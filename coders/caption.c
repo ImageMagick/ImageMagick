@@ -169,7 +169,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
     return(DestroyImageList(image));
   (void) SetImageProperty(image,"caption",caption,exception);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-  width=CastDoubleToUnsigned(0.5*draw_info->pointsize*strlen(caption)+0.5);
+  width=CastDoubleToSizeT(0.5*draw_info->pointsize*strlen(caption)+0.5);
   if (AcquireMagickResource(WidthResource,width) == MagickFalse)
     {
       caption=DestroyString(caption);
@@ -197,7 +197,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
         (void) CloneString(&draw_info->geometry,geometry);
       status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
       AdjustTypeMetricBounds(&metrics);
-      image->columns=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
+      image->columns=CastDoubleToSizeT(floor(metrics.width+draw_info->stroke_width+0.5));
     }
   if (image->rows == 0)
     {
@@ -213,8 +213,8 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
         (void) CloneString(&draw_info->geometry,geometry);
       status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
       AdjustTypeMetricBounds(&metrics);
-      image->rows=(size_t) ((i+1)*(metrics.ascent-metrics.descent+
-        draw_info->interline_spacing+draw_info->stroke_width)+0.5);
+      image->rows=CastDoubleToSizeT(((i+1)*(metrics.ascent-metrics.descent+
+        draw_info->interline_spacing+draw_info->stroke_width)+0.5));
     }
   if (status != MagickFalse)
     status=SetImageExtent(image,image->columns,image->rows,exception);
@@ -277,10 +277,8 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
             if (status == MagickFalse)
               break;
             AdjustTypeMetricBounds(&metrics);
-            width=CastDoubleToUnsigned(metrics.width+draw_info->stroke_width+
-              0.5);
-            height=CastDoubleToUnsigned(
-              metrics.height-metrics.underline_position+
+            width=CastDoubleToSizeT(metrics.width+draw_info->stroke_width+0.5);
+            height=CastDoubleToSizeT(metrics.height-metrics.underline_position+
               draw_info->interline_spacing+draw_info->stroke_width+0.5);
             if ((image->columns != 0) && (image->rows != 0))
               {
@@ -312,8 +310,8 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
         if (status == MagickFalse)
           break;
         AdjustTypeMetricBounds(&metrics);
-        width=CastDoubleToUnsigned(metrics.width+draw_info->stroke_width+0.5);
-        height=CastDoubleToUnsigned(metrics.height-metrics.underline_position+
+        width=CastDoubleToSizeT(metrics.width+draw_info->stroke_width+0.5);
+        height=CastDoubleToSizeT(metrics.height-metrics.underline_position+
           draw_info->interline_spacing+draw_info->stroke_width+0.5);
         if ((image->columns != 0) && (image->rows != 0))
           {

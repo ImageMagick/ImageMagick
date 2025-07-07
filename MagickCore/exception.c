@@ -533,6 +533,8 @@ MagickExport char *GetExceptionMessage(const int error)
   (void) CopyMagickString(exception,strerror_r(error,exception,
     sizeof(exception)),sizeof(exception));
 #endif
+#elif defined(MAGICKCORE_WINDOWS_SUPPORT)
+  strerror_s(exception,sizeof(exception),error);
 #else
   (void) CopyMagickString(exception,strerror(error),sizeof(exception));
 #endif

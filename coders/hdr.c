@@ -259,7 +259,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
           do
           {
             if ((size_t) (p-keyword) < (MagickPathExtent-1))
-              *p++=c;
+              *p++=(char) c;
             c=ReadBlobByte(image);
           } while (isalnum((int) ((unsigned char) c)) || (c == '_'));
           *p='\0';
@@ -278,7 +278,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
           while ((c != '\n') && (c != '\0') && (c != EOF))
           {
             if ((size_t) (p-value) < (MagickPathExtent-1))
-              *p++=c;
+              *p++=(char) c;
             c=ReadBlobByte(image);
           }
           *p='\0';
@@ -316,7 +316,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               if (LocaleCompare(keyword,"primaries") == 0)
                 {
-                  chromaticity_count=sscanf(value,"%g %g %g %g %g %g %g %g",
+                  chromaticity_count=MagickSscanf(value,"%g %g %g %g %g %g %g %g",
                     &chromaticity[0],&chromaticity[1],&chromaticity[2],
                     &chromaticity[3],&chromaticity[4],&chromaticity[5],
                     &white_point[0],&white_point[1]);
@@ -338,7 +338,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     height,
                     width;
 
-                  if (sscanf(value,"%d +X %d",&height,&width) == 2)
+                  if (MagickSscanf(value,"%d +X %d",&height,&width) == 2)
                     {
                       image->columns=(size_t) width;
                       image->rows=(size_t) height;

@@ -112,7 +112,7 @@
 */
 #define XBlueGamma(color) ClampToQuantum(blue_gamma == 1.0 ? (double) \
   (color) : ((pow((QuantumScale*(double) (color)),1.0* \
-  PerceptibleReciprocal((double) blue_gamma))*(double) QuantumRange)))
+  MagickSafeReciprocal((double) blue_gamma))*(double) QuantumRange)))
 #define XGammaPacket(map,color)  (size_t) (map->base_pixel+ \
   ((ScaleQuantumToShort(XRedGamma((color)->red))*map->red_max/65535L)* \
     map->red_mult)+ \
@@ -129,10 +129,10 @@
     map->blue_mult))
 #define XGreenGamma(color) ClampToQuantum(green_gamma == 1.0 ? (double) \
   (color) : ((pow((QuantumScale*(double) (color)),1.0* \
-  PerceptibleReciprocal((double) green_gamma))*(double) QuantumRange)))
+  MagickSafeReciprocal((double) green_gamma))*(double) QuantumRange)))
 #define XRedGamma(color) ClampToQuantum(red_gamma == 1.0 ? (double) \
   (color) : ((pow((QuantumScale*(double) (color)),1.0* \
-  PerceptibleReciprocal((double) red_gamma))*(double) QuantumRange)))
+  MagickSafeReciprocal((double) red_gamma))*(double) QuantumRange)))
 #define XStandardPixel(map,color)  (size_t) (map->base_pixel+ \
   (((color)->red*map->red_max/65535L)*map->red_mult)+ \
   (((color)->green*map->green_max/65535L)*map->green_mult)+ \
@@ -1155,7 +1155,7 @@ MagickPrivate XVisualInfo *XBestVisualInfo(Display *display,
   XStandardColormap *map_info,XResourceInfo *resource_info)
 {
 #define MaxStandardColormaps  7
-#define XVisualColormapSize(visual_info) MagickMin((unsigned int) (\
+#define XVisualColormapSize(visual_info) MagickMin((unsigned long int) (\
   (visual_info->klass == TrueColor) || (visual_info->klass == DirectColor) ? \
    visual_info->red_mask | visual_info->green_mask | visual_info->blue_mask : \
    (unsigned long) visual_info->colormap_size),1UL << visual_info->depth)
@@ -4084,10 +4084,10 @@ static Image *XGetWindowImage(Display *display,const Window window,
       crop_info.y=0;
     }
   display_width=XDisplayWidth(display,XDefaultScreen(display));
-  if ((crop_info.x+(int) crop_info.width) > display_width)
+  if ((int) (crop_info.x+(int) crop_info.width) > display_width)
     crop_info.width=(size_t) (display_width-crop_info.x);
   display_height=XDisplayHeight(display,XDefaultScreen(display));
-  if ((crop_info.y+(int) crop_info.height) > display_height)
+  if ((int) (crop_info.y+(int) crop_info.height) > display_height)
     crop_info.height=(size_t) (display_height-crop_info.y);
   /*
     Initialize window info attributes.
@@ -7816,16 +7816,16 @@ MagickPrivate void XMakeStandardColormap(Display *display,
               {
                 for (i=0; i < (ssize_t) number_colors; i++)
                 {
-                  SetPixelRed(affinity_image,0,q);
+                  SetPixelRed(affinity_image,(Quantum) 0,q);
                   if (map_info->red_max != 0)
                     SetPixelRed(affinity_image,ScaleXToQuantum((size_t)
                       (i/(ssize_t) map_info->red_mult),map_info->red_max),q);
-                  SetPixelGreen(affinity_image,0,q);
+                  SetPixelGreen(affinity_image,(Quantum) 0,q);
                   if (map_info->green_max != 0)
                     SetPixelGreen(affinity_image,ScaleXToQuantum((size_t)
                       ((i/(ssize_t) map_info->green_mult) % (ssize_t)
                       (map_info->green_max+1)),map_info->green_max),q);
-                  SetPixelBlue(affinity_image,0,q);
+                  SetPixelBlue(affinity_image,(Quantum) 0,q);
                   if (map_info->blue_max != 0)
                     SetPixelBlue(affinity_image,ScaleXToQuantum((size_t)
                       (i % (ssize_t) map_info->green_mult),map_info->blue_max),
@@ -9708,7 +9708,8 @@ MagickPrivate void XWarning(const ExceptionType magick_unused(warning),
   (void) CopyMagickString(text,reason,MagickPathExtent);
   (void) ConcatenateMagickString(text,":",MagickPathExtent);
   windows=XSetWindows((XWindows *) ~0);
-  XNoticeWidget(windows->display,windows,text,(char *) description);
+  if (windows != (XWindows *) NULL)
+     XNoticeWidget(windows->display,windows,text,(char *) description);
 }
 
 /*

@@ -1740,9 +1740,9 @@ MagickExport Image *XAnimateImages(Display *display,
       */
       windows->image.flags|=USPosition;
       windows->image.x=(XDisplayWidth(display,visual_info->screen)/2)-
-        ((ssize_t) windows->image.width/2);
+        ((int) windows->image.width/2);
       windows->image.y=(XDisplayHeight(display,visual_info->screen)/2)-
-        ((ssize_t) windows->image.height/2);
+        ((int) windows->image.height/2);
     }
   manager_hints->flags=IconWindowHint | InputHint | StateHint;
   manager_hints->icon_window=windows->icon.id;
@@ -2421,7 +2421,7 @@ MagickExport Image *XAnimateImages(Display *display,
                   if (windows->command.mapped == MagickFalse)
                     {
                         windows->command.x=event.xconfigure.x-
-                          (ssize_t) windows->command.width-25;
+                          (int) windows->command.width-25;
                         windows->command.y=event.xconfigure.y;
                         XConstrainWindowPosition(display,&windows->command);
                         window_changes.x=windows->command.x;

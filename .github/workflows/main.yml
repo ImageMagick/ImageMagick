@@ -13,8 +13,8 @@ jobs:
   build_linux:
     name: Build Linux
     container:
-      image: ubuntu:20.04
-    runs-on: ubuntu-latest
+      image: ubuntu:22.04
+    runs-on: ubuntu-24.04
 
     strategy:
       fail-fast: false
@@ -79,7 +79,7 @@ jobs:
 
     - name: Configure ImageMagick
       run: |
-        export CFLAGS="-Wall -Wextra -Wno-incompatible-library-redeclaration -Wno-deprecated-declarations -Wno-unused-parameter -Wno-unused-function -Wno-missing-declarations -Wno-incompatible-pointer-types-discards-qualifiers"
+        export CFLAGS="-Wall -Wextra -Wdeclaration-after-statement -Wno-deprecated-declarations -Wno-incompatible-library-redeclaration -Wno-incompatible-pointer-types-discards-qualifiers -Wno-missing-declarations -Wno-unused-function -Wno-unused-parameter"
         autoreconf -fiv
         ./configure --with-quantum-depth=16 --enable-hdri=no --without-perl --with-fftw --with-flif
 
@@ -103,7 +103,7 @@ jobs:
 
     - name: Configure ImageMagick
       run: |
-        export CFLAGS="-Wall -Wextra -Werror -Wno-incompatible-library-redeclaration -Wno-deprecated-declarations -Wno-unused-parameter -Wno-unused-function -Wno-missing-declarations -Wno-incompatible-pointer-types-discards-qualifiers"
+        export CFLAGS="-Wall -Wextra -Werror -Wdeclaration-after-statement -Wno-deprecated-declarations -Wno-incompatible-library-redeclaration -Wno-incompatible-pointer-types-discards-qualifiers -Wno-missing-declarations -Wno-unused-function -Wno-unused-parameter"
         export LDFLAGS=$(pkg-config --libs libjpeg)
         autoreconf -fiv
         ./configure --with-quantum-depth=16 --enable-hdri=no --without-perl --with-fftw --with-flif --with-rsvg
@@ -150,18 +150,11 @@ jobs:
         cd ImageMagick-Windows
         CloneRepositories.IM7.cmd
 
-    - name: Build configure
-      shell: cmd
-      run: |
-        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
-        cd ImageMagick-Windows\Configure
-        msbuild Configure.sln /m /t:Rebuild /p:Configuration=Release,Platform=x64
-
     - name: Configure ImageMagick
       shell: cmd
       run: |
         cd ImageMagick-Windows\Configure
-        Configure.exe /noWizard /VS2022 /${{matrix.platform}} /smt
+        Configure.Release.x64.exe /noWizard /VS2022 /${{matrix.platform}} /smt
 
     - name: Build ImageMagick
       shell: cmd
@@ -172,7 +165,7 @@ jobs:
 
   build_msys2:
     name: Build MSYS2
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     steps:
     - name: Prepare git

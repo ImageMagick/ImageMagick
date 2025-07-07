@@ -1364,12 +1364,12 @@ static Image *OptimizeLayerFrames(const Image *image,const LayerMethod method,
       size_t time = 0;
       while ( disposals[i] == DelDispose ) {
         time +=(size_t) (curr->delay*1000*
-          PerceptibleReciprocal((double) curr->ticks_per_second));
+          MagickSafeReciprocal((double) curr->ticks_per_second));
         curr=GetNextImageInList(curr);
         i++;
       }
       time += (size_t)(curr->delay*1000*
-        PerceptibleReciprocal((double) curr->ticks_per_second));
+        MagickSafeReciprocal((double) curr->ticks_per_second));
       prev_image->ticks_per_second = 100L;
       prev_image->delay = time*(size_t) prev_image->ticks_per_second/1000;
     }
@@ -1656,9 +1656,9 @@ MagickExport void RemoveDuplicateLayers(Image **images,ExceptionInfo *exception)
           time;
 
         time=(size_t) (1000.0*image->delay*
-          PerceptibleReciprocal((double) image->ticks_per_second));
+          MagickSafeReciprocal((double) image->ticks_per_second));
         time+=(size_t) (1000.0*next->delay*
-          PerceptibleReciprocal((double) next->ticks_per_second));
+          MagickSafeReciprocal((double) next->ticks_per_second));
         next->ticks_per_second=100L;
         next->delay=time*(size_t) image->ticks_per_second/1000;
         next->iterations=image->iterations;

@@ -212,7 +212,7 @@ static ssize_t WriteURLComponent(Image *image,const int c)
   
   html5=isalnum(c) != 0 || (c == '-') || (c == '_') || (c == '.') ||
     (c == '!') || (c == '~') || (c == '*') || (c == '\'') || (c == '(') ||
-    (c == ')') ?  c : 0;
+    (c == ')') ?  (char) c : 0;
   if (html5 != 0)
     (void) FormatLocaleString(encoding,MagickPathExtent,"%c",html5);
   else

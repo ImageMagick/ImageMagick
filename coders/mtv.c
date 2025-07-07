@@ -58,6 +58,7 @@
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
 #include "MagickCore/module.h"
 
 /*
@@ -145,7 +146,7 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   (void) memset(buffer,0,sizeof(buffer));
   (void) ReadBlobString(image,buffer);
-  count=(ssize_t) sscanf(buffer,"%lu %lu\n",&columns,&rows);
+  count=(ssize_t) MagickSscanf(buffer,"%lu %lu\n",&columns,&rows);
   if (count != 2)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   do
@@ -215,7 +216,7 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *buffer='\0';
     if (ReadBlobString(image,buffer) == (char *) NULL)
       break;
-    count=(ssize_t) sscanf(buffer,"%lu %lu\n",&columns,&rows);
+    count=(ssize_t) MagickSscanf(buffer,"%lu %lu\n",&columns,&rows);
     if (count > 0)
       {
         /*

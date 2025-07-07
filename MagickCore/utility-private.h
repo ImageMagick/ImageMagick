@@ -57,7 +57,7 @@ static inline int MagickReadDirectory(DIR *directory,struct dirent *entry,
   Windows UTF8 compatibility methods.
 */
 
-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__)
 static inline wchar_t *create_wchar_path(const char *utf8)
 {
   int
@@ -77,6 +77,9 @@ static inline wchar_t *create_wchar_path(const char *utf8)
         shortPath[MAX_PATH],
         *longPath;
 
+      size_t
+        length;
+
       (void) FormatLocaleString(buffer,MagickPathExtent,"\\\\?\\%s",utf8);
       count+=4;
       longPath=(wchar_t *) NTAcquireQuantumMemory((size_t) count,
@@ -89,8 +92,9 @@ static inline wchar_t *create_wchar_path(const char *utf8)
       longPath=(wchar_t *) RelinquishMagickMemory(longPath);
       if ((count < 5) || (count >= MAX_PATH))
         return((wchar_t *) NULL);
-      wide=(wchar_t *) NTAcquireQuantumMemory((size_t) count-3,sizeof(*wide));
-      wcscpy(wide,shortPath+4);
+      length=(size_t) count-3;
+      wide=(wchar_t *) NTAcquireQuantumMemory(length,sizeof(*wide));
+      wcscpy_s(wide,length,shortPath+4);
       return(wide);
     }
   wide=(wchar_t *) NTAcquireQuantumMemory((size_t) count,sizeof(*wide));
@@ -129,49 +133,56 @@ static inline int access_utf8(const char *path,int mode)
 {
   if (path == (const char *) NULL)
     return(-1);
-#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__)
   return(access(path,mode));
 #else
-   int
-     status;
+  int
+    status;
 
-   wchar_t
-     *path_wide;
+  wchar_t
+    *path_wide;
 
-   path_wide=create_wchar_path(path);
-   if (path_wide == (wchar_t *) NULL)
-     return(-1);
-   status=_waccess(path_wide,mode);
-   path_wide=(wchar_t *) RelinquishMagickMemory(path_wide);
-   return(status);
+  path_wide=create_wchar_path(path);
+  if (path_wide == (wchar_t *) NULL)
+    return(-1);
+  status=_waccess(path_wide,mode);
+  path_wide=(wchar_t *) RelinquishMagickMemory(path_wide);
+  return(status);
 #endif
 }
 
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__) && !defined(__MINGW32__)
+#define close_utf8 _close
+#else
+#define close_utf8 close
+#endif
+
 static inline FILE *fopen_utf8(const char *path,const char *mode)
 {
-#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__)
   return(fopen(path,mode));
 #else
-   FILE
-     *file;
+  FILE
+    *file;
 
-   wchar_t
-     *mode_wide,
-     *path_wide;
+  wchar_t
+    *mode_wide,
+    *path_wide;
 
-   path_wide=create_wchar_path(path);
-   if (path_wide == (wchar_t *) NULL)
-     return((FILE *) NULL);
-   mode_wide=create_wchar_mode(mode);
-   if (mode_wide == (wchar_t *) NULL)
-     {
-       path_wide=(wchar_t *) RelinquishMagickMemory(path_wide);
-       return((FILE *) NULL);
-     }
-   file=_wfopen(path_wide,mode_wide);
-   mode_wide=(wchar_t *) RelinquishMagickMemory(mode_wide);
-   path_wide=(wchar_t *) RelinquishMagickMemory(path_wide);
-   return(file);
+  path_wide=create_wchar_path(path);
+  if (path_wide == (wchar_t *) NULL)
+    return((FILE *) NULL);
+  mode_wide=create_wchar_mode(mode);
+  if (mode_wide == (wchar_t *) NULL)
+    {
+      path_wide=(wchar_t *) RelinquishMagickMemory(path_wide);
+      return((FILE *) NULL);
+    }
+  if (_wfopen_s(&file,path_wide,mode_wide) != 0)
+    file=(FILE *) NULL;
+  mode_wide=(wchar_t *) RelinquishMagickMemory(mode_wide);
+  path_wide=(wchar_t *) RelinquishMagickMemory(path_wide);
+  return(file);
 #endif
 }
 
@@ -199,10 +210,11 @@ typedef int
 
 static inline int open_utf8(const char *path,int flags,mode_t mode)
 {
-#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__)
   return(open(path,flags,mode));
 #else
   int
+    file_handle,
     status;
 
   wchar_t
@@ -212,15 +224,15 @@ static inline int open_utf8(const char *path,int flags,mode_t mode)
   if (path_wide == (wchar_t *) NULL)
     return(-1);
   /* O_NOINHERIT specifies that the file is not inherited by child processes */
-  status=_wopen(path_wide,flags | O_NOINHERIT,mode);
+  status=_wsopen_s(&file_handle,path_wide,flags | O_NOINHERIT,_SH_DENYNO,mode);
   path_wide=(wchar_t *) RelinquishMagickMemory(path_wide);
-  return(status);
+  return(status == 0 ? file_handle : -1);
 #endif
 }
 
 static inline FILE *popen_utf8(const char *command,const char *type)
 {
-#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__)
   return(popen(command,type));
 #else
   FILE
@@ -254,49 +266,49 @@ static inline FILE *popen_utf8(const char *command,const char *type)
 
 static inline int remove_utf8(const char *path)
 {
-#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__)
   return(unlink(path));
 #else
-   int
-     status;
+  int
+    status;
 
-   wchar_t
-     *path_wide;
+  wchar_t
+    *path_wide;
 
-   path_wide=create_wchar_path(path);
-   if (path_wide == (wchar_t *) NULL)
-     return(-1);
-   status=_wremove(path_wide);
-   path_wide=(wchar_t *) RelinquishMagickMemory(path_wide);
-   return(status);
+  path_wide=create_wchar_path(path);
+  if (path_wide == (wchar_t *) NULL)
+    return(-1);
+  status=_wremove(path_wide);
+  path_wide=(wchar_t *) RelinquishMagickMemory(path_wide);
+  return(status);
 #endif
 }
 
 static inline int rename_utf8(const char *source,const char *destination)
 {
-#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__)
   return(rename(source,destination));
 #else
-   int
-     status;
+ int
+   status;
 
-   wchar_t
-     *destination_wide,
-     *source_wide;
+  wchar_t
+    *destination_wide,
+    *source_wide;
 
-   source_wide=create_wchar_path(source);
-   if (source_wide == (wchar_t *) NULL)
-     return(-1);
-   destination_wide=create_wchar_path(destination);
-   if (destination_wide == (wchar_t *) NULL)
-     {
-       source_wide=(wchar_t *) RelinquishMagickMemory(source_wide);
-       return(-1);
-     }
-   status=_wrename(source_wide,destination_wide);
-   destination_wide=(wchar_t *) RelinquishMagickMemory(destination_wide);
-   source_wide=(wchar_t *) RelinquishMagickMemory(source_wide);
-   return(status);
+  source_wide=create_wchar_path(source);
+  if (source_wide == (wchar_t *) NULL)
+    return(-1);
+  destination_wide=create_wchar_path(destination);
+  if (destination_wide == (wchar_t *) NULL)
+    {
+      source_wide=(wchar_t *) RelinquishMagickMemory(source_wide);
+      return(-1);
+    }
+  status=_wrename(source_wide,destination_wide);
+  destination_wide=(wchar_t *) RelinquishMagickMemory(destination_wide);
+  source_wide=(wchar_t *) RelinquishMagickMemory(source_wide);
+  return(status);
 #endif
 }
 
@@ -305,7 +317,7 @@ static inline int set_file_timestamp(const char *path,struct stat *attributes)
   int
     status;
 
-#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__)
 #if defined(MAGICKCORE_HAVE_UTIMENSAT)
 #if defined(__APPLE__) || defined(__NetBSD__) 
 #define st_atim st_atimespec
@@ -375,21 +387,21 @@ static inline int set_file_timestamp(const char *path,struct stat *attributes)
 
 static inline int stat_utf8(const char *path,struct stat *attributes)
 {
-#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__)
   return(stat(path,attributes));
 #else
-   int
-     status;
+  int
+    status;
 
-   wchar_t
-     *path_wide;
+  wchar_t
+    *path_wide;
 
-   path_wide=create_wchar_path(path);
-   if (path_wide == (WCHAR *) NULL)
-     return(-1);
-   status=_wstati64(path_wide,attributes);
-   path_wide=(WCHAR *) RelinquishMagickMemory(path_wide);
-   return(status);
+  path_wide=create_wchar_path(path);
+  if (path_wide == (WCHAR *) NULL)
+    return(-1);
+  status=_wstati64(path_wide,attributes);
+  path_wide=(WCHAR *) RelinquishMagickMemory(path_wide);
+  return(status);
 #endif
 }
 

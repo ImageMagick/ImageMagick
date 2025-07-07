@@ -65,6 +65,7 @@
 #include "MagickCore/module.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
+#include "MagickCore/nt-base-private.h"
 #include "MagickCore/option.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/policy.h"
@@ -491,10 +492,10 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
     }
   if (apply_density != MagickFalse)
     {
-      image->columns=image->resolution.x*dimension_info.width/
-        DefaultSVGDensity;
-      image->rows=image->resolution.y*dimension_info.height/
-        DefaultSVGDensity;
+      image->columns=(size_t) (image->resolution.x*dimension_info.width/
+        DefaultSVGDensity);
+      image->rows=(size_t) (image->resolution.y*dimension_info.height/
+        DefaultSVGDensity);
     }
   else
     {
@@ -594,7 +595,7 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
               gamma;
 
             gamma=QuantumScale*fill_color.alpha;
-            gamma=PerceptibleReciprocal(gamma);
+            gamma=MagickSafeReciprocal(gamma);
             fill_color.blue*=gamma;
             fill_color.green*=gamma;
             fill_color.red*=gamma;
@@ -992,14 +993,14 @@ static void SVGProcessStyleElement(SVGInfo *svg_info,const xmlChar *name,
               font_size[MagickPathExtent],
               font_style[MagickPathExtent];
 
-            if (sscanf(value,"%2048s %2048s %2048s",font_style,font_size,
+            if (MagickSscanf(value,"%2048s %2048s %2048s",font_style,font_size,
                   font_family) != 3)
               break;
             if (GetUserSpaceCoordinateValue(svg_info,0,font_style) == 0)
               (void) FormatLocaleFile(svg_info->file,"font-style \"%s\"\n",
                 style);
             else
-              if (sscanf(value,"%2048s %2048s",font_size,font_family) != 2)
+              if (MagickSscanf(value,"%2048s %2048s",font_size,font_family) != 2)
                 break;
             (void) FormatLocaleFile(svg_info->file,"font-size \"%s\"\n",
               font_size);
@@ -2499,14 +2500,14 @@ static void SVGStartElement(void *context,const xmlChar *name,
             svg_info->view_box=svg_info->bounds;
           svg_info->width=0;
           if (svg_info->bounds.width >= MagickEpsilon)
-            svg_info->width=CastDoubleToUnsigned(svg_info->bounds.width+0.5);
+            svg_info->width=CastDoubleToSizeT(svg_info->bounds.width+0.5);
           svg_info->height=0;
           if (svg_info->bounds.height >= MagickEpsilon)
-            svg_info->height=CastDoubleToUnsigned(svg_info->bounds.height+0.5);
+            svg_info->height=CastDoubleToSizeT(svg_info->bounds.height+0.5);
           (void) FormatLocaleFile(svg_info->file,"viewbox 0 0 %.20g %.20g\n",
             (double) svg_info->width,(double) svg_info->height);
-          sx=PerceptibleReciprocal(svg_info->view_box.width)*svg_info->width;
-          sy=PerceptibleReciprocal(svg_info->view_box.height)*svg_info->height;
+          sx=MagickSafeReciprocal(svg_info->view_box.width)*svg_info->width;
+          sy=MagickSafeReciprocal(svg_info->view_box.height)*svg_info->height;
           tx=svg_info->view_box.x != 0.0 ? (double) -sx*svg_info->view_box.x :
             0.0;
           ty=svg_info->view_box.y != 0.0 ? (double) -sy*svg_info->view_box.y :
@@ -3081,8 +3082,8 @@ static Image *RenderMSVGImage(const ImageInfo *image_info,Image *image,
   svg_info->exception=exception;
   svg_info->image=image;
   svg_info->image_info=image_info;
-  svg_info->bounds.width=image->columns;
-  svg_info->bounds.height=image->rows;
+  svg_info->bounds.width=(double) image->columns;
+  svg_info->bounds.height=(double) image->rows;
   svg_info->svgDepth=0;
   if (image_info->size != (char *) NULL)
     (void) CloneString(&svg_info->size,image_info->size);
@@ -3110,8 +3111,8 @@ static Image *RenderMSVGImage(const ImageInfo *image_info,Image *image,
   parser=(xmlParserCtxtPtr) NULL;
   if (n > 0)
     {
-      parser=xmlCreatePushParserCtxt(sax_handler,(void *) NULL,(char *)
-        message,n,image->filename);
+      parser=xmlCreatePushParserCtxt(sax_handler,(void *) NULL,(const char *)
+        message,(int) n,image->filename);
       if (parser != (xmlParserCtxtPtr) NULL)
         {
           const char *option;
@@ -3752,14 +3753,11 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
   /*
     Write SVG header.
   */
-  (void) WriteBlobString(image,"<?xml version=\"1.0\" standalone=\"no\"?>\n");
   (void) WriteBlobString(image,
-    "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 20010904//EN\"\n");
-  (void) WriteBlobString(image,
-    "  \"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd\">\n");
+    "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n");
   (void) FormatLocaleString(message,MagickPathExtent,
-    "<svg width=\"%.20g\" height=\"%.20g\">\n",(double) image->columns,(double)
-    image->rows);
+    "<svg width=\"%.20g\" height=\"%.20g\" xmlns=\"http://www.w3.org/2000/svg\">\n",
+    (double) image->columns,(double) image->rows);
   (void) WriteBlobString(image,message);
   /*
     Allocate primitive info memory.

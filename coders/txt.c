@@ -67,6 +67,7 @@
 #include "MagickCore/static.h"
 #include "MagickCore/statistic.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
 #include "MagickCore/token.h"
 #include "coders/txt.h"
 
@@ -119,8 +120,8 @@ static MagickBooleanType IsTXT(const unsigned char *magick,const size_t length)
   if (LocaleNCompare((const char *) magick,MagickTXTID,
         strlen(MagickTXTID)) != 0)
     return(MagickFalse);
-  count=(ssize_t) sscanf((const char *) magick+32,"%lu,%lu,%lu,%32s",&columns,
-    &rows,&depth,colorspace);
+  count=(ssize_t) MagickSscanf((const char *) magick+32,"%lu,%lu,%lu,%32s",
+    &columns,&rows,&depth,colorspace);
   if (count != 4)
     return(MagickFalse);
   return(MagickTrue);
@@ -234,10 +235,10 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,
   /*
     Initialize Image structure.
   */
-  image->columns=(size_t) floor((((double) page.width*image->resolution.x)/
-    delta.x)+0.5);
-  image->rows=(size_t) floor((((double) page.height*image->resolution.y)/
-    delta.y)+0.5);
+  image->columns=CastDoubleToSizeT(floor((((double) page.width*
+    image->resolution.x)/delta.x)+0.5));
+  image->rows=CastDoubleToSizeT(floor((((double) page.height*
+    image->resolution.y)/delta.y)+0.5));
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status != MagickFalse)
     status=ResetImagePixels(image,exception);
@@ -273,7 +274,7 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,
       draw_info=DestroyDrawInfo(draw_info);
       ThrowReaderException(TypeError,"UnableToGetTypeMetrics");
     }
-  page.y=CastDoubleToLong(ceil((double) page.y+metrics.ascent-0.5));
+  page.y=CastDoubleToSsizeT(ceil((double) page.y+metrics.ascent-0.5));
   (void) FormatLocaleString(geometry,MagickPathExtent,"%gx%g%+g%+g",(double)
     image->columns,(double) image->rows,(double) page.x,(double) page.y);
   (void) CloneString(&draw_info->geometry,geometry);
@@ -437,12 +438,12 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       number_meta_channels = 0,
       width = 0;
 
-    count=(ssize_t) sscanf(text+32,"%lu,%lu,%lu,%lf,%32s",&width,&height,
+    count=(ssize_t) MagickSscanf(text+32,"%lu,%lu,%lu,%lf,%32s",&width,&height,
       &number_meta_channels,&max_value,colorspace);
     if (count < 5)
       {
         number_meta_channels=0;
-        count=(ssize_t) sscanf(text+32,"%lu,%lu,%lf,%32s",&width,&height,
+        count=(ssize_t) MagickSscanf(text+32,"%lu,%lu,%lf,%32s",&width,&height,
           &max_value,colorspace);
       }
     if ((count < 4) || (width == 0) || (height == 0) || (max_value == 0.0) ||
@@ -531,8 +532,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
               n++;
             }
         }
-        q=GetAuthenticPixels(image,CastDoubleToLong(channels[0]),
-          CastDoubleToLong(channels[1]),1,1,exception);
+        q=GetAuthenticPixels(image,CastDoubleToSsizeT(channels[0]),
+          CastDoubleToSsizeT(channels[1]),1,1,exception);
         if (q == (Quantum *) NULL)
           break;
         for (i=0; i < (ssize_t) GetImageChannels(image); i++)

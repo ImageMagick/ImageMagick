@@ -615,17 +615,17 @@ static MagickBooleanType Classify(Image *image,short **extrema,
             sum=0.0;
             p=image->colormap+j;
             distance_squared=
-              squares[(ssize_t) (pixel.red-ScaleQuantumToChar(p->red))]+
-              squares[(ssize_t) (pixel.green-ScaleQuantumToChar(p->green))]+
-              squares[(ssize_t) (pixel.blue-ScaleQuantumToChar(p->blue))];
+              squares[(ssize_t) (pixel.red-ScaleQuantumToChar((const Quantum) p->red))]+
+              squares[(ssize_t) (pixel.green-ScaleQuantumToChar((const Quantum) p->green))]+
+              squares[(ssize_t) (pixel.blue-ScaleQuantumToChar((const Quantum) p->blue))];
             numerator=distance_squared;
             for (k=0; k < (ssize_t) image->colors; k++)
             {
               p=image->colormap+k;
               distance_squared=
-                squares[(ssize_t) (pixel.red-ScaleQuantumToChar(p->red))]+
-                squares[(ssize_t) (pixel.green-ScaleQuantumToChar(p->green))]+
-                squares[(ssize_t) (pixel.blue-ScaleQuantumToChar(p->blue))];
+                squares[(ssize_t) (pixel.red-ScaleQuantumToChar((const Quantum) p->red))]+
+                squares[(ssize_t) (pixel.green-ScaleQuantumToChar((const Quantum) p->green))]+
+                squares[(ssize_t) (pixel.blue-ScaleQuantumToChar((const Quantum) p->blue))];
               ratio=numerator/distance_squared;
               sum+=SegmentPower(ratio);
             }
@@ -1681,7 +1681,7 @@ static double OptimalTau(const ssize_t *histogram,const double max_tau,
   average_tau=0.0;
   for (i=0; i < number_nodes; i++)
     average_tau+=list[i]->tau;
-  average_tau*=PerceptibleReciprocal((double) number_nodes);
+  average_tau*=MagickSafeReciprocal((double) number_nodes);
   /*
     Relinquish resources.
   */
@@ -1731,8 +1731,8 @@ static void ScaleSpace(const ssize_t *histogram,const double tau,
   gamma=(double *) AcquireQuantumMemory(256,sizeof(*gamma));
   if (gamma == (double *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"UnableToAllocateGammaMap");
-  alpha=PerceptibleReciprocal(tau*sqrt(2.0*MagickPI));
-  beta=(-1.0*PerceptibleReciprocal(2.0*tau*tau));
+  alpha=MagickSafeReciprocal(tau*sqrt(2.0*MagickPI));
+  beta=(-1.0*MagickSafeReciprocal(2.0*tau*tau));
   for (x=0; x <= 255; x++)
     gamma[x]=0.0;
   for (x=0; x <= 255; x++)

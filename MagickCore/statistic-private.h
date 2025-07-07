@@ -22,11 +22,20 @@
 extern "C" {
 #endif
 
-static inline double MagickLog10(const double x)
+static inline double MagickSafeLog10(const double x)
 {
-  if (fabs(x) < MagickEpsilon)
+  if (x < MagickEpsilon)
     return(log10(MagickEpsilon));
-  return(log10(fabs(x)));
+  if (fabs(x-1.0) < MagickEpsilon)
+    return(0.0);
+  return(log10(x));
+}
+
+static inline double MagickSafeReciprocal(const double x)
+{
+  if ((x > -MagickEpsilon) && (x < MagickEpsilon))
+    return(1.0/MagickEpsilon);
+  return(1.0/x);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)

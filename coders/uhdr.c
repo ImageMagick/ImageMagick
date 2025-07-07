@@ -799,10 +799,10 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
             unsigned short
               r, g, b, a;
 
-            r = SinglePrecisionToHalf((float)QuantumScale * GetPixelRed(image, p));
-            g = SinglePrecisionToHalf((float)QuantumScale * GetPixelGreen(image, p));
-            b = SinglePrecisionToHalf((float)QuantumScale * GetPixelBlue(image, p));
-            a = SinglePrecisionToHalf((float)QuantumScale * GetPixelAlpha(image, p));
+            r = SinglePrecisionToHalf(QuantumScale * GetPixelRed(image, p));
+            g = SinglePrecisionToHalf(QuantumScale * GetPixelGreen(image, p));
+            b = SinglePrecisionToHalf(QuantumScale * GetPixelBlue(image, p));
+            a = SinglePrecisionToHalf(QuantumScale * GetPixelAlpha(image, p));
 
             rgbaBase[y * hdrImgDescriptor.stride[UHDR_PLANE_PACKED] + x] =
                 ((uint64_t)a << 48) | ((uint64_t)b << 32) | (g << 16) | (r);

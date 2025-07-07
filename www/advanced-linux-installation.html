@@ -1,10 +1,10 @@
 
 
 
-
 <!doctype html>
 <html lang="en" data-bs-theme="dark">
 <head>
+  <script src="assets/color-modes.js" ></script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ImageMagick – Advanced Linux Source Installation</title>
@@ -26,13 +26,11 @@
   <link type="images/png" sizes="64x64" href="../images/wand.png" rel="icon" />
   <link type="images/icon" sizes="16x16" href="../images/wand.ico" rel="shortcut icon" />
   <link href="advanced-linux-installation.html" rel="canonical" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
-  <link href="assets/magick.css" rel="stylesheet" />
-  <script src="assets/color-modes.js" ></script>
-  <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
+  <link href="assets/bootstrap.min.css" rel="stylesheet" />
   <script async src="https://localhost/cse.js?cx=006134137889097767902:turn9fku95u"> </script>
 </head>
 <body>
+  <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
   <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
     <symbol id="check2" viewBox="0 0 16 16">
       <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
@@ -113,7 +111,7 @@
           <a class="nav-link " href="develop.html">Develop</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
+          <a class="nav-link" rel="noopener" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
         </li>
         <li class="nav-item">
           <iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border: 0;"></iframe>
@@ -130,7 +128,7 @@
 <div class="col-lg-8 mx-auto p-4 py-md-5 text-body-secondary">
   <header class="d-flex align-items-center pb-3 mb-5 border-bottom">
     <a href="../index.html" class="d-flex align-items-center text-decoration-none">
-      <h1 class="fs-4">Advanced Linux Source Installation</h1>
+      <h1 class="mt-5 fs-4">Advanced Linux Source Installation</h1>
     </a>
   </header>
 
@@ -155,7 +153,10 @@
 
 <p>The configure script looks at your environment and decides what it can cobble together to get ImageMagick compiled and installed on your system.  This includes finding a compiler, where your compiler header files are located (e.g. stdlib.h), and if any delegate libraries are available for ImageMagick to use (e.g. JPEG, PNG, TIFF, etc.).  If you are willing to accept configure's default options, and build from within the source directory, you can simply type:</p>
 
-<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>cd ImageMagick-7.1.1-39</span><span class='crtout'></span><span class="crtprompt"><br/>$ </span><span class='crtin'>./configure</span></code></pre></ul>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><samp>
+cd ImageMagick-7.1.1-44
+./configure</samp></pre>
+
 <p>Watch the configure script output to verify that it finds everything that
  you think it should.  Pay particular attention to the last lines of the script output.  For example, here is a recent report from our system:</p>
 
@@ -564,7 +565,8 @@ identify logo.gif</samp></pre>
 
 <p>After the build you, locate the RPMS folder and install the ImageMagick binary RPM distribution:</p>
 
-<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>rpm -ivh ImageMagick-7.1.1-?.*.rpm</span></code></pre></ul>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><samp>rpm -ivh ImageMagick-7.1.1.-?.*.rpm</samp></pre>
+
 <h2><a class="anchor" id="macosx"></a>Mac OS X-specific Build instructions</h2>
 
 <p>Perform these steps as an administrator or with the <tt>sudo</tt> command:</p>
@@ -587,7 +589,9 @@ sudo port -v install graphviz +gs +wmf +jbig +jpeg2 +lcms </samp></pre>
 
 	  <p><a href="download.html">Download</a> the ImageMagick source distribution and verify the distribution against its <a href="../archive/digest.rdf">message digest</a>.</p>
 	  <p>Unpack and change into the top-level ImageMagick directory:</p>
-		<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>tar xvzf ImageMagick-7.1.1-39.tar.gz</span><span class='crtout'></span><span class="crtprompt"><br/>$ </span><span class='crtin'>cd ImageMagick-7.1.1-39</span></code></pre></ul>	  <p>Configure ImageMagick:</p>
+    <pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><samp>tar xvzf ImageMagick-7.1.1-44.tar.gz
+cd ImageMagick-7.1.1-44</samp></pre>
+	  <p>Configure ImageMagick:</p>
 <pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><samp>./configure --prefix=/opt --with-quantum-depth=16 \
   --disable-dependency-tracking --with-x=yes \
   --x-includes=/usr/X11R6/include --x-libraries=/usr/X11R6/lib/ \
@@ -609,7 +613,14 @@ sudo port -v install graphviz +gs +wmf +jbig +jpeg2 +lcms </samp></pre>
 
 <p>Although you can download and install delegate libraries yourself, many are already available in the <a href="../index.html">GnuWin32</a> distribution.  Download and install whichever delegate libraries you require such as JPEG, PNG, TIFF, etc.  Make sure you specify the development headers when you install a package.  Next type,</p>
 
-<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>tar jxvf ImageMagick-7.1.1-?.tar.bz2</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>cd ImageMagick-7.1.1-39</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>export CPPFLAGS="-Ic:/Progra~1/GnuWin32/include"</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>export LDFLAGS="-Lc:/Progra~1/GnuWin32/lib"</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>./configure --without-perl</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>make</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>sudo make install</span></code></pre></ul>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><samp>tar jxvf ImageMagick-7.1.1-?.tar.bz2
+cd ImageMagick-7.1.1-44
+export CPPFLAGS="-Ic:/Progra~1/GnuWin32/include"
+export LDFLAGS="-Lc:/Progra~1/GnuWin32/lib"
+./configure --without-perl
+make
+sudo make install</samp></pre>
+
 <h2><a class="anchor" id="problems"></a>Dealing with Unexpected Problems</h2>
 
 <p>Chances are the download, configure, build, and install of ImageMagick went flawlessly as it is intended, however, certain systems and environments may cause one or more steps to fail.  We discuss a few problems we've run across and how to take corrective action to ensure you have a working release of ImageMagick</p>
@@ -650,7 +661,7 @@ no encode delegate for this image format </samp></pre>
 </div>
   </div>
   </main><!-- /.container -->
-  <footer class="py-5 text-center text-body-secondary bg-body-tertiary">
+  <footer class="text-center pt-5 my-5 text-body-secondary border-top">
     <div class="container-fluid">
       <a href="security-policy.html">Security</a> •
       <a href="news.html">News</a>
@@ -663,10 +674,10 @@ no encode delegate for this image format </samp></pre>
      <a href="support.html">Sponsor</a> •
      <a href="cite.html">Cite</a> •
      <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-     <a href="https://imagemagick.org/script/contact.php">Contact Us</a>
+     <a href="../www/https://imagemagick.org/script/contact.php">Contact Us</a>
    <br/>
-     <a href="https://github.com/imagemagick/imagemagick" target="_blank" rel="noopener" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
-     <a href="https://twitter.com/imagemagick" target="_blank" rel="noopener" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 300 300" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path d="M178.57 127.15 290.27 0h-26.46l-97.03 110.38L89.34 0H0l117.13 166.93L0 300.25h26.46l102.4-116.59 81.8 116.59h89.34M36.01 19.54H76.66l187.13 262.13h-40.66"/></svg></a>
+     <a href="https://github.com/imagemagick/imagemagick" rel="noopener" target="_blank" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
+     <a href="https://twitter.com/imagemagick" rel="noopener" target="_blank" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 300 300" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path d="M178.57 127.15 290.27 0h-26.46l-97.03 110.38L89.34 0H0l117.13 166.93L0 300.25h26.46l102.4-116.59 81.8 116.59h89.34M36.01 19.54H76.66l187.13 262.13h-40.66"/></svg></a>
     <br/>
     <small>Copyright © 1999 ImageMagick Studio LLC</small>
     </div>
@@ -674,7 +685,7 @@ no encode delegate for this image format </samp></pre>
 </div>
 
   <!-- Javascript assets -->
-  <script src="assets/magick.js" ></script>
+  <script src="assets/bootstrap.bundle.min.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 3rd November 2024 17:13 -->
+<!-- Magick Cache 1st March 2025 18:00 -->

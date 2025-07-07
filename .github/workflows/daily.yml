@@ -17,7 +17,7 @@ name: daily
 jobs:
   change_log:
     name: 'Create ChangeLog.md'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
     - name: Checkout
@@ -45,8 +45,8 @@ jobs:
   build_linux:
     name: 'Linux Q${{matrix.quantum}}-x64 hdri=${{matrix.hdri}} (${{matrix.modules}}) (${{ matrix.compiler }})'
     container:
-      image: ubuntu:20.04
-    runs-on: ubuntu-latest
+      image: ubuntu:22.04
+    runs-on: ubuntu-24.04
 
     strategy:
       fail-fast: false
@@ -69,7 +69,7 @@ jobs:
             packages: gcc g++
           - compiler: clang
             cxx_compiler: clang++
-            compiler_flags: -Wall -Wextra -Werror -Wno-unused-function -Wno-incompatible-library-redeclaration
+            compiler_flags: -Wall -Wextra -Werror -Wno-unused-function -Wno-incompatible-library-redeclaration -Wno-compound-token-split-by-macro
             packages: clang
 
     steps:
@@ -84,7 +84,6 @@ jobs:
       uses: actions/checkout@v4
       with:
         repository: ImageMagick/msttcorefonts
-        ref: refs/heads/main
 
     - name: Install msttcorefonts
       run: |
@@ -100,17 +99,22 @@ jobs:
         CFLAGS: ${{ matrix.compiler_flags }}
         CXXFLAGS: ${{ matrix.compiler_flags }}
       run: |
-        ./configure --with-quantum-depth=${{matrix.quantum}} --enable-hdri=${{matrix.hdri}} --${{matrix.modules}}
+        ./configure --with-perl --with-quantum-depth=${{matrix.quantum}} --enable-hdri=${{matrix.hdri}} --${{matrix.modules}}
 
     - name: Build ImageMagick
       run: |
-        make
+        make install
 
     - name: Test ImageMagick
       run: |
         make check || exit_code=$?
         if [ "$exit_code" != "0" ] ; then cat ./test-suite.log ; fi
         exit $exit_code
+
+    - name: Test PerlMagick
+      run: |
+        cd PerlMagick
+        make test TEST_VERBOSE=1
 
   build_windows:
     name: 'Windows Q${{matrix.quantum}}-${{matrix.platform}} hdri=${{matrix.hdri}} (${{matrix.buildType}})'
@@ -158,18 +162,11 @@ jobs:
         name: ChangeLog
         path: ImageMagick-Windows\ImageMagick
 
-    - name: Build configure
-      shell: cmd
-      run: |
-        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
-        cd ImageMagick-Windows\Configure
-        msbuild Configure.sln /m /t:Rebuild /p:Configuration=Release,Platform=x64
-
     - name: Configure ImageMagick
       shell: cmd
       run: |
         cd ImageMagick-Windows\Configure
-        Configure.exe /noWizard /VS2022 /includeOptional /incompatibleLicense /deprecated /${{matrix.platform}} /${{matrix.buildType}}
+        Configure.Release.x64.exe /noWizard /VS2022 /includeOptional /incompatibleLicense /deprecated /${{matrix.platform}} /${{matrix.buildType}}
 
     - name: Build ImageMagick
       shell: cmd
@@ -206,18 +203,11 @@ jobs:
         cd ImageMagick-Windows
         CloneRepositories.IM7.cmd
 
-    - name: Build configure
-      shell: cmd
-      run: |
-        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
-        cd ImageMagick-Windows\Configure
-        msbuild Configure.sln /m /t:Rebuild /p:Configuration=Release,Platform=x64
-
     - name: Configure ImageMagick
       shell: cmd
       run: |
         cd ImageMagick-Windows\Configure
-        Configure.exe /noWizard /VS2022 /x64 /${{matrix.buildType}} /zeroConfigurationSupport
+        Configure.Release.x64.exe /noWizard /VS2022 /x64 /${{matrix.buildType}} /zeroConfigurationSupport
 
     - name: Build ImageMagick
       shell: cmd
@@ -227,15 +217,15 @@ jobs:
         msbuild /m /t:Rebuild /p:Configuration=Release,Platform=x64
 
   build_msys2:
-    name: 'Windows Q16-${{matrix.toolchain}} hdri=yes (MSYS2)'
-    runs-on: windows-latest
+    name: 'MSYS2 Q16-${{matrix.toolchain}} hdri=yes'
+    runs-on: windows-2022
 
     strategy:
       matrix:
         include: [
-          { msystem: ucrt64, toolchain: ucrt-x86_64 },
+          { msystem: clang64, toolchain: clang-x86_64 },
           { msystem: mingw64, toolchain: x86_64 },
-          { msystem: mingw32, toolchain: i686 }
+          { msystem: ucrt64, toolchain: ucrt-x86_64 },
         ]
       fail-fast: false
 

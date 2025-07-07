@@ -207,9 +207,9 @@ static Image *ReadCUBEImage(const ImageInfo *image_info,
             if (n >= (ssize_t) (cube_level*cube_level*cube_level))
               break;
             r=buffer;
-            cube[n].r=StringToDouble(r,&r);
-            cube[n].g=StringToDouble(r,&r);
-            cube[n].b=StringToDouble(r,&r);
+            cube[n].r=StringToFloat(r,&r);
+            cube[n].g=StringToFloat(r,&r);
+            cube[n].b=StringToFloat(r,&r);
             n++;
           }
         else
@@ -272,23 +272,23 @@ static Image *ReadCUBEImage(const ImageInfo *image_info,
           offset,
           scale;
 
-        offset.r=(PerceptibleReciprocal((double) (hald_level*hald_level)-1.0)*
-          r)*(cube_level-1.0);
-        index.r=floor(offset.r);
+        offset.r=(float) ((MagickSafeReciprocal(((double) hald_level*hald_level)-1.0)*
+          r)*(cube_level-1.0));
+        index.r=floorf(offset.r);
         scale.r=offset.r-index.r;
         next.r=index.r+1;
         if ((size_t) index.r == (cube_level-1))
           next.r=index.r;
-        offset.g=(PerceptibleReciprocal(((double) hald_level*hald_level)-1.0)*
-          g)*(cube_level-1.0);
-        index.g=floor(offset.g);
+        offset.g=(float) ((MagickSafeReciprocal(((double) hald_level*hald_level)-1.0)*
+          g)*(cube_level-1.0));
+        index.g=floorf(offset.g);
         scale.g=offset.g-index.g;
         next.g=index.g+1;
         if ((size_t) index.g == (cube_level-1))
           next.g=index.g;
-        offset.b=(PerceptibleReciprocal(((double) hald_level*hald_level)-1.0)*
-          b)*(cube_level-1.0);
-        index.b=floor(offset.b);
+        offset.b=(float) ((MagickSafeReciprocal(((double) hald_level*hald_level)-1.0)*
+          b)*(cube_level-1.0));
+        index.b=floorf(offset.b);
         scale.b=offset.b-index.b;
         next.b=index.b+1;
         if ((size_t) index.b == (cube_level-1))

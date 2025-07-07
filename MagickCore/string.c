@@ -595,7 +595,7 @@ MagickExport StringInfo *ConfigureFileToStringInfo(const char *filename)
   offset=(MagickOffsetType) lseek(file,0,SEEK_END);
   if ((offset < 0) || (offset != (MagickOffsetType) ((ssize_t) offset)))
     {
-      file=close(file)-1;
+      file=close_utf8(file)-1;
       return((StringInfo *) NULL);
     }
   length=(size_t) offset;
@@ -605,7 +605,7 @@ MagickExport StringInfo *ConfigureFileToStringInfo(const char *filename)
       sizeof(*string));
   if (string == (char *) NULL)
     {
-      file=close(file)-1;
+      file=close_utf8(file)-1;
       return((StringInfo *) NULL);
     }
   map=MapBlob(file,ReadMode,0,length);
@@ -636,13 +636,13 @@ MagickExport StringInfo *ConfigureFileToStringInfo(const char *filename)
       }
       if (i < length)
         {
-          file=close(file)-1;
+          file=close_utf8(file)-1;
           string=DestroyString(string);
           return((StringInfo *) NULL);
         }
     }
   string[length]='\0';
-  file=close(file)-1;
+  file=close_utf8(file)-1;
   string_info=AcquireStringInfoContainer();
   string_info->path=ConstantString(filename);
   string_info->length=length;

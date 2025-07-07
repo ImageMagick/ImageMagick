@@ -246,7 +246,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
     {
       if (bit == 0)
         byte=(*p++);
-      index=(byte & 0x80) ? 0 : 1;
+      index=(Quantum) ((byte & 0x80) ? 0 : 1);
       bit++;
       byte<<=1;
       if (bit == 8)
@@ -529,15 +529,15 @@ static MagickBooleanType WriteJBIGImage(const ImageInfo *image_info,
               flags;
 
             flags=ParseGeometry(image_info->density,&geometry_info);
-            x_resolution=geometry_info.rho;
-            y_resolution=geometry_info.sigma;
+            x_resolution=(size_t) geometry_info.rho;
+            y_resolution=(size_t) geometry_info.sigma;
             if ((flags & SigmaValue) == 0)
               y_resolution=x_resolution;
           }
         if (image->units == PixelsPerCentimeterResolution)
           {
-            x_resolution=(size_t) (100.0*2.54*x_resolution+0.5)/100.0;
-            y_resolution=(size_t) (100.0*2.54*y_resolution+0.5)/100.0;
+            x_resolution=(size_t) ((100.0*2.54*x_resolution+0.5)/100.0);
+            y_resolution=(size_t) ((100.0*2.54*y_resolution+0.5)/100.0);
           }
         (void) jbg_enc_lrlmax(&jbig_info,(unsigned long) x_resolution,
           (unsigned long) y_resolution);

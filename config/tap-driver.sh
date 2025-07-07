@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2021 Free Software Foundation, Inc.
+# Copyright (C) 2011-2024 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
 # bugs to <bug-automake@gnu.org> or send patches to
 # <automake-patches@gnu.org>.
 
-scriptversion=2013-12-23.17; # UTC
+scriptversion=2024-06-19.01; # UTC
 
 # Make unconditional expansion of undefined variables an error.  This
 # helps a lot in preventing typo-related bugs.
@@ -48,12 +48,16 @@ print_usage ()
 {
   cat <<END
 Usage:
-  tap-driver.sh --test-name=NAME --log-file=PATH --trs-file=PATH
-                [--expect-failure={yes|no}] [--color-tests={yes|no}]
-                [--enable-hard-errors={yes|no}] [--ignore-exit]
-                [--diagnostic-string=STRING] [--merge|--no-merge]
+  tap-driver.sh --test-name NAME --log-file PATH --trs-file PATH
+                [--expect-failure {yes|no}] [--color-tests {yes|no}]
+                [--enable-hard-errors {yes|no}] [--ignore-exit]
+                [--diagnostic-string STRING] [--merge|--no-merge]
                 [--comments|--no-comments] [--] TEST-COMMAND
 The '--test-name', '-log-file' and '--trs-file' options are mandatory.
+
+Report bugs to <bug-automake@gnu.org>.
+GNU Automake home page: <https://www.gnu.org/software/automake/>.
+General help using GNU software: <https://www.gnu.org/gethelp/>.
 END
 }
 
@@ -71,7 +75,7 @@ diag_string='#'
 while test $# -gt 0; do
   case $1 in
   --help) print_usage; exit $?;;
-  --version) echo "$me $scriptversion"; exit $?;;
+  --version) echo "$me (GNU Automake) $scriptversion"; exit $?;;
   --test-name) test_name=$2; shift;;
   --log-file) log_file=$2; shift;;
   --trs-file) trs_file=$2; shift;;
@@ -124,7 +128,7 @@ fi
     # problems with Korn shells.  Some Korn shells are known to propagate
     # to themselves signals that have killed a child process they were
     # waiting for; this is done at least for SIGINT (and usually only for
-    # it, in truth).  Without the `trap' below, such a behaviour could
+    # it, in truth).  Without the `trap' below, such a behavior could
     # cause a premature exit in the current subshell, e.g., in case the
     # test command it runs gets terminated by a SIGINT.  Thus, the awk
     # script we are piping into would never seen the exit status it
@@ -462,8 +466,8 @@ function get_test_exit_message(status)
     # We used to report an "abnormal termination" here, but some Korn
     # shells, when a child process die due to signal number n, can leave
     # in $? an exit status of 256+n instead of the more standard 128+n.
-    # Apparently, both behaviours are allowed by POSIX (2008), so be
-    # prepared to handle them both.  See also Austing Group report ID
+    # Apparently, both behaviors are allowed by POSIX (2008), so be
+    # prepared to handle them both.  See also Austin Group report ID
     # 0000051 <http://www.austingroupbugs.net/view.php?id=51>
     exit_details = sprintf(" (terminated by signal %d?)", status - 256)
   else
@@ -578,7 +582,7 @@ while (1)
     # Older versions of prove and TAP::Harness (e.g., 3.17) did not
     # recognize a "Bail out!" directive when preceded by leading
     # whitespace, but more modern versions (e.g., 3.23) do.  So we
-    # emulate the latter, "more modern" behaviour.
+    # emulate the latter, "more modern" behavior.
     else if ($0 ~ /^[ \t]*Bail out!/)
       {
         bailed_out = 1
@@ -592,7 +596,7 @@ while (1)
           bailout_message = bailout_message " " $0
         testsuite_error(bailout_message)
       }
-    # Maybe we have too look for dianogtic comments too.
+    # Maybe we have to look for diagnostic comments too.
     else if (comments != 0)
       {
         comment = extract_tap_comment($0);

@@ -770,32 +770,9 @@ static boolean ReadAPPProfiles(j_decompress_ptr jpeg_info)
         }
     }
   else
-    if (length > 4)
-      {
-        if ((LocaleNCompare((char *) p,"exif",4) == 0) ||
-            (LocaleNCompare((char *) p,"MM",2) == 0) ||
-            (LocaleNCompare((char *) p,"II",2) == 0))
-          {
-            /*
-              Extract EXIF profile.
-            */
-            profile=AcquireProfileStringInfo("exif",length,exception);
-            if (profile != (StringInfo*) NULL)
-              {
-                (void) memcpy(GetStringInfoDatum(profile),p,length);
-                status=SetImageProfilePrivate(image,profile,exception);
-              }
-            client_info->profiles[marker]=DestroyStringInfo(
-              client_info->profiles[marker]);
-          }
-        else
-          status=SetImageProfile(image,"app1",client_info->profiles[marker],
-            exception);
-      }
-    else
-      status=SetImageProfile(image,"app1",client_info->profiles[marker],
-        exception);
-  return(status);
+    status=SetImageProfile(image,"app1",client_info->profiles[marker],
+      exception);
+  return(status == MagickFalse ? FALSE : TRUE);
 }
 
 static void SkipInputData(j_decompress_ptr compress_info,long number_bytes)
@@ -2215,9 +2192,9 @@ static void WriteProfiles(j_compress_ptr jpeg_info,Image *image,
         marker=JPEG_APP0+StringToInteger(name+3);
         for (i=0; i < (ssize_t) length; i+=65533L)
            jpeg_write_marker(jpeg_info,marker,GetStringInfoDatum(profile)+i,
-             MagickMin((unsigned int) length-i,65533L));
+             MagickMin((unsigned int) (length-i),65533));
       }
-    if ((LocaleCompare(name,"EXIF") == 0) && (length < 65533L))
+    else if (LocaleCompare(name,"EXIF") == 0)
       {
         if (length > 65533L)
           (void) ThrowMagickException(exception,GetMagickModule(),CoderWarning,
@@ -2226,7 +2203,7 @@ static void WriteProfiles(j_compress_ptr jpeg_info,Image *image,
           jpeg_write_marker(jpeg_info,APP_MARKER+1,GetStringInfoDatum(profile),
             (unsigned int) length);
       }
-    if (LocaleCompare(name,"ICC") == 0)
+    else if (LocaleCompare(name,"ICC") == 0)
       {
         unsigned char
           *p;
@@ -2247,7 +2224,7 @@ static void WriteProfiles(j_compress_ptr jpeg_info,Image *image,
             custom_profile),(unsigned int) (length+tag_length+3));
         }
       }
-    if (((LocaleCompare(name,"IPTC") == 0) ||
+    else if (((LocaleCompare(name,"IPTC") == 0) ||
         (LocaleCompare(name,"8BIM") == 0)) && (iptc == MagickFalse))
       {
         size_t
@@ -2283,7 +2260,7 @@ static void WriteProfiles(j_compress_ptr jpeg_info,Image *image,
             custom_profile),(unsigned int) (length+tag_length+roundup));
         }
       }
-    if (LocaleCompare(name,"XMP") == 0)
+    else if (LocaleCompare(name,"XMP") == 0)
       {
         StringInfo
           *xmp_profile;
@@ -2298,7 +2275,7 @@ static void WriteProfiles(j_compress_ptr jpeg_info,Image *image,
         length=GetStringInfoLength(xmp_profile);
         for (i=0; i < (ssize_t) length; i+=65533L)
           jpeg_write_marker(jpeg_info,APP_MARKER+1,GetStringInfoDatum(
-            xmp_profile)+i,MagickMin((unsigned int) length-i,65533L));
+            xmp_profile)+i,MagickMin((unsigned int) (length-i),65533));
         xmp_profile=DestroyStringInfo(xmp_profile);
       }
     if (image->debug != MagickFalse)
@@ -2371,7 +2348,7 @@ static inline void JPEGSetSample(const struct jpeg_compress_struct *jpeg_info,
   const unsigned int scale,const Quantum pixel,JSAMPLE *q)
 {
   if (jpeg_info->data_precision > 8)
-    (*(unsigned short *) q)=(ScaleQuantumToShort(pixel)/scale);
+    (*(unsigned short *) q)=(unsigned short) (ScaleQuantumToShort(pixel)/scale);
   *q=(JSAMPLE) ScaleQuantumToChar(pixel);
 }
 
@@ -2536,6 +2513,9 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
     }
   }
   jpeg_set_defaults(jpeg_info);
+  option=GetImageOption(image_info,"jpeg:restart-interval");
+  if (option != (const char *) NULL)
+    jpeg_info->restart_interval=StringToInteger(option);
   if (jpeg_info->in_color_space == JCS_CMYK)
     jpeg_set_colorspace(jpeg_info,JCS_YCCK);
   if (image->debug != MagickFalse)

@@ -2,14 +2,14 @@
 
 # build zlib
 pushd "$SRC/zlib"
-./configure --static --prefix="$WORK"
+cmake . -DCMAKE_INSTALL_PREFIX=$WORK -DLIBDEFLATE_BUILD_SHARED_LIB=off
 make -j$(nproc) CFLAGS="$CFLAGS -fPIC"
 make install
 popd
 
 # build deflate
 pushd "$SRC/libdeflate"
-cmake .  -DCMAKE_INSTALL_PREFIX=$WORK -DLIBDEFLATE_BUILD_SHARED_LIB=off -DLIBDEFLATE_BUILD_GZIP=off
+cmake . -DCMAKE_INSTALL_PREFIX=$WORK -DLIBDEFLATE_BUILD_SHARED_LIB=off -DLIBDEFLATE_BUILD_GZIP=off
 make -j$(nproc)
 make install
 popd

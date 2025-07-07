@@ -85,12 +85,12 @@ AC_DEFUN([AX_HAVE_OPENCL],
       CL_VERSION=0
     else
       #
-      # First we check for Mac OS X, since OpenCL is standard there
+      # First we check for macOS, since OpenCL is standard there
       #
       CL_LIBS=""
       AC_MSG_CHECKING([for OpenCL library])
       case "$host_os" in
-        darwin*) # On Mac OS X we check for installed frameworks
+        darwin*) # On macOS we check for installed frameworks
         AX_CHECK_FRAMEWORK([OpenCL], [
           CL_LIBS="-framework OpenCL"
           no_cl=no

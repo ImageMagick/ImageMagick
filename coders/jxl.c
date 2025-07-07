@@ -603,7 +603,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,
 #endif
         if (jxl_status != JXL_DEC_SUCCESS)
           break;
-        profile=AcquireProfileStringInfo("icm",profile_size,exception);
+        profile=AcquireProfileStringInfo("icc",profile_size,exception);
         if (profile != (StringInfo *) NULL)
           {
   #if JPEGXL_NUMERIC_VERSION >= JPEGXL_COMPUTE_NUMERIC_VERSION(0,9,0)
@@ -730,7 +730,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,
                 exception);
               if (exif_profile != (StringInfo *) NULL)
                 jxl_status=JxlDecoderSetBoxBuffer(jxl_info,
-                  GetStringInfoDatum(exif_profile),size);
+                  GetStringInfoDatum(exif_profile),(size_t) size);
             }
           }
         if (LocaleNCompare(type,"xml ",sizeof(type)) == 0)
@@ -744,7 +744,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,
                   exception);
                 if (xmp_profile != (StringInfo *) NULL)
                   jxl_status=JxlDecoderSetBoxBuffer(jxl_info,
-                    GetStringInfoDatum(xmp_profile),size);
+                    GetStringInfoDatum(xmp_profile),(size_t) size);
               }
           }
         if (jxl_status == JXL_DEC_SUCCESS)
@@ -884,7 +884,7 @@ ModuleExport void UnregisterJXLImage(void)
 */
 
 static JxlEncoderStatus JXLWriteMetadata(const Image *image,
-  JxlEncoder *jxl_info)
+  JxlEncoder *jxl_info, const StringInfo *icc_profile)
 {
   JxlColorEncoding
     color_encoding;
@@ -892,6 +892,12 @@ static JxlEncoderStatus JXLWriteMetadata(const Image *image,
   JxlEncoderStatus
     jxl_status;
 
+  if (icc_profile != (StringInfo *) NULL)
+    {
+      jxl_status=JxlEncoderSetICCProfile(jxl_info,(const uint8_t *)
+        GetStringInfoDatum(icc_profile),GetStringInfoLength(icc_profile));
+      return(jxl_status);
+    }
   (void) memset(&color_encoding,0,sizeof(color_encoding));
   color_encoding.color_space=JXL_COLOR_SPACE_RGB;
   if (IsRGBColorspace(image->colorspace) == MagickFalse)
@@ -904,13 +910,28 @@ static JxlEncoderStatus JXLWriteMetadata(const Image *image,
   return(jxl_status);
 }
 
-static inline float JXLGetDistance(const ImageInfo *image_info)
+static inline float JXLGetDistance(float quality)
 {
-  if (image_info->quality == 0)
-    return(1.0f);
-  if (image_info->quality >= 30)
-    return(0.1f+(float) (100-MagickMin(100,image_info->quality))*0.09f);
-  return(6.24f+(float) pow(2.5f,(30.0-image_info->quality)/5.0)/6.25f);
+  return quality >= 100.0f ? 0.0f
+         : quality >= 30
+             ? 0.1f + (100 - quality) * 0.09f
+             : 53.0f / 3000.0f * quality * quality - 23.0f / 20.0f * quality + 25.0f;
+}
+
+static inline MagickBooleanType JXLSameFrameType(const Image *image,
+  const Image *next)
+{
+  if (image->columns != next->columns)
+    return(MagickFalse);
+  if (image->rows != next->rows)
+    return(MagickFalse);
+  if (image->depth != next->depth)
+    return(MagickFalse);
+  if (image->alpha_trait != next->alpha_trait)
+    return(MagickFalse);
+  if (image->colorspace != next->colorspace)
+    return(MagickFalse);
+  return(MagickTrue);
 }
 
 static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
@@ -920,6 +941,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     *option;
 
   const StringInfo
+    *icc_profile = (StringInfo *) NULL,
     *exif_profile = (StringInfo *) NULL,
     *xmp_profile = (StringInfo *) NULL;
 
@@ -1032,7 +1054,10 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       basic_info.num_extra_channels=1;
     }
   if (image_info->quality == 100)
-    basic_info.uses_original_profile=JXL_TRUE;
+    {
+      basic_info.uses_original_profile=JXL_TRUE;
+      icc_profile=GetImageProfile(image,"icc");
+    }
   if ((image_info->adjoin != MagickFalse) &&
       (GetNextImageInList(image) != (Image *) NULL))
     {
@@ -1063,9 +1088,9 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       (void) JxlEncoderSetFrameDistance(frame_settings,0.f);
       (void) JxlEncoderSetFrameLossless(frame_settings,JXL_TRUE);
     }
-  else
+  else if (image_info->quality != 0)
     (void) JxlEncoderSetFrameDistance(frame_settings,
-      JXLGetDistance(image_info));
+      JXLGetDistance((float) image_info->quality));
   option=GetImageOption(image_info,"jxl:effort");
   if (option != (const char *) NULL)
     (void) JxlEncoderFrameSettingsSetOption(frame_settings,
@@ -1108,7 +1133,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
         }
       (void) JxlEncoderCloseBoxes(jxl_info);
     }
-  jxl_status=JXLWriteMetadata(image,jxl_info);
+  jxl_status=JXLWriteMetadata(image,jxl_info,icc_profile);
   if (jxl_status != JXL_ENC_SUCCESS)
     {
       JxlThreadParallelRunnerDestroy(runner);
@@ -1174,7 +1199,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     next=GetNextImageInList(image);
     if (next == (Image*) NULL)
       break;
-    if ((next->columns != image->columns) || (next->rows != image->rows))
+    if (JXLSameFrameType(image,next) == MagickFalse)
       {
        (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
          "FramesNotSameDimensions","`%s'",image->filename);

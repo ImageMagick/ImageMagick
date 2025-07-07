@@ -179,7 +179,7 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info,
     (void) SetImageProperty(image,"dng:serial.number",
       raw_info->shootinginfo.BodySerial,exception);
   (void) FormatImageProperty(image,"dng:exposure.time","1/%.0g",
-    (double) PerceptibleReciprocal(raw_info->other.shutter));
+    (double) MagickSafeReciprocal(raw_info->other.shutter));
   (void) FormatImageProperty(image,"dng:f.number","%0.1g",
     (double) raw_info->other.aperture);
   (void) FormatImageProperty(image,"dng:max.aperture.value","%0.1g",
@@ -332,7 +332,11 @@ static void SetLibRawParams(const ImageInfo *image_info,Image *image,
 }
 
 static void LibRawDataError(void *data,const char *magick_unused(file),
+#if defined(MAGICK_LIBRAW_VERSION_TAIL) && MAGICK_LIBRAW_VERSION_TAIL == 202502
+  const INT64 offset)
+#else
   const int offset)
+#endif
 {
   magick_unreferenced(file);
   if (offset >= 0)

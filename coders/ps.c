@@ -78,6 +78,7 @@
 #include "MagickCore/token.h"
 #include "MagickCore/transform.h"
 #include "MagickCore/utility.h"
+#include "MagickCore/utility-private.h"
 #include "coders/bytebuffer-private.h"
 #include "coders/coders-private.h"
 #include "coders/ghostscript-private.h"
@@ -355,7 +356,7 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,PSInfo *ps_info,
     if (CompareMagickByteBuffer(&buffer,ImageData,strlen(ImageData)) != MagickFalse)
       {
         p=GetMagickByteBufferDatum(&buffer);
-        (void) sscanf(p,ImageData " %lu %lu",&ps_info->columns,&ps_info->rows);
+        (void) MagickSscanf(p,ImageData " %lu %lu",&ps_info->columns,&ps_info->rows);
       }
     /*
       Is this a CMYK document?
@@ -472,7 +473,7 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,PSInfo *ps_info,
         */
         p=GetMagickByteBufferDatum(&buffer);
         extent=0;
-        count=(ssize_t) sscanf(p,PhotoshopProfile " %lu",&extent);
+        count=(ssize_t) MagickSscanf(p,PhotoshopProfile " %lu",&extent);
         if ((count != 1) || (extent == 0))
           continue;
         if ((MagickSizeType) extent > GetBlobSize(image))
@@ -508,35 +509,35 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,PSInfo *ps_info,
     if (CompareMagickByteBuffer(&buffer,BoundingBox,strlen(BoundingBox)) != MagickFalse)
       {
         p=GetMagickByteBufferDatum(&buffer);
-        count=(ssize_t) sscanf(p,BoundingBox " %lf %lf %lf %lf",
+        count=(ssize_t) MagickSscanf(p,BoundingBox " %lf %lf %lf %lf",
           &bounds.x1,&bounds.y1,&bounds.x2,&bounds.y2);
         i=2;
       }
     if (CompareMagickByteBuffer(&buffer,DocumentMedia,strlen(DocumentMedia)) != MagickFalse)
       {
         p=GetMagickByteBufferDatum(&buffer);
-        count=(ssize_t) sscanf(p,DocumentMedia " %lf %lf %lf %lf",
+        count=(ssize_t) MagickSscanf(p,DocumentMedia " %lf %lf %lf %lf",
           &bounds.x1,&bounds.y1,&bounds.x2,&bounds.y2);
         i=1;
       }
     if (CompareMagickByteBuffer(&buffer,HiResBoundingBox,strlen(HiResBoundingBox)) != MagickFalse)
       {
         p=GetMagickByteBufferDatum(&buffer);
-        count=(ssize_t) sscanf(p,HiResBoundingBox " %lf %lf %lf %lf",
+        count=(ssize_t) MagickSscanf(p,HiResBoundingBox " %lf %lf %lf %lf",
           &bounds.x1,&bounds.y1,&bounds.x2,&bounds.y2);
         i=3;
       }
     if (CompareMagickByteBuffer(&buffer,PageBoundingBox,strlen(PageBoundingBox)) != MagickFalse)
       {
         p=GetMagickByteBufferDatum(&buffer);
-        count=(ssize_t) sscanf(p,PageBoundingBox " %lf %lf %lf %lf",
+        count=(ssize_t) MagickSscanf(p,PageBoundingBox " %lf %lf %lf %lf",
           &bounds.x1,&bounds.y1,&bounds.x2,&bounds.y2);
         i=1;
       }
     if (CompareMagickByteBuffer(&buffer,PageMedia,strlen(PageMedia)) != MagickFalse)
       {
         p=GetMagickByteBufferDatum(&buffer);
-        count=(ssize_t) sscanf(p,PageMedia " %lf %lf %lf %lf",
+        count=(ssize_t) MagickSscanf(p,PageMedia " %lf %lf %lf %lf",
           &bounds.x1,&bounds.y1,&bounds.x2,&bounds.y2);
         i=1;
       }
@@ -757,7 +758,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         strlen(translate_geometry));
     }
   (void) count;
-  file=close(file)-1;
+  file=close_utf8(file)-1;
   /*
     Render Postscript with the Ghostscript delegate.
   */
@@ -1533,10 +1534,10 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
     (void) ConcatenateMagickString(page_geometry,">",MagickPathExtent);
     (void) ParseMetaGeometry(page_geometry,&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
-    scale.x=PerceptibleReciprocal(resolution.x)*geometry.width*delta.x;
-    geometry.width=CastDoubleToUnsigned(scale.x+0.5);
-    scale.y=PerceptibleReciprocal(resolution.y)*geometry.height*delta.y;
-    geometry.height=CastDoubleToUnsigned(scale.y+0.5);
+    scale.x=MagickSafeReciprocal(resolution.x)*geometry.width*delta.x;
+    geometry.width=CastDoubleToSizeT(scale.x+0.5);
+    scale.y=MagickSafeReciprocal(resolution.y)*geometry.height*delta.y;
+    geometry.height=CastDoubleToSizeT(scale.y+0.5);
     (void) ParseAbsoluteGeometry(page_geometry,&media_info);
     (void) ParseGravityGeometry(image,page_geometry,&page_info,exception);
     if (image->gravity != UndefinedGravity)

@@ -1881,7 +1881,8 @@ static void PatchCorruptProfile(const char *name,StringInfo *profile)
         }
       return;
     }
-  if (LocaleCompare(name,"exif") == 0)
+  if (((LocaleCompare(name, "exif") == 0) || (LocaleCompare(name, "app1") == 0)) &&
+      (GetStringInfoLength(profile) > 2))
     {
       /*
         Check if profile starts with byte order marker instead of Exif.
@@ -1982,18 +1983,27 @@ static MagickBooleanType SetImageProfileInternal(Image *image,const char *name,
     image->profiles=NewSplayTree(CompareSplayTreeString,RelinquishMagickMemory,
       DestroyProfile);
   (void) CopyMagickString(key,name,MagickPathExtent);
-  LocaleLower(key);
+  /*
+   * When an app1 profile starts with an exif header then store it as an exif
+   * profile instead. The PatchCorruptProfile method already ensures that the
+   * profile starts with exif instead of MM or II.
+   */
+  if ((length > 4) && (LocaleCompare(key,"app1") == 0) && 
+      (LocaleNCompare((const char *) GetStringInfoDatum(profile),"exif",4) == 0))
+    (void) CopyMagickString(key,"exif",MagickPathExtent);
+  else
+    LocaleLower(key);
   status=AddValueToSplayTree((SplayTreeInfo *) image->profiles,
     ConstantString(key),profile);
   if (status == MagickFalse)
     profile=DestroyStringInfo(profile);
   else
     {
-      if (LocaleCompare(name,"8bim") == 0)
+      if (LocaleCompare(key,"8bim") == 0)
         GetProfilesFromResourceBlock(image,profile,exception);
       else
         if (recursive == MagickFalse)
-          WriteTo8BimProfile(image,name,profile);
+          WriteTo8BimProfile(image,key,profile);
     }
   return(status);
 }
@@ -2105,12 +2115,12 @@ static inline signed short ReadProfileShort(const EndianType endian,
       value=(unsigned short) buffer[1] << 8;
       value|=(unsigned short) buffer[0];
       quantum.unsigned_value=value & 0xffff;
-      return(quantum.signed_value);
+      return((signed short) quantum.signed_value);
     }
   value=(unsigned short) buffer[0] << 8;
   value|=(unsigned short) buffer[1];
   quantum.unsigned_value=value & 0xffff;
-  return(quantum.signed_value);
+  return((signed short) quantum.signed_value);
 }
 
 static inline signed int ReadProfileLong(const EndianType endian,
@@ -2475,17 +2485,17 @@ static void Sync8BimProfile(const Image *image,const StringInfo *profile)
     if ((id == 0x3ED) && (count == 16))
       {
         if (image->units == PixelsPerCentimeterResolution)
-          WriteProfileLong(MSBEndian,(unsigned int) CastDoubleToLong(
+          WriteProfileLong(MSBEndian,(unsigned int) CastDoubleToSsizeT(
             image->resolution.x*2.54*65536.0),p);
         else
-          WriteProfileLong(MSBEndian,(unsigned int) CastDoubleToLong(
+          WriteProfileLong(MSBEndian,(unsigned int) CastDoubleToSsizeT(
             image->resolution.x*65536.0),p);
         WriteProfileShort(MSBEndian,(unsigned short) image->units,p+4);
         if (image->units == PixelsPerCentimeterResolution)
-          WriteProfileLong(MSBEndian,(unsigned int) CastDoubleToLong(
+          WriteProfileLong(MSBEndian,(unsigned int) CastDoubleToSsizeT(
             image->resolution.y*2.54*65536.0),p+8);
         else
-          WriteProfileLong(MSBEndian,(unsigned int) CastDoubleToLong(
+          WriteProfileLong(MSBEndian,(unsigned int) CastDoubleToSsizeT(
             image->resolution.y*65536.0),p+8);
         WriteProfileShort(MSBEndian,(unsigned short) image->units,p+12);
       }
@@ -2561,6 +2571,18 @@ static void GetXmpNumeratorAndDenominator(double value,
   *denominator=1;
   if (value <= MagickEpsilon)
     return;
+  if (value > (double) MAGICK_ULONG_MAX)
+    {
+      *numerator = MAGICK_ULONG_MAX;
+      *denominator = 1;
+      return;
+    }
+  if (floor(value) == value)
+    {
+      *numerator = (unsigned long) value;
+      *denominator = 1;
+      return;
+    }
   *numerator=1;
   df=1.0;
   while(fabs(df - value) > MagickEpsilon)

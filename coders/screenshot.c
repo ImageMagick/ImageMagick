@@ -172,7 +172,7 @@ static Image *ReadSCREENSHOTImage(const ImageInfo *image_info,
       geometry.height=(size_t) GetDeviceCaps(hDC,VERTRES);
       if (image_info->extract != (char *) NULL)
         {
-          geometry.x=MagickMin(screen->extract_info.x,geometry.width);
+          geometry.x=MagickMin(screen->extract_info.x,(ssize_t) geometry.width);
           if (geometry.x < 0)
             {
               geometry.width=(size_t ) MagickMin(0,(ssize_t) geometry.width+
@@ -182,7 +182,7 @@ static Image *ReadSCREENSHOTImage(const ImageInfo *image_info,
           geometry.width=geometry.width-geometry.x;
           if (screen->columns > 0)
             geometry.width=MagickMin(geometry.width,screen->columns);
-          geometry.y=MagickMin(screen->extract_info.y,geometry.height);
+          geometry.y=MagickMin(screen->extract_info.y,(ssize_t) geometry.height);
           if (geometry.y < 0)
             {
               geometry.width=(size_t ) MagickMin(0,(ssize_t) geometry.width+
@@ -239,7 +239,7 @@ static Image *ReadSCREENSHOTImage(const ImageInfo *image_info,
           ThrowReaderException(CoderError,"UnableToCreateBitmap");
         }
       BitBlt(bitmapDC,0,0,(int) screen->columns,(int) screen->rows,hDC,
-        geometry.x,geometry.y,SRCCOPY);
+        (int) geometry.x,(int) geometry.y,SRCCOPY);
       (void) SelectObject(bitmapDC,bitmapOld);
 
       for (y=0; y < (ssize_t) screen->rows; y++)

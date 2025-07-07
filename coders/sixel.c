@@ -192,7 +192,8 @@ static int hls_to_rgb(int hue, int lum, int sat)
       magic1=(int) (2*(ssize_t) lum-magic2);
       b=(hue_to_rgb(magic1,magic2,(ssize_t) hue+(HLSMAX/3))*(ssize_t) RGBMAX+
         (HLSMAX/2))/HLSMAX;
-      r=(hue_to_rgb(magic1,magic2,hue)*RGBMAX+(ssize_t) (HLSMAX/2))/HLSMAX;
+      r=(hue_to_rgb(magic1,magic2,hue)*(ssize_t) RGBMAX+(ssize_t) (HLSMAX/2))/
+        HLSMAX;
       g=(hue_to_rgb(magic1,magic2,(ssize_t) hue-(HLSMAX/3))*(ssize_t) RGBMAX+
         (HLSMAX/2))/HLSMAX;
     }
@@ -314,7 +315,7 @@ static MagickBooleanType sixel_decode(Image *image,unsigned char *p,
   for (; n < SIXEL_PALETTE_MAX; n++)
     sixel_palet[n]=SIXEL_RGB(255,255,255);
   for (i = 0; i < imsx * imsy; i++)
-    imbuf[i]=background_color_index;
+    imbuf[i]=(sixel_pixel_t) background_color_index;
   while (*p != '\0')
   {
     if ((p[0] == '\033' && p[1] == 'P') || (*p == 0x90))
@@ -540,7 +541,7 @@ static MagickBooleanType sixel_decode(Image *image,unsigned char *p,
                           imbuf=(sixel_pixel_t *) RelinquishMagickMemory(imbuf);
                           return(MagickFalse);
                         }
-                      imbuf[offset]=color_index;
+                      imbuf[offset]=(sixel_pixel_t) color_index;
                       if (max_x < position_x)
                           max_x = position_x;
                       if (max_y < (position_y + i))
@@ -572,7 +573,7 @@ static MagickBooleanType sixel_decode(Image *image,unsigned char *p,
                             return(MagickFalse);
                           }
                         for (x = 0; x < repeat_count; x++)
-                          imbuf[(int) offset+x] = color_index;
+                          imbuf[(int) offset+x]=(sixel_pixel_t) color_index;
                       }
                       if (max_x < (position_x+repeat_count-1))
                         max_x = position_x+repeat_count-1;
@@ -676,9 +677,9 @@ static int sixel_put_flash(sixel_output_t *const context)
   if (context->save_count > 3)
     {
       /* DECGRI Graphics Repeat Introducer ! Pn Ch */
-      nwrite=FormatLocaleString((char *) context->buffer+context->pos,
+      nwrite=(int) FormatLocaleString((char *) context->buffer+context->pos,
         sizeof(context->buffer),"!%d%c",context->save_count,
-        context->save_pixel);
+        (char) context->save_pixel);
       if (nwrite <= 0)
         return(-1);
       sixel_advance(context,nwrite);
@@ -745,7 +746,7 @@ static int sixel_put_node(sixel_output_t *const context,int x,sixel_node_t *np,
       /* designate palette index */
       if (context->active_palette != np->color)
         {
-          nwrite=FormatLocaleString((char *) context->buffer+context->pos,
+          nwrite=(int) FormatLocaleString((char *) context->buffer+context->pos,
             sizeof(context->buffer),"#%d",np->color);
           sixel_advance(context,nwrite);
           context->active_palette=np->color;
@@ -803,15 +804,15 @@ static MagickBooleanType sixel_encode_impl(sixel_pixel_t *pixels,size_t width,
     return (MagickFalse);
   (void) memset(map,0,len*sizeof(sixel_pixel_t));
   if (context->has_8bit_control)
-    nwrite=FormatLocaleString((char *) context->buffer,sizeof(context->buffer),
+    nwrite=(int) FormatLocaleString((char *) context->buffer,sizeof(context->buffer),
       "\x90" "0;0;0" "q");
   else
-    nwrite=FormatLocaleString((char *) context->buffer,sizeof(context->buffer),
+    nwrite=(int) FormatLocaleString((char *) context->buffer,sizeof(context->buffer),
       "\x1bP" "0;0;0" "q");
   if (nwrite <= 0)
     return(MagickFalse);
   sixel_advance(context,nwrite);
-  nwrite=FormatLocaleString((char *) context->buffer+context->pos,
+  nwrite=(int) FormatLocaleString((char *) context->buffer+context->pos,
     sizeof(context->buffer),"\"1;1;%d;%d",(int) width,(int) height);
   if (nwrite <= 0)
     {
@@ -823,7 +824,7 @@ static MagickBooleanType sixel_encode_impl(sixel_pixel_t *pixels,size_t width,
     for (n = 0; n < (ssize_t) ncolors; n++)
     {
         /* DECGCI Graphics Color Introducer  # Pc ; Pu; Px; Py; Pz */
-        nwrite=FormatLocaleString((char *) context->buffer+context->pos,
+        nwrite=(int) FormatLocaleString((char *) context->buffer+context->pos,
           sizeof(context->buffer),"#%d;2;%d;%d;%d",n,(palette[n*3+0]*100+127)/
           255,(palette[n*3+1]*100+127)/255,(palette[n*3+2]*100+127)/255);
         if (nwrite <= 0)
@@ -1161,10 +1162,10 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,
         {
           j=(ssize_t) sixel_pixels[y*(ssize_t) image->columns+x];
           j=ConstrainColormapIndex(image,j,exception);
-          SetPixelIndex(image,j,q);
-          SetPixelRed(image,image->colormap[j].red,q);
-          SetPixelGreen(image,image->colormap[j].green,q);
-          SetPixelBlue(image,image->colormap[j].blue,q);
+          SetPixelIndex(image,(Quantum) j,q);
+          SetPixelRed(image,(Quantum) image->colormap[j].red,q);
+          SetPixelGreen(image,(Quantum) image->colormap[j].green,q);
+          SetPixelBlue(image,(Quantum) image->colormap[j].blue,q);
           q+=(ptrdiff_t) GetPixelChannels(image);
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -1384,9 +1385,9 @@ static MagickBooleanType WriteSIXELImage(const ImageInfo *image_info,
   */
   for (i=0; i < (ssize_t) image->colors; i++)
   {
-    sixel_palette[3*i+0]=ScaleQuantumToChar(image->colormap[i].red);
-    sixel_palette[3*i+1]=ScaleQuantumToChar(image->colormap[i].green);
-    sixel_palette[3*i+2]=ScaleQuantumToChar(image->colormap[i].blue);
+    sixel_palette[3*i+0]=ScaleQuantumToChar((Quantum) image->colormap[i].red);
+    sixel_palette[3*i+1]=ScaleQuantumToChar((Quantum) image->colormap[i].green);
+    sixel_palette[3*i+2]=ScaleQuantumToChar((Quantum) image->colormap[i].blue);
   }
   /*
     Define SIXEL pixels.
@@ -1408,7 +1409,7 @@ static MagickBooleanType WriteSIXELImage(const ImageInfo *image_info,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      sixel_pixels[y*(ssize_t) image->columns+x]=((ssize_t)
+      sixel_pixels[y*(ssize_t) image->columns+x]=((sixel_pixel_t)
         GetPixelIndex(image,q));
       q+=(ptrdiff_t) GetPixelChannels(image);
     }

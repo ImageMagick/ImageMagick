@@ -540,7 +540,7 @@ MagickExport MagickBooleanType GradientImage(Image *image,
     gradient->angle=StringToDouble(artifact,(char **) NULL);
   artifact=GetImageArtifact(image,"gradient:vector");
   if (artifact != (const char *) NULL)
-    (void) sscanf(artifact,"%lf%*[ ,]%lf%*[ ,]%lf%*[ ,]%lf",
+    (void) MagickSscanf(artifact,"%lf%*[ ,]%lf%*[ ,]%lf%*[ ,]%lf",
       &gradient->gradient_vector.x1,&gradient->gradient_vector.y1,
       &gradient->gradient_vector.x2,&gradient->gradient_vector.y2);
   if ((GetImageArtifact(image,"gradient:angle") == (const char *) NULL) &&
@@ -553,7 +553,7 @@ MagickExport MagickBooleanType GradientImage(Image *image,
   gradient->center.y=(double) gradient->gradient_vector.y2/2.0;
   artifact=GetImageArtifact(image,"gradient:center");
   if (artifact != (const char *) NULL)
-    (void) sscanf(artifact,"%lf%*[ ,]%lf",&gradient->center.x,
+    (void) MagickSscanf(artifact,"%lf%*[ ,]%lf",&gradient->center.x,
       &gradient->center.y);
   artifact=GetImageArtifact(image,"gradient:angle");
   if ((type == LinearGradient) && (artifact != (const char *) NULL))
@@ -613,7 +613,7 @@ MagickExport MagickBooleanType GradientImage(Image *image,
     }
   artifact=GetImageArtifact(image,"gradient:radii");
   if (artifact != (const char *) NULL)
-    (void) sscanf(artifact,"%lf%*[ ,]%lf",&gradient->radii.x,
+    (void) MagickSscanf(artifact,"%lf%*[ ,]%lf",&gradient->radii.x,
       &gradient->radii.y);
   gradient->radius=MagickMax(gradient->radii.x,gradient->radii.y);
   gradient->spread=method;

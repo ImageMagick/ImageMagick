@@ -748,7 +748,7 @@ static const Quantum *GetVirtualPixelStream(const Image *image,
   if (cache_info->number_channels == 0)
     length=(size_t) number_pixels*sizeof(Quantum);
   if (cache_info->metacontent_extent != 0)
-    length+=number_pixels*cache_info->metacontent_extent;
+    length+=(size_t) number_pixels*cache_info->metacontent_extent;
   if (cache_info->pixels == (Quantum *) NULL)
     {
       cache_info->length=length;
@@ -949,7 +949,7 @@ static Quantum *QueueAuthenticPixelsStream(Image *image,const ssize_t x,
   if (cache_info->number_channels == 0)
     length=(size_t) number_pixels*sizeof(Quantum);
   if (cache_info->metacontent_extent != 0)
-    length+=number_pixels*cache_info->metacontent_extent;
+    length+=(size_t) number_pixels*cache_info->metacontent_extent;
   if (cache_info->pixels == (Quantum *) NULL)
     {
       cache_info->length=length;
@@ -1321,7 +1321,8 @@ MagickExport Image *StreamImage(const ImageInfo *image_info,
       image_info->filename);
   read_info=CloneImageInfo(image_info);
   stream_info->image_info=image_info;
-  stream_info->quantum_info=AcquireQuantumInfo(image_info,(Image *) NULL);
+  if (stream_info->quantum_info == (QuantumInfo *) NULL)
+    stream_info->quantum_info=AcquireQuantumInfo(image_info,(Image *) NULL);
   if (stream_info->quantum_info == (QuantumInfo *) NULL)
     {
       read_info=DestroyImageInfo(read_info);

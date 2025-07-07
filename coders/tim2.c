@@ -303,15 +303,15 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
             p=row_data;
             for (x=0; x < ((ssize_t) image->columns-1); x+=2)
             {
-              SetPixelIndex(image,(*p >> 0) & 0x0F,q);
+              SetPixelIndex(image,(Quantum)((*p >> 0) & 0x0f),q);
               q+=(ptrdiff_t) GetPixelChannels(image);
-              SetPixelIndex(image,(*p >> 4) & 0x0F,q);
+              SetPixelIndex(image,(Quantum)((*p >> 4) & 0x0f),q);
               p++;
               q+=(ptrdiff_t) GetPixelChannels(image);
             }
             if ((image->columns % 2) != 0)
               {
-                SetPixelIndex(image,(*p >> 4) & 0x0F,q);
+                SetPixelIndex(image,(Quantum)((*p >> 4) & 0x0f),q);
                 p++;
                 q+=(ptrdiff_t) GetPixelChannels(image);
               }
@@ -654,10 +654,10 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,
   file_header.magic_num=ReadBlobMSBLong(image);
   if (file_header.magic_num != 0x54494D32) /* "TIM2" */
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  file_header.format_vers=ReadBlobByte(image);
+  file_header.format_vers=(unsigned char) ReadBlobByte(image);
   if (file_header.format_vers != 0x04)
     ThrowReaderException(CoderError,"ImageTypeNotSupported");
-  file_header.format_type=ReadBlobByte(image);
+  file_header.format_type=(unsigned char) ReadBlobByte(image);
   file_header.image_count=ReadBlobLSBShort(image);
   if (DiscardBlobBytes(image,8) == MagickFalse) /* reserved */
     ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");

@@ -905,6 +905,7 @@ static MagickBooleanType LoadMimeCache(LinkedListInfo *cache,const char *xml,
         (void) SubstituteString((char **) &token,"&lt;","<");
         (void) SubstituteString((char **) &token,"&amp;","&");
         (void) SubstituteString((char **) &token,"&quot;","\"");
+        (void) SubstituteString((char **) &token,"&apos;","'");
         mime_info->magic=(unsigned char *) AcquireString(token);
         q=mime_info->magic;
         for (p=token; *p != '\0'; )

@@ -136,7 +136,7 @@ static ResourceInfo
     MagickULLConstant(768),            /* file limit */
     MagickULLConstant(1),              /* thread limit */
     MagickULLConstant(0),              /* throttle limit */
-    MagickULLConstant(0),              /* time limit */
+    MagickResourceInfinity,            /* time limit */
   };
 
 static SemaphoreInfo
@@ -332,7 +332,8 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
       if (((MagickSizeType) resource_info.time+(MagickSizeType) request) > (MagickSizeType) resource_info.time)
         {
           resource_info.time+=request;
-          if ((limit == 0) || (resource_info.time < (MagickOffsetType) limit))
+          if ((limit == MagickResourceInfinity) ||
+              (resource_info.time < (MagickOffsetType) limit))
             status=MagickTrue;
           else
             resource_info.time-=request;
@@ -502,7 +503,7 @@ MagickExport MagickBooleanType GetPathTemplate(char *path)
     directory=ConstantString(P_tmpdir);
 #endif
   if (directory == (char *) NULL)
-    return(MagickTrue);
+    return(MagickFalse);
   value=GetPolicyValue("resource:temporary-path");
   if (value != (char *) NULL)
     {
@@ -970,7 +971,7 @@ MagickExport MagickBooleanType ListMagickResourceInfo(FILE *file,
     (void) FormatMagickSize(resource_info.disk_limit,MagickTrue,"B",
       MagickFormatExtent,disk_limit);
   (void) CopyMagickString(time_limit,"unlimited",MagickFormatExtent);
-  if (resource_info.time_limit != 0)
+  if (resource_info.time_limit != MagickResourceInfinity)
     FormatTimeToLive(resource_info.time_limit,time_limit);
   (void) FormatLocaleFile(file,"Resource limits:\n");
   (void) FormatLocaleFile(file,"  Width: %s\n",width_limit);
@@ -1252,7 +1253,7 @@ MagickPrivate MagickBooleanType ResourceComponentGenesis(void)
   if ((pagesize <= 0) || (pages <= 0))
     memory=2048UL*1024UL*1024UL;
 #if defined(MAGICKCORE_PixelCacheThreshold)
-  memory=MAGICKCORE_PixelCacheThreshold;
+  memory=StringToMagickSizeType(MAGICKCORE_PixelCacheThreshold,100.0);
 #endif
   (void) SetMagickResourceLimit(AreaResource,4*memory);
   limit=GetEnvironmentValue("MAGICK_AREA_LIMIT");
@@ -1334,7 +1335,7 @@ MagickPrivate MagickBooleanType ResourceComponentGenesis(void)
         limit,100.0));
       limit=DestroyString(limit);
     }
-  (void) SetMagickResourceLimit(TimeResource,0);
+  (void) SetMagickResourceLimit(TimeResource,MagickResourceInfinity);
   limit=GetEnvironmentValue("MAGICK_TIME_LIMIT");
   if (limit != (char *) NULL)
     {

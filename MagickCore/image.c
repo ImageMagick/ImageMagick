@@ -140,7 +140,7 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
   Image
     *image;
 
-  int
+  MagickSizeType
     time_limit;
 
   MagickStatusType
@@ -187,9 +187,9 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
   image->channel_map=AcquirePixelChannelMap();
   image->blob=CloneBlobInfo((BlobInfo *) NULL);
   image->timestamp=GetMagickTime();
-  time_limit=(int) GetMagickResourceLimit(TimeResource);
-  if (time_limit > 0)
-    image->ttl=image->timestamp+time_limit;
+  time_limit=GetMagickResourceLimit(TimeResource);
+  if (time_limit != MagickResourceInfinity)
+    image->ttl=image->timestamp+(time_t) time_limit;
   image->debug=(GetLogEventMask() & (ImageEvent | TransformEvent | CoderEvent))
     != 0 ? MagickTrue : MagickFalse;
   image->reference_count=1;
@@ -286,21 +286,19 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
       if ((flags & GreaterValue) != 0)
         {
           if ((double) image->delay > floor(geometry_info.rho+0.5))
-            image->delay=(size_t) CastDoubleToLong(floor(
-              geometry_info.rho+0.5));
+            image->delay=(size_t) CastDoubleToSsizeT(floor(geometry_info.rho+0.5));
         }
       else
         if ((flags & LessValue) != 0)
           {
             if ((double) image->delay < floor(geometry_info.rho+0.5))
-              image->ticks_per_second=CastDoubleToLong(floor(
+              image->ticks_per_second=CastDoubleToSsizeT(floor(
                 geometry_info.sigma+0.5));
           }
         else
-          image->delay=(size_t) CastDoubleToLong(floor(geometry_info.rho+0.5));
+          image->delay=(size_t) CastDoubleToSsizeT(floor(geometry_info.rho+0.5));
       if ((flags & SigmaValue) != 0)
-        image->ticks_per_second=CastDoubleToLong(floor(
-          geometry_info.sigma+0.5));
+        image->ticks_per_second=CastDoubleToSsizeT(floor(geometry_info.sigma+0.5));
     }
   option=GetImageOption(image_info,"dispose");
   if (option != (const char *) NULL)
@@ -899,17 +897,17 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
     scale_x=(double) columns/(double) image->columns;
   if (image->rows != 0)
     scale_y=(double) rows/(double) image->rows;
-  clone_image->page.width=(size_t) CastDoubleToLong(floor(scale_x*
+  clone_image->page.width=(size_t) CastDoubleToSsizeT(floor(scale_x*
     image->page.width+0.5));
-  clone_image->page.height=(size_t) CastDoubleToLong(floor(scale_y*
+  clone_image->page.height=(size_t) CastDoubleToSsizeT(floor(scale_y*
     image->page.height+0.5));
   if (MagickAbsoluteValue(scale_x-scale_y) < 2.0)
     scale_x=scale_y=MagickMin(scale_x,scale_y);
-  clone_image->page.x=CastDoubleToLong(ceil(scale_x*image->page.x-0.5));
-  clone_image->tile_offset.x=CastDoubleToLong(ceil(scale_x*
+  clone_image->page.x=CastDoubleToSsizeT(ceil(scale_x*image->page.x-0.5));
+  clone_image->tile_offset.x=CastDoubleToSsizeT(ceil(scale_x*
     image->tile_offset.x-0.5));
-  clone_image->page.y=CastDoubleToLong(ceil(scale_y*image->page.y-0.5));
-  clone_image->tile_offset.y=CastDoubleToLong(ceil(scale_y*
+  clone_image->page.y=CastDoubleToSsizeT(ceil(scale_y*image->page.y-0.5));
+  clone_image->tile_offset.y=CastDoubleToSsizeT(ceil(scale_y*
     image->tile_offset.y-0.5));
   clone_image->cache=ClonePixelCache(image->cache);
   if (SetImageExtent(clone_image,columns,rows,exception) == MagickFalse)
@@ -1665,7 +1663,6 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
     canonical;
 
   ssize_t
-    field_width,
     offset;
 
   canonical=MagickFalse;
@@ -1678,25 +1675,27 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
     q=(char *) p+1;
     if (*q == '%')
       {
-        p=q+1;
+        p++;
         continue;
       }
-    field_width=0;
-    if (*q == '0')
-      field_width=(ssize_t) strtol(q,&q,10);
     switch (*q)
     {
       case 'd':
       case 'o':
       case 'x':
       {
+        ssize_t
+          count;
+
         q++;
         c=(*q);
         *q='\0';
-        (void) FormatLocaleString(filename+(p-format-offset),(size_t)
+        count=FormatLocaleString(filename+(p-format-offset),(size_t)
           (MagickPathExtent-(p-format-offset)),p,value);
-        offset+=(4-field_width);
-        *q=c;
+        if ((count <= 0) || (count > (MagickPathExtent-(p-format-offset))))
+          return(0);
+        offset+=(ssize_t) ((q-p)-count);
+        *q=(char) c;
         (void) ConcatenateMagickString(filename,q,MagickPathExtent);
         canonical=MagickTrue;
         if (*(q-1) != '%')
@@ -1757,7 +1756,7 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
         (void) CopyMagickString(filename+(p-format-offset),option,(size_t)
           (MagickPathExtent-(p-format-offset)));
         offset+=(ssize_t) strlen(pattern)-(ssize_t) strlen(option)+3;
-        *q=c;
+        *q=(char) c;
         (void) ConcatenateMagickString(filename,r+1,MagickPathExtent);
         canonical=MagickTrue;
         if (*(q-1) != '%')
@@ -2795,6 +2794,9 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
     path[MagickPathExtent],
     *q;
 
+  const char
+    *p;
+
   const MagicInfo
     *magic_info;
 
@@ -2809,9 +2811,6 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
 
   MagickBooleanType
     status;
-
-  const char
-    *p;
 
   ssize_t
     count;
@@ -2982,7 +2981,9 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
       image=AcquireImage(image_info,exception);
       (void) CopyMagickString(image->filename,image_info->filename,
         MagickPathExtent);
-      status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
+      sans_exception=AcquireExceptionInfo();
+      status=OpenBlob(image_info,image,ReadBinaryBlobMode,sans_exception);
+      sans_exception=DestroyExceptionInfo(sans_exception);
       if (status == MagickFalse)
         {
           image=DestroyImage(image);

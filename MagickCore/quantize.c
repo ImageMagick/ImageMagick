@@ -215,7 +215,7 @@
 #define CacheShift  3
 #endif
 #define ErrorQueueLength  16
-#define ErrorRelativeWeight  PerceptibleReciprocal(16)
+#define ErrorRelativeWeight  MagickSafeReciprocal(16)
 #define MaxQNodes  266817
 #define MaxTreeDepth  8
 #define QNodesInAList  1920
@@ -1277,7 +1277,7 @@ static void DefineImageColormap(Image *image,QCubeInfo *cube_info,
       */
       q=image->colormap+image->colors;
       alpha=(double) ((MagickOffsetType) node_info->number_unique);
-      alpha=PerceptibleReciprocal(alpha);
+      alpha=MagickSafeReciprocal(alpha);
       if (cube_info->associate_alpha == MagickFalse)
         {
           q->red=(double) ClampToQuantum(alpha*(double) QuantumRange*
@@ -1311,7 +1311,7 @@ static void DefineImageColormap(Image *image,QCubeInfo *cube_info,
                 gamma;
 
               gamma=(double) (QuantumScale*q->alpha);
-              gamma=PerceptibleReciprocal(gamma);
+              gamma=MagickSafeReciprocal(gamma);
               q->red=(double) ClampToQuantum(alpha*gamma*(double) QuantumRange*
                 node_info->total_color.red);
               q->green=(double) ClampToQuantum(alpha*gamma*(double)
@@ -2108,7 +2108,7 @@ static QCubeInfo *GetQCubeInfo(const QuantizeInfo *quantize_info,
   weight=1.0;
   for (i=0; i < ErrorQueueLength; i++)
   {
-    cube_info->weights[i]=PerceptibleReciprocal(weight);
+    cube_info->weights[i]=MagickSafeReciprocal(weight);
     weight*=exp(log(1.0/ErrorRelativeWeight)/(ErrorQueueLength-1.0));
   }
   cube_info->diffusion=1.0;
@@ -2745,7 +2745,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
       double
         gamma;
 
-      gamma=PerceptibleReciprocal((double) kmeans_pixels[0][j].count);
+      gamma=MagickSafeReciprocal((double) kmeans_pixels[0][j].count);
       image->colormap[j].red=gamma*(double) QuantumRange*
         kmeans_pixels[0][j].red;
       image->colormap[j].green=gamma*(double) QuantumRange*
@@ -2854,7 +2854,7 @@ static inline double MagickRound(double x)
 static inline Quantum PosterizePixel(const Quantum pixel,const size_t levels)
 {
   double posterize_pixel = QuantumRange*MagickRound(QuantumScale*(double) pixel*
-    (levels-1.0))/MagickMax(levels-1.0,1.0);
+    ((double) levels-1.0))/MagickMax((double) levels-1.0,1.0);
   return(ClampToQuantum((MagickRealType) posterize_pixel));
 }
 
@@ -2901,7 +2901,7 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
         if ((traits & UpdatePixelTrait) != 0)
           channels++;
       }
-      number_columns=(size_t) pow(levels,channels);
+      number_columns=(size_t) pow((double) levels,(double) channels);
       map_image=CloneImage(image,number_columns,1,MagickTrue,exception);
       if (map_image == (Image *) NULL)
         {
@@ -2918,7 +2918,7 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
           *map_image_view;
 
         MagickRealType
-          scale = QuantumRange/(levels-1.0);
+          scale = (MagickRealType) QuantumRange/(levels-1.0);
 
         Quantum
           *magick_restrict q;
@@ -2949,7 +2949,7 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
             if ((traits & UpdatePixelTrait) != 0)
               {
                 size_t value = remainder % levels;
-                SetPixelChannel(map_image,channel,scale*value,q);
+                SetPixelChannel(map_image,channel,(const Quantum) (scale*value),q);
                 remainder=(remainder-value)/levels;
               }
           }
@@ -2995,17 +2995,17 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
               Posterize colormap.
             */
             if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-              image->colormap[i].red=(double)
-                PosterizePixel(image->colormap[i].red,levels);
+              image->colormap[i].red=(MagickRealType)
+                PosterizePixel((const Quantum) image->colormap[i].red,levels);
             if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-              image->colormap[i].green=(double)
-                PosterizePixel(image->colormap[i].green,levels);
+              image->colormap[i].green=(MagickRealType)
+                PosterizePixel((const Quantum) image->colormap[i].green,levels);
             if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-              image->colormap[i].blue=(double)
-                PosterizePixel(image->colormap[i].blue,levels);
+              image->colormap[i].blue=(MagickRealType)
+                PosterizePixel((const Quantum) image->colormap[i].blue,levels);
             if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-              image->colormap[i].alpha=(double)
-                PosterizePixel(image->colormap[i].alpha,levels);
+              image->colormap[i].alpha=(MagickRealType)
+                PosterizePixel((const Quantum) image->colormap[i].alpha,levels);
           }
         }
       /*

@@ -121,11 +121,11 @@ static MagickBooleanType MonitorProgress(const char *text,
   if (p == (char *) NULL)
     (void) FormatLocaleFile(stderr,"%s: %ld of %lu, %02ld%% complete\r",
       locale_message,(long) offset,(unsigned long) extent,(long)
-      (100.0*offset*PerceptibleReciprocal(extent-1.0)));
+      (100.0*offset*MagickSafeReciprocal((double) extent-1.0)));
   else
     (void) FormatLocaleFile(stderr,"%s[%s]: %ld of %lu, %02ld%% complete\r",
       locale_message,p+1,(long) offset,(unsigned long) extent,(long)
-      (100.0*offset*PerceptibleReciprocal(extent-1.0)));
+      (100.0*offset*MagickSafeReciprocal((double) extent-1.0)));
   if (offset == (MagickOffsetType) (extent-1))
     (void) FormatLocaleFile(stderr,"\n");
   (void) fflush(stderr);
@@ -2480,12 +2480,12 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
 #if 0
           /* Using Gamma, via a cache */
           if (IfPlusOp)
-            constant=PerceptibleReciprocal(constant);
+            constant=MagickSafeReciprocal(constant);
           (void) GammaImage(_image,constant,_exception);
 #else
           /* Using Evaluate POW, direct update of values - more accurate */
           if (IfNormalOp)
-            constant=PerceptibleReciprocal(constant);
+            constant=MagickSafeReciprocal(constant);
           (void) EvaluateImage(_image,PowEvaluateOperator,constant,_exception);
           _image->gamma*=StringToDouble(arg1,(char **) NULL);
 #endif
@@ -3286,8 +3286,8 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           flags=ParsePageGeometry(_image,arg1,&geometry,_exception);
           if ((flags & PercentValue) != 0)
             {
-              geometry.x*=(double) _image->columns/100.0;
-              geometry.y*=(double) _image->rows/100.0;
+              geometry.x*=(ssize_t) (_image->columns/100.0);
+              geometry.y*=(ssize_t) (_image->rows/100.0);
             }
           new_image=RollImage(_image,geometry.x,geometry.y,_exception);
           break;

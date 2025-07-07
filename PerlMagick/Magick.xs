@@ -1996,7 +1996,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       if (LocaleNCompare(attribute,"registry:",9) == 0)
         {
           (void) SetImageRegistry(StringRegistryType,attribute+9,SvPV(sval,na),
-            exception); 
+            exception);
           break;
         }
       if (LocaleCompare(attribute,"render") == 0)
@@ -13933,7 +13933,7 @@ Read(ref,...)
       **keep,
       **list,
       **p;
-    
+
     ExceptionInfo
       *exception;
 

@@ -615,24 +615,25 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
     }
   if ((page.x < 0) && (bounding_box.x >= 0))
     {
-      page.width=(size_t) ((ssize_t) page.width+page.x-bounding_box.x);
+      page.width=CastDoubleToSizeT((double) page.width+page.x-bounding_box.x);
       page.x=0;
     }
   else
     {
-      page.width=(size_t) ((ssize_t) page.width-(bounding_box.x-page.x));
+      page.width=CastDoubleToSizeT((double) page.width-(bounding_box.x-page.x));
       page.x-=bounding_box.x;
       if (page.x < 0)
         page.x=0;
     }
   if ((page.y < 0) && (bounding_box.y >= 0))
     {
-      page.height=(size_t) ((ssize_t) page.height+page.y-bounding_box.y);
+      page.height=CastDoubleToSizeT((double) page.height+page.y-bounding_box.y);
       page.y=0;
     }
   else
     {
-      page.height=(size_t) ((ssize_t) page.height-(bounding_box.y-page.y));
+      page.height=CastDoubleToSizeT((double) page.height-(bounding_box.y-
+        page.y));
       page.y-=bounding_box.y;
       if (page.y < 0)
         page.y=0;
@@ -642,7 +643,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
   if ((geometry->width != 0) && (page.width > geometry->width))
     page.width=geometry->width;
   if ((page.y+(ssize_t) page.height) > (ssize_t) image->rows)
-    page.height=(size_t) ((ssize_t) image->rows-page.y);
+    page.height=CastDoubleToSizeT((double) image->rows-page.y);
   if ((geometry->height != 0) && (page.height > geometry->height))
     page.height=geometry->height;
   bounding_box.x+=page.x;
@@ -780,8 +781,8 @@ static inline ssize_t PixelRoundOffset(double x)
     Round the fraction to nearest integer.
   */
   if ((x-floor(x)) < (ceil(x)-x))
-    return(CastDoubleToLong(floor(x)));
-  return(CastDoubleToLong(ceil(x)));
+    return(CastDoubleToSsizeT(floor(x)));
+  return(CastDoubleToSsizeT(ceil(x)));
 }
 
 MagickExport Image *CropImageToTiles(const Image *image,
@@ -968,7 +969,7 @@ MagickExport Image *CropImageToTiles(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ExcerptImage() returns a excerpt of the image as defined by the geometry.
+%  ExcerptImage() returns an excerpt of the image as defined by the geometry.
 %
 %  The format of the ExcerptImage method is:
 %

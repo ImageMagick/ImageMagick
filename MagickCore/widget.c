@@ -1171,7 +1171,8 @@ static void XEditText(Display *display,XWidgetInfo *text_info,
           q=text_info->text+Extent(text_info->text)+strlen(text);
           for (i=0; i <= Extent(text_info->cursor); i++)
           {
-            *q=(*(q-Extent(text)));
+            if ((q-Extent(text)) > text_info->text)
+              *q=(*(q-Extent(text)));
             q--;
           }
           p=text;
@@ -1866,7 +1867,7 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
         slider_info.height=(unsigned int) ((int) scroll_info.height-
           ((slider_info.min_y-scroll_info.y+1) << 1)+4);
         visible_colors=(unsigned int) (scroll_info.height*
-          PerceptibleReciprocal((double) height+(height >> 3)));
+          MagickSafeReciprocal((double) height+(height >> 3)));
         if (colors > visible_colors)
           slider_info.height=(unsigned int) ((visible_colors*
             slider_info.height)/colors);
@@ -4485,7 +4486,7 @@ MagickPrivate void XFileBrowserWidget(Display *display,XWindows *windows,
         slider_info.height=(unsigned int) ((int) scroll_info.height-
           ((slider_info.min_y-scroll_info.y+1) << 1)+4);
         visible_files=(unsigned int) (scroll_info.height*
-          PerceptibleReciprocal((double) height+(height >> 3)));
+          MagickSafeReciprocal((double) height+(height >> 3)));
         if (files > visible_files)
           slider_info.height=(unsigned int)
             ((visible_files*slider_info.height)/files);
@@ -5754,7 +5755,7 @@ MagickPrivate void XFontBrowserWidget(Display *display,XWindows *windows,
         slider_info.height=(unsigned int) ((int) scroll_info.height-
           ((slider_info.min_y-scroll_info.y+1) << 1)+4);
         visible_fonts=(unsigned int) (scroll_info.height*
-          PerceptibleReciprocal((double) height+(height >> 3)));
+          MagickSafeReciprocal((double) height+(height >> 3)));
         if (fonts > (int) visible_fonts)
           slider_info.height=(visible_fonts*slider_info.height)/(unsigned int)
             fonts;
@@ -6977,7 +6978,7 @@ MagickPrivate void XListBrowserWidget(Display *display,XWindows *windows,
         slider_info.height=(unsigned int) ((int) scroll_info.height-
           ((slider_info.min_y-scroll_info.y+1) << 1)+4);
         visible_entries=(unsigned int) (scroll_info.height*
-          PerceptibleReciprocal((double) height+(height >> 3)));
+          MagickSafeReciprocal((double) height+(height >> 3)));
         if (entries > visible_entries)
           slider_info.height=(visible_entries*slider_info.height)/entries;
         slider_info.max_y=south_info.y-(int) south_info.bevel_width-(int)
@@ -9181,7 +9182,7 @@ MagickPrivate void XTextViewWidget(Display *display,
           north_info.bevel_width+(int) slider_info.bevel_width+2;
         slider_info.height=(unsigned int) ((int) scroll_info.height-
           ((slider_info.min_y-scroll_info.y+1) << 1)+4);
-        visible_lines=(unsigned int) (scroll_info.height*PerceptibleReciprocal(
+        visible_lines=(unsigned int) (scroll_info.height*MagickSafeReciprocal(
           (double) text_info->ascent+text_info->descent+((text_info->ascent+
           text_info->descent) >> 3)));
         if (lines > visible_lines)

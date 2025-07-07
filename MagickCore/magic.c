@@ -800,7 +800,7 @@ MagickPrivate MagickBooleanType MagicComponentGenesis(void)
 
 static void *DestroyMagicElement(void *magic_info)
 {
-  RelinquishMagickMemory((MagicInfo *) magic_info);
+  (void) RelinquishMagickMemory((MagicInfo *) magic_info);
   return((void *) NULL);
 }
 

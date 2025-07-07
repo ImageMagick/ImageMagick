@@ -53,6 +53,7 @@
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/module.h"
+#include "MagickCore/nt-base-private.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
 #include "MagickCore/resource_.h"
@@ -92,6 +93,36 @@
 %
 */
 
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT)
+static Image* InvokeURLDelegate(ImageInfo* read_info,Image* image,
+  const char *delegate,ExceptionInfo* exception)
+{
+  Image
+    *images,
+    *next;
+
+  MagickBooleanType
+    status;
+
+  images=(Image *) NULL;
+  status=InvokeDelegate(read_info,image,delegate,(char *) NULL,
+    exception);
+  if (status != MagickFalse)
+    {
+      (void) FormatLocaleString(read_info->filename,MagickPathExtent,
+        "%s.dat",read_info->unique);
+      *read_info->magick='\0';
+      images=ReadImage(read_info,exception);
+      (void) RelinquishUniqueFileResource(read_info->filename);
+      if (images != (Image *) NULL)
+        for (next=images; next != (Image *) NULL; next=next->next)
+          (void) CopyMagickString(next->filename,image->filename,
+            MagickPathExtent);
+    }
+  return(images);
+}
+#endif
+
 static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
@@ -116,28 +147,16 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   read_info=CloneImageInfo(image_info);
   SetImageInfoBlob(read_info,(void *) NULL,0);
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT)
+  if (LocaleCompare(read_info->magick,"http") == 0)
+    {
+      images=InvokeURLDelegate(read_info,image,"http:decode",exception);
+      read_info=DestroyImageInfo(read_info);
+      image=DestroyImage(image);
+      return(images);
+    }
   if (LocaleCompare(read_info->magick,"https") == 0)
     {
-      MagickBooleanType
-        status;
-
-      /*
-        Leverage delegate to read HTTPS link.
-      */
-      status=InvokeDelegate(read_info,image,"https:decode",(char *) NULL,
-        exception);
-      if (status != MagickFalse)
-        {
-          (void) FormatLocaleString(read_info->filename,MagickPathExtent,
-            "%s.dat",read_info->unique);
-          *read_info->magick='\0';
-          images=ReadImage(read_info,exception);
-          (void) RelinquishUniqueFileResource(read_info->filename);
-          if (images != (Image *) NULL)
-            for (next=images; next != (Image *) NULL; next=next->next)
-              (void) CopyMagickString(next->filename,image->filename,
-                MagickPathExtent);
-        }
+      images=InvokeURLDelegate(read_info,image,"https:decode",exception);
       read_info=DestroyImageInfo(read_info);
       image=DestroyImage(image);
       return(images);
@@ -232,9 +251,7 @@ ModuleExport size_t RegisterURLImage(void)
     *entry;
 
   entry=AcquireMagickInfo("URL","HTTP","Uniform Resource Locator (http://)");
-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
   entry->decoder=(DecodeImageHandler *) ReadURLImage;
-#endif
   entry->format_type=ImplicitFormatType;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("URL","HTTPS","Uniform Resource Locator (https://)");

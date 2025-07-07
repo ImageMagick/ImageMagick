@@ -406,18 +406,26 @@ MagickPrivate int gettimeofday (struct timeval *time_value,
       time=date_time.QuadPart;
       time-=EpochFiletime;
       time/=10;
-      time_value->tv_sec=(ssize_t) (time / 1000000);
-      time_value->tv_usec=(ssize_t) (time % 1000000);
+      time_value->tv_sec=(long) (time / 1000000);
+      time_value->tv_usec=(long) (time % 1000000);
     }
   if (time_zone != (struct timezone *) NULL)
     {
+      int
+        daylight;
+
+      long
+        timezone=0;
+
       if (is_tz_set == 0)
         {
           _tzset();
           is_tz_set++;
         }
-      time_zone->tz_minuteswest=_timezone/60;
-      time_zone->tz_dsttime=_daylight;
+      _get_timezone(&timezone);
+      time_zone->tz_minuteswest=timezone/60;
+      _get_daylight(&daylight);
+      time_zone->tz_dsttime=daylight;
     }
   return(0);
 }
@@ -529,7 +537,7 @@ MagickPrivate int NTCloseDirectory(DIR *entry)
 */
 MagickPrivate int NTCloseLibrary(void *handle)
 {
-  return(!(FreeLibrary((HINSTANCE) handle)));
+  return(FreeLibrary((HINSTANCE) handle) ? 0 : 1);
 }
 
 
@@ -1099,8 +1107,8 @@ static int NTLocateGhostscript(DWORD flags,int *root_index,
             major=0;
             minor=0;
             patch=0;
-            if (sscanf(key,"%d.%d.%d",&major,&minor,&patch) != 3)
-              if (sscanf(key,"%d.%d",&major,&minor) != 2)
+            if (MagickSscanf(key,"%d.%d.%d",&major,&minor,&patch) != 3)
+              if (MagickSscanf(key,"%d.%d",&major,&minor) != 2)
                 continue;
             if ((major > *major_version) ||
                ((major == *major_version) && (minor > *minor_version)) ||
@@ -1688,8 +1696,8 @@ MagickPrivate DIR *NTOpenDirectory(const char *path)
     MagickPathExtent);
   if (length == 0)
     return((DIR *) NULL);
-  if(wcsncat(file_specification,L"\\*.*",MagickPathExtent-wcslen(
-      file_specification)-1) == (wchar_t *) NULL)
+  if (wcsncat_s(file_specification,MagickPathExtent,L"\\*.*",MagickPathExtent-
+      wcslen(file_specification)-1) != 0)
     return((DIR *) NULL);
   entry=(DIR *) AcquireCriticalMemory(sizeof(DIR));
   entry->firsttime=TRUE;
@@ -2090,7 +2098,7 @@ MagickPrivate int NTSystemCommand(const char *command,char *output)
       error=NTGetLastErrorMessage(last_error); \
       if (error != (char *) NULL) \
         { \
-          CopyMagickString(output,error,MagickPathExtent); \
+          (void) CopyMagickString(output,error,MagickPathExtent); \
           error=DestroyString(error); \
         } \
     }
@@ -2204,7 +2212,7 @@ MagickPrivate int NTSystemCommand(const char *command,char *output)
             (size_t) bytes_read+1);
           if (count > 0)
             {
-              CopyMagickString(output+output_offset,buffer,count);
+              (void) CopyMagickString(output+output_offset,buffer,count);
               output_offset+=count-1;
             }
         }

@@ -38,7 +38,7 @@ Magick::adaptiveThresholdImage::adaptiveThresholdImage( const size_t width_,
 }
 void Magick::adaptiveThresholdImage::operator()( Magick::Image &image_ ) const
 {
-  image_.adaptiveThreshold( _width, _height, _offset );
+  image_.adaptiveThreshold( _width, _height, (double) _offset );
 }
 
 // Add noise to image with specified noise type
@@ -1030,7 +1030,7 @@ Magick::spreadImage::spreadImage( const size_t amount_ )
 }
 void Magick::spreadImage::operator()( Magick::Image &image_ ) const
 {
-  image_.spread( _amount );
+  image_.spread( (double) _amount );
 }
 
 // Add a digital watermark to the image (based on second image)
@@ -1383,7 +1383,7 @@ Magick::fontPointsizeImage::fontPointsizeImage( const size_t pointsize_ )
 }
 void Magick::fontPointsizeImage::operator()( Magick::Image &image_ ) const
 {
-  image_.fontPointsize( _pointsize );
+  image_.fontPointsize( (double) _pointsize );
 }
 
 // GIF disposal method

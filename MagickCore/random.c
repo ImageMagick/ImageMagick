@@ -539,7 +539,7 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
       {
         SetStringInfoLength(chaos,MaxEntropyExtent);
         count=ReadRandom(file,GetStringInfoDatum(chaos),MaxEntropyExtent);
-        (void) close(file);
+        (void) close_utf8(file);
         SetStringInfoLength(chaos,(size_t) count);
         ConcatenateStringInfo(entropy,chaos);
       }
@@ -564,7 +564,7 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
           {
             SetStringInfoLength(chaos,MaxEntropyExtent);
             count=ReadRandom(file,GetStringInfoDatum(chaos),MaxEntropyExtent);
-            (void) close(file);
+            (void) close_utf8(file);
             SetStringInfoLength(chaos,(size_t) count);
             ConcatenateStringInfo(entropy,chaos);
           }

@@ -328,11 +328,13 @@ ModuleExport size_t RegisterVIDEOImage(void)
   entry->decoder=(DecodeImageHandler *) ReadVIDEOImage;
   entry->encoder=(EncodeImageHandler *) WriteVIDEOImage;
   entry->magick=(IsImageFormatHandler *) IsPNG;
+  entry->mime_type=ConstantString("image/apng");
   entry->flags^=CoderBlobSupportFlag;
   entry->flags|=CoderDecoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("VIDEO","AVI","Microsoft Audio/Visual Interleaved");
   entry->decoder=(DecodeImageHandler *) ReadVIDEOImage;
+  entry->mime_type=ConstantString("image/avif-sequence");
   entry->flags^=CoderBlobSupportFlag;
   entry->flags|=CoderDecoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
@@ -509,7 +511,7 @@ static MagickBooleanType CopyDelegateFile(const char *source,
   source_file=open_utf8(source,O_RDONLY | O_BINARY,0);
   if (source_file == -1)
     {
-      (void) close(destination_file);
+      (void) close_utf8(destination_file);
       return(MagickFalse);
     }
   quantum=(size_t) MagickMaxBufferExtent;
@@ -519,8 +521,8 @@ static MagickBooleanType CopyDelegateFile(const char *source,
   buffer=(unsigned char *) AcquireQuantumMemory(quantum,sizeof(*buffer));
   if (buffer == (unsigned char *) NULL)
     {
-      (void) close(source_file);
-      (void) close(destination_file);
+      (void) close_utf8(source_file);
+      (void) close_utf8(destination_file);
       return(MagickFalse);
     }
   length=0;
@@ -535,8 +537,8 @@ static MagickBooleanType CopyDelegateFile(const char *source,
       break;
   }
   if (strcmp(destination,"-") != 0)
-    (void) close(destination_file);
-  (void) close(source_file);
+    (void) close_utf8(destination_file);
+  (void) close_utf8(source_file);
   buffer=(unsigned char *) RelinquishMagickMemory(buffer);
   return(i != 0 ? MagickTrue : MagickFalse);
 }
@@ -600,7 +602,7 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
     return(MagickFalse);
   file=AcquireUniqueFileResource(basename);
   if (file != -1)
-    file=close(file)-1;
+    file=close_utf8(file)-1;
   (void) FormatLocaleString(clone_images->filename,MagickPathExtent,"%s",
     basename);
   count=0;

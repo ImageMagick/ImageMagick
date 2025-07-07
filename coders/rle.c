@@ -340,8 +340,8 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     number_planes_filled=(number_planes % 2 == 0) ? number_planes :
       number_planes+1;
-    if ((number_pixels*number_planes_filled) !=
-        (MagickSizeType) (((size_t) number_pixels*number_planes_filled)))
+    if (HeapOverflowSanityCheckGetSize(number_planes_filled,
+         (size_t) number_pixels,(size_t *) NULL) != MagickFalse)
       ThrowRLEException(ResourceLimitError,"MemoryAllocationFailed");
     pixel_info=AcquireVirtualMemory(image->columns,image->rows*
       MagickMax(number_planes_filled,4)*sizeof(*pixels));

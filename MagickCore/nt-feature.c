@@ -136,9 +136,6 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
   LONG
     res;
 
-  int
-    list_entries;
-
   char
     buffer[MagickPathExtent],
     font_root[MagickPathExtent];
@@ -154,7 +151,6 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
     Try to find the right Windows*\CurrentVersion key, the SystemRoot and
     then the Fonts key
   */
-  list_entries=0;
   reg_key=(HKEY) INVALID_HANDLE_VALUE;
   res=RegOpenKeyExA(HKEY_LOCAL_MACHINE,
     "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion",0,KEY_READ,&reg_key);
@@ -315,7 +311,6 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
           }
         LocaleLower(buffer);
         type_info->glyphs=ConstantString(buffer);
-        list_entries++;
         status=AddValueToSplayTree(type_cache,type_info->name,type_info);
         if (status == MagickFalse)
           (void) ThrowMagickException(exception,GetMagickModule(),

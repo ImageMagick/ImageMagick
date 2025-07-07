@@ -674,7 +674,7 @@ Magick::Point Magick::Image::density(void) const
 {
   if (isValid())
     {
-      ssize_t
+      double
         x_resolution=72,
         y_resolution=72;
 
@@ -684,7 +684,7 @@ Magick::Point Magick::Image::density(void) const
       if (constImage()->resolution.y > 0.0)
         y_resolution=constImage()->resolution.y;
 
-      return(Point(x_resolution,y_resolution));
+      return(Point(x_resolution, y_resolution));
     }
 
   return(constOptions()->density());
@@ -1843,7 +1843,7 @@ void Magick::Image::alpha(const unsigned int alpha_)
 {
   modifyImage();
   GetPPException;
-  SetImageAlpha(image(),alpha_,exceptionInfo);
+  SetImageAlpha(image(),(Quantum) alpha_,exceptionInfo);
   ThrowImageException;
 }
 
@@ -3526,7 +3526,7 @@ void Magick::Image::liquidRescale(const Geometry &geometry_)
     &height);
 
   GetPPException;
-  newImage=LiquidRescaleImage(image(),width,height,x,y,exceptionInfo);
+  newImage=LiquidRescaleImage(image(),width,height,(double) x,(double) y,exceptionInfo);
   replaceImage(newImage);
   ThrowImageException;
 }
@@ -3569,9 +3569,14 @@ void Magick::Image::magnify(void)
 
 void Magick::Image::map(const Image &mapImage_,const bool dither_)
 {
+  map(mapImage_, dither_ ? RiemersmaDitherMethod : NoDitherMethod);
+}
+
+void Magick::Image::map(const Image &mapImage_,const DitherMethod ditherMethod_)
+{
   modifyImage();
   GetPPException;
-  options()->quantizeDither(dither_);
+  options()->quantizeDither(ditherMethod_);
   RemapImage(options()->quantizeInfo(),image(),mapImage_.constImage(),
     exceptionInfo);
   ThrowImageException;
@@ -3963,8 +3968,8 @@ void Magick::Image::process(std::string name_,const ssize_t argc,
   modifyImage();
 
   GetPPException;
-  (void) InvokeDynamicImageFilter(name_.c_str(),&image(),argc,argv,
-      exceptionInfo);
+  (void) InvokeDynamicImageFilter(name_.c_str(),&image(),(int) argc,argv,
+    exceptionInfo);
   ThrowImageException;
 }
 

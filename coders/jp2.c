@@ -1,4 +1,4 @@
-  /*
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -80,7 +80,7 @@
 /*
   Typedef declarations.
 */
-#if defined(MAGICKCORE_JPEG_DELEGATE)
+#if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
 typedef struct _JP2CompsInfo
 {
   double
@@ -582,7 +582,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
         index=comps_info[i].y_index/jp2_image->comps[i].dx+x/
           jp2_image->comps[i].dx;
         if ((index < 0) ||
-            (index >= (jp2_image->comps[i].h*jp2_image->comps[i].w)))
+            (index >= (ssize_t) (jp2_image->comps[i].h*jp2_image->comps[i].w)))
           {
             opj_destroy_codec(jp2_codec);
             opj_image_destroy(jp2_image);
@@ -1003,7 +1003,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
   parameters->cp_disto_alloc=OPJ_TRUE;
   if ((image_info->quality != 0) && (image_info->quality != 100))
     {
-      parameters->tcp_distoratio[0]=(double) image_info->quality;
+      parameters->tcp_distoratio[0]=(float) image_info->quality;
       parameters->cp_fixed_quality=OPJ_TRUE;
       parameters->cp_disto_alloc=OPJ_FALSE;
     }
@@ -1025,9 +1025,9 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
       if ((flags & HeightValue) != 0)
         parameters->cp_tdy=(int) geometry.height;
       if ((flags & XValue) != 0)
-        parameters->cp_tx0=geometry.x;
+        parameters->cp_tx0=(int) geometry.x;
       if ((flags & YValue) != 0)
-        parameters->cp_ty0=geometry.y;
+        parameters->cp_ty0=(int) geometry.y;
       parameters->tile_size_on=OPJ_TRUE;
       parameters->numresolution=CalculateNumResolutions((size_t)
         parameters->cp_tdx,(size_t) parameters->cp_tdy);
@@ -1042,7 +1042,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
         Set quality PSNR.
       */
       p=option;
-      for (i=0; sscanf(p,"%f",&parameters->tcp_distoratio[i]) == 1; i++)
+      for (i=0; MagickSscanf(p,"%f",&parameters->tcp_distoratio[i]) == 1; i++)
       {
         if (i > 100)
           break;
@@ -1052,7 +1052,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
           break;
         p++;
       }
-      parameters->tcp_numlayers=i+1;
+      parameters->tcp_numlayers=(int) (i+1);
       parameters->cp_fixed_quality=OPJ_TRUE;
       parameters->cp_disto_alloc=OPJ_FALSE;
     }
@@ -1080,7 +1080,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
         Set compression rate.
       */
       p=option;
-      for (i=0; sscanf(p,"%f",&parameters->tcp_rates[i]) == 1; i++)
+      for (i=0; MagickSscanf(p,"%f",&parameters->tcp_rates[i]) == 1; i++)
       {
         if (i >= 100)
           break;
@@ -1090,7 +1090,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
           break;
         p++;
       }
-      parameters->tcp_numlayers=i+1;
+      parameters->tcp_numlayers=(int) (i+1);
       parameters->cp_disto_alloc=OPJ_TRUE;
     }
   if (image_info->sampling_factor != (char *) NULL)
@@ -1190,9 +1190,9 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
 
         scale=(double) (((size_t) MagickULLConstant(1) <<
           jp2_image->comps[i].prec)-1)/(double) QuantumRange;
-        q=jp2_image->comps[i].data+(ssize_t) (y*PerceptibleReciprocal(
-          jp2_image->comps[i].dy)*image->columns*PerceptibleReciprocal(
-          jp2_image->comps[i].dx)+x*PerceptibleReciprocal(
+        q=jp2_image->comps[i].data+(ssize_t) (y*MagickSafeReciprocal(
+          jp2_image->comps[i].dy)*image->columns*MagickSafeReciprocal(
+          jp2_image->comps[i].dx)+x*MagickSafeReciprocal(
           jp2_image->comps[i].dx));
         switch (i)
         {

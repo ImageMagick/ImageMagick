@@ -968,7 +968,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
   switch(type) {
     case UndefinedKernel:    /* These should not call this function */
     case UserDefinedKernel:
-      ThrowMagickException(exception,GetMagickModule(),OptionWarning,
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
         "InvalidOption","`%s'","Should not call this function");
       return((KernelInfo *) NULL);
     case LaplacianKernel:   /* Named Discrete Convolution Kernels */
@@ -2639,7 +2639,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
     }
     default:
     {
-      ThrowMagickException(exception,GetMagickModule(),OptionWarning,
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
         "InvalidOption","`%s'","not a primitive morphology method");
       break;
     }
@@ -2771,7 +2771,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
               }
             if (fabs(pixel-(double) p[center+i]) >= MagickEpsilon)
               changes[id]++;
-            gamma=PerceptibleReciprocal(gamma);
+            gamma=MagickSafeReciprocal(gamma);
             if (count != 0)
               gamma*=(double) kernel->height/count;
             SetPixelChannel(morphology_image,channel,ClampToQuantum(gamma*
@@ -3194,7 +3194,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             SetPixelChannel(morphology_image,channel,quantum_pixels[i],q);
             continue;
           }
-        gamma=PerceptibleReciprocal(gamma);
+        gamma=MagickSafeReciprocal(gamma);
         SetPixelChannel(morphology_image,channel,ClampToQuantum(gamma*pixel),q);
         if (fabs(pixel-(double) p[center+i]) >= MagickEpsilon)
           changes[id]++;

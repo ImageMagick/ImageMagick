@@ -153,7 +153,11 @@ Magick::ChannelPerceptualHash::ChannelPerceptualHash(
     double
       value;
 
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__MINGW32__)
+    if (sscanf_s(hash_.substr(i*5,5).c_str(),"%05x",&hex) != 1)
+#else
     if (sscanf(hash_.substr(i*5,5).c_str(),"%05x",&hex) != 1)
+#endif
       throw ErrorOption("Invalid hash value");
 
     value=((unsigned short)hex) / pow(10.0, (double)(hex >> 17));
@@ -280,7 +284,7 @@ Magick::ChannelPerceptualHash::ChannelPerceptualHash(
 Magick::ChannelStatistics::ChannelStatistics(void)
   : _channel(SyncPixelChannel),
     _area(0.0),
-    _depth(0.0),
+    _depth(0),
     _entropy(0.0),
     _kurtosis(0.0),
     _maxima(0.0),

@@ -5641,10 +5641,10 @@ Get(ref,...)
               continue;
             }
           if (LocaleNCompare(attribute,"registry:",9) == 0)
-            {   
+            {
               const char
                 *value;
-        
+ 
               value=(const char *) GetImageRegistry(StringRegistryType,
                 attribute+9,exception);
               if (value != (const char *) NULL)

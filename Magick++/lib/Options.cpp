@@ -472,14 +472,18 @@ Magick::ColorspaceType Magick::Options::quantizeColorSpace(void) const
 
 void Magick::Options::quantizeDither(const bool ditherFlag_)
 {
-  _imageInfo->dither=(MagickBooleanType) ditherFlag_;
-  _quantizeInfo->dither_method=ditherFlag_ ? RiemersmaDitherMethod :
-    NoDitherMethod;
+  quantizeDither(ditherFlag_ ? RiemersmaDitherMethod : NoDitherMethod);
 }
 
 bool Magick::Options::quantizeDither(void) const
 {
   return(static_cast<bool>(_imageInfo->dither));
+}
+
+void Magick::Options::quantizeDither(const DitherMethod ditherMethod_)
+{
+  _imageInfo->dither=(MagickBooleanType) (ditherMethod_ != NoDitherMethod);
+  _quantizeInfo->dither_method=ditherMethod_;
 }
 
 void Magick::Options::quantizeDitherMethod(const DitherMethod ditherMethod_)

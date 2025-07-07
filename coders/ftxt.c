@@ -192,7 +192,7 @@ static int ReadInt(Image * image,MagickBooleanType *eofInp,int *chPushed,
     *eofInp = MagickTrue;
   while (isdigit(chIn))
   {
-    *p=chIn;
+    *p=(char) chIn;
     p++;
     if (p-buffer >= MaxTextExtent)
       {
@@ -335,7 +335,7 @@ static void ReadUntil(Image * image,int UntilChar,MagickBooleanType *eofInp,
           *eofInp=MagickTrue;
           break;
         }
-      buf[i++]=chIn;
+      buf[i++]=(char) chIn;
     }
   if (*eofInp)
     *chPushed='\0';
@@ -630,7 +630,7 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,
                   if (q == (Quantum *) NULL)
                     break;
                   for (i=0; i< nExpCh; i++)
-                    q[i]=chVals[i];
+                    q[i]=(char) chVals[i];
                   if (SyncAuthenticPixels(image,exception) == MagickFalse)
                     break;
                 }

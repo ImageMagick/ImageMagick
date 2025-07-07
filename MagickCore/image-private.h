@@ -52,6 +52,9 @@ extern "C" {
 #define MAGICK_SIZE_MAX  (SIZE_MAX)
 #define MAGICK_SSIZE_MAX  (SSIZE_MAX)
 #define MAGICK_SSIZE_MIN  (-SSIZE_MAX-1)
+#define MAGICK_UINT_MAX  (UINT_MAX)
+#define MAGICK_ULONG_MAX  (ULONG_MAX)
+#define MAGICK_USHORT_MAX  (USHRT_MAX)
 #define MatteColor  "#bdbdbd"  /* gray */
 #define MatteColorRGBA  ScaleShortToQuantum(0xbdbd),\
   ScaleShortToQuantum(0xbdbd),ScaleShortToQuantum(0xbdbd),OpaqueAlpha
@@ -60,11 +63,55 @@ extern "C" {
 #define SaveImagesTag  "Save/Images"
 #define SaveImageTag  "Save/Image"
 #define TransparentColor  "#00000000"  /* transparent black */
-#define TransparentColorRGBA  0,0,0,TransparentAlpha
+#define TransparentColorRGBA  (Quantum) 0,(Quantum) 0,(Quantum) 0,TransparentAlpha
 #define UndefinedCompressionQuality  0UL
 #define UndefinedTicksPerSecond  100L
 
-static inline ssize_t CastDoubleToLong(const double x)
+static inline QuantumAny CastDoubleToQuantumAny(const double x)
+{
+  if (IsNaN(x) != 0)
+    {
+      errno=ERANGE;
+      return(0);
+    }
+  if (x > ((double) ((QuantumAny) ~0)))
+    {
+      errno=ERANGE;
+      return((QuantumAny) ~0);
+    }
+  if (x < 0.0)
+    {
+      errno=ERANGE;
+      return((QuantumAny) 0);
+    }
+  return((QuantumAny) (x+0.5));
+}
+
+static inline size_t CastDoubleToSizeT(const double x)
+{
+  double
+    value;
+
+  if (IsNaN(x) != 0)
+    {
+      errno=ERANGE;
+      return(0);
+    }
+  value=floor(x);
+  if (value >= ((double) MAGICK_SIZE_MAX))
+    {
+      errno=ERANGE;
+      return((size_t) MAGICK_SIZE_MAX);
+    }
+  if (value < 0.0)
+    {
+      errno=ERANGE;
+      return(0);
+    }
+  return((size_t) value);
+}
+
+static inline ssize_t CastDoubleToSsizeT(const double x)
 {
   double
     value;
@@ -95,27 +142,7 @@ static inline ssize_t CastDoubleToLong(const double x)
   return((ssize_t) value);
 }
 
-static inline QuantumAny CastDoubleToQuantumAny(const double x)
-{
-  if (IsNaN(x) != 0)
-    {
-      errno=ERANGE;
-      return(0);
-    }
-  if (x > ((double) ((QuantumAny) ~0)))
-    {
-      errno=ERANGE;
-      return((QuantumAny) ~0);
-    }
-  if (x < 0.0)
-    {
-      errno=ERANGE;
-      return((QuantumAny) 0);
-    }
-  return((QuantumAny) (x+0.5));
-}
-
-static inline size_t CastDoubleToUnsigned(const double x)
+static inline unsigned int CastDoubleToUInt(const double x)
 {
   double
     value;
@@ -126,17 +153,41 @@ static inline size_t CastDoubleToUnsigned(const double x)
       return(0);
     }
   value=floor(x);
-  if (value >= ((double) MAGICK_SIZE_MAX))
+  if (value >= ((double) MAGICK_UINT_MAX))
     {
       errno=ERANGE;
-      return((size_t) MAGICK_SIZE_MAX);
+      return((unsigned int) MAGICK_UINT_MAX);
     }
   if (value < 0.0)
     {
       errno=ERANGE;
       return(0);
     }
-  return((size_t) value);
+  return((unsigned int) value);
+}
+
+static inline unsigned short CastDoubleToUShort(const double x)
+{
+  double
+    value;
+
+  if (IsNaN(x) != 0)
+    {
+      errno=ERANGE;
+      return(0);
+    }
+  value=floor(x);
+  if (value >= ((double) MAGICK_USHORT_MAX))
+    {
+      errno=ERANGE;
+      return((unsigned short) MAGICK_USHORT_MAX);
+    }
+  if (value < 0.0)
+    {
+      errno=ERANGE;
+      return(0);
+    }
+  return((unsigned short) value);
 }
 
 static inline double DegreesToRadians(const double degrees)

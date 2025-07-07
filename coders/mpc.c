@@ -867,7 +867,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           profile=AcquireProfileStringInfo(name,length,exception);
           if (profile == (StringInfo *) NULL)
             {
-              count=SeekBlob(image,(MagickOffsetType) length,SEEK_CUR);
+              count=(ssize_t) SeekBlob(image,(MagickOffsetType) length,SEEK_CUR);
               if (count != (ssize_t) length)
                 break;
             }

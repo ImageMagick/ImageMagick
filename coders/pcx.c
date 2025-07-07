@@ -484,6 +484,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 /*
                   256 color images have their color map at the end of the file.
                 */
+                offset=SeekBlob(image,(MagickOffsetType) GetBlobSize(image)-3*
+                  image->colors-1,SEEK_SET);
                 pcx_info.colormap_signature=(unsigned char) ReadBlobByte(image);
                 count=ReadBlob(image,3*image->colors,pcx_colormap);
                 p=pcx_colormap;
@@ -947,16 +949,14 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
       case PixelsPerInchResolution:
       default:
       {
-        pcx_info.horizontal_resolution=(unsigned short) image->resolution.x;
-        pcx_info.vertical_resolution=(unsigned short) image->resolution.y;
+        pcx_info.horizontal_resolution=CastDoubleToUShort(image->resolution.x);
+        pcx_info.vertical_resolution=CastDoubleToUShort(image->resolution.y);
         break;
       }
       case PixelsPerCentimeterResolution:
       {
-        pcx_info.horizontal_resolution=(unsigned short)
-          (2.54*image->resolution.x+0.5);
-        pcx_info.vertical_resolution=(unsigned short)
-          (2.54*image->resolution.y+0.5);
+        pcx_info.horizontal_resolution=CastDoubleToUShort(2.54*image->resolution.x+0.5);
+        pcx_info.vertical_resolution=CastDoubleToUShort(2.54*image->resolution.y+0.5);
         break;
       }
     }
@@ -1008,9 +1008,9 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
     if ((image->storage_class == PseudoClass) && (image->colors <= 256))
       for (i=0; i < (ssize_t) image->colors; i++)
       {
-        *q++=ScaleQuantumToChar(image->colormap[i].red);
-        *q++=ScaleQuantumToChar(image->colormap[i].green);
-        *q++=ScaleQuantumToChar(image->colormap[i].blue);
+        *q++=ScaleQuantumToChar((Quantum) image->colormap[i].red);
+        *q++=ScaleQuantumToChar((Quantum) image->colormap[i].green);
+        *q++=ScaleQuantumToChar((Quantum) image->colormap[i].blue);
       }
     (void) WriteBlob(image,3*16,(const unsigned char *) pcx_colormap);
     (void) WriteBlobByte(image,pcx_info.reserved);

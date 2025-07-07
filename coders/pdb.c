@@ -389,7 +389,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   count=ReadBlob(image,sizeof(pdb_image.name),(unsigned char *) pdb_image.name);
   if (count != sizeof(pdb_image.name))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  pdb_image.version=ReadBlobByte(image);
+  pdb_image.version=(char) ReadBlobByte(image);
   pdb_image.type=(unsigned char) (ReadBlobByte(image));
   pdb_image.reserved_1=ReadBlobMSBLong(image);
   pdb_image.note=ReadBlobMSBLong(image);
@@ -513,7 +513,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           shift-=2;
-          index=ConstrainColormapIndex(image,3UL-((*p >> shift) & 0x03),
+          index=(Quantum) ConstrainColormapIndex(image,3UL-((*p >> shift) & 0x03),
             exception);
           SetPixelIndex(image,index,q);
           q+=(ptrdiff_t) GetPixelChannels(image);
@@ -550,7 +550,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           shift-=4;
-          index=ConstrainColormapIndex(image,15UL-((*p >> shift) & 0x0f),
+          index=(Quantum) ConstrainColormapIndex(image,15UL-((*p >> shift) & 0x0f),
             exception);
           SetPixelIndex(image,index,q);
           q+=(ptrdiff_t) GetPixelChannels(image);
@@ -621,7 +621,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
             r=comment+strlen(comment);
           }
-        *r=c;
+        *r=(char) c;
         c=ReadBlobByte(image);
       }
       *r='\0';
@@ -819,7 +819,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
   (void) CopyMagickString(pdb_info.name,filename,sizeof(pdb_info.name));
   pdb_info.attributes=0;
   pdb_info.version=0;
-  pdb_info.create_time=GetMagickTime();
+  pdb_info.create_time=(ssize_t) GetMagickTime();
   pdb_info.modify_time=pdb_info.create_time;
   pdb_info.archive_time=0;
   pdb_info.modify_number=0;

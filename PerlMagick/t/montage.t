@@ -112,9 +112,11 @@ testMontage( q//,
 testMontage( q/bordercolor=>'blue', mattecolor=>'red'/, 
   q/background=>'#696e7e',  tile=>'4x4', geometry=>'90x80+3+3>', frame=>'8x10',
   borderwidth=>'0', gravity=>'Center', background=>'gray'/,
+  'dcf3971caf73a0d7a7e3dd5c231622f7350da6a02addfb2eb1a9ebce75246f88',
   '40835871b13232243ba4d2bcb244d06958556a24a9624e793f5c4c291d64f322',
   '531d0d485d55a5b585cab3f64b37da81a109fbaa91aa44a038fa916421780f14',
-  '40835871b13232243ba4d2bcb244d06958556a24a9624e793f5c4c291d64f322');
+  '531d0d485d55a5b585cab3f64b37da81a109fbaa91aa44a038fa916421780f14',
+  '531d0d485d55a5b585cab3f64b37da81a109fbaa91aa44a038fa916421780f14');
 
 #
 # 12) Test Framed Montage with drop-shadows
@@ -123,9 +125,11 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
 testMontage( q/bordercolor=>'blue', mattecolor=>'red'/, 
   q/background=>'#696e7e',  tile=>'4x4', geometry=>'90x80+6+6>', frame=>'8x10',
   borderwidth=>'0', gravity=>'Center', shadow=>'True',background=>'gray'/,
+  'f338c5218bf2dba47490d453bd845ed7b6e6c146079f662265338baedcd473ee',
+  '40d6c29a9e85135eed35cf47b79cdfd8091f4a72459fbea0cc80f94bfff87d88',
   '420aecbcab063e2735156a2b4d0b96e89d1b89dd84d3b2f217c9cf980f25939c',
-  '51b8db221299cea2bea84b11247bfa4b41a0cc3a9af27ff4c20f9c23ee7f2117',
-  '9899c23919efd2e3ac51a60cb62a780d114ecdab40478bed21c40a2b1c9832b9');
+  '16d83700b4dabac353bcc557aa2581659a07f71e8098b550f5ef241b6d1ab9e6',
+  'ab9588dcdd480f7a792ecc3202b0af5d9c8bd900eee1447f0c6ef1cedee3b140');
 
 #
 # 13) Test Framed Montage with drop-shadows and background texture
@@ -134,9 +138,11 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
 testMontage( q/bordercolor=>'blue', mattecolor=>'red'/, 
   q/background=>'#696e7e',  tile=>'4x4', geometry=>'90x80+6+6>', frame=>'8x10',
   borderwidth=>'0', gravity=>'Center', shadow=>'True', texture=>'granite:'/,
+  'b2be2edbc68a4b828392f5fbf2683a16e63d81bcd5c2c77e8aa1573c4a37b23b',
+  '9a23ef5366121cee8d101af2d6def5920b4984ce8e37f5e46db8fd5b18c47896',
   'c10b9d30b4a3312df15f4a55c195992670dd22d59dbf2c4e3436ad730d647ed2',
-  'e2fe0b56decf6fd791813e99d7b0f40646a479589e7519d97e2f92969dd17a1e',
-  'e9882a3ad383424e5bf803ec1522c61cfdd0b6f503ac378a03d674e2ef957d32');
+  '6a7b56ca2e9f7e7308f1794b1556c2f87c3ba6050f84bfbeb61a7ccad2b3de9b',
+  '4a2b769973f9e0682004307cf8c999d1476404e5c85712e6fe8e77af6699289d');
 
 #
 # 14) Test Un-bordered, Un-framed Montage

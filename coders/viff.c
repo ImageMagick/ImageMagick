@@ -528,7 +528,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       number_pixels,max_packets),bytes_per_pixel*sizeof(*pixels));
     if (pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    (void) memset(pixels,0,MagickMax(number_pixels,max_packets)*
+    (void) memset(pixels,0,(size_t) MagickMax(number_pixels,max_packets)*
       bytes_per_pixel*sizeof(*pixels));
     if (ReadBlob(image,(size_t) count,pixels) != count)
       {

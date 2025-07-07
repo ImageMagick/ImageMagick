@@ -301,9 +301,9 @@ static Image *ReadQOIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         vg=(b & ~QOI_MASK_2) - 32;
         if ((b=ReadBlobByte(image)) == EOF)
           break;
-        px.rgba.r+=vg - 8 + ((b >> 4) & 0x0f);
-        px.rgba.g+=vg;
-        px.rgba.b+=vg - 8 +  (b       & 0x0f);
+        px.rgba.r+=(unsigned char) (vg - 8 + ((b >> 4) & 0x0f));
+        px.rgba.g+=(unsigned char) vg;
+        px.rgba.b+=(unsigned char) (vg - 8 +  (b       & 0x0f));
       }
     else if ((b & QOI_MASK_2) == QOI_OP_RUN)
       {

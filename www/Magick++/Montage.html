@@ -71,7 +71,7 @@
 <td>
 <p><font size="2">void</font></p></td>
 <td>
-<p><font size="2">std::string fileName_</font></p></td>
+<p><font size="2">const std::string& fileName_</font></p></td>
 <td rowspan="2">
 <p><font size="2">Specifies the image filename to be used for the generated montage images. To handle the case were multiple montage images are generated, a <span lang="en-US">printf</span>-style format may be embedded within the filename. For example, a filename specification of image%02d.miff names the montage images as image00.miff, image01.miff, etc.</font></p></td></tr>
 <tr>
@@ -99,7 +99,7 @@
 <td>
 <p><font size="2">void</font></p></td>
 <td>
-<p><font size="2">std::string font_</font></p></td>
+<p><font size="2">const std::string& font_</font></p></td>
 <td rowspan="2">
 <p><font size="2">Specifies the thumbnail label font.</font></p></td></tr>
 <tr>
@@ -141,7 +141,7 @@
 <td>
 <p><font size="2">void</font></p></td>
 <td>
-<p><font size="2">std::string label_</font></p></td>
+<p><font size="2">const std::string& label_</font></p></td>
 <td rowspan="2">
 <p><font size="2">Specifies the format used for the image label. Special <a href="https://imagemagick.org/Magick++/FormatCharacters.html">format characters</a> may be embedded in the format string to include information about the image.</font></p></td></tr>
 <tr>
@@ -211,7 +211,7 @@
 <td>
 <p><font size="2">void</font></p></td>
 <td>
-<p><font size="2">std::string texture_</font></p></td>
+<p><font size="2">const std::string& texture_</font></p></td>
 <td rowspan="2">
 <p><font size="2">Specifies a texture image to use as montage background. The built-in textures "<tt>granite:</tt>" and "<tt>plasma:</tt>" are available. A texture is the same as a background image.</font></p></td></tr>
 <tr>

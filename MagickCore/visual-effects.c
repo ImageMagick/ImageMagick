@@ -1002,12 +1002,12 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
   center.y=0.5*canvas_image->rows;
   radius=center.x;
   if (canvas_image->columns > canvas_image->rows)
-    scale.y=(double) canvas_image->columns*PerceptibleReciprocal((double)
+    scale.y=(double) canvas_image->columns*MagickSafeReciprocal((double)
       canvas_image->rows);
   else
     if (canvas_image->columns < canvas_image->rows)
       {
-        scale.x=(double) canvas_image->rows*PerceptibleReciprocal((double)
+        scale.x=(double) canvas_image->rows*MagickSafeReciprocal((double)
           canvas_image->columns);
         radius=center.y;
       }
@@ -1088,11 +1088,11 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
           factor=1.0;
           if (distance > 0.0)
             factor=pow(sin(MagickPI*sqrt(distance)*
-              PerceptibleReciprocal(radius)/2.0),-amount);
-          offset.x=factor*delta.x*PerceptibleReciprocal(scale.x)+center.x;
-          offset.y=factor*delta.y*PerceptibleReciprocal(scale.y)+center.y;
-          if ((IsValidPixelOffset(offset.x,image->columns) != MagickFalse) &&
-              (IsValidPixelOffset(offset.y,image->rows) != MagickFalse))
+              MagickSafeReciprocal(radius)/2.0),-amount);
+          offset.x=factor*delta.x*MagickSafeReciprocal(scale.x)+center.x;
+          offset.y=factor*delta.y*MagickSafeReciprocal(scale.y)+center.y;
+          if ((IsValidPixelOffset((ssize_t) offset.x,image->columns) != MagickFalse) &&
+              (IsValidPixelOffset((ssize_t) offset.y,image->rows) != MagickFalse))
             status=InterpolatePixelChannels(canvas_image,interpolate_view,
               implode_image,method,offset.x,offset.y,q,exception);
           if (status == MagickFalse)
@@ -1443,8 +1443,8 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
       */
       depth--;
       attenuate++;
-      x_mid=CastDoubleToLong(ceil((segment->x1+segment->x2)/2-0.5));
-      y_mid=CastDoubleToLong(ceil((segment->y1+segment->y2)/2-0.5));
+      x_mid=CastDoubleToSsizeT(ceil((segment->x1+segment->x2)/2-0.5));
+      y_mid=CastDoubleToSsizeT(ceil((segment->y1+segment->y2)/2-0.5));
       local_info=(*segment);
       local_info.x2=(double) x_mid;
       local_info.y2=(double) y_mid;
@@ -1467,8 +1467,8 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
         v_view,random_info,&local_info,attenuate,depth,exception);
       return(status == 0 ? MagickFalse : MagickTrue);
     }
-  x_mid=CastDoubleToLong(ceil((segment->x1+segment->x2)/2-0.5));
-  y_mid=CastDoubleToLong(ceil((segment->y1+segment->y2)/2-0.5));
+  x_mid=CastDoubleToSsizeT(ceil((segment->x1+segment->x2)/2-0.5));
+  y_mid=CastDoubleToSsizeT(ceil((segment->y1+segment->y2)/2-0.5));
   if ((fabs(segment->x1-x_mid) < MagickEpsilon) &&
       (fabs(segment->x2-x_mid) < MagickEpsilon) &&
       (fabs(segment->y1-y_mid) < MagickEpsilon) &&
@@ -1485,10 +1485,10 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
       /*
         Left pixel.
       */
-      x=CastDoubleToLong(ceil(segment->x1-0.5));
-      u=GetCacheViewVirtualPixels(u_view,x,CastDoubleToLong(ceil(
+      x=CastDoubleToSsizeT(ceil(segment->x1-0.5));
+      u=GetCacheViewVirtualPixels(u_view,x,CastDoubleToSsizeT(ceil(
         segment->y1-0.5)),1,1,exception);
-      v=GetCacheViewVirtualPixels(v_view,x,CastDoubleToLong(ceil(
+      v=GetCacheViewVirtualPixels(v_view,x,CastDoubleToSsizeT(ceil(
         segment->y2-0.5)),1,1,exception);
       q=QueueCacheViewAuthenticPixels(image_view,x,y_mid,1,1,exception);
       if ((u == (const Quantum *) NULL) || (v == (const Quantum *) NULL) ||
@@ -1508,10 +1508,10 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
           /*
             Right pixel.
           */
-          x=CastDoubleToLong(ceil(segment->x2-0.5));
-          u=GetCacheViewVirtualPixels(u_view,x,CastDoubleToLong(ceil(
+          x=CastDoubleToSsizeT(ceil(segment->x2-0.5));
+          u=GetCacheViewVirtualPixels(u_view,x,CastDoubleToSsizeT(ceil(
             segment->y1-0.5)),1,1,exception);
-          v=GetCacheViewVirtualPixels(v_view,x,CastDoubleToLong(ceil(
+          v=GetCacheViewVirtualPixels(v_view,x,CastDoubleToSsizeT(ceil(
             segment->y2-0.5)),1,1,exception);
           q=QueueCacheViewAuthenticPixels(image_view,x,y_mid,1,1,exception);
           if ((u == (const Quantum *) NULL) || (v == (const Quantum *) NULL) ||
@@ -1538,10 +1538,10 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
           /*
             Bottom pixel.
           */
-          y=CastDoubleToLong(ceil(segment->y2-0.5));
-          u=GetCacheViewVirtualPixels(u_view,CastDoubleToLong(ceil(
+          y=CastDoubleToSsizeT(ceil(segment->y2-0.5));
+          u=GetCacheViewVirtualPixels(u_view,CastDoubleToSsizeT(ceil(
             segment->x1-0.5)),y,1,1,exception);
-          v=GetCacheViewVirtualPixels(v_view,CastDoubleToLong(ceil(
+          v=GetCacheViewVirtualPixels(v_view,CastDoubleToSsizeT(ceil(
             segment->x2-0.5)),y,1,1,exception);
           q=QueueCacheViewAuthenticPixels(image_view,x_mid,y,1,1,exception);
           if ((u == (const Quantum *) NULL) || (v == (const Quantum *) NULL) ||
@@ -1563,10 +1563,10 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
           /*
             Top pixel.
           */
-          y=CastDoubleToLong(ceil(segment->y1-0.5));
-          u=GetCacheViewVirtualPixels(u_view,CastDoubleToLong(ceil(
+          y=CastDoubleToSsizeT(ceil(segment->y1-0.5));
+          u=GetCacheViewVirtualPixels(u_view,CastDoubleToSsizeT(ceil(
             segment->x1-0.5)),y,1,1,exception);
-          v=GetCacheViewVirtualPixels(v_view,CastDoubleToLong(ceil(
+          v=GetCacheViewVirtualPixels(v_view,CastDoubleToSsizeT(ceil(
             segment->x2-0.5)),y,1,1,exception);
           q=QueueCacheViewAuthenticPixels(image_view,x_mid,y,1,1,exception);
           if ((u == (const Quantum *) NULL) || (v == (const Quantum *) NULL) ||
@@ -1590,11 +1590,11 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
       /*
         Middle pixel.
       */
-      x=CastDoubleToLong(ceil(segment->x1-0.5));
-      y=CastDoubleToLong(ceil(segment->y1-0.5));
+      x=CastDoubleToSsizeT(ceil(segment->x1-0.5));
+      y=CastDoubleToSsizeT(ceil(segment->y1-0.5));
       u=GetCacheViewVirtualPixels(u_view,x,y,1,1,exception);
-      x=CastDoubleToLong(ceil(segment->x2-0.5));
-      y=CastDoubleToLong(ceil(segment->y2-0.5));
+      x=CastDoubleToSsizeT(ceil(segment->x2-0.5));
+      y=CastDoubleToSsizeT(ceil(segment->y2-0.5));
       v=GetCacheViewVirtualPixels(v_view,x,y,1,1,exception);
       q=QueueCacheViewAuthenticPixels(image_view,x_mid,y_mid,1,1,exception);
       if ((u == (const Quantum *) NULL) || (v == (const Quantum *) NULL) ||
@@ -1853,7 +1853,7 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickSepiaToneImage() applies a special effect to the image, similar to the
+%  SepiaToneImage() applies a special effect to the image, similar to the
 %  effect achieved in a photo darkroom by sepia toning.  Threshold ranges from
 %  0 to QuantumRange and is a measure of the extent of the sepia toning.  A
 %  threshold of 80% is a good starting point for a reasonable tone.
@@ -2067,8 +2067,8 @@ MagickExport Image *ShadowImage(const Image *image,const double alpha,
     (void) SetImageColorspace(clone_image,sRGBColorspace,exception);
   (void) SetImageVirtualPixelMethod(clone_image,EdgeVirtualPixelMethod,
     exception);
-  border_info.width=CastDoubleToUnsigned(2.0*sigma+0.5);
-  border_info.height=CastDoubleToUnsigned(2.0*sigma+0.5);
+  border_info.width=CastDoubleToSizeT(2.0*sigma+0.5);
+  border_info.height=CastDoubleToSizeT(2.0*sigma+0.5);
   border_info.x=0;
   border_info.y=0;
   (void) QueryColorCompliance("none",AllCompliance,&clone_image->border_color,
@@ -3369,7 +3369,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
     }
   for (i=0; i < (ssize_t) wave_image->columns; i++)
     sine_map[i]=(float) (fabs(amplitude)+amplitude*sin((double)
-      ((2.0*MagickPI*i)*(double) PerceptibleReciprocal(wave_length))));
+      ((2.0*MagickPI*i)*(double) MagickSafeReciprocal(wave_length))));
   /*
     Wave image.
   */

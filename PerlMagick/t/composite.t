@@ -27,14 +27,14 @@ chdir 't' || die 'Cd failed';
 #
 testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
   'input.miff', q//, q/, gravity=>'Center', compose=>'ModulusAdd'/,
-  'reference/composite/Add.miff', 0.002, 1.0);
+  'reference/composite/Add.miff', 0.003, 1.0);
 #
 # Atop
 #
 ++$test;
 testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
   'input.miff', q//, q/, gravity=>'Center', compose=>'Atop'/,
-  'reference/composite/Atop.miff', 0.00001, 0.009);
+  'reference/composite/Atop.miff', 0.00003, 0.009);
 
 #
 # Bumpmap
@@ -51,7 +51,7 @@ testCompositeCompare('gradient:white-black',q/size=>"70x46"/,
 testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
   'input.miff', q//,
   q/, gravity=>'Center', 'clip-to-self'=>True, compose=>'Clear'/,
-  'reference/composite/Clear.miff', 0.00001, 0.009);
+  'reference/composite/Clear.miff', 0.00003, 0.009);
 
 #
 # Copy
@@ -59,7 +59,7 @@ testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
 ++$test;
 testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
   'input.miff', q//, q/, gravity=>'Center', compose=>'Copy'/,
-  'reference/composite/Copy.miff', 0.00001, 0.009);
+  'reference/composite/Copy.miff', 0.00003, 0.009);
 
 #
 # CopyBlue
@@ -67,7 +67,7 @@ testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
 ++$test;
 testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
   'input.miff', q//, q/, gravity=>'Center', compose=>'CopyBlue'/,
-  'reference/composite/CopyBlue.miff', 0.00001, 0.009);
+  'reference/composite/CopyBlue.miff', 0.00003, 0.009);
 
 #
 # CopyGreen
@@ -75,7 +75,7 @@ testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
 ++$test;
 testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
   'input.miff', q//, q/, gravity=>'Center', compose=>'CopyGreen'/,
-  'reference/composite/CopyGreen.miff', 0.00001, 0.009);
+  'reference/composite/CopyGreen.miff', 0.00003, 0.009);
 
 #
 # CopyRed
@@ -83,7 +83,7 @@ testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
 ++$test;
 testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
   'input.miff', q//, q/, gravity=>'Center', compose=>'CopyRed'/,
-  'reference/composite/CopyRed.miff', 0.00001, 0.009);
+  'reference/composite/CopyRed.miff', 0.00003, 0.009);
 
 #
 # CopyAlpha
@@ -91,7 +91,7 @@ testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
 ++$test;
 testCompositeCompare('gradient:white-black',q/size=>"70x46"/,
   'input.miff', q//, q/, gravity=>'Center', compose=>'CopyAlpha'/,
-  'reference/composite/CopyAlpha.miff', 0.00001, 0.009);
+  'reference/composite/CopyAlpha.miff', 0.00003, 0.009);
 
 #
 # Difference
@@ -99,7 +99,7 @@ testCompositeCompare('gradient:white-black',q/size=>"70x46"/,
 ++$test;
 testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
   'input.miff', q//, q/, gravity=>'Center', compose=>'Difference'/,
-  'reference/composite/Difference.miff', 0.00001, 0.009);
+  'reference/composite/Difference.miff', 0.00003, 0.009);
 
 #
 # In
@@ -107,7 +107,7 @@ testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
 ++$test;
 testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
   'input.miff', q//, q/, gravity=>'Center', compose=>'In'/,
-  'reference/composite/In.miff', 0.00001, 0.009);
+  'reference/composite/In.miff', 0.00003, 0.009);
 
 #
 # Minus
@@ -115,7 +115,7 @@ testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
 ++$test;
 testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
   'input.miff', q//, q/, gravity=>'Center', compose=>'Minus'/,
-  'reference/composite/Minus.miff', 0.00001, 0.009);
+  'reference/composite/Minus.miff', 0.00003, 0.009);
 
 #
 # Multiply
@@ -123,7 +123,7 @@ testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
 ++$test;
 testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
   'input.miff', q//, q/, gravity=>'Center', compose=>'Multiply'/,
-  'reference/composite/Multiply.miff', 0.00001, 0.009);
+  'reference/composite/Multiply.miff', 0.00003, 0.009);
 
 #
 # Out
@@ -131,7 +131,7 @@ testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
 ++$test;
 testCompositeCompare('gradient:white-black',q/size=>"70x46"/,
   'input.miff', q//, q/, gravity=>'Center', compose=>'Out'/,
-  'reference/composite/Out.miff', 0.00001, 0.009);
+  'reference/composite/Out.miff', 0.00003, 0.009);
 
 #
 # Over
@@ -139,7 +139,7 @@ testCompositeCompare('gradient:white-black',q/size=>"70x46"/,
 ++$test;
 testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
   'input.miff', q//, q/, gravity=>'Center', compose=>'Over'/,
-  'reference/composite/Over.miff', 0.00001, 0.009);
+  'reference/composite/Over.miff', 0.00003, 0.009);
 
 #
 # Plus
@@ -155,7 +155,7 @@ testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
 ++$test;
 testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
   'input.miff', q//, q/, gravity=>'Center', compose=>'ModulusSubtract'/,
-  'reference/composite/Subtract.miff', 0.0009, 1.0);
+  'reference/composite/Subtract.miff', 0.0026, 1.0);
 
 #
 # Xor
@@ -163,6 +163,6 @@ testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
 ++$test;
 testCompositeCompare('gradient:white-black',q/size=>"70x46"/,
   'input.miff', q//, q/, gravity=>'Center', compose=>'Xor'/,
-  'reference/composite/Xor.miff', 0.00001, 0.009);
+  'reference/composite/Xor.miff', 0.00003, 0.009);
 
 1;

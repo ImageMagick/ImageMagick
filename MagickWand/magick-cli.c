@@ -395,11 +395,11 @@ RestoreMSCWarning
     do { /* use break to loop to exception handler and loop */
 
       /* save option details */
-      CloneString(&option,token_info->token);
+      (void) CloneString(&option,token_info->token);
 
       /* get option, its argument count, and option type */
       cli_wand->command = GetCommandOptionInfo(option);
-      count=cli_wand->command->type;
+      count=(int) cli_wand->command->type;
       option_type=(CommandOptionFlags) cli_wand->command->flags;
 #if 0
       (void) FormatLocaleFile(stderr, "Script: %u,%u: \"%s\" matched \"%s\"\n",
@@ -426,18 +426,18 @@ RestoreMSCWarning
       if ( count >= 1 ) {
         if (GetScriptToken(token_info) == MagickFalse)
           CLIWandException(OptionFatalError,"MissingArgument",option);
-        CloneString(&arg1,token_info->token);
+        (void) CloneString(&arg1,token_info->token);
       }
       else
-        CloneString(&arg1,(char *) NULL);
+        (void) CloneString(&arg1,(char *) NULL);
 
       if ( count >= 2 ) {
         if (GetScriptToken(token_info) == MagickFalse)
           CLIWandExceptionBreak(OptionFatalError,"MissingArgument",option);
-        CloneString(&arg2,token_info->token);
+        (void) CloneString(&arg2,token_info->token);
       }
       else
-        CloneString(&arg2,(char *) NULL);
+        (void) CloneString(&arg2,(char *) NULL);
 
       /*
         Process Options
@@ -534,9 +534,9 @@ loop_exit:
   /* Clean up */
   token_info = DestroyScriptTokenInfo(token_info);
 
-  CloneString(&option,(char *) NULL);
-  CloneString(&arg1,(char *) NULL);
-  CloneString(&arg2,(char *) NULL);
+  (void) CloneString(&option,(char *) NULL);
+  (void) CloneString(&arg1,(char *) NULL);
+  (void) CloneString(&arg2,(char *) NULL);
 
   return;
 }
@@ -633,7 +633,7 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand,int argc,char **argv,
 
       /* get option, its argument count, and option type */
       cli_wand->command = GetCommandOptionInfo(argv[i]);
-      count=cli_wand->command->type;
+      count=(int) cli_wand->command->type;
       option_type=(CommandOptionFlags) cli_wand->command->flags;
 #if 0
       (void) FormatLocaleFile(stderr, "CLI %d: \"%s\" matched \"%s\"\n",
@@ -798,6 +798,370 @@ RestoreMSCWarning
 %
 */
 
+static MagickBooleanType MagickCommandUsage(void)
+{
+  static const char
+    channel_operators[] =
+      "  -channel-fx expression\n"
+      "                       exchange, extract, or transfer one or more image channels\n"
+      "  -separate            separate an image channel into a grayscale image",
+    miscellaneous[] =
+      "  -debug events        display copious debugging information\n"
+      "  -distribute-cache port\n"
+      "                       distributed pixel cache spanning one or more servers\n"
+      "  -help                print program options\n"
+      "  -list type           print a list of supported option arguments\n"
+      "  -log format          format of debugging information\n"
+      "  -usage               print program usage\n"
+      "  -version             print version information",
+    operators[] =
+      "  -adaptive-blur geometry\n"
+      "                       adaptively blur pixels; decrease effect near edges\n"
+      "  -adaptive-resize geometry\n"
+      "                       adaptively resize image using 'mesh' interpolation\n"
+      "  -adaptive-sharpen geometry\n"
+      "                       adaptively sharpen pixels; increase effect near edges\n"
+      "  -alpha option        on, activate, off, deactivate, set, opaque, copy\n"
+      "                       transparent, extract, background, or shape\n"
+      "  -annotate geometry text\n"
+      "                       annotate the image with text\n"
+      "  -auto-gamma          automagically adjust gamma level of image\n"
+      "  -auto-level          automagically adjust color levels of image\n"
+      "  -auto-orient         automagically orient (rotate) image\n"
+      "  -auto-threshold method\n"
+      "                       automatically perform image thresholding\n"
+      "  -bench iterations    measure performance\n"
+      "  -bilateral-blur geometry\n"
+      "                       non-linear, edge-preserving, and noise-reducing smoothing filter\n"
+      "  -black-threshold value\n"
+      "                       force all pixels below the threshold into black\n"
+      "  -blue-shift factor   simulate a scene at nighttime in the moonlight\n"
+      "  -blur geometry       reduce image noise and reduce detail levels\n"
+      "  -border geometry     surround image with a border of color\n"
+      "  -bordercolor color   border color\n"
+      "  -brightness-contrast geometry\n"
+      "                       improve brightness / contrast of the image\n"
+      "  -canny geometry      detect edges in the image\n"
+      "  -cdl filename        color correct with a color decision list\n"
+      "  -channel mask        set the image channel mask\n"
+      "  -charcoal radius     simulate a charcoal drawing\n"
+      "  -chop geometry       remove pixels from the image interior\n"
+      "  -clahe geometry      contrast limited adaptive histogram equalization\n"
+      "  -clamp               keep pixel values in range (0-QuantumRange)\n"
+      "  -colorize value      colorize the image with the fill color\n"
+      "  -color-matrix matrix apply color correction to the image\n"
+      "  -colors value        preferred number of colors in the image\n"
+      "  -connected-components connectivity\n"
+      "                       connected-components uniquely labeled\n"
+      "  -contrast            enhance or reduce the image contrast\n"
+      "  -contrast-stretch geometry\n"
+      "                       improve contrast by 'stretching' the intensity range\n"
+      "  -convolve coefficients\n"
+      "                       apply a convolution kernel to the image\n"
+      "  -cycle amount        cycle the image colormap\n"
+      "  -decipher filename   convert cipher pixels to plain pixels\n"
+      "  -deskew threshold    straighten an image\n"
+      "  -despeckle           reduce the speckles within an image\n"
+      "  -distort method args\n"
+      "                       distort images according to given method and args\n"
+      "  -draw string         annotate the image with a graphic primitive\n"
+      "  -edge radius         apply a filter to detect edges in the image\n"
+      "  -encipher filename   convert plain pixels to cipher pixels\n"
+      "  -emboss radius       emboss an image\n"
+      "  -enhance             apply a digital filter to enhance a noisy image\n"
+      "  -equalize            perform histogram equalization to an image\n"
+      "  -evaluate operator value\n"
+      "                       evaluate an arithmetic, relational, or logical expression\n"
+      "  -extent geometry     set the image size\n"
+      "  -extract geometry    extract area from image\n"
+      "  -fft                 implements the discrete Fourier transform (DFT)\n"
+      "  -flip                flip image vertically\n"
+      "  -floodfill geometry color\n"
+      "                       floodfill the image with color\n"
+      "  -flop                flop image horizontally\n"
+      "  -frame geometry      surround image with an ornamental border\n"
+      "  -function name parameters\n"
+      "                       apply function over image values\n"
+      "  -gamma value         level of gamma correction\n"
+      "  -gaussian-blur geometry\n"
+      "                       reduce image noise and reduce detail levels\n"
+      "  -geometry geometry   preferred size or location of the image\n"
+      "  -grayscale method    convert image to grayscale\n"
+      "  -hough-lines geometry\n"
+      "                       identify lines in the image\n"
+      "  -identify            identify the format and characteristics of the image\n"
+      "  -ift                 implements the inverse discrete Fourier transform (DFT)\n"
+      "  -implode amount      implode image pixels about the center\n"
+      "  -integral            calculate the sum of values (pixel values) in the image\n"
+      "  -interpolative-resize geometry\n"
+      "                       resize image using interpolation\n"
+      "  -kmeans geometry     K means color reduction\n"
+      "  -kuwahara geometry   edge preserving noise reduction filter\n"
+      "  -lat geometry        local adaptive thresholding\n"
+      "  -level value         adjust the level of image contrast\n"
+      "  -level-colors color,color\n"
+      "                       level image with the given colors\n"
+      "  -linear-stretch geometry\n"
+      "                       improve contrast by 'stretching with saturation'\n"
+      "  -liquid-rescale geometry\n"
+      "                       rescale image with seam-carving\n"
+      "  -local-contrast geometry\n"
+      "                       enhance local contrast\n"
+      "  -mean-shift geometry delineate arbitrarily shaped clusters in the image\n"
+      "  -median geometry     apply a median filter to the image\n"
+      "  -mode geometry       make each pixel the 'predominant color' of the\n"
+      "                       neighborhood\n"
+      "  -modulate value      vary the brightness, saturation, and hue\n"
+      "  -monochrome          transform image to black and white\n"
+      "  -morphology method kernel\n"
+      "                       apply a morphology method to the image\n"
+      "  -motion-blur geometry\n"
+      "                       simulate motion blur\n"
+      "  -negate              replace every pixel with its complementary color \n"
+      "  -noise geometry      add or reduce noise in an image\n"
+      "  -normalize           transform image to span the full range of colors\n"
+      "  -opaque color        change this color to the fill color\n"
+      "  -ordered-dither NxN\n"
+      "                       add a noise pattern to the image with specific\n"
+      "                       amplitudes\n"
+      "  -paint radius        simulate an oil painting\n"
+      "  -perceptible epsilon\n"
+      "                       pixel value less than |epsilon| become epsilon or\n"
+      "                       -epsilon\n"
+      "  -polaroid angle      simulate a Polaroid picture\n"
+      "  -posterize levels    reduce the image to a limited number of color levels\n"
+      "  -profile filename    add, delete, or apply an image profile\n"
+      "  -quantize colorspace reduce colors in this colorspace\n"
+      "  -raise value         lighten/darken image edges to create a 3-D effect\n"
+      "  -random-threshold low,high\n"
+      "                       random threshold the image\n"
+      "  -range-threshold values\n"
+      "                       perform either hard or soft thresholding within some range of values in an image\n"
+      "  -region geometry     apply options to a portion of the image\n"
+      "  -render              render vector graphics\n"
+      "  -resample geometry   change the resolution of an image\n"
+      "  -reshape geometry    reshape the image\n"
+      "  -resize geometry     resize the image\n"
+      "  -roll geometry       roll an image vertically or horizontally\n"
+      "  -rotate degrees      apply Paeth rotation to the image\n"
+      "  -rotational-blur angle\n"
+      "                       rotational blur the image\n"
+      "  -sample geometry     scale image with pixel sampling\n"
+      "  -scale geometry      scale the image\n"
+      "  -segment values      segment an image\n"
+      "  -selective-blur geometry\n"
+      "                       selectively blur pixels within a contrast threshold\n"
+      "  -sepia-tone threshold\n"
+      "                       simulate a sepia-toned photo\n"
+      "  -set property value  set an image property\n"
+      "  -shade degrees       shade the image using a distant light source\n"
+      "  -shadow geometry     simulate an image shadow\n"
+      "  -sharpen geometry    sharpen the image\n"
+      "  -shave geometry      shave pixels from the image edges\n"
+      "  -shear geometry      slide one edge of the image along the X or Y axis\n"
+      "  -sigmoidal-contrast geometry\n"
+      "                       increase the contrast without saturating highlights or\n"
+      "                       shadows\n"
+      "  -sketch geometry     simulate a pencil sketch\n"
+      "  -solarize threshold  negate all pixels above the threshold level\n"
+      "  -sort-pixels         sort each scanline in ascending order of intensity\n"
+      "  -sparse-color method args\n"
+      "                       fill in a image based on a few color points\n"
+      "  -splice geometry     splice the background color into the image\n"
+      "  -spread radius       displace image pixels by a random amount\n"
+      "  -statistic type geometry\n"
+      "                       replace each pixel with corresponding statistic from the\n"
+      "                       neighborhood\n"
+      "  -strip               strip image of all profiles and comments\n"
+      "  -swirl degrees       swirl image pixels about the center\n"
+      "  -threshold value     threshold the image\n"
+      "  -thumbnail geometry  create a thumbnail of the image\n"
+      "  -tile filename       tile image when filling a graphic primitive\n"
+      "  -tint value          tint the image with the fill color\n"
+      "  -transform           affine transform image\n"
+      "  -transparent color   make this color transparent within the image\n"
+      "  -transpose           flip image vertically and rotate 90 degrees\n"
+      "  -transverse          flop image horizontally and rotate 270 degrees\n"
+      "  -trim                trim image edges\n"
+      "  -type type           image type\n"
+      "  -unique-colors       discard all but one of any pixel color\n"
+      "  -unsharp geometry    sharpen the image\n"
+      "  -vignette geometry   soften the edges of the image in vignette style\n"
+      "  -wave geometry       alter an image along a sine wave\n"
+      "  -wavelet-denoise threshold\n"
+      "                       removes noise from the image using a wavelet transform\n"
+      "  -white-balance       automagically adjust white balance of image\n"
+      "  -white-threshold value\n"
+      "                       force all pixels above the threshold into white",
+    sequence_operators[] =
+      "  -append              append an image sequence\n"
+      "  -clut                apply a color lookup table to the image\n"
+      "  -coalesce            merge a sequence of images\n"
+      "  -combine             combine a sequence of images\n"
+      "  -compare             mathematically and visually annotate the difference between an image and its reconstruction\n"
+      "  -complex operator    perform complex mathematics on an image sequence\n"
+      "  -composite           composite image\n"
+      "  -copy geometry offset\n"
+      "                       copy pixels from one area of an image to another\n"
+      "  -crop geometry       cut out a rectangular region of the image\n"
+      "  -deconstruct         break down an image sequence into constituent parts\n"
+      "  -evaluate-sequence operator\n"
+      "                       evaluate an arithmetic, relational, or logical expression\n"
+      "  -flatten             flatten a sequence of images\n"
+      "  -fx expression       apply mathematical expression to an image channel(s)\n"
+      "  -hald-clut           apply a Hald color lookup table to the image\n"
+      "  -layers method       optimize, merge, or compare image layers\n"
+      "  -morph value         morph an image sequence\n"
+      "  -mosaic              create a mosaic from an image sequence\n"
+      "  -poly terms          build a polynomial from the image sequence and the corresponding\n"
+      "                       terms (coefficients and degree pairs).\n"
+      "  -print string        interpret string and print to console\n"
+      "  -process arguments   process the image with a custom image filter\n"
+      "  -smush geometry      smush an image sequence together\n"
+      "  -write filename      write images to this file",
+    settings[] =
+      "  -adjoin              join images into a single multi-image file\n"
+      "  -affine matrix       affine transform matrix\n"
+      "  -alpha option        activate, deactivate, reset, or set the alpha channel\n"
+      "  -antialias           remove pixel-aliasing\n"
+      "  -authenticate password\n"
+      "                       decipher image with this password\n"
+      "  -attenuate value     lessen (or intensify) when adding noise to an image\n"
+      "  -background color    background color\n"
+      "  -bias value          add bias when convolving an image\n"
+      "  -black-point-compensation\n"
+      "                       use black point compensation\n"
+      "  -blue-primary point  chromaticity blue primary point\n"
+      "  -bordercolor color   border color\n"
+      "  -caption string      assign a caption to an image\n"
+      "  -clip                clip along the first path from the 8BIM profile\n"
+      "  -clip-mask filename  associate a clip mask with the image\n"
+      "  -clip-path id        clip along a named path from the 8BIM profile\n"
+      "  -colorspace type     alternate image colorspace\n"
+      "  -comment string      annotate image with comment\n"
+      "  -compose operator    set image composite operator\n"
+      "  -compress type       type of pixel compression when writing the image\n"
+      "  -define format:option\n"
+      "                       define one or more image format options\n"
+      "  -delay value         display the next image after pausing\n"
+      "  -density geometry    horizontal and vertical density of the image\n"
+      "  -depth value         image depth\n"
+      "  -direction type      render text right-to-left or left-to-right\n"
+      "  -display server      get image or font from this X server\n"
+      "  -dispose method      layer disposal method\n"
+      "  -dither method       apply error diffusion to image\n"
+      "  -encoding type       text encoding type\n"
+      "  -endian type         endianness (MSB or LSB) of the image\n"
+      "  -family name         render text with this font family\n"
+      "  -features distance   analyze image features (e.g. contrast, correlation)\n"
+      "  -fill color          color to use when filling a graphic primitive\n"
+      "  -filter type         use this filter when resizing an image\n"
+      "  -font name           render text with this font\n"
+      "  -format \"string\"     output formatted image characteristics\n"
+      "  -fuzz distance       colors within this distance are considered equal\n"
+      "  -gravity type        horizontal and vertical text placement\n"
+      "  -green-primary point chromaticity green primary point\n"
+      "  -illuminant type     reference illuminant\n"
+      "  -intensity method    method to generate an intensity value from a pixel\n"
+      "  -intent type         type of rendering intent when managing the image color\n"
+      "  -interlace type      type of image interlacing scheme\n"
+      "  -interline-spacing value\n"
+      "                       set the space between two text lines\n"
+      "  -interpolate method  pixel color interpolation method\n"
+      "  -interword-spacing value\n"
+      "                       set the space between two words\n"
+      "  -kerning value       set the space between two letters\n"
+      "  -label string        assign a label to an image\n"
+      "  -limit type value    pixel cache resource limit\n"
+      "  -loop iterations     add Netscape loop extension to your GIF animation\n"
+      "  -matte               store matte channel if the image has one\n"
+      "  -mattecolor color    frame color\n"
+      "  -moments             report image moments\n"
+      "  -monitor             monitor progress\n"
+      "  -orient type         image orientation\n"
+      "  -page geometry       size and location of an image canvas (setting)\n"
+      "  -ping                efficiently determine image attributes\n"
+      "  -pointsize value     font point size\n"
+      "  -precision value     maximum number of significant digits to print\n"
+      "  -preview type        image preview type\n"
+      "  -quality value       JPEG/MIFF/PNG compression level\n"
+      "  -quiet               suppress all warning messages\n"
+      "  -read-mask filename  associate a read mask with the image\n"
+      "  -red-primary point   chromaticity red primary point\n"
+      "  -regard-warnings     pay attention to warning messages\n"
+      "  -remap filename      transform image colors to match this set of colors\n"
+      "  -repage geometry     size and location of an image canvas\n"
+      "  -respect-parentheses settings remain in effect until parenthesis boundary\n"
+      "  -sampling-factor geometry\n"
+      "                       horizontal and vertical sampling factor\n"
+      "  -scene value         image scene number\n"
+      "  -seed value          seed a new sequence of pseudo-random numbers\n"
+      "  -size geometry       width and height of image\n"
+      "  -stretch type        render text with this font stretch\n"
+      "  -stroke color        graphic primitive stroke color\n"
+      "  -strokewidth value   graphic primitive stroke width\n"
+      "  -style type          render text with this font style\n"
+      "  -support factor      resize support: > 1.0 is blurry, < 1.0 is sharp\n"
+      "  -synchronize         synchronize image to storage device\n"
+      "  -taint               declare the image as modified\n"
+      "  -texture filename    name of texture to tile onto the image background\n"
+      "  -tile-offset geometry\n"
+      "                       tile offset\n"
+      "  -treedepth value     color tree depth\n"
+      "  -transparent-color color\n"
+      "                       transparent color\n"
+      "  -undercolor color    annotation bounding box color\n"
+      "  -units type          the units of image resolution\n"
+      "  -verbose             print detailed information about the image\n"
+      "  -view                FlashPix viewing transforms\n"
+      "  -virtual-pixel method\n"
+      "                       virtual pixel access method\n"
+      "  -weight type         render text with this font weight\n"
+      "  -white-point point   chromaticity white point\n"
+      "  -write-mask filename associate a write mask with the image"
+      "  -word-break type     sets whether line breaks appear wherever the text would otherwise overflow",
+    stack_operators[] =
+      "  -clone indexes       clone an image\n"
+      "  -delete indexes      delete the image from the image sequence\n"
+      "  -duplicate count,indexes\n"
+      "                       duplicate an image one or more times\n"
+      "  -insert index        insert last image into the image sequence\n"
+      "  -reverse             reverse image sequence\n"
+      "  -swap indexes        swap two images in the image sequence";
+
+  ListMagickVersion(stdout);
+  (void) FormatLocaleFile(stdout,
+    "Usage: %s tool [ {option} | {image} ... ] {output_image}\n",
+    GetClientName());
+  (void) FormatLocaleFile(stdout,
+    "Usage: %s [ {option} | {image} ... ] {output_image}\n",GetClientName());
+  (void) FormatLocaleFile(stdout,
+    "       %s [ {option} | {image} ... ] -script {filename} [ {script_args} ...]\n",
+    GetClientName());
+  (void) FormatLocaleFile(stdout,"\nImage Settings:\n");
+  (void) FormatLocaleFile(stdout,"%s\n",settings);
+  (void) FormatLocaleFile(stdout,"\nImage Operators:\n");
+  (void) FormatLocaleFile(stdout,"%s\n",operators);
+  (void) FormatLocaleFile(stdout,"\nImage Channel Operators:\n");
+  (void) FormatLocaleFile(stdout,"%s\n",channel_operators);
+  (void) FormatLocaleFile(stdout,"\nImage Sequence Operators:\n");
+  (void) FormatLocaleFile(stdout,"%s\n",sequence_operators);
+  (void) FormatLocaleFile(stdout,"\nImage Stack Operators:\n");
+  (void) FormatLocaleFile(stdout,"%s\n",stack_operators);
+  (void) FormatLocaleFile(stdout,"\nMiscellaneous Options:\n");
+  (void) FormatLocaleFile(stdout,"%s\n",miscellaneous);
+  (void) FormatLocaleFile(stdout,
+    "\nBy default, the image format of 'file' is determined by its magic\n");
+  (void) FormatLocaleFile(stdout,
+    "number.  To specify a particular image format, precede the filename\n");
+  (void) FormatLocaleFile(stdout,
+    "with an image format name and a colon (i.e. ps:image) or specify the\n");
+  (void) FormatLocaleFile(stdout,
+    "image type as the filename suffix (i.e. image.ps).  Specify 'file' as\n");
+  (void) FormatLocaleFile(stdout,"'-' for standard input or output.\n");
+  return(MagickTrue);
+}
+
 static void MagickUsage(MagickBooleanType verbose)
 {
   const char
@@ -808,6 +1172,12 @@ static void MagickUsage(MagickBooleanType verbose)
 
   name=GetClientName();
   len=strlen(name);
+
+  if (verbose == MagickFalse)
+    {
+      (void) MagickCommandUsage();
+      return;
+    }
 
   if (len>=7 && LocaleCompare("convert",name+len-7) == 0) {
     /* convert usage */
@@ -834,9 +1204,6 @@ static void MagickUsage(MagickBooleanType verbose)
   }
   (void) FormatLocaleFile(stdout,
     "       %s -help | -version | -usage | -list {option}\n\n",name);
-
-  if (verbose == MagickFalse)
-    return;
 
   (void) FormatLocaleFile(stdout,"%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s\n",
     "All options are performed in a strict 'as you see them' order\n",
@@ -940,8 +1307,8 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,int argc,
 
 
   GetPathComponent(argv[0],TailPath,cli_wand->wand.name);
-  SetClientName(cli_wand->wand.name);
-  ConcatenateMagickString(cli_wand->wand.name,"-CLI",MagickPathExtent);
+  (void) SetClientName(cli_wand->wand.name);
+  (void) ConcatenateMagickString(cli_wand->wand.name,"-CLI",MagickPathExtent);
 
   len=strlen(argv[0]);  /* precaution */
 
@@ -999,7 +1366,7 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,int argc,
     if (cli_wand->wand.debug != MagickFalse)
         (void) CLILogEvent(cli_wand,CommandEvent,GetMagickModule(),
             "- Special Option \"%s\"", argv[1]);
-    ConcatenateImages(argc,argv,exception);
+    (void) ConcatenateImages(argc,argv,exception);
     goto Magick_Command_Exit;
   }
 
@@ -1060,7 +1427,7 @@ Magick_Command_Cleanup:
       text=InterpretImageProperties(image_info,cli_wand->wand.images,format,
         exception);
       if (text == (char *) NULL)
-        ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
+        (void) ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
           "MemoryAllocationFailed","`%s'", GetExceptionMessage(errno));
       else
         {

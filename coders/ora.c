@@ -54,6 +54,7 @@
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/module.h"
+#include "MagickCore/nt-base-private.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
 #include "MagickCore/resource_.h"
@@ -198,7 +199,7 @@ static Image *ReadORAImage(const ImageInfo *image_info,
     else if (read_bytes == 0)
       {
         /* Write up to offset of image_data_buffer to temp file */
-        if (!fwrite(image_data_buffer,1,offset,file))
+        if (!fwrite(image_data_buffer,1,(size_t) offset,file))
           status=MagickFalse;
         break;
       }

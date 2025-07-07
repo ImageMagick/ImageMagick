@@ -984,10 +984,10 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
     (void) ConcatenateMagickString(page_geometry,">",MagickPathExtent);
     (void) ParseMetaGeometry(page_geometry,&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
-    scale.x=PerceptibleReciprocal(resolution.x)*geometry.width*delta.x;
-    geometry.width=CastDoubleToUnsigned(scale.x+0.5);
-    scale.y=PerceptibleReciprocal(resolution.y)*geometry.height*delta.y;
-    geometry.height=CastDoubleToUnsigned(scale.y+0.5);
+    scale.x=MagickSafeReciprocal(resolution.x)*geometry.width*delta.x;
+    geometry.width=CastDoubleToSizeT(scale.x+0.5);
+    scale.y=MagickSafeReciprocal(resolution.y)*geometry.height*delta.y;
+    geometry.height=CastDoubleToSizeT(scale.y+0.5);
     (void) ParseAbsoluteGeometry(page_geometry,&media_info);
     (void) ParseGravityGeometry(image,page_geometry,&page_info,exception);
     if (image->gravity != UndefinedGravity)
@@ -1503,11 +1503,11 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
               {
                 for (i=0; i < (ssize_t) image->colors; i++)
                 {
-                  pixel=ScaleQuantumToChar(image->colormap[i].red);
+                  pixel=ScaleQuantumToChar((Quantum) image->colormap[i].red);
                   (void) WriteBlobByte(image,(unsigned char) pixel);
-                  pixel=ScaleQuantumToChar(image->colormap[i].green);
+                  pixel=ScaleQuantumToChar((Quantum) image->colormap[i].green);
                   (void) WriteBlobByte(image,(unsigned char) pixel);
-                  pixel=ScaleQuantumToChar(image->colormap[i].blue);
+                  pixel=ScaleQuantumToChar((Quantum) image->colormap[i].blue);
                   (void) WriteBlobByte(image,(unsigned char) pixel);
                 }
               }
@@ -1516,11 +1516,11 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
                 Ascii85Initialize(image);
                 for (i=0; i < (ssize_t) image->colors; i++)
                 {
-                  pixel=ScaleQuantumToChar(image->colormap[i].red);
+                  pixel=ScaleQuantumToChar((Quantum) image->colormap[i].red);
                   Ascii85Encode(image,(unsigned char) pixel);
-                  pixel=ScaleQuantumToChar(image->colormap[i].green);
+                  pixel=ScaleQuantumToChar((Quantum) image->colormap[i].green);
                   Ascii85Encode(image,(unsigned char) pixel);
-                  pixel=ScaleQuantumToChar(image->colormap[i].blue);
+                  pixel=ScaleQuantumToChar((Quantum) image->colormap[i].blue);
                   Ascii85Encode(image,(unsigned char) pixel);
                 }
                 Ascii85Flush(image);

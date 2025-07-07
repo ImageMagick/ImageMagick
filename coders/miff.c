@@ -1202,7 +1202,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           profile=AcquireProfileStringInfo(name,length,exception);
           if (profile == (StringInfo *) NULL)
             {
-              count=SeekBlob(image,(MagickOffsetType) length,SEEK_CUR);
+              count=(ssize_t) SeekBlob(image,(MagickOffsetType) length,SEEK_CUR);
               if (count != (ssize_t) length)
                 break;
             }
@@ -1335,22 +1335,26 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     if (quantum_format != UndefinedQuantumFormat)
       {
         status=SetQuantumFormat(image,quantum_info,quantum_format);
+        image->depth=quantum_info->depth;
         if (status == MagickFalse)
           ThrowMIFFException(ResourceLimitError,"MemoryAllocationFailed");
       }
-    packet_size=(size_t) (image->depth/8);
-    if (image->storage_class == DirectClass)
-      packet_size=(size_t) (3*image->depth/8);
-    if (IsGrayColorspace(image->colorspace) != MagickFalse)
-      packet_size=image->depth/8;
-    if (image->alpha_trait != UndefinedPixelTrait)
-      packet_size+=image->depth/8;
-    if (image->colorspace == CMYKColorspace)
-      packet_size+=image->depth/8;
-    if (image->compression == RLECompression)
-      packet_size++;
     if (image->number_meta_channels != 0)
-      packet_size+=image->number_meta_channels*image->depth/8;
+      packet_size=GetImageChannels(image)*image->depth/8;
+    else
+      {
+        packet_size=(size_t) (image->depth/8);
+        if (image->storage_class == DirectClass)
+          packet_size=(size_t) (3*image->depth/8);
+        if (IsGrayColorspace(image->colorspace) != MagickFalse)
+          packet_size=image->depth/8;
+        if (image->alpha_trait != UndefinedPixelTrait)
+          packet_size+=image->depth/8;
+        if (image->colorspace == CMYKColorspace)
+          packet_size+=image->depth/8;
+        if (image->compression == RLECompression)
+          packet_size++;
+      }
     compress_extent=MagickMax(MagickMax(BZipMaxExtent(packet_size*
       image->columns),LZMAMaxExtent(packet_size*image->columns)),
       ZipMaxExtent(packet_size*image->columns));
@@ -2159,19 +2163,22 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
       default:
         break;
     }
-    packet_size=(size_t) (image->depth/8);
-    if (image->storage_class == DirectClass)
-      packet_size=(size_t) (3*image->depth/8);
-    if (IsGrayColorspace(image->colorspace) != MagickFalse)
-      packet_size=(size_t) (image->depth/8);
-    if (image->alpha_trait != UndefinedPixelTrait)
-      packet_size+=image->depth/8;
-    if (image->colorspace == CMYKColorspace)
-      packet_size+=image->depth/8;
-    if (compression == RLECompression)
-      packet_size++;
     if (image->number_meta_channels != 0)
-      packet_size+=image->number_meta_channels*image->depth/8;
+      packet_size=GetImageChannels(image)*image->depth/8;
+    else
+      {
+        packet_size=(size_t) (image->depth/8);
+        if (image->storage_class == DirectClass)
+          packet_size=(size_t) (3*image->depth/8);
+        if (IsGrayColorspace(image->colorspace) != MagickFalse)
+          packet_size=(size_t) (image->depth/8);
+        if (image->alpha_trait != UndefinedPixelTrait)
+          packet_size+=image->depth/8;
+        if (image->colorspace == CMYKColorspace)
+          packet_size+=image->depth/8;
+        if (compression == RLECompression)
+          packet_size++;
+      }
     length=MagickMax(BZipMaxExtent(packet_size*image->columns),ZipMaxExtent(
       packet_size*image->columns));
     if ((compression == BZipCompression) || (compression == ZipCompression))

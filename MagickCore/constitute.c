@@ -485,9 +485,9 @@ static void InitializeConstituteInfo(const ImageInfo *image_info,
       constitute_info->delay_flags=ParseGeometry(option,&geometry_info);
       if (constitute_info->delay_flags != NoValue)
         {
-          constitute_info->delay=floor(geometry_info.rho+0.5);
+          constitute_info->delay=(size_t) floor(geometry_info.rho+0.5);
           if ((constitute_info->delay_flags & SigmaValue) != 0)
-            constitute_info->ticks_per_second=CastDoubleToLong(floor(
+            constitute_info->ticks_per_second=CastDoubleToSsizeT(floor(
               geometry_info.sigma+0.5));
         }
     }
@@ -843,12 +843,6 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     const StringInfo
       *profile;
 
-    static const char
-      *source_date_epoch = (const char *) NULL;
-
-    static MagickBooleanType
-      epoch_initialized = MagickFalse;
-
     next->taint=MagickFalse;
     GetPathComponent(magick_filename,MagickPath,magick_path);
     if ((*magick_path == '\0') && (*next->magick == '\0'))
@@ -938,12 +932,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     profile=GetImageProfile(next,"iptc");
     if (profile == (const StringInfo *) NULL)
       profile=GetImageProfile(next,"8bim");
-    if (epoch_initialized == MagickFalse)
-      {
-        source_date_epoch=getenv("SOURCE_DATE_EPOCH");
-        epoch_initialized=MagickTrue;
-      }
-    if (source_date_epoch == (const char *) NULL)
+    if (IsSourceDataEpochSet() == MagickFalse)
       {
         char
           timestamp[MagickTimeExtent];

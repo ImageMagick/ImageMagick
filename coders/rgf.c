@@ -181,7 +181,7 @@ static Image *ReadRGFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   p=data;
   for (i=0; i < (ssize_t) (image->columns * image->rows); i++) 
     {
-      *p++=ReadBlobByte(image);
+      *p++=(char) ReadBlobByte(image);
     }
 
   /*

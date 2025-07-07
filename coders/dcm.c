@@ -62,6 +62,7 @@
 #include "MagickCore/module.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
+#include "MagickCore/nt-base-private.h"
 #include "MagickCore/option.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/property.h"
@@ -3451,8 +3452,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   subtype=0;
                   if (strlen(transfer_syntax) > 17)
                     {
-                      count=(ssize_t) sscanf(transfer_syntax+17,".%d.%d",&type,
-                        &subtype);
+                      count=(ssize_t) MagickSscanf(transfer_syntax+17,".%d.%d",
+                        &type,&subtype);
                       if (count < 1)
                         ThrowDCMException(CorruptImageError,
                           "ImproperImageHeader")
@@ -3907,7 +3908,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               stream_info->offsets[i]=(ssize_t) ReadBlobLSBSignedLong(image);
             offset=TellBlob(image);
             for (i=0; i < (ssize_t) stream_info->offset_count; i++)
-              stream_info->offsets[i]+=offset;
+              stream_info->offsets[i]+=(ssize_t) offset;
           }
         /*
           Handle non-native image formats.
@@ -4078,7 +4079,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
             offset=TellBlob(image);
             for (i=0; i < (ssize_t) stream_info->offset_count; i++)
-              stream_info->offsets[i]+=offset;
+              stream_info->offsets[i]+=(ssize_t) offset;
           }
       }
     for (scene=0; scene < (ssize_t) number_scenes; scene++)
@@ -4108,25 +4109,25 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (map.red != (int *) NULL)
             for (i=0; i < (ssize_t) colors; i++)
             {
-              color=ScaleShortToQuantum(map.red[i]);
+              color=ScaleShortToQuantum((unsigned short) map.red[i]);
               image->colormap[i].red=(MagickRealType) color;
             }
           if (map.green != (int *) NULL)
             for (i=0; i < (ssize_t) colors; i++)
             {
-              color=ScaleShortToQuantum(map.green[i]);
+              color=ScaleShortToQuantum((unsigned short) map.green[i]);
               image->colormap[i].green=(MagickRealType) color;
             }
           if (map.blue != (int *) NULL)
             for (i=0; i < (ssize_t) colors; i++)
             {
-              color=ScaleShortToQuantum(map.blue[i]);
+              color=ScaleShortToQuantum((unsigned short) map.blue[i]);
               image->colormap[i].blue=(MagickRealType) color;
             }
           if (map.gray != (int *) NULL)
             for (i=0; i < (ssize_t) colors; i++)
             {
-              color=ScaleShortToQuantum(map.gray[i]);
+              color=ScaleShortToQuantum((unsigned short) map.gray[i]);
               image->colormap[i].red=(MagickRealType) color;
               image->colormap[i].green=(MagickRealType) color;
               image->colormap[i].blue=(MagickRealType) color;

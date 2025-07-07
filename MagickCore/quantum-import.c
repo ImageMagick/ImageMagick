@@ -169,7 +169,7 @@ static inline float ScaleFloatPixel(const QuantumInfo *quantum_info,
     return(-FLT_MAX);
   if (pixel > (double) FLT_MAX)
     return(FLT_MAX);
-  return(pixel);
+  return((float) pixel);
 }
 
 static inline const unsigned char *PushQuantumFloatPixel(
@@ -2550,18 +2550,6 @@ static void ImportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
             p=PushShortPixel(quantum_info->endian,p,&pixel);
             SetPixelGray(image,ClampToQuantum((double) QuantumRange*(double)
               HalfToSinglePrecision(pixel)),q);
-            p+=(ptrdiff_t) quantum_info->pad;
-            q+=(ptrdiff_t) GetPixelChannels(image);
-          }
-          break;
-        }
-      if (quantum_info->format == SignedQuantumFormat)
-        {
-          for (x=0; x < (ssize_t) number_pixels; x++)
-          {
-            p=PushShortPixel(quantum_info->endian,p,&pixel);
-            pixel=(unsigned short) (((unsigned int) pixel+32768) % 65536);
-            SetPixelGray(image,ScaleShortToQuantum(pixel),q);
             p+=(ptrdiff_t) quantum_info->pad;
             q+=(ptrdiff_t) GetPixelChannels(image);
           }
@@ -5034,7 +5022,7 @@ MagickExport size_t ImportQuantumPixels(const Image *image,
           i;
 
         Sa=QuantumScale*(double) GetPixelAlpha(image,q);
-        gamma=PerceptibleReciprocal(Sa);
+        gamma=MagickSafeReciprocal(Sa);
         for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
         {
           PixelChannel channel = GetPixelChannelChannel(image,i);

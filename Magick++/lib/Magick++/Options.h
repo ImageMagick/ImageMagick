@@ -168,6 +168,7 @@ namespace Magick
     // Dither image during quantization.
     void quantizeDither(const bool ditherFlag_);
     bool quantizeDither(void) const;
+    void quantizeDither(const DitherMethod ditherMethod_);
 
     // Dither method
     void quantizeDitherMethod(const DitherMethod ditherMethod_);

@@ -342,7 +342,7 @@ OPENCL_ENDIF()
   )
 
   STRINGIFY(
-    static inline float PerceptibleReciprocal(const float x)
+    static inline float MagickSafeReciprocal(const float x)
     {
       float sign = x < (float) 0.0 ? (float) -1.0 : (float) 1.0;
       return((sign*x) >= MagickEpsilon ? (float) 1.0/x : sign*((float) 1.0/MagickEpsilon));
@@ -810,7 +810,7 @@ OPENCL_ENDIF()
           beta=mwcReadPseudoRandomValue(r);
           alpha*=beta;
         }
-        noise=(QuantumRange*i*PerceptibleReciprocal(SigmaPoisson));
+        noise=(QuantumRange*i*MagickSafeReciprocal(SigmaPoisson));
         break;
       }
       case RandomNoise:
@@ -1951,7 +1951,7 @@ OPENCL_ENDIF()
 
           gamma+=k*alpha;
         }
-        gamma = PerceptibleReciprocal(gamma);
+        gamma = MagickSafeReciprocal(gamma);
         pixel.xyz = gamma*pixel.xyz;
 
         CLPixelType outputPixel;
@@ -2183,7 +2183,7 @@ OPENCL_ENDIF()
     // calculate the range of input image pixels to cache
     float scale = MagickMax(1.0f/xFactor+MagickEpsilon ,1.0f);
     const float support = MagickMax(scale*resizeFilterSupport,0.5f);
-    scale = PerceptibleReciprocal(scale);
+    scale = MagickSafeReciprocal(scale);
 
     const int cacheRangeStartX = MagickMax((int)((startX+0.5f)/xFactor+MagickEpsilon-support+0.5f),(int)(0));
     const int cacheRangeEndX = MagickMin((int)(cacheRangeStartX + numCachedPixels), (int)inputColumns);
@@ -2305,7 +2305,7 @@ OPENCL_ENDIF()
         float density = densityCache[itemID];
         if ((density != 0.0f) && (density != 1.0f))
         {
-          density = PerceptibleReciprocal(density);
+          density = MagickSafeReciprocal(density);
           filteredPixel *= (float4) density;
           if (alpha_index != 0)
             gamma *= density;
@@ -2313,7 +2313,7 @@ OPENCL_ENDIF()
 
         if (alpha_index != 0)
         {
-          gamma = PerceptibleReciprocal(gamma);
+          gamma = MagickSafeReciprocal(gamma);
           filteredPixel.x *= gamma;
           filteredPixel.y *= gamma;
           filteredPixel.z *= gamma;
@@ -2345,7 +2345,7 @@ OPENCL_ENDIF()
     // calculate the range of input image pixels to cache
     float scale = MagickMax(1.0f/yFactor+MagickEpsilon ,1.0f);
     const float support = MagickMax(scale*resizeFilterSupport,0.5f);
-    scale = PerceptibleReciprocal(scale);
+    scale = MagickSafeReciprocal(scale);
 
     const int cacheRangeStartY = MagickMax((int)((startY+0.5f)/yFactor+MagickEpsilon-support+0.5f),(int)(0));
     const int cacheRangeEndY = MagickMin((int)(cacheRangeStartY + numCachedPixels), (int)inputRows);
@@ -2471,7 +2471,7 @@ OPENCL_ENDIF()
         float density = densityCache[itemID];
         if ((density != 0.0f) && (density != 1.0f))
         {
-          density = PerceptibleReciprocal(density);
+          density = MagickSafeReciprocal(density);
           filteredPixel *= (float4) density;
           if (alpha_index != 0)
             gamma *= density;
@@ -2479,7 +2479,7 @@ OPENCL_ENDIF()
 
         if (alpha_index != 0)
         {
-          gamma = PerceptibleReciprocal(gamma);
+          gamma = MagickSafeReciprocal(gamma);
           filteredPixel.x *= gamma;
           filteredPixel.y *= gamma;
           filteredPixel.z *= gamma;
@@ -2558,11 +2558,11 @@ OPENCL_ENDIF()
       normalize += 1.0f;
     }
 
-    normalize = PerceptibleReciprocal(normalize);
+    normalize = MagickSafeReciprocal(normalize);
 
     if ((number_channels == 4) || (number_channels == 2))
     {
-      gamma = PerceptibleReciprocal(gamma);
+      gamma = MagickSafeReciprocal(gamma);
       result.x *= gamma;
       result.y *= gamma;
       result.z *= gamma;

@@ -187,8 +187,8 @@ static MagickOffsetType GetFITSPixelExtrema(Image *image,
   if (offset == -1)
     return(-1);
   number_pixels=(MagickSizeType) image->columns*image->rows;
-  *minima=DBL_MAX;
-  *maxima=DBL_MIN;
+  *minima=MagickMaximumValue;
+  *maxima=(-MagickMaximumValue);
   for (i=0; i < (MagickOffsetType) number_pixels; i++)
   {
     pixel=GetFITSPixel(image,bits_per_pixel);
@@ -337,7 +337,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         {
           if (isspace((int) ((unsigned char) keyword[i])) != 0)
             break;
-          keyword[i]=LocaleToLowercase((int) ((unsigned char) keyword[i]));
+          keyword[i]=(char) LocaleToLowercase((int) ((unsigned char) keyword[i]));
         }
         keyword[i]='\0';
         count=ReadBlob(image,72,(unsigned char *) value);
@@ -471,7 +471,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       /*
         Convert FITS pixels to pixel packets.
       */
-      scale=(double) QuantumRange*PerceptibleReciprocal(fits_info.max_data-
+      scale=(double) QuantumRange*MagickSafeReciprocal(fits_info.max_data-
         fits_info.min_data);
       for (y=(ssize_t) image->rows-1; y >= 0; y--)
       {
@@ -792,7 +792,7 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
     (void) FormatLocaleString(header,FITSBlocksize,"HISTORY %.72s",
       MagickAuthoritativeURL);
     offset+=CopyFITSRecord(fits_info,header,offset);
-    (void) strncpy(header,"END",FITSBlocksize);
+    (void) CopyMagickString(header,"END",FITSBlocksize);
     offset+=CopyFITSRecord(fits_info,header,offset);
     (void) WriteBlob(image,FITSBlocksize,(unsigned char *) fits_info);
     /*

@@ -1207,10 +1207,10 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
   { double scale;
 #if FILTER_LUT
     /* scale so that F = WLUT_WIDTH; -- hardcoded */
-    scale=(double) WLUT_WIDTH*PerceptibleReciprocal(F);
+    scale=(double) WLUT_WIDTH*MagickSafeReciprocal(F);
 #else
     /* scale so that F = resample_filter->F (support^2) */
-    scale=resample_filter->F*PerceptibleReciprocal(F);
+    scale=resample_filter->F*MagickSafeReciprocal(F);
 #endif
     resample_filter->A = A*scale;
     resample_filter->B = B*scale;

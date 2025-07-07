@@ -342,10 +342,10 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
     (void) CloneString(&annotate->text,textlist[i]);
     if ((metrics.width == 0) || (annotate->gravity != NorthWestGravity))
       (void) GetTypeMetrics(image,annotate,&metrics,exception);
-    height=CastDoubleToUnsigned(metrics.ascent-metrics.descent+0.5);
+    height=CastDoubleToSizeT(metrics.ascent-metrics.descent+0.5);
     if (height == 0)
-      height=draw_info->pointsize;
-    height=CastDoubleToUnsigned(floor((double) height+
+      height=(size_t) draw_info->pointsize;
+    height=CastDoubleToSizeT(floor((double) height+
       draw_info->interline_spacing+0.5));
     switch (annotate->gravity)
     {
@@ -623,8 +623,8 @@ static inline char *ReplaceSpaceWithNewline(char **caption,char *space)
       if (offset >= 0)
         {
           target=AcquireString(*caption);
-          CopyMagickString(target,*caption,(size_t) offset+2);
-          ConcatenateMagickString(target,space+octets,length);
+          (void) CopyMagickString(target,*caption,(size_t) offset+2);
+          (void) ConcatenateMagickString(target,space+octets,length);
           (void) DestroyString(*caption);
           *caption=target;
           space=(*caption)+offset;
@@ -680,7 +680,7 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
     status=GetTypeMetrics(image,draw_info,metrics,exception);
     if (status == MagickFalse)
       break;
-    width=CastDoubleToUnsigned(metrics->width+draw_info->stroke_width+0.5);
+    width=CastDoubleToSizeT(metrics->width+draw_info->stroke_width+0.5);
     if (width <= image->columns)
       continue;
     if (s != (char *) NULL)
@@ -698,9 +698,9 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
                 *target;
 
               target=AcquireString(*caption);
-              CopyMagickString(target,*caption,(size_t) n+1);
-              ConcatenateMagickString(target,"\n",strlen(*caption)+1);
-              ConcatenateMagickString(target,p,strlen(*caption)+2);
+              (void) CopyMagickString(target,*caption,(size_t) n+1);
+              (void) ConcatenateMagickString(target,"\n",strlen(*caption)+1);
+              (void) ConcatenateMagickString(target,p,strlen(*caption)+2);
               (void) DestroyString(*caption);
               *caption=target;
               p=(*caption)+n;
@@ -1771,9 +1771,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   metrics->bounds.x2=metrics->ascent+metrics->descent;
   metrics->bounds.y2=metrics->ascent+metrics->descent;
   metrics->underline_position=face->underline_position*
-    (metrics->pixels_per_em.x*PerceptibleReciprocal(face->units_per_EM));
+    (metrics->pixels_per_em.x*MagickSafeReciprocal(face->units_per_EM));
   metrics->underline_thickness=face->underline_thickness*
-    (metrics->pixels_per_em.x*PerceptibleReciprocal(face->units_per_EM));
+    (metrics->pixels_per_em.x*MagickSafeReciprocal(face->units_per_EM));
   first_glyph_id=0;
   FT_Get_First_Char(face,&first_glyph_id);
   if ((draw_info->text == (char *) NULL) || (*draw_info->text == '\0') ||
@@ -1975,8 +1975,8 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
 
           if (status == MagickFalse)
             continue;
-          x_offset=CastDoubleToLong(ceil(point.x-0.5));
-          y_offset=CastDoubleToLong(ceil(point.y+y-0.5));
+          x_offset=CastDoubleToSsizeT(ceil(point.x-0.5));
+          y_offset=CastDoubleToSsizeT(ceil(point.y+y-0.5));
           if ((y_offset < 0) || (y_offset >= (ssize_t) image->rows))
             continue;
           q=(Quantum *) NULL;
@@ -1991,7 +1991,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
           n=y*bitmap->bitmap.pitch;
           for (x=0; x < (ssize_t) bitmap->bitmap.width; x++, n++)
           {
-            x_offset=CastDoubleToLong(ceil(point.x+x-0.5));
+            x_offset=CastDoubleToSsizeT(ceil(point.x+x-0.5));
             if ((x_offset < 0) || (x_offset >= (ssize_t) image->columns))
               {
                 if (q != (Quantum *) NULL)
@@ -2033,7 +2033,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
                 Sa=fill_opacity;
                 fill_opacity=(1.0-RoundToUnity(Sa+Da-Sa*Da))*(double)
                   QuantumRange;
-                SetPixelAlpha(image,fill_opacity,q);
+                SetPixelAlpha(image,(const Quantum) fill_opacity,q);
               }
             if (active == MagickFalse)
               {
@@ -2066,7 +2066,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       }
     if ((fabs(draw_info->interword_spacing) >= MagickEpsilon) &&
         (IsUTFSpace(GetUTFCode(p+grapheme[i].cluster)) != MagickFalse) &&
-        (IsUTFSpace(code) == MagickFalse))
+        (IsUTFSpace((int) code) == MagickFalse))
       origin.x+=(FT_Pos) (64.0*draw_info->interword_spacing);
     else
       if (i == last_character)
@@ -2348,7 +2348,7 @@ static MagickBooleanType RenderPostscript(Image *image,
       crop_info=GetImageBoundingBox(annotate_image,exception);
       crop_info.height=(size_t) ((resolution.y/DefaultResolution)*
         ExpandAffine(&draw_info->affine)*draw_info->pointsize+0.5);
-      crop_info.y=CastDoubleToLong(ceil((resolution.y/DefaultResolution)*
+      crop_info.y=CastDoubleToSsizeT(ceil((resolution.y/DefaultResolution)*
         extent.y/8.0-0.5));
       (void) FormatLocaleString(geometry,MagickPathExtent,
         "%.20gx%.20g%+.20g%+.20g",(double) crop_info.width,(double)
@@ -2423,9 +2423,9 @@ static MagickBooleanType RenderPostscript(Image *image,
           GetFillColor(draw_info,x,y,&fill_color,exception);
           SetPixelAlpha(annotate_image,ClampToQuantum((((double) QuantumScale*
             GetPixelIntensity(annotate_image,q)*fill_color.alpha))),q);
-          SetPixelRed(annotate_image,fill_color.red,q);
-          SetPixelGreen(annotate_image,fill_color.green,q);
-          SetPixelBlue(annotate_image,fill_color.blue,q);
+          SetPixelRed(annotate_image,(const Quantum) fill_color.red,q);
+          SetPixelGreen(annotate_image,(const Quantum) fill_color.green,q);
+          SetPixelBlue(annotate_image,(const Quantum) fill_color.blue,q);
           q+=(ptrdiff_t) GetPixelChannels(annotate_image);
         }
         sync=SyncCacheViewAuthenticPixels(annotate_view,exception);

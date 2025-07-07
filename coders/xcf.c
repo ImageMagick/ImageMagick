@@ -1156,7 +1156,6 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   size_t
     image_type,
-    precision,
     length;
 
   ssize_t
@@ -1193,12 +1192,17 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((doc_info.width > 262144) || (doc_info.height > 262144))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   doc_info.image_type=ReadBlobMSBLong(image);
-  precision=150;
   if (doc_info.version >= 4)
     {
+      size_t
+        precision;
+
       precision=ReadBlobMSBLong(image);
-      if (precision == 0)
+      if ((precision == 0) && (doc_info.version == 4))
         precision=150;
+      if ((precision == 100) && (doc_info.version < 7))
+        precision=150;
+      /* we only support 8-bit gamma integer */
       if (precision != 150)
         ThrowReaderException(CoderError,"DataStorageTypeIsNotSupported");
     }
@@ -1208,7 +1212,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->columns=doc_info.width;
   image->rows=doc_info.height;
   image_type=doc_info.image_type;
-  doc_info.file_size=GetBlobSize(image);
+  doc_info.file_size=(size_t) GetBlobSize(image);
   image->compression=NoCompression;
   image->depth=8;
   status=SetImageExtent(image,image->columns,image->rows,exception);

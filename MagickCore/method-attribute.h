@@ -28,9 +28,6 @@ extern "C" {
 #    define _MAGICKDLL_
 #  endif
 #  if defined(_MAGICKDLL_)
-#    if defined(_VISUALC_)
-#      pragma warning( disable: 4273 )  /* Disable the dll linkage warnings */
-#    endif
 #    if !defined(_MAGICKLIB_)
 #      if defined(__clang__) || defined(__GNUC__)
 #        define MagickExport __attribute__ ((dllimport))
@@ -107,7 +104,11 @@ extern "C" {
 #else
 #  define magick_alloc_size(x)  /* nothing */
 #  define magick_alloc_sizes(x,y)  /* nothing */
-#  define magick_fallthrough /* nothing */
+#  if defined(_MSC_VER)
+#    define magick_fallthrough [[fallthrough]]
+#  else
+#    define magick_fallthrough  /* nothing */
+#  endif
 #endif
 
 #if defined(__clang__) || (defined(__GNUC__) && (__GNUC__) > 4)

@@ -432,8 +432,8 @@ static void MajorAxisThreshold(const Image *component_image,
         p+=(ptrdiff_t) GetPixelChannels(component_image);
       }
     }
-    centroid.x=M10*PerceptibleReciprocal(M00);
-    centroid.y=M01*PerceptibleReciprocal(M00);
+    centroid.x=M10*MagickSafeReciprocal(M00);
+    centroid.y=M01*MagickSafeReciprocal(M00);
     for (y=0; y < (ssize_t) bounding_box.height; y++)
     {
       if (status == MagickFalse)
@@ -457,7 +457,7 @@ static void MajorAxisThreshold(const Image *component_image,
       }
     }
     component_view=DestroyCacheView(component_view);
-    object[i].metric[metric_index]=sqrt((2.0*PerceptibleReciprocal(M00))*
+    object[i].metric[metric_index]=sqrt((2.0*MagickSafeReciprocal(M00))*
       ((M20+M02)+sqrt(4.0*M11*M11+(M20-M02)*(M20-M02))));
   }
 }
@@ -531,8 +531,8 @@ static void MinorAxisThreshold(const Image *component_image,
         p+=(ptrdiff_t) GetPixelChannels(component_image);
       }
     }
-    centroid.x=M10*PerceptibleReciprocal(M00);
-    centroid.y=M01*PerceptibleReciprocal(M00);
+    centroid.x=M10*MagickSafeReciprocal(M00);
+    centroid.y=M01*MagickSafeReciprocal(M00);
     for (y=0; y < (ssize_t) bounding_box.height; y++)
     {
       if (status == MagickFalse)
@@ -556,7 +556,7 @@ static void MinorAxisThreshold(const Image *component_image,
       }
     }
     component_view=DestroyCacheView(component_view);
-    object[i].metric[metric_index]=sqrt((2.0*PerceptibleReciprocal(M00))*
+    object[i].metric[metric_index]=sqrt((2.0*MagickSafeReciprocal(M00))*
       ((M20+M02)-sqrt(4.0*M11*M11+(M20-M02)*(M20-M02))));
   }
 }
@@ -631,8 +631,8 @@ static void EccentricityThreshold(const Image *component_image,
         p+=(ptrdiff_t) GetPixelChannels(component_image);
       }
     }
-    centroid.x=M10*PerceptibleReciprocal(M00);
-    centroid.y=M01*PerceptibleReciprocal(M00);
+    centroid.x=M10*MagickSafeReciprocal(M00);
+    centroid.y=M01*MagickSafeReciprocal(M00);
     for (y=0; y < (ssize_t) bounding_box.height; y++)
     {
       if (status == MagickFalse)
@@ -656,12 +656,12 @@ static void EccentricityThreshold(const Image *component_image,
       }
     }
     component_view=DestroyCacheView(component_view);
-    ellipse_axis.x=sqrt((2.0*PerceptibleReciprocal(M00))*((M20+M02)+
+    ellipse_axis.x=sqrt((2.0*MagickSafeReciprocal(M00))*((M20+M02)+
       sqrt(4.0*M11*M11+(M20-M02)*(M20-M02))));
-    ellipse_axis.y=sqrt((2.0*PerceptibleReciprocal(M00))*((M20+M02)-
+    ellipse_axis.y=sqrt((2.0*MagickSafeReciprocal(M00))*((M20+M02)-
       sqrt(4.0*M11*M11+(M20-M02)*(M20-M02))));
     object[i].metric[metric_index]=sqrt(1.0-(ellipse_axis.y*ellipse_axis.y*
-      PerceptibleReciprocal(ellipse_axis.x*ellipse_axis.x)));
+      MagickSafeReciprocal(ellipse_axis.x*ellipse_axis.x)));
   }
 }
 
@@ -734,8 +734,8 @@ static void AngleThreshold(const Image *component_image,
         p+=(ptrdiff_t) GetPixelChannels(component_image);
       }
     }
-    centroid.x=M10*PerceptibleReciprocal(M00);
-    centroid.y=M01*PerceptibleReciprocal(M00);
+    centroid.x=M10*MagickSafeReciprocal(M00);
+    centroid.y=M01*MagickSafeReciprocal(M00);
     for (y=0; y < (ssize_t) bounding_box.height; y++)
     {
       if (status == MagickFalse)
@@ -760,7 +760,7 @@ static void AngleThreshold(const Image *component_image,
     }
     component_view=DestroyCacheView(component_view);
     object[i].metric[metric_index]=RadiansToDegrees(1.0/2.0*atan(2.0*M11*
-      PerceptibleReciprocal(M20-M02)));
+      MagickSafeReciprocal(M20-M02)));
     if (fabs(M11) < 0.0)
         {
           if ((fabs(M20-M02) >= 0.0) && ((M20-M02) < 0.0))
@@ -1121,7 +1121,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       /*
         Merge any object not within the min and max area threshold.
       */
-      (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
+      (void) MagickSscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
       for (i=0; i < (ssize_t) component_image->colors; i++)
         if (((object[i].area < min_threshold) ||
              (object[i].area >= max_threshold)) && (i != background_id))
@@ -1289,7 +1289,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       /*
         Merge any object not within the min and max perimeter threshold.
       */
-      (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
+      (void) MagickSscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
       metrics[++n]="perimeter";
       PerimeterThreshold(component_image,object,n,exception);
       for (i=0; i < (ssize_t) component_image->colors; i++)
@@ -1303,7 +1303,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       /*
         Merge any object not within the min and max circularity threshold.
       */
-      (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
+      (void) MagickSscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
       metrics[++n]="circularity";
       CircularityThreshold(component_image,object,n,exception);
       for (i=0; i < (ssize_t) component_image->colors; i++)
@@ -1317,7 +1317,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       /*
         Merge any object not within the min and max diameter threshold.
       */
-      (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
+      (void) MagickSscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
       metrics[++n]="diameter";
       for (i=0; i < (ssize_t) component_image->colors; i++)
       {
@@ -1333,7 +1333,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       /*
         Merge any object not within the min and max ellipse major threshold.
       */
-      (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
+      (void) MagickSscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
       metrics[++n]="major-axis";
       MajorAxisThreshold(component_image,object,n,exception);
       for (i=0; i < (ssize_t) component_image->colors; i++)
@@ -1347,7 +1347,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       /*
         Merge any object not within the min and max ellipse minor threshold.
       */
-      (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
+      (void) MagickSscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
       metrics[++n]="minor-axis";
       MinorAxisThreshold(component_image,object,n,exception);
       for (i=0; i < (ssize_t) component_image->colors; i++)
@@ -1361,7 +1361,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       /*
         Merge any object not within the min and max eccentricity threshold.
       */
-      (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
+      (void) MagickSscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
       metrics[++n]="eccentricity";
       EccentricityThreshold(component_image,object,n,exception);
       for (i=0; i < (ssize_t) component_image->colors; i++)
@@ -1375,7 +1375,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       /*
         Merge any object not within the min and max ellipse angle threshold.
       */
-      (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
+      (void) MagickSscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
       metrics[++n]="angle";
       AngleThreshold(component_image,object,n,exception);
       for (i=0; i < (ssize_t) component_image->colors; i++)

@@ -3119,8 +3119,8 @@ should never be deallocated by the user.</font></td>
       <center><a name="readPixels"></a> <font size="-1">readPixels</font></center>
       </td>
       <td><font size="-1">void</font></td>
-      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Enumerations.html#QuantumTypes">QuantumTypes</a>
-quantum_, unsigned char *source_,</font></td>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Enumerations.html#QuantumTypes">QuantumType</a>
+quantum_, const unsigned char *source_,</font></td>
       <td><font size="-1">Transfers one or more pixel components from a
 buffer or file into the image pixel cache of an image. ReadPixels is
 typically used to support image decoders. The region transferred
@@ -3131,7 +3131,7 @@ corresponds to the region set by a preceding setPixels call.</font></td>
       <center><a name="writePixels"></a> <font size="-1">writePixels</font></center>
       </td>
       <td><font size="-1">void</font></td>
-      <td><font size="-1"><a href="https://imagemagick.org/Magick++/Enumerations.html#QuantumTypes">QuantumTypes</a>
+      <td><font size="-1">const <a href="https://imagemagick.org/Magick++/Enumerations.html#QuantumTypes">QuantumType</a>
 quantum_, unsigned char *destination_</font></td>
       <td><font size="-1">Transfers one or more pixel components from
 the image pixel cache to a buffer or file. WritePixels is typically

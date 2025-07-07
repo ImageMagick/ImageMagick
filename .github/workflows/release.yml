@@ -15,9 +15,9 @@ name: release
 jobs:
   create_app_image:
     name: Create AppImage
-    runs-on: ubuntu-latest
     container:
-      image: ubuntu:20.04
+      image: ubuntu:22.04
+    runs-on: ubuntu-24.04
 
     strategy:
       matrix:
@@ -35,13 +35,8 @@ jobs:
       run: |
         set -e
         export DEBIAN_FRONTEND=noninteractive
-        apt update -y
-        apt install -y autoconf curl fuse git kmod libbz2-dev libdjvulibre-dev libfontconfig-dev libfreetype6-dev libfribidi-dev libharfbuzz-dev liblcms-dev libopenexr-dev libopenjp2-7-dev libturbojpeg0-dev liblqr-dev libraqm-dev libtiff-dev libwebp-dev libx11-dev libxml2-dev liblzma-dev make software-properties-common wget ${{ matrix.packages }}
-        add-apt-repository ppa:git-core/ppa -y
-        apt install -y git
-        add-apt-repository ppa:strukturag/libheif -y
-        add-apt-repository ppa:strukturag/libde265 -y
-        apt install libheif-dev -y
+        apt-get update -y
+        apt-get install -y autoconf curl file fuse git kmod libbz2-dev libdjvulibre-dev libfontconfig-dev libfreetype6-dev libfribidi-dev libharfbuzz-dev libheif-dev liblcms-dev libopenexr-dev libopenjp2-7-dev libturbojpeg0-dev liblqr-dev libraqm-dev libtiff-dev libwebp-dev libx11-dev libxml2-dev liblzma-dev make software-properties-common wget ${{ matrix.packages }}
 
     - name: Checkout
       uses: actions/checkout@v4
@@ -132,18 +127,11 @@ jobs:
         cd ImageMagick-Windows
         CloneRepositories.IM7.cmd
 
-    - name: Build configure
-      shell: cmd
-      run: |
-        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
-        cd ImageMagick-Windows\Configure
-        msbuild Configure.sln /m /t:Rebuild /p:Configuration=Release,Platform=x64
-
     - name: Configure ImageMagick
       shell: cmd
       run: |
         cd ImageMagick-Windows\Configure
-        Configure.exe /VS2022 /noWizard /noAliases /${{ matrix.hdri }} /${{ matrix.quantum }} /${{ matrix.platform }} /smtd
+        Configure.Release.x64.exe /VS2022 /noWizard /noAliases /${{ matrix.hdri }} /${{ matrix.quantum }} /${{ matrix.platform }} /smtd
 
     - name: Build ImageMagick (${{ matrix.platform }})
       shell: cmd
@@ -252,7 +240,7 @@ jobs:
     needs:
       - create_app_image
       - create_msix
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     permissions:
       contents: write

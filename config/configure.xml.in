@@ -28,7 +28,7 @@
   <configure name="EXECUTABLE_PATH" value="@EXECUTABLE_PATH@"/>
   <configure name="FEATURES" value="@MAGICK_FEATURES@"/>
   <configure name="FILTER_PATH" value="@FILTER_PATH@"/>
-  <configure name="GIT_REVISION" value="21316" />
+  <configure name="GIT_REVISION" value="@MAGICK_GIT_REVISION@" />
   <configure name="HOST" value="@host@"/>
   <configure name="INCLUDE_PATH" value="@INCLUDE_PATH@"/>
   <configure name="LDFLAGS" value="@MAGICK_LDFLAGS@"/>

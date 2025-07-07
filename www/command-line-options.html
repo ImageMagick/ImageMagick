@@ -1,10 +1,10 @@
 
 
 
-
 <!doctype html>
 <html lang="en" data-bs-theme="dark">
 <head>
+  <script src="assets/color-modes.js" ></script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ImageMagick – Command-line Options</title>
@@ -26,13 +26,11 @@
   <link type="images/png" sizes="64x64" href="../images/wand.png" rel="icon" />
   <link type="images/icon" sizes="16x16" href="../images/wand.ico" rel="shortcut icon" />
   <link href="command-line-options.html" rel="canonical" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
-  <link href="assets/magick.css" rel="stylesheet" />
-  <script src="assets/color-modes.js" ></script>
-  <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
+  <link href="assets/bootstrap.min.css" rel="stylesheet" />
   <script async src="https://localhost/cse.js?cx=006134137889097767902:turn9fku95u"> </script>
 </head>
 <body>
+  <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
   <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
     <symbol id="check2" viewBox="0 0 16 16">
       <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
@@ -113,7 +111,7 @@
           <a class="nav-link " href="develop.html">Develop</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
+          <a class="nav-link" rel="noopener" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
         </li>
         <li class="nav-item">
           <iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border: 0;"></iframe>
@@ -130,7 +128,7 @@
 <div class="col-lg-8 mx-auto p-4 py-md-5 text-body-secondary">
   <header class="d-flex align-items-center pb-3 mb-5 border-bottom">
     <a href="../index.html" class="d-flex align-items-center text-decoration-none">
-      <h1 class="fs-4">Command-line Options</h1>
+      <h1 class="mt-5 fs-4">Command-line Options</h1>
     </a>
   </header>
 
@@ -1721,16 +1719,74 @@ CMYKA images) and offsets are normalized (divide Flash offset by 255).</p>
 
 <p>Choices are:</p>
 
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><samp>CMY          CMYK         Gray         HCL
-HCLp         HSB          HSI          HSL
-HSV          HWB          Jzazbz       Lab
-LCHab        LCHuv        LMS          Log
-Luv          OHTA         OkLab        OkLCH
-Rec601YCbCr  Rec709YCbCr  RGB          scRGB
-sRGB         Transparent  xyY          XYZ
-YCbCr        YCC          YDbDr        YIQ
-YPbPr        YUV          Undefined
-</samp></pre>
+<table class="table table-sm table-hover table-striped table-responsive">
+  <tr>
+    <td>Adobe98</td>
+    <td>CIELab</td>
+    <td>DisplayP3</td>
+    <td>HSL</td>
+  </tr>
+  <tr>
+    <td>CAT02LMS</td>
+    <td>CMY</td>
+    <td>CMYK</td>
+    <td>Gray</td>
+  </tr>
+  <tr>
+    <td>HCL</td>
+    <td>HCLp</td>
+    <td>HSB</td>
+    <td>HSI</td>
+  </tr>
+  <tr>
+    <td>HSV</td>
+    <td>HWB</td>
+    <td>Jzazbz</td>
+    <td>Lab</td>
+  </tr>
+  <tr>
+    <td>LCH</td>
+    <td>LCHab</td>
+    <td>LCHuv</td>
+    <td>LinearGray</td>
+  </tr>
+  <tr>
+    <td>LMS</td>
+    <td>Log</td>
+    <td>Luv</td>
+    <td>OHTA</td>
+  </tr>
+  <tr>
+    <td>Oklab</td>
+    <td>Oklch</td>
+    <td>ProPhoto</td>
+    <td>Rec601YCbCr</td>
+  </tr>
+  <tr>
+    <td>Rec709YCbCr</td>
+    <td>RGB</td>
+    <td>scRGB</td>
+    <td>sRGB</td>
+  </tr>
+  <tr>
+    <td>Transparent</td>
+    <td>xyY</td>
+    <td>XYZ</td>
+    <td>YCbCr</td>
+  </tr>
+  <tr>
+    <td>YDbDr</td>
+    <td>YCC</td>
+    <td>YIQ</td>
+    <td>YPbPr</td>
+  </tr>
+  <tr>
+    <td>YUV</td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+</table>
 
 <p>To print a complete list of colorspaces, use <a href="#list">-list colorspace</a>.</p>
 
@@ -3326,7 +3382,7 @@ calculations, to the full range by multiplying by <var>QuantumRange</var>.)</p>
   <col width="75%" />
   <thead>
   <tr>
-  <th><var>operator</var></th>
+  <th>Operator</th>
   <th>Summary (see further below for details)</th>
   </tr>
   </thead>
@@ -3340,15 +3396,20 @@ calculations, to the full range by multiplying by <var>QuantumRange</var>.)</p>
     <tr><td>Divide  </td>         <td>Divide pixels by <var>value</var>.</td></tr>
     <tr><td>Exp  </td>            <td>base-e exponential function</td></tr>
     <tr><td>Exponential  </td>            <td>base-e exponential function</td></tr>
+   <tr><td>Gaussian-noise</td><td> </td></tr>
+   <tr><td>Impulse-noise</td><td> </td></tr>
     <tr><td>InverseLog  </td>            <td>Apply inverse scaled logarithm to normalized pixels.</td></tr>
+   <tr><td>Laplacian-noise</td><td> </td></tr>
     <tr><td>LeftShift </td>       <td>Shift the pixel values left by <var>value</var> bits (i.e., multiply pixels by 2<sup><var>value</var></sup>).</td></tr>
     <tr><td>Log  </td>            <td>Apply scaled logarithm to normalized pixels.</td></tr>
     <tr><td>Max  </td>            <td>Set pixels to maximum of <var>value</var> and current pixel <var>value</var> (i.e. set any pixels currently less than <var>value</var> to <var>value</var>).</td></tr>
     <tr><td>Mean  </td>            <td>Add the <var>value</var> and divide by 2.</td></tr>
     <tr><td>Median  </td>          <td>Choose the median value from an image sequence.</td></tr>
     <tr><td>Min  </td>            <td>Set pixels to minimum of <var>value</var> and current pixel <var>value</var> (i.e. set any pixels currently greater than <var>value</var> to <var>value</var>).</td></tr>
+   <tr><td>Multiplicative-noise</td>      <td>(These are equivalent to the corresponding <a href="#noise" >-noise</a> operators.)</td></tr>
     <tr><td>Multiply </td>        <td>Multiply pixels by <var>value</var>.</td></tr>
     <tr><td>Or  </td>             <td>Binary OR of pixels with <var>value</var>.</td></tr>
+   <tr><td>Poisson-noise</td><td> </td></tr>
     <tr><td>Pow </td>             <td>Raise normalized pixels to the power <var>value</var>.</td></tr>
     <tr><td>RightShift </td>      <td>Shift the pixel values right by <var>value</var> bits (i.e., divide pixels by 2<sup><var>value</var></sup>).</td></tr>
     <tr><td>RMS</td>            <td>Square the pixel and add the <var>value</var>.</td></tr>
@@ -3356,22 +3417,14 @@ calculations, to the full range by multiplying by <var>QuantumRange</var>.)</p>
     <tr><td>Set </td>             <td>Set pixel equal to <var>value</var>.</td></tr>
     <tr><td>Sin, Sine </td>             <td>Apply sine to pixels with frequency <var>value</var> with 50% bias added.</td></tr>
     <tr><td>Subtract </td>        <td>Subtract <var>value</var> from pixels.</td></tr>
-    <tr><td>Xor </td>             <td>Binary XOR of pixels with <var>value.</var></td></tr>
-
-    <tr><td> </td><td> </td></tr>
-
-   <tr><td>Gaussian-noise</td><td> </td></tr>
-   <tr><td>Impulse-noise</td><td> </td></tr>
-   <tr><td>Laplacian-noise</td><td> </td></tr>
-   <tr><td>Multiplicative-noise</td>      <td>(These are equivalent to the corresponding <a href="#noise" >-noise</a> operators.)</td></tr>
-   <tr><td>PoissonNoise</td><td> </td></tr>
-   <tr><td>Uniform-noise</td><td> </td></tr>
-
-    <tr><td> </td><td> </td></tr>
+    <tr><td>Sum </td>        <td></td></tr>
 
    <tr><td>Threshold </td>       <td>Threshold pixels larger than <var>value</var>.</td></tr>
    <tr><td>ThresholdBlack </td>  <td>Threshold pixels to zero values equal to or below <var>value</var>.</td></tr>
    <tr><td>ThresholdWhite </td>  <td>Threshold pixels to maximum values above <var>value</var>.  </td></tr>
+   <tr><td>Uniform-noise</td><td> </td></tr>
+    <tr><td>Xor </td>             <td>Binary XOR of pixels with <var>value.</var></td></tr>
+
  </tbody>
  </table>
 </div>
@@ -6244,7 +6297,7 @@ asymmetric since they involve 3−&gt;4 and 4−&gt;3 channel mapping.
   <h2><a class="anchor" id="quality"></a>-quality <var>value</var></h2>
 </div>
 
-<p class="magick-description">JPEG/MIFF/PNG compression level.</p>
+<p class="magick-description">control the compression quality of JPEG, PNG, HEIC, and WebP image files when you are creating or saving them. This option is important for managing the trade-off between image quality and file size.</p>
 
 <p>For the JPEG and MPEG image formats, quality is 1 (lowest image quality and
 highest compression) to 100 (best quality but least effective compression).
@@ -7646,6 +7699,8 @@ tolerated in an edge specified as a percent.  0% means no background is tolerate
 <p>Use <samp><a href="#background">-background</a> <em>background-color</em></samp> to
 identify background color surrounding the region of interest.</p>
 
+<p>Fully transparent pixels are typically treated as if they lack color or that their color is irrelevant. When comparing two pixels that are both fully transparent, they are often considered equal. This means that any attributes related to their color are disregarded in the evaluation process.</p>
+
 <div style="margin: auto;">
   <h2><a class="anchor" id="type"></a>-type <var>type</var></h2>
 </div>
@@ -7984,7 +8039,7 @@ but with strict boolean masking. </p>
 </div>
   </div>
   </main><!-- /.container -->
-  <footer class="py-5 text-center text-body-secondary bg-body-tertiary">
+  <footer class="text-center pt-5 my-5 text-body-secondary border-top">
     <div class="container-fluid">
       <a href="security-policy.html">Security</a> •
       <a href="news.html">News</a>
@@ -7997,10 +8052,10 @@ but with strict boolean masking. </p>
      <a href="support.html">Sponsor</a> •
      <a href="cite.html">Cite</a> •
      <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-     <a href="https://imagemagick.org/script/contact.php">Contact Us</a>
+     <a href="../www/https://imagemagick.org/script/contact.php">Contact Us</a>
    <br/>
-     <a href="https://github.com/imagemagick/imagemagick" target="_blank" rel="noopener" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
-     <a href="https://twitter.com/imagemagick" target="_blank" rel="noopener" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 300 300" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path d="M178.57 127.15 290.27 0h-26.46l-97.03 110.38L89.34 0H0l117.13 166.93L0 300.25h26.46l102.4-116.59 81.8 116.59h89.34M36.01 19.54H76.66l187.13 262.13h-40.66"/></svg></a>
+     <a href="https://github.com/imagemagick/imagemagick" rel="noopener" target="_blank" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
+     <a href="https://twitter.com/imagemagick" rel="noopener" target="_blank" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 300 300" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path d="M178.57 127.15 290.27 0h-26.46l-97.03 110.38L89.34 0H0l117.13 166.93L0 300.25h26.46l102.4-116.59 81.8 116.59h89.34M36.01 19.54H76.66l187.13 262.13h-40.66"/></svg></a>
     <br/>
     <small>Copyright © 1999 ImageMagick Studio LLC</small>
     </div>
@@ -8008,7 +8063,7 @@ but with strict boolean masking. </p>
 </div>
 
   <!-- Javascript assets -->
-  <script src="assets/magick.js" ></script>
+  <script src="assets/bootstrap.bundle.min.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 3rd November 2024 16:42 -->
+<!-- Magick Cache 1st March 2025 19:09 -->

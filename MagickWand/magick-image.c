@@ -52,6 +52,7 @@
 #include "MagickWand/wand.h"
 #include "MagickWand/pixel-wand-private.h"
 #include "MagickCore/image-private.h"
+#include "MagickCore/nt-base-private.h"
 
 /*
   Define declarations.
@@ -930,8 +931,8 @@ WandExport MagickBooleanType MagickBilateralBlurImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  blur_image=BilateralBlurImage(wand->images,radius,sigma,intensity_sigma,
-    spatial_sigma,wand->exception);
+  blur_image=BilateralBlurImage(wand->images,(size_t) radius,(size_t) sigma,
+    intensity_sigma,spatial_sigma,wand->exception);
   if (blur_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,blur_image);

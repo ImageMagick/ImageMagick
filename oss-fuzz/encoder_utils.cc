@@ -33,8 +33,15 @@ static int fuzzEncoderWithStringFileName(const std::string encoder,
 
     image.read(encoder + ":" + fileName);
   }
+#if defined(BUILD_MAIN)
   catch (Magick::Exception &e)
   {
+    std::cout << "Exception when reading: " << e.what() << std::endl;
   }
+#else
+  catch (Magick::Exception)
+  {
+  }
+#endif
   return(0);
 }

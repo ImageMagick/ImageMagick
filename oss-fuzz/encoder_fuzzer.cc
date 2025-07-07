@@ -34,8 +34,10 @@
 #endif
 #define FUZZ_ENCODER_INITIALIZER FUZZ_ENCODER_STRING_LITERAL_X(FUZZ_IMAGEMAGICK_INITIALIZER)
 
-static ssize_t EncoderInitializer(const uint8_t *Data,const size_t Size,Magick::Image &image)
+static ssize_t EncoderInitializer(const uint8_t *Data,const size_t magick_unused(Size),Magick::Image &image)
 {
+  magick_unreferenced(Size);
+
   if (strcmp(FUZZ_ENCODER_INITIALIZER,"interlace") == 0)
     {
       Magick::InterlaceType
@@ -83,13 +85,18 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data,size_t Size)
 
     image.read(blob);
   }
+#if defined(BUILD_MAIN)
   catch (Magick::Exception &e)
   {
-#if defined(BUILD_MAIN)
     std::cout << "Exception when reading: " << e.what() << std::endl;
-#endif
     return(0);
   }
+#else
+  catch (Magick::Exception)
+  {
+    return(0);
+  }
+#endif
 
 #if FUZZ_IMAGEMAGICK_ENCODER_WRITE || defined(BUILD_MAIN)
   try
@@ -99,12 +106,16 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data,size_t Size)
 
     image.write(&outBlob,encoder);
   }
+#if defined(BUILD_MAIN)
   catch (Magick::Exception &e)
   {
-#if defined(BUILD_MAIN)
     std::cout << "Exception when writing: " << e.what() << std::endl;
-#endif
   }
+#else
+  catch (Magick::Exception)
+  {
+  }
+#endif
 #endif
   return(0);
 }

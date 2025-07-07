@@ -201,7 +201,7 @@ static Image *ReadMACImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 if (bit == 0)
                   byte=(*p++);
-                SetPixelIndex(image,((byte & 0x80) != 0 ? 0x01 : 0x00),q);
+                SetPixelIndex(image,(Quantum) ((byte & 0x80) != 0 ? 0x01 : 0x00),q);
                 bit++;
                 byte<<=1;
                 if (bit == 8)
@@ -236,7 +236,7 @@ static Image *ReadMACImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             if (bit == 0)
               byte=(*p++);
-            SetPixelIndex(image,((byte & 0x80) != 0 ? 0x01 : 0x00),q);
+            SetPixelIndex(image,(Quantum) ((byte & 0x80) != 0 ? 0x01 : 0x00),q);
             bit++;
             byte<<=1;
             if (bit == 8)

@@ -1,10 +1,10 @@
 
 
 
-
 <!doctype html>
 <html lang="en" data-bs-theme="dark">
 <head>
+  <script src="assets/color-modes.js" ></script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ImageMagick – Architecture</title>
@@ -26,13 +26,11 @@
   <link type="images/png" sizes="64x64" href="../images/wand.png" rel="icon" />
   <link type="images/icon" sizes="16x16" href="../images/wand.ico" rel="shortcut icon" />
   <link href="architecture.html" rel="canonical" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
-  <link href="assets/magick.css" rel="stylesheet" />
-  <script src="assets/color-modes.js" ></script>
-  <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
+  <link href="assets/bootstrap.min.css" rel="stylesheet" />
   <script async src="https://localhost/cse.js?cx=006134137889097767902:turn9fku95u"> </script>
 </head>
 <body>
+  <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
   <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
     <symbol id="check2" viewBox="0 0 16 16">
       <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
@@ -113,7 +111,7 @@
           <a class="nav-link " href="develop.html">Develop</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
+          <a class="nav-link" rel="noopener" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
         </li>
         <li class="nav-item">
           <iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border: 0;"></iframe>
@@ -130,12 +128,12 @@
 <div class="col-lg-8 mx-auto p-4 py-md-5 text-body-secondary">
   <header class="d-flex align-items-center pb-3 mb-5 border-bottom">
     <a href="../index.html" class="d-flex align-items-center text-decoration-none">
-      <h1 class="fs-4">Architecture</h1>
+      <h1 class="mt-5 fs-4">Architecture</h1>
     </a>
   </header>
 
   <main class="container">
-<div> 
+<div>
 <p class="text-center"><a href="#cache">The Pixel Cache</a> • <a href="#properties">Image Properties and Profiles</a> • <a href="#multispectral">Multispectral Imagery</a> • <a href="#tera-pixel">Large Image Support</a> • <a href="#stream">Streaming Pixels</a> • <a href="#threads">Threads of Execution</a> • <a href="#distributed">Heterogeneous Distributed Processing</a> • <a href="#coders">Custom Image Coders</a> • <a href="#filters">Custom Image Filters</a></p>
 
 <p class="lead">The citizens of Oz were quite content with their benefactor, the all-powerful Wizard.  They accepted his wisdom and benevolence without ever questioning the who, why, and where of his power.  Like the citizens of Oz, if you feel comfortable that ImageMagick can help you convert, edit, or compose your images without knowing what goes on behind the curtain, feel free to skip this section.  However, if you want to know more about the software and algorithms behind ImageMagick, read on.  To fully benefit from this discussion, you should be comfortable with image nomenclature and be familiar with computer programming.</p>
@@ -215,17 +213,19 @@ if (image == (Image *) NULL)
 
 <p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to 8-bit gray image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a class="text-nowrap" href="command-line-options.html#version">-version</a> option: </p>
 
-<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>identify -version</span><span class='crtout'><br/>Version: ImageMagick 7.1.1-39 2024-05-05 Q16 https://imagemagick.org</span></code></pre></ul>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><samp>$ identify -version
+Version: ImageMagick 7.1.1-44 2025-02-20 Q16-HDRI https://imagemagick.org</samp></pre>
+
 <p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).  In most cases, the benefits of the pixel cache typically outweigh any disadvantages.</p>
 
 <h2><a class="anchor" id="authentic-pixels"></a>Access the Pixel Cache</h2>
 
 <p>Once the pixel cache is associated with an image, you typically want to get, update, or put pixels into it.  We refer to pixels inside the image region as <a href="#authentic-pixels">authentic pixels</a> and outside the region as <a href="#virtual-pixels">virtual pixels</a>.  Use these methods to access the pixels in the cache:</p>
 <ul>
-  <li><a href="api/cache.html#GetVirtualPixels">GetVirtualPixels()</a>: gets pixels that you do not intend to modify or pixels that lie outside the image region (e.g. pixel @ -1,-3)</li>
-  <li><a href="api/cache.html#GetAuthenticPixels">GetAuthenticPixels()</a>: gets pixels that you intend to modify</li>
-  <li><a href="api/cache.html#QueueAuthenticPixels">QueueAuthenticPixels()</a>: queue pixels that you intend to set</li>
-  <li><a href="api/cache.html#SyncAuthenticPixels">SyncAuthenticPixels()</a>: update the pixel cache with any modified pixels</li>
+  <li><a href="api/cache.html#GetVirtualPixels#GetVirtualPixels">GetVirtualPixels()</a>: gets pixels that you do not intend to modify or pixels that lie outside the image region (e.g. pixel @ -1,-3)</li>
+  <li><a href="api/cache.html#GetAuthenticPixels#GetAuthenticPixels">GetAuthenticPixels()</a>: gets pixels that you intend to modify</li>
+  <li><a href="api/cache.html#QueueAuthenticPixels#QueueAuthenticPixels">QueueAuthenticPixels()</a>: queue pixels that you intend to set</li>
+  <li><a href="api/cache.html#SyncAuthenticPixels#SyncAuthenticPixels">SyncAuthenticPixels()</a>: update the pixel cache with any modified pixels</li>
 </ul>
 
 <p>Here is a typical <a href="magick-core.html">MagickCore</a> code snippet for manipulating pixels in the pixel cache.  In our example, we copy pixels from the input image to the output image and decrease the intensity by 10%:</p>
@@ -265,9 +265,9 @@ if (y &lt; (ssize_t) source-&gt;rows)
   { /* an exception was thrown */ }
 </samp></pre>
 
-<p>When we first create the destination image by cloning the source image, the pixel cache pixels are not copied.  They are only copied when you signal your intentions to modify or set the pixel cache by calling <a href="api/cache.html#GetAuthenticPixels">GetAuthenticPixels()</a> or <a href="api/cache.html#QueueAuthenticPixels">QueueAuthenticPixels()</a>. Use <a href="api/cache.html#QueueAuthenticPixels">QueueAuthenticPixels()</a> if you want to set new pixel values rather than update existing ones.  You could use GetAuthenticPixels() to set pixel values but it is slightly more efficient to use QueueAuthenticPixels() instead. Finally, use <a href="api/cache.html#SyncAuthenticPixels">SyncAuthenticPixels()</a> to ensure any updated pixels are pushed to the pixel cache.</p>
+<p>When we first create the destination image by cloning the source image, the pixel cache pixels are not copied.  They are only copied when you signal your intentions to modify or set the pixel cache by calling <a href="api/cache.html#GetAuthenticPixels#GetAuthenticPixels">GetAuthenticPixels()</a> or <a href="api/cache.html#QueueAuthenticPixels#QueueAuthenticPixels">QueueAuthenticPixels()</a>. Use <a href="api/cache.html#QueueAuthenticPixels#QueueAuthenticPixels">QueueAuthenticPixels()</a> if you want to set new pixel values rather than update existing ones.  You could use GetAuthenticPixels() to set pixel values but it is slightly more efficient to use QueueAuthenticPixels() instead. Finally, use <a href="api/cache.html#SyncAuthenticPixels#SyncAuthenticPixels">SyncAuthenticPixels()</a> to ensure any updated pixels are pushed to the pixel cache.</p>
 
-<p>You can associate arbitrary content with each pixel, called <em>meta</em> content.  Use  <a href="api/cache.html#GetVirtualMetacontent">GetVirtualMetacontent()</a> (to read the content) or <a href="api/cache.html#GetAuthenticMetacontent">GetAuthenticMetacontent()</a> (to update the content) to gain access to this content.  For example, to print the metacontent, use:</p>
+<p>You can associate arbitrary content with each pixel, called <em>meta</em> content.  Use  <a href="api/cache.html#GetVirtualMetacontent#GetVirtualMetacontent">GetVirtualMetacontent()</a> (to read the content) or <a href="api/cache.html#GetAuthenticMetacontent#GetAuthenticMetacontent">GetAuthenticMetacontent()</a> (to update the content) to gain access to this content.  For example, to print the metacontent, use:</p>
 
 <pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><samp>const void
   *metacontent;
@@ -294,7 +294,7 @@ if (y &lt; (ssize_t) source-&gt;rows)
 <h2><a class="anchor" id="virtual-pixels"></a>Virtual Pixels</h2>
 
 <p>There are a plethora of image processing algorithms that require a neighborhood of pixels about a pixel of interest.  The algorithm typically includes a caveat concerning how to handle pixels around the image boundaries, known as edge pixels.  With virtual pixels, you do not need to concern yourself about special edge processing other than choosing  which virtual pixel method is most appropriate for your algorithm.</p>
- <p>Access to the virtual pixels are controlled by the <a href="api/cache.html#SetImageVirtualPixelMethod">SetImageVirtualPixelMethod()</a> method from the MagickCore API or the <a class="text-nowrap" href="command-line-options.html#virtual-pixel">-virtual-pixel</a> option from the command line.  The methods include:</p>
+ <p>Access to the virtual pixels are controlled by the <a href="api/cache.html#SetImageVirtualPixelMethod#SetImageVirtualPixelMethod">SetImageVirtualPixelMethod()</a> method from the MagickCore API or the <a class="text-nowrap" href="command-line-options.html#virtual-pixel">-virtual-pixel</a> option from the command line.  The methods include:</p>
 
 <div>
 <table class="table table-sm table-hover table-striped table-responsive">
@@ -425,7 +425,7 @@ Resource limits:
   Time: unlimited
 </samp></pre>
 
-<p>You can set these limits either as a <a href="security-policy.html">security policy</a> (see <a href="https://imagemagick.org/source/policy-open.xml">policy.xml</a>), with an <a href="resources.html#environment">environment variable</a>, with the <a href="command-line-options.html#limit">-limit</a> command line option, or with the <a href="api/resource.html#SetMagickResourceLimit">SetMagickResourceLimit()</a> MagickCore API method. As an example, our online web interface to ImageMagick, <a href="../index.html">MagickStudio</a>, includes these policy limits to help prevent a denial-of-service:</p>
+<p>You can set these limits either as a <a href="security-policy.html">security policy</a> (see <a href="https://imagemagick.org/source/policy-open.xml">policy.xml</a>), with an <a href="resources.html#environment">environment variable</a>, with the <a href="command-line-options.html#limit">-limit</a> command line option, or with the <a href="api/resource.html#SetMagickResourceLimit#SetMagickResourceLimit">SetMagickResourceLimit()</a> MagickCore API method. As an example, our online web interface to ImageMagick, <a href="../index.html">MagickStudio</a>, includes these policy limits to help prevent a denial-of-service:</p>
 <pre class="pre-scrollable p-3 mb-2 text-body-secondary bg-body-tertiary"><code>&lt;?xml version="1.0" encoding="UTF-8"?>
 &lt;!DOCTYPE policymap [
 &lt;!ELEMENT policymap (policy)*>
@@ -540,7 +540,7 @@ Resource limits:
 <p>To determine which type and how much resources are consumed by the pixel cache, add the <a href="command-line-options.html#debug">-debug cache</a> option to the command-line:</p>
 <pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><samp>$ magick -debug cache logo: -sharpen 3x2 null:
 2016-12-17T13:33:42-05:00 0:00.000 0.000u 7.0.0 Cache magick: cache.c/DestroyPixelCache/1275/Cache
-  destroy 
+  destroy
 2016-12-17T13:33:42-05:00 0:00.000 0.000u 7.0.0 Cache magick: cache.c/OpenPixelCache/3834/Cache
   open LOGO[0] (Heap Memory, 640x480x4 4.688MiB)
 2016-12-17T13:33:42-05:00 0:00.010 0.000u 7.0.0 Cache magick: cache.c/OpenPixelCache/3834/Cache
@@ -641,7 +641,7 @@ magick image.mpc -crop 100x100+200+0 +repage 3.png
 <pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><samp>(void) printf("image width: %lu, height: %lu\n",image-&gt;columns,image-&gt;rows);
 </samp></pre>
 
-<p>For a great majority of image properties, such as an image comment or description, we use the <a href="api/property.html#GetImageProperty">GetImageProperty()</a> and <a href="api/property.html#SetImageProperty">SetImageProperty()</a> methods.  Here we set a property and fetch it right back:</p>
+<p>For a great majority of image properties, such as an image comment or description, we use the <a href="api/property.html#GetImageProperty#GetImageProperty">GetImageProperty()</a> and <a href="api/property.html#SetImageProperty#SetImageProperty">SetImageProperty()</a> methods.  Here we set a property and fetch it right back:</p>
 <pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><samp>const char
   *comment;
 
@@ -653,7 +653,7 @@ if (comment == (const char *) NULL)
 
 <p>ImageMagick supports artifacts with the GetImageArtifact() and SetImageArtifact() methods.  Artifacts are stealth properties that are not exported to image formats (e.g. PNG).</p>
 
-<p>Image profiles are handled with <a href="api/profile.html#GetImageProfile">GetImageProfile()</a>, <a href="api/profile.html#SetImageProfile">SetImageProfile()</a>, and <a href="api/profile.html#ProfileImage">ProfileImage()</a> methods.  Here we set a profile and fetch it right back:</p>
+<p>Image profiles are handled with <a href="api/profile.html#GetImageProfile#GetImageProfile">GetImageProfile()</a>, <a href="api/profile.html#SetImageProfile#SetImageProfile">SetImageProfile()</a>, and <a href="api/profile.html#ProfileImage#ProfileImage">ProfileImage()</a> methods.  Here we set a profile and fetch it right back:</p>
 <pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><samp>StringInfo
   *profile;
 
@@ -675,7 +675,7 @@ if (profile != (StringInfo *) NULL)
 
 <p>ImageMagick provides for streaming pixels as they are read from or written to an image.  This has several advantages over the pixel cache.  The time and resources consumed by the pixel cache scale with the area of an image, whereas the pixel stream resources scale with the width of an image.  The disadvantage is the pixels must be consumed as they are streamed so there is no persistence.</p>
 
-<p>Use <a href="api/stream.html#ReadStream">ReadStream()</a> or <a href="api/stream.html#WriteStream">WriteStream()</a> with an appropriate callback method in your MagickCore program to consume the pixels as they are streaming.  Here's an abbreviated example of using ReadStream:</p>
+<p>Use <a href="api/stream.html#ReadStream#ReadStream">ReadStream()</a> or <a href="api/stream.html#WriteStream#WriteStream">WriteStream()</a> with an appropriate callback method in your MagickCore program to consume the pixels as they are streaming.  Here's an abbreviated example of using ReadStream:</p>
 <pre class="pre-scrollable p-3 mb-2 text-body-secondary bg-body-tertiary"><samp>static size_t StreamPixels(const Image *image,const void *pixels,const size_t columns)
 {
   register const Quantum
@@ -738,7 +738,7 @@ magick -limit memory 2mb -limit map 2mb -limit disk 2gb \
 
 <h2><a class="anchor" id="threads"></a>Threads of Execution</h2>
 
-<p>Many of ImageMagick's internal algorithms are threaded to take advantage of speed-ups offered by the multicore processor chips. However, you are welcome to use ImageMagick algorithms in your threads of execution with the exception of the MagickCore's GetVirtualPixels(), GetAuthenticPixels(), QueueAuthenticPixels(), or SyncAuthenticPixels() pixel cache methods.  These methods are intended for one thread of execution only with the exception of an OpenMP parallel section.  To access the pixel cache with more than one thread of execution, use a cache view.  We do this for the <a href="api/composite.html#CompositeImage">CompositeImage()</a> method, for example.  Suppose we want to composite a single source image over a different destination image in each thread of execution.  If we use GetVirtualPixels(), the results are unpredictable because multiple threads would likely be asking for different areas of the pixel cache simultaneously.  Instead we use GetCacheViewVirtualPixels() which creates a unique view for each thread of execution ensuring our program behaves properly regardless of how many threads are invoked.  The other program interfaces, such as the <a href="magick-wand.html">MagickWand API</a>, are completely thread safe so there are no special precautions for threads of execution.</p>
+<p>Many of ImageMagick's internal algorithms are threaded to take advantage of speed-ups offered by the multicore processor chips. However, you are welcome to use ImageMagick algorithms in your threads of execution with the exception of the MagickCore's GetVirtualPixels(), GetAuthenticPixels(), QueueAuthenticPixels(), or SyncAuthenticPixels() pixel cache methods.  These methods are intended for one thread of execution only with the exception of an OpenMP parallel section.  To access the pixel cache with more than one thread of execution, use a cache view.  We do this for the <a href="api/composite.html#CompositeImage#CompositeImage">CompositeImage()</a> method, for example.  Suppose we want to composite a single source image over a different destination image in each thread of execution.  If we use GetVirtualPixels(), the results are unpredictable because multiple threads would likely be asking for different areas of the pixel cache simultaneously.  Instead we use GetCacheViewVirtualPixels() which creates a unique view for each thread of execution ensuring our program behaves properly regardless of how many threads are invoked.  The other program interfaces, such as the <a href="magick-wand.html">MagickWand API</a>, are completely thread safe so there are no special precautions for threads of execution.</p>
 
 <p>Here is an MagickCore code snippet that takes advantage of threads of execution with the <a href="openmp.html">OpenMP</a> programming paradigm:</p>
 <pre class="pre-scrollable p-3 mb-2 text-body-secondary bg-body-tertiary"><samp>CacheView
@@ -1414,7 +1414,7 @@ display logo.mgk
 
 <h2><a class="anchor" id="filters"></a>Custom Image Filters</h2>
 
-<p>ImageMagick provides a convenient mechanism for adding your own custom image processing algorithms.  We call these image filters and they are invoked from the command line with the <a href="command-line-options.html#process">-process</a> option or from the MagickCore API method <a href="api/module.html#ExecuteModuleProcess">ExecuteModuleProcess()</a>.</p>
+<p>ImageMagick provides a convenient mechanism for adding your own custom image processing algorithms.  We call these image filters and they are invoked from the command line with the <a href="command-line-options.html#process">-process</a> option or from the MagickCore API method <a href="api/module.html#ExecuteModuleProcess#ExecuteModuleProcess">ExecuteModuleProcess()</a>.</p>
 
 <p>Here is a listing of a sample <a href="https://imagemagick.org/source/analyze.c">custom image filter</a>.  It computes a few statistics such as the pixel brightness and saturation mean and standard-deviation.</p>
 <pre class="pre-scrollable p-3 mb-2 text-body-secondary bg-body-tertiary"><samp>#include &lt;stdio.h>
@@ -1438,7 +1438,7 @@ display logo.mgk
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  analyzeImage() computes the brightness and saturation mean,  standard
-%  deviation, kurtosis and skewness and stores these values as attributes 
+%  deviation, kurtosis and skewness and stores these values as attributes
 %  of the image.
 %
 %  The format of the analyzeImage method is:
@@ -1693,7 +1693,7 @@ Image: logo:
 </div>
   </div>
   </main><!-- /.container -->
-  <footer class="py-5 text-center text-body-secondary bg-body-tertiary">
+  <footer class="text-center pt-5 my-5 text-body-secondary border-top">
     <div class="container-fluid">
       <a href="security-policy.html">Security</a> •
       <a href="news.html">News</a>
@@ -1706,10 +1706,10 @@ Image: logo:
      <a href="support.html">Sponsor</a> •
      <a href="cite.html">Cite</a> •
      <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-     <a href="https://imagemagick.org/script/contact.php">Contact Us</a>
+     <a href="../www/https://imagemagick.org/script/contact.php">Contact Us</a>
    <br/>
-     <a href="https://github.com/imagemagick/imagemagick" target="_blank" rel="noopener" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
-     <a href="https://twitter.com/imagemagick" target="_blank" rel="noopener" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 300 300" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path d="M178.57 127.15 290.27 0h-26.46l-97.03 110.38L89.34 0H0l117.13 166.93L0 300.25h26.46l102.4-116.59 81.8 116.59h89.34M36.01 19.54H76.66l187.13 262.13h-40.66"/></svg></a>
+     <a href="https://github.com/imagemagick/imagemagick" rel="noopener" target="_blank" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
+     <a href="https://twitter.com/imagemagick" rel="noopener" target="_blank" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 300 300" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path d="M178.57 127.15 290.27 0h-26.46l-97.03 110.38L89.34 0H0l117.13 166.93L0 300.25h26.46l102.4-116.59 81.8 116.59h89.34M36.01 19.54H76.66l187.13 262.13h-40.66"/></svg></a>
     <br/>
     <small>Copyright © 1999 ImageMagick Studio LLC</small>
     </div>
@@ -1717,7 +1717,6 @@ Image: logo:
 </div>
 
   <!-- Javascript assets -->
-  <script src="assets/magick.js" ></script>
+  <script src="assets/bootstrap.bundle.min.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 3rd November 2024 17:10 -->

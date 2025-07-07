@@ -2470,7 +2470,9 @@ if test "$with_jpeg" != 'no'; then
             AC_MSG_RESULT([no -- some components failed test])
             have_jpeg='no (failed tests)'
         else
-            JPEG_LIBS='-ljpeg'
+            if test -z "$JPEG_LIBS"; then
+              JPEG_LIBS='-ljpeg'
+            fi
             LIBS="$JPEG_LIBS $LIBS"
             AC_DEFINE([JPEG_DELEGATE],[1],[Define if you have JPEG library])
             AC_MSG_RESULT([yes])
@@ -2509,6 +2511,7 @@ fi
 
 if test "$have_jxl" = 'yes'; then
   AC_DEFINE([JXL_DELEGATE],[1],[Define if you have jpeg-xl library])
+  CFLAGS="$JXL_CFLAGS $CFLAGS"
 fi
 
 AM_CONDITIONAL([JXL_DELEGATE],[test "$have_jxl" = 'yes'])
@@ -3307,6 +3310,7 @@ LEPDelegateDefault='lepton'
 LPDelegateDefault='lp'
 LPRDelegateDefault='lpr'
 LaunchDelegateDefault='gimp'
+MKDIRDelegateDefault='mkdir'
 MrSIDDecodeDelegateDefault='mrsidgeodecode'
 MVDelegateDefault='mv'
 PCLDelegateDefault='pcl6'
@@ -3355,6 +3359,7 @@ AC_PATH_PROG([LaunchDelegate],["$LaunchDelegateDefault"],["$LaunchDelegateDefaul
 AC_PATH_PROG([MogrifyDelegate],["$MogrifyDelegateDefault"],["$MogrifyDelegateDefault"])
 AC_PATH_PROG([VIDEODecodeDelegate],["$VIDEODecodeDelegateDefault"],["$VIDEODecodeDelegateDefault"])
 AC_PATH_PROG([VIDEOEncodeDelegate],["$VIDEOEncodeDelegateDefault"],["$VIDEOEncodeDelegateDefault"])
+AC_PATH_PROG([MKDIRDelegate],["$MKDIRDelegateDefault"],["$MKDIRDelegateDefault"])
 AC_PATH_PROG([MrSIDDecodeDelegate],["$MrSIDDecodeDelegateDefault"],["$MrSIDDecodeDelegateDefault"])
 AC_PATH_PROG([MVDelegate],["$MVDelegateDefault"],["$MVDelegateDefault"])
 AC_PATH_PROG([PCLDelegate],["$PCLDelegateDefault"],["$PCLDelegateDefault"])
@@ -3458,7 +3463,7 @@ else
       ghostscript_font_dir=`echo "${PSDelegate}" | sed -e 's:/gs/.*:/gs:;s:^/::;s/./&:/;s:/:\\\\:g'`"\\fonts\\"
     fi
   else
-    # Linux / Mac OS X / Unix Build
+    # Linux / macOS / Unix Build
     for font_dir in "${prefix}/share/ghostscript/fonts/" '/usr/share/fonts/default/Type1/' '/usr/share/ghostscript/fonts/' '/usr/share/fonts/ghostscript/' '/usr/share/fonts/type1/gsfonts/' '/opt/local/share/ghostscript/fonts/' '/sw/share/ghostscript/fonts/' '/System/Library/Frameworks/Ghostscript.framework/Resources/fonts/'; do
       if test -f "${font_dir}a010013l.pfb"; then
         ghostscript_font_dir="${font_dir}"
@@ -3737,7 +3742,7 @@ AM_CONDITIONAL([ZIP_DELEGATE],[test "x$ZIP" != "x"])
 #
 # GhostPCL related configuration.
 #
-PCLColorDevice=ppmraw
+PCLColorDevice=png16malpha
 PCLCMYKDevice=pamcmyk32
 PCLMonoDevice=pbmraw
 if test -z "$PCLVersion"; then
@@ -3783,8 +3788,8 @@ AC_SUBST([PCLVersion])
 #
 # GhostXPS related configuration.
 #
-XPSColorDevice=ppmraw
-XPSCMYKDevice=bmpsep8
+XPSColorDevice=png16malpha
+XPSCMYKDevice=pamcmyk32
 XPSMonoDevice=pbmraw
 if test -z "$XPSVersion"; then
     XPSVersion='unknown'
@@ -3829,7 +3834,7 @@ AC_SUBST([XPSVersion])
 #
 # Ghostscript related configuration.
 #
-GSAlphaDevice=pngalpha
+GSAlphaDevice=png16malpha
 GSColorDevice=png16m
 GSCMYKDevice=pamcmyk32
 GSMonoDevice=pbmraw
@@ -3862,6 +3867,8 @@ if test $have_gs = 'yes'; then
     AC_MSG_CHECKING([for gs alpha device])
     if $PSDelegate -q -dBATCH -sDEVICE=$GSAlphaDevice -sOutputFile=/dev/null < /dev/null 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD; then
         :
+    elif $PSDelegate -q -dBATCH -sDEVICE=pngalpha -sOutputFile=/dev/null < /dev/null 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD; then
+        GSAlphaDevice=pngalpha
     else
         GSAlphaDevice=$GSColorDevice
     fi
@@ -4050,6 +4057,9 @@ if test "$have_openexr"    = 'yes' ; then
 fi
 if test "$have_pangocairo" = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES pangocairo"
+fi
+if test "$have_pcl"    = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES pcl"
 fi
 if test "$have_png"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES png"

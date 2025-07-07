@@ -40,8 +40,8 @@ ImageMagick release, we perform a comprehensive security assessment that
 includes memory error, thread data race detection, and continuous fuzzing to
 help prevent security vulnerabilities.
 
-The current release is ImageMagick 7.0.8-11. It runs on Linux, Windows, Mac Os
-X, iOS, Android OS, and others.  We continue to maintain the legacy release of
+The current release is ImageMagick 7.0.8-11. It runs on Linux, Windows, macOS,
+iOS, Android OS, and others.  We continue to maintain the legacy release of
 ImageMagick, version 6, at https://legacy.imagemagick.org.
 
 The authoritative ImageMagick web site is https://imagemagick.org. The

@@ -769,7 +769,7 @@ MagickExport MagickBooleanType LoadFontConfigFonts(SplayTreeInfo *type_cache,
   font_config=FcConfigGetCurrent();
   if (font_config == (FcConfig *) NULL)
     return(MagickFalse);
-  FcConfigSetRescanInterval(font_config,0);
+  (void) FcConfigSetRescanInterval(font_config,0);
   font_set=(FcFontSet *) NULL;
   object_set=FcObjectSetBuild(FC_FULLNAME,FC_FAMILY,FC_STYLE,FC_SLANT,
     FC_WIDTH,FC_WEIGHT,FC_FILE,FC_INDEX,(char *) NULL);

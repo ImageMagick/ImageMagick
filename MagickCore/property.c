@@ -446,7 +446,7 @@ static void GetIPTCProperty(const Image *image,const char *key,
     profile=GetImageProfile(image,"8bim");
   if (profile == (StringInfo *) NULL)
     return;
-  count=sscanf(key,"IPTC:%ld:%ld",&dataset,&record);
+  count=MagickSscanf(key,"IPTC:%ld:%ld",&dataset,&record);
   if (count != 2)
     return;
   attribute=(char *) NULL;
@@ -613,8 +613,8 @@ static void Get8BIMProperty(const Image *image,const char *key,
   profile=GetImageProfile(image,"8bim");
   if (profile == (StringInfo *) NULL)
     return;
-  count=(ssize_t) sscanf(key,"8BIM:%ld,%ld:%1024[^\n]\n%1024[^\n]",&start,&stop,
-    name,format);
+  count=(ssize_t) MagickSscanf(key,"8BIM:%ld,%ld:%1024[^\n]\n%1024[^\n]",
+    &start,&stop,name,format);
   if ((count != 2) && (count != 3) && (count != 4))
     return;
   if (count < 4)
@@ -3222,6 +3222,18 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
             GetMagickPrecision(),median);
           break;
         }
+      if (LocaleCompare("mime:type",property) == 0)
+        {
+          const MagickInfo
+            *magick_info;
+
+          magick_info=GetMagickInfo(image->magick,exception);
+          if ((magick_info != (const MagickInfo *) NULL) &&
+              (GetMagickMimeType(magick_info) != (const char *) NULL))
+            (void) CopyMagickString(value,GetMagickMimeType(magick_info),
+              MagickPathExtent);
+          break;
+        }
       if ((LocaleCompare("minima",property) == 0) ||
           (LocaleCompare("min",property) == 0))
         {
@@ -3359,7 +3371,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
         {
           WarnNoImageReturn("\"%%[%s]\"",property);
           (void) FormatLocaleString(value,MagickPathExtent,"%.*g",
-            GetMagickPrecision(),(double) PerceptibleReciprocal(
+            GetMagickPrecision(),(double) MagickSafeReciprocal(
               image->resolution.x)*image->columns);
           break;
         }
@@ -3367,7 +3379,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
         {
           WarnNoImageReturn("\"%%[%s]\"",property);
           (void) FormatLocaleString(value,MagickPathExtent,"%.*g",
-            GetMagickPrecision(),(double) PerceptibleReciprocal(
+            GetMagickPrecision(),(double) MagickSafeReciprocal(
               image->resolution.y)*image->rows);
           break;
         }
@@ -4493,13 +4505,13 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
             if ((flags & LessValue) != 0)
               {
                 if ((double) image->delay < floor(geometry_info.rho+0.5))
-                  image->delay=(size_t) CastDoubleToLong(
-                    floor(geometry_info.sigma+0.5));
+                  image->delay=(size_t) CastDoubleToSsizeT(floor(
+                    geometry_info.sigma+0.5));
               }
             else
               image->delay=(size_t) floor(geometry_info.rho+0.5);
           if ((flags & SigmaValue) != 0)
-            image->ticks_per_second=CastDoubleToLong(floor(
+            image->ticks_per_second=CastDoubleToSsizeT(floor(
               geometry_info.sigma+0.5));
           return(MagickTrue);
         }

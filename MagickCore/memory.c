@@ -791,7 +791,7 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
                       *memory_info->filename='\0';
                     }
                 }
-              (void) close(file);
+              (void) close_utf8(file);
             }
         }
     }
@@ -1042,29 +1042,43 @@ MagickExport void GetMagickMemoryMethods(
 %      size_t GetMaxMemoryRequest(void)
 %
 */
-MagickExport size_t GetMaxMemoryRequest(void)
+static size_t GetMaxMemoryRequestFromPolicy(void)
 {
 #define MinMemoryRequest "16MiB"
 
+  char
+    *value;
+
+  size_t
+    max=(size_t) MAGICK_SSIZE_MAX;
+
+  value=GetPolicyValue("system:max-memory-request");
+  if (value != (char *) NULL)
+    {
+      /*
+        The security policy sets a max memory request limit.
+      */
+      max=MagickMax(StringToSizeType(value,100.0),StringToSizeType(
+        MinMemoryRequest,100.0));
+      value=DestroyString(value);
+    }
+  return(MagickMin(max,(size_t) MAGICK_SSIZE_MAX));
+}
+
+MagickExport size_t GetMaxMemoryRequest(void)
+{
   if (max_memory_request == 0)
     {
-      char
-        *value;
-
+      /*
+        Setting this to unlimited before we check the policy value to avoid
+        recursive calls to GetMaxMemoryRequestFromPolicy()
+      */
       max_memory_request=(size_t) MAGICK_SSIZE_MAX;
-      value=GetPolicyValue("system:max-memory-request");
-      if (value != (char *) NULL)
-        {
-          /*
-            The security policy sets a max memory request limit.
-          */
-          max_memory_request=MagickMax(StringToSizeType(value,100.0),
-            StringToSizeType(MinMemoryRequest,100.0));
-          value=DestroyString(value);
-        }
-    }
-  return(MagickMin(max_memory_request,(size_t) MAGICK_SSIZE_MAX));
+      max_memory_request=GetMaxMemoryRequestFromPolicy();
+    } 
+  return(max_memory_request);
 }
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1083,25 +1097,31 @@ MagickExport size_t GetMaxMemoryRequest(void)
 %      size_t GetMaxProfileSize(void)
 %
 */
+static size_t GetMaxProfileSizeFromPolicy(void)
+{
+  char
+    *value;
+
+  size_t
+    max=(size_t) MAGICK_SSIZE_MAX;
+
+  value=GetPolicyValue("system:max-profile-size");
+  if (value != (char *) NULL)
+    {
+      /*
+        The security policy sets a max profile size limit.
+      */
+      max=StringToSizeType(value,100.0);
+      value=DestroyString(value);
+    }
+  return(MagickMin(max,(size_t) MAGICK_SSIZE_MAX));
+}
+
 MagickExport size_t GetMaxProfileSize(void)
 {
   if (max_profile_size == 0)
-    {
-      char
-        *value;
-
-      max_profile_size=(size_t) MAGICK_SSIZE_MAX;
-      value=GetPolicyValue("system:max-profile-size");
-      if (value != (char *) NULL)
-        {
-          /*
-            The security policy sets a max profile size limit.
-          */
-          max_profile_size=StringToSizeType(value,100.0);
-          value=DestroyString(value);
-        }
-    }
-  return(MagickMin(max_profile_size,(size_t) MAGICK_SSIZE_MAX));
+    max_profile_size=GetMaxProfileSizeFromPolicy();
+  return(max_profile_size);
 }
 
 /*
@@ -1340,29 +1360,6 @@ MagickExport void *ResetMagickMemory(void *memory,int c,const size_t size)
   while (n-- != 0)
   	*p++=(unsigned char) c;
   return(memory);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   R e s e t M a x M e m o r y R e q u e s t                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ResetMaxMemoryRequest() resets the max_memory_request value.
-%
-%  The format of the ResetMaxMemoryRequest method is:
-%
-%      void ResetMaxMemoryRequest(void)
-%
-*/
-MagickPrivate void ResetMaxMemoryRequest(void)
-{
-  max_memory_request=0;
 }
 
 /*
@@ -1617,7 +1614,7 @@ MagickExport void SetMagickMemoryMethods(
 */
 MagickPrivate void SetMaxMemoryRequest(const MagickSizeType limit)
 {
-  max_memory_request=MagickMin(limit,GetMaxMemoryRequest());
+  max_memory_request=(size_t) MagickMin(limit,GetMaxMemoryRequestFromPolicy());
 }
 
 /*
@@ -1644,7 +1641,7 @@ MagickPrivate void SetMaxMemoryRequest(const MagickSizeType limit)
 */
 MagickPrivate void SetMaxProfileSize(const MagickSizeType limit)
 {
-  max_profile_size=MagickMin(limit,GetMaxProfileSize());
+  max_profile_size=(size_t) MagickMin(limit,GetMaxProfileSizeFromPolicy());
 }
 
 /*

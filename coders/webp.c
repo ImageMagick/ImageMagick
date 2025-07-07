@@ -975,8 +975,8 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
     if (memory_info != (MemoryInfo *) NULL)
       (void) AppendValueToLinkedList(memory_info_list,memory_info);
     WebPPictureFree(&picture);
-    effective_delta=frame->delay*1000*PerceptibleReciprocal(
-      frame->ticks_per_second);
+    effective_delta=(size_t) (frame->delay*1000*MagickSafeReciprocal(
+      (double) frame->ticks_per_second));
     if (effective_delta < 10)
       effective_delta=100; /* Consistent with gif2webp */
     frame_timestamp+=effective_delta;
@@ -1148,7 +1148,7 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
     {
       configure.quality=(float) image->quality;
 #if WEBP_ENCODER_ABI_VERSION >= 0x020e
-      configure.near_lossless=(float) image->quality;
+      configure.near_lossless=(int) image->quality;
 #endif
     }
   if (image->quality >= 100)
@@ -1223,7 +1223,7 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
     if ((next != (Image *) NULL) && (image_info->adjoin != MagickFalse))
       {
         Image
-          *coalesce_image=(Image *) NULL;;
+          *coalesce_image=(Image *) NULL;
 
         while(next != (Image *) NULL)
         {

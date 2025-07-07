@@ -116,7 +116,7 @@ MagickExport MagickBooleanType AcquireUniqueFilename(char *path)
   file=AcquireUniqueFileResource(path);
   if (file == -1)
     return(MagickFalse);
-  file=close(file)-1;
+  file=close_utf8(file)-1;
   return(MagickTrue);
 }
 
@@ -215,7 +215,7 @@ MagickExport MagickBooleanType AcquireUniqueSymbolicLink(const char *source,
   source_file=open_utf8(source,O_RDONLY | O_BINARY,0);
   if (source_file == -1)
     {
-      (void) close(destination_file);
+      (void) close_utf8(destination_file);
       (void) RelinquishUniqueFileResource(destination);
       return(MagickFalse);
     }
@@ -225,8 +225,8 @@ MagickExport MagickBooleanType AcquireUniqueSymbolicLink(const char *source,
   buffer=(unsigned char *) AcquireQuantumMemory(quantum,sizeof(*buffer));
   if (buffer == (unsigned char *) NULL)
     {
-      (void) close(source_file);
-      (void) close(destination_file);
+      (void) close_utf8(source_file);
+      (void) close_utf8(destination_file);
       (void) RelinquishUniqueFileResource(destination);
       return(MagickFalse);
     }
@@ -245,8 +245,8 @@ MagickExport MagickBooleanType AcquireUniqueSymbolicLink(const char *source,
         break;
       }
   }
-  (void) close(destination_file);
-  (void) close(source_file);
+  (void) close_utf8(destination_file);
+  (void) close_utf8(source_file);
   buffer=(unsigned char *) RelinquishMagickMemory(buffer);
   return(status);
 }
@@ -386,27 +386,27 @@ MagickExport unsigned char *Base64Decode(const char *source,size_t *length)
     {
       case 0:
       {
-        decode[i]=(q-Base64) << 2;
+        decode[i]=(unsigned char)((q-Base64) << 2);
         state++;
         break;
       }
       case 1:
       {
-        decode[i++]|=(q-Base64) >> 4;
-        decode[i]=((q-Base64) & 0x0f) << 4;
+        decode[i++]|=(unsigned char)((q-Base64) >> 4);
+        decode[i]=(unsigned char)(((q-Base64) & 0x0f) << 4);
         state++;
         break;
       }
       case 2:
       {
-        decode[i++]|=(q-Base64) >> 2;
-        decode[i]=((q-Base64) & 0x03) << 6;
+        decode[i++]|=(unsigned char)((q-Base64) >> 2);
+        decode[i]=(unsigned char)(((q-Base64) & 0x03) << 6);
         state++;
         break;
       }
       case 3:
       {
-        decode[i++]|=(q-Base64);
+        decode[i++]|=(unsigned char)(q-Base64);
         state=0;
         break;
       }
@@ -1939,6 +1939,6 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
   }
   key=DestroyStringInfo(key);
   random_info=DestroyRandomInfo(random_info);
-  status=close(file);
+  status=close_utf8(file);
   return((status == -1 || i < passes) ? MagickFalse : MagickTrue);
 }

@@ -51,7 +51,7 @@ namespace MagickCore
 // Provide appropriate DLL imports/exports for Visual C++,
 // Borland C++Builder and MinGW builds.
 //
-#if defined(WIN32) && !defined(__CYGWIN__) && !defined(__MINGW32__)
+#if (defined(WIN32) || defined(_WIN32_WINNT)) && !defined(__CYGWIN__) && !defined(__MINGW32__)
 #  define MagickCplusPlusDLLSupported
 #endif
 #if defined(MagickCplusPlusDLLSupported)
@@ -70,9 +70,8 @@ namespace MagickCore
 //
 #    if defined(_VISUALC_)
 #      define MagickDLLExplicitTemplate
-#      pragma warning( disable: 4275 )
-#      pragma warning( disable: 4273 )  /* Disable the stupid dll linkage warnings */
-#      pragma warning( disable: 4251 )
+#      pragma warning(disable: 4275) /* non - DLL-interface class 'class_1' used as base for DLL-interface class 'class_2' */
+#      pragma warning(disable: 4251) /* 'type': 'type1' needs to have dll-interface to be used by clients of 'type2' */
 #    endif
 #    if !defined(MAGICKCORE_IMPLEMENTATION)
 #      if defined(__GNUC__)
@@ -97,195 +96,6 @@ namespace MagickCore
 #  else
 #    define MagickPPExport
 #    define MagickPPPrivate
-#    if defined(_MSC_VER) && defined(STATIC_MAGICK) && !defined(NOAUTOLINK_MAGICK)
-#      if defined(_DEBUG)
-#        if defined(MAGICKCORE_BZLIB_DELEGATE)
-#          pragma comment(lib, "CORE_DB_bzlib_.lib")
-#        endif
-#        if defined(MAGICKCORE_CAIRO_DELEGATE)
-#          pragma comment(lib, "CORE_DB_cairo_.lib")
-#        endif
-#        if defined(MAGICKCORE_OPENEXR_DELEGATE)
-#          pragma comment(lib, "CORE_DB_deflate_.lib")
-#          pragma comment(lib, "CORE_DB_exr_.lib")
-#        endif
-#        if defined(MAGICKCORE_FLIF_DELEGATE)
-#          pragma comment(lib, "CORE_DB_flif_.lib")
-#        endif
-#        if defined(MAGICKCORE_FREETYPE_DELEGATE)
-#          pragma comment(lib, "CORE_DB_freetype_.lib")
-#        endif
-#        if defined(MAGICKCORE_JBIG_DELEGATE)
-#          pragma comment(lib, "CORE_DB_jbig_.lib")
-#        endif
-#        if defined(MAGICKCORE_JP2_DELEGATE)
-#          pragma comment(lib, "CORE_DB_jasper_.lib")
-#        endif
-#        if defined(MAGICKCORE_JPEG_DELEGATE)
-#          pragma comment(lib, "CORE_DB_jpeg-turbo_.lib")
-#        endif
-#        if defined(MAGICKCORE_JXL_DELEGATE)
-#          pragma comment(lib, "CORE_DB_highway_.lib")
-#          pragma comment(lib, "CORE_DB_brotli_.lib")
-#          pragma comment(lib, "CORE_DB_jpeg-xl_.lib")
-#        endif
-#        if defined(MAGICKCORE_LCMS_DELEGATE)
-#          pragma comment(lib, "CORE_DB_lcms_.lib")
-#        endif
-#        if defined(MAGICKCORE_HEIC_DELEGATE)
-#          pragma comment(lib, "CORE_DB_aom_.lib")
-#          pragma comment(lib, "CORE_DB_de265_.lib")
-#          pragma comment(lib, "CORE_DB_heif_.lib")
-#        endif
-#        if defined(MAGICKCORE_LZMA_DELEGATE)
-#          pragma comment(lib, "CORE_DB_lzma_.lib")
-#        endif
-#        if defined(MAGICKCORE_RAW_R_DELEGATE)
-#          pragma comment(lib, "CORE_DB_raw_.lib")
-#        endif
-#        if defined(MAGICKCORE_RSVG_DELEGATE)
-#          pragma comment(lib, "CORE_DB_croco_.lib")
-#          pragma comment(lib, "CORE_DB_rsvg_.lib")
-#        endif
-#        if defined(MAGICKCORE_XML_DELEGATE)
-#          pragma comment(lib, "CORE_DB_xml_.lib")
-#        endif
-#        if defined(MAGICKCORE_ZIP_DELEGATE)
-#          pragma comment(lib, "CORE_DB_zip_.lib")
-#        endif
-#        if defined(MAGICKCORE_LQR_DELEGATE)
-#          pragma comment(lib, "CORE_DB_ffi_.lib")
-#          pragma comment(lib, "CORE_DB_glib_.lib")
-#          pragma comment(lib, "CORE_DB_lqr_.lib")
-#          pragma comment(lib, "winmm.lib")
-#        endif
-#        if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
-#          pragma comment(lib, "CORE_DB_openjpeg_.lib")
-#        endif
-#        if defined(MAGICKCORE_PANGOCAIRO_DELEGATE)
-#          pragma comment(lib, "CORE_DB_fribidi_.lib")
-#          pragma comment(lib, "CORE_DB_harfbuzz_.lib")
-#          pragma comment(lib, "CORE_DB_pango_.lib")
-#          pragma comment(lib, "CORE_DB_pixman_.lib")
-#        endif
-#        if defined(MAGICKCORE_PNG_DELEGATE)
-#          pragma comment(lib, "CORE_DB_png_.lib")
-#        endif
-#        if defined(MAGICKCORE_RAQM_DELEGATE)
-#          pragma comment(lib, "CORE_DB_raqm_.lib")
-#        endif
-#        if defined(MAGICKCORE_TIFF_DELEGATE)
-#          pragma comment(lib, "CORE_DB_tiff_.lib")
-#        endif
-#        if defined(MAGICKCORE_WEBP_DELEGATE)
-#          pragma comment(lib, "CORE_DB_webp_.lib")
-#        endif
-#        if defined(MAGICKCORE_ZLIB_DELEGATE)
-#          pragma comment(lib, "CORE_DB_zlib_.lib")
-#        endif
-#        pragma comment(lib, "CORE_DB_coders_.lib")
-#        pragma comment(lib, "CORE_DB_filters_.lib")
-#        pragma comment(lib, "CORE_DB_Magick++_.lib")
-#        pragma comment(lib, "CORE_DB_MagickCore_.lib")
-#        pragma comment(lib, "CORE_DB_MagickWand_.lib")
-#      else
-#        if defined(MAGICKCORE_BZLIB_DELEGATE)
-#          pragma comment(lib, "CORE_RL_bzlib_.lib")
-#        endif
-#        if defined(MAGICKCORE_CAIRO_DELEGATE)
-#          pragma comment(lib, "CORE_RL_cairo_.lib")
-#        endif
-#        if defined(MAGICKCORE_OPENEXR_DELEGATE)
-#          pragma comment(lib, "CORE_RL_deflate_.lib")
-#          pragma comment(lib, "CORE_RL_exr_.lib")
-#        endif
-#        if defined(MAGICKCORE_FLIF_DELEGATE)
-#          pragma comment(lib, "CORE_RL_flif_.lib")
-#        endif
-#        if defined(MAGICKCORE_FREETYPE_DELEGATE)
-#          pragma comment(lib, "CORE_RL_freetype_.lib")
-#        endif
-#        if defined(MAGICKCORE_JBIG_DELEGATE)
-#          pragma comment(lib, "CORE_RL_jbig_.lib")
-#        endif
-#        if defined(MAGICKCORE_JP2_DELEGATE)
-#          pragma comment(lib, "CORE_RL_jasper_.lib")
-#        endif
-#        if defined(MAGICKCORE_JPEG_DELEGATE)
-#          pragma comment(lib, "CORE_RL_jpeg-turbo_.lib")
-#        endif
-#        if defined(MAGICKCORE_JXL_DELEGATE)
-#          pragma comment(lib, "CORE_RL_highway_.lib")
-#          pragma comment(lib, "CORE_RL_brotli_.lib")
-#          pragma comment(lib, "CORE_RL_jpeg-xl_.lib")
-#        endif
-#        if defined(MAGICKCORE_LCMS_DELEGATE)
-#          pragma comment(lib, "CORE_RL_lcms_.lib")
-#        endif
-#        if defined(MAGICKCORE_HEIC_DELEGATE)
-#          pragma comment(lib, "CORE_RL_aom_.lib")
-#          pragma comment(lib, "CORE_RL_de265_.lib")
-#          pragma comment(lib, "CORE_RL_heif_.lib")
-#        endif
-#        if defined(MAGICKCORE_LZMA_DELEGATE)
-#          pragma comment(lib, "CORE_RL_lzma_.lib")
-#        endif
-#        if defined(MAGICKCORE_RAW_R_DELEGATE)
-#          pragma comment(lib, "CORE_RL_raw_.lib")
-#        endif
-#        if defined(MAGICKCORE_RSVG_DELEGATE)
-#          pragma comment(lib, "CORE_RL_croco_.lib")
-#          pragma comment(lib, "CORE_RL_rsvg_.lib")
-#        endif
-#        if defined(MAGICKCORE_XML_DELEGATE)
-#          pragma comment(lib, "CORE_RL_xml_.lib")
-#        endif
-#        if defined(MAGICKCORE_ZIP_DELEGATE)
-#          pragma comment(lib, "CORE_RL_zip_.lib")
-#        endif
-#        if defined(MAGICKCORE_LQR_DELEGATE)
-#          pragma comment(lib, "CORE_RL_ffi_.lib")
-#          pragma comment(lib, "CORE_RL_glib_.lib")
-#          pragma comment(lib, "CORE_RL_lqr_.lib")
-#          pragma comment(lib, "winmm.lib")
-#        endif
-#        if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
-#          pragma comment(lib, "CORE_RL_openjpeg_.lib")
-#        endif
-#        if defined(MAGICKCORE_PANGOCAIRO_DELEGATE)
-#          pragma comment(lib, "CORE_RL_fribidi_.lib")
-#          pragma comment(lib, "CORE_RL_harfbuzz_.lib")
-#          pragma comment(lib, "CORE_RL_pango_.lib")
-#          pragma comment(lib, "CORE_RL_pixman_.lib")
-#        endif
-#        if defined(MAGICKCORE_PNG_DELEGATE)
-#          pragma comment(lib, "CORE_RL_png_.lib")
-#        endif
-#        if defined(MAGICKCORE_RAQM_DELEGATE)
-#          pragma comment(lib, "CORE_RL_raqm_.lib")
-#        endif
-#        if defined(MAGICKCORE_TIFF_DELEGATE)
-#          pragma comment(lib, "CORE_RL_tiff_.lib")
-#        endif
-#        if defined(MAGICKCORE_WEBP_DELEGATE)
-#          pragma comment(lib, "CORE_RL_webp_.lib")
-#        endif
-#        if defined(MAGICKCORE_ZLIB_DELEGATE)
-#          pragma comment(lib, "CORE_RL_zlib_.lib")
-#        endif
-#        pragma comment(lib, "CORE_RL_coders_.lib")
-#        pragma comment(lib, "CORE_RL_filters_.lib")
-#        pragma comment(lib, "CORE_RL_Magick++_.lib")
-#        pragma comment(lib, "CORE_RL_MagickCore_.lib")
-#        pragma comment(lib, "CORE_RL_MagickWand_.lib")
-#      endif
-#      if defined(_WIN32_WCE)
-#        pragma comment(lib, "wsock32.lib")
-#      else
-#        pragma comment(lib, "ws2_32.lib")
-#      endif
-#      pragma comment(lib, "urlmon.lib")
-#    endif
 #  endif
 #else
 #  if __GNUC__ >= 4
@@ -295,10 +105,6 @@ namespace MagickCore
 #    define MagickPPExport
 #    define MagickPPPrivate
 #  endif
-#endif
-
-#if (defined(WIN32) || defined(WIN64)) && defined(_VISUALC_)
-#  pragma warning(disable : 4996) /* function deprecation warnings */
 #endif
 
 //

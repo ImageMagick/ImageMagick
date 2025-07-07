@@ -511,10 +511,14 @@ static ssize_t PrintChannelFeatures(FILE *file,const PixelChannel channel,
   "          \"average\": %.*g\n" \
   "        }\n"
 
+  char
+    *buffer;
+
   ssize_t
     n;
 
-  n=FormatLocaleFile(file,FeaturesFormat,name,
+  buffer=AcquireString((char *) NULL);
+  n=FormatLocaleString(buffer,MagickPathExtent,FeaturesFormat,name,
     PrintFeature(channel_features[channel].angular_second_moment),
     PrintFeature(channel_features[channel].contrast),
     PrintFeature(channel_features[channel].correlation),
@@ -529,6 +533,12 @@ static ssize_t PrintChannelFeatures(FILE *file,const PixelChannel channel,
     PrintFeature(channel_features[channel].measure_of_correlation_1),
     PrintFeature(channel_features[channel].measure_of_correlation_2),
     PrintFeature(channel_features[channel].maximum_correlation_coefficient));
+  (void) SubstituteString(&buffer,": -inf",": null");
+  (void) SubstituteString(&buffer,": inf",": null");
+  (void) SubstituteString(&buffer,": -nan",": null");
+  (void) SubstituteString(&buffer,": nan",": null");
+  n=FormatLocaleFile(file,"%s",buffer);
+  buffer=DestroyString(buffer);
   (void) FormatLocaleFile(file,"      }");
   if (separator != MagickFalse)
     (void) FormatLocaleFile(file,",");
@@ -714,12 +724,17 @@ static ssize_t PrintChannelStatistics(FILE *file,const PixelChannel channel,
   "\"standardDeviation\": %.*g,\n        \"kurtosis\": %.*g,\n        "\
   "\"skewness\": %.*g,\n        \"entropy\": %.*g\n      }"
 
+  char
+    *buffer;
+
   ssize_t
     n;
 
-  n=FormatLocaleFile(file,StatisticsFormat,name,GetMagickPrecision(),
-    channel_statistics[channel].minima == MagickMaximumValue ? 0.0 :
-    (double) ClampToQuantum(scale*channel_statistics[channel].minima),
+  buffer=AcquireString((char *) NULL);
+  n=FormatLocaleString(buffer,MagickPathExtent,StatisticsFormat,name,
+    GetMagickPrecision(),
+    channel_statistics[channel].minima == MagickMaximumValue ? 0.0 : (double)
+    ClampToQuantum(scale*channel_statistics[channel].minima),
     GetMagickPrecision(),
     channel_statistics[channel].maxima == -MagickMaximumValue ? 0.0 :
     (double) ClampToQuantum(scale*channel_statistics[channel].maxima),
@@ -731,6 +746,12 @@ static ssize_t PrintChannelStatistics(FILE *file,const PixelChannel channel,
     channel_statistics[channel].kurtosis,GetMagickPrecision(),
     channel_statistics[channel].skewness,GetMagickPrecision(),
     channel_statistics[channel].entropy);
+  (void) SubstituteString(&buffer,": -inf",": null");
+  (void) SubstituteString(&buffer,": inf",": null");
+  (void) SubstituteString(&buffer,": -nan",": null");
+  (void) SubstituteString(&buffer,": nan",": null");
+  n=FormatLocaleFile(file,"%s",buffer);
+  buffer=DestroyString(buffer);
   if (separator != MagickFalse)
     (void) FormatLocaleFile(file,",");
   (void) FormatLocaleFile(file,"\n");
@@ -946,6 +967,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
 
   double
     elapsed_time,
+    scale,
     user_time,
     version;
 
@@ -957,8 +979,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
 
   size_t
     depth,
-    distance,
-    scale;
+    distance;
 
   ssize_t
     i,
@@ -1136,7 +1157,6 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
   channel_moments=(ChannelMoments *) NULL;
   channel_phash=(ChannelPerceptualHash *) NULL;
   channel_features=(ChannelFeatures *) NULL;
-  scale=1;
   channel_statistics=GetImageStatistics(image,exception);
   if (channel_statistics == (ChannelStatistics *) NULL)
     return(MagickFalse);
@@ -1200,8 +1220,8 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
   (void) FormatLocaleFile(file,"    },\n");
   scale=1;
   if (image->depth <= MAGICKCORE_QUANTUM_DEPTH)
-    scale=QuantumRange/((size_t) QuantumRange >> ((size_t)
-      MAGICKCORE_QUANTUM_DEPTH-image->depth));
+    scale=(double) (QuantumRange/((size_t) QuantumRange >> ((size_t)
+      MAGICKCORE_QUANTUM_DEPTH-image->depth)));
   if (channel_statistics != (ChannelStatistics *) NULL)
     {
       (void) FormatLocaleFile(file,"    \"pixels\": %.20g,\n",

@@ -1,12 +1,12 @@
 /*
   Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
-  
+
   You may not use this file except in compliance with the License.  You may
   obtain a copy of the License at
-  
+
     https://imagemagick.org/script/license.php
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -52,14 +52,14 @@ extern "C" {
 
 static inline void ConvertAdobe98ToXYZ(const double red,const double green,
   const double blue,double *X,double *Y,double *Z)
-{ 
+{
   double
     b,
     g,
     r;
 
   /*
-    Convert Adobe '98 to XYZ colorspace. 
+    Convert Adobe '98 to XYZ colorspace.
   */
   r=QuantumScale*DecodePixelGamma((double) QuantumRange*red);
   g=QuantumScale*DecodePixelGamma((double) QuantumRange*green);
@@ -67,7 +67,7 @@ static inline void ConvertAdobe98ToXYZ(const double red,const double green,
   *X=0.57666904291013050*r+0.18555823790654630*g+0.18822864623499470*b;
   *Y=0.29734497525053605*r+0.62736356625546610*g+0.07529145849399788*b;
   *Z=0.02703136138641234*r+0.07068885253582723*g+0.99133753683763880*b;
-} 
+}
 
 static inline void ConvertXYZToRGB(const double X,const double Y,const double Z,
   double *red,double *green,double *blue)
@@ -75,11 +75,19 @@ static inline void ConvertXYZToRGB(const double X,const double Y,const double Z,
   double
     b,
     g,
+    min,
     r;
 
-  r=3.2404542*X-1.5371385*Y-0.4985314*Z;
-  g=(-0.9692660)*X+1.8760108*Y+0.0415560*Z;
-  b=0.0556434*X-0.2040259*Y+1.0572252*Z;
+  r=(3.240969941904521*X)+(-1.537383177570093*Y)+(-0.498610760293*Z);
+  g=(-0.96924363628087*X)+(1.87596750150772*Y)+(0.041555057407175*Z);
+  b=(0.055630079696993*X)+(-0.20397695888897*Y)+(1.056971514242878*Z);
+  min=MagickMin(r,MagickMin(g,b));
+  if (min < 0.0)
+    {
+      r-=min;
+      g-=min;
+      b-=min;
+    }
   *red=EncodePixelGamma((double) QuantumRange*r);
   *green=EncodePixelGamma((double) QuantumRange*g);
   *blue=EncodePixelGamma((double) QuantumRange*b);
@@ -95,6 +103,29 @@ static inline void ConvertAdobe98ToRGB(const double r,const double g,
 
   ConvertAdobe98ToXYZ(r,g,b,&X,&Y,&Z);
   ConvertXYZToRGB(X,Y,Z,red,green,blue);
+}
+
+static inline void ConvertCAT02LMSToXYZ(const double L,const double M,
+  const double S,double *X,double *Y,double *Z)
+{
+  /*
+    Convert CAT02LMS to XYZ colorspace.
+  */
+  *X=1.096123820835514*L-0.278869000218287*M+0.182745179382773*S;
+  *Y=0.454369041975359*L+0.473533154307412*M+0.072097803717229*S;
+  *Z=(-0.009627608738429)*L-0.005698031216113*M+1.015325639954543*S;
+}
+
+static inline void ConvertCAT02LMSToRGB(const double L,const double M,
+  const double S,double *R,double *G,double *B)
+{
+  double
+    X,
+    Y,
+    Z;
+
+  ConvertCAT02LMSToXYZ(L,M,S,&X,&Y,&Z);
+  ConvertXYZToRGB(X,Y,Z,R,G,B);
 }
 
 static inline void ConvertCMYKToRGB(PixelInfo *pixel)
@@ -477,7 +508,7 @@ static inline void ConvertHWBToRGB(const double hue,const double whiteness,
       *blue=(double) QuantumRange*v;
       return;
     }
-  i=CastDoubleToLong(floor(6.0*hue));
+  i=CastDoubleToSsizeT(floor(6.0*hue));
   f=6.0*hue-i;
   if ((i & 0x01) != 0)
     f=1.0-f;
@@ -499,12 +530,12 @@ static inline void ConvertHWBToRGB(const double hue,const double whiteness,
 
 static inline void ConvertLabToXYZ(const double L,const double a,const double b,
   const IlluminantType illuminant,double *X,double *Y,double *Z)
-{   
+{
   double
     x,
     y,
     z;
-    
+
   y=(L+16.0)/116.0;
   x=y+a/500.0;
   z=y-b/200.0;
@@ -576,17 +607,17 @@ static inline void ConvertLuvToXYZ(const double L,const double u,const double v,
     *Y=(double) pow((L+16.0)/116.0,3.0);
   else
     *Y=L/CIEK;
-  gamma=PerceptibleReciprocal((((52.0*L*PerceptibleReciprocal(u+13.0*L*
+  gamma=MagickSafeReciprocal((((52.0*L*MagickSafeReciprocal(u+13.0*L*
     (4.0*illuminant_tristimulus[illuminant].x/
     (illuminant_tristimulus[illuminant].x+15.0*
     illuminant_tristimulus[illuminant].y+3.0*
     illuminant_tristimulus[illuminant].z))))-1.0)/3.0)-(-1.0/3.0));
-  *X=gamma*((*Y*((39.0*L*PerceptibleReciprocal(v+13.0*L*(9.0*
+  *X=gamma*((*Y*((39.0*L*MagickSafeReciprocal(v+13.0*L*(9.0*
     illuminant_tristimulus[illuminant].y/
     (illuminant_tristimulus[illuminant].x+15.0*
     illuminant_tristimulus[illuminant].y+3.0*
     illuminant_tristimulus[illuminant].z))))-5.0))+5.0*(*Y));
-  *Z=(*X*(((52.0*L*PerceptibleReciprocal(u+13.0*L*(4.0*
+  *Z=(*X*(((52.0*L*MagickSafeReciprocal(u+13.0*L*(4.0*
     illuminant_tristimulus[illuminant].x/
     (illuminant_tristimulus[illuminant].x+15.0*
     illuminant_tristimulus[illuminant].y+3.0*
@@ -643,7 +674,7 @@ static inline void ConvertLMSToRGB(const double L,const double M,
 
 static inline void ConvertDisplayP3ToXYZ(const double red,const double green,
   const double blue,double *X,double *Y,double *Z)
-{ 
+{
   double
     b,
     g,
@@ -687,12 +718,12 @@ static inline void ConvertLuvToRGB(const double L,const double u,
 
 static inline void ConvertProPhotoToXYZ(const double red,const double green,
   const double blue,double *X,double *Y,double *Z)
-{   
+{
   double
     b,
     g,
     r;
-  
+
   /*
     Convert ProPhoto to XYZ colorspace.
   */
@@ -715,6 +746,48 @@ static inline void ConvertProPhotoToRGB(const double r,const double g,
 
   ConvertProPhotoToXYZ(r,g,b,&X,&Y,&Z);
   ConvertXYZToRGB(X,Y,Z,red,green,blue);
+}
+
+static inline void ConvertXYZToCAT02LMS(const double X,const double Y,
+  const double Z,double *L,double *M,double *S)
+{
+  *L=0.7328*X+0.4296*Y-0.1624*Z;
+  *M=(-0.7036)*X+1.6975*Y+0.0061*Z;
+  *S=0.0030*X+0.0136*Y+0.9834*Z; 
+}
+
+static inline void ConvertRGBToXYZ(const double red,const double green,
+  const double blue,double *X,double *Y,double *Z)
+{
+  double
+    b,
+    g,
+    r;
+
+  /*
+    Convert RGB to XYZ colorspace.
+  */
+  r=QuantumScale*DecodePixelGamma(red);
+  g=QuantumScale*DecodePixelGamma(green);
+  b=QuantumScale*DecodePixelGamma(blue);
+  *X=(0.4123955889674142161*r)+(0.3575834307637148171*g)+
+    (0.1804926473817015735*b);
+  *Y=(0.2125862307855955516*r)+(0.7151703037034108499*g)+
+    (0.07220049864333622685*b);
+  *Z=(0.01929721549174694484*r)+(0.1191838645808485318*g)+
+    (0.9504971251315797660*b);
+}
+
+static inline void ConvertRGBToCAT02LMS(const double R,const double G,
+  const double B,double *L,double *M,double *S)
+{
+  double
+    X,
+    Y,
+    Z;
+
+  ConvertRGBToXYZ(R,G,B,&X,&Y,&Z);
+  ConvertXYZToCAT02LMS(X,Y,Z,L,M,S);
 }
 
 static inline void ConvertRGBToCMY(const double red,const double green,
@@ -862,25 +935,6 @@ static inline void ConvertRGBToHSI(const double red,const double green,
     *hue+=1.0;
 }
 
-static inline void ConvertRGBToXYZ(const double red,const double green,
-  const double blue,double *X,double *Y,double *Z)
-{
-  double
-    b,
-    g,
-    r;
-
-  /*
-    Convert RGB to XYZ colorspace.
-  */
-  r=QuantumScale*DecodePixelGamma(red);
-  g=QuantumScale*DecodePixelGamma(green);
-  b=QuantumScale*DecodePixelGamma(blue);
-  *X=0.4124564*r+0.3575761*g+0.1804375*b;
-  *Y=0.2126729*r+0.7151522*g+0.0721750*b;
-  *Z=0.0193339*r+0.1191920*g+0.9503041*b;
-}
-
 static inline void ConvertXYZToAdobe98(const double X,const double Y,
   const double Z,double *red,double *green,double *blue)
 {
@@ -975,7 +1029,7 @@ static inline void ConvertRGBToHSV(const double red,const double green,
     else
       *hue=4.0+(QuantumScale*red-QuantumScale*green)/c;
   *hue*=60.0/360.0;
-  *saturation=c*PerceptibleReciprocal(max);
+  *saturation=c*MagickSafeReciprocal(max);
 }
 
 static inline void ConvertRGBToHWB(const double red,const double green,
@@ -1092,7 +1146,7 @@ static inline void ConvertXYZToLuv(const double X,const double Y,const double Z,
       1.0/3.0)-16.0);
   else
     *L=CIEK*(Y/illuminant_tristimulus[illuminant].y);
-  alpha=PerceptibleReciprocal(X+15.0*Y+3.0*Z);
+  alpha=MagickSafeReciprocal(X+15.0*Y+3.0*Z);
   *u=13.0*(*L)*((4.0*alpha*X)-(4.0*illuminant_tristimulus[illuminant].x/
     (illuminant_tristimulus[illuminant].x+15.0*
     illuminant_tristimulus[illuminant].y+3.0*
@@ -1211,7 +1265,7 @@ static inline void ConvertRGBToxyY(const double red,const double green,
     Z;
 
   ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
-  gamma=PerceptibleReciprocal(X+Y+Z);
+  gamma=MagickSafeReciprocal(X+Y+Z);
   *low_x=gamma*X;
   *low_y=gamma*Y;
   *cap_Y=Y;
@@ -1220,8 +1274,8 @@ static inline void ConvertRGBToxyY(const double red,const double green,
 static inline void ConvertXYZToJzazbz(const double X,const double Y,
   const double Z,const double white_luminance,double *Jz,double *az,double *bz)
 {
-#define Jzazbz_b  1.15  /* https://observablehq.com/@jrus/jzazbz */
-#define Jzazbz_g  0.66
+#define Jzazbz_b  (1.15)  /* https://observablehq.com/@jrus/jzazbz */
+#define Jzazbz_g  (0.66)  /* refactored by N. Robidoux */
 #define Jzazbz_c1  (3424.0/4096.0)
 #define Jzazbz_c2  (2413.0/128.0)
 #define Jzazbz_c3  (2392.0/128.0)
@@ -1229,78 +1283,83 @@ static inline void ConvertXYZToJzazbz(const double X,const double Y,
 #define Jzazbz_p  (1.7*2523.0/32.0)
 #define Jzazbz_d  (-0.56)
 #define Jzazbz_d0  (1.6295499532821566e-11)
+#define Jzazbz_LX  (0.41478972)
+#define Jzazbz_LY  (0.579999)
+#define Jzazbz_LZ  (0.0146480)
+#define Jzazbz_MX  (-0.2015100)
+#define Jzazbz_MY  (1.120649)
+#define Jzazbz_MZ  (0.0531008)
+#define Jzazbz_SX  (-0.0166008)
+#define Jzazbz_SY  (0.264800)
+#define Jzazbz_SZ  (0.6684799)
+#define Jzazbz_aL  (3.52400)
+#define Jzazbz_aM  (-4.066708)
+#define Jzazbz_aS  (0.542708)
+#define Jzazbz_bL  (0.199076)
+#define Jzazbz_bM  (1.096799)
+#define Jzazbz_bS  (-1.295875)
 
   double
-    gamma,
+    a,
+    b,
+    dL,
+    dM,
+    dS,
+    gL,
+    gM,
+    gS,
+    nL,
+    nM,
+    nS,
     Iz,
+    J,
+    JdI,
     L,
     Lp,
     M,
     Mp,
     S,
     Sp,
+    WLr,
     Xp,
-    Yp,
-    Zp;
+    Yp;
 
-  Xp=(Jzazbz_b*X-(Jzazbz_b-1)*Z);
-  Yp=(Jzazbz_g*Y-(Jzazbz_g-1)*X);
-  Zp=Z;
-  L=0.41478972*Xp+0.579999*Yp+0.0146480*Zp;
-  M=(-0.2015100)*Xp+1.120649*Yp+0.0531008*Zp;
-  S=(-0.0166008)*Xp+0.264800*Yp+0.6684799*Zp;
-  gamma=pow(L*PerceptibleReciprocal(white_luminance),Jzazbz_n);
-  Lp=pow((Jzazbz_c1+Jzazbz_c2*gamma)/(1.0+Jzazbz_c3*gamma),Jzazbz_p);
-  gamma=pow(M*PerceptibleReciprocal(white_luminance),Jzazbz_n);
-  Mp=pow((Jzazbz_c1+Jzazbz_c2*gamma)/(1.0+Jzazbz_c3*gamma),Jzazbz_p);
-  gamma=pow(S*PerceptibleReciprocal(white_luminance),Jzazbz_n);
-  Sp=pow((Jzazbz_c1+Jzazbz_c2*gamma)/(1.0+Jzazbz_c3*gamma),Jzazbz_p);
-  Iz=0.5*Lp+0.5*Mp;
-  *az=3.52400*Lp-4.066708*Mp+0.542708*Sp+0.5;
-  *bz=0.199076*Lp+1.096799*Mp-1.295875*Sp+0.5;
-  *Jz=((Jzazbz_d+1.0)*Iz)/(Jzazbz_d*Iz+1.0)-Jzazbz_d0;
-}
-
-static inline void ConvertJzazbzToXYZ(const double Jz,const double az,
-  const double bz,const double white_luminance,double *X,double *Y,double *Z)
-{
-  double
-    azz,
-    bzz,
-    gamma,
-    Iz,
-    L,
-    Lp,
-    M,
-    Mp,
-    S,
-    Sp,
-    Xp,
-    Yp,
-    Zp;
-
-  gamma=Jz+Jzazbz_d0;
-  Iz=gamma/(Jzazbz_d-Jzazbz_d*gamma+1.0);
-  azz=az-0.5;
-  bzz=bz-0.5;
-  Lp=Iz+0.138605043271539*azz+0.0580473161561189*bzz;
-  Mp=Iz-0.138605043271539*azz-0.0580473161561189*bzz;
-  Sp=Iz-0.0960192420263189*azz-0.811891896056039*bzz;
-  gamma=pow(Lp,1.0/Jzazbz_p);
-  L=white_luminance*pow((Jzazbz_c1-gamma)/(Jzazbz_c3*gamma-Jzazbz_c2),1.0/
-    Jzazbz_n);
-  gamma=pow(Mp,1.0/Jzazbz_p);
-  M=white_luminance*pow((Jzazbz_c1-gamma)/(Jzazbz_c3*gamma-Jzazbz_c2),1.0/
-    Jzazbz_n);
-  gamma=pow(Sp,1.0/Jzazbz_p);
-  S=white_luminance*pow((Jzazbz_c1-gamma)/(Jzazbz_c3*gamma-Jzazbz_c2),1.0/
-    Jzazbz_n);
-  Xp=1.92422643578761*L-1.00479231259537*M+0.037651404030618*S;
-  Yp=0.350316762094999*L+0.726481193931655*M-0.065384422948085*S;
-  Zp=(-0.0909828109828476)*L-0.312728290523074*M+1.52276656130526*S;
-  *X=(Xp+(Jzazbz_b-1.0)*Zp)/Jzazbz_b;
-  *Y=(Yp+(Jzazbz_g-1.0)**X)/Jzazbz_g;
-  *Z=Zp;
+  WLr=MagickSafeReciprocal(white_luminance);
+  Xp=Z+Jzazbz_b*(X-Z); /* If X and Z are vectorized, better done */
+  Yp=X+Jzazbz_g*(Y-X); /* as Xp=Jzazbz_b*X+(1.0-Jzazbz_b)*Z; etc. */
+  L=Jzazbz_LZ*Z;
+  M=Jzazbz_MZ*Z;
+  S=Jzazbz_SZ*Z;
+  L+=Jzazbz_LX*Xp;
+  M+=Jzazbz_MX*Xp;
+  S+=Jzazbz_SX*Xp;
+  L+=Jzazbz_LY*Yp;
+  M+=Jzazbz_MY*Yp;
+  S+=Jzazbz_SY*Yp;
+  gL=pow(L*WLr,Jzazbz_n);
+  gM=pow(M*WLr,Jzazbz_n);
+  gS=pow(S*WLr,Jzazbz_n);
+  nL=Jzazbz_c1+Jzazbz_c2*gL;
+  nM=Jzazbz_c1+Jzazbz_c2*gM;
+  nS=Jzazbz_c1+Jzazbz_c2*gS;
+  dL=1.0+Jzazbz_c3*gL;
+  dM=1.0+Jzazbz_c3*gM;
+  dS=1.0+Jzazbz_c3*gS;
+  Lp=pow(nL/dL,Jzazbz_p);
+  Mp=pow(nM/dM,Jzazbz_p);
+  Sp=pow(nS/dS,Jzazbz_p);
+  Iz=(Lp+Mp)*0.5;
+  JdI=Jzazbz_d*Iz;
+  J=(JdI+Iz)/(JdI+1.0)-Jzazbz_d0;
+  a=0.5+Jzazbz_aL*Lp;
+  b=0.5+Jzazbz_bL*Lp;
+  a+=Jzazbz_aM*Mp;
+  b+=Jzazbz_bM*Mp;
+  a+=Jzazbz_aS*Sp;
+  b+=Jzazbz_bS*Sp;
+  *Jz=IsNaN(J) != 0 ? 0.0 : J;
+  *az=IsNaN(a) != 0 ? 0.5 : a;
+  *bz=IsNaN(b) != 0 ? 0.5 : b;
 }
 
 static inline void ConvertRGBToJzazbz(const double red,const double green,
@@ -1314,6 +1373,95 @@ static inline void ConvertRGBToJzazbz(const double red,const double green,
 
   ConvertRGBToXYZ(red,blue,green,&X,&Y,&Z);
   ConvertXYZToJzazbz(X,Y,Z,white_luminance,Jz,az,bz);
+}
+
+static inline void ConvertJzazbzToXYZ(const double Jz,const double az,
+  const double bz,const double white_luminance,double *X,double *Y,double *Z)
+{
+#define Jzazbz_Ca  (0.138605043271539)
+#define Jzazbz_Cb  (0.0580473161561189)
+#define Jzazbz_Sa  (-0.0960192420263189)
+#define Jzazbz_Sb  (-0.811891896056039)
+#define Jzazbz_XL  (1.92422643578761)
+#define Jzazbz_XM  (-1.00479231259537)
+#define Jzazbz_XS  (0.037651404030618)
+#define Jzazbz_YL  (0.350316762094999)
+#define Jzazbz_YM  (0.726481193931655)
+#define Jzazbz_YS  (-0.065384422948085)
+#define Jzazbz_ZL  (-0.0909828109828476)
+#define Jzazbz_ZM  (-0.312728290523074)
+#define Jzazbz_ZS  (1.52276656130526)
+#define mJzazbz_c3  (-2392.0/128.0)
+
+  double
+    azz,
+    bzz,
+    C,
+    dL,
+    dM,
+    dS,
+    g,
+    gL,
+    gM,
+    gS,
+    Jnr,
+    Jpr,
+    L,
+    Lp,
+    M,
+    Mp,
+    S,
+    Sp,
+    nL,
+    nM,
+    nS,
+    Xp,
+    Zp,
+    Yp;
+
+  g=Jz+Jzazbz_d0;
+  azz=az-0.5;
+  bzz=bz-0.5;
+  C=Jzazbz_Ca*azz+Jzazbz_Cb*bzz;
+  Sp=g/(1.0+Jzazbz_d*(1.0-g));
+  Lp=Sp+C;
+  Mp=Sp-C;
+  Sp+=Jzazbz_Sa*azz;
+  Sp+=Jzazbz_Sb*bzz;
+  Jpr=1.0/Jzazbz_p;
+  gL=pow(Lp,Jpr);
+  gM=pow(Mp,Jpr);
+  gS=pow(Sp,Jpr);
+  Jnr=1.0/Jzazbz_n;
+  nL=gL-Jzazbz_c1;
+  nM=gM-Jzazbz_c1;
+  nS=gS-Jzazbz_c1;
+  dL=Jzazbz_c2+mJzazbz_c3*gL;
+  dM=Jzazbz_c2+mJzazbz_c3*gM;
+  dS=Jzazbz_c2+mJzazbz_c3*gS;
+  L=pow(nL/dL,Jnr);
+  M=pow(nM/dM,Jnr);
+  S=pow(nS/dS,Jnr);
+  L*=white_luminance;
+  M*=white_luminance;
+  S*=white_luminance;
+  Zp=Jzazbz_ZL*L;
+  Xp=Jzazbz_XL*L;
+  Yp=Jzazbz_YL*L;
+  Zp+=Jzazbz_ZM*M;
+  Xp+=Jzazbz_XM*M;
+  Yp+=Jzazbz_YM*M;
+  Zp+=Jzazbz_ZS*S;
+  Xp+=Jzazbz_XS*S;
+  Yp+=Jzazbz_YS*S;
+  Zp=IsNaN(Zp) != 0 ? 0.0 : Zp;
+  Xp=Zp+(Xp-Zp)/Jzazbz_b;  /* If Xp and Zp are vectorized, better done */
+  Xp=IsNaN(Xp) != 0 ? 0.0 : Xp;  /* as rJzazbz_b = 1.0/Jzazbz_b; */
+  Yp=Xp+(Yp-Xp)/Jzazbz_g;  /* Xp=rJzazbz_b*Xp+(1.0-rJzazbz_b)*Zp; etc. */
+  Yp=IsNaN(Yp) != 0 ? 0.0 : Yp;
+  *Z=Zp;
+  *X=Xp;
+  *Y=Yp;
 }
 
 static inline void ConvertJzazbzToRGB(const double Jz,const double az,
@@ -1332,48 +1480,64 @@ static inline void ConvertJzazbzToRGB(const double Jz,const double az,
 static inline void ConvertOklabToRGB(const double L,const double a,
   const double b,double *red,double *green,double *blue)
 {
+#define Oklab_la  (0.3963377774)
+#define Oklab_lb  (0.2158037573)
+#define Oklab_ma  (-0.1055613458)
+#define Oklab_mb  (-0.0638541728)
+#define Oklab_sa  (-0.0894841775)
+#define Oklab_sb  (-1.2914855480)
+#define Oklab_Rl  (4.0767416621)
+#define Oklab_Rm  (-3.3077115913)
+#define Oklab_Rs  (0.2309699292)
+#define Oklab_Gl  (-1.2684380046)
+#define Oklab_Gm  (2.6097574011)
+#define Oklab_Gs  (-0.3413193965)
+#define Oklab_Bl  (-0.0041960863)
+#define Oklab_Bm  (-0.7034186147)
+#define Oklab_Bs  (1.7076147010)
+
   double
+    aa,
     B,
+    bb,
+    Bl,
+    Bm,
+    Bs,
     G,
+    Gl,
+    Gm,
+    Gs,
     l,
     m,
     R,
+    Rl,
+    Rm,
+    Rs,
     s;
 
-  l=L+0.3963377774*(a-0.5)+0.2158037573*(b-0.5);
-  m=L-0.1055613458*(a-0.5)-0.0638541728*(b-0.5);
-  s=L-0.0894841775*(a-0.5)-1.2914855480*(b-0.5);
+  aa=a-0.5;
+  bb=b-0.5;
+  l=L+Oklab_la*aa+Oklab_lb*bb;
+  m=L+Oklab_ma*aa+Oklab_mb*bb;
+  s=L+Oklab_sa*aa+Oklab_sb*bb;
   l*=l*l;
   m*=m*m;
   s*=s*s;
-  R=4.0767416621*l-3.3077115913*m+0.2309699292*s;
-  G=(-1.2684380046)*l+2.6097574011*m-0.3413193965*s;
-  B=(-0.0041960863)*l-0.7034186147*m+1.7076147010*s;
-  *red=EncodePixelGamma((double) QuantumRange*R);
-  *green=EncodePixelGamma((double) QuantumRange*G);
-  *blue=EncodePixelGamma((double) QuantumRange*B);
-}
-
-static inline void ConvertRGBToOklab(const double red,const double green,
-  const double blue,double *L,double *a,double *b)
-{
-  double
-    B,
-    G,
-    l,
-    m,
-    R,
-    s;
-
-  R=QuantumScale*DecodePixelGamma(red);
-  G=QuantumScale*DecodePixelGamma(green);
-  B=QuantumScale*DecodePixelGamma(blue);
-  l=cbrt(0.4122214708*R+0.5363325363*G+0.0514459929*B);
-  m=cbrt(0.2119034982*R+0.6806995451*G+0.1073969566*B);
-  s=cbrt(0.0883024619*R+0.2817188376*G+0.6299787005*B);
-  *L=0.2104542553*l+0.7936177850*m-0.0040720468*s;
-  *a=1.9779984951*l-2.4285922050*m+0.4505937099*s+0.5;
-  *b=0.0259040371*l+0.7827717662*m-0.8086757660*s+0.5;
+  Rl=Oklab_Rl*(double) QuantumRange;  /* constant folding */
+  Rm=Oklab_Rm*(double) QuantumRange;
+  Rs=Oklab_Rs*(double) QuantumRange;
+  Gl=Oklab_Gl*(double) QuantumRange;
+  Gm=Oklab_Gm*(double) QuantumRange;
+  Gs=Oklab_Gs*(double) QuantumRange;
+  Bl=Oklab_Bl*(double) QuantumRange;
+  Bm=Oklab_Bm*(double) QuantumRange;
+  Bs=Oklab_Bs*(double) QuantumRange;
+  R=Rl*l+Rm*m+Rs*s;
+  G=Gl*l+Gm*m+Gs*s;
+  B=Bl*l+Bm*m+Bs*s;
+  *red=EncodePixelGamma(R);
+  *green=EncodePixelGamma(G);
+  *blue=EncodePixelGamma(B);
 }
 
 static inline void ConvertOklchToRGB(const double L,const double C,
@@ -1386,6 +1550,68 @@ static inline void ConvertOklchToRGB(const double L,const double C,
   a=C*cos(2.0*MagickPI*h);
   b=C*sin(2.0*MagickPI*h);
   ConvertOklabToRGB(L,a,b,red,green,blue);
+}
+
+static inline void ConvertRGBToOklab(const double red,const double green,
+  const double blue,double *L,double *a,double *b)
+{
+#define Oklab_lR  (0.4122214708)
+#define Oklab_lG  (0.5363325363)
+#define Oklab_lB  (0.0514459929)
+#define Oklab_mR  (0.2119034982)
+#define Oklab_mG  (0.6806995451)
+#define Oklab_mB  (0.1073969566)
+#define Oklab_sR  (0.0883024619)
+#define Oklab_sG  (0.2817188376)
+#define Oklab_sB  (0.6299787005)
+#define Oklab_Ll  (0.2104542553)
+#define Oklab_Lm  (0.7936177850)
+#define Oklab_Ls  (-0.0040720468)
+#define Oklab_al  (1.9779984951)
+#define Oklab_am  (-2.4285922050)
+#define Oklab_as  (0.4505937099)
+#define Oklab_bl  (0.0259040371)
+#define Oklab_bm  (0.7827717662)
+#define Oklab_bs  (-0.8086757660)
+
+  double
+    B,
+    G,
+    l,
+    lR,
+    lG,
+    lB,
+    m,
+    mR,
+    mG,
+    mB,
+    R,
+    s,
+    sR,
+    sG,
+    sB;
+
+  R=DecodePixelGamma(red);
+  G=DecodePixelGamma(green);
+  B=DecodePixelGamma(blue);
+  lR=Oklab_lR*QuantumScale;  /* constant folding */
+  lG=Oklab_lG*QuantumScale;
+  lB=Oklab_lB*QuantumScale;
+  mR=Oklab_mR*QuantumScale;
+  mG=Oklab_mG*QuantumScale;
+  mB=Oklab_mB*QuantumScale;
+  sR=Oklab_sR*QuantumScale;
+  sG=Oklab_sG*QuantumScale;
+  sB=Oklab_sB*QuantumScale;
+  l=lR*R+lG*G+lB*B;
+  m=mR*R+mG*G+mB*B;
+  s=sR*R+sG*G+sB*B;
+  l=cbrt(l);
+  m=cbrt(m);
+  s=cbrt(s);
+  *L=Oklab_Ll*l+Oklab_Lm*m+Oklab_Ls*s;
+  *a=Oklab_al*l+Oklab_am*m+Oklab_as*s+0.5;
+  *b=Oklab_bl*l+Oklab_bm*m+Oklab_bs*s+0.5;
 }
 
 static inline void ConvertRGBToOklch(const double red,const double green,
@@ -1476,9 +1702,9 @@ static inline void ConvertRGBToCMYK(PixelInfo *pixel)
     black=magenta;
   if (yellow < black)
     black=yellow;
-  cyan=(MagickRealType) (PerceptibleReciprocal(1.0-black)*(cyan-black));
-  magenta=(MagickRealType) (PerceptibleReciprocal(1.0-black)*(magenta-black));
-  yellow=(MagickRealType) (PerceptibleReciprocal(1.0-black)*(yellow-black));
+  cyan=(MagickRealType) (MagickSafeReciprocal(1.0-black)*(cyan-black));
+  magenta=(MagickRealType) (MagickSafeReciprocal(1.0-black)*(magenta-black));
+  yellow=(MagickRealType) (MagickSafeReciprocal(1.0-black)*(yellow-black));
   pixel->colorspace=CMYKColorspace;
   pixel->red=(MagickRealType) QuantumRange*cyan;
   pixel->green=(MagickRealType) QuantumRange*magenta;
@@ -1512,7 +1738,7 @@ static inline void ConvertYDbDrToRGB(const double Y,const double Db,
     0.26789932820759876*(Dr-0.5));
   *blue=(double) QuantumRange*(Y+0.66467905997895482*(Db-0.5)-
     7.9202543533108e-05*(Dr-0.5));
-}   
+}
 
 static inline void ConvertYIQToRGB(const double Y,const double I,const double Q,
   double *red,double *green,double *blue)
@@ -1534,7 +1760,7 @@ static inline void ConvertxyYToRGB(const double low_x,const double low_y,
     Y,
     Z;
 
-  gamma=PerceptibleReciprocal(low_y);
+  gamma=MagickSafeReciprocal(low_y);
   X=gamma*cap_Y*low_x;
   Y=cap_Y;
   Z=gamma*cap_Y*(1.0-low_x-low_y);

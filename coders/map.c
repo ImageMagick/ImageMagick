@@ -232,11 +232,11 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      index=ConstrainColormapIndex(image,*p,exception);
+      index=(Quantum) ConstrainColormapIndex(image,*p,exception);
       p++;
       if (image->colors > 256)
         {
-          index=ConstrainColormapIndex(image,(ssize_t) (((size_t) index << 8)+
+          index=(Quantum) ConstrainColormapIndex(image,(ssize_t) (((size_t) index << 8)+
             (size_t) (*p)),exception);
           p++;
         }
@@ -420,20 +420,20 @@ static MagickBooleanType WriteMAPImage(const ImageInfo *image_info,Image *image,
   if (image->colors <= 256)
     for (i=0; i < (ssize_t) image->colors; i++)
     {
-      *q++=(unsigned char) ScaleQuantumToChar(image->colormap[i].red);
-      *q++=(unsigned char) ScaleQuantumToChar(image->colormap[i].green);
-      *q++=(unsigned char) ScaleQuantumToChar(image->colormap[i].blue);
+      *q++=(unsigned char) ScaleQuantumToChar((Quantum) image->colormap[i].red);
+      *q++=(unsigned char) ScaleQuantumToChar((Quantum) image->colormap[i].green);
+      *q++=(unsigned char) ScaleQuantumToChar((Quantum) image->colormap[i].blue);
     }
   else
     for (i=0; i < (ssize_t) image->colors; i++)
     {
-      *q++=(unsigned char) (ScaleQuantumToShort(image->colormap[i].red) >> 8);
-      *q++=(unsigned char) (ScaleQuantumToShort(image->colormap[i].red) & 0xff);
-      *q++=(unsigned char) (ScaleQuantumToShort(image->colormap[i].green) >> 8);
-      *q++=(unsigned char) (ScaleQuantumToShort(image->colormap[i].green) &
+      *q++=(unsigned char) (ScaleQuantumToShort((Quantum) image->colormap[i].red) >> 8);
+      *q++=(unsigned char) (ScaleQuantumToShort((Quantum) image->colormap[i].red) & 0xff);
+      *q++=(unsigned char) (ScaleQuantumToShort((Quantum) image->colormap[i].green) >> 8);
+      *q++=(unsigned char) (ScaleQuantumToShort((Quantum) image->colormap[i].green) &
         0xff);
-      *q++=(unsigned char) (ScaleQuantumToShort(image->colormap[i].blue) >> 8);
-      *q++=(unsigned char) (ScaleQuantumToShort(image->colormap[i].blue) &
+      *q++=(unsigned char) (ScaleQuantumToShort((Quantum) image->colormap[i].blue) >> 8);
+      *q++=(unsigned char) (ScaleQuantumToShort((Quantum) image->colormap[i].blue) &
         0xff);
     }
   (void) WriteBlob(image,packet_size*image->colors,colormap);

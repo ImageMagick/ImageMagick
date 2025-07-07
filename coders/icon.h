@@ -20,7 +20,8 @@
 
 #define MagickICONAliases \
   MagickCoderAlias("ICON", "CUR") \
-  MagickCoderAlias("ICON", "ICO")
+  MagickCoderAlias("ICON", "ICO") \
+  MagickCoderAlias("ICON", "ICN")
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

@@ -72,16 +72,18 @@
 #include "MagickCore/splay-tree.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
+#include "MagickCore/utility-private.h"
 #include "MagickCore/version.h"
 #include "MagickCore/version-private.h"
 #undef MAGICKCORE_HAVE_DISTRIBUTE_CACHE
+#define SOCKET_TYPE int
 #if defined(MAGICKCORE_DPC_SUPPORT)
 #if defined(MAGICKCORE_HAVE_SOCKET) && defined(MAGICKCORE_THREAD_SUPPORT)
 #include <netinet/in.h>
 #include <netdb.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#define CLOSE_SOCKET(socket) (void) close(socket)
+#define CLOSE_SOCKET(socket) (void) close_utf8(socket)
 #define HANDLER_RETURN_TYPE void *
 #define HANDLER_RETURN_VALUE (void *) NULL
 #define SOCKET_TYPE int
@@ -91,6 +93,7 @@
 #define CLOSE_SOCKET(socket) (void) closesocket(socket)
 #define HANDLER_RETURN_TYPE DWORD WINAPI
 #define HANDLER_RETURN_VALUE 0
+#undef SOCKET_TYPE
 #define SOCKET_TYPE SOCKET
 #define LENGTH_TYPE int
 #define MAGICKCORE_HAVE_DISTRIBUTE_CACHE 1
@@ -144,7 +147,7 @@ static WSADATA
 */
 
 #if !defined(MAGICKCORE_HAVE_DISTRIBUTE_CACHE)
-static inline MagickOffsetType dpc_read(int magick_unused(file),
+static inline MagickOffsetType dpc_read(SOCKET_TYPE magick_unused(file),
   const MagickSizeType magick_unused(length),
   unsigned char *magick_restrict magick_unused(message))
 {
@@ -154,7 +157,7 @@ static inline MagickOffsetType dpc_read(int magick_unused(file),
   return(-1);
 }
 #else
-static inline MagickOffsetType dpc_read(int file,const MagickSizeType length,
+static inline MagickOffsetType dpc_read(SOCKET_TYPE file,const MagickSizeType length,
   unsigned char *magick_restrict message)
 {
   MagickOffsetType
@@ -292,7 +295,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
       return(-1);
     }
   nonce=StringToStringInfo(shared_secret);
-  if (GetMagickSignature(nonce) != *session_key)
+  if ((size_t) GetMagickSignature(nonce) != *session_key)
     {
       CLOSE_SOCKET(client_socket);
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
@@ -301,7 +304,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
     }
   shared_secret=DestroyString(shared_secret);
   nonce=DestroyStringInfo(nonce);
-  return(client_socket);
+  return((int) client_socket);
 }
 #endif
 
@@ -462,7 +465,7 @@ MagickPrivate DistributeCacheInfo *DestroyDistributeCacheInfo(
 */
 
 #if !defined(MAGICKCORE_HAVE_DISTRIBUTE_CACHE)
-static inline MagickOffsetType dpc_send(int magick_unused(file),
+static inline MagickOffsetType dpc_send(SOCKET_TYPE magick_unused(file),
   const MagickSizeType magick_unused(length),
   const void *magick_restrict magick_unused(message))
 {
@@ -472,7 +475,7 @@ static inline MagickOffsetType dpc_send(int magick_unused(file),
   return(-1);
 }
 #else
-static inline MagickOffsetType dpc_send(int file,const MagickSizeType length,
+static inline MagickOffsetType dpc_send(SOCKET_TYPE file,const MagickSizeType length,
   const void *magick_restrict message)
 {
   MagickOffsetType
@@ -487,7 +490,7 @@ static inline MagickOffsetType dpc_send(int file,const MagickSizeType length,
   count=0;
   for (i=0; i < (MagickOffsetType) length; i+=count)
   {
-    count=(MagickOffsetType) send(file,(char *) message+i,(LENGTH_TYPE)
+    count=(ssize_t) send(file,(char *) message+i,(LENGTH_TYPE)
       MagickMin(length-(MagickSizeType) i,(MagickSizeType) MagickMaxBufferExtent),
       MSG_NOSIGNAL);
     if (count <= 0)
@@ -522,8 +525,8 @@ static MagickBooleanType DestroyDistributeCache(SplayTreeInfo *registry,
   return(DeleteNodeFromSplayTree(registry,(const void *) key));
 }
 
-static MagickBooleanType OpenDistributeCache(SplayTreeInfo *registry,int file,
-  const size_t session_key,ExceptionInfo *exception)
+static MagickBooleanType OpenDistributeCache(SplayTreeInfo *registry,
+  SOCKET_TYPE file,const size_t session_key,ExceptionInfo *exception)
 {
   Image
     *image;
@@ -587,7 +590,7 @@ static MagickBooleanType OpenDistributeCache(SplayTreeInfo *registry,int file,
 }
 
 static MagickBooleanType ReadDistributeCacheMetacontent(SplayTreeInfo *registry,
-  int file,const size_t session_key,ExceptionInfo *exception)
+  SOCKET_TYPE file,const size_t session_key,ExceptionInfo *exception)
 {
   const Quantum
     *p;
@@ -648,7 +651,7 @@ static MagickBooleanType ReadDistributeCacheMetacontent(SplayTreeInfo *registry,
 }
 
 static MagickBooleanType ReadDistributeCachePixels(SplayTreeInfo *registry,
-  int file,const size_t session_key,ExceptionInfo *exception)
+  SOCKET_TYPE file,const size_t session_key,ExceptionInfo *exception)
 {
   const Quantum
     *p;
@@ -710,7 +713,7 @@ static void *RelinquishImageRegistry(void *image)
 }
 
 static MagickBooleanType WriteDistributeCacheMetacontent(
-  SplayTreeInfo *registry,int file,const size_t session_key,
+  SplayTreeInfo *registry,SOCKET_TYPE file,const size_t session_key,
   ExceptionInfo *exception)
 {
   Image
@@ -771,7 +774,7 @@ static MagickBooleanType WriteDistributeCacheMetacontent(
 }
 
 static MagickBooleanType WriteDistributeCachePixels(SplayTreeInfo *registry,
-  int file,const size_t session_key,ExceptionInfo *exception)
+  SOCKET_TYPE file,const size_t session_key,ExceptionInfo *exception)
 {
   Image
     *image;

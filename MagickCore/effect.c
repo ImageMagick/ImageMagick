@@ -90,6 +90,7 @@
 #include "MagickCore/thread-private.h"
 #include "MagickCore/transform.h"
 #include "MagickCore/threshold.h"
+#include "MagickCore/utility-private.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -287,7 +288,7 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
         center,
         j;
 
-      j=CastDoubleToLong(ceil((double) width*(1.0-QuantumScale*
+      j=CastDoubleToSsizeT(ceil((double) width*(1.0-QuantumScale*
         GetPixelIntensity(edge_image,r))-0.5));
       if (j < 0)
         j=0;
@@ -356,7 +357,7 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
                 pixels+=(ptrdiff_t) GetPixelChannels(image);
               }
             }
-            gamma=PerceptibleReciprocal(gamma);
+            gamma=MagickSafeReciprocal(gamma);
             SetPixelChannel(blur_image,channel,ClampToQuantum(gamma*pixel),q);
             continue;
           }
@@ -374,7 +375,7 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
             pixels+=(ptrdiff_t) GetPixelChannels(image);
           }
         }
-        gamma=PerceptibleReciprocal(gamma);
+        gamma=MagickSafeReciprocal(gamma);
         SetPixelChannel(blur_image,channel,ClampToQuantum(gamma*pixel),q);
       }
       q+=(ptrdiff_t) GetPixelChannels(blur_image);
@@ -606,7 +607,7 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
         center,
         j;
 
-      j=CastDoubleToLong(ceil((double) width*(1.0-QuantumScale*
+      j=CastDoubleToSsizeT(ceil((double) width*(1.0-QuantumScale*
         GetPixelIntensity(edge_image,r))-0.5));
       if (j < 0)
         j=0;
@@ -675,7 +676,7 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
                 pixels+=(ptrdiff_t) GetPixelChannels(image);
               }
             }
-            gamma=PerceptibleReciprocal(gamma);
+            gamma=MagickSafeReciprocal(gamma);
             SetPixelChannel(sharp_image,channel,ClampToQuantum(gamma*pixel),q);
             continue;
           }
@@ -693,7 +694,7 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
             pixels+=(ptrdiff_t) GetPixelChannels(image);
           }
         }
-        gamma=PerceptibleReciprocal(gamma);
+        gamma=MagickSafeReciprocal(gamma);
         SetPixelChannel(sharp_image,channel,ClampToQuantum(gamma*pixel),q);
       }
       q+=(ptrdiff_t) GetPixelChannels(sharp_image);
@@ -851,8 +852,8 @@ static inline double BlurDistance(const ssize_t x,const ssize_t y,
 
 static inline double BlurGaussian(const double x,const double sigma)
 {
-  return(exp(-((double) x*x)*PerceptibleReciprocal(2.0*sigma*sigma))*
-    PerceptibleReciprocal(Magick2PI*sigma*sigma));
+  return(exp(-((double) x*x)*MagickSafeReciprocal(2.0*sigma*sigma))*
+    MagickSafeReciprocal(Magick2PI*sigma*sigma));
 }
 
 static double **DestroyBilateralTLS(const size_t number_threads,
@@ -1035,8 +1036,8 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
 
           r=p+(ssize_t) (GetPixelChannels(image)*MagickMax(width,1)*
             (size_t) (mid.y-v)+GetPixelChannels(image)*(size_t) (mid.x-u));
-          intensity=ScaleQuantumToChar(GetPixelIntensity(image,r))-
-            (double) ScaleQuantumToChar(GetPixelIntensity(image,p));
+          intensity=ScaleQuantumToChar((const Quantum) GetPixelIntensity(image,r))-
+            (double) ScaleQuantumToChar((const Quantum) GetPixelIntensity(image,p));
           if ((intensity >= -MaxIntensity) && (intensity <= MaxIntensity))
             weights[id][n]=intensity_gaussian[(ssize_t) intensity+MaxIntensity]*
               spatial_gaussian[n];
@@ -1086,7 +1087,7 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
               }
             }
             SetPixelChannel(blur_image,channel,ClampToQuantum(
-              PerceptibleReciprocal(gamma)*pixel),q);
+              MagickSafeReciprocal(gamma)*pixel),q);
             continue;
           }
         /*
@@ -1110,7 +1111,7 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
           }
         }
         SetPixelChannel(blur_image,channel,ClampToQuantum(
-          PerceptibleReciprocal(gamma)*pixel),q);
+          MagickSafeReciprocal(gamma)*pixel),q);
       }
       q+=(ptrdiff_t) GetPixelChannels(blur_image);
     }
@@ -1225,7 +1226,7 @@ static void Hull(const Image *image,const ssize_t x_offset,
   assert(image->signature == MagickCoreSignature);
   assert(f != (Quantum *) NULL);
   assert(g != (Quantum *) NULL);
-  assert(columns <= (MAGICK_SSIZE_MAX-2));
+  assert(columns <= (size_t) (MAGICK_SSIZE_MAX-2));
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   p=f+(ptrdiff_t) (columns+2);
@@ -1663,7 +1664,7 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
   normalize=0.0;
   for (i=0; i < (ssize_t) (kernel_info->width*kernel_info->height); i++)
     normalize+=kernel_info->values[i];
-  gamma=PerceptibleReciprocal(normalize);
+  gamma=MagickSafeReciprocal(normalize);
   for (i=0; i < (ssize_t) (kernel_info->width*kernel_info->height); i++)
     kernel_info->values[i]*=gamma;
   emboss_image=ConvolveImage(image,kernel_info,exception);
@@ -2065,7 +2066,7 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
   image_view=AcquireVirtualCacheView(image,exception);
   contrast_view=AcquireAuthenticCacheView(contrast_image,exception);
   scanLineSize=(ssize_t) MagickMax(image->columns,image->rows);
-  width=(ssize_t) scanLineSize*0.002*fabs(radius);
+  width=(ssize_t) (scanLineSize*0.002*fabs(radius));
   scanLineSize+=(2*width);
   scanline_info=AcquireVirtualMemory(GetOpenMPMaximumThreads()*
     (size_t) scanLineSize,sizeof(*scanline));
@@ -2161,7 +2162,7 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
           weight-=1.0;
         }
         /* write to output */
-        *out=sum/totalWeight;
+        *out=(float) (sum/totalWeight);
         /* mirror into padding */
         if ((x <= width) && (x != 0))
           *(out-(x*2))=*out;
@@ -2399,9 +2400,9 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
   point.y=(double) width*cos(DegreesToRadians(angle));
   for (w=0; w < (ssize_t) width; w++)
   {
-    offset[w].x=CastDoubleToLong(ceil((double) (w*point.y)/
+    offset[w].x=CastDoubleToSsizeT(ceil((double) (w*point.y)/
       hypot(point.x,point.y)-0.5));
-    offset[w].y=CastDoubleToLong(ceil((double) (w*point.x)/
+    offset[w].y=CastDoubleToSsizeT(ceil((double) (w*point.x)/
       hypot(point.x,point.y)-0.5));
   }
   /*
@@ -2532,7 +2533,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
           gamma+=(*k)*alpha;
           k++;
         }
-        gamma=PerceptibleReciprocal(gamma);
+        gamma=MagickSafeReciprocal(gamma);
         SetPixelChannel(blur_image,channel,ClampToQuantum(gamma*pixel),q);
       }
       p+=(ptrdiff_t) GetPixelChannels(image);
@@ -3010,7 +3011,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
           preview_info->quality);
         file=AcquireUniqueFileResource(filename);
         if (file != -1)
-          file=close(file)-1;
+          file=close_utf8(file)-1;
         (void) FormatLocaleString(preview_image->filename,MagickPathExtent,
           "jpeg:%s",filename);
         status=WriteImage(preview_info,preview_image,exception);
@@ -3314,7 +3315,7 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
               pixel+=(double) r[i];
               gamma++;
             }
-            gamma=PerceptibleReciprocal(gamma);
+            gamma=MagickSafeReciprocal(gamma);
             SetPixelChannel(blur_image,channel,ClampToQuantum(gamma*pixel),q);
             continue;
           }
@@ -3336,7 +3337,7 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
           pixel+=alpha*(double) r[i];
           gamma+=alpha;
         }
-        gamma=PerceptibleReciprocal(gamma);
+        gamma=MagickSafeReciprocal(gamma);
         SetPixelChannel(blur_image,channel,ClampToQuantum(gamma*pixel),q);
       }
       p+=(ptrdiff_t) GetPixelChannels(image);
@@ -3646,7 +3647,7 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
                 SetPixelChannel(blur_image,channel,p[center+i],q);
                 continue;
               }
-            gamma=PerceptibleReciprocal(gamma);
+            gamma=MagickSafeReciprocal(gamma);
             SetPixelChannel(blur_image,channel,ClampToQuantum(gamma*pixel),q);
             continue;
           }
@@ -3674,7 +3675,7 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
             SetPixelChannel(blur_image,channel,p[center+i],q);
             continue;
           }
-        gamma=PerceptibleReciprocal(gamma);
+        gamma=MagickSafeReciprocal(gamma);
         SetPixelChannel(blur_image,channel,ClampToQuantum(gamma*pixel),q);
       }
       p+=(ptrdiff_t) GetPixelChannels(image);
@@ -4053,7 +4054,7 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
   normalize=0.0;
   for (i=0; i < (ssize_t) (kernel_info->width*kernel_info->height); i++)
     normalize+=kernel_info->values[i];
-  gamma=PerceptibleReciprocal(normalize);
+  gamma=MagickSafeReciprocal(normalize);
   for (i=0; i < (ssize_t) (kernel_info->width*kernel_info->height); i++)
     kernel_info->values[i]*=gamma;
   sharp_image=ConvolveImage(image,kernel_info,exception);

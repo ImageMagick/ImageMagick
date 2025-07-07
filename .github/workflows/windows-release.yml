@@ -17,7 +17,7 @@ name: windows release
 jobs:
   change_log:
     name: 'Create ChangeLog.md'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
     - name: Checkout
@@ -115,18 +115,11 @@ jobs:
         powershell Invoke-WebRequest -Uri https://github.com/ImageMagick/ImageMagick-Windows/releases/download/20200615/innosetup-6.2.0.exe -OutFile innosetup-6.2.0.exe
         innosetup-6.2.0.exe /SILENT /SUPPRESSMSGBOXES /NORESTART /SP-
 
-    - name: Build configure
-      shell: cmd
-      run: |
-        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
-        cd ImageMagick-Windows\Configure
-        msbuild Configure.sln /m /t:Rebuild /p:Configuration=Release,Platform=x64
-
     - name: Configure ImageMagick
       shell: cmd
       run: |
         cd ImageMagick-Windows\Configure
-        Configure.exe /noWizard /VS2022 /includeOptional /installedSupport /deprecated /${{matrix.hdri}} /${{matrix.quantum}} /${{matrix.platform}} /${{matrix.type_flag}}
+        Configure.Release.x64.exe /noWizard /VS2022 /includeOptional /installedSupport /deprecated /${{matrix.hdri}} /${{matrix.quantum}} /${{matrix.platform}} /${{matrix.type_flag}}
 
     - name: Build ImageMagick
       shell: cmd
@@ -157,7 +150,7 @@ jobs:
 
     - name: Sign binaries
       if: github.event_name != 'pull_request'
-      uses: azure/trusted-signing-action@v0.5.0
+      uses: azure/trusted-signing-action@v0.5.1
       with:
         endpoint: https://eus.codesigning.azure.net/
         trusted-signing-account-name: ImageMagick
@@ -175,7 +168,7 @@ jobs:
 
     - name: Sign installer
       if: github.event_name != 'pull_request'
-      uses: azure/trusted-signing-action@v0.5.0
+      uses: azure/trusted-signing-action@v0.5.1
       with:
         endpoint: https://eus.codesigning.azure.net/
         trusted-signing-account-name: ImageMagick
@@ -240,6 +233,7 @@ jobs:
         move Configure Source
         move Dependencies Source
         move ImageMagick Source
+        move Installer Source
         move OptionalDependencies Source
         move Artifacts Source
         move Projects Source
@@ -304,18 +298,11 @@ jobs:
         name: ChangeLog
         path: ImageMagick-Windows\ImageMagick
 
-    - name: Build configure
-      shell: cmd
-      run: |
-        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
-        cd ImageMagick-Windows\Configure
-        msbuild Configure.sln /m /t:Rebuild /p:Configuration=Release,Platform=x64
-
     - name: Configure ImageMagick
       shell: cmd
       run: |
         cd ImageMagick-Windows\Configure
-        Configure.exe /noWizard /VS2022 /${{matrix.hdri}} /${{matrix.quantum}} /${{matrix.platform}} /smt
+        Configure.Release.x64.exe /noWizard /VS2022 /${{matrix.hdri}} /${{matrix.quantum}} /${{matrix.platform}} /smt
 
     - name: Build ImageMagick
       shell: cmd
@@ -334,7 +321,7 @@ jobs:
 
     - name: Sign executables
       if: github.event_name != 'pull_request'
-      uses: azure/trusted-signing-action@v0.5.0
+      uses: azure/trusted-signing-action@v0.5.1
       with:
         endpoint: https://eus.codesigning.azure.net/
         trusted-signing-account-name: ImageMagick

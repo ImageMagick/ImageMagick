@@ -526,10 +526,10 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
     (void) ConcatenateMagickString(page_geometry,">",MagickPathExtent);
     (void) ParseMetaGeometry(page_geometry,&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
-    scale.x=PerceptibleReciprocal(resolution.x)*geometry.width*delta.x;
-    geometry.width=CastDoubleToUnsigned(scale.x+0.5);
-    scale.y=PerceptibleReciprocal(resolution.y)*geometry.height*delta.y;
-    geometry.height=CastDoubleToUnsigned(scale.y+0.5);
+    scale.x=MagickSafeReciprocal(resolution.x)*geometry.width*delta.x;
+    geometry.width=CastDoubleToSizeT(scale.x+0.5);
+    scale.y=MagickSafeReciprocal(resolution.y)*geometry.height*delta.y;
+    geometry.height=CastDoubleToSizeT(scale.y+0.5);
     (void) ParseAbsoluteGeometry(page_geometry,&media_info);
     (void) ParseGravityGeometry(image,page_geometry,&page_info,exception);
     if (image->gravity != UndefinedGravity)
@@ -1002,9 +1002,9 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
           for (i=0; i < (ssize_t) image->colors; i++)
           {
             (void) FormatLocaleString(buffer,MagickPathExtent,"%02X%02X%02X\n",
-              ScaleQuantumToChar(image->colormap[i].red),
-              ScaleQuantumToChar(image->colormap[i].green),
-              ScaleQuantumToChar(image->colormap[i].blue));
+              ScaleQuantumToChar((Quantum) image->colormap[i].red),
+              ScaleQuantumToChar((Quantum) image->colormap[i].green),
+              ScaleQuantumToChar((Quantum) image->colormap[i].blue));
             (void) WriteBlobString(image,buffer);
           }
           switch (compression)

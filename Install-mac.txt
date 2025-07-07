@@ -1,6 +1,6 @@
-Mac OS X-specific Build instructions
+macOS-specific Build instructions
 
-In order to install ImageMagick on OSX, you will first need Apple's "Xcode", 
+In order to install ImageMagick on macOS, you will first need Apple's "Xcode", 
 which you can get by going to the AppStore and searching for "Xcode" and 
 installing it.
 

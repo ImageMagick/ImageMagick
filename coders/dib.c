@@ -608,7 +608,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->colors == 0)
         image->colors=one << dib_info.bits_per_pixel;
     }
-  if (image_info->size)
+  if (image_info->size != 0)
     {
       RectangleInfo
         geometry;
@@ -625,6 +625,9 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image->rows=geometry.height;
     }
   status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
+  status=ResetImagePixels(image,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
   if (image->storage_class == PseudoClass)
@@ -1181,14 +1184,14 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image,
     case UndefinedResolution:
     case PixelsPerInchResolution:
     {
-      dib_info.x_pixels=(unsigned int) (100.0*image->resolution.x/2.54);
-      dib_info.y_pixels=(unsigned int) (100.0*image->resolution.y/2.54);
+      dib_info.x_pixels=CastDoubleToUInt(100.0*image->resolution.x/2.54);
+      dib_info.y_pixels=CastDoubleToUInt(100.0*image->resolution.y/2.54);
       break;
     }
     case PixelsPerCentimeterResolution:
     {
-      dib_info.x_pixels=(unsigned int) (100.0*image->resolution.x);
-      dib_info.y_pixels=(unsigned int) (100.0*image->resolution.y);
+      dib_info.x_pixels=CastDoubleToUInt(100.0*image->resolution.x);
+      dib_info.y_pixels=CastDoubleToUInt(100.0*image->resolution.y);
       break;
     }
   }
@@ -1397,14 +1400,14 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image,
             *q++=ScaleQuantumToChar(ClampToQuantum(image->colormap[i].blue));
             *q++=ScaleQuantumToChar(ClampToQuantum(image->colormap[i].green));
             *q++=ScaleQuantumToChar(ClampToQuantum(image->colormap[i].red));
-            *q++=(Quantum) 0x0;
+            *q++=(unsigned char) 0x0;
           }
           for ( ; i < (ssize_t) 1L << dib_info.bits_per_pixel; i++)
           {
-            *q++=(Quantum) 0x0;
-            *q++=(Quantum) 0x0;
-            *q++=(Quantum) 0x0;
-            *q++=(Quantum) 0x0;
+            *q++=(unsigned char) 0x0;
+            *q++=(unsigned char) 0x0;
+            *q++=(unsigned char) 0x0;
+            *q++=(unsigned char) 0x0;
           }
           (void) WriteBlob(image,(size_t) (4*(1 << dib_info.bits_per_pixel)),
             dib_colormap);

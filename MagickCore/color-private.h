@@ -70,12 +70,12 @@ static inline MagickBooleanType GetColorRange(const char *color,
 
 static inline double GetFuzzyColorDistance(const Image *p,const Image *q)
 {
-  double
-    fuzz;
-
-  fuzz=(double) MagickMax(MagickMax(p->fuzz,q->fuzz),(MagickRealType)
-    MagickSQ1_2);
-  return(fuzz*fuzz);
+  /*
+    Variance-style combined fuzz.
+  */
+  if (q == (const Image *) NULL)
+    return(p->fuzz*p->fuzz);
+  return(p->fuzz*p->fuzz+q->fuzz*q->fuzz);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
