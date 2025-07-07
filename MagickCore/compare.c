@@ -4344,9 +4344,6 @@ static double GetSimilarityMetric(const Image *image,
   size_t
     length = MaxPixelChannels+1UL;
 
-  ssize_t
-    i;
-
   SetGeometry(reconstruct_image,&geometry);
   geometry.x=x_offset;
   geometry.y=y_offset;
@@ -4452,19 +4449,6 @@ static double GetSimilarityMetric(const Image *image,
     }
   }
   similarity_image=DestroyImage(similarity_image);
-  switch (metric)
-  {
-    case DotProductCorrelationErrorMetric:
-    {
-      for (i=0; i <= MaxPixelChannels; i++)
-        channel_similarity[i]=(1.0-channel_similarity[i])/2.0;
-      break;
-    }
-    default: break;
-  }
-  for (i=0; i <= MaxPixelChannels; i++)
-    if (fabs(channel_similarity[i]) < MagickEpsilon)
-      channel_similarity[i]=0.0;
   similarity=channel_similarity[CompositePixelChannel];
   channel_similarity=(double *) RelinquishMagickMemory(channel_similarity);
   if (status == MagickFalse)
