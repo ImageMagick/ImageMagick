@@ -1621,10 +1621,10 @@ static MagickBooleanType GetPHASESimilarity(const Image *image,
           q+=(ptrdiff_t) GetPixelChannels(reconstruct_image);
           continue;
         }
-      status=DFTPhaseSpectrum(image,y,x,phase,exception);
+      status=DFTPhaseSpectrum(image,x,y,phase,exception);
       if (status == MagickFalse)
         break;
-      status=DFTPhaseSpectrum(reconstruct_image,y,x,reconstruct_phase,
+      status=DFTPhaseSpectrum(reconstruct_image,x,y,reconstruct_phase,
         exception);
       if (status == MagickFalse)
         break;
