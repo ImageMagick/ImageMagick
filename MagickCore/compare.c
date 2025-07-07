@@ -1538,8 +1538,8 @@ static MagickBooleanType DFTPhaseSpectrum(const Image *image,const ssize_t u,
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
-        channel_real[i]+=Sa*p[i]*cos(angle);
-        channel_imag[i]-=Sa*p[i]*sin(angle);
+        channel_real[i]+=(QuantumScale*Sa*p[i])*cos(angle);
+        channel_imag[i]-=(QuantumScale*Sa*p[i])*sin(angle);
       }
       p+=(ptrdiff_t) GetPixelChannels(image);
     }
