@@ -4368,9 +4368,8 @@ static double GetSimilarityMetric(const Image *image,
       break;
     }
     case DotProductCorrelationErrorMetric:
-    case PhaseCorrelationErrorMetric:
     {
-      status=GetMSESimilarity(similarity_image,reconstruct_image,
+      status=GetDPCSimilarity(similarity_image,reconstruct_image,
         channel_similarity,exception);
       break;
     }
@@ -4422,6 +4421,12 @@ static double GetSimilarityMetric(const Image *image,
         channel_similarity,exception);
       break;
     }
+    case PhaseCorrelationErrorMetric:
+    {
+      status=GetPHASESimilarity(similarity_image,reconstruct_image,
+        channel_similarity,exception);
+      break;
+    }
     case RootMeanSquaredErrorMetric:
     case UndefinedErrorMetric:
     default:
@@ -4444,6 +4449,19 @@ static double GetSimilarityMetric(const Image *image,
     }
   }
   similarity_image=DestroyImage(similarity_image);
+  switch (metric)
+  {
+    case DotProductCorrelationErrorMetric:
+    {
+      for (i=0; i <= MaxPixelChannels; i++)
+        channel_similarity[i]=(1.0-channel_similarity[i])/2.0;
+      break;
+    }
+    default: break;
+  }
+  for (i=0; i <= MaxPixelChannels; i++)
+    if (fabs(channel_similarity[i]) < MagickEpsilon)
+      channel_similarity[i]=0.0;
   similarity=channel_similarity[CompositePixelChannel];
   channel_similarity=(double *) RelinquishMagickMemory(channel_similarity);
   if (status == MagickFalse)
@@ -4548,14 +4566,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
     }
 }
 #endif
-  if ((metric == DotProductCorrelationErrorMetric) ||
-      (metric == PhaseCorrelationErrorMetric))
-    {
-      (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
-        CompareMetricNotSupportedException,"(%s)",CommandOptionToMnemonic(
-        MagickMetricOptions,(ssize_t) metric));
-      return((Image *) NULL);
-    }
   if ((image->columns < reconstruct->columns) ||
       (image->rows < reconstruct->rows))
     {
