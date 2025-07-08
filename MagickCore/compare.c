@@ -1490,8 +1490,8 @@ static MagickBooleanType DFTPhaseSpectrum(const Image *image,const ssize_t u,
     *image_view;
 
   double
-    channel_real[MaxPixelChannels+1] = { 0.0 },
-    channel_imag[MaxPixelChannels+1] = { 0.0 };
+    channel_imag[MaxPixelChannels+1] = { 0.0 },
+    channel_real[MaxPixelChannels+1] = { 0.0 };
 
   MagickBooleanType
     status;
