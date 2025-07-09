@@ -4716,6 +4716,8 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
   if (status == MagickFalse)
     similarity_image=DestroyImage(similarity_image);
   *similarity_metric=similarity_info.similarity;
+  if (fabs(*similarity_metric) < MagickEpsilon)
+    *similarity_metric=0.0;
   offset->x=similarity_info.x;
   offset->y=similarity_info.y;
   (void) FormatImageProperty((Image *) image,"similarity","%.*g",
