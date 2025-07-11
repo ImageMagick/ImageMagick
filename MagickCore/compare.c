@@ -2295,6 +2295,7 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
   {
     case DotProductCorrelationErrorMetric:
     case NormalizedCrossCorrelationErrorMetric:
+    case PhaseCorrelationErrorMetric:
     case StructuralDissimilarityErrorMetric:
     case StructuralSimilarityErrorMetric:
     {
@@ -2473,6 +2474,7 @@ MagickExport double *GetImageDistortions(Image *image,
   {
     case DotProductCorrelationErrorMetric:
     case NormalizedCrossCorrelationErrorMetric:
+    case PhaseCorrelationErrorMetric:
     case StructuralDissimilarityErrorMetric:
     case StructuralSimilarityErrorMetric:
     {
