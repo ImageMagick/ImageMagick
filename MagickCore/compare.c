@@ -549,8 +549,8 @@ static MagickBooleanType GetDPCSimilarity(const Image *image,
         if (channel == AlphaPixelChannel)
           {
             alpha=QuantumScale*((double) p[i]-image_statistics[channel].mean);
-            beta=QuantumScale*((double) GetPixelChannel(reconstruct_image,channel,
-              q)-reconstruct_statistics[channel].mean);
+            beta=QuantumScale*((double) GetPixelChannel(reconstruct_image,
+              channel,q)-reconstruct_statistics[channel].mean);
           }
         else
           {
@@ -720,7 +720,8 @@ static MagickBooleanType GetFUZZSimilarity(const Image *image,
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
         if (channel == AlphaPixelChannel)
-          error=(double) p[i]-(double) GetPixelChannel(reconstruct_image,channel,q);
+          error=(double) p[i]-(double) GetPixelChannel(reconstruct_image,
+            channel,q);
         else
           error=Sa*p[i]-Da*GetPixelChannel(reconstruct_image,channel,q);
         if ((error*error) > fuzz)
