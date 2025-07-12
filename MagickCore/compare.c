@@ -2835,15 +2835,9 @@ static Image *SIMDivideImage(const Image *numerator_image,
       }
     for (x=0; x < (ssize_t) divide_image->columns; x++)
     {
-      double
-        Da,
-        Sa;
-
       ssize_t
         i;
 
-      Sa=QuantumScale*(double) GetPixelAlpha(divide_image,p);
-      Da=QuantumScale*(double) GetPixelAlpha(denominator_image,q);
       for (i=0; i < (ssize_t) GetPixelChannels(divide_image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(divide_image,i);
@@ -2853,12 +2847,8 @@ static Image *SIMDivideImage(const Image *numerator_image,
         if (((traits & UpdatePixelTrait) == 0) ||
             ((denominator_traits & UpdatePixelTrait) == 0))
           continue;
-        if (channel == AlphaPixelChannel)
-          q[i]=(Quantum) ((double) q[i]*MagickSafeReciprocal(QuantumScale*
-            (double) GetPixelChannel(denominator_image,channel,p)));
-        else
-          q[i]=(Quantum) (Sa*q[i]*MagickSafeReciprocal(QuantumScale*
-            Da*GetPixelChannel(denominator_image,channel,p)));
+        q[i]=(Quantum) ((double) q[i]*MagickSafeReciprocal(QuantumScale*
+          (double) GetPixelChannel(denominator_image,channel,p)));
       }
       p+=(ptrdiff_t) GetPixelChannels(denominator_image);
       q+=(ptrdiff_t) GetPixelChannels(divide_image);
@@ -2999,23 +2989,16 @@ static Image *SIMSquareImage(const Image *image,ExceptionInfo *exception)
       }
     for (x=0; x < (ssize_t) square_image->columns; x++)
     {
-      double
-        Sa;
-
       ssize_t
         i;
 
-      Sa=QuantumScale*(double) GetPixelAlpha(square_image,q);
       for (i=0; i < (ssize_t) GetPixelChannels(square_image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(square_image,i);
         PixelTrait traits = GetPixelChannelTraits(square_image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        if (channel == AlphaPixelChannel)
-          q[i]=(Quantum) (QuantumScale*q[i]*q[i]);
-        else
-          q[i]=(Quantum) (QuantumScale*Sa*q[i]*q[i]);
+        q[i]=(Quantum) (QuantumScale*q[i]*q[i]);
       }
       q+=(ptrdiff_t) GetPixelChannels(square_image);
     }
@@ -3130,13 +3113,9 @@ static MagickBooleanType SIMMaximaImage(const Image *image,double *maxima,
     channel_maxima=maxima_info;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      double
-        Sa;
-
       ssize_t
         i;
 
-      Sa=QuantumScale*(double) GetPixelAlpha(image,p);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         double
@@ -3146,10 +3125,7 @@ static MagickBooleanType SIMMaximaImage(const Image *image,double *maxima,
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        if (channel == AlphaPixelChannel)
-          pixel=(double) p[i];
-        else
-          pixel=Sa*p[i];
+        pixel=(double) p[i];
         if (IsNaN(pixel) != 0)
           pixel=0.0;
         if (pixel > channel_maxima.maxima)
@@ -3236,13 +3212,9 @@ static MagickBooleanType SIMMinimaImage(const Image *image,double *minima,
     channel_minima=minima_info;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      double
-        Sa;
-
       ssize_t
         i;
 
-      Sa=QuantumScale*(double) GetPixelAlpha(image,p);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         double
@@ -3252,10 +3224,7 @@ static MagickBooleanType SIMMinimaImage(const Image *image,double *minima,
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        if (channel == AlphaPixelChannel)
-          pixel=(double) p[i];
-        else
-          pixel=Sa*p[i];
+        pixel=(double) p[i];
         if (IsNaN(pixel) != 0)
           pixel=0.0;
         if (pixel < channel_minima.minima)
@@ -3318,35 +3287,20 @@ static MagickBooleanType SIMMultiplyImage(Image *image,const double factor,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      double
-        Sa;
-
       ssize_t
         i;
 
-      Sa=QuantumScale*(double) GetPixelAlpha(image,q);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        if (channel == AlphaPixelChannel)
-          {
-            if (channel_statistics != (const ChannelStatistics *) NULL)
-              q[i]=(Quantum) (factor*q[i]*QuantumScale*
-                channel_statistics[channel].standard_deviation);
-            else
-              q[i]=(Quantum) (factor*q[i]);
-          }
+        if (channel_statistics != (const ChannelStatistics *) NULL)
+          q[i]=(Quantum) (factor*q[i]*QuantumScale*
+            channel_statistics[channel].standard_deviation);
         else
-          {
-            if (channel_statistics != (const ChannelStatistics *) NULL)
-              q[i]=(Quantum) (factor*Sa*q[i]*QuantumScale*
-                channel_statistics[channel].standard_deviation);
-            else
-              q[i]=(Quantum) (factor*Sa*q[i]);
-          }
+          q[i]=(Quantum) (factor*q[i]);
       }
       q+=(ptrdiff_t) GetPixelChannels(image);
     }
@@ -3538,13 +3492,9 @@ static Image *SIMSubtractImageMean(const Image *alpha_image,
       }
     for (x=0; x < (ssize_t) subtract_image->columns; x++)
     {
-      double
-        Sa;
-
       ssize_t
         i;
 
-      Sa=QuantumScale*(double) GetPixelAlpha(beta_image,p);
       for (i=0; i < (ssize_t) GetPixelChannels(subtract_image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(subtract_image,i);
@@ -3557,12 +3507,8 @@ static Image *SIMSubtractImageMean(const Image *alpha_image,
             (y >= (ssize_t) beta_image->rows))
           q[i]=(Quantum) 0;
         else
-          if (channel == AlphaPixelChannel)
-            q[i]=(Quantum) ((double) GetPixelChannel(beta_image,channel,p)-
-              channel_statistics[channel].mean);
-          else
-            q[i]=(Quantum) (Sa*GetPixelChannel(beta_image,channel,p)-
-              channel_statistics[channel].mean);
+          q[i]=(Quantum) ((double) GetPixelChannel(beta_image,channel,p)-
+            channel_statistics[channel].mean);
       }
       p+=(ptrdiff_t) GetPixelChannels(beta_image);
       q+=(ptrdiff_t) GetPixelChannels(subtract_image);
@@ -3703,15 +3649,9 @@ static Image *SIMVarianceImage(Image *alpha_image,const Image *beta_image,
       }
     for (x=0; x < (ssize_t) variance_image->columns; x++)
     {
-      double
-        Da,
-        Sa;
-
       ssize_t
         i;
 
-      Sa=QuantumScale*(double) GetPixelAlpha(variance_image,p);
-      Da=QuantumScale*(double) GetPixelAlpha(beta_image,q);
       for (i=0; i < (ssize_t) GetPixelChannels(variance_image); i++)
       {
         double
@@ -3723,10 +3663,7 @@ static Image *SIMVarianceImage(Image *alpha_image,const Image *beta_image,
         if (((traits & UpdatePixelTrait) == 0) ||
             ((beta_traits & UpdatePixelTrait) == 0))
           continue;
-        if (channel == AlphaPixelChannel)
-          error=(double) q[i]-(double) GetPixelChannel(beta_image,channel,p);
-        else
-          error=Sa*q[i]-Da*GetPixelChannel(beta_image,channel,p);
+        error=(double) q[i]-(double) GetPixelChannel(beta_image,channel,p);
         q[i]=(Quantum) ((double) ClampToQuantum((double) QuantumRange*
           (sqrt(fabs(QuantumScale*error))/sqrt((double) QuantumRange))));
       }
