@@ -791,6 +791,8 @@
   <mime type="image/png" description="PNG image" data-type="string" offset="0" magic="\x89PNG" priority="50" />
   <mime type="image/png" description="PNG image" priority="100" pattern="*.png" />
   <mime type="image/rle" description="Run Length Encoded bitmap image" priority="100" pattern="*.rle" />
+  <mime type="image/x.sf3" acronym="SF3" description="Simple File Format Family" data-type="string" offset="0" magic="\x81SF3\x00\xE0\xD0\r\n\n\x03" priority="50" />
+  <mime type="image/x.sf3" acronym="SF3" description="Simple File Format Family" priority="100" pattern="*.sf3" />
   <mime type="image/svg+xml" description="Scalable Vector Graphics" data-type="string" offset="0:256" magic="&lt;!DOCTYPE svg" priority="80" />
   <mime type="image/svg+xml" description="Scalable Vector Graphics" data-type="string" offset="0:256" magic="&lt;svg" priority="80" />
   <mime type="image/svg+xml" acronym="SVG" description="Scalable Vector Graphics" priority="100" pattern="*.svg" />

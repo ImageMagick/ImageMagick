@@ -150,6 +150,7 @@
 #include "coders/scr.h"
 #include "coders/screenshot.h"
 #include "coders/sct.h"
+#include "coders/sf3.h"
 #include "coders/sfw.h"
 #include "coders/sgi.h"
 #include "coders/sixel.h"
