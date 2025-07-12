@@ -3804,14 +3804,12 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   target_image=CloneImage(image,0,0,MagickTrue,exception);
   if (target_image == (Image *) NULL)
     return((Image *) NULL);
-  (void) SetImageAlphaChannel(target_image,OffAlphaChannel,exception);
   /*
     Compute the cross correlation of the test and reconstruct magnitudes.
   */
   reconstruct_image=CloneImage(reconstruct,0,0,MagickTrue,exception);
   if (reconstruct_image == (Image *) NULL)
     ThrowDPCSimilarityException();
-  (void) SetImageAlphaChannel(reconstruct_image,OffAlphaChannel,exception);
   /*
     Compute X and Y derivatives of reference image.
   */
@@ -3937,6 +3935,8 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   if (status == MagickFalse)
     ThrowDPCSimilarityException();
   dot_product_image->depth=32;
+  dot_product_image->colorspace=GRAYColorspace;
+  dot_product_image->alpha_trait=UndefinedPixelTrait;
   status=SIMFilterImageNaNs(dot_product_image,exception);
   if (status == MagickFalse)
     ThrowDPCSimilarityException();
@@ -4062,7 +4062,6 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
   status=GrayscaleImage(mean_image,AveragePixelIntensityMethod,exception);
   if (status == MagickFalse)
     ThrowMSESimilarityException();
-  mean_image->depth=32;
   /*
     Crop to difference of reconstruction and test images.
   */
@@ -4080,6 +4079,8 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
   (void) ResetImagePage(mse_image,"0x0+0+0");
   (void) ClampImage(mse_image,exception);
   mse_image->depth=32;
+  mse_image->colorspace=GRAYColorspace;
+  mse_image->alpha_trait=UndefinedPixelTrait;
   status=SIMMinimaImage(mse_image,&minima,offset,exception);
   if (status == MagickFalse)
     ThrowMSESimilarityException();
@@ -4203,7 +4204,7 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reconstruct,
   normalize_image=SIMSubtractImageMean(image,reconstruct,channel_statistics,
     exception);
   channel_statistics=(ChannelStatistics *)
-     RelinquishMagickMemory(channel_statistics);
+    RelinquishMagickMemory(channel_statistics);
   if (normalize_image == (Image *) NULL)
     ThrowNCCSimilarityException();
   correlation_image=SIMCrossCorrelationImage(image,normalize_image,exception);
@@ -4237,6 +4238,8 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reconstruct,
   if (status == MagickFalse)
     ThrowNCCSimilarityException();
   ncc_image->depth=32;
+  ncc_image->colorspace=GRAYColorspace;
+  ncc_image->alpha_trait=UndefinedPixelTrait;
   status=SIMMaximaImage(ncc_image,&maxima,offset,exception);
   if (status == MagickFalse)
     ThrowNCCSimilarityException();
@@ -4309,7 +4312,6 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
     2.0),2*(size_t) ceil((double) image->rows/2.0),exception);
   if (status == MagickFalse)
     ThrowPhaseSimilarityException();
-  (void) SetImageAlphaChannel(target_image,OffAlphaChannel,exception);
   /*
     Compute the cross correlation of the test and reconstruct magnitudes.
   */
@@ -4323,7 +4325,6 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
     image->columns/2.0),2*(size_t) ceil((double) image->rows/2.0),exception);
   if (status == MagickFalse)
     ThrowPhaseSimilarityException();
-  (void) SetImageAlphaChannel(reconstruct_image,OffAlphaChannel,exception);
   /*
     Evaluate phase coorelation image and divide by the product magnitude.
   */
@@ -4387,6 +4388,8 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   if (status == MagickFalse)
     ThrowPhaseSimilarityException();
   phase_image->depth=32;
+  phase_image->colorspace=GRAYColorspace;
+  phase_image->alpha_trait=UndefinedPixelTrait;
   status=SIMFilterImageNaNs(phase_image,exception);
   if (status == MagickFalse)
     ThrowPhaseSimilarityException();
