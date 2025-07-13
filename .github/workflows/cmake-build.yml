@@ -48,7 +48,8 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.conan2
-          key: ${{ runner.os }}-${{ runner.arch }}-${{ matrix.libtype }}-${{ matrix.buildtype }}
+          key: ${{ runner.os }}-${{ runner.arch }}-${{ matrix.libtype }}-${{ matrix.buildtype }}-${{ github.run_id }}
+          restore-keys: ${{ runner.os }}-${{ runner.arch }}-${{ matrix.libtype }}-${{ matrix.buildtype }}
 
       - name: Restart from scratch every Sunday
         run: rm -rf ~/.conan2
@@ -116,7 +117,8 @@ jobs:
       uses: actions/cache/restore@v4
       with:
         path: ~/.conan2
-        key: ${{ runner.os }}-${{ runner.arch }}-${{ matrix.libtype }}-${{ matrix.buildtype }}
+        key: ${{ runner.os }}-${{ runner.arch }}-${{ matrix.libtype }}-${{ matrix.buildtype }}-${{ github.run_id }}
+        restore-keys: ${{ runner.os }}-${{ runner.arch }}-${{ matrix.libtype }}-${{ matrix.buildtype }}
       if: matrix.provider == 'conan' || matrix.provider == 'pkgconf'
 
     - name: Install all delegates (conan)
@@ -261,7 +263,8 @@ jobs:
       uses: actions/cache@v4
       with:
         path: ~/.conan2
-        key: wasm-emscripten
+        key: wasm-emscripten-${{ github.run_id }}
+        restore-keys: wasm-emscripten
 
     - name: Install all delegates
       shell: bash
