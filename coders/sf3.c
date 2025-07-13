@@ -594,19 +594,27 @@ static MagickBooleanType WriteSF3Image(const ImageInfo *image_info,Image *image,
       quantum_type = GrayQuantum;
       break;
     case AlphaQuantum:
+    case OpacityQuantum:
     case GrayAlphaQuantum:
       channels = SF3_PIXEL_VA;
       quantum_type = GrayAlphaQuantum;
       break;
     case IndexQuantum:
+    case CbYCrQuantum:
+    case MultispectralQuantum:
     case RedQuantum:
     case GreenQuantum:
     case BlueQuantum:
+    case RGBPadQuantum:
     case RGBQuantum:
       channels = SF3_PIXEL_RGB;
       quantum_type = RGBQuantum;
       break;
+    case UndefinedQuantum:
     case IndexAlphaQuantum:
+    case CbYCrAQuantum:
+    case CMYKAQuantum:
+    case CMYKOQuantum:
     case RGBOQuantum:
     case RGBAQuantum:
       channels = SF3_PIXEL_RGBA;
