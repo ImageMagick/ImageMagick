@@ -388,6 +388,7 @@ static Image *ReadSF3Image(const ImageInfo *image_info,ExceptionInfo *exception)
           quantum_info=DestroyQuantumInfo(quantum_info);
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         }
+      *p='\0';
       for (unsigned int y=0; y<image->rows; ++y)
         {
           count=ReadBlob(image,length,p);
@@ -402,7 +403,7 @@ static Image *ReadSF3Image(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image_info->number_scenes != 0)
         if (image->scene >= (image_info->scene+image_info->number_scenes-1))
           break;
-      if (z+1 == layers)
+      if ((z+1) == layers)
         break;
       AcquireNextImage(image_info,image,exception);
       if (GetNextImageInList(image) == (Image *) NULL)
