@@ -1713,7 +1713,8 @@ coders_sct_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_sct_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_sct_la_rpath = -rpath $(codersdir)
-coders_sf3_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_sf3_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_coders_sf3_la_OBJECTS = coders/sf3_la-sf3.lo
 coders_sf3_la_OBJECTS = $(am_coders_sf3_la_OBJECTS)
 coders_sf3_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -5014,7 +5015,7 @@ coders_sct_la_LIBADD = $(MAGICKCORE_LIBS)
 coders_sf3_la_SOURCES = coders/sf3.c
 coders_sf3_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_sf3_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_sf3_la_LIBADD = $(MAGICKCORE_LIBS)
+coders_sf3_la_LIBADD = $(MAGICKCORE_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
 
 # SFW coder module
 coders_sfw_la_SOURCES = coders/sfw.c

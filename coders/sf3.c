@@ -58,7 +58,9 @@
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/module.h"
-#include <zlib.h>
+#if defined(MAGICKCORE_ZLIB_DELEGATE)
+ #include "zlib.h"
+#endif
 
 /*
   Enumerated declarations.
