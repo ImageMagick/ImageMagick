@@ -149,7 +149,7 @@ static const unsigned int CRC32Table[] = {
 
 static unsigned int crc32(unsigned int crc, const void *buf, size_t size)
 {
-  const unsigned char *p = buf;
+  const unsigned char *p = (const unsigned char*)buf;
 
   while (size--)
 	crc = CRC32Table[(crc ^ *p++) & 0xff] ^ (crc >> 8);
@@ -282,6 +282,7 @@ static Image *ReadSF3Image(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
   channels=ReadBlobByte(image);
   format=ReadBlobByte(image);
+  quantum_info=(QuantumInfo *) NULL;
   
   for (unsigned int z=0; z<layers; ++z)
     {
@@ -391,11 +392,7 @@ static Image *ReadSF3Image(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           count=ReadBlob(image,length,p);
           if (count != (ssize_t) length)
-            {
-              p=(unsigned char *) RelinquishMagickMemory(p);
-              quantum_info=DestroyQuantumInfo(quantum_info);
-              ThrowReaderException(CorruptImageError,"NotEnoughPixelData");
-            }
+            break;
           (void) GetAuthenticPixels(image,0,y,image->columns,1,exception);
           (void) ImportQuantumPixels(image,(CacheView *) NULL,
                                      quantum_info,quantum_type,p,exception);
@@ -598,19 +595,27 @@ static MagickBooleanType WriteSF3Image(const ImageInfo *image_info,Image *image,
       quantum_type = GrayQuantum;
       break;
     case AlphaQuantum:
+    case OpacityQuantum:
     case GrayAlphaQuantum:
       channels = SF3_PIXEL_VA;
       quantum_type = GrayAlphaQuantum;
       break;
     case IndexQuantum:
+    case CbYCrQuantum:
+    case MultispectralQuantum:
     case RedQuantum:
     case GreenQuantum:
     case BlueQuantum:
+    case RGBPadQuantum:
     case RGBQuantum:
       channels = SF3_PIXEL_RGB;
       quantum_type = RGBQuantum;
       break;
+    case UndefinedQuantum:
     case IndexAlphaQuantum:
+    case CbYCrAQuantum:
+    case CMYKAQuantum:
+    case CMYKOQuantum:
     case RGBOQuantum:
     case RGBAQuantum:
       channels = SF3_PIXEL_RGBA;
@@ -679,8 +684,8 @@ static MagickBooleanType WriteSF3Image(const ImageInfo *image_info,Image *image,
         }
       break;
     case UndefinedQuantumFormat:
-      SetQuantumFormat(image,quantum_info,UnsignedQuantumFormat);
     case UnsignedQuantumFormat:
+      SetQuantumFormat(image,quantum_info,UnsignedQuantumFormat);
       if (image->depth <= 8)
         {
           format = SF3_PIXEL_UINT8;

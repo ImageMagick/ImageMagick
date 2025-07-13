@@ -390,7 +390,7 @@ static const struct ReferenceFormats
     { "RLE", UndefinedCompression, 0.0 },
     { "SCR", UndefinedCompression, 0.0 },
     { "SCT", UndefinedCompression, 0.0 },
-    /* { "SF3", UndefinedCompression, 0.0 }, */
+    { "SF3", UndefinedCompression, 0.0 },
     { "SFW", UndefinedCompression, 0.0 },
     { "SGI", UndefinedCompression, 0.0 },
     { "SHTML", UndefinedCompression, 0.0 },
