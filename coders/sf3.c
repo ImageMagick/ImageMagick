@@ -496,9 +496,11 @@ static MagickBooleanType WriteSF3Image(const ImageInfo *image_info,Image *image,
 
   size_t
     number_scenes,
-    scene,
-    length,
+    length;
+
+  ssize_t
     count,
+    scene,
     y;
 
   unsigned char
