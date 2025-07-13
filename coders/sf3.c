@@ -126,7 +126,9 @@ static MagickBooleanType
 */
 static unsigned int IsSF3(const unsigned char *magick,const size_t length)
 {
-  // The header is 16 bytes long, though the last 5 bytes aren't constant.
+  /*
+    The header is 16 bytes long, though the last 5 bytes aren't constant.
+  */
   if (length < 16)
     return(MagickFalse);
   if (memcmp(magick,"\x81SF3\x00\xE0\xD0\r\n\n\x03",11) == 0)
@@ -211,7 +213,7 @@ static Image *ReadSF3Image(const ImageInfo *image_info,ExceptionInfo *exception)
     return(DestroyImageList(image));
   /*
     Read SF3 header information.
-   */
+  */
   count=ReadBlob(image,16,header);
   if ((count != 16) || (memcmp(header,"\x81SF3\x00\xE0\xD0\r\n\n\x03",11) != 0))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
