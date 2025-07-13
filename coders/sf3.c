@@ -241,9 +241,6 @@ static Image *ReadSF3Image(const ImageInfo *image_info,ExceptionInfo *exception)
     length;
 
   unsigned char
-    *p;
-
-  unsigned char
     channels,
     format;
 
@@ -286,6 +283,9 @@ static Image *ReadSF3Image(const ImageInfo *image_info,ExceptionInfo *exception)
   
   for (unsigned int z=0; z<layers; ++z)
     {
+      unsigned char
+        *p;
+
       image->endian=LSBEndian;
       image->compression=NoCompression;
       image->orientation=TopLeftOrientation;
@@ -400,6 +400,7 @@ static Image *ReadSF3Image(const ImageInfo *image_info,ExceptionInfo *exception)
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
         }
+      p=(unsigned char *) RelinquishMagickMemory(p);
       if (image_info->number_scenes != 0)
         if (image->scene >= (image_info->scene+image_info->number_scenes-1))
           break;
@@ -417,7 +418,6 @@ static Image *ReadSF3Image(const ImageInfo *image_info,ExceptionInfo *exception)
       if (status == MagickFalse)
         break;
     }
-  p=(unsigned char *) RelinquishMagickMemory(p);
   quantum_info=DestroyQuantumInfo(quantum_info);
   if (status == MagickFalse)
     return(DestroyImageList(image));
