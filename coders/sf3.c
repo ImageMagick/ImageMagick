@@ -149,7 +149,7 @@ static const unsigned int CRC32Table[] = {
 
 static unsigned int crc32(unsigned int crc, const void *buf, size_t size)
 {
-  const unsigned char *p = buf;
+  const unsigned char *p = (const unsigned char*)buf;
 
   while (size--)
 	crc = CRC32Table[(crc ^ *p++) & 0xff] ^ (crc >> 8);
