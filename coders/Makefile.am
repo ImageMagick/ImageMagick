@@ -1313,7 +1313,7 @@ coders_sct_la_LIBADD       = $(MAGICKCORE_LIBS)
 coders_sf3_la_SOURCES      = coders/sf3.c
 coders_sf3_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
 coders_sf3_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_sf3_la_LIBADD       = $(MAGICKCORE_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
+coders_sf3_la_LIBADD       = $(MAGICKCORE_LIBS)
 
 # SFW coder module
 coders_sfw_la_SOURCES      = coders/sfw.c
