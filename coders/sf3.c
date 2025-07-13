@@ -391,11 +391,7 @@ static Image *ReadSF3Image(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           count=ReadBlob(image,length,p);
           if (count != (ssize_t) length)
-            {
-              p=(unsigned char *) RelinquishMagickMemory(p);
-              quantum_info=DestroyQuantumInfo(quantum_info);
-              ThrowReaderException(CorruptImageError,"NotEnoughPixelData");
-            }
+            break;
           (void) GetAuthenticPixels(image,0,y,image->columns,1,exception);
           (void) ImportQuantumPixels(image,(CacheView *) NULL,
                                      quantum_info,quantum_type,p,exception);
