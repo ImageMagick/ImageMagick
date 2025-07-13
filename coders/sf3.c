@@ -282,6 +282,7 @@ static Image *ReadSF3Image(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
   channels=ReadBlobByte(image);
   format=ReadBlobByte(image);
+  quantum_info=(QuantumInfo *) NULL;
   
   for (unsigned int z=0; z<layers; ++z)
     {
