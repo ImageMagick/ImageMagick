@@ -311,6 +311,8 @@ MAGICKCORE_CODER_SRCS = \
 	coders/scr.h \
 	coders/sct.c \
 	coders/sct.h \
+	coders/sf3.c \
+	coders/sf3.h \
 	coders/sfw.c \
 	coders/sfw.h \
 	coders/sgi.c \
@@ -510,6 +512,7 @@ CODERS_NOINST_HDRS = \
 	coders/screenshot.h \
 	coders/scr.h \
 	coders/sct.h \
+	coders/sf3.h \
 	coders/sfw.h \
 	coders/sgi.h \
 	coders/sixel.h \
@@ -639,6 +642,7 @@ coders_LTLIBRARIES = \
 	coders/rle.la \
 	coders/scr.la \
 	coders/sct.la \
+	coders/sf3.la \
 	coders/sfw.la \
 	coders/sgi.la \
 	coders/sixel.la \
@@ -1304,6 +1308,12 @@ coders_sct_la_SOURCES      = coders/sct.c
 coders_sct_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
 coders_sct_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_sct_la_LIBADD       = $(MAGICKCORE_LIBS)
+
+# SF3 coder module
+coders_sf3_la_SOURCES      = coders/sf3.c
+coders_sf3_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
+coders_sf3_la_LDFLAGS      = $(MODULECOMMONFLAGS)
+coders_sf3_la_LIBADD       = $(MAGICKCORE_LIBS)
 
 # SFW coder module
 coders_sfw_la_SOURCES      = coders/sfw.c
