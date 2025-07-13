@@ -679,8 +679,8 @@ static MagickBooleanType WriteSF3Image(const ImageInfo *image_info,Image *image,
         }
       break;
     case UndefinedQuantumFormat:
-      SetQuantumFormat(image,quantum_info,UnsignedQuantumFormat);
     case UnsignedQuantumFormat:
+      SetQuantumFormat(image,quantum_info,UnsignedQuantumFormat);
       if (image->depth <= 8)
         {
           format = SF3_PIXEL_UINT8;
