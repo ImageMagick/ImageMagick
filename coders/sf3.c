@@ -531,27 +531,18 @@ static MagickBooleanType WriteSF3Image(const ImageInfo *image_info,Image *image,
   MagickBooleanType
     status;
 
-  unsigned char
-    channels,
-    format;
-
   QuantumInfo
     *quantum_info;
-
-  QuantumType
-    quantum_type;
 
   QuantumFormatType
     quantum_format;
 
-  unsigned int
-    width,
-    height,
-    checksum;
+  QuantumType
+    quantum_type;
 
   size_t
-    number_scenes,
-    length;
+    length,
+    number_scenes;
 
   ssize_t
     count,
@@ -559,11 +550,14 @@ static MagickBooleanType WriteSF3Image(const ImageInfo *image_info,Image *image,
     y;
 
   unsigned char
+    channels,
+    format,
+    header[16],
     *pixels;
-
-  unsigned char
-    header[16];
   
+  unsigned int
+    checksum;
+
   /*
     Open output image file.
   */
@@ -578,6 +572,8 @@ static MagickBooleanType WriteSF3Image(const ImageInfo *image_info,Image *image,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
+  if ((image->columns > 4294967295UL) || (image->rows > 4294967295UL))
+    ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
   quantum_info=AcquireQuantumInfo(image_info,image);
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
@@ -586,8 +582,6 @@ static MagickBooleanType WriteSF3Image(const ImageInfo *image_info,Image *image,
   number_scenes=GetImageListLength(image);
   quantum_type=GetQuantumType(image,exception);
   quantum_format=GetQuantumFormat(quantum_info);
-  width=image->columns;
-  height=image->rows;
   switch (quantum_type)
     {
     case GrayQuantum:
@@ -718,8 +712,8 @@ static MagickBooleanType WriteSF3Image(const ImageInfo *image_info,Image *image,
   (void) WriteBlobLSBLong(image,(unsigned int) 0); // Zero CRC32 for now
   (void) WriteBlobByte(image,(unsigned char) 0);
   checksum=0xFFFFFFFF;
-  (void) WriteBlobLSBLong(image,(unsigned int) width);
-  (void) WriteBlobLSBLong(image,(unsigned int) height);
+  (void) WriteBlobLSBLong(image,(unsigned int) image->columns);
+  (void) WriteBlobLSBLong(image,(unsigned int) image->rows);
   (void) WriteBlobLSBLong(image,(unsigned int) number_scenes);
   (void) WriteBlobByte(image,channels);
   (void) WriteBlobByte(image,format);
