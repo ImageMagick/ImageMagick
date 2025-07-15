@@ -401,6 +401,7 @@ static Image *ReadSF3Image(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
         }
       p=(unsigned char *) RelinquishMagickMemory(p);
+      quantum_info=DestroyQuantumInfo(quantum_info);
       if (image_info->number_scenes != 0)
         if (image->scene >= (image_info->scene+image_info->number_scenes-1))
           break;
@@ -418,7 +419,6 @@ static Image *ReadSF3Image(const ImageInfo *image_info,ExceptionInfo *exception)
       if (status == MagickFalse)
         break;
     }
-  quantum_info=DestroyQuantumInfo(quantum_info);
   if (status == MagickFalse)
     return(DestroyImageList(image));
   return(GetFirstImageInList(image));
