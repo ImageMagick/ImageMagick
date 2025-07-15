@@ -169,19 +169,13 @@ jobs:
 
     - uses: actions/checkout@v4
 
-    - uses: actions/checkout@v4
-      with:
-        repository: ImageMagick/ImageMagick-Windows
-        path: ImageMagick-Windows
-        ref: refs/heads/main
-
     - uses: msys2/setup-msys2@v2
       with:
         install: mingw-w64-x86_64-toolchain base-devel binutils
         update: true
 
     - name: Building ImageMagick
-      run: cd ImageMagick-Windows/Build/MSYS2 && makepkg-mingw --noconfirm --syncdeps
+      run: cd .github/build/msys2 && makepkg-mingw --noconfirm --syncdeps
       env:
         MINGW_ARCH: mingw64
         PKGEXT: ".pkg.tar.xz"
