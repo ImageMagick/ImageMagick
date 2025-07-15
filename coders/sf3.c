@@ -228,18 +228,9 @@ static Image *ReadSF3Image(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  QuantumInfo
-    *quantum_info;
-
-  QuantumType
-    quantum_type;
-
   ssize_t
-    count;
+    count = 0;
   
-  size_t
-    length;
-
   unsigned char
     channels,
     format;
@@ -279,12 +270,23 @@ static Image *ReadSF3Image(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
   channels=ReadBlobByte(image);
   format=ReadBlobByte(image);
-  quantum_info=(QuantumInfo *) NULL;
   
   for (unsigned int z=0; z<layers; ++z)
     {
+      QuantumInfo
+        *quantum_info;
+
+      QuantumType
+        quantum_type;
+
+      size_t
+        length = 0;
+
+      ssize_t
+        y;
+
       unsigned char
-        *p;
+        *pixels;
 
       image->endian=LSBEndian;
       image->compression=NoCompression;
@@ -382,26 +384,25 @@ static Image *ReadSF3Image(const ImageInfo *image_info,ExceptionInfo *exception)
         return(DestroyImageList(image));
       }
       length=image->columns*(format & 0xF)*(channels & 0xF);
-      p=(unsigned char *) AcquireQuantumMemory(length, 1);
-      if (p == (unsigned char *) NULL)
+      pixels=GetQuantumPixels(quantum_info);
+      for (y=0; y < (ssize_t) image->rows; ++y)
         {
-          quantum_info=DestroyQuantumInfo(quantum_info);
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-        }
-      *p='\0';
-      for (unsigned int y=0; y<image->rows; ++y)
-        {
-          count=ReadBlob(image,length,p);
+          count=ReadBlob(image,length,pixels);
           if (count != (ssize_t) length)
             break;
           (void) GetAuthenticPixels(image,0,y,image->columns,1,exception);
           (void) ImportQuantumPixels(image,(CacheView *) NULL,
-                                     quantum_info,quantum_type,p,exception);
+                                    quantum_info,quantum_type,pixels,exception);
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
         }
-      p=(unsigned char *) RelinquishMagickMemory(p);
       quantum_info=DestroyQuantumInfo(quantum_info);
+      if (y < (ssize_t) image->rows)
+        {
+          ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+            image->filename);
+          break;
+        }
       if (image_info->number_scenes != 0)
         if (image->scene >= (image_info->scene+image_info->number_scenes-1))
           break;
