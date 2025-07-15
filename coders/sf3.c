@@ -268,8 +268,8 @@ static Image *ReadSF3Image(const ImageInfo *image_info,ExceptionInfo *exception)
   layers = ReadBlobLSBLong(image);
   if (width == 0 || height == 0 || layers == 0)
     ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
-  channels=ReadBlobByte(image);
-  format=ReadBlobByte(image);
+  channels=(unsigned char) ReadBlobByte(image);
+  format=(unsigned char) ReadBlobByte(image);
   
   for (unsigned int z=0; z<layers; ++z)
     {
