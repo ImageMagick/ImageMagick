@@ -294,6 +294,11 @@ static Image *ReadSF3Image(const ImageInfo *image_info,ExceptionInfo *exception)
       image->columns=(size_t) width;
       image->rows=(size_t) height;
       image->depth=(size_t)((format & 0xF)*8);
+      if (image_info->ping != MagickFalse)
+        break;
+      if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
+        if (image->scene >= (image_info->scene+image_info->number_scenes-1))
+          break;
       status=SetImageExtent(image,image->columns,image->rows,exception);
       if (status == MagickFalse)
         return(DestroyImageList(image));
@@ -662,6 +667,7 @@ static MagickBooleanType WriteSF3Image(const ImageInfo *image_info,Image *image,
       if (image->depth <= 8)
         {
           format = SF3_PIXEL_INT8;
+          SetQuantumDepth(image,quantum_info,8);
         }
       else if (image->depth <= 16)
         {
@@ -685,6 +691,7 @@ static MagickBooleanType WriteSF3Image(const ImageInfo *image_info,Image *image,
       if (image->depth <= 8)
         {
           format = SF3_PIXEL_UINT8;
+          SetQuantumDepth(image,quantum_info,8);
         }
       else if (image->depth <= 16)
         {
