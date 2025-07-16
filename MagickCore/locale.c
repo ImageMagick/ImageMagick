@@ -1011,9 +1011,9 @@ MagickExport double InterpretLocaleValue(const char *magick_restrict string,
         value=strtod(string,&q);
       else
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
-      value=_strtod_l(string,&q,locale);
+        value=_strtod_l(string,&q,locale);
 #else
-      value=strtod_l(string,&q,locale);
+        value=strtod_l(string,&q,locale);
 #endif
 #else
       value=strtod(string,&q);
