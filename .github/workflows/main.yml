@@ -174,7 +174,7 @@ jobs:
         install: mingw-w64-x86_64-toolchain base-devel binutils
         update: true
 
-    - name: Building ImageMagick
+    - name: Build ImageMagick
       run: cd .github/build/msys2 && makepkg-mingw --noconfirm --syncdeps
       env:
         MINGW_ARCH: mingw64
