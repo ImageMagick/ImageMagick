@@ -173,7 +173,7 @@ jobs:
         msbuild /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.architecture}}
 
   build_windows_zero_configuration:
-    name: 'Windows Q16-x64 hdri=yes (zero configuration ${{matrix.buildType}})'
+    name: 'Windows Q16-HDRI-x64 (zero configuration ${{matrix.buildType}})'
     runs-on: windows-2022
 
     strategy:
@@ -186,6 +186,11 @@ jobs:
       uses: actions/checkout@v4
       with:
         path: ImageMagick
+
+    - name: Download configure
+      shell: cmd
+      run: |
+        ImageMagick\.github\build\windows\download-configure.cmd
 
     - name: Download dependencies
       shell: cmd
