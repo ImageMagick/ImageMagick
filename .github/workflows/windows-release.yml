@@ -285,7 +285,7 @@ jobs:
       shell: cmd
       working-directory: Configure
       run: |
-        Configure.Release.x64.exe /noWizard /VS2022 /${{matrix.hdri}} /${{matrix.quantum}} /${{matrix.architecture}} /static
+        Configure.Release.x64.exe /noWizard /VS2022 /onlyMagick /${{matrix.hdri}} /${{matrix.quantum}} /${{matrix.architecture}} /static
 
     - name: Build ImageMagick
       shell: cmd
