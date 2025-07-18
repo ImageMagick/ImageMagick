@@ -150,7 +150,7 @@ jobs:
 
     - name: Sign executables and libraries
       if: github.event_name != 'pull_request'
-      run: sign code trusted-signing`
+      run: sign code trusted-signing `
         --trusted-signing-account ImageMagick `
         --trusted-signing-certificate-profile ImageMagick `
         --trusted-signing-endpoint https://eus.codesigning.azure.net `
