@@ -169,7 +169,7 @@ jobs:
         endpoint: https://eus.codesigning.azure.net/
         trusted-signing-account-name: ImageMagick
         certificate-profile-name: ImageMagick
-        files-folder: 'Installer\Inno\Artifacts'
+        files-folder: 'Configure\Installer\Inno\Artifacts'
         files-folder-filter: dll,exe
         append-signature: true
         timeout: 600
@@ -336,7 +336,7 @@ jobs:
         Copy-Item "ImageMagick\ChangeLog.md" "portable"
         Copy-Item "ImageMagick\LICENSE" "portable\LICENSE.txt"
 
-        $version = (cat "Installer\Inno\config.isx" | Select-String "MagickPackageFullVersionText") | Out-String
+        $version = (cat "Configure\Installer\Inno\config.isx" | Select-String "MagickPackageFullVersionText") | Out-String
         $version = ($version | Select-String '".*"' -AllMatches |  Select -Expand Matches | Select -Expand Value | Out-String)
         $version = $version -Replace "`n|`r|""",""
         $version = $version -Replace " ","-"
