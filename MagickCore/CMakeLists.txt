@@ -572,6 +572,8 @@ set(MAGICKCORE_CODERS_SRCS
   ${CODERS_PATH}/scr.h
   ${CODERS_PATH}/sct.c
   ${CODERS_PATH}/sct.h
+  ${CODERS_PATH}/sf3.c
+  ${CODERS_PATH}/sf3.h
   ${CODERS_PATH}/sfw.c
   ${CODERS_PATH}/sfw.h
   ${CODERS_PATH}/sgi.c
