@@ -18,15 +18,6 @@
 #ifndef MAGICKCORE_STUDIO_H
 #define MAGICKCORE_STUDIO_H
 
-#if defined(_OPENMP) && ((_OPENMP >= 200203) || defined(__OPENCC__))
-#  include <omp.h>
-#  define MAGICKCORE_OPENMP_SUPPORT  1
-#endif
-
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 #if defined(WIN32) || defined(WIN64) || defined(_WIN32_WINNT)
 #  define MAGICKCORE_WINDOWS_SUPPORT
 #else
@@ -50,6 +41,15 @@ extern "C" {
 # if defined(__cplusplus) || defined(c_plusplus)
 #  undef inline
 # endif
+#endif
+
+#if defined(_OPENMP) && ((_OPENMP >= 200203) || defined(__OPENCC__))
+#  include <omp.h>
+#  define MAGICKCORE_OPENMP_SUPPORT  1
+#endif
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
 #endif
 
 #if defined(MAGICKCORE_NAMESPACE_PREFIX)
