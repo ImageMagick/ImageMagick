@@ -136,12 +136,6 @@ jobs:
         nmake
         nmake release
 
-    - name: Create installer
-      shell: cmd
-      run: |
-        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
-        "C:\Program Files (x86)\Inno Setup 6\iscc.exe" Configure\Installer\Inno\ImageMagick.iss
-
     - name: Azure CLI login with federated credential
       if: github.event_name != 'pull_request'
       uses: azure/login@v2
@@ -154,14 +148,32 @@ jobs:
       if: github.event_name != 'pull_request'
       run: dotnet tool install --global sign --prerelease
 
-    - name: Sign installer
+    - name: Sign executables and libraries
       if: github.event_name != 'pull_request'
-      run: sign code trusted-signing *.exe `
+      run: sign code trusted-signing`
         --trusted-signing-account ImageMagick `
         --trusted-signing-certificate-profile ImageMagick `
         --trusted-signing-endpoint https://eus.codesigning.azure.net `
         --azure-credential-type azure-cli `
-        --verbosity information
+        --verbosity information `
+        *.exe *.dll
+      working-directory: Artifacts/bin
+
+    - name: Create installer
+      shell: cmd
+      run: |
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
+        "C:\Program Files (x86)\Inno Setup 6\iscc.exe" Configure\Installer\Inno\ImageMagick.iss
+
+    - name: Sign installer
+      if: github.event_name != 'pull_request'
+      run: sign code trusted-signing `
+        --trusted-signing-account ImageMagick `
+        --trusted-signing-certificate-profile ImageMagick `
+        --trusted-signing-endpoint https://eus.codesigning.azure.net `
+        --azure-credential-type azure-cli `
+        --verbosity information `
+        *.exe
       working-directory: Configure/Installer/Inno/Artifacts
 
     - name: Get version
@@ -307,12 +319,13 @@ jobs:
 
     - name: Sign executables
       if: github.event_name != 'pull_request'
-      run: sign code trusted-signing *.exe `
+      run: sign code trusted-signing `
         --trusted-signing-account ImageMagick `
         --trusted-signing-certificate-profile ImageMagick `
         --trusted-signing-endpoint https://eus.codesigning.azure.net `
         --azure-credential-type azure-cli `
-        --verbosity information
+        --verbosity information `
+        *.exe
       working-directory: Artifacts/bin
 
     - name: Copy Files
