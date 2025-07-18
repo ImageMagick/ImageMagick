@@ -63,11 +63,11 @@ jobs:
           - quantum: Q8
             hdri: hdri
         include:
-          - platform: x64
+          - architecture: x64
             bit: 64
-          - platform: arm64
+          - architecture: arm64
             bit: 64
-          - platform: x86
+          - architecture: x86
             bit: 32
           - buildType: dynamic
             typeName: dll
@@ -99,7 +99,7 @@ jobs:
         path: ImageMagick
 
     - name: Install Strawberry Perl
-      if: ${{matrix.buildType == 'dynamic' && matrix.platform != 'arm64'}}
+      if: ${{matrix.buildType == 'dynamic' && matrix.architecture != 'arm64'}}
       shell: cmd
       run: |
         powershell Invoke-WebRequest -Uri https://github.com/ImageMagick/ImageMagick-Windows/releases/download/20200615/strawberry-perl-5.30.2.1-${{matrix.bit}}bit.msi -OutFile strawberry-perl-5.30.2.1-${{matrix.bit}}bit.msi
@@ -122,7 +122,7 @@ jobs:
       shell: cmd
       run: |
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
-        msbuild /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform}}
+        msbuild /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.architecture}}
 
     - name: Build PerlMagick
       if: ${{matrix.buildType == 'dynamic' && matrix.architecture != 'arm64'}}
@@ -260,11 +260,11 @@ jobs:
           - quantum: Q8
             hdri: hdri
         include:
-          - platform: x64
+          - architecture: x64
             bit: 64
-          - platform: arm64
+          - architecture: arm64
             bit: 64
-          - platform: x86
+          - architecture: x86
             bit: 32
           - hdri: hdri
             hdri_flag: '-HDRI'
@@ -301,7 +301,7 @@ jobs:
       shell: cmd
       run: |
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
-        msbuild /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform}}
+        msbuild /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.architecture}}
 
     - name: 'Azure CLI login with federated credential'
       if: github.event_name != 'pull_request'
@@ -344,5 +344,5 @@ jobs:
 
     - uses: actions/upload-artifact@v4
       with:
-        name: 'ImageMagick-${{steps.package.outputs.version}}-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.platform}}'
+        name: 'ImageMagick-${{steps.package.outputs.version}}-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.architecture}}'
         path: portable
