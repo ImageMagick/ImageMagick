@@ -136,7 +136,13 @@ jobs:
         nmake
         nmake release
 
-    - name: 'Azure CLI login with federated credential'
+    - name: Create installer
+      shell: cmd
+      run: |
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
+        "C:\Program Files (x86)\Inno Setup 6\iscc.exe" Configure\Installer\Inno\ImageMagick.iss
+
+    - name: Azure CLI login with federated credential
       if: github.event_name != 'pull_request'
       uses: azure/login@v2
       with:
@@ -144,35 +150,19 @@ jobs:
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-    - name: Sign binaries
+    - name: Install sign cli
       if: github.event_name != 'pull_request'
-      uses: azure/trusted-signing-action@v0.5.1
-      with:
-        endpoint: https://eus.codesigning.azure.net/
-        trusted-signing-account-name: ImageMagick
-        certificate-profile-name: ImageMagick
-        files-folder: 'Artifacts\bin'
-        files-folder-filter: dll,exe
-        append-signature: true
-        timeout: 600
-
-    - name: Create installer
-      shell: cmd
-      run: |
-        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
-        "C:\Program Files (x86)\Inno Setup 6\iscc.exe" Configure\Installer\Inno\ImageMagick.iss
+      run: dotnet tool install --global sign --prerelease
 
     - name: Sign installer
       if: github.event_name != 'pull_request'
-      uses: azure/trusted-signing-action@v0.5.1
-      with:
-        endpoint: https://eus.codesigning.azure.net/
-        trusted-signing-account-name: ImageMagick
-        certificate-profile-name: ImageMagick
-        files-folder: 'Configure\Installer\Inno\Artifacts'
-        files-folder-filter: dll,exe
-        append-signature: true
-        timeout: 600
+      run: sign code trusted-signing *.exe `
+        --trusted-signing-account ImageMagick `
+        --trusted-signing-certificate-profile ImageMagick `
+        --trusted-signing-endpoint https://eus.codesigning.azure.net `
+        --azure-credential-type azure-cli `
+        --verbosity information
+      working-directory: Configure/Installer/Inno/Artifacts
 
     - name: Get version
       id: version
@@ -303,7 +293,7 @@ jobs:
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
         msbuild /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.architecture}}
 
-    - name: 'Azure CLI login with federated credential'
+    - name: Azure CLI login with federated credential
       if: github.event_name != 'pull_request'
       uses: azure/login@v2
       with:
@@ -311,17 +301,19 @@ jobs:
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+    - name: Install sign cli
+      if: github.event_name != 'pull_request'
+      run: dotnet tool install --global sign --prerelease
+
     - name: Sign executables
       if: github.event_name != 'pull_request'
-      uses: azure/trusted-signing-action@v0.5.1
-      with:
-        endpoint: https://eus.codesigning.azure.net/
-        trusted-signing-account-name: ImageMagick
-        certificate-profile-name: ImageMagick
-        files-folder: 'Artifacts\bin'
-        files-folder-filter: exe
-        append-signature: true
-        timeout: 600
+      run: sign code trusted-signing *.exe `
+        --trusted-signing-account ImageMagick `
+        --trusted-signing-certificate-profile ImageMagick `
+        --trusted-signing-endpoint https://eus.codesigning.azure.net `
+        --azure-credential-type azure-cli `
+        --verbosity information
+      working-directory: Artifacts/bin
 
     - name: Copy Files
       id: package
