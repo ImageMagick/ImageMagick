@@ -198,43 +198,30 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Clone ImageMagick
+    - name: Clone ImageMagick/Windows
       uses: actions/checkout@v4
       with:
-        path: ImageMagick
-
-    - name: Clone ImageMagick-Windows
-      uses: actions/checkout@v4
-      with:
-        repository: ImageMagick/ImageMagick-Windows
-        path: ImageMagick-Windows
+        repository: ImageMagick/Windows
         ref: refs/heads/main
 
     - name: Clone repositories
       shell: cmd
       run: |
-        cd ImageMagick-Windows
-        CloneRepositories.IM7.cmd
+        clone-repositories-im7.cmd
 
     - name: Download ChangeLog.md
       uses: actions/download-artifact@v4
       with:
         name: ChangeLog
-        path: ImageMagick-Windows\ImageMagick
+        path: ImageMagick
 
     - name: Create source archive
       shell: cmd
       run: |
-        cd ImageMagick-Windows
         mkdir Source
-        move Build Source
         move Configure Source
         move Dependencies Source
         move ImageMagick Source
-        move Installer Source
-        move OptionalDependencies Source
-        move Artifacts Source
-        move Projects Source
         7z a ImageMagick-Windows.7z .\Source\*
 
     - uses: actions/upload-artifact@v4
