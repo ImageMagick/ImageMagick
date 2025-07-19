@@ -93,20 +93,20 @@ jobs:
         path: artifacts
 
   build_windows:
-    name: 'Build ${{ matrix.quantum }}${{ matrix.hdri_flag }} (${{ matrix.platform }})'
+    name: Build ${{ matrix.quantum }}${{matrix.hdri_flag}} (${{matrix.architecture}})
     runs-on: windows-latest
 
     strategy:
       fail-fast: false
       matrix:
-        platform: [ x64, arm64 ]
+        architecture: [ x64, arm64 ]
         quantum: [ Q8, Q16 ]
-        hdri: [ HDRI, noHDRI ]
+        hdri: [ hdri, noHdri ]
         exclude:
           - quantum: Q8
             hdri: HDRI
         include:
-          - hdri: HDRI
+          - hdri: hdri
             hdri_flag: '-HDRI'
 
     steps:
@@ -115,37 +115,34 @@ jobs:
       with:
         path: ImageMagick
 
-    - name: Clone ImageMagick-Windows
-      uses: actions/checkout@v4
-      with:
-        repository: ImageMagick/ImageMagick-Windows
-        path: ImageMagick-Windows
-
-    - name: Clone repositories
+    - name: Download configure
       shell: cmd
       run: |
-        cd ImageMagick-Windows
-        CloneRepositories.IM7.cmd
+        ImageMagick\.github\build\windows\download-configure.cmd
+
+    - name: Download dependencies
+      shell: cmd
+      run: |
+        ImageMagick\.github\build\windows\download-dependencies.cmd windows-${{matrix.architecture}}-static-openMP.zip
 
     - name: Configure ImageMagick
       shell: cmd
+      working-directory: Configure
       run: |
-        cd ImageMagick-Windows\Configure
-        Configure.Release.x64.exe /VS2022 /noWizard /noAliases /${{ matrix.hdri }} /${{ matrix.quantum }} /${{ matrix.platform }} /smtd
+        Configure.Release.x64.exe /VS2022 /noWizard /onlyMagick /${{matrix.architecture}} /static /${{matrix.quantum}} /${{matrix.hdri}}
 
-    - name: Build ImageMagick (${{ matrix.platform }})
+    - name: Build ImageMagick (${{matrix.architecture}})
       shell: cmd
       run: |
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
-        cd ImageMagick-Windows
-        msbuild /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform}}
+        msbuild /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.architecture}}
 
     - uses: actions/upload-artifact@v4
       with:
-        name: Windows-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.platform}}
+        name: Windows-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.architecture}}
         path: |
-          ImageMagick-Windows\Artifacts\bin\*.xml
-          ImageMagick-Windows\Artifacts\bin\*.exe
+          Artifacts\bin\*.xml
+          Artifacts\bin\*.exe
 
   version:
     name: Set release and version
@@ -169,7 +166,7 @@ jobs:
         echo "version=$version" >> $env:GITHUB_OUTPUT
 
   create_msix:
-    name: 'Create Msix ${{matrix.quantum}}${{matrix.hdri_flag}}'
+    name: Create Msix ${{matrix.quantum}}${{matrix.hdri_flag}}
     runs-on: windows-latest
     environment: release
     needs:
@@ -184,12 +181,12 @@ jobs:
       fail-fast: false
       matrix:
         quantum: [ Q8, Q16 ]
-        hdri: [ HDRI, noHDRI ]
+        hdri: [ hdri, noHdri ]
         exclude:
           - quantum: Q8
-            hdri: HDRI
+            hdri: hdri
         include:
-          - hdri: HDRI
+          - hdri: hdri
             hdri_flag: '-HDRI'
 
     steps:
@@ -263,7 +260,7 @@ jobs:
           artifacts/Msix-Q16-HDRI/ImageMagick.Q16-HDRI.msixbundle
 
   publish_msix:
-    name: 'Publish Msix ${{matrix.quantum}}${{matrix.hdri_flag}}'
+    name: Publish Msix ${{matrix.quantum}}${{matrix.hdri_flag}}
     if: startsWith(github.ref, 'refs/tags/')
     needs:
       - version
@@ -274,12 +271,12 @@ jobs:
       fail-fast: false
       matrix:
         quantum: [ Q8, Q16 ]
-        hdri: [ HDRI, noHDRI ]
+        hdri: [ hdri, noHdri ]
         exclude:
           - quantum: Q8
-            hdri: HDRI
+            hdri: hdri
         include:
-          - hdri: HDRI
+          - hdri: hdri
             hdri_flag: '-HDRI'
 
     steps:

@@ -1225,6 +1225,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
               Image
                 *sans_image;
 
+              (void) SetImageArtifact(distort_image,"compare:virtual-pixels",
+                "false");
               sans_image=CompareImages(distort_image,reconstruct_image,metric,
                 &distortion,exception);
               if (sans_image != (Image *) NULL)

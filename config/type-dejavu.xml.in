@@ -22,7 +22,7 @@
     style="normal"
     stretch="normal"
     format="opentype"
-    glyphs="@dejavu_font_dir@URWGothic-Book.otf"
+    glyphs="@dejavu_font_dir@URWGothic-Book.ttf"
     />
   <type
     name="AvantGarde-BookOblique"
@@ -33,7 +33,7 @@
     style="oblique"
     stretch="normal"
     format="opentype"
-    glyphs="@dejavu_font_dir@URWGothic-BookOblique.otf"
+    glyphs="@dejavu_font_dir@URWGothic-BookOblique.ttf"
     />
   <type
     name="AvantGarde-Demi"
@@ -44,7 +44,7 @@
     style="normal"
     stretch="normal"
     format="opentype"
-    glyphs="@dejavu_font_dir@URWGothic-Demi.otf"
+    glyphs="@dejavu_font_dir@URWGothic-Demi.ttf"
     />
   <type
     name="AvantGarde-DemiOblique"
@@ -55,7 +55,7 @@
     style="oblique"
     stretch="normal"
     format="opentype"
-    glyphs="@dejavu_font_dir@URWGothic-DemiOblique.otf"
+    glyphs="@dejavu_font_dir@URWGothic-DemiOblique.ttf"
     />
   <type
     name="Bookman-Demi"
@@ -66,7 +66,7 @@
     style="normal"
     stretch="normal"
     format="opentype"
-    glyphs="@dejavu_font_dir@URWBookman-Demi.otf"
+    glyphs="@dejavu_font_dir@URWBookman-Demi.ttf"
     />
   <type
     name="Bookman-DemiItalic"
@@ -77,7 +77,7 @@
     style="italic"
     stretch="normal"
     format="opentype"
-    glyphs="@dejavu_font_dir@URWBookman-DemiItalic.otf"
+    glyphs="@dejavu_font_dir@URWBookman-DemiItalic.ttf"
     />
   <type
     name="Bookman-Light"
@@ -88,7 +88,7 @@
     style="normal"
     stretch="normal"
     format="opentype"
-    glyphs="@dejavu_font_dir@URWBookman-Light.otf"
+    glyphs="@dejavu_font_dir@URWBookman-Light.ttf"
     />
   <type
     name="Bookman-LightItalic"
@@ -99,7 +99,7 @@
     style="italic"
     stretch="normal"
     format="opentype"
-    glyphs="@dejavu_font_dir@URWBookman-LightItalic.otf"
+    glyphs="@dejavu_font_dir@URWBookman-LightItalic.ttf"
     />
   <type
     name="Courier"
@@ -110,7 +110,7 @@
     style="normal"
     stretch="normal"
     format="opentype"
-    glyphs="@dejavu_font_dir@NimbusMonoPS-Regular.otf"
+    glyphs="@dejavu_font_dir@NimbusMonoPS-Regular.ttf"
     />
   <type
     name="Courier-Bold"
@@ -121,7 +121,7 @@
     style="normal"
     stretch="normal"
     format="opentype"
-    glyphs="@dejavu_font_dir@NimbusMonoPS-Bold.otf"
+    glyphs="@dejavu_font_dir@NimbusMonoPS-Bold.ttf"
     />
   <type
     name="Courier-Oblique"
@@ -132,7 +132,7 @@
     style="oblique"
     stretch="normal"
     format="opentype"
-    glyphs="@dejavu_font_dir@NimbusMonoPS-Italic.otf"
+    glyphs="@dejavu_font_dir@NimbusMonoPS-Italic.ttf"
     />
   <type
     name="Courier-BoldOblique"
@@ -143,7 +143,7 @@
     style="oblique"
     stretch="normal"
     format="opentype"
-    glyphs="@dejavu_font_dir@NimbusMonoPS-BoldItalic.otf"
+    glyphs="@dejavu_font_dir@NimbusMonoPS-BoldItalic.ttf"
     />
   <type
     name="Helvetica"
@@ -154,7 +154,7 @@
     style="normal"
     stretch="normal"
     format="opentype"
-    glyphs="@dejavu_font_dir@NimbusSans-Regular.otf"
+    glyphs="@dejavu_font_dir@NimbusSans-Regular.ttf"
     />
   <type
     name="Helvetica-Bold"
@@ -165,7 +165,7 @@
     style="normal"
     stretch="normal"
     format="opentype"
-    glyphs="@dejavu_font_dir@NimbusSans-Bold.otf"
+    glyphs="@dejavu_font_dir@NimbusSans-Bold.ttf"
     />
   <type
     name="Helvetica-Oblique"
@@ -176,7 +176,7 @@
     style="italic"
     stretch="normal"
     format="opentype"
-    glyphs="@dejavu_font_dir@NimbusSans-Italic.otf"
+    glyphs="@dejavu_font_dir@NimbusSans-Italic.ttf"
     />
   <type
     name="Helvetica-BoldOblique"
@@ -187,7 +187,7 @@
     style="italic"
     stretch="normal"
     format="opentype"
-    glyphs="@dejavu_font_dir@NimbusSans-BoldItalic.otf"
+    glyphs="@dejavu_font_dir@NimbusSans-BoldItalic.ttf"
     />
   <type
     name="Helvetica-Narrow"
@@ -198,7 +198,7 @@
     style="normal"
     stretch="condensed"
     format="opentype"
-    glyphs="@dejavu_font_dir@NimbusSansNarrow-Regular.otf"
+    glyphs="@dejavu_font_dir@NimbusSansNarrow-Regular.ttf"
     />
   <type
     name="Helvetica-Narrow-Oblique"
@@ -209,7 +209,7 @@
     style="oblique"
     stretch="condensed"
     format="opentype"
-    glyphs="@dejavu_font_dir@NimbusSansNarrow-Oblique.otf"
+    glyphs="@dejavu_font_dir@NimbusSansNarrow-Oblique.ttf"
     />
   <type
     name="Helvetica-Narrow-Bold"
@@ -220,7 +220,7 @@
     style="normal"
     stretch="condensed"
     format="opentype"
-    glyphs="@dejavu_font_dir@NimbusSansNarrow-Bold.otf"
+    glyphs="@dejavu_font_dir@NimbusSansNarrow-Bold.ttf"
     />
   <type
     name="Helvetica-Narrow-BoldOblique"
@@ -231,7 +231,7 @@
     style="oblique"
     stretch="condensed"
     format="opentype"
-    glyphs="@dejavu_font_dir@NimbusSansNarrow-BoldOblique.otf"
+    glyphs="@dejavu_font_dir@NimbusSansNarrow-BoldOblique.ttf"
     />
   <type
     name="NewCenturySchlbk-Roman"
@@ -242,7 +242,7 @@
     style="normal"
     stretch="normal"
     format="opentype"
-    glyphs="@dejavu_font_dir@C059-Roman.otf"
+    glyphs="@dejavu_font_dir@C059-Roman.ttf"
     />
   <type
     name="NewCenturySchlbk-Italic"
@@ -253,7 +253,7 @@
     style="italic"
     stretch="normal"
     format="opentype"
-    glyphs="@dejavu_font_dir@C059-Italic.otf"
+    glyphs="@dejavu_font_dir@C059-Italic.ttf"
     />
   <type
     name="NewCenturySchlbk-Bold"
@@ -264,7 +264,7 @@
     style="normal"
     stretch="normal"
     format="opentype"
-    glyphs="@dejavu_font_dir@C059-Bold.otf"
+    glyphs="@dejavu_font_dir@C059-Bold.ttf"
     />
   <type
     name="NewCenturySchlbk-BoldItalic"
@@ -275,7 +275,7 @@
     style="italic"
     stretch="normal"
     format="opentype"
-    glyphs="@dejavu_font_dir@C059-BdIta.otf"
+    glyphs="@dejavu_font_dir@C059-BdIta.ttf"
     />
   <type
     name="Palatino-Roman"
@@ -286,7 +286,7 @@
     style="normal"
     stretch="normal"
     format="opentype"
-    glyphs="@dejavu_font_dir@P052-Roman.otf"
+    glyphs="@dejavu_font_dir@P052-Roman.ttf"
     />
   <type
     name="Palatino-Italic"
@@ -297,7 +297,7 @@
     style="italic"
     stretch="normal"
     format="opentype"
-    glyphs="@dejavu_font_dir@P052-Italic.otf"
+    glyphs="@dejavu_font_dir@P052-Italic.ttf"
     />
   <type
     name="Palatino-Bold"
@@ -308,7 +308,7 @@
     style="normal"
     stretch="normal"
     format="opentype"
-    glyphs="@dejavu_font_dir@P052-Bold.otf"
+    glyphs="@dejavu_font_dir@P052-Bold.ttf"
     />
   <type
     name="Palatino-BoldItalic"
@@ -319,7 +319,7 @@
     style="italic"
     stretch="normal"
     format="opentype"
-    glyphs="@dejavu_font_dir@P052-BoldItalic.otf"
+    glyphs="@dejavu_font_dir@P052-BoldItalic.ttf"
     />
   <type
     name="Symbol"
@@ -330,7 +330,7 @@
     style="normal"
     stretch="normal"
     format="opentype"
-    glyphs="@dejavu_font_dir@StandardSymbolsPS.otf"
+    glyphs="@dejavu_font_dir@StandardSymbolsPS.ttf"
     version="0.1"
     encoding="AdobeCustom"
     />
@@ -343,7 +343,7 @@
     style="normal"
     stretch="normal"
     format="opentype"
-    glyphs="@dejavu_font_dir@NimbusRoman-Regular.otf"
+    glyphs="@dejavu_font_dir@NimbusRoman-Regular.ttf"
     />
   <type
     name="Times-Bold"
@@ -354,7 +354,7 @@
     style="normal"
     stretch="normal"
     format="opentype"
-    glyphs="@dejavu_font_dir@NimbusRoman-Bold.otf"
+    glyphs="@dejavu_font_dir@NimbusRoman-Bold.ttf"
     />
   <type
     name="Times-Italic"
@@ -365,7 +365,7 @@
     style="italic"
     stretch="normal"
     format="opentype"
-    glyphs="@dejavu_font_dir@NimbusRoman-Italic.otf"
+    glyphs="@dejavu_font_dir@NimbusRoman-Italic.ttf"
     />
   <type
     name="Times-BoldItalic"
@@ -376,6 +376,6 @@
     style="italic"
     stretch="normal"
     format="opentype"
-    glyphs="@dejavu_font_dir@NimbusRoman-BoldItalic.otf"
+    glyphs="@dejavu_font_dir@NimbusRoman-BoldItalic.ttf"
     />
 </typemap>
