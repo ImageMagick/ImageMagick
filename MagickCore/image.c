@@ -1733,6 +1733,8 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
           break;
         (void) CopyMagickString(p+offset,option,(size_t) (MagickPathExtent-
           offset));
+        (void) ConcatenateMagickString(p+offset+strlen(option),end+1,(size_t)
+          (MagickPathExtent-offset-strlen(option)-strlen(end)-1));
         cursor=end+1;
         break;
       }
