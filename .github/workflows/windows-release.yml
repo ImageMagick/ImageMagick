@@ -192,7 +192,7 @@ jobs:
         path: 'Configure\Installer\Inno\Artifacts'
 
   release_windows_source:
-    name: 'Windows source'
+    name: Windows source
     needs:
       - change_log
     runs-on: windows-latest
@@ -227,7 +227,7 @@ jobs:
     - uses: actions/upload-artifact@v4
       with:
         name: ImageMagick-Windows
-        path: 'ImageMagick-Windows\ImageMagick-Windows.7z'
+        path: ImageMagick-Windows.7z
 
   release_windows_portable:
     name: Windows portable ${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.architecture}}
