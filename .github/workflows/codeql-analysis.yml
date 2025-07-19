@@ -11,7 +11,7 @@ on:
 name: codeql analysis
 jobs:
   scan_linux:
-    name: 'Linux Q${{matrix.quantum}}-x64 hdri=${{matrix.hdri}} (${{matrix.modules}})'
+    name: Linux Q${{matrix.quantum}}-x64 hdri=${{matrix.hdri}} (${{matrix.modules}})
     runs-on: ubuntu-24.04
 
     permissions:
@@ -39,6 +39,7 @@ jobs:
     - name: Configure ImageMagick
       run: |
         export CFLAGS="-Wno-deprecated-declarations"
+        autoreconf -fiv
         ./configure --with-quantum-depth=${{matrix.quantum}} --enable-hdri=${{matrix.hdri}} --${{matrix.modules}}
         echo "" > config.status
 
