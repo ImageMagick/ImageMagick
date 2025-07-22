@@ -1270,7 +1270,7 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
           continue;
         }
       difference_image=DestroyImage(difference_image);
-      if (MagickSafeSignificantError(QuantumScale*distance,fuzz) != MagickFalse)
+      if (MagickSafeSignificantError(QuantumScale*distortion,fuzz) != MagickFalse)
         {
           (void) FormatLocaleFile(stdout,"... fail (with distortion %g).\n",
             QuantumScale*distortion);
@@ -1508,7 +1508,7 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
           continue;
         }
       difference_image=DestroyImage(difference_image);
-      if (MagickSafeSignificantError(QuantumScale*distance,fuzz) != MagickFalse)
+      if (MagickSafeSignificantError(QuantumScale*distortion,fuzz) != MagickFalse)
         {
           (void) FormatLocaleFile(stdout,"... fail (with distortion %g).\n",
             QuantumScale*distortion);
