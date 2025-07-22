@@ -22,6 +22,13 @@
 extern "C" {
 #endif
 
+static inline MagickBooleanType MagickSafeSignificantError(const double error,
+  const double fuzz)
+{
+  double threshold = (fuzz > 0.0 ? fuzz : MagickEpsilon)*(1.0+MagickEpsilon);
+  return(error > threshold ? MagickTrue : MagickFalse);
+}
+
 static inline double MagickSafeLog10(const double x)
 {
   if (x < MagickEpsilon)

@@ -1685,7 +1685,7 @@ MagickPrivate MagickBooleanType IsEquivalentAlpha(const Image *image,
     return(MagickTrue);
   fuzz=p->fuzz*p->fuzz+q->fuzz*q->fuzz;
   pixel=(double) p->alpha-(double) q->alpha;
-  if ((pixel*pixel) > (fuzz*(1.0+FLT_EPSILON)))
+  if (MagickSafeSignificantError(pixel*pixel,fuzz) != MagickFalse)
     return(MagickFalse);
   return(MagickTrue);
 }
@@ -1855,7 +1855,7 @@ MagickPrivate MagickBooleanType IsEquivalentIntensity(const Image *image,
     return(MagickTrue);
   fuzz=p->fuzz*p->fuzz+q->fuzz*q->fuzz;
   pixel=GetPixelInfoIntensity(image,p)-GetPixelInfoIntensity(image,q);
-  if ((pixel*pixel) > (fuzz*(1.0+FLT_EPSILON)))
+  if (MagickSafeSignificantError(pixel*pixel,fuzz) != MagickFalse)
     return(MagickFalse);
   return(MagickTrue);
 }
