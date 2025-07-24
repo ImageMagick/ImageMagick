@@ -23,8 +23,7 @@ download_configure()
   download_release "Configure" "$version" "Configure.Release.arm64.exe"
   download_release "Configure" "$version" "Configure.Release.x86.exe"
   download_release "Configure" "$version" "files.zip"
-  unzip -o "files.zip"
-  rm "files.zip"
+  unzip -o "files.zip" || rm "files.zip"
 
   cd ..
 }
