@@ -117,7 +117,7 @@
           <iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border: 0;"></iframe>
         </li>
       </ul>
-      <form class="d-flex form-inline" action="search.html">
+      <form class="d-flex form-inline" action="../www/search.html">
         <input class="form-control me-2" type="text" name="q" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success" type="submit" name="sa">Search</button>
       </form>
@@ -147,7 +147,7 @@ definition of a flag is created with that name. This used to control on/off
 options.  Use <a href="command-line-options.html#define">-define keys</a> to remove definitions
 previously created.  Use <a href="command-line-options.html#define">+define "*"</a> to remove all existing definitions.</p>
 
-<p>The same 'artifact' settings can also be defined using the <a href="command-line-options.html#set">-set "option:<var>key</var>" "<var>value</var>"</a> option, which also allows the use of <a href="escape.html" >Format and Print Image Properties</a> in the defined value. </p>
+<p>The same 'artifact' settings can also be defined using the <a href="command-line-options.html#set">-set "option:<var>key</var>" "<var>value</var>"</a> option, which also allows the use of <a href="../www/escape.html" >Format and Print Image Properties</a> in the defined value. </p>
 
 <p>The <var>option</var> and <var>key</var> are case-independent (they are
 converted to lowercase for use within the decoders) while the <var>value</var>
@@ -155,7 +155,8 @@ is case-dependent.</p>
 
 <p>Such settings are global in scope, and affect all images and operations. </p>
 
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick bilevel.tif -define ps:imagemask eps3:stencil.ps </samp></pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick bilevel.tif -define ps:imagemask eps3:stencil.ps
+magick arrow.tga -set colorspace:auto-grayscale=off myArrow.tga </samp></pre>
 
 <p>Set attributes of the image registry by prefixing the value with
 <samp>registry:</samp>.  For example, to set a temporary path to put work files,
@@ -230,6 +231,11 @@ use:</p>
     <td>Set the structural similarity index k2 argument.</td>
   </tr>
 
+  <tr>
+    <td>compare:virtual-pixels=<var>boolean</var></td>
+    <td>ImageMagick compares images pixel by pixel, aligning from the top-left corner. If sizes differ, unmatched areas in the smaller image are treated as virtual pixels, possibly affecting comparison results. To limit comparison to authentic pixels only, use <samp>-define compare:virtual-pixels=false</samp>.</td>
+  </tr>
+
  <tr>
     <td>complex:snr=<var>value</var></td>
     <td>Set the divide SNR constant <a href="command-line-options.html#complex">-complex</a>.</td>
@@ -238,7 +244,7 @@ use:</p>
   <tr>
     <td>compose:args=<var>arguments</var></td>
      <td>Set certain compose argument values when using convert ... -compose ...
-    -composite. See <a href="compose.html"
+    -composite. See <a href="../www/compose.html"
     >Image Composition</a>.</td>
   </tr>
 
@@ -415,7 +421,7 @@ use:</p>
 
   <tr>
     <td>filename:literal=<var>true</var></td>
-    <td>By default, an output filename can contain <a href="command-line-processing.html#output">embedded formatting characters</a>.  Use this option to bypass interpreting embedded formatting characters and instead use the filename literally.</td>
+    <td>By default, output filenames can contain <a href="command-line-processing.html#output">embedded formatting characters</a>.  Use this option to bypass interpreting embedded formatting characters and instead use the filename literally.</td>
   </tr>
 
   <tr>
@@ -622,7 +628,7 @@ use:</p>
 
   <tr>
     <td>phash:colorspaces=<var>colorspace,colorspace,...</var></td>
-    <td>The perceptual hash defaults to the sRGB and HCLp colorspaces.  When
+    <td>The perceptual hash defaults to the xyY and HSB colorspaces.  When
     using this define, you can specify up to six alternative colorspaces. (as
     of IM 7.0.3-8)</td>
   </tr>
@@ -973,14 +979,52 @@ use:</p>
 
   <tr>
     <td>heic:chroma=<var>value</var></td>
-    <td>set the HEIC chroma parameter. Possible values are: "420", "422", "444". Default is "420".</td>
-    </td>
+    <td>Set the HEIC chroma parameter. Possible values are: "420", "422", "444". Default is "420".</td>
+  </tr>
+
+  <tr>
+    <td>heic:cicp=<var>value</var></td>
+    <td>Set the HEIC color primaries, transfer characteristics, matrix coefficients, and full range flag. Use <samp>1/13/6/1</samp> for full range BT.709.  See ISO/IEC 14496-12:2022 standard for a description of these fields and values.</td>
   </tr>
 
   <tr>
     <td>heic:depth-image=<var>true</var></td>
-    <td>extract the depth image if the container has one.</td>
-    </td>
+    <td>Extract the depth image if the container has one.</td>
+  </tr>
+
+  <tr>
+    <td>heic:max-number-of-tiles=<var>value</var></td>
+    <td>Sets the maximum number of tiles of a HEIC image.</td>
+  </tr>
+
+  <tr>
+    <td>heic:max-bayer-pattern-pixels=<var>value</var></td>
+    <td>Sets the maximum bayer pattern size in pixels of a HEIC image.</td>
+  </tr>
+
+  <tr>
+    <td>heic:max-items=<var>value</var></td>
+    <td>Sets the maximum number of items in a box of a HEIC image.</td>
+  </tr>
+
+  <tr>
+    <td>heic:max-components=<var>value</var></td>
+    <td>Sets the maximum number of components of a HEIC image.</td>
+  </tr>
+
+  <tr>
+    <td>heic:max-iloc-extents-per-item=<var>value</var></td>
+    <td>Sets the maximum number of extents in iloc box of a HEIC image.</td>
+  </tr>
+
+  <tr>
+    <td>heic:max-size-entity-group=<var>value</var></td>
+    <td>Sets the maximum size of an entity group of a HEIC image.</td>
+  </tr>
+
+  <tr>
+    <td>heic:mmax-children-per-box=<var>value</var></td>
+    <td>Sets the maximum number of children per box of a HEIC image.</td>
   </tr>
 
   <tr>
@@ -993,8 +1037,7 @@ use:</p>
 
   <tr>
     <td>heic:speed=<var>value</var></td>
-    <td>set the HEIC speed parameter. Integer value from 0-9. Default is 5.</td>
-    </td>
+    <td>Set the HEIC speed parameter. Integer value from 0-9. Default is 5.</td>
   </tr>
 
   <tr>
@@ -1010,14 +1053,12 @@ use:</p>
 
   <tr>
     <td>identify:locate=<var>value</var></td>
-    <td>Display minimum or maximum pixel locations.</td>
+    <td>Display minimum or maximum pixel locations. Valid values are <samp>minimum</samp> or <samp>maximum</samp>. The default is <samp>maximum</samp>.</td>
   </tr>
 
   <tr>
     <td>identify:limit=<var>value</var></td>
-    <td>The maximum number of pixel locations to display when using identify:locate.
-    Valid values are <samp>minimum</samp>,<samp>maximum</samp>. The default is maximum.
-    </td>
+    <td>The maximum number of pixel locations to display when using <samp>identify:locate</samp>.</td>
   </tr>
 
   <tr>
@@ -1124,6 +1165,11 @@ use:</p>
     example, <samp>-define jpeg:size=128x128</samp>.
     It is most useful for increasing performance and reducing the memory
     requirements when reducing the size of a large JPEG image.</td>
+  </tr>
+
+  <tr>
+    <td>jxl:decoding-speed=<var>value</var></td>
+    <td>Set the jpeg-xl decoding speed. Valid values are in the range of 0 (slowest) to 4 (fastest, at the cost of some quality/density).</td>
   </tr>
 
   <tr>
@@ -1840,7 +1886,7 @@ use:</p>
 
   <tr>
     <td>webp:<var>tag</var>=<var>value</var></td>
-    <td>WebP has a plethora of defines detailed on this <a href="webp.html">page</a>.</td>
+    <td>WebP has a plethora of defines detailed on this <a href="../www/webp.html">page</a>.</td>
   </tr>
 
   <tr>
@@ -1883,14 +1929,14 @@ use:</p>
   <footer class="text-center pt-5 my-5 text-body-secondary border-top">
     <div class="container-fluid">
       <a href="security-policy.html">Security</a> •
-      <a href="news.html">News</a>
+      <a href="../www/news.html">News</a>
      
       <a href="#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
      
-      <a href="links.html">Related</a> •
-      <a href="sitemap.html">Sitemap</a>
+      <a href="../www/links.html">Related</a> •
+      <a href="../www/sitemap.html">Sitemap</a>
    <br/>
-     <a href="support.html">Sponsor</a> •
+     <a href="../www/support.html">Sponsor</a> •
      <a href="cite.html">Cite</a> •
      <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
      <a href="../www/https://imagemagick.org/script/contact.php">Contact Us</a>
@@ -1907,3 +1953,4 @@ use:</p>
   <script src="assets/bootstrap.bundle.min.js" ></script>
   </body>
 </html>
+<!-- Magick Cache 27th July 2025 09:38 -->

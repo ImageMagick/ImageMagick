@@ -117,7 +117,7 @@
           <iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border: 0;"></iframe>
         </li>
       </ul>
-      <form class="d-flex form-inline" action="search.html">
+      <form class="d-flex form-inline" action="../www/search.html">
         <input class="form-control me-2" type="text" name="q" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success" type="submit" name="sa">Search</button>
       </form>
@@ -172,7 +172,7 @@ example,</p>
 <pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick image.jpg -colorspace RGB -resize 50% -colorspace sRGB resize.jpg </samp></pre>
 
 <p>As of IM 6.7.8-2 one can properly work in LAB colorspace whether or not
-Imagemagick is <a href="high-dynamic-range.html">HDRI</a>-enabled.  Essentially the A and
+Imagemagick is <a href="../www/high-dynamic-range.html">HDRI</a>-enabled.  Essentially the A and
 B channels are stored with a 50% gray bias, to allow it to handle the
 negatives required by the format.</p>
 
@@ -497,7 +497,7 @@ the supported image formats.</p>
     <td><a href="../index.html">EXR</a></td>
     <td>RW</td>
     <td>High dynamic-range (HDR) file format developed by Industrial Light &amp; Magic</td>
-    <td>See <a href="high-dynamic-range.html">High Dynamic-Range Images</a> for details on this image format. To specify the output color type, use <samp>-define exr:color-type={RGB,RGBA,YC,YCA,Y,YA,R,G,B,A}</samp>. Use <a href="command-line-options.html#sampling-factor">-sampling-factor</a> to specify the sampling rate for YC(A) (e.g. <samp>2x2 or 4:2:0</samp>). Requires the <a href="../index.html">OpenEXR</a> delegate library.</td>
+    <td>See <a href="../www/high-dynamic-range.html">High Dynamic-Range Images</a> for details on this image format. To specify the output color type, use <samp>-define exr:color-type={RGB,RGBA,YC,YCA,Y,YA,R,G,B,A}</samp>. Use <a href="command-line-options.html#sampling-factor">-sampling-factor</a> to specify the sampling rate for YC(A) (e.g. <samp>2x2 or 4:2:0</samp>). Requires the <a href="../index.html">OpenEXR</a> delegate library.</td>
   </tr>
 
   <tr>
@@ -602,7 +602,7 @@ the supported image formats.</p>
     <td><a href="https://en.wikipedia.org/wiki/High_Efficiency_Image_File_Format">HEIC</a></td>
     <td>RW</td>
     <td>Apple High efficiency Image Format</td>
-    <td>Set the quality to 100 to produce lossless HEIC images.  Requires the <a href="https://github.com/strukturag/libheif">libheif</a> delegate library.  Recognized defines include <samp>heic:preserve-orientation={true,false}</samp>, <samp>depth-image={true,false}</samp>, <samp>heic:speed</samp>, and <samp>heic:chroma</samp>.</td>
+    <td>Set the quality to 100 to produce lossless HEIC images.  Requires the <a href="https://github.com/strukturag/libheif">libheif</a> delegate library.  Recognized defines include <samp>heic:cicp</samp>, <samp>heic:preserve-orientation={true,false}</samp>, <samp>depth-image={true,false}</samp>, <samp>heic:speed</samp>, and <samp>heic:chroma</samp>.</td>
   </tr>
 
   <tr>
@@ -672,28 +672,28 @@ the supported image formats.</p>
     <td><a href="../index.html">JP2</a></td>
     <td>RW</td>
     <td>JPEG-2000 JP2 File Format Syntax</td>
-    <td>Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option. See <a href="jp2.html">JP2 Encoding Options</a> for more details.</td>
+    <td>Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option. See <a href="../www/jp2.html">JP2 Encoding Options</a> for more details.</td>
   </tr>
 
   <tr>
     <td><a href="../index.html">JPT</a></td>
     <td>RW</td>
     <td>JPEG-2000 Code Stream Syntax</td>
-    <td>Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="jp2.html">JP2 Encoding Options</a> for more details.</td>
+    <td>Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="../www/jp2.html">JP2 Encoding Options</a> for more details.</td>
   </tr>
 
   <tr>
     <td><a href="../index.html">J2C</a></td>
     <td>RW</td>
     <td>JPEG-2000 Code Stream Syntax</td>
-    <td>Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="jp2.html">JP2 Encoding Options</a> for more details.</td>
+    <td>Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="../www/jp2.html">JP2 Encoding Options</a> for more details.</td>
   </tr>
 
   <tr>
     <td><a href="../index.html">J2K</a></td>
     <td>RW</td>
     <td>JPEG-2000 Code Stream Syntax</td>
-    <td>Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="jp2.html">JP2 Encoding Options</a> for more details.</td>
+    <td>Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="../www/jp2.html">JP2 Encoding Options</a> for more details.</td>
   </tr>
 
   <tr>
@@ -746,7 +746,7 @@ the supported image formats.</p>
   </tr>
 
   <tr>
-    <td><a href="miff.html">MIFF</a></td>
+    <td><a href="../www/miff.html">MIFF</a></td>
     <td>RW</td>
     <td>Magick multispectral image file format</td>
     <td>This format persists all image attributes known to ImageMagick.  To specify a single precision floating-point format, use <samp>-define quantum:format=floating-point</samp>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>
@@ -827,7 +827,7 @@ the supported image formats.</p>
   </tr>
 
   <tr>
-    <td><a href="magick-vector-graphics.html">MVG</a></td>
+    <td><a href="../www/magick-vector-graphics.html">MVG</a></td>
     <td>RW</td>
     <td>Magick Vector Graphics.</td>
     <td>The native ImageMagick vector metafile format. A text file containing vector drawing commands accepted by <a href="magick.html">magick</a>'s <a href="command-line-options.html#draw">-draw</a> option.</td>
@@ -1204,17 +1204,17 @@ the supported image formats.</p>
   </tr>
 
   <tr>
-    <td><a href="https://shirakumo.org/docs/sf3/">SF3</a></td>
-    <td>RW</td>
-    <td>The SF3 image format is part of the Simple File Format Family.</td>
-    <td>SF3 is designed to be lightweight and easy to parse, with a human-readable text-based structure that focuses on simplicity over compression. It’s especially useful for fast prototyping or environments where minimal overhead is key.</td>
-  </tr>
-
-  <tr>
     <td><a href="../index.html">SFW</a></td>
     <td>R</td>
     <td>Seattle File Works image</td>
     <td> </td>
+  </tr>
+
+  <tr>
+    <td><a href="https://shirakumo.org/docs/sf3/">SF3</a></td>
+    <td>R</td>
+    <td>The SF3 image format is part of the Simple File Format Family.</td>
+    <td>SF3 is designed to be lightweight and easy to parse, with a human-readable text-based structure that focuses on simplicity over compression. It’s especially useful for fast prototyping or environments where minimal overhead is key.</td>
   </tr>
 
   <tr>
@@ -1383,7 +1383,7 @@ the supported image formats.</p>
     <td><a href="http://en.wikipedia.org/wiki/WebP">WEBP</a></td>
     <td>RW</td>
     <td>Weppy image format</td>
-    <td>Requires the <a href="https://developers.google.com/speed/webp/download">WEBP</a> delegate library.  The muxing delegate library is required to read animated Webp image containers. Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="webp.html">WebP Encoding Options</a> for more details.</td>
+    <td>Requires the <a href="https://developers.google.com/speed/webp/download">WEBP</a> delegate library.  The muxing delegate library is required to read animated Webp image containers. Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="../www/webp.html">WebP Encoding Options</a> for more details.</td>
   </tr>
 
   <tr>
@@ -1541,7 +1541,7 @@ the supported image formats.</p>
     <td>GRADIENT</td>
     <td>R</td>
     <td>Gradual passing from one shade to another</td>
-    <td>Returns a rendered linear or radial top-to-bottom <a href="gradient.html">gradient image</a> using the specified image size.</td>
+    <td>Returns a rendered linear or radial top-to-bottom <a href="../www/gradient.html">gradient image</a> using the specified image size.</td>
 
   </tr>
 
@@ -1641,7 +1641,7 @@ the supported image formats.</p>
     <td>RADIAL_GRADIENT</td>
     <td>R</td>
     <td>Gradual radial passing from one shade to another</td>
-    <td>Returns a rendered radial top-to-bottom <a href="gradient.html">gradient image</a> using the specified image size.</td>
+    <td>Returns a rendered radial top-to-bottom <a href="../www/gradient.html">gradient image</a> using the specified image size.</td>
   </tr>
 
   <tr>
@@ -2230,14 +2230,14 @@ the supported image formats.</p>
   <footer class="text-center pt-5 my-5 text-body-secondary border-top">
     <div class="container-fluid">
       <a href="security-policy.html">Security</a> •
-      <a href="news.html">News</a>
+      <a href="../www/news.html">News</a>
      
       <a href="#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
      
-      <a href="links.html">Related</a> •
-      <a href="sitemap.html">Sitemap</a>
+      <a href="../www/links.html">Related</a> •
+      <a href="../www/sitemap.html">Sitemap</a>
    <br/>
-     <a href="support.html">Sponsor</a> •
+     <a href="../www/support.html">Sponsor</a> •
      <a href="cite.html">Cite</a> •
      <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
      <a href="../www/https://imagemagick.org/script/contact.php">Contact Us</a>
@@ -2254,4 +2254,4 @@ the supported image formats.</p>
   <script src="assets/bootstrap.bundle.min.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 1st March 2025 17:03 -->
+<!-- Magick Cache 27th July 2025 09:27 -->

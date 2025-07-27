@@ -117,7 +117,7 @@
           <iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border: 0;"></iframe>
         </li>
       </ul>
-      <form class="d-flex form-inline" action="search.html">
+      <form class="d-flex form-inline" action="../www/search.html">
         <input class="form-control me-2" type="text" name="q" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success" type="submit" name="sa">Search</button>
       </form>
@@ -157,7 +157,7 @@ options, and more global use of 'image properties' (more commonly known as
 <p>Now that ImageMagick version 7 is released, we continue to support version 6 for a minimum of 10 years.  Support for version 6 is limited primarily to bug fixes and security patches with few enhancements.</p>
 
 <h2><a class="anchor" id="hdri"></a>High Dynamic Range Imaging</h2>
-<p>ImageMagick version 7 enables <a href="high-dynamic-range.html">high dynamic range imaging</a> (HDRI) by default.  HDRI accurately represents the wide range of intensity levels found in real scenes ranging from the brightest direct sunlight to the deepest darkest shadows.  In addition, image processing results are more accurate.  The disadvantage is it requires more memory and may result in slower processing times.  If you see differences in the results of your version 6 command-line with version 7, it is likely due to HDRI.  You may need to add <samp>-clamp</samp> to your command-line to constrain pixels to the 0 .. QuantumRange range, or disable HDRI when you build ImageMagick version 7.  To disable HDRI (recommended for smart phone builds such as iOS or production sites where performance is a premium), simply add <samp>--disable-hdri</samp> to the configure script command line when building ImageMagick.</p>
+<p>ImageMagick version 7 enables <a href="../www/high-dynamic-range.html">high dynamic range imaging</a> (HDRI) by default.  HDRI accurately represents the wide range of intensity levels found in real scenes ranging from the brightest direct sunlight to the deepest darkest shadows.  In addition, image processing results are more accurate.  The disadvantage is it requires more memory and may result in slower processing times.  If you see differences in the results of your version 6 command-line with version 7, it is likely due to HDRI.  You may need to add <samp>-clamp</samp> to your command-line to constrain pixels to the 0 .. QuantumRange range, or disable HDRI when you build ImageMagick version 7.  To disable HDRI (recommended for smart phone builds such as iOS or production sites where performance is a premium), simply add <samp>--disable-hdri</samp> to the configure script command line when building ImageMagick.</p>
 
 <h2><a class="anchor" id="channels"></a>Pixel Channels</h2>
 <p>A pixel is comprised of one or more color values, or <var>channels</var> (e.g. red pixel channel).</p>
@@ -345,7 +345,7 @@ GetCacheViewAuthenticMetacontent()
 GetCacheViewVirtualMetacontent()</samp></pre>
 
 <h2><a class="anchor" id="alpha"></a>Alpha</h2>
-<p>We support alpha now, previously opacity.  With alpha, a value of <kbd>0</kbd> means that the pixel does not have any coverage information and is transparent; i.e. there was no color contribution from any geometry because the geometry did not overlap this pixel. A value of <samp>QuantumRange</samp> means that the pixel is opaque because the geometry completely overlapped the pixel. As a consequence, in version 7, the PixelInfo structure member alpha has replaced the previous opacity member.  Another consequence is the alpha part of an sRGB value in hexadecimal notation is now reversed (e.g. #0000 is fully transparent).</p>
+<p>We support alpha now, previously opacity.  With alpha, a value of <samp>0</samp> means that the pixel does not have any coverage information and is transparent; i.e. there was no color contribution from any geometry because the geometry did not overlap this pixel. A value of <samp>QuantumRange</samp> means that the pixel is opaque because the geometry completely overlapped the pixel. As a consequence, in version 7, the PixelInfo structure member alpha has replaced the previous opacity member.  Another consequence is the alpha part of an sRGB value in hexadecimal notation is now reversed (e.g. #0000 is fully transparent).</p>
 <h2><a class="anchor" id="colorspace"></a>Colorspace</h2>
 <p>The <samp>Rec601Luma</samp> and <samp>Rec709Luma</samp> colorspaces are no longer supported.  Instead, specify the <samp>gray</samp> colorspace and choose from these intensity options:</p>
 <pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><samp>Rec601Luma
@@ -669,7 +669,7 @@ example "+annotate", "+resize", "+clut", and "+draw" .</p>
 </dl>
 <h2><a class="anchor" id="performance"></a>Performance Improvements</h2>
 <p>Operating on grayscale images is significantly improved as only one channel is required.  Previously, grayscale required three channels.</p>
-<p>The performance of <a href="fx.html">-fx</a> option has increased by one to two orders of magnitude.</p>
+<p>The performance of <a href="../www/fx.html">-fx</a> option has increased by one to two orders of magnitude.</p>
 
 <h2><a class="anchor" id="summary"></a>Version 7 Change Summary</h2>
 <p>Changes from ImageMagick version 6 to version 7 are summarized here:</p>
@@ -721,14 +721,14 @@ example "+annotate", "+resize", "+clut", and "+draw" .</p>
   <footer class="text-center pt-5 my-5 text-body-secondary border-top">
     <div class="container-fluid">
       <a href="security-policy.html">Security</a> •
-      <a href="news.html">News</a>
+      <a href="../www/news.html">News</a>
      
       <a href="#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
      
-      <a href="links.html">Related</a> •
-      <a href="sitemap.html">Sitemap</a>
+      <a href="../www/links.html">Related</a> •
+      <a href="../www/sitemap.html">Sitemap</a>
    <br/>
-     <a href="support.html">Sponsor</a> •
+     <a href="../www/support.html">Sponsor</a> •
      <a href="cite.html">Cite</a> •
      <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
      <a href="../www/https://imagemagick.org/script/contact.php">Contact Us</a>
@@ -745,4 +745,4 @@ example "+annotate", "+resize", "+clut", and "+draw" .</p>
   <script src="assets/bootstrap.bundle.min.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 1st March 2025 16:41 -->
+<!-- Magick Cache 27th July 2025 09:58 -->
