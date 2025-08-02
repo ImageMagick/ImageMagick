@@ -218,6 +218,9 @@
 /* Define to 1 if you have the 'getexecname' function. */
 #undef HAVE_GETEXECNAME
 
+/* Define to 1 if you have the 'getloadavg' function. */
+#undef HAVE_GETLOADAVG
+
 /* Define to 1 if you have the 'getpagesize' function. */
 #undef HAVE_GETPAGESIZE
 

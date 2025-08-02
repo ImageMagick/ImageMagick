@@ -1050,7 +1050,7 @@ static size_t GetMaxMemoryRequestFromPolicy(void)
     *value;
 
   size_t
-    max = (size_t) MAGICK_SSIZE_MAX;
+    max_memory = (size_t) MAGICK_SSIZE_MAX;
 
   value=GetPolicyValue("system:max-memory-request");
   if (value != (char *) NULL)
@@ -1058,11 +1058,11 @@ static size_t GetMaxMemoryRequestFromPolicy(void)
       /*
         The security policy sets a max memory request limit.
       */
-      max=MagickMax(StringToSizeType(value,100.0),StringToSizeType(
+      max_memory=MagickMax(StringToSizeType(value,100.0),StringToSizeType(
         MinMemoryRequest,100.0));
       value=DestroyString(value);
     }
-  return(MagickMin(max,(size_t) MAGICK_SSIZE_MAX));
+  return(MagickMin(max_memory,(size_t) MAGICK_SSIZE_MAX));
 }
 
 MagickExport size_t GetMaxMemoryRequest(void)

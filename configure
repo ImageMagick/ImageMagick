@@ -5371,7 +5371,7 @@ MAGICK_PATCHLEVEL_VERSION=1
 
 MAGICK_VERSION=7.1.2-1
 
-MAGICK_GIT_REVISION=e779f7aad:20250713
+MAGICK_GIT_REVISION=29a0bea8f:20250801
 
 
 # Substitute library versioning
@@ -5405,7 +5405,7 @@ PACKAGE_LIB_VERSION=0x712
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,2,1
 
-PACKAGE_RELEASE_DATE=2025-07-13
+PACKAGE_RELEASE_DATE=2025-08-01
 
 
 # Ensure that make can run correctly
@@ -36516,6 +36516,12 @@ ac_fn_c_check_func "$LINENO" "getdtablesize" "ac_cv_func_getdtablesize"
 if test "x$ac_cv_func_getdtablesize" = xyes
 then :
   printf "%s\n" "#define HAVE_GETDTABLESIZE 1" >>confdefs.h
+
+fi
+ac_fn_c_check_func "$LINENO" "getloadavg" "ac_cv_func_getloadavg"
+if test "x$ac_cv_func_getloadavg" = xyes
+then :
+  printf "%s\n" "#define HAVE_GETLOADAVG 1" >>confdefs.h
 
 fi
 ac_fn_c_check_func "$LINENO" "getpagesize" "ac_cv_func_getpagesize"
