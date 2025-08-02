@@ -1755,7 +1755,8 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
         Dynamically throttle the CPU relative to the load average.
       */
 #if defined(MAGICKCORE_HAVE_GETLOADAVG)
-      getloadavg(&load_average,1);
+      if (getloadavg(&load_average,1) != 1)
+        load_average=0.0;
 #endif
       load=MagickMax(load_average-GetOpenMPMaximumThreads(),0.0);
       cpu_throttle=(MagickSizeType) (max_delay*(1.0-exp(-sensitivity*load)));
