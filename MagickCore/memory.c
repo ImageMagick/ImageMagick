@@ -1050,7 +1050,7 @@ static size_t GetMaxMemoryRequestFromPolicy(void)
     *value;
 
   size_t
-    max=(size_t) MAGICK_SSIZE_MAX;
+    max = (size_t) MAGICK_SSIZE_MAX;
 
   value=GetPolicyValue("system:max-memory-request");
   if (value != (char *) NULL)
