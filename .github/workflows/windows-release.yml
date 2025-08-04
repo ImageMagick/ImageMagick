@@ -48,7 +48,7 @@ jobs:
     name: Windows ${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.architecture}} (${{matrix.typeName}})
     needs:
       - change_log
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     permissions:
       id-token: write
@@ -197,7 +197,7 @@ jobs:
     name: Windows source
     needs:
       - change_log
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     steps:
     - name: Clone ImageMagick/Windows
@@ -235,7 +235,7 @@ jobs:
     name: Windows portable ${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.architecture}}
     needs:
       - change_log
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     permissions:
       id-token: write
