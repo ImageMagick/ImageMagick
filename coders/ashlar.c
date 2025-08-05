@@ -56,6 +56,7 @@
 #include "MagickCore/option.h"
 #include "MagickCore/property.h"
 #include "MagickCore/quantum-private.h"
+#include "MagickCore/resource_.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
@@ -458,6 +459,10 @@ static inline MagickBooleanType PackAshlarTiles(AshlarInfo *ashlar_info,
   /*
     Pack tiles so they fit the canvas with minimum excess.
   */
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic) shared(status) \
+    num_threads((int) GetMagickResourceLimit(ThreadResource))
+#endif
   for (i=0; i < (ssize_t) number_tiles; i++)
     tiles[i].order=(i);
   qsort((void *) tiles,number_tiles,sizeof(*tiles),CompareTileHeight);
@@ -483,6 +488,10 @@ static inline MagickBooleanType PackAshlarTiles(AshlarInfo *ashlar_info,
   }
   qsort((void *) tiles,number_tiles,sizeof(*tiles),RestoreTileOrder);
   status=MagickTrue;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic) shared(status) \
+    num_threads((int) GetMagickResourceLimit(ThreadResource))
+#endif
   for (i=0; i < (ssize_t) number_tiles; i++)
   {
     tiles[i].order=(ssize_t) ((tiles[i].x != (ssize_t) MAGICK_SSIZE_MAX) ||
@@ -618,6 +627,10 @@ static Image *ASHLARImage(ImageInfo *image_info,Image *image,
   value=GetImageOption(image_info,"label");
   extent.width=0;
   extent.height=0;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic) shared(status) \
+    num_threads((int) GetMagickResourceLimit(ThreadResource))
+#endif
   for (i=0; i < n; i++)
   {
     Image
