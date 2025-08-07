@@ -4791,37 +4791,24 @@ static Image *ReadOneJNGImage(MngReadInfo *mng_info,
       jng_image=ReadImage(alpha_image_info,exception);
 
       if (jng_image != (Image *) NULL)
-        for (y=0; y < (ssize_t) image->rows; y++)
         {
-          s=GetVirtualPixels(jng_image,0,y,image->columns,1,exception);
-          q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
-          if ((s == (const Quantum *)  NULL) || (q == (Quantum *) NULL))
-            break;
+          image->alpha_trait=BlendPixelTrait;
+          for (y=0; y < (ssize_t) image->rows; y++)
+          {
+            s=GetVirtualPixels(jng_image,0,y,image->columns,1,exception);
+            q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
+            if ((s == (const Quantum *)  NULL) || (q == (Quantum *) NULL))
+              break;
 
-          if (image->alpha_trait != UndefinedPixelTrait)
             for (x=(ssize_t) image->columns; x != 0; x--)
             {
               SetPixelAlpha(image,GetPixelRed(jng_image,s),q);
               q+=(ptrdiff_t) GetPixelChannels(image);
               s+=(ptrdiff_t) GetPixelChannels(jng_image);
             }
-
-          else
-            for (x=(ssize_t) image->columns; x != 0; x--)
-            {
-              Quantum
-                alpha;
-
-              alpha=GetPixelRed(jng_image,s);
-              SetPixelAlpha(image,alpha,q);
-              if (alpha != OpaqueAlpha)
-                image->alpha_trait=BlendPixelTrait;
-              q+=(ptrdiff_t) GetPixelChannels(image);
-              s+=(ptrdiff_t) GetPixelChannels(jng_image);
-            }
-
-          if (SyncAuthenticPixels(image,exception) == MagickFalse)
-            break;
+            if (SyncAuthenticPixels(image,exception) == MagickFalse)
+              break;
+          }
         }
       (void) RelinquishUniqueFileResource(alpha_image->filename);
       alpha_image=DestroyImageList(alpha_image);
