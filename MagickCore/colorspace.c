@@ -2420,10 +2420,16 @@ static MagickBooleanType TransformsRGBImage(Image *image,
       value=GetImageProperty(image,"reference-black",exception);
       if (value != (const char *) NULL)
         reference_black=StringToDouble(value,(char **) NULL);
+      if (reference_black > 1024.0)
+        reference_black=1024.0;
       reference_white=ReferenceWhite;
       value=GetImageProperty(image,"reference-white",exception);
       if (value != (const char *) NULL)
         reference_white=StringToDouble(value,(char **) NULL);
+      if (reference_white > 1024.0)
+        reference_white=1024.0;
+      if (reference_black > reference_white)
+        reference_black=reference_white;
       logmap=(Quantum *) AcquireQuantumMemory((size_t) MaxMap+1UL,
         sizeof(*logmap));
       if (logmap == (Quantum *) NULL)
