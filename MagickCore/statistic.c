@@ -1843,9 +1843,6 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
   CacheView
     *image_view;
 
-  const Quantum
-    *magick_restrict q;
-
   MagickBooleanType
     status;
 
@@ -1860,13 +1857,9 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   status=MagickTrue;
+  range_info.maxima=(-MagickMaximumValue);
+  range_info.minima=MagickMaximumValue;
   image_view=AcquireVirtualCacheView(image,exception);
-  q=GetCacheViewVirtualPixels(image_view,0,0,1,1,exception);
-  if (q != (const Quantum *) NULL)
-    {
-      range_info.maxima=(double) q[0];
-      range_info.minima=(double) q[0];
-    }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(range_info,status) \
     magick_number_threads(image,image,image->rows,1)
