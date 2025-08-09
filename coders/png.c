@@ -6404,19 +6404,19 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
               mng_info->magn_methy = 1;
             if (mng_info->magn_methx == 1)
               {
-                magnified_width=mng_info->magn_ml;
+                magnified_width=(size_t) mng_info->magn_ml;
 
                 if (image->columns > 1)
                    magnified_width += mng_info->magn_mr;
 
                 if (image->columns > 2)
-                   magnified_width += (png_uint_32)
+                   magnified_width += (size_t)
                       ((image->columns-2)*(mng_info->magn_mx));
               }
 
             else
               {
-                magnified_width=(png_uint_32) image->columns;
+                magnified_width=(size_t) image->columns;
 
                 if (image->columns > 1)
                    magnified_width += mng_info->magn_ml-1;
@@ -6425,25 +6425,25 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
                    magnified_width += mng_info->magn_mr-1;
 
                 if (image->columns > 3)
-                   magnified_width += (png_uint_32)
+                   magnified_width += (size_t)
                       ((image->columns-3)*(mng_info->magn_mx-1));
               }
 
             if (mng_info->magn_methy == 1)
               {
-                magnified_height=mng_info->magn_mt;
+                magnified_height=(size_t) mng_info->magn_mt;
 
                 if (image->rows > 1)
                    magnified_height += mng_info->magn_mb;
 
                 if (image->rows > 2)
-                   magnified_height += (png_uint_32)
+                   magnified_height += (size_t)
                       ((image->rows-2)*(mng_info->magn_my));
               }
 
             else
               {
-                magnified_height=(png_uint_32) image->rows;
+                magnified_height=(size_t) image->rows;
 
                 if (image->rows > 1)
                    magnified_height += mng_info->magn_mt-1;
@@ -6452,7 +6452,7 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
                    magnified_height += mng_info->magn_mb-1;
 
                 if (image->rows > 3)
-                   magnified_height += (png_uint_32)
+                   magnified_height += (size_t)
                       ((image->rows-3)*(mng_info->magn_my-1));
               }
 
