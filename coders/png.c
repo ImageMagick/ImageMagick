@@ -6390,7 +6390,7 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
         if (((mng_info->magn_methx > 0) && (mng_info->magn_methx <= 5)) &&
             ((mng_info->magn_methy > 0) && (mng_info->magn_methy <= 5)))
           {
-            png_uint_32
+            size_t
                magnified_height,
                magnified_width;
 
