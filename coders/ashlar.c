@@ -56,7 +56,6 @@
 #include "MagickCore/option.h"
 #include "MagickCore/property.h"
 #include "MagickCore/quantum-private.h"
-#include "MagickCore/resource_.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
@@ -460,8 +459,7 @@ static inline MagickBooleanType PackAshlarTiles(AshlarInfo *ashlar_info,
     Pack tiles so they fit the canvas with minimum excess.
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic) shared(status) \
-    num_threads((int) GetMagickResourceLimit(ThreadResource))
+  #pragma omp parallel for schedule(dynamic) shared(status)
 #endif
   for (i=0; i < (ssize_t) number_tiles; i++)
     tiles[i].order=(i);
@@ -489,8 +487,7 @@ static inline MagickBooleanType PackAshlarTiles(AshlarInfo *ashlar_info,
   qsort((void *) tiles,number_tiles,sizeof(*tiles),RestoreTileOrder);
   status=MagickTrue;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic) shared(status) \
-    num_threads((int) GetMagickResourceLimit(ThreadResource))
+  #pragma omp parallel for schedule(dynamic) shared(status)
 #endif
   for (i=0; i < (ssize_t) number_tiles; i++)
   {
@@ -628,14 +625,15 @@ static Image *ASHLARImage(ImageInfo *image_info,Image *image,
   extent.width=0;
   extent.height=0;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic) shared(status) \
-    num_threads((int) GetMagickResourceLimit(ThreadResource))
+  #pragma omp parallel for schedule(dynamic) shared(status,extent)
 #endif
   for (i=0; i < n; i++)
   {
     Image
       *tile_image;
 
+    if (status == MagickFalse)
+      continue;
     if ((tiles[i].x == (ssize_t) MAGICK_SSIZE_MAX) ||
         (tiles[i].y == (ssize_t) MAGICK_SSIZE_MAX))
       continue;
@@ -643,9 +641,14 @@ static Image *ASHLARImage(ImageInfo *image_info,Image *image,
       ((ssize_t) tiles[i].width-2*geometry.x),(size_t)
       ((ssize_t) tiles[i].height-2*geometry.y),image->filter,exception);
     if (tile_image == (Image *) NULL)
-      continue;
-    (void) CompositeImage(ashlar_image,tile_image,image->compose,MagickTrue,
+      {
+        status=MagickFalse;
+        continue;
+      }
+    status=CompositeImage(ashlar_image,tile_image,image->compose,MagickTrue,
       tiles[i].x+geometry.x,tiles[i].y+geometry.y,exception);
+    if (status == MagickFalse)
+      continue;
     if (value != (const char *) NULL)
       {
         char
@@ -660,24 +663,32 @@ static Image *ASHLARImage(ImageInfo *image_info,Image *image,
         if (label != (const char *) NULL)
           {
             (void) CloneString(&draw_info->text,label);
+            label=DestroyString(label);
             draw_info->pointsize=1.8*geometry.y;
             (void) FormatLocaleString(offset,MagickPathExtent,"%+g%+g",(double)
               tiles[i].x+geometry.x,(double) tiles[i].height+tiles[i].y+
               geometry.y/2.0);
             (void) CloneString(&draw_info->geometry,offset);
-            (void) AnnotateImage(ashlar_image,draw_info,exception);
+            status=AnnotateImage(ashlar_image,draw_info,exception);
           }
       }
-    if (((ssize_t) tiles[i].width+tiles[i].x) > (ssize_t) extent.width)
-      extent.width=(size_t) ((ssize_t) tiles[i].width+tiles[i].x);
-    if (((ssize_t) tiles[i].height+tiles[i].y+geometry.y+2) > (ssize_t) extent.height)
-      extent.height=(size_t) ((ssize_t) tiles[i].height+tiles[i].y+
-        geometry.y+2);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+    #pragma omp critical
+#endif
+    {
+      if (((ssize_t) tiles[i].width+tiles[i].x) > (ssize_t) extent.width)
+        extent.width=(size_t) ((ssize_t) tiles[i].width+tiles[i].x);
+      if (((ssize_t) tiles[i].height+tiles[i].y+geometry.y+2) > (ssize_t) extent.height)
+        extent.height=(size_t) ((ssize_t) tiles[i].height+tiles[i].y+
+          geometry.y+2);
+    }
     tile_image=DestroyImage(tile_image);
   }
   (void) SetImageExtent(ashlar_image,extent.width,extent.height,exception);
   nodes=(NodeInfo *) RelinquishMagickMemory(nodes);
   tiles=(CanvasInfo *) RelinquishMagickMemory(tiles);
+  if (status == MagickFalse)
+    ashlar_image=DestroyImage(ashlar_image);
   return(ashlar_image);
 }
 

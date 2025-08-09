@@ -1857,8 +1857,6 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   status=MagickTrue;
-  range_info.maxima=(-MagickMaximumValue);
-  range_info.minima=MagickMaximumValue;
   image_view=AcquireVirtualCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(range_info,status) \
