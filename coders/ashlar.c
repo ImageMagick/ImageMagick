@@ -53,13 +53,14 @@
 #include "MagickCore/list.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/module.h"
 #include "MagickCore/option.h"
 #include "MagickCore/property.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
-#include "MagickCore/module.h"
+#include "MagickCore/thread-private.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/xwindow.h"
 #include "MagickCore/xwindow-private.h"
@@ -625,7 +626,8 @@ static Image *ASHLARImage(ImageInfo *image_info,Image *image,
   extent.width=0;
   extent.height=0;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic) shared(status,extent)
+  #pragma omp parallel for schedule(dynamic) shared(status,extent) \
+    magick_number_threads(image,image,n,1)
 #endif
   for (i=0; i < n; i++)
   {
