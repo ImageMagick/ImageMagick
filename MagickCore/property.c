@@ -131,6 +131,21 @@
 %    o clone_image: the clone image.
 %
 */
+
+typedef char
+  *(*CloneKeyFunc)(const char *),
+  *(*CloneValueFunc)(const char *);
+
+static inline void *ClonePropertyKey(void *key)
+{
+  return((void *) ((CloneKeyFunc) ConstantString)((const char *) key));
+}
+
+static inline void *ClonePropertyValue(void *value)
+{
+  return((void *) ((CloneValueFunc) ConstantString)((const char *) value));
+}
+
 MagickExport MagickBooleanType CloneImageProperties(Image *image,
   const Image *clone_image)
 {
@@ -195,8 +210,7 @@ MagickExport MagickBooleanType CloneImageProperties(Image *image,
       if (image->properties != (void *) NULL)
         DestroyImageProperties(image);
       image->properties=CloneSplayTree((SplayTreeInfo *)
-        clone_image->properties,(void *(*)(void *)) ConstantString,
-        (void *(*)(void *)) ConstantString);
+        clone_image->properties,ClonePropertyKey,ClonePropertyValue);
     }
   return(MagickTrue);
 }
