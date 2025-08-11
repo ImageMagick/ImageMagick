@@ -95,7 +95,7 @@ jobs:
         ImageMagick\.github\build\windows\download-dependencies.cmd windows-${{matrix.architecture}}-${{matrix.buildType}}-openMP.zip
 
     - name: Download ChangeLog.md
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: ChangeLog
         path: ImageMagick
@@ -212,7 +212,7 @@ jobs:
         clone-repositories-im7.cmd
 
     - name: Download ChangeLog.md
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: ChangeLog
         path: ImageMagick
@@ -277,7 +277,7 @@ jobs:
         ImageMagick\.github\build\windows\download-dependencies.cmd windows-${{matrix.architecture}}-static-openMP.zip
 
     - name: Download ChangeLog.md
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: ChangeLog
         path: ImageMagick
