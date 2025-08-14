@@ -4613,6 +4613,8 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
   assert(exception->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if ((columns == 0) || (rows == 0))
+    ThrowImageException(ImageError,"NegativeOrZeroImageSize");
   thumbnail_image=CloneImage(image,0,0,MagickTrue,exception);
   if (thumbnail_image == (Image *) NULL)
     return(thumbnail_image);
