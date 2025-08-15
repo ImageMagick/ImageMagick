@@ -83,6 +83,7 @@
 #define DDSD_DEPTH        0x00800000
 
 #define DDPF_ALPHAPIXELS  0x00000001
+#define DDPF_ALPHA        0x00000002
 #define DDPF_FOURCC       0x00000004
 #define DDPF_RGB          0x00000040
 #define DDPF_LUMINANCE    0x00020000
@@ -2443,6 +2444,38 @@ static MagickBooleanType ReadUncompressedRGBPixels(Image *image,
   return(MagickTrue);
 }
 
+static MagickBooleanType ReadUncompressedAlphaPixels(Image *image,
+  const DDSInfo *magick_unused(dds_info),ExceptionInfo *exception)
+{
+  Quantum
+    *q;
+
+  ssize_t
+    x,
+    y;
+
+  magick_unreferenced(dds_info);
+  for (y = 0; y < (ssize_t) image->rows; y++)
+  {
+    q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
+
+    if (q == (Quantum *) NULL)
+      return(MagickFalse);
+
+    for (x = 0; x < (ssize_t) image->columns; x++)
+    {
+      SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)
+        ReadBlobByte(image)),q);
+      q+=(ptrdiff_t) GetPixelChannels(image);
+    }
+    if (SyncAuthenticPixels(image,exception) == MagickFalse)
+      return(MagickFalse);
+    if (EOFBlob(image) != MagickFalse)
+      return(MagickFalse);
+  }
+  return(MagickTrue);
+}
+
 /*
   Skip the mipmap images for uncompressed (RGB or RGBA) dds files
 */
@@ -2512,6 +2545,24 @@ static MagickBooleanType ReadUncompressedRGB(const ImageInfo *image_info,
       exception));
   else
     return(SkipRGBMipmaps(image,dds_info,3,exception));
+}
+
+static MagickBooleanType ReadUncompressedAlpha(const ImageInfo *image_info,
+  Image *image,const DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
+  ExceptionInfo *exception)
+{
+  if (dds_info->pixelformat.rgb_bitcount != 8)
+    ThrowBinaryException(CorruptImageError,"ImageTypeNotSupported",
+      image->filename);
+
+  if (ReadUncompressedAlphaPixels(image,dds_info,exception) == MagickFalse)
+    return(MagickFalse);
+
+  if (read_mipmaps != MagickFalse)
+    return(ReadMipmaps(image_info,image,dds_info,ReadUncompressedAlphaPixels,
+      exception));
+  else
+    return(SkipRGBMipmaps(image,dds_info,1,exception));
 }
 
 static MagickBooleanType ReadUncompressedRGBAPixels(Image *image,
@@ -2760,6 +2811,12 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
           alpha_trait=UndefinedPixelTrait;
           decoder=ReadUncompressedRGB;
         }
+    }
+  else if (dds_info.pixelformat.flags & DDPF_ALPHA)
+    {
+      compression=NoCompression;
+      alpha_trait=BlendPixelTrait;
+      decoder=ReadUncompressedAlpha;
     }
   else if (dds_info.pixelformat.flags & DDPF_LUMINANCE)
    {
