@@ -70,7 +70,7 @@ static inline MagickBooleanType IsImageTTLExpired(const Image* image)
 {
   if (image->ttl == (time_t) 0)
     return(MagickFalse);
-  return(image->ttl < GetMagickTime() ? MagickTrue : MagickFalse);
+  return(image->ttl < time((time_t *) NULL) ? MagickTrue : MagickFalse);
 }
 
 static inline time_t ParseMagickTimeToLive(const char *time_to_live)
