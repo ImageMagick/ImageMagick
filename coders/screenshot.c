@@ -168,8 +168,8 @@ static Image *ReadSCREENSHOTImage(const ImageInfo *image_info,
       screen=AcquireImage(image_info,exception);
       geometry.x=0;
       geometry.y=0;
-      geometry.width=(size_t) GetDeviceCaps(hDC,HORZRES);
-      geometry.height=(size_t) GetDeviceCaps(hDC,VERTRES);
+      geometry.width=(size_t) GetDeviceCaps(hDC,DESKTOPHORZRES);
+      geometry.height=(size_t) GetDeviceCaps(hDC,DESKTOPVERTRES);
       if (image_info->extract != (char *) NULL)
         {
           geometry.x=MagickMin(screen->extract_info.x,(ssize_t) geometry.width);
