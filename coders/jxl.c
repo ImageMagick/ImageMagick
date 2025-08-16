@@ -643,10 +643,11 @@ static Image *ReadJXLImage(const ImageInfo *image_info,
       case JXL_DEC_NEED_IMAGE_OUT_BUFFER:
       {
         status=SetImageExtent(image,image->columns,image->rows,exception);
-        if (status == MagickFalse) {
-          jxl_status=JXL_DEC_ERROR;
-          break;
-        }
+        if (status == MagickFalse)
+          {
+            jxl_status=JXL_DEC_ERROR;
+            break;
+          }
         (void) ResetImagePixels(image,exception);
         JXLSetFormat(image,&pixel_format,exception);
         if (extent == 0)
