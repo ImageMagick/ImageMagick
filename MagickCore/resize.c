@@ -4613,8 +4613,6 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
   assert(exception->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if ((columns == 0) || (rows == 0))
-    ThrowImageException(ImageError,"NegativeOrZeroImageSize");
   thumbnail_image=CloneImage(image,0,0,MagickTrue,exception);
   if (thumbnail_image == (Image *) NULL)
     return(thumbnail_image);
@@ -4627,8 +4625,9 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
         x_factor,
         y_factor;
 
-      x_factor=(ssize_t) image->columns/(ssize_t) columns;
-      y_factor=(ssize_t) image->rows/(ssize_t) rows;
+      x_factor=(ssize_t) (image->columns*MagickSafeReciprocal((double) 
+        columns));
+      y_factor=(ssize_t) (image->rows*MagickSafeReciprocal((double) rows));
       if ((x_factor > 4) && (y_factor > 4))
         {
           thumbnail_image=SampleImage(clone_image,4*columns,4*rows,exception);
