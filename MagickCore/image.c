@@ -1632,7 +1632,7 @@ MagickExport VirtualPixelMethod GetImageVirtualPixelMethod(const Image *image)
 %
 %  A description of each parameter follows.
 %
-%    o image_info: the image info..
+%    o image_info: the image info.
 %
 %    o image: the image.
 %
@@ -1647,28 +1647,39 @@ MagickExport VirtualPixelMethod GetImageVirtualPixelMethod(const Image *image)
 %
 */
 
-static inline MagickBooleanType PercentNInvalidOperation(char *filename)
+static inline MagickBooleanType IsValidFormatSpecifier(const char *start,
+  const char *end)
 {
-  MagickBooleanType
-    match = MagickFalse;
+  char
+    specifier = end[-1];
 
   size_t
-    length = strlen(filename);
+    length = end-start;
 
-  ssize_t
-    i;
+  /*
+    Is this a valid format specifier?
+  */
+  if ((specifier != 'd') && (specifier != 'x') && (specifier != 'o'))
+    return(MagickFalse);
+  if ((length == 1) && (*start == specifier))
+    return(MagickTrue);
+  if (length >= 2)
+    {
+      size_t
+        i = 0;
 
-  for (i=0; i < (ssize_t) length-1; i++)
-  {
-    if ((filename[i] == '%') &&
-        ((filename[i+1] == 'n') || (filename[i+1] == 'N')))
-      {
-        filename[i]='?';
-        filename[i+1]='\?';
-        match=MagickTrue;
-      }
-  }
-  return(match);
+      if (*start == '0')
+        {
+          if ((length >= 3) && (start[1] == '0'))
+            return(MagickFalse);
+          i=1;
+        }
+      for ( ; i < (length-1); i++)
+        if (isdigit((int) ((unsigned char) start[i])) == 0)
+          return(MagickFalse);
+      return(MagickTrue);
+    }
+  return(MagickFalse);
 }
 
 MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
@@ -1682,117 +1693,116 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
   const char
     *cursor = format;
 
-  /*
-    Start with a copy of the format string.
-  */
   assert(format != (const char *) NULL);
   assert(filename != (char *) NULL);
-  (void) CopyMagickString(filename,format,MagickPathExtent);
   if (IsStringTrue(GetImageOption(image_info,"filename:literal")) != MagickFalse)
-    return(strlen(filename));
-  if (PercentNInvalidOperation(filename) != MagickFalse)
     {
-      errno=EPERM;
-      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-        "InvalidArgument","`%s'",filename);
-      return(0);
+      (void) CopyMagickString(filename,format,MagickPathExtent);
+      return(strlen(filename));
     }
-  while ((cursor=strchr(cursor,'%')) != (const char *) NULL)
+  while ((*cursor != '\0') && ((p-filename) < ((ssize_t) MagickPathExtent-1)))
   {
     const char
-      *q = cursor;
+      *specifier_start,
+      *start;
 
-    ssize_t
-      offset = (ssize_t) (cursor-format);
-
-    cursor++;  /* move past '%' */
+    if (*cursor != '%')
+      {
+        *p++=(*cursor++);
+        continue;
+      }
+    start=cursor++;  /* Skip '%' */
     if (*cursor == '%')
       {
-        /*
-          Escaped %%.
-        */
+        *p++='%';
         cursor++;
         continue;
       }
-    /*
-      Skip padding digits like %03d.
-    */
-    if (isdigit((int) ((unsigned char) *cursor)) != 0)
-      (void) strtol(cursor,(char **) &cursor,10);
-    switch (*cursor)
-    {
-      case 'd':
-      case 'o':
-      case 'x':
+    specifier_start=cursor;
+    while (isdigit((int) ((unsigned char) *cursor)) != 0)
+      cursor++;
+    if ((*cursor == 'd') || (*cursor == 'o') || (*cursor == 'x'))
       {
-        ssize_t
-          count;
+        const char
+          *specifier_end = cursor+1;
 
-        count=FormatLocaleString(pattern,sizeof(pattern),q,value);
-        if ((count <= 0) || (count >= MagickPathExtent) ||
-            ((offset+count) >= MagickPathExtent))
-          return(0);
-        (void) CopyMagickString(p+offset,pattern,(size_t) (MagickPathExtent-
-          offset));
-        cursor++;
-        break;
+        if (IsValidFormatSpecifier(specifier_start,specifier_end) != MagickFalse)
+          {
+            char
+              format_specifier[MagickPathExtent];
+
+            size_t
+              length = cursor-specifier_start;
+
+            ssize_t
+              count;
+
+            (void) snprintf(format_specifier,sizeof(format_specifier),
+              "%%%.*s%c",(int) length,specifier_start,*cursor);
+            count=FormatLocaleString(pattern,sizeof(pattern),format_specifier,
+              value);
+            if ((count <= 0) || ((p-filename+count) >= MagickPathExtent))
+              return(0);
+            (void) CopyMagickString(p,pattern,MagickPathExtent-(p-filename));
+            p+=strlen(pattern);
+            cursor++;
+            continue;
+          }
+        else
+          {
+            /*
+              Invalid specifier — treat as literal.
+            */
+            cursor=start;
+            *p++=(*cursor++);
+            continue;
+          }
       }
-      case '[':
+    if (*cursor == '[')
       {
         const char
           *end = strchr(cursor,']'),
           *option = (const char *) NULL;
 
         size_t
-          extent = (size_t) (end-cursor-1),
-          option_length,
-          tail_length;
+          extent,
+          option_length;
 
-        /*
-          Handle %[key:value];
-        */
         if (end == (const char *) NULL)
-          break;
+          continue;
+        extent=(size_t) (end-cursor-1);
         if (extent >= sizeof(pattern))
-          break;
+          continue;
         (void) CopyMagickString(pattern,cursor+1,extent+1);
         pattern[extent]='\0';
-        if (image != (Image *) NULL)
+        if (image != NULL)
           {
             option=GetImageProperty(image,pattern,exception);
             if (option == (const char *) NULL)
               option=GetImageArtifact(image,pattern);
           }
-        if ((option == (const char *) NULL) && 
+        if ((option == (const char *) NULL) &&
             (image_info != (ImageInfo *) NULL))
           option=GetImageOption(image_info,pattern);
         if (option == (const char *) NULL)
-          break;
+          continue;
         option_length=strlen(option);
-        tail_length=strlen(end+1);
-        if ((offset+option_length+tail_length+1) > MagickPathExtent)
+        if ((p-filename+option_length) >= MagickPathExtent)
           return(0);
-        (void) CopyMagickString(p+offset,option,(size_t) (MagickPathExtent-
-          offset));
-        (void) ConcatenateMagickString(p+offset+option_length,end+1,(size_t) (
-          MagickPathExtent-offset-option_length-tail_length-1));
+        (void) CopyMagickString(p,option,MagickPathExtent-(p-filename));
+        p+=option_length;
         cursor=end+1;
-        break;
+        continue;
       }
-      default:
-        break;
-    }
-  }
-  for (p=filename; *p != '\0'; )
-  {
     /*
-      Replace "%%" with "%".
+      Invalid or unsupported specifier — treat as literal.
     */
-    if ((*p == '%') && (*(p+1) == '%'))
-      (void) memmove(p,p+1,strlen(p+1)+1);  /* shift left */
-    else
-      p++;
+    cursor=start;
+    if ((p-filename+1) >= MagickPathExtent)
+      return(0);
+    *p++=(*cursor++);
   }
+  *p='\0';
   return(strlen(filename));
 }
 
