@@ -39,7 +39,7 @@ jobs:
         apt-get install -y autoconf curl file fuse git kmod libbz2-dev libdjvulibre-dev libfontconfig-dev libfreetype6-dev libfribidi-dev libharfbuzz-dev libheif-dev liblcms-dev libopenexr-dev libopenjp2-7-dev libturbojpeg0-dev liblqr-dev libraqm-dev libtiff-dev libwebp-dev libx11-dev libxml2-dev liblzma-dev make software-properties-common wget ${{ matrix.packages }}
 
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
       # Avoid fatal: detected dubious ownership in repository at '/__w/ImageMagick/ImageMagick'
       # Possible workaround: https://github.com/actions/runner/issues/2033#issuecomment-1598547465
@@ -111,7 +111,7 @@ jobs:
 
     steps:
     - name: Clone ImageMagick
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         path: ImageMagick
 
@@ -153,7 +153,7 @@ jobs:
 
     steps:
     - name: Clone ImageMagick
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         path: ImageMagick
 
@@ -191,7 +191,7 @@ jobs:
 
     steps:
     - name: Clone ImageMagick-Windows
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         repository: ImageMagick/ImageMagick-Windows
         path: ImageMagick-Windows
