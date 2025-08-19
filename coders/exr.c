@@ -281,6 +281,8 @@ static MagickBooleanType InitializeEXRChannels(Image *image,exr_context_t ctxt,
     status=SetPixelMetaChannels(image,number_meta_channels,exception);
   if (status == MagickFalse)
     return(status);
+  if ((decoder.channel_count == 1) && (pixel_channels[0] == IndexPixelChannel))
+    image->colorspace=GRAYColorspace;
   *data=(uint8_t *) AcquireQuantumMemory(*pixel_size,pixel_count);
   if (*data == (uint8_t*)NULL)
     {
