@@ -652,6 +652,7 @@ static MagickBooleanType ClonePixelCacheOnDisk(
   return(MagickTrue);
 }
 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
 static inline int GetCacheNumberThreads(const CacheInfo *source,
   const CacheInfo *destination,const size_t chunk,const int factor)
 {
@@ -674,6 +675,7 @@ static inline int GetCacheNumberThreads(const CacheInfo *source,
     number_threads=MagickMin(number_threads,4);
   return((int) number_threads);
 }
+#endif
 
 static MagickBooleanType ClonePixelCacheRepository(
   CacheInfo *magick_restrict clone_info,CacheInfo *magick_restrict cache_info,
