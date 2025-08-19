@@ -745,7 +745,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         {
           (void) ThrowMagickException(exception,GetMagickModule(),
             MissingDelegateError,"NoDecodeDelegateForThisImageFormat","`%s'",
-            read_info->magick);
+            read_info->filename);
           if (read_info->temporary != MagickFalse)
             (void) RelinquishUniqueFileResource(read_info->filename);
           read_info=DestroyImageInfo(read_info);
