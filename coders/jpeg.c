@@ -770,8 +770,12 @@ static boolean ReadAPPProfiles(j_decompress_ptr jpeg_info)
         }
     }
   else
-    status=SetImageProfile(image,"app1",client_info->profiles[marker],
-      exception);
+    {
+      status=SetImageProfile(image,"app1",client_info->profiles[marker],
+        exception);
+      client_info->profiles[marker]=DestroyStringInfo(
+        client_info->profiles[marker]);
+    }
   return(status == MagickFalse ? FALSE : TRUE);
 }
 
