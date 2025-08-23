@@ -2105,7 +2105,8 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
     /*
       Convert MIFF to BMP raster pixels.
     */
-    extent=GetImageChannels(image)*MagickMax(bytes_per_line,image->columns+1UL);
+    extent=MagickMax(bytes_per_line,image->columns+1UL)*
+      ((bmp_info.bits_per_pixel+7)/8);
     if ((BMPOverflowCheck(image->rows,extent) != MagickFalse) ||
         (BMPOverflowCheck(extent,sizeof(*pixels)) != MagickFalse))
       ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
