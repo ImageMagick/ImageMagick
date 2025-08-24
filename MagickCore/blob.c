@@ -1630,7 +1630,7 @@ static inline ssize_t WriteBlobStream(Image *image,const size_t length,
   extent=(MagickSizeType) (blob_info->offset+(MagickOffsetType) length);
   if (extent >= blob_info->extent)
     {
-      extent=blob_info->extent+blob_info->quantum+length;
+      extent+=blob_info->quantum+length;
       blob_info->quantum<<=1;
       if (SetBlobExtent(image,extent) == MagickFalse)
         return(0);
@@ -5912,12 +5912,15 @@ MagickExport ssize_t WriteBlob(Image *image,const size_t length,
     }
     case BlobStream:
     {
-      if ((blob_info->offset+(MagickOffsetType) length) >=
-          (MagickOffsetType) blob_info->extent)
+      MagickSizeType
+        extent;
+
+      extent=(MagickSizeType) (blob_info->offset+(MagickOffsetType) length);
+      if (extent >= blob_info->extent)
         {
           if (blob_info->mapped != MagickFalse)
             return(0);
-          blob_info->extent+=length+blob_info->quantum;
+          blob_info->extent=extent+blob_info->quantum+length;
           blob_info->quantum<<=1;
           blob_info->data=(unsigned char *) ResizeQuantumMemory(
             blob_info->data,blob_info->extent+1,sizeof(*blob_info->data));
