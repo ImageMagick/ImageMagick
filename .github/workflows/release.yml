@@ -1,15 +1,15 @@
 on:
   workflow_dispatch:
-  schedule:
-  - cron: 0 6 * * *
-  push:
-    tags:
-    - '*'
-  pull_request:
-    branches:
-    - main
-    paths:
-    - '.github/workflows/release.yml'
+  #schedule:
+  #- cron: 0 6 * * *
+  #push:
+  #  tags:
+  #  - '*'
+  #pull_request:
+  #  branches:
+  #  - main
+  #  paths:
+  #  - '.github/workflows/release.yml'
 
 name: release
 jobs:
