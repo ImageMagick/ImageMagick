@@ -5371,7 +5371,7 @@ MAGICK_PATCHLEVEL_VERSION=3
 
 MAGICK_VERSION=7.1.2-3
 
-MAGICK_GIT_REVISION=8289a3388:20250824
+MAGICK_GIT_REVISION=331efb409:20250824
 
 
 # Substitute library versioning
@@ -26005,6 +26005,12 @@ ac_fn_c_check_header_compile "$LINENO" "sys/ipc.h" "ac_cv_header_sys_ipc_h" "$ac
 if test "x$ac_cv_header_sys_ipc_h" = xyes
 then :
   printf "%s\n" "#define HAVE_SYS_IPC_H 1" >>confdefs.h
+
+fi
+ac_fn_c_check_header_compile "$LINENO" "sys/loadavg.h" "ac_cv_header_sys_loadavg_h" "$ac_includes_default"
+if test "x$ac_cv_header_sys_loadavg_h" = xyes
+then :
+  printf "%s\n" "#define HAVE_SYS_LOADAVG_H 1" >>confdefs.h
 
 fi
 ac_fn_c_check_header_compile "$LINENO" "sys/mman.h" "ac_cv_header_sys_mman_h" "$ac_includes_default"

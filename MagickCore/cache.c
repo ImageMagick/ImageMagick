@@ -75,8 +75,11 @@
 #include "MagickCore/thread-private.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
+#if defined(MAGICKCORE_HAVE_SYS_LOADAVG_H)
+#  include <sys/loadavg.h>
+#endif
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
-#include "zlib.h"
+#  include "zlib.h"
 #endif
 
 /*
