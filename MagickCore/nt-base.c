@@ -1993,7 +1993,6 @@ MagickPrivate MagickBooleanType NTReportEvent(const char *event,
 */
 MagickPrivate unsigned char *NTResourceToBlob(const char *id)
 {
-
 #ifndef MAGICKCORE_LIBRARY_NAME
   char
     path[MagickPathExtent];
