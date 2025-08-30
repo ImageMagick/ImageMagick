@@ -104,14 +104,14 @@ jobs:
       if: ${{matrix.buildType == 'dynamic' && matrix.architecture != 'arm64'}}
       shell: cmd
       run: |
-        powershell Invoke-WebRequest -Uri https://github.com/ImageMagick/ImageMagick-Windows/releases/download/20200615/strawberry-perl-5.30.2.1-${{matrix.bit}}bit.msi -OutFile strawberry-perl-5.30.2.1-${{matrix.bit}}bit.msi
+        powershell Invoke-WebRequest -Uri https://github.com/ImageMagick/Windows/releases/download/build-binaries-2025-08-30/strawberry-perl-5.30.2.1-${{matrix.bit}}bit.msi -OutFile strawberry-perl-5.30.2.1-${{matrix.bit}}bit.msi
         msiexec /i strawberry-perl-5.30.2.1-${{matrix.bit}}bit.msi /qn INSTALLDIR="C:\Strawberry${{matrix.bit}}"
         mv "C:\Strawberry" "C:\Strawberry64"
 
     - name: Install Inno Setup
       shell: cmd
       run: |
-        powershell Invoke-WebRequest -Uri https://github.com/ImageMagick/ImageMagick-Windows/releases/download/20200615/innosetup-6.2.0.exe -OutFile innosetup-6.2.0.exe
+        powershell Invoke-WebRequest -Uri https://github.com/ImageMagick/Windows/releases/download/build-binaries-2025-08-30/innosetup-6.2.0.exe -OutFile innosetup-6.2.0.exe
         innosetup-6.2.0.exe /SILENT /SUPPRESSMSGBOXES /NORESTART /SP-
 
     - name: Configure ImageMagick
