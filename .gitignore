@@ -98,3 +98,6 @@
 .libs
 Makefile
 Makefile.PL
+
+/build*
+/CMakeUserPresets.json
