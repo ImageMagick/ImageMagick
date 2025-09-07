@@ -172,13 +172,11 @@ typedef struct _AshlarInfo
 {
   size_t
     width,
-    height;
+    height,
+    number_nodes;
 
   ssize_t
     align;
-
-  size_t
-    number_nodes;
 
   MagickBooleanType
     best_fit;
@@ -548,8 +546,8 @@ static Image *ASHLARImage(ImageInfo *image_info,Image *image,
       }
       geometry.width=(size_t) geometry.width/7;
       geometry.height=(size_t) geometry.height/7;
-      geometry.x=(ssize_t) pow((double) geometry.width,0.25);
-      geometry.y=(ssize_t) pow((double) geometry.height,0.25);
+      geometry.x=(ssize_t) pow((double) geometry.width,0.4);
+      geometry.y=(ssize_t) pow((double) geometry.height,0.4);
       image_info->extract=AcquireString("");
       if (image_info->extract != (char *) NULL)
         (void) FormatLocaleString(image_info->extract,MagickPathExtent,
@@ -666,10 +664,9 @@ static Image *ASHLARImage(ImageInfo *image_info,Image *image,
           {
             (void) CloneString(&draw_info->text,label);
             label=DestroyString(label);
-            draw_info->pointsize=1.8*geometry.y;
             (void) FormatLocaleString(offset,MagickPathExtent,"%+g%+g",(double)
-              tiles[i].x+geometry.x,(double) tiles[i].height+tiles[i].y+
-              geometry.y/2.0);
+              tiles[i].x+geometry.x,(double) tiles[i].height+tiles[i].y-
+              geometry.y/2.0+4);
             (void) CloneString(&draw_info->geometry,offset);
             status=AnnotateImage(ashlar_image,draw_info,exception);
           }
@@ -686,6 +683,8 @@ static Image *ASHLARImage(ImageInfo *image_info,Image *image,
     }
     tile_image=DestroyImage(tile_image);
   }
+  if (image_info->extract != (char *) NULL)
+    (void) ParseAbsoluteGeometry(image_info->extract,&extent);
   (void) SetImageExtent(ashlar_image,extent.width,extent.height,exception);
   nodes=(NodeInfo *) RelinquishMagickMemory(nodes);
   tiles=(CanvasInfo *) RelinquishMagickMemory(tiles);
