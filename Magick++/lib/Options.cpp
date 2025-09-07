@@ -592,9 +592,8 @@ void Magick::Options::strokeDashArray(const double *strokeDashArray_)
     {
       size_t
         x;
-      // Count elements in dash array
-      for (x=0; strokeDashArray_[x]; x++) ;
-      // Allocate elements
+
+      for (x=0; fabs(strokeDashArray_[x]) >= MagickEpsilon; x++) ;
       _drawInfo->dash_pattern=static_cast<double*>(AcquireMagickMemory((x+1)*
         sizeof(double)));
       if (!_drawInfo->dash_pattern)
@@ -602,8 +601,8 @@ void Magick::Options::strokeDashArray(const double *strokeDashArray_)
           "Unable to allocate dash-pattern memory");
       else
         {
-          // Copy elements
-          memcpy(_drawInfo->dash_pattern,strokeDashArray_,(x+1)*sizeof(double));
+          (void) memset(_drawInfo->dash_pattern,0,(size_t) (x+1)*sizeof(double));
+          memcpy(_drawInfo->dash_pattern,strokeDashArray_,x*sizeof(double));
           _drawInfo->dash_pattern[x]=0.0;
         }
     }
