@@ -54,3 +54,18 @@ jobs:
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
+
+  actions:
+    name: CodeQL analysis (GitHub Actions)
+    runs-on: ubuntu-24.04
+
+    steps:
+    - uses: actions/checkout@v5
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: actions
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
