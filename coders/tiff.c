@@ -1201,7 +1201,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     *quantum_info;
 
   QuantumType
-    quantum_type;
+    image_quantum_type;
 
   ssize_t
     i,
@@ -1771,12 +1771,12 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
     pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
     (void) memset(pixels,0,(size_t) number_pixels*sizeof(uint32));
-    quantum_type=GrayQuantum;
+    image_quantum_type=GrayQuantum;
     if (image->storage_class == PseudoClass)
-      quantum_type=IndexQuantum;
+      image_quantum_type=IndexQuantum;
     if (image->number_meta_channels != 0)
       {
-        quantum_type=MultispectralQuantum;
+        image_quantum_type=MultispectralQuantum;
         (void) SetQuantumPad(image,quantum_info,0);
       }
     else
@@ -1791,21 +1791,21 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               if (image->colorspace == CMYKColorspace)
                 {
                   pad-=4;
-                  quantum_type=CMYKQuantum;
+                  image_quantum_type=CMYKQuantum;
                   if (image->alpha_trait != UndefinedPixelTrait)
                     {
                       pad--;
-                      quantum_type=CMYKAQuantum;
+                      image_quantum_type=CMYKAQuantum;
                     }
                 }
               else
                 {
                   pad-=3;
-                  quantum_type=RGBQuantum;
+                  image_quantum_type=RGBQuantum;
                   if (image->alpha_trait != UndefinedPixelTrait)
                     {
                       pad--;
-                      quantum_type=RGBAQuantum;
+                      image_quantum_type=RGBAQuantum;
                     }
                 }
             }
@@ -1815,14 +1815,14 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               if (image->alpha_trait != UndefinedPixelTrait)
                 {
                   if (samples_per_pixel == 1)
-                    quantum_type=AlphaQuantum;
+                    image_quantum_type=AlphaQuantum;
                   else
                     {
                       pad--;
                       if (image->storage_class == PseudoClass)
-                        quantum_type=IndexAlphaQuantum;
+                        image_quantum_type=IndexAlphaQuantum;
                       else
-                        quantum_type=GrayAlphaQuantum;
+                        image_quantum_type=GrayAlphaQuantum;
                     }
                 }
             }
@@ -1909,7 +1909,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           */
           strip_size=TIFFStripSize(tiff);
           stride=(ssize_t) TIFFVStripSize(tiff,1);
-          length=GetQuantumExtent(image,quantum_info,quantum_type);
+          length=GetQuantumExtent(image,quantum_info,image_quantum_type);
           extent=(size_t) MagickMax((size_t) strip_size,rows_per_strip*
             MagickMax((size_t) stride,length));
           strip_pixels=(unsigned char *) AcquireQuantumMemory(extent,
@@ -1921,6 +1921,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           p=strip_pixels;
           for (i=0; i < (ssize_t) samples_per_pixel; i++)
           {
+            QuantumType
+              quantum_type = image_quantum_type;
+
             size_t
               rows_remaining;
 
@@ -2016,7 +2019,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
           tile_size=TIFFTileSize(tiff);
           stride=(ssize_t) TIFFTileRowSize(tiff);
-          length=GetQuantumExtent(image,quantum_info,quantum_type);
+          length=GetQuantumExtent(image,quantum_info,image_quantum_type);
           extent=(size_t) MagickMax((size_t) tile_size,rows*
             MagickMax((size_t) stride,length));
           tile_pixels=(unsigned char *) AcquireQuantumMemory(extent,
@@ -2026,6 +2029,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           (void) memset(tile_pixels,0,extent*sizeof(*tile_pixels));
           for (i=0; i < (ssize_t) samples_per_pixel; i++)
           {
+            QuantumType
+              quantum_type = image_quantum_type;
+
             tmsize_t
               size = 0;
 
@@ -2171,7 +2177,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         }
       }
     pixel_info=RelinquishVirtualMemory(pixel_info);
-    SetQuantumImageType(image,quantum_type);
+    SetQuantumImageType(image,image_quantum_type);
   next_tiff_frame:
     if (quantum_info != (QuantumInfo *) NULL)
       quantum_info=DestroyQuantumInfo(quantum_info);
