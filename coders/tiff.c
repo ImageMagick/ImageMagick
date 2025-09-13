@@ -1943,8 +1943,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 break;
               }
               case 4: quantum_type=AlphaQuantum; break;
-              default:
-                break;
+              default: break;
             }
             rows_remaining=0;
             for (y=0; y < (ssize_t) image->rows; y++)
@@ -3793,10 +3792,10 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         break;
     }
     (void) TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,PLANARCONFIG_CONTIG);
-    if (photometric == PHOTOMETRIC_RGB)
-      if ((image_info->interlace == PlaneInterlace) ||
-          (image_info->interlace == PartitionInterlace))
-        (void) TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,PLANARCONFIG_SEPARATE);
+    if ((photometric == PHOTOMETRIC_RGB) &&
+        ((image_info->interlace == PlaneInterlace) ||
+         (image_info->interlace == PartitionInterlace)))
+      (void) TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,PLANARCONFIG_SEPARATE);
     predictor=0;
     switch (compress_tag)
     {
