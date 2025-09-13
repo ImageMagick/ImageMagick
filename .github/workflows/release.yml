@@ -9,7 +9,7 @@ on:
     branches:
     - main
     paths:
-    - '.github/workflows/release.yml'
+    - .github/workflows/release.yml
 
 name: release
 permissions:
@@ -177,7 +177,6 @@ jobs:
 
     permissions:
       id-token: write
-      contents: read
 
     strategy:
       fail-fast: false
