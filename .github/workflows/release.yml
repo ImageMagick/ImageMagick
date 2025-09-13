@@ -242,9 +242,6 @@ jobs:
       contents: write 
     runs-on: ubuntu-24.04
 
-    permissions:
-      contents: write
-
     steps:
     - name: Download artifacts
       uses: actions/download-artifact@v5
