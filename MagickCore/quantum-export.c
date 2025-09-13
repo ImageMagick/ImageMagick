@@ -239,7 +239,7 @@ static inline unsigned char *PopQuantumLongPixel(QuantumInfo *quantum_info,
 
 static void ExportAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
   const MagickSizeType number_pixels,const Quantum *magick_restrict p,
-  unsigned char *magick_restrict q)
+  unsigned char *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -247,6 +247,12 @@ static void ExportAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
   ssize_t
     x;
 
+  if (image->alpha_trait != UndefinedPixelTrait)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
+        "ImageDoesNotHaveAnAlphaChannel","`%s'",image->filename);
+      return;
+    }
   switch (quantum_info->depth)
   {
     case 8:
@@ -4143,7 +4149,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
   {
     case AlphaQuantum:
     {
-      ExportAlphaQuantum(image,quantum_info,number_pixels,p,q);
+      ExportAlphaQuantum(image,quantum_info,number_pixels,p,q,exception);
       break;
     }
     case BGRQuantum:
