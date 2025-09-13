@@ -445,8 +445,6 @@ static void ImportAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
   const MagickSizeType number_pixels,const unsigned char *magick_restrict p,
   Quantum *magick_restrict q,ExceptionInfo *exception)
 {
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickCoreSignature);
   if (image->alpha_trait == UndefinedPixelTrait)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
@@ -3290,7 +3288,7 @@ static void ImportMultispectralQuantum(const Image *image,
 
 static void ImportOpacityQuantum(const Image *image,QuantumInfo *quantum_info,
   const MagickSizeType number_pixels,const unsigned char *magick_restrict p,
-  Quantum *magick_restrict q)
+  Quantum *magick_restrict q,ExceptionInfo* exception)
 {
   QuantumAny
     range;
@@ -3298,8 +3296,12 @@ static void ImportOpacityQuantum(const Image *image,QuantumInfo *quantum_info,
   ssize_t
     x;
 
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickCoreSignature);
+  if (image->alpha_trait == UndefinedPixelTrait)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
+        "ImageDoesNotHaveAnAlphaChannel","`%s'",image->filename);
+      return;
+    }
   switch (quantum_info->depth)
   {
     case 8:
@@ -4327,6 +4329,8 @@ MagickExport size_t ImportQuantumPixels(const Image *image,
   assert(image->signature == MagickCoreSignature);
   assert(quantum_info != (QuantumInfo *) NULL);
   assert(quantum_info->signature == MagickCoreSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (pixels == (const unsigned char *) NULL)
@@ -4431,7 +4435,7 @@ MagickExport size_t ImportQuantumPixels(const Image *image,
     }
     case OpacityQuantum:
     {
-      ImportOpacityQuantum(image,quantum_info,number_pixels,p,q);
+      ImportOpacityQuantum(image,quantum_info,number_pixels,p,q,exception);
       break;
     }
     case RedQuantum:

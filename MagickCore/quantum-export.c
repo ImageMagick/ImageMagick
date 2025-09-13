@@ -1158,8 +1158,6 @@ static void ExportBlackQuantum(const Image *image,QuantumInfo *quantum_info,
   const MagickSizeType number_pixels,const Quantum *magick_restrict p,
   unsigned char *magick_restrict q,ExceptionInfo *exception)
 {
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickCoreSignature);
   if (image->colorspace != CMYKColorspace)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
@@ -1289,8 +1287,6 @@ static void ExportCMYKQuantum(const Image *image,QuantumInfo *quantum_info,
   ssize_t
     x;
 
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickCoreSignature);
   if (image->colorspace != CMYKColorspace)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
@@ -1441,8 +1437,6 @@ static void ExportCMYKAQuantum(const Image *image,QuantumInfo *quantum_info,
   ssize_t
     x;
 
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickCoreSignature);
   if (image->colorspace != CMYKColorspace)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
@@ -1616,8 +1610,6 @@ static void ExportCMYKOQuantum(const Image *image,QuantumInfo *quantum_info,
   ssize_t
     x;
 
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickCoreSignature);
   if (image->colorspace != CMYKColorspace)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
@@ -2743,7 +2735,7 @@ static void ExportMultispectralQuantum(const Image *image,
 
 static void ExportOpacityQuantum(const Image *image,QuantumInfo *quantum_info,
   const MagickSizeType number_pixels,const Quantum *magick_restrict p,
-  unsigned char *magick_restrict q)
+  unsigned char *magick_restrict q,ExceptionInfo *exception)
 {
   QuantumAny
     range;
@@ -2751,6 +2743,12 @@ static void ExportOpacityQuantum(const Image *image,QuantumInfo *quantum_info,
   ssize_t
     x;
 
+  if (image->alpha_trait == UndefinedPixelTrait)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
+        "ImageDoesNotHaveAnAlphaChannel","`%s'",image->filename);
+      return;
+    }
   switch (quantum_info->depth)
   {
     case 8:
@@ -3674,6 +3672,8 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
   assert(image->signature == MagickCoreSignature);
   assert(quantum_info != (QuantumInfo *) NULL);
   assert(quantum_info->signature == MagickCoreSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (pixels == (unsigned char *) NULL)
@@ -3835,7 +3835,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
     }
     case OpacityQuantum:
     {
-      ExportOpacityQuantum(image,quantum_info,number_pixels,p,q);
+      ExportOpacityQuantum(image,quantum_info,number_pixels,p,q,exception);
       break;
     }
     case RGBQuantum:
