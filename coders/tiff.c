@@ -3398,9 +3398,6 @@ static MagickBooleanType WriteTIFFChannels(Image *image,TIFF *tiff,
   TIFFInfo tiff_info,QuantumInfo *quantum_info,QuantumType quantum_type,
   tsample_t sample,unsigned char *pixels,ExceptionInfo *exception)
 {
-  size_t
-    length;
-
   ssize_t
     y;
 
@@ -3412,7 +3409,7 @@ static MagickBooleanType WriteTIFFChannels(Image *image,TIFF *tiff,
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
-    length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+    (void) ExportQuantumPixels(image,(CacheView*)NULL,quantum_info,
       quantum_type,pixels,exception);
     if (TIFFWritePixels(tiff,&tiff_info,y,sample,image) == -1)
       return(MagickFalse);
