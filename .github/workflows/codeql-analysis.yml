@@ -9,13 +9,13 @@ on:
     - .github/workflows/codeql-analysis.yml
 
 name: codeql analysis
+permissions:
+  contents: read
+  security-events: write
 jobs:
   c_cpp:
     name: Linux Q${{matrix.quantum}}-x64 hdri=${{matrix.hdri}} (${{matrix.modules}})
     runs-on: ubuntu-24.04
-
-    permissions:
-      security-events: write
 
     strategy:
       fail-fast: false

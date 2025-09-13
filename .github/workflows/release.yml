@@ -12,6 +12,8 @@ on:
     - '.github/workflows/release.yml'
 
 name: release
+permissions:
+  contents: read
 jobs:
   create_app_image:
     name: Create AppImage
@@ -237,6 +239,8 @@ jobs:
     needs:
       - create_app_image
       - create_msix
+    permissions:
+      contents: write 
     runs-on: ubuntu-24.04
 
     permissions:

@@ -14,6 +14,8 @@ on:
     - '.github/workflows/daily.yml'
 
 name: daily
+permissions:
+  contents: read
 jobs:
   change_log:
     name: 'Create ChangeLog.md'

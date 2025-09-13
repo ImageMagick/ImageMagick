@@ -9,6 +9,8 @@ on:
     - main
 
 name: main
+permissions:
+  contents: read
 jobs:
   build_linux:
     name: Build Linux

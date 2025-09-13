@@ -1,5 +1,3 @@
-name: Documentation check for Magick++
-
 on:
   push:
     branches:
@@ -14,10 +12,13 @@ on:
   workflow_dispatch:
   schedule:
     - cron: 0 6 * * 1
-
+    
+name: documentation check for Magick++
+permissions:
+  contents: read
 jobs:
   doxygen-check:
-    name: 'Documentation check'
+    name: Documentation check
     runs-on: ubuntu-24.04
 
     steps:
