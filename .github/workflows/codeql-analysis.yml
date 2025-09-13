@@ -6,11 +6,11 @@ on:
     branches:
     - main
     paths:
-    - '.github/workflows/codeql-analysis.yml'
+    - .github/workflows/codeql-analysis.yml
 
 name: codeql analysis
 jobs:
-  scan_linux:
+  c_cpp:
     name: Linux Q${{matrix.quantum}}-x64 hdri=${{matrix.hdri}} (${{matrix.modules}})
     runs-on: ubuntu-24.04
 
@@ -46,7 +46,7 @@ jobs:
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
-        languages: cpp
+        languages: c-cpp
 
     - name: Build ImageMagick
       run: |
