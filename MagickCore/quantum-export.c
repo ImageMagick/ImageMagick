@@ -244,15 +244,10 @@ static void ExportPixelChannel(const Image *image,QuantumInfo *quantum_info,
   QuantumAny
     range;
 
-  ptrdiff_t
-    step_size;
-
   ssize_t
     x;
 
-  step_size=(ptrdiff_t) image->channel_map[channel].offset;
-  p+=step_size;
-  step_size+=(ptrdiff_t) GetPixelChannels(image);
+  p+=(ptrdiff_t) image->channel_map[channel].offset;
   switch (quantum_info->depth)
   {
     case 8:
@@ -264,7 +259,7 @@ static void ExportPixelChannel(const Image *image,QuantumInfo *quantum_info,
       {
         pixel=ScaleQuantumToChar(*p);
         q=PopCharPixel(pixel,q);
-        p+=step_size;
+        p+=(ptrdiff_t) GetPixelChannels(image);
         q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
@@ -280,7 +275,7 @@ static void ExportPixelChannel(const Image *image,QuantumInfo *quantum_info,
           {
             pixel=SinglePrecisionToHalf(QuantumScale*(*p));
             q=PopShortPixel(quantum_info->endian,pixel,q);
-            p+=step_size;
+            p+=(ptrdiff_t) GetPixelChannels(image);
             q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
@@ -289,7 +284,7 @@ static void ExportPixelChannel(const Image *image,QuantumInfo *quantum_info,
       {
         pixel=ScaleQuantumToShort(*p);
         q=PopShortPixel(quantum_info->endian,pixel,q);
-        p+=step_size;
+        p+=(ptrdiff_t) GetPixelChannels(image);
         q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
@@ -304,7 +299,7 @@ static void ExportPixelChannel(const Image *image,QuantumInfo *quantum_info,
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
             q=PopQuantumFloatPixel(quantum_info,(float) *p,q);
-            p+=step_size;
+            p+=(ptrdiff_t) GetPixelChannels(image);
             q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
@@ -313,7 +308,7 @@ static void ExportPixelChannel(const Image *image,QuantumInfo *quantum_info,
       {
         pixel=ScaleQuantumToLong(*p);
         q=PopLongPixel(quantum_info->endian,pixel,q);
-        p+=step_size;
+        p+=(ptrdiff_t) GetPixelChannels(image);
         q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
@@ -325,7 +320,7 @@ static void ExportPixelChannel(const Image *image,QuantumInfo *quantum_info,
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
             q=PopQuantumDoublePixel(quantum_info,(double) *p,q);
-            p+=step_size;
+            p+=(ptrdiff_t) GetPixelChannels(image);
             q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
@@ -338,7 +333,7 @@ static void ExportPixelChannel(const Image *image,QuantumInfo *quantum_info,
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
         q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(*p,range),q);
-        p+=step_size;
+        p+=(ptrdiff_t) GetPixelChannels(image);
         q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
