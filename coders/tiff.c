@@ -1932,7 +1932,12 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 
             switch (i)
             {
-              case 0: break;
+              case 0:
+              {
+                if (interlace == PLANARCONFIG_SEPARATE)
+                  quantum_type=RedQuantum;
+                break;
+              }
               case 1: quantum_type=GreenQuantum; break;
               case 2: quantum_type=BlueQuantum; break;
               case 3:
@@ -1942,8 +1947,26 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                   quantum_type=BlackQuantum;
                 break;
               }
-              case 4: quantum_type=AlphaQuantum; break;
-              default: break;
+              case 4:
+              {
+                if (image->colorspace == CMYKColorspace)
+                  {
+                    quantum_type=AlphaQuantum;
+                    break;
+                  }
+                magick_fallthrough;
+              }
+              default:
+              {
+                if (quantum_type == MultispectralQuantum)
+                  {
+                    if (image->colorspace == CMYKColorspace)
+                      (void) SetQuantumMetaChannel(image,quantum_info,i-5);
+                    else
+                      (void) SetQuantumMetaChannel(image,quantum_info,i-4);
+                  }
+                break;
+              }
             }
             rows_remaining=0;
             for (y=0; y < (ssize_t) image->rows; y++)
@@ -1982,6 +2005,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 (interlace != PLANARCONFIG_SEPARATE)))
               break;
           }
+          (void) SetQuantumMetaChannel(image,quantum_info,-1);
           strip_pixels=(unsigned char *) RelinquishMagickMemory(strip_pixels);
           break;
         }
@@ -2036,7 +2060,12 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 
             switch (i)
             {
-              case 0: break;
+              case 0:
+              {
+                if (interlace == PLANARCONFIG_SEPARATE)
+                  quantum_type=RedQuantum;
+                break;
+              }
               case 1: quantum_type=GreenQuantum; break;
               case 2: quantum_type=BlueQuantum; break;
               case 3:
@@ -2046,8 +2075,26 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                   quantum_type=BlackQuantum;
                 break;
               }
-              case 4: quantum_type=AlphaQuantum; break;
-              default: break;
+              case 4:
+              {
+                if (image->colorspace == CMYKColorspace)
+                  {
+                    quantum_type=AlphaQuantum;
+                    break;
+                  }
+                magick_fallthrough;
+              }
+              default:
+              {
+                if (quantum_type == MultispectralQuantum)
+                  {
+                    if (image->colorspace == CMYKColorspace)
+                      (void) SetQuantumMetaChannel(image,quantum_info,i-5);
+                    else
+                      (void) SetQuantumMetaChannel(image,quantum_info,i-4);
+                  }
+                break;
+              }
             }
             for (y=0; y < (ssize_t) image->rows; y+=rows)
             {
@@ -2104,6 +2151,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                   break;
               }
           }
+          (void) SetQuantumMetaChannel(image,quantum_info,-1);
           tile_pixels=(unsigned char *) RelinquishMagickMemory(tile_pixels);
           break;
         }
@@ -4126,6 +4174,15 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
                 if (status == MagickFalse)
                   break;
               }
+            for (i=0; i < (ssize_t) image->number_meta_channels; i++)
+            {
+              (void) SetQuantumMetaChannel(image,quantum_info,i);
+              status=WriteTIFFChannels(image,tiff,tiff_info,quantum_info,
+                MultispectralQuantum,sample++,pixels,exception);
+              if (status == MagickFalse)
+                break;
+            }
+            (void) SetQuantumMetaChannel(image,quantum_info,-1);
             break;
           }
         }
