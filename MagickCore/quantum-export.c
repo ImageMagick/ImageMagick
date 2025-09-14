@@ -345,7 +345,7 @@ static void ExportAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
   const MagickSizeType number_pixels,const Quantum *magick_restrict p,
   unsigned char *magick_restrict q,ExceptionInfo *exception)
 {
-  if (image->alpha_trait != UndefinedPixelTrait)
+  if (image->alpha_trait == UndefinedPixelTrait)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
         "ImageDoesNotHaveAnAlphaChannel","`%s'",image->filename);
