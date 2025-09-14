@@ -3132,6 +3132,12 @@ static void ImportMultispectralQuantum(const Image *image,
         "MultispectralImageRequired","`%s'",image->filename);
       return;
     }
+  if (quantum_info->meta_channel != 0)
+    {
+      ImportPixelChannel(image,quantum_info,number_pixels,p,q,
+        (PixelChannel) (MetaPixelChannels+quantum_info->meta_channel-1));
+      return;
+    }
   switch (quantum_info->depth)
   {
     case 8:

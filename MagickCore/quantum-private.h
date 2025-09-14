@@ -87,6 +87,9 @@ struct _QuantumInfo
 
   size_t
     signature;
+
+  size_t
+    meta_channel;
 };
 
 extern MagickPrivate void

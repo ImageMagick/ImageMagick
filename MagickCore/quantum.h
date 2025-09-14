@@ -167,6 +167,7 @@ extern MagickExport MagickBooleanType
   SetQuantumDepth(const Image *,QuantumInfo *,const size_t),
   SetQuantumEndian(const Image *,QuantumInfo *,const EndianType),
   SetQuantumFormat(const Image *,QuantumInfo *,const QuantumFormatType),
+  SetQuantumMetaChannel(const Image *,QuantumInfo *,const ssize_t),
   SetQuantumPad(const Image *,QuantumInfo *,const size_t);
 
 extern MagickExport QuantumFormatType
