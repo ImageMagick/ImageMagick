@@ -1311,6 +1311,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     /* TIFFPrintDirectory(tiff,stdout,MagickFalse); */
     if ((TIFFGetField(tiff,TIFFTAG_IMAGEWIDTH,&width) != 1) ||
         (TIFFGetField(tiff,TIFFTAG_IMAGELENGTH,&height) != 1) ||
+        (TIFFGetFieldDefaulted(tiff,TIFFTAG_PHOTOMETRIC,&photometric,sans) != 1) ||
         (TIFFGetFieldDefaulted(tiff,TIFFTAG_COMPRESSION,&compress_tag,sans) != 1) ||
         (TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&endian,sans) != 1) ||
         (TIFFGetFieldDefaulted(tiff,TIFFTAG_PLANARCONFIG,&interlace,sans) != 1) ||
