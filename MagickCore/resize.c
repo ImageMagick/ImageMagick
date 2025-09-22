@@ -4625,8 +4625,9 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
         x_factor,
         y_factor;
 
-      x_factor=(ssize_t) image->columns/(ssize_t) columns;
-      y_factor=(ssize_t) image->rows/(ssize_t) rows;
+      x_factor=(ssize_t) (image->columns*MagickSafeReciprocal((double) 
+        columns));
+      y_factor=(ssize_t) (image->rows*MagickSafeReciprocal((double) rows));
       if ((x_factor > 4) && (y_factor > 4))
         {
           thumbnail_image=SampleImage(clone_image,4*columns,4*rows,exception);

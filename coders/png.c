@@ -4694,6 +4694,7 @@ static Image *ReadOneJNGImage(MngReadInfo *mng_info,
     "jpeg:%s",color_image->filename);
 
   color_image_info->ping=MagickFalse;   /* To do: avoid this */
+  CloseBlob(color_image);
   jng_image=ReadImage(color_image_info,exception);
 
   (void) RelinquishUniqueFileResource(color_image->filename);
@@ -4791,37 +4792,24 @@ static Image *ReadOneJNGImage(MngReadInfo *mng_info,
       jng_image=ReadImage(alpha_image_info,exception);
 
       if (jng_image != (Image *) NULL)
-        for (y=0; y < (ssize_t) image->rows; y++)
         {
-          s=GetVirtualPixels(jng_image,0,y,image->columns,1,exception);
-          q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
-          if ((s == (const Quantum *)  NULL) || (q == (Quantum *) NULL))
-            break;
+          image->alpha_trait=BlendPixelTrait;
+          for (y=0; y < (ssize_t) image->rows; y++)
+          {
+            s=GetVirtualPixels(jng_image,0,y,image->columns,1,exception);
+            q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
+            if ((s == (const Quantum *)  NULL) || (q == (Quantum *) NULL))
+              break;
 
-          if (image->alpha_trait != UndefinedPixelTrait)
             for (x=(ssize_t) image->columns; x != 0; x--)
             {
               SetPixelAlpha(image,GetPixelRed(jng_image,s),q);
               q+=(ptrdiff_t) GetPixelChannels(image);
               s+=(ptrdiff_t) GetPixelChannels(jng_image);
             }
-
-          else
-            for (x=(ssize_t) image->columns; x != 0; x--)
-            {
-              Quantum
-                alpha;
-
-              alpha=GetPixelRed(jng_image,s);
-              SetPixelAlpha(image,alpha,q);
-              if (alpha != OpaqueAlpha)
-                image->alpha_trait=BlendPixelTrait;
-              q+=(ptrdiff_t) GetPixelChannels(image);
-              s+=(ptrdiff_t) GetPixelChannels(jng_image);
-            }
-
-          if (SyncAuthenticPixels(image,exception) == MagickFalse)
-            break;
+            if (SyncAuthenticPixels(image,exception) == MagickFalse)
+              break;
+          }
         }
       (void) RelinquishUniqueFileResource(alpha_image->filename);
       alpha_image=DestroyImageList(alpha_image);
@@ -6403,7 +6391,7 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
         if (((mng_info->magn_methx > 0) && (mng_info->magn_methx <= 5)) &&
             ((mng_info->magn_methy > 0) && (mng_info->magn_methy <= 5)))
           {
-            png_uint_32
+            size_t
                magnified_height,
                magnified_width;
 
@@ -6417,19 +6405,19 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
               mng_info->magn_methy = 1;
             if (mng_info->magn_methx == 1)
               {
-                magnified_width=mng_info->magn_ml;
+                magnified_width=(size_t) mng_info->magn_ml;
 
                 if (image->columns > 1)
                    magnified_width += mng_info->magn_mr;
 
                 if (image->columns > 2)
-                   magnified_width += (png_uint_32)
+                   magnified_width += (size_t)
                       ((image->columns-2)*(mng_info->magn_mx));
               }
 
             else
               {
-                magnified_width=(png_uint_32) image->columns;
+                magnified_width=(size_t) image->columns;
 
                 if (image->columns > 1)
                    magnified_width += mng_info->magn_ml-1;
@@ -6438,25 +6426,25 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
                    magnified_width += mng_info->magn_mr-1;
 
                 if (image->columns > 3)
-                   magnified_width += (png_uint_32)
+                   magnified_width += (size_t)
                       ((image->columns-3)*(mng_info->magn_mx-1));
               }
 
             if (mng_info->magn_methy == 1)
               {
-                magnified_height=mng_info->magn_mt;
+                magnified_height=(size_t) mng_info->magn_mt;
 
                 if (image->rows > 1)
                    magnified_height += mng_info->magn_mb;
 
                 if (image->rows > 2)
-                   magnified_height += (png_uint_32)
+                   magnified_height += (size_t)
                       ((image->rows-2)*(mng_info->magn_my));
               }
 
             else
               {
-                magnified_height=(png_uint_32) image->rows;
+                magnified_height=(size_t) image->rows;
 
                 if (image->rows > 1)
                    magnified_height += mng_info->magn_mt-1;
@@ -6465,7 +6453,7 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
                    magnified_height += mng_info->magn_mb-1;
 
                 if (image->rows > 3)
-                   magnified_height += (png_uint_32)
+                   magnified_height += (size_t)
                       ((image->rows-3)*(mng_info->magn_my-1));
               }
 
@@ -7704,7 +7692,7 @@ Magick_png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
        { '0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f' },
      *sp;
 
-   if (length > 1)
+   if (length > 10)
      {
        if (LocaleNCompare((char *) profile_type+1, "ng-chunk-",9) == 0)
           return;

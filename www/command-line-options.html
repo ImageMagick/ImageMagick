@@ -1,108 +1,152 @@
 
 
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
 <head>
-  <script src="assets/color-modes.js" ></script>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ImageMagick – Command-line Options</title>
-  <meta name="keywords" content="Command-line Options, Image Processing, Digital Image Editing, Image Conversion, Open-Source Software, Image Manipulation, Command-Line Image Tools" />
-  <meta name="description" content="ImageMagick is a powerful, open-source software suite for creating, editing, converting, and manipulating images in over 200 formats. Ideal for web developers, graphic designers, and researchers, it offers versatile tools for image processing, including batch processing, format conversion, and complex image transformations." />
-  <meta name="application-name" content="ImageMagick" />
-  <meta name="application-url" content="https://imagemagick.org" />
-  <meta name="copyright" content="Copyright (c) 1999 ImageMagick Studio LLC" />
-  <meta itemprop='url' content='../' />
-  <meta itemprop='title' content='ImageMagick' />
-  <meta itemprop='description' content="ImageMagick is a powerful, open-source software suite for creating, editing, converting, and manipulating images in over 200 formats. Ideal for web developers, graphic designers, and researchers, it offers versatile tools for image processing, including batch processing, format conversion, and complex image transformations." />
-  <meta property='og:url' content='../' />
-  <meta property='og:name' content='ImageMagick' />
-  <meta property='og:image' content='../images/logo.png' />
-  <meta property='og:type' content='website' />
-  <meta property='og:site_name' content='ImageMagick' />
-  <meta property='og:description' content="ImageMagick is a powerful, open-source software suite for creating, editing, converting, and manipulating images in over 200 formats. Ideal for web developers, graphic designers, and researchers, it offers versatile tools for image processing, including batch processing, format conversion, and complex image transformations." />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <!-- Title and Description -->
+  <title>ImageMagick | Command-line Options</title>
+  <meta name="description" content="ImageMagick is a powerful open-source software suite for creating, editing, converting, and manipulating images in over 200 formats. Ideal for developers, designers, and researchers." />
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="command-line-options.html" />
+
+  <!-- Robots -->
+  <meta name="robots" content="index, follow" />
+
+  <!-- Theme Color -->
+  <meta name="theme-color" content="#000000" />
+
+  <!-- Verification Tags -->
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link type="images/png" sizes="64x64" href="../images/wand.png" rel="icon" />
-  <link type="images/icon" sizes="16x16" href="../images/wand.ico" rel="shortcut icon" />
-  <link href="command-line-options.html" rel="canonical" />
-  <link href="assets/bootstrap.min.css" rel="stylesheet" />
-  <script async src="https://localhost/cse.js?cx=006134137889097767902:turn9fku95u"> </script>
+
+  <!-- Favicon and Apple Icon -->
+  <link rel="shortcut icon" href="../images/wand.png" type="images/png" />
+  <link rel="apple-touch-icon" href="../images/wand.png" type="images/png" />
+
+  <!-- Preconnect for External Resources -->
+  <link rel="preconnect" href="../index.html" />
+
+  <!-- Stylesheets -->
+  <link rel="preload" href="assets/bootstrap.min.css" as="style" crossorigin="anonymous" />
+  <link rel="stylesheet" href="assets/bootstrap.min.css" />
+
+  <!-- Accessibility Enhancement -->
+  <style>
+    html {
+      scroll-padding-top: 70px;
+    }
+  </style>
+
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="ImageMagick | Command-line Options" />
+  <meta property="og:description" content="ImageMagick is a powerful open-source software suite for creating, editing, converting, and manipulating images in over 200 formats. Ideal for developers, designers, and researchers." />
+  <meta property="og:image" content="../images/logo.png" />
+  <meta property="og:logo" content="../images/logo.png" />
+  <meta property="og:url" content="../www/command-line-options.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="ImageMagick" />
+  <meta property="og:locale" content="en_us" />
+
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@imagemagick" />
+  <meta name="twitter:creator" content="@imagemagick" />
+  <meta name="twitter:title" content="ImageMagick | Command-line Options" />
+  <meta name="twitter:description" content="ImageMagick is a powerful open-source software suite for creating, editing, converting, and manipulating images in over 200 formats. Ideal for developers, designers, and researchers." />
+  <meta name="twitter:image" content="../images/logo.png" />
+  <meta name="twitter:image:alt" content="ImageMagick logo and tag line" />
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "ImageMagick",
+    "url": "../www/command-line-options.html",
+    "image": "../images/logo.png",
+    "description": "ImageMagick is a powerful open-source software suite for creating, editing, converting, and manipulating images in over 200 formats. Ideal for developers, designers, and researchers.",
+    "applicationCategory": "Multimedia",
+    "operatingSystem": "Windows, macOS, Linux, Unix",
+    "softwareVersion": "7.1.2-1",
+    "license": "../www/license.html",
+    "creator": {
+      "@type": "Organization",
+      "name": "ImageMagick Studio LLC",
+      "url": "https://imagemagick.org"
+    },
+    "keywords": [
+      "Command-line Options",
+      "image processing software",
+      "image conversion tool",
+      "batch image editing",
+      "open-source image editor",
+      "ImageMagick command-line",
+      "resize images ImageMagick",
+      "crop and rotate images",
+      "ImageMagick tutorial",
+      "ImageMagick automation",
+      "ImageMagick for developers",
+      "ImageMagick CLI",
+      "ImageMagick filters and effects",
+      "ImageMagick scripting",
+      "ImageMagick API integration"
+    ],
+    "sameAs": [
+      "https://github.com/ImageMagick",
+      "https://x.com/imagemagick"
+    ],
+    "offers": {
+      "@type": "Offer",
+      "price": "0.00",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <!-- Google Custom Search -->
+  <script defer src="https://localhost/cse.js?cx=006134137889097767902:turn9fku95u"></script>
 </head>
 <body>
-  <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
-  <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
-    <symbol id="check2" viewBox="0 0 16 16">
-      <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
-    </symbol>
-    <symbol id="circle-half" viewBox="0 0 16 16">
-      <path d="M8 15A7 7 0 1 0 8 1v14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>
-    </symbol>
-    <symbol id="moon-stars-fill" viewBox="0 0 16 16">
-      <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
-      <path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z"/>
-    </symbol>
-    <symbol id="sun-fill" viewBox="0 0 16 16">
-      <path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
-    </symbol>
-  </svg>
-  <div class="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
-    <button class="btn btn-bd-secondary py-2 dropdown-toggle d-flex align-items-center"
-            id="bd-theme"
-            type="button"
-            aria-expanded="false"
-            data-bs-toggle="dropdown"
-            aria-label="Toggle theme (auto)">
-      <svg class="bi my-1 theme-icon-active" width="1em" height="1em"><use href="#circle-half"></use></svg>
-      <span class="visually-hidden" id="bd-theme-text">Toggle theme</span>
-    </button>
-    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="bd-theme-text">
-      <li>
-        <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="false">
-          <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#sun-fill"></use></svg>
-          Light
-          <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
-        </button>
-      </li>
-      <li>
-        <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="dark" aria-pressed="false">
-          <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#moon-stars-fill"></use></svg>
-          Dark
-          <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
-        </button>
-      </li>
-      <li>
-        <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="auto" aria-pressed="true">
-          <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#circle-half"></use></svg>
-          Auto
-          <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
-        </button>
-      </li>
-    </ul>
-  </div>
-  <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
-    <symbol id="arrow-right-circle" viewBox="0 0 16 16">
-      <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
-    </symbol>
-    <symbol id="color-mode" viewBox="0 0 118 94">
-      <title>Color Modes</title>
-      <path fill-rule="evenodd" clip-rule="evenodd" d="M24.509 0c-6.733 0-11.715 5.893-11.492 12.284.214 6.14-.064 14.092-2.066 20.577C8.943 39.365 5.547 43.485 0 44.014v5.972c5.547.529 8.943 4.649 10.951 11.153 2.002 6.485 2.28 14.437 2.066 20.577C12.794 88.106 17.776 94 24.51 94H93.5c6.733 0 11.714-5.893 11.491-12.284-.214-6.14.064-14.092 2.066-20.577 2.009-6.504 5.396-10.624 10.943-11.153v-5.972c-5.547-.529-8.934-4.649-10.943-11.153-2.002-6.484-2.28-14.437-2.066-20.577C105.214 5.894 100.233 0 93.5 0H24.508zM80 57.863C80 66.663 73.436 72 62.543 72H44a2 2 0 01-2-2V24a2 2 0 012-2h18.437c9.083 0 15.044 4.92 15.044 12.474 0 5.302-4.01 10.049-9.119 10.88v.277C75.317 46.394 80 51.21 80 57.863zM60.521 28.34H49.948v14.934h8.905c6.884 0 10.68-2.772 10.68-7.727 0-4.643-3.264-7.207-9.012-7.207zM49.948 49.2v16.458H60.91c7.167 0 10.964-2.876 10.964-8.281 0-5.406-3.903-8.178-11.425-8.178H49.948z"></path>
-    </symbol>
-  </svg>
+  <script>
+    function setTheme(theme) {
+      localStorage.setItem('theme', theme);
+      updateThemeIcon(theme);
+      document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? getSystemTheme() : theme);
+    }
+    function getSystemTheme() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    function updateThemeIcon(theme) {
+      const iconMap = {
+        light: '☀️',
+        dark: '🌙',
+        auto: '🌓'
+      };
+      document.getElementById('currentThemeIcon').textContent = iconMap[theme] || '🌓';
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('theme') || 'auto';
+      setTheme(savedTheme);
+    });
+  </script>
   <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
   <div class="container-fluid">
-    <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
+    <a class="navbar-brand fw-bold" href="../index.html" title="$meta->sitename;">
+      ImageMagick    </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#magick-navbars" aria-controls="magick-navbars" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="magick-navbars">
-      <ul class="navbar-nav me-auto mb-2 mb-md-0">
+      <ul class="navbar-nav me-auto">
         <li class="nav-item">
           <a class="nav-link " href="download.html">Download</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="command-line-tools.html">Tools</a>
+          <a class="nav-link " href="../www/command-line-tools.html">Tools</a>
         </li>
         <li class="nav-item">
           <a class="nav-link " href="command-line-processing.html">CLI</a>
@@ -113,23 +157,40 @@
         <li class="nav-item">
           <a class="nav-link" rel="noopener" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item ms-4">
           <iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border: 0;"></iframe>
         </li>
       </ul>
-      <form class="d-flex form-inline" action="search.html">
-        <input class="form-control me-2" type="text" name="q" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit" name="sa">Search</button>
-      </form>
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item dropdown">
+          <form class="d-flex form-inline" action="../www/search.html">
+            <input class="form-control me-2" type="text" name="q" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit" name="sa">Search</button>
+          </form>
+        </li>
+        <li class="nav-item dropdown ms-2">
+          <a class="nav-link dropdown-toggle" href="#" id="themeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <span id="currentThemeIcon">🌓</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="themeDropdown">
+            <li><a class="dropdown-item" href="#" onclick="setTheme('light')">☀️ Light</a></li>
+            <li><a class="dropdown-item" href="#" onclick="setTheme('dark')">🌙 Dark</a></li>
+            <li><a class="dropdown-item" href="#" onclick="setTheme('auto')">🌓 Auto</a></li>
+          </ul>
+        </li>
+      </ul>
     </div>
   </div>
   </nav>
 
-<div class="col-lg-8 mx-auto p-4 py-md-5 text-body-secondary">
+<div class="col-lg-8 mx-auto text-body-secondary pt-5 pt-lg-5">
   <header class="d-flex align-items-center pb-3 mb-5 border-bottom">
-    <a href="../index.html" class="d-flex align-items-center text-decoration-none">
-      <h1 class="mt-5 fs-4">Command-line Options</h1>
-    </a>
+    <div class="mt-3 ms-3">
+      <a href="../index.html" class="text-decoration-none">
+        <h1 class="fs-2 mb-1">Command-line Options</h1>
+      </a>
+      <h2 class="fs-5 text-muted">ImageMagick</h2>
+    </div>
   </header>
 
   <main class="container">
@@ -470,7 +531,7 @@
   </ul>
 </div>
 <p> </p>
-<p class="lead">Below is list of command-line options recognized by the ImageMagick <a href="command-line-tools.html">command-line tools</a>. If you want a description of a particular option, click on the option name in the navigation bar above and you will go right to it. Unless otherwise noted, each option is recognized by the commands: <a href="convert.html">convert</a> and <a href="mogrify.html">mogrify</a>.</p>
+<p class="lead">Below is list of command-line options recognized by the ImageMagick <a href="../www/command-line-tools.html">command-line tools</a>. If you want a description of a particular option, click on the option name in the navigation bar above and you will go right to it. Unless otherwise noted, each option is recognized by the commands: <a href="../www/magick.html">magick</a> and <a href="../www/mogrify.html">mogrify</a>.</p>
 
 <div style="margin: auto;">
   <h2><a class="anchor" id="adaptive-blur"></a>-adaptive-blur <var>radius</var>[x<var>sigma</var>]</h2>
@@ -915,7 +976,7 @@ href="#auto-orient" >-auto-orient</a> operator will do nothing. </p>
 </dl>
 </div>
 
-<p>The computed threshold is returned as the <kbd>auto-threshold:verbose</kbd> image property. To instead print to your device, use <kbd>-define auto-threshold:verbose=true</kbd>.</p>
+<p>The computed threshold is returned as the <samp>auto-threshold:verbose</samp> image property. To instead print to your device, use <samp>-define auto-threshold:verbose=true</samp>.</p>
 
 <div style="margin: auto;">
   <h2><a class="anchor" id="average"></a>-average</h2>
@@ -990,7 +1051,7 @@ negative results without clipping to the color value range
 (0..QuantumRange).</p>
 
 <p>See the discussion on HDRI implementations of ImageMagick on the page <a
-href="high-dynamic-range.html" >High Dynamic-Range Images</a>. For more
+href="../www/high-dynamic-range.html" >High Dynamic-Range Images</a>. For more
 about HDRI go the ImageMagick <a
 href="https://usage.imagemagick.org/basics/#hdri#hdri" >Usage</a> pages or this
 <a
@@ -1245,7 +1306,7 @@ option has been given.  To modify a caption of images already in memory use
 "<samp><a href="#set">-set</a> caption</samp>". </p>
 
 <p>The caption can contain special format characters listed in the <a
-href="escape.html">Format and
+href="../www/escape.html">Format and
 Print Image Properties</a>. These attributes are expanded when the caption
 is finally assigned to the individual images. </p>
 
@@ -1564,8 +1625,7 @@ operation. </p>
 
 <p>Inside parenthesis (where the operator is normally used) it will make a
 clone of the images from the last 'pushed' image sequence, and adds them to
-the end of the current image sequence. Outside parenthesis
-(not recommended) it clones the images from the current image sequence. </p>
+the end of the current image sequence. If used outside parentheses, an error is raised. </p>
 
 <p>Specify the image by its index in the sequence.  The first image is index
 0.  Negative indexes are relative to the end of the sequence; for
@@ -1685,7 +1745,7 @@ duplicate or unused colors removed.  The ordering of an existing color
 palette may be altered. When converting an image from color to grayscale,
 it is more efficient to convert the image to the gray colorspace before
 reducing the number of colors. Refer to
-the <a href="quantize.html">
+the <a href="../www/quantize.html">
 color reduction algorithm</a> for more details.</p>
 
 <div style="margin: auto;">
@@ -1936,7 +1996,7 @@ option has been given.  To modify a comment of images already in memory use
 "<samp><a href="#set">-set</a> comment</samp>". </p>
 
 <p>The comment can contain special format characters listed in the <a
-href="escape.html">Format and
+href="../www/escape.html">Format and
 Print Image Properties</a>. These attributes are expanded when the comment
 is finally assigned to the individual images. </p>
 
@@ -1999,7 +2059,7 @@ subtract
 
 <p class="magick-description">Set the type of image composition.</p>
 
-<p>See <a href="compose.html">Alpha Compositing</a> for
+<p>See <a href="../www/compose.html">Alpha Compositing</a> for
 a detailed discussion of alpha compositing.</p>
 
 <p>This setting affects image processing operators that merge two (or more)
@@ -2088,7 +2148,7 @@ the chroma channels.</p>
   <h2><a class="anchor" id="connected-components"></a>-connected-components <var>connectivity</var></h2>
 </div>
 
-<p class="magick-description"><a href="connected-components.html">connected-components</a> labeling detects connected regions in an image, choose from 4 or 8 way connectivity.</p>
+<p class="magick-description"><a href="../www/connected-components.html">connected-components</a> labeling detects connected regions in an image, choose from 4 or 8 way connectivity.</p>
 
 <p>Use <samp><a href="#define" >-define</a> connected-components:verbose=true</samp> to output statistics associated with each unique label.</p>
 
@@ -2165,7 +2225,7 @@ detection. Without an output bias, the negative values is clipped at zero.
 <p>When using an ImageMagick with the HDRI compile-time setting, <a class="text-nowrap" href="command-line-options.html#bias">-bias</a> is not needed, as ImageMagick is able to store/handle any
 negative results without clipping to the color value range (0..QuantumRange).
 See the discussion on HDRI implementations of ImageMagick on the page <a
-href="high-dynamic-range.html">High
+href="../www/high-dynamic-range.html">High
 Dynamic-Range Images</a>. For more about HDRI go the ImageMagick <a
 href="https://usage.imagemagick.org/basics/#hdri#hdri">Usage</a> pages or this
 <a href="http://en.wikipedia.org/wiki/High_dynamic_range_imaging">Wikipedia</a>
@@ -2272,7 +2332,7 @@ output.</p>
 
 <p>Use <a href="#debug">+debug</a> to turn off all logging.</p>
 
-<p>Debugging may also be set using the <samp>MAGICK_DEBUG</samp> <a href="resources.html#environment"
+<p>Debugging may also be set using the <samp>MAGICK_DEBUG</samp> <a href="../www/resources.html#environment#environment"
 >environment variable</a>.  The allowed values for the <samp>MAGICK_DEBUG</samp>
 environment variable are the same as for the <a href="#debug">-debug</a>
 option.</p>
@@ -2286,7 +2346,7 @@ option.</p>
 
 <p>Get the passphrase from the file specified by <var>filename</var>.</p>
 
-<p>For more information, see the webpage, <a href="cipher.html">ImageMagick: Encipher or
+<p>For more information, see the webpage, <a href="../www/cipher.html">ImageMagick: Encipher or
 Decipher an Image</a>.</p>
 
 
@@ -2329,7 +2389,7 @@ previously created.  Use <a href="#define">+define "*"</a> to remove all
 existing definitions.</p>
 
 <p>The same 'artifact' settings can also be defined using the <a
-href="#set" >-set "option:<var>key</var>" "<var>value</var>"</a> option, which also allows the use of <a href="escape.html" >Format and Print Image
+href="#set" >-set "option:<var>key</var>" "<var>value</var>"</a> option, which also allows the use of <a href="../www/escape.html" >Format and Print Image
 Properties</a> in the defined value. </p>
 
 <p>The <var>option</var> and <var>key</var> are case-independent (they are
@@ -2338,7 +2398,7 @@ is case-dependent.</p>
 
 <p>Such settings are global in scope, and affect all images and operations. </p>
 
-<p>See <a href="defines.html">ImageMagick Defines</a> for a list of recognized defines.  For example:</p>
+<p>See <a href="../www/defines.html">ImageMagick Defines</a> for a list of recognized defines.  For example:</p>
 
 <pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick bilevel.tif -define ps:imagemask eps3:stencil.ps
 </samp></pre>
@@ -3185,7 +3245,7 @@ filename:</p>
 
 <p>You can use 0,0 for the image size, which means to use the actual
 dimensions found in the image header. Otherwise, it is scaled to the given
-dimensions. See <a href="compose.html">Alpha Compositing</a> for
+dimensions. See <a href="../www/compose.html">Alpha Compositing</a> for
 a detailed discussion of alpha composition methods that are available. </p>
 
 <p>The "special augmented compose operators" such as "dissolve" that require
@@ -3263,7 +3323,7 @@ these options <var>before</var> the <a href="#draw">-draw</a> option.</p>
 <p>Strings that begin with a number must be quoted (e.g. use '1.png' rather
 than 1.png).</p>
 
-<p>Drawing primitives conform to the <a href="magick-vector-graphics.html" >Magick
+<p>Drawing primitives conform to the <a href="../www/magick-vector-graphics.html" >Magick
 Vector Graphics</a> format.</p>
 <p>Note, drawing requires an alpha channel.  If none is available, an all opaque alpha channel is implicitly created.</p>
 
@@ -3301,7 +3361,7 @@ image sequence.</p>
 
 <p>Get the passphrase from the file specified by <var>filename</var>.</p>
 
-<p>For more information, see the webpage, <a href="cipher.html">ImageMagick: Encipher or
+<p>For more information, see the webpage, <a href="../www/cipher.html">ImageMagick: Encipher or
 Decipher an Image</a>.</p>
 
 
@@ -3709,7 +3769,7 @@ padding that was discussed above for the magnitude and phase component
 images.</p>
 
 <p>See the discussion on HDRI implementations of ImageMagick on the page <a
-href="high-dynamic-range.html" >High Dynamic-Range Images</a>. For more
+href="../www/high-dynamic-range.html" >High Dynamic-Range Images</a>. For more
 about HDRI go the ImageMagick <a
 href="https://usage.imagemagick.org/basics/#hdri#hdri" >Usage</a> pages, <a
 href="http://www.fmwconcepts.com/imagemagick/fourier_transforms/fourier.html"
@@ -3727,7 +3787,7 @@ href="http://www.fmwconcepts.com/imagemagick/fourier_transforms/fourier.html"
 <p class="magick-description">Color to use when filling a graphic primitive.</p>
 
 <p>This option accepts a color name, a hex color, or a numerical RGB, RGBA,
-HSL, HSLA, CMYK, or CMYKA specification.  See <a href="color.html" >Color Names</a> for
+HSL, HSLA, CMYK, or CMYKA specification.  See <a href="../www/color.html" >Color Names</a> for
 a description of how to properly specify the color argument.</p>
 
 <p>Enclose the color specification in quotation marks to prevent the "#" or
@@ -4051,7 +4111,7 @@ filename becomes <var>image.tiff</var>.</p>
 
 <p class="magick-description">Output formatted image characteristics.</p>
 
-<p>See <a href="escape.html">Format and Print Image
+<p>See <a href="../www/escape.html">Format and Print Image
 Properties</a> for an explanation on how to specify the argument to this
 option.</p>
 
@@ -4288,7 +4348,7 @@ appending <samp>%</samp> as a percentage of the maximum possible intensity (255,
 the expression is read from a file titled by the remaining characters in the
 string.</p>
 
-<p>See <a href="fx.html">FX,
+<p>See <a href="../www/fx.html">FX,
 The Special Effects Image Operator</a> for a detailed discussion of this
 option.</p>
 
@@ -4412,11 +4472,11 @@ coordinate (60,70). (See <a href="command-line-processing.html#geometry">Image G
   -negate output.png
 </samp></pre>
 
-<p>When used as an option to <a href="composite.html">composite</a>, <a
+<p>When used as an option to <a href="../www/composite.html">composite</a>, <a
 href="#gravity">-gravity</a> gives the direction that the image gravitates
 within the composite.</p>
 
-<p>When used as an option to <a href="montage.html">montage</a>, <a
+<p>When used as an option to <a href="../www/montage.html">montage</a>, <a
 href="#gravity">-gravity</a> gives the direction that an image gravitates
 within a tile. The default gravity is <samp>Center</samp> for this purpose.</p>
 
@@ -4576,7 +4636,7 @@ handle negative offsets.</p>
 
 <p>If <a href="#colors">-colors</a> is also specified, the total unique colors
 in the image and color reduction error values are printed. Refer to <a
-href="quantize.html">color
+href="../www/quantize.html">color
 reduction algorithm</a> for a description of these values.</p>
 
 <p>If <a href="#verbose">-verbose</a> precedes this option, copious
@@ -4898,7 +4958,7 @@ assigned to an image is used as a header string to print above the postscript
 image. </p>
 
 <p>You can include the image filename, type, width, height, or other image
-attribute by embedding special format character.  See <a href="escape.html">Format and Print Image
+attribute by embedding special format character.  See <a href="../www/escape.html">Format and Print Image
 Properties</a> for details of the percent escape codes.</p>
 
 <p>For example,</p>
@@ -5367,7 +5427,7 @@ limit as well:</p>
 <p>Here ImageMagick stops processing if an image requires more than 500MB of disk storage.</p>
 
 <p>In addition to command-line resource limit option, resources can be set
-with <a href="resources.html#environment" >environment variables</a>. Set the
+with <a href="../www/resources.html#environment#environment" >environment variables</a>. Set the
 environment variables <samp>MAGICK_AREA_LIMIT</samp>,
 <samp>MAGICK_DISK_LIMIT</samp>, <samp>MAGICK_FILE_LIMIT</samp>,
 <samp>MAGICK_MEMORY_LIMIT</samp>, <samp>MAGICK_MAP_LIMIT</samp>,
@@ -5385,7 +5445,7 @@ through <samp>grep memory|open|destroy|disk</samp> for more readable sifting.
 </p>
 
 <p>For more about ImageMagick's use of resources, see the section <b>Cache
-Storage and Resource Requirements</b> on the <a href="architecture.html#cache
+Storage and Resource Requirements</b> on the <a href="../www/architecture.html#cache#cache
 ">Architecture</a> page.  </p>
 
 <div style="margin: auto;">
@@ -5676,6 +5736,7 @@ name. </p>
 <div class="pre-scrollable p-3 mb-2 text-body-secondary bg-body-tertiary">
 <dl class="row">
 <dt class="col-md-4">AE</dt><dd class="col-md-8">    absolute error count, number of different pixels (-fuzz affected)</dd>
+<dt class="col-md-4">DPC</dt><dd class="col-md-8">  discrete phase correlation</dd>
 <dt class="col-md-4">DSSIM</dt><dd class="col-md-8">  structural dissimilarity index</dd>
 <dt class="col-md-4">FUZZ</dt><dd class="col-md-8">  mean color distance</dd>
 <dt class="col-md-4">MAE</dt><dd class="col-md-8">   mean absolute error (normalized), average channel error distance</dd>
@@ -5683,6 +5744,7 @@ name. </p>
 <dt class="col-md-4">MSE</dt><dd class="col-md-8">   mean error squared, average of the channel error squared</dd>
 <dt class="col-md-4">NCC</dt><dd class="col-md-8">   normalized cross correlation</dd>
 <dt class="col-md-4">PAE</dt><dd class="col-md-8">   peak absolute (normalized peak absolute)</dd>
+<dt class="col-md-4">PHASE</dt><dd class="col-md-8">  phase correlation</dd>
 <dt class="col-md-4">PHASH</dt><dd class="col-md-8"> perceptual hash for the sRGB and HCLp colorspaces.  Specify an alternative colorspace with <samp>-define phash:colorspaces=<var>colorspace,colorspace,...</var></samp></dd>
 <dt class="col-md-4">PSNR</dt><dd class="col-md-8">  peak signal to noise ratio</dd>
 <dt class="col-md-4">RMSE</dt><dd class="col-md-8">  root mean squared (normalized root mean squared)</dd>
@@ -5996,7 +6058,7 @@ white, and  mid-tone colors into a checkerboard pattern of black and white.
 
 <p>You can define your own <var >threshold map</var> for ordered
 dithering and halftoning your images, in either personal or system
-<samp>thresholds.xml</samp> XML file. See <a href="resources.html" >Resources</a>
+<samp>thresholds.xml</samp> XML file. See <a href="../www/resources.html" >Resources</a>
 for more details of configuration files. </p>
 
 <p>To print a complete list of the thresholds that have been defined, use the
@@ -6848,7 +6910,7 @@ the same name. </p>
 <p>This includes string 'properties' that are set by and assigned to images
 using the options <a href="#comment" >-comment</a>, <a href="#label"
 >-label</a>, <a href="#caption" >-caption</a>. These options actually assign
-a global 'artifact' which are automatically assigned (and any <a href="escape.html" >Format Percent
+a global 'artifact' which are automatically assigned (and any <a href="../www/escape.html" >Format Percent
 Escapes</a> expanded) to images as they are read in.  For example:</p>
 
 <pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><samp>$ magick rose: -set Comment 'Rose is a rose is a rose is a rose' rose.jpg
@@ -6856,7 +6918,7 @@ identify -format %c rose.jpg
 Rose is a rose is a rose is a rose
 </samp></pre>
 
-<p>The set value can also make use of <a href="escape.html" >Format and Print Image
+<p>The set value can also make use of <a href="../www/escape.html" >Format and Print Image
 Properties</a> in the defined value.  For example:</p>
 
 <pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><samp>$ magick rose: -set origsize '%wx%h' -resize 50% \
@@ -6899,7 +6961,7 @@ the original image has long since been modified or destroyed. For example: </p>
   label:'%[rosesize]'   label_size_of_rose.gif"
 </samp></pre>
 
-<p>Note that <a href="escape.html" >Format Percent Escapes</a> will only match
+<p>Note that <a href="../www/escape.html" >Format Percent Escapes</a> will only match
 a 'artifact' if the given <var>key</var> does not match an existing
 'attribute' or 'property'.  </p>
 
@@ -7060,7 +7122,7 @@ effects) of a true threshold, but with tapered gray-levels around the threshold
 </div>
 
 <p class="magick-description">Operate silently. This option is only used
-by the <a href="import.html">import</a> tool.</p>
+by the <a href="../www/import.html">import</a> tool.</p>
 
 <div style="margin: auto;">
   <h2><a class="anchor" id="similarity-threshold"></a>-similarity-threshold <var>value</var></h2>
@@ -7372,23 +7434,15 @@ href="#stretch">-stretch</a>, and <a href="#weight">-weight</a>. </p>
 
 <p class="magick-description">Search for subimage.</p>
 
-<p>This option is required to have compare search for the best match location
-of a small image within a larger image. This search will produce two images
-(or two frames). The first is the "difference" image and the second will
-be the "match score" image.</p>
-
-<p>The "match-score" image is smaller containing a pixel for ever possible
-position of the top-left corner of the given sub-image. that is its size will
-be the size of the larger_image - sub_image + 1.  The brightest location in
-this image is the location s the locate on the best match that is also
-reported. Note that this may or may not be a perfect match, and the actual
-brightness will reflect this. Other bright 'peaks' can be used to locate other
-possible matching locations. </p>
-
-<p>Note that the search will try to compare the sub-image at every possible
-location in the larger image, as such it can be very slow.  The smaller the
-sub-image the faster this search is. </p>
-
+<p>This option enables the <code>compare</code> function to search for the best match location of a small image within a larger image. The search process generates either one or two output images (or frames), depending on whether the metric is accelerated.</p>
+<ul>
+    <li>The first output is the <strong>difference</strong> image.</li>
+    <li>The second output, if present, is the <strong>similarity score</strong> image.</li>
+</ul>
+<p>When utilizing the HDRI-enabled compile of ImageMagick and the FFTW delegate is installed, specific metrics—<strong>NCC</strong>, <strong>MSE</strong>, <strong>RMSE</strong>, <strong>PSNR</strong>, <strong>PHASE</strong>, and <strong>DPC</strong>—are automatically accelerated using FFT (Fast Fourier Transform) processing. This is the default behavior. However, by using the flag <code>-define compare:frequency-domain=false</code>, you can disable FFT acceleration and instead opt for the slower spatial domain processing, if desired.</p>
+<p>The <strong>similarity score</strong> image matches the dimensions of the larger image. Each pixel in this output represents a potential position for the top-left corner of the small image within the larger one. The brightest spot in the similarity image corresponds to the best match location. For FFT-accelerated metrics, the similarity score at this position is also displayed in square brackets alongside the match coordinates.</p>
+<p>It is important to note that the best match in the similarity image does not necessarily imply a perfect match. The actual brightness of the peak reflects the quality of the match. Additionally, other bright peaks in the similarity image may indicate alternate potential matching locations.</p>
+<p>Metrics differ in their definition of a <i>perfect match</i>. For metrics like <strong>MSE</strong>, <strong>RMSE</strong>, <strong>PSNR</strong> (<strong>MAE</strong>, <strong>FUZZ</strong>, <strong>DSIM</strong>, and <strong>PHASH</strong>), a perfect match has a value of 0. Conversely, metrics such as <strong>NCC</strong>, <strong>PHASE</strong>, <strong>DPC</strong> (<strong>AE</strong>, <strong>PAE</strong>, <strong>MEPP</strong>, and <strong>SSIM</strong>) define a perfect match as 1. To maintain consistency, for metrics where the perfect match is 0, the similarity image is inverted, ensuring that the best match location appears as the brightest point, just as it does for metrics with a perfect match at 1. </p>
 
 <div style="margin: auto;">
   <h2><a class="anchor" id="swap"></a>-swap <var>index,index</var></h2>
@@ -7661,7 +7715,7 @@ the use of an optimal tree depth for the color reduction algorithm.</p>
 image with the fastest computational speed and the least amount of memory.
 However, the default depth is inappropriate for some images. To assure the
 best representation, try values between 2 and 8 for this parameter.  Refer to
-the <a href="quantize.html"
+the <a href="../www/quantize.html"
 >color reduction algorithm</a> for more details.</p>
 
 <p>The <a href="#colors">-colors</a> or <a href="#monochrome">-monochrome</a>
@@ -7963,7 +8017,7 @@ href="#stretch">-stretch</a>, and <a href="#style">-style</a>. </p>
   <h2><a class="anchor" id="white-balance"></a>-white-balance</h2>
 </div>
 <p>Applies white balancing to an image according to a grayworld assumption in the LAB colorspace.</p>
-<p>Use <kbd>-define white-balance:vibrance=<em>value{%}</em></kdb> to change the color vibrance of the a &amp; b channels.</p>
+<p>Use <samp>-define white-balance:vibrance=<em>value{%}</em></kdb> to change the color vibrance of the a &amp; b channels.</p>
 
 <div style="margin: auto;">
   <h2><a class="anchor" id="white-point"></a>-white-point <var>x,y</var></h2>
@@ -8037,26 +8091,25 @@ grayscale values causing blended updates of the image the mask is attached to.
 but with strict boolean masking. </p>
 </div>
 </div>
-  </div>
   </main><!-- /.container -->
   <footer class="text-center pt-5 my-5 text-body-secondary border-top">
     <div class="container-fluid">
       <a href="security-policy.html">Security</a> •
       <a href="news.html">News</a>
      
-      <a href="#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
+      <a href="#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico" /></a>
      
-      <a href="links.html">Related</a> •
-      <a href="sitemap.html">Sitemap</a>
-   <br/>
-     <a href="support.html">Sponsor</a> •
-     <a href="cite.html">Cite</a> •
+      <a href="../www/links.html">Related</a> •
+      <a href="../www/sitemap.html">Sitemap</a>
+   <br>
+     <a href="../www/support.html">Sponsor</a> •
+     <a href="../www/cite.html">Cite</a> •
      <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
      <a href="../www/https://imagemagick.org/script/contact.php">Contact Us</a>
-   <br/>
+   <br>
      <a href="https://github.com/imagemagick/imagemagick" rel="noopener" target="_blank" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
      <a href="https://twitter.com/imagemagick" rel="noopener" target="_blank" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 300 300" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path d="M178.57 127.15 290.27 0h-26.46l-97.03 110.38L89.34 0H0l117.13 166.93L0 300.25h26.46l102.4-116.59 81.8 116.59h89.34M36.01 19.54H76.66l187.13 262.13h-40.66"/></svg></a>
-    <br/>
+    <br>
     <small>Copyright © 1999 ImageMagick Studio LLC</small>
     </div>
   </footer>
@@ -8066,4 +8119,4 @@ but with strict boolean masking. </p>
   <script src="assets/bootstrap.bundle.min.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 1st March 2025 19:09 -->
+<!-- Magick Cache 17th August 2025 15:30 -->

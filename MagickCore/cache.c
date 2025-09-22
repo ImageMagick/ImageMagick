@@ -75,8 +75,11 @@
 #include "MagickCore/thread-private.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
+#if defined(MAGICKCORE_HAVE_SYS_LOADAVG_H)
+#  include <sys/loadavg.h>
+#endif
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
-#include "zlib.h"
+#  include "zlib.h"
 #endif
 
 /*
@@ -652,6 +655,7 @@ static MagickBooleanType ClonePixelCacheOnDisk(
   return(MagickTrue);
 }
 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
 static inline int GetCacheNumberThreads(const CacheInfo *source,
   const CacheInfo *destination,const size_t chunk,const int factor)
 {
@@ -674,6 +678,7 @@ static inline int GetCacheNumberThreads(const CacheInfo *source,
     number_threads=MagickMin(number_threads,4);
   return((int) number_threads);
 }
+#endif
 
 static MagickBooleanType ClonePixelCacheRepository(
   CacheInfo *magick_restrict clone_info,CacheInfo *magick_restrict cache_info,
@@ -1665,6 +1670,27 @@ MagickExport MagickSizeType GetImageExtent(const Image *image)
 %
 */
 
+static MagickBooleanType GetDynamicThrottlePolicy(void)
+{
+  static MagickBooleanType
+    check_policy = MagickTrue;
+
+  static MagickBooleanType
+    dynamic_throttle = MagickFalse;
+
+  if (check_policy != MagickFalse)
+    {
+      char *value = GetPolicyValue("resource:dynamic-throttle");
+      if (value != (char *) NULL)
+        {
+          dynamic_throttle=IsStringTrue(value);
+          value=DestroyString(value);
+        }
+    check_policy=MagickFalse;
+  }
+  return(dynamic_throttle);
+}
+
 static inline MagickBooleanType ValidatePixelCacheMorphology(
   const Image *magick_restrict image)
 {
@@ -1720,8 +1746,29 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
     }
   if (cpu_throttle == MagickResourceInfinity)
     cpu_throttle=GetMagickResourceLimit(ThrottleResource);
-  if ((cpu_throttle != 0) && ((cycles++ % 4096) == 0))
+  if ((GetDynamicThrottlePolicy() != MagickFalse) && ((cycles % 65536) == 0))
+    {
+      const double
+        max_delay = 50.0,
+        sensitivity = 0.3;
+
+      double
+        load,
+        load_average = 0.0;
+
+      /*
+        Dynamically throttle the CPU relative to the load average.
+      */
+#if defined(MAGICKCORE_HAVE_GETLOADAVG)
+      if (getloadavg(&load_average,1) != 1)
+        load_average=0.0;
+#endif
+      load=MagickMax(load_average-GetOpenMPMaximumThreads(),0.0);
+      cpu_throttle=(MagickSizeType) (max_delay*(1.0-exp(-sensitivity*load)));
+    }
+  if ((cpu_throttle != 0) && ((cycles % 4096) == 0))
     MagickDelay(cpu_throttle);
+  cycles++;
   LockSemaphoreInfo(image->semaphore);
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;

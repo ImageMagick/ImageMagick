@@ -6,16 +6,16 @@ on:
     branches:
     - main
     paths:
-    - '.github/workflows/codeql-analysis.yml'
+    - .github/workflows/codeql-analysis.yml
 
 name: codeql analysis
+permissions:
+  contents: read
+  security-events: write
 jobs:
-  scan_linux:
-    name: 'Linux Q${{matrix.quantum}}-x64 hdri=${{matrix.hdri}} (${{matrix.modules}})'
+  c_cpp:
+    name: Linux Q${{matrix.quantum}}-x64 hdri=${{matrix.hdri}} (${{matrix.modules}})
     runs-on: ubuntu-24.04
-
-    permissions:
-      security-events: write
 
     strategy:
       fail-fast: false
@@ -25,7 +25,7 @@ jobs:
         modules: [ 'with-modules', 'without-modules' ]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         fetch-depth: 2
 
@@ -39,17 +39,33 @@ jobs:
     - name: Configure ImageMagick
       run: |
         export CFLAGS="-Wno-deprecated-declarations"
+        autoreconf -fiv
         ./configure --with-quantum-depth=${{matrix.quantum}} --enable-hdri=${{matrix.hdri}} --${{matrix.modules}}
         echo "" > config.status
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
-        languages: cpp
+        languages: c-cpp
 
     - name: Build ImageMagick
       run: |
         make
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+
+  actions:
+    name: CodeQL analysis (GitHub Actions)
+    runs-on: ubuntu-24.04
+
+    steps:
+    - uses: actions/checkout@v5
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: actions
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3

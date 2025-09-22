@@ -143,6 +143,23 @@ typedef struct _CMSExceptionInfo
 %    o clone_image: the clone image.
 %
 */
+
+typedef char
+  *(*CloneKeyFunc)(const char *);
+
+typedef StringInfo
+  *(*CloneValueFunc)(const StringInfo *);
+
+static inline void *CloneProfileKey(void *key)
+{
+  return((void *) ((CloneKeyFunc) ConstantString)((const char *) key));
+}
+
+static inline void *CloneProfileValue(void *value)
+{
+  return((void *) ((CloneValueFunc) CloneStringInfo)((const StringInfo *) value));
+}
+
 MagickExport MagickBooleanType CloneImageProfiles(Image *image,
   const Image *clone_image)
 {
@@ -157,7 +174,7 @@ MagickExport MagickBooleanType CloneImageProfiles(Image *image,
       if (image->profiles != (void *) NULL)
         DestroyImageProfiles(image);
       image->profiles=CloneSplayTree((SplayTreeInfo *) clone_image->profiles,
-        (void *(*)(void *)) ConstantString,(void *(*)(void *)) CloneStringInfo);
+        CloneProfileKey,CloneProfileValue);
     }
   return(MagickTrue);
 }

@@ -512,6 +512,9 @@ MagickExport Image *CombineImages(const Image *image,
   MagickOffsetType
     progress;
 
+  size_t
+    number_channels;
+
   ssize_t
     y;
 
@@ -539,26 +542,33 @@ MagickExport Image *CombineImages(const Image *image,
       (void) SetImageColorspace(combine_image,RGBColorspace,exception);
     else
       (void) SetImageColorspace(combine_image,sRGBColorspace,exception);
+  number_channels=GetImageListLength(image);
   switch (combine_image->colorspace)
   {
     case UndefinedColorspace:
     case sRGBColorspace:
     {
-      if (GetImageListLength(image) > 3)
+      if (number_channels > 3)
         combine_image->alpha_trait=BlendPixelTrait;
+      if (number_channels > 4)
+        SetPixelMetaChannels(combine_image,number_channels-4,exception);
       break;
     }
     case LinearGRAYColorspace:
     case GRAYColorspace:
     {
-      if (GetImageListLength(image) > 1)
+      if (number_channels > 1)
         combine_image->alpha_trait=BlendPixelTrait;
+      if (number_channels > 2)
+        SetPixelMetaChannels(combine_image,number_channels-2,exception);
       break;
     }
     case CMYKColorspace:
     {
-      if (GetImageListLength(image) > 4)
+      if (number_channels > 4)
         combine_image->alpha_trait=BlendPixelTrait;
+      if (number_channels > 5)
+        SetPixelMetaChannels(combine_image,number_channels-5,exception);
       break;
     }
     default:

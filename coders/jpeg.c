@@ -770,8 +770,12 @@ static boolean ReadAPPProfiles(j_decompress_ptr jpeg_info)
         }
     }
   else
-    status=SetImageProfile(image,"app1",client_info->profiles[marker],
-      exception);
+    {
+      status=SetImageProfile(image,"app1",client_info->profiles[marker],
+        exception);
+      client_info->profiles[marker]=DestroyStringInfo(
+        client_info->profiles[marker]);
+    }
   return(status == MagickFalse ? FALSE : TRUE);
 }
 
@@ -2189,7 +2193,7 @@ static void WriteProfiles(j_compress_ptr jpeg_info,Image *image,
         int
           marker;
 
-        marker=JPEG_APP0+StringToInteger(name+3);
+        marker=APP_MARKER+StringToInteger(name+3);
         for (i=0; i < (ssize_t) length; i+=65533L)
            jpeg_write_marker(jpeg_info,marker,GetStringInfoDatum(profile)+i,
              MagickMin((unsigned int) (length-i),65533));

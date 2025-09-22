@@ -281,6 +281,8 @@ static MagickBooleanType InitializeEXRChannels(Image *image,exr_context_t ctxt,
     status=SetPixelMetaChannels(image,number_meta_channels,exception);
   if (status == MagickFalse)
     return(status);
+  if ((decoder.channel_count == 1) && (pixel_channels[0] == IndexPixelChannel))
+    image->colorspace=GRAYColorspace;
   *data=(uint8_t *) AcquireQuantumMemory(*pixel_size,pixel_count);
   if (*data == (uint8_t*)NULL)
     {
@@ -405,6 +407,10 @@ static MagickBooleanType ReadEXRScanlineImage(exr_context_t ctxt,int part_index,
     Quantum
       *q;
 
+    size_t
+      scans_count_to_read,
+      pixel_count_to_read;
+
     if (y != 0)
       {
         int
@@ -418,11 +424,13 @@ static MagickBooleanType ReadEXRScanlineImage(exr_context_t ctxt,int part_index,
       result=exr_decoding_run(ctxt,part_index,&decoder);
     if (result != EXR_ERR_SUCCESS)
       break;
-    q=QueueAuthenticPixels(image,0,y,image->columns,(size_t) scans_per_chunk,
+    scans_count_to_read=MagickMin((size_t) scans_per_chunk,image->rows-y);
+    pixel_count_to_read=scans_count_to_read*image->columns;
+    q=QueueAuthenticPixels(image,0,y,image->columns,scans_count_to_read,
       exception);
     if (q == (Quantum *) NULL)
       break;
-    status=ReadEXRPixels(image,decoder,pixel_channels,data,q,pixel_count,
+    status=ReadEXRPixels(image,decoder,pixel_channels,data,q,pixel_count_to_read,
       image->columns,0,exception);
     if (status == MagickFalse)
       break;

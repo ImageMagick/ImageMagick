@@ -14,6 +14,8 @@ on:
     - '.github/workflows/daily.yml'
 
 name: daily
+permissions:
+  contents: read
 jobs:
   change_log:
     name: 'Create ChangeLog.md'
@@ -21,7 +23,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         fetch-depth: 0
 
@@ -81,7 +83,7 @@ jobs:
         apt-get install -y autoconf libfontconfig1-dev libfreetype6-dev libltdl-dev make pkg-config ${{ matrix.packages }}
 
     - name: Clone msttcorefonts
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         repository: ImageMagick/msttcorefonts
 
@@ -90,7 +92,7 @@ jobs:
         set -e
         ./install.sh
 
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
     - name: Configure ImageMagick
       env:
@@ -140,7 +142,7 @@ jobs:
 
     steps:
     - name: Clone ImageMagick
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         path: ImageMagick
 
@@ -155,7 +157,7 @@ jobs:
         ImageMagick\.github\build\windows\download-dependencies.cmd windows-${{matrix.architecture}}-${{matrix.buildType}}-openMP.zip
 
     - name: Download ChangeLog.md
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: ChangeLog
         path: ImageMagick
@@ -183,7 +185,7 @@ jobs:
 
     steps:
     - name: Clone ImageMagick
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         path: ImageMagick
 
@@ -226,7 +228,7 @@ jobs:
     - name: Prepare git
       run: git config --global core.autocrlf false
 
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
     - uses: msys2/setup-msys2@v2
       with:

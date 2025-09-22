@@ -9,9 +9,11 @@ on:
     branches:
     - main
     paths:
-    - '.github/workflows/release.yml'
+    - .github/workflows/release.yml
 
 name: release
+permissions:
+  contents: read
 jobs:
   create_app_image:
     name: Create AppImage
@@ -39,7 +41,7 @@ jobs:
         apt-get install -y autoconf curl file fuse git kmod libbz2-dev libdjvulibre-dev libfontconfig-dev libfreetype6-dev libfribidi-dev libharfbuzz-dev libheif-dev liblcms-dev libopenexr-dev libopenjp2-7-dev libturbojpeg0-dev liblqr-dev libraqm-dev libtiff-dev libwebp-dev libx11-dev libxml2-dev liblzma-dev make software-properties-common wget ${{ matrix.packages }}
 
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
       # Avoid fatal: detected dubious ownership in repository at '/__w/ImageMagick/ImageMagick'
       # Possible workaround: https://github.com/actions/runner/issues/2033#issuecomment-1598547465
@@ -94,7 +96,7 @@ jobs:
 
   build_windows:
     name: Build ${{ matrix.quantum }}${{matrix.hdri_flag}} (${{matrix.architecture}})
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     strategy:
       fail-fast: false
@@ -111,7 +113,7 @@ jobs:
 
     steps:
     - name: Clone ImageMagick
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         path: ImageMagick
 
@@ -146,14 +148,14 @@ jobs:
 
   version:
     name: Set release and version
-    runs-on: windows-latest
+    runs-on: windows-2022
     outputs:
       release: ${{ steps.version.outputs.release }}
       version: ${{ steps.version.outputs.version }}
 
     steps:
     - name: Clone ImageMagick
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         path: ImageMagick
 
@@ -167,7 +169,7 @@ jobs:
 
   create_msix:
     name: Create Msix ${{matrix.quantum}}${{matrix.hdri_flag}}
-    runs-on: windows-latest
+    runs-on: windows-2022
     environment: release
     needs:
       - version
@@ -175,7 +177,6 @@ jobs:
 
     permissions:
       id-token: write
-      contents: read
 
     strategy:
       fail-fast: false
@@ -191,19 +192,19 @@ jobs:
 
     steps:
     - name: Clone ImageMagick-Windows
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         repository: ImageMagick/ImageMagick-Windows
         path: ImageMagick-Windows
 
     - name: Download x64 artifacts
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: Windows-${{matrix.quantum}}${{matrix.hdri_flag}}-x64
         path: ImageMagick-Windows\Installer\Msix\x64
 
     - name: Download arm64 artifacts
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: Windows-${{matrix.quantum}}${{matrix.hdri_flag}}-arm64
         path: ImageMagick-Windows\Installer\Msix\arm64
@@ -237,14 +238,13 @@ jobs:
     needs:
       - create_app_image
       - create_msix
-    runs-on: ubuntu-24.04
-
     permissions:
-      contents: write
+      contents: write 
+    runs-on: ubuntu-24.04
 
     steps:
     - name: Download artifacts
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         path: artifacts
 
@@ -265,7 +265,7 @@ jobs:
     needs:
       - version
       - create_release
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     strategy:
       fail-fast: false

@@ -9,6 +9,8 @@ on:
     - main
 
 name: main
+permissions:
+  contents: read
 jobs:
   build_linux:
     name: Build Linux
@@ -31,7 +33,7 @@ jobs:
             packages: clang
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
     - name: Install dependencies
       run: |
@@ -69,7 +71,7 @@ jobs:
     runs-on: macos-13
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
     - name: Install dependencies
       run: |
@@ -93,7 +95,7 @@ jobs:
     runs-on: macos-14
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
     - name: Install dependencies
       run: |
@@ -133,7 +135,7 @@ jobs:
 
     steps:
     - name: Clone ImageMagick
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         path: ImageMagick
 
@@ -167,7 +169,7 @@ jobs:
     - name: Prepare git
       run: git config --global core.autocrlf false
 
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
     - uses: msys2/setup-msys2@v2
       with:

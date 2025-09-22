@@ -959,8 +959,8 @@ static const OptionInfo
     { "+local-contrast", 0L, DeprecateOptionFlag, MagickTrue },
     { "-local-contrast", 1L, SimpleOperatorFlag, MagickFalse },
     { "+log", 0L, DeprecateOptionFlag, MagickFalse },
-    { "-log", 1L, GlobalOptionFlag, MagickFalse },
-    { "+loop", 0L, ImageInfoOptionFlag, MagickFalse },
+    { "-log", 1L, GlobalOptionFlag | NeverInterpretArgsFlag, MagickFalse },
+    { "+loop", 0L, ImageInfoOptionFlag | NeverInterpretArgsFlag, MagickFalse },
     { "-loop", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+lowlight-color", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-lowlight-color", 1L, ImageInfoOptionFlag, MagickFalse },
@@ -2361,6 +2361,21 @@ static const OptionInfo
 %    o clone_info: the source image info for options to clone.
 %
 */
+
+typedef char
+  *(*CloneKeyFunc)(const char *),
+  *(*CloneValueFunc)(const char *);
+
+static inline void *CloneOptionKey(void *key)
+{
+  return((void *) ((CloneKeyFunc) ConstantString)((const char *) key));
+}
+
+static inline void *CloneOptionValue(void *value)
+{
+  return((void *) ((CloneValueFunc) ConstantString)((const char *) value));
+}
+
 MagickExport MagickBooleanType CloneImageOptions(ImageInfo *image_info,
   const ImageInfo *clone_info)
 {
@@ -2376,7 +2391,7 @@ MagickExport MagickBooleanType CloneImageOptions(ImageInfo *image_info,
       if (image_info->options != (void *) NULL)
         DestroyImageOptions(image_info);
       image_info->options=CloneSplayTree((SplayTreeInfo *) clone_info->options,
-        (void *(*)(void *)) ConstantString,(void *(*)(void *)) ConstantString);
+        CloneOptionKey,CloneOptionValue);
     }
   return(MagickTrue);
 }

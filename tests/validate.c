@@ -1258,7 +1258,7 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
         RootMeanSquaredErrorMetric,&distortion,exception);
       reconstruct_image=DestroyImage(reconstruct_image);
       reference_image=DestroyImage(reference_image);
-      if (difference_image == (Image *) NULL ||
+      if ((difference_image == (Image *) NULL) ||
           (exception->severity >= ErrorException))
         {
           (void) FormatLocaleFile(stdout,"... fail @ %s/%s/%lu.\n",
@@ -1270,7 +1270,7 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
           continue;
         }
       difference_image=DestroyImage(difference_image);
-      if ((QuantumScale*distortion) > fuzz)
+      if (MagickSafeSignificantError(QuantumScale*distortion,fuzz) != MagickFalse)
         {
           (void) FormatLocaleFile(stdout,"... fail (with distortion %g).\n",
             QuantumScale*distortion);
@@ -1508,7 +1508,7 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
           continue;
         }
       difference_image=DestroyImage(difference_image);
-      if ((QuantumScale*distortion) > fuzz)
+      if (MagickSafeSignificantError(QuantumScale*distortion,fuzz) != MagickFalse)
         {
           (void) FormatLocaleFile(stdout,"... fail (with distortion %g).\n",
             QuantumScale*distortion);

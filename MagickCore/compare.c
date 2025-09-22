@@ -397,7 +397,7 @@ static MagickBooleanType GetAESimilarity(const Image *image,
             channel,q);
         else
           error=Sa*p[i]-Da*GetPixelChannel(reconstruct_image,channel,q);
-        if ((error*error) > fuzz)
+        if (MagickSafeSignificantError(error*error,fuzz) != MagickFalse)
           {
             channel_similarity[i]++;
             count++;
@@ -724,7 +724,7 @@ static MagickBooleanType GetFUZZSimilarity(const Image *image,
             channel,q);
         else
           error=Sa*p[i]-Da*GetPixelChannel(reconstruct_image,channel,q);
-        if ((error*error) > fuzz)
+        if (MagickSafeSignificantError(error*error,fuzz) != MagickFalse)
           {
             channel_similarity[i]+=QuantumScale*error*QuantumScale*error;
             channel_similarity[CompositePixelChannel]+=QuantumScale*error*

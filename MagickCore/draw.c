@@ -341,15 +341,15 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
         x;
 
       for (x=0; fabs(draw_info->dash_pattern[x]) >= MagickEpsilon; x++) ;
-      clone_info->dash_pattern=(double *) AcquireQuantumMemory((size_t) (2*x+2),
+      clone_info->dash_pattern=(double *) AcquireQuantumMemory((size_t) (x+1),
         sizeof(*clone_info->dash_pattern));
       if (clone_info->dash_pattern == (double *) NULL)
         ThrowFatalException(ResourceLimitFatalError,
           "UnableToAllocateDashPattern");
-      (void) memset(clone_info->dash_pattern,0,(size_t) (2*x+2)*
+      (void) memset(clone_info->dash_pattern,0,(size_t) (x+1)*
         sizeof(*clone_info->dash_pattern));
       (void) memcpy(clone_info->dash_pattern,draw_info->dash_pattern,(size_t)
-        (x+1)*sizeof(*clone_info->dash_pattern));
+        x*sizeof(*clone_info->dash_pattern));
     }
   clone_info->gradient=draw_info->gradient;
   if (draw_info->gradient.stops != (StopInfo *) NULL)
