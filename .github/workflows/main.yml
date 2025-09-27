@@ -8,7 +8,7 @@ on:
     branches:
     - main
 
-name: main
+name: Main
 permissions:
   contents: read
 jobs:

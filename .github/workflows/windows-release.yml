@@ -4,23 +4,23 @@ on:
     branches:
     - main
     paths:
-    - 'configure'
-    - 'm4/version.m4'
-    - '.github/build/windows/download-configure.sh'
-    - '.github/build/windows/download-dependencies.sh'
-    - '.github/workflows/windows-release.yml'
+    - configure
+    - m4/version.m4
+    - .github/build/windows/download-configure.sh
+    - .github/build/windows/download-dependencies.sh
+    - .github/workflows/windows-release.yml
   pull_request:
     branches:
     - main
     paths:
-    - '.github/workflows/windows-release.yml'
+    - .github/workflows/windows-release.yml
 
-name: windows release
+name: Windows release
 permissions:
   contents: read
 jobs:
   change_log:
-    name: 'Create ChangeLog.md'
+    name: Create ChangeLog.md
     runs-on: ubuntu-24.04
 
     steps:
@@ -53,8 +53,8 @@ jobs:
     runs-on: windows-2022
 
     permissions:
-      id-token: write
       contents: read
+      id-token: write
 
     strategy:
       fail-fast: false
@@ -240,8 +240,8 @@ jobs:
     runs-on: windows-2022
 
     permissions:
-      id-token: write
       contents: read
+      id-token: write
 
     strategy:
       fail-fast: false
