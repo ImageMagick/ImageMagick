@@ -232,7 +232,7 @@ static Image *ReadVIDEOImage(const ImageInfo *image_info,
       if (option != (const char *) NULL)
         {
           FormatSanitizedDelegateOption(command,MagickPathExtent,
-            " -vsync \"%s\""," -vsync '%s'",option);
+            " -fps_mode \"%s\""," -fps_mode '%s'",option);
           (void) ConcatenateMagickString(options,command,MagickPathExtent);
         }
       option=GetImageOption(image_info,"video:pixel-format");
