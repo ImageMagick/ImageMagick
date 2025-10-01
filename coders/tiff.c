@@ -1229,7 +1229,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     sample_format = 0,
     samples_per_pixel = 0,
     units = 0,
-    value = 0;
+    value = 0,
+    page_number = 0;
 
   uint32
     height,
@@ -1571,9 +1572,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           }
       }
-    value=(unsigned short) image->scene;
-    if (TIFFGetFieldDefaulted(tiff,TIFFTAG_PAGENUMBER,&value,&pages,sans) == 1)
-      image->scene=value;
+    image->scene = page_number;
     if (image->storage_class == PseudoClass)
       {
         size_t
@@ -1618,8 +1617,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if (image_info->ping != MagickFalse)
       {
         if (image_info->number_scenes != 0)
-          if (image->scene >= (image_info->scene+image_info->number_scenes-1))
+          if (page_number >= (page_number+image_info->number_scenes-1))
             break;
+        page_number += 1;
         goto next_tiff_frame;
       }
     status=SetImageExtent(image,image->columns,image->rows,exception);
@@ -2248,7 +2248,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       Proceed to next image.
     */
     if (image_info->number_scenes != 0)
-      if (image->scene >= (image_info->scene+image_info->number_scenes-1))
+      if (page_number >= (page_number+image_info->number_scenes-1))
         break;
     more_frames=TIFFReadDirectory(tiff) != 0 ? MagickTrue : MagickFalse;
     if (more_frames != MagickFalse)
@@ -2264,7 +2264,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           }
         image=SyncNextImageInList(image);
         status=SetImageProgress(image,LoadImagesTag,(MagickOffsetType)
-          image->scene-1,image->scene);
+          page_number-1,page_number);
         if (status == MagickFalse)
           break;
       }
