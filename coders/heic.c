@@ -422,14 +422,14 @@ static MagickBooleanType ReadHEICImageHandle(const ImageInfo *image_info,
   else
     {
 #if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,17,0)
+      enum heif_item_property_type
+        type = heif_item_property_type_invalid;
+
       heif_item_id
         item_id;
 
       heif_property_id
         transforms[1];
-
-      heif_item_property_type
-        type = heif_item_property_type_invalid;
 
       int
         count;
