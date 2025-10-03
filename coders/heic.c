@@ -428,6 +428,9 @@ static MagickBooleanType ReadHEICImageHandle(const ImageInfo *image_info,
       heif_property_id
         transforms[1];
 
+      heif_item_property_type
+        type = heif_item_property_type_invalid;
+
       int
         count;
 
@@ -435,6 +438,9 @@ static MagickBooleanType ReadHEICImageHandle(const ImageInfo *image_info,
       count=heif_item_get_transformation_properties(heif_context,item_id,
         transforms,1);
       if (count == 1)
+        type=heif_item_get_property_type(heif_context,item_id,transforms[0]);
+      if (count == 1 && ((type == heif_item_property_type_transform_mirror) ||
+          (type == heif_item_property_type_transform_rotation)))
         {
           enum heif_transform_mirror_direction
             mirror;
