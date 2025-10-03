@@ -1525,7 +1525,11 @@ static void TagToFilterModuleName(const char *tag,char *name)
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",tag);
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
-  (void) FormatLocaleString(name,MagickPathExtent,"FILTER_%s_.dll",tag);
+#if defined(_DEBUG)
+ (void) FormatLocaleString(name,MagickPathExtent,"FILTER_DB_%s_.dll",tag);
+#else
+ (void) FormatLocaleString(name,MagickPathExtent,"FILTER_RL_%s_.dll",tag);
+#endif
 #elif !defined(MAGICKCORE_LTDL_DELEGATE)
   (void) FormatLocaleString(name,MagickPathExtent,"%s.dll",tag);
 #else
