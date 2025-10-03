@@ -472,7 +472,7 @@ static int MagicInfoCompare(const void *x,const void *y)
 #endif
 
 MagickExport const MagicInfo **GetMagicInfoList(const char *pattern,
-  size_t *number_aliases,ExceptionInfo *magick_unused(exception))
+  size_t *number_aliases,ExceptionInfo *exception)
 {
   const MagicInfo
     **aliases;
@@ -569,7 +569,7 @@ static int MagicCompare(const void *x,const void *y)
 #endif
 
 MagickExport char **GetMagicList(const char *pattern,size_t *number_aliases,
-  ExceptionInfo *magick_unused(exception))
+  ExceptionInfo *exception)
 {
   char
     **aliases;
