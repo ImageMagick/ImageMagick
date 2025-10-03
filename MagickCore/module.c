@@ -78,11 +78,14 @@ typedef void *ModuleHandle;
   Define declarations.
 */
 #if defined(MAGICKCORE_LTDL_DELEGATE)
+#  define FilterGlobExpression "*.la"
 #  define ModuleGlobExpression "*.la"
 #else
 #  if defined(_DEBUG)
+#    define FilterGlobExpression "FILTER_DB_*.dll"
 #    define ModuleGlobExpression "IM_MOD_DB_*.dll"
 #  else
+#    define FilterGlobExpression "FILTER_RL_*.dll"
 #    define ModuleGlobExpression "IM_MOD_RL_*.dll"
 #  endif
 #endif
@@ -454,7 +457,10 @@ MagickExport char **GetModuleList(const char *pattern,
   while ((MagickReadDirectory(directory,buffer,&entry) == 0) &&
          (entry != (struct dirent *) NULL))
   {
-    status=GlobExpression(entry->d_name,ModuleGlobExpression,MagickFalse);
+    if (type == MagickImageFilterModule)
+      status=GlobExpression(entry->d_name,FilterGlobExpression,MagickFalse);
+    else
+      status=GlobExpression(entry->d_name,ModuleGlobExpression,MagickFalse);
     if (status == MagickFalse)
       continue;
     if (GlobExpression(entry->d_name,pattern,MagickFalse) == MagickFalse)
@@ -475,6 +481,11 @@ MagickExport char **GetModuleList(const char *pattern,
     modules[i]=AcquireString((char *) NULL);
     GetPathComponent(entry->d_name,BasePath,modules[i]);
     if (LocaleNCompare("IM_MOD_",modules[i],7) == 0)
+      {
+        (void) CopyMagickString(modules[i],modules[i]+10,MagickPathExtent);
+        modules[i][strlen(modules[i])-1]='\0';
+      }
+    else if (LocaleNCompare("FILTER_",modules[i],7) == 0)
       {
         (void) CopyMagickString(modules[i],modules[i]+10,MagickPathExtent);
         modules[i][strlen(modules[i])-1]='\0';
