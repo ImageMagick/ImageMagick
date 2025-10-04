@@ -31,13 +31,30 @@
   <link rel="preconnect" href="../index.html" />
 
   <!-- Stylesheets -->
-  <link rel="preload" href="assets/bootstrap.min.css" as="style" crossorigin="anonymous" />
-  <link rel="stylesheet" href="assets/bootstrap.min.css" />
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" as="style" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" />
 
   <!-- Accessibility Enhancement -->
   <style>
     html {
       scroll-padding-top: 70px;
+    }
+    a.nav-link:hover,
+    a.dropdown-item:hover {
+      color: #ffc107 !important;
+      text-shadow: 0px 2px 4px rgba(255, 193, 7, 0.8);
+    }
+    .btn-outline-warning {
+      color: #cd7f32;
+      border-color: #cd7f32;
+    }
+    .navbar-brand {
+      color: #d4af37;
+      transition: color 0.3s ease, text-shadow 0.3s ease;
+    }
+    .navbar-brand:hover {
+      color: #e9c03d;
+      text-shadow: 0px 2px 4px rgba(203, 163, 120, 0.6);
     }
   </style>
 
@@ -71,7 +88,7 @@
     "description": "ImageMagick is a powerful open-source software suite for creating, editing, converting, and manipulating images in over 200 formats. Ideal for developers, designers, and researchers.",
     "applicationCategory": "Multimedia",
     "operatingSystem": "Windows, macOS, Linux, Unix",
-    "softwareVersion": "7.1.2-1",
+    "softwareVersion": "7.1.2-3",
     "license": "../www/license.html",
     "creator": {
       "@type": "Organization",
@@ -146,7 +163,7 @@
           <a class="nav-link " href="download.html">Download</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="../www/command-line-tools.html">Tools</a>
+          <a class="nav-link " href="command-line-tools.html">Tools</a>
         </li>
         <li class="nav-item">
           <a class="nav-link " href="command-line-processing.html">CLI</a>
@@ -155,20 +172,20 @@
           <a class="nav-link " href="develop.html">Develop</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" rel="noopener" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
+          <a class="nav-link" rel="noopener noreferrer" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
         </li>
         <li class="nav-item ms-4">
           <iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border: 0;"></iframe>
         </li>
       </ul>
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item dropdown">
+        <li class="nav-item ms-3">
           <form class="d-flex form-inline" action="../www/search.html">
-            <input class="form-control me-2" type="text" name="q" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success" type="submit" name="sa">Search</button>
+            <input class="form-control me-2" type="text" name="q" placeholder="Search site..." aria-label="Search">
+            <button class="btn btn-outline-warning" type="submit" name="sa">Search</button>
           </form>
         </li>
-        <li class="nav-item dropdown ms-2">
+        <li class="nav-item dropdown ms-3">
           <a class="nav-link dropdown-toggle" href="#" id="themeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             <span id="currentThemeIcon">🌓</span>
           </a>
@@ -193,7 +210,7 @@
     </div>
   </header>
 
-  <main class="container">
+  <main role="main" class="container">
 ﻿<div>
 <p class="text-center"><a href="#colorspace">A Word about Colorspaces</a> • <a href="#supported">Supported Formats</a> • <a href="#pseudo">Pseudo Formats</a> • <a href="#builtin-images">Built-in Images</a>  • <a href="#builtin-patterns">Built-in Patterns</a> • <a href="#embedded">Embedded Profiles</a></p>
 
@@ -485,7 +502,7 @@ the supported image formats.</p>
   </tr>
 
   <tr>
-    <td><a href="motion-picture.html">DPX</a></td>
+    <td><a href="../www/motion-picture.html">DPX</a></td>
     <td>RW</td>
     <td>SMPTE Digital Moving Picture Exchange 2.0 (SMPTE 268M-2003)</td>
     <td>Use <a href="command-line-options.html#set">-set</a> to specify the image gamma or black and white points (e.g. <samp>-set gamma 1.7</samp>, <samp>-set reference-black 95</samp>, <samp>-set reference-white 685</samp>).</td>
@@ -733,28 +750,28 @@ the supported image formats.</p>
     <td><a href="../index.html">JP2</a></td>
     <td>RW</td>
     <td>JPEG-2000 JP2 File Format Syntax</td>
-    <td>Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option. See <a href="jp2.html">JP2 Encoding Options</a> for more details.</td>
+    <td>Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option. See <a href="../www/jp2.html">JP2 Encoding Options</a> for more details.</td>
   </tr>
 
   <tr>
     <td><a href="../index.html">JPT</a></td>
     <td>RW</td>
     <td>JPEG-2000 Code Stream Syntax</td>
-    <td>Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="jp2.html">JP2 Encoding Options</a> for more details.</td>
+    <td>Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="../www/jp2.html">JP2 Encoding Options</a> for more details.</td>
   </tr>
 
   <tr>
     <td><a href="../index.html">J2C</a></td>
     <td>RW</td>
     <td>JPEG-2000 Code Stream Syntax</td>
-    <td>Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="jp2.html">JP2 Encoding Options</a> for more details.</td>
+    <td>Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="../www/jp2.html">JP2 Encoding Options</a> for more details.</td>
   </tr>
 
   <tr>
     <td><a href="../index.html">J2K</a></td>
     <td>RW</td>
     <td>JPEG-2000 Code Stream Syntax</td>
-    <td>Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="jp2.html">JP2 Encoding Options</a> for more details.</td>
+    <td>Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="../www/jp2.html">JP2 Encoding Options</a> for more details.</td>
   </tr>
 
   <tr>
@@ -891,7 +908,7 @@ the supported image formats.</p>
     <td><a href="../www/magick-vector-graphics.html">MVG</a></td>
     <td>RW</td>
     <td>Magick Vector Graphics.</td>
-    <td>The native ImageMagick vector metafile format. A text file containing vector drawing commands accepted by <a href="../www/magick.html">magick</a>'s <a href="command-line-options.html#draw">-draw</a> option.</td>
+    <td>The native ImageMagick vector metafile format. A text file containing vector drawing commands accepted by <a href="magick.html">magick</a>'s <a href="command-line-options.html#draw">-draw</a> option.</td>
   </tr>
 
   <tr>
@@ -1806,7 +1823,7 @@ the supported image formats.</p>
     <td> NETSCAPE</td>
     <td>R</td>
     <td>image using colors in Netscape 216 (6x6x6 ) color cube, 216x144</td>
-    <td>Most commonly used with the <a href="../www/magick.html">magick</a> and <a href="../www/mogrify.html">magick mogrify</a> programs with the <a href="command-line-options.html#map">-map</a> option to create <var>web safe</var> images.</td>
+    <td>Most commonly used with the <a href="magick.html">magick</a> and <a href="mogrify.html">magick mogrify</a> programs with the <a href="command-line-options.html#map">-map</a> option to create <var>web safe</var> images.</td>
   </tr>
 
   <tr>
@@ -2266,14 +2283,14 @@ the supported image formats.</p>
     <td>RW</td>
     <td>International Color Consortium color profile</td>
     <td>Also known as <samp>ICM</samp>. To read, use <a href="command-line-options.html#profile">-profile</a> with
-      <a href="../www/magick.html">magick</a>.</td>
+      <a href="magick.html">magick</a>.</td>
   </tr>
 
   <tr>
     <td>IPTC</td>
     <td>RW</td>
     <td>IPTC Newsphoto (binary)</td>
-    <td>To read, use <a href="command-line-options.html#profile">-profile</a> with <a href="../www/magick.html">magick</a></td>
+    <td>To read, use <a href="command-line-options.html#profile">-profile</a> with <a href="magick.html">magick</a></td>
   </tr>
 
   <tr>
@@ -2286,11 +2303,12 @@ the supported image formats.</p>
 </table></div>
 
 </div>
+    <a aria-label="About ImageMagick" class="btn btn-outline-warning mt-3" href="../index.html">About ImageMagick</a>
   </main><!-- /.container -->
   <footer class="text-center pt-5 my-5 text-body-secondary border-top">
     <div class="container-fluid">
       <a href="security-policy.html">Security</a> •
-      <a href="news.html">News</a>
+      <a href="../www/news.html">News</a>
      
       <a href="#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico" /></a>
      
@@ -2302,8 +2320,8 @@ the supported image formats.</p>
      <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
      <a href="../www/https://imagemagick.org/script/contact.php">Contact Us</a>
    <br>
-     <a href="https://github.com/imagemagick/imagemagick" rel="noopener" target="_blank" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
-     <a href="https://twitter.com/imagemagick" rel="noopener" target="_blank" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 300 300" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path d="M178.57 127.15 290.27 0h-26.46l-97.03 110.38L89.34 0H0l117.13 166.93L0 300.25h26.46l102.4-116.59 81.8 116.59h89.34M36.01 19.54H76.66l187.13 262.13h-40.66"/></svg></a>
+     <a href="https://github.com/imagemagick/imagemagick" rel="noopener noreferrer" target="_blank" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
+     <a href="https://twitter.com/imagemagick" rel="noopener noreferrer" target="_blank" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 300 300" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path d="M178.57 127.15 290.27 0h-26.46l-97.03 110.38L89.34 0H0l117.13 166.93L0 300.25h26.46l102.4-116.59 81.8 116.59h89.34M36.01 19.54H76.66l187.13 262.13h-40.66"/></svg></a>
     <br>
     <small>Copyright © 1999 ImageMagick Studio LLC</small>
     </div>
@@ -2311,7 +2329,8 @@ the supported image formats.</p>
 </div>
 
   <!-- Javascript assets -->
-  <script src="assets/bootstrap.bundle.min.js" ></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+~                                                         
   </body>
 </html>
-<!-- Magick Cache 17th August 2025 15:30 -->
+<!-- Magick Cache 3rd October 2025 21:07 -->
