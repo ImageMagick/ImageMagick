@@ -1181,8 +1181,6 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
   /*
     Set image resolution.
   */
-  image->resolution.x=DefaultResolution;
-  image->resolution.y=DefaultResolution;
   units=0;
   if (jpeg_info->saw_JFIF_marker != 0)
     {
@@ -1202,11 +1200,10 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
           */
           if ((jpeg_info->X_density != 0) && (jpeg_info->Y_density != 0))
             {
-              double aspect_ratio = (double) jpeg_info->Y_density/
-                (double) jpeg_info->X_density;
+              double aspect_ratio = (double) jpeg_info->Y_density*
+                MagickSafeReciprocal((double) jpeg_info->X_density);
               image->resolution.y=image->resolution.x*aspect_ratio;
             }
-          units=1;
         }
     }
   if (units == 1)
