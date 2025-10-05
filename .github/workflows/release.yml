@@ -484,7 +484,7 @@ jobs:
 
   release:
     name: Publish Release
-    #if: ${{ needs.version.outputs.publish == 'true' }}
+    if: ${{ needs.version.outputs.publish == 'true' }}
     runs-on: ubuntu-24.04
     needs:
       - version
