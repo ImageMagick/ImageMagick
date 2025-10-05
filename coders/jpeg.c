@@ -1184,27 +1184,12 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
   units=0;
   if (jpeg_info->saw_JFIF_marker != 0)
     {
+      if (jpeg_info->X_density != 0)
+        image->resolution.x=(double) jpeg_info->X_density;
+      if (jpeg_info->Y_density != 0)
+        image->resolution.y=(double) jpeg_info->Y_density;
       if (jpeg_info->density_unit != 0)
-        {
-          /*
-            Units are defined: 1 = DPI, 2 = DPC.
-          */
-          image->resolution.x=(double) jpeg_info->X_density;
-          image->resolution.y=(double) jpeg_info->Y_density;
-          units=(size_t) jpeg_info->density_unit;
-        }
-      else
-        {
-          /*
-            Optionally scale based on aspect ratio.
-          */
-          if ((jpeg_info->X_density != 0) && (jpeg_info->Y_density != 0))
-            {
-              double aspect_ratio = (double) jpeg_info->Y_density*
-                MagickSafeReciprocal((double) jpeg_info->X_density);
-              image->resolution.y=image->resolution.x*aspect_ratio;
-            }
-        }
+        units=(size_t) jpeg_info->density_unit;
     }
   if (units == 1)
     image->units=PixelsPerInchResolution;
