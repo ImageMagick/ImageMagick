@@ -1342,7 +1342,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               if ((tile_image->storage_class == DirectClass) &&
                   (pixmap.bits_per_pixel != 16))
                 {
-                  p+=(ptrdiff_t) (pixmap.component_count-1)*(ssize_t) tile_image->columns;
+                  p+=(ptrdiff_t) (pixmap.component_count-1)*(ssize_t)
+                    tile_image->columns;
                   if (p < pixels)
                     break;
                 }
@@ -1355,9 +1356,21 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             if ((jpeg == MagickFalse) && (EOFBlob(image) == MagickFalse))
               if ((code == 0x9a) || (code == 0x9b) ||
                   ((bytes_per_line & 0x8000) != 0))
+                {
+                  if ((source.right-source.left) != (destination.right-destination.left) ||
+                      (source.bottom-source.top) != (destination.bottom-destination.top))
+                    {
+                      Image *clone_image = tile_image;
+                      tile_image=ResizeImage(clone_image,(size_t)
+                        (destination.right-destination.left),(size_t)
+                        (destination.bottom-destination.top),UndefinedFilter,
+                        exception);
+                      clone_image=DestroyImage(clone_image);
+                    }
                 (void) CompositeImage(image,tile_image,CopyCompositeOp,
                   MagickTrue,(ssize_t) destination.left,(ssize_t)
                   destination.top,exception);
+              }
             tile_image=DestroyImage(tile_image);
             break;
           }
