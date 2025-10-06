@@ -1223,13 +1223,13 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     max_sample_value = 0,
     min_sample_value = 0,
     orientation = 0,
+    page = 0,
     pages = 0,
     photometric = 0,
     *sample_info = NULL,
     sample_format = 0,
     samples_per_pixel = 0,
-    units = 0,
-    value = 0;
+    units = 0;
 
   uint32
     height,
@@ -1571,9 +1571,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           }
       }
-    value=(unsigned short) image->scene;
-    if (TIFFGetFieldDefaulted(tiff,TIFFTAG_PAGENUMBER,&value,&pages,sans) == 1)
-      image->scene=value;
+    if ((TIFFGetFieldDefaulted(tiff,TIFFTAG_PAGENUMBER,&page,&pages,sans) == 1) &&
+        (page >= (unsigned short) image->scene))
+      image->scene=(size_t) page;
     if (image->storage_class == PseudoClass)
       {
         size_t
