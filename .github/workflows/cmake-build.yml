@@ -35,7 +35,6 @@ jobs:
         with:
           sparse-checkout: |
             conanfile.py
-            conan.profile
           sparse-checkout-cone-mode: false
 
       - uses: actions/setup-python@v5
@@ -61,7 +60,7 @@ jobs:
       - name: Install all delegates
         run: |
           conan profile detect --exist-ok
-          conan install . -of build -pr:a ./conan.profile --build=missing -o libtype=${{ matrix.libtype }} --settings=build_type=${{ matrix.buildtype }} --settings compiler.cppstd=20
+          conan install . -of build --build=missing -o libtype=${{ matrix.libtype }} --settings=build_type=${{ matrix.buildtype }} --settings compiler.cppstd=20
           conan cache clean
           echo 'CONAN_TOOLCHAIN=-DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/build/conan_toolchain.cmake"' >> $GITHUB_ENV
         shell: bash
@@ -127,7 +126,7 @@ jobs:
     - name: Install all delegates (conan)
       run: |
         conan profile detect --exist-ok
-        conan install . -of build -pr:a ./conan.profile --build=missing -o libtype=${{ matrix.libtype }} --settings=build_type=${{ matrix.buildtype }} --settings compiler.cppstd=20
+        conan install . -of build --build=missing -o libtype=${{ matrix.libtype }} --settings=build_type=${{ matrix.buildtype }} --settings compiler.cppstd=20
         conan cache clean
         echo 'CONAN_TOOLCHAIN=-DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/build/conan_toolchain.cmake"' >> $GITHUB_ENV
       shell: bash
@@ -138,7 +137,7 @@ jobs:
     - name: Install all delegates (pkgconf)
       run: |
         conan profile detect --exist-ok
-        conan install . -of build -pr:a ./conan.profile --build=missing -o libtype=${{ matrix.libtype }} --settings=build_type=${{ matrix.buildtype }} --settings compiler.cppstd=20
+        conan install . -of build --build=missing -o libtype=${{ matrix.libtype }} --settings=build_type=${{ matrix.buildtype }} --settings compiler.cppstd=20
         conan cache clean
         echo "PKG_CONFIG_PATH=${{ github.workspace }}/build" >> $GITHUB_ENV
       shell: bash
@@ -275,7 +274,7 @@ jobs:
       shell: bash
       run: |
         conan profile detect --exist-ok
-        conan install . -of build -pr:a ./conan.profile -pr:h=./emscripten.profile --build=missing --settings compiler.cppstd=20
+        conan install . -of build -pr:h=./emscripten.profile --build=missing --settings compiler.cppstd=20
         conan cache clean
 
     - name: Generate CMake build (conan)
