@@ -104,13 +104,13 @@ class ImageMagickDelegates(ConanFile):
         self.requires('zstd/1.5.5', force=True)
 
       if self.options.zip:
-        self.requires('libzip/1.9.2', force=True)
+        self.requires('libzip/1.11.3', force=True)
 
       if self.options.xz:
         self.requires('xz_utils/5.4.5', force=True)
 
       if self.options.gzip:
-        self.requires('zlib/1.2.13', force=True)
+        self.requires('zlib/1.3.1', force=True)
 
       if self.options.fftw:
         self.requires('fftw/3.3.10', force=True)
@@ -155,7 +155,7 @@ class ImageMagickDelegates(ConanFile):
         self.requires('libraw/0.21.2', force=True)
 
       if self.options.jpeg:
-        self.requires('openjpeg/2.5.0', force=True)
+        self.requires('openjpeg/2.5.3', force=True)
 
       if self.options.cairo and self.settings.arch != 'wasm':
         self.requires('cairo/1.17.8', force=True)
@@ -205,6 +205,7 @@ class ImageMagickDelegates(ConanFile):
         self.options['cairo'].with_xcb = False
         self.options['cairo'].with_xcb = False
         self.options['cairo'].with_zlib = self.options.gzip
+        self.options['cairo'].with_lzo = False
         self.options['cairo'].with_freetype = self.settings.arch != 'wasm' and self.options.fonts
         self.options['cairo'].with_fontconfig = self.settings.arch != 'wasm' and self.options.fonts
 
