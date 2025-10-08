@@ -1365,7 +1365,10 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                         (destination.right-destination.left),(size_t)
                         (destination.bottom-destination.top),UndefinedFilter,
                         exception);
-                      clone_image=DestroyImage(clone_image);
+                      if (tile_image == (Image *) NULL)
+                        tile_image=clone_image;
+                      else
+                        clone_image=DestroyImage(clone_image);
                     }
                 (void) CompositeImage(image,tile_image,CopyCompositeOp,
                   MagickTrue,(ssize_t) destination.left,(ssize_t)
