@@ -1117,8 +1117,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     if (bmp_info.compression == BI_RLE4)
       bmp_info.bits_per_pixel<<=1;
-		extent=image->columns*bmp_info.bits_per_pixel;
-		bytes_per_line=4*((extent+31)/32);
+    extent=image->columns*bmp_info.bits_per_pixel;
+    bytes_per_line=4*((extent+31)/32);
     if (BMPOverflowCheck(bytes_per_line,image->rows) != MagickFalse)
       ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
     length=bytes_per_line*image->rows;
