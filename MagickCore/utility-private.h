@@ -203,7 +203,7 @@ static inline void getcwd_utf8(char *path,size_t extent)
 #endif
 }
 
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__) && !defined(__MINGW32__)
 typedef int
   mode_t;
 #endif
