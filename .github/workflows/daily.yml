@@ -234,6 +234,7 @@ jobs:
       with:
         install: mingw-w64-${{ matrix.toolchain }}-toolchain base-devel binutils
         update: true
+        cache: false
 
     - name: Build ImageMagick
       run: cd .github/build/msys2 && makepkg-mingw --noconfirm --syncdeps
