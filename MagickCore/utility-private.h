@@ -24,6 +24,9 @@
 #if defined(MAGICKCORE_HAVE_UTIME_H)
 #include <utime.h>
 #endif
+#if defined(__MINGW32__)
+#include <share.h>
+#endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -399,7 +402,7 @@ static inline int stat_utf8(const char *path,struct stat *attributes)
   path_wide=create_wchar_path(path);
   if (path_wide == (WCHAR *) NULL)
     return(-1);
-  status=_wstati64(path_wide,attributes);
+  status=wstat(path_wide,attributes);
   path_wide=(WCHAR *) RelinquishMagickMemory(path_wide);
   return(status);
 #endif

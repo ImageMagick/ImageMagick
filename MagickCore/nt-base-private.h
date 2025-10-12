@@ -77,6 +77,7 @@ extern "C" {
 #  define setmode _setmode
 #  define stat    _stat64
 #  define tell    _telli64
+#  define wstat   _wstat64
 #endif
 
 #if !defined(XS_VERSION)
