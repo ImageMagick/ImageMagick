@@ -986,7 +986,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
           }
         pixels=p;
         if (x_offset < 0)
-          p-=(ptrdiff_t)CastDoubleToSsizeT((double) x_offset*
+          p-=(ptrdiff_t) CastDoubleToSsizeT((double) x_offset*
             GetPixelChannels(source_image));
       }
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);

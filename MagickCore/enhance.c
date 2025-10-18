@@ -69,6 +69,7 @@
 #include "MagickCore/option.h"
 #include "MagickCore/pixel.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/pixel-private.h"
 #include "MagickCore/property.h"
 #include "MagickCore/quantum.h"
 #include "MagickCore/quantum-private.h"
@@ -318,11 +319,8 @@ static void ClipCLAHEHistogram(const double clip_limit,const size_t number_bins,
     return;
   cumulative_excess=0;
   for (i=0; i < (ssize_t) number_bins; i++)
-  {
-    excess=(ssize_t) histogram[i]-(ssize_t) clip_limit;
-    if (excess > 0)
-      cumulative_excess+=excess;
-  }
+    if (histogram[i] > clip_limit)
+      cumulative_excess+=(ssize_t) (histogram[i]-clip_limit);
   /*
     Clip histogram and redistribute excess pixels across all bins.
   */
@@ -481,9 +479,6 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
   MemoryInfo
     *tile_cache;
 
-  unsigned short
-    *p;
-
   size_t
     limit,
     *tiles;
@@ -492,15 +487,16 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
     y;
 
   unsigned short
-    *lut;
+    *lut,
+    *p;
 
   /*
     Contrast limited adapted histogram equalization.
   */
   if (clip_limit == 1.0)
     return(MagickTrue);
-  tile_cache=AcquireVirtualMemory((size_t) clahe_info->x*number_bins,
-    (size_t) clahe_info->y*sizeof(*tiles));
+  tile_cache=AcquireVirtualMemory((size_t) clahe_info->x*number_bins,(size_t)
+    clahe_info->y*sizeof(*tiles));
   if (tile_cache == (MemoryInfo *) NULL)
     return(MagickFalse);
   lut=(unsigned short *) AcquireQuantumMemory(NumberCLAHEGrays,sizeof(*lut));
@@ -510,7 +506,8 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
       return(MagickFalse);
     }
   tiles=(size_t *) GetVirtualMemoryBlob(tile_cache);
-  limit=(size_t) (clip_limit*(tile_info->width*tile_info->height)/number_bins);
+  limit=(size_t) (clip_limit*((double) tile_info->width*tile_info->height)/
+    number_bins);
   if (limit < 1UL)
     limit=1UL;
   /*
@@ -535,7 +532,7 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
         tile_info->height,histogram);
       p+=(ptrdiff_t) tile_info->width;
     }
-    p+=(ptrdiff_t) clahe_info->width*(tile_info->height-1);
+    p+=CastDoubleToPtrdiffT((double) clahe_info->width*(tile_info->height-1));
   }
   /*
     Interpolate greylevel mappings to get CLAHE image.
@@ -576,6 +573,12 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
         }
     for (x=0; x <= (ssize_t) clahe_info->x; x++)
     {
+      double
+        Q11,
+        Q12,
+        Q21,
+        Q22;
+
       tile.width=tile_info->width;
       tile.x=x-1;
       offset.x=tile.x+1;
@@ -598,15 +601,16 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
             tile.x=clahe_info->x-1;
             offset.x=tile.x;
           }
-      InterpolateCLAHE(clahe_info,
-        tiles+((ssize_t) number_bins*(tile.y*clahe_info->x+tile.x)),   /* Q12 */
-        tiles+((ssize_t) number_bins*(tile.y*clahe_info->x+offset.x)), /* Q22 */
-        tiles+((ssize_t) number_bins*(offset.y*clahe_info->x+tile.x)), /* Q11 */
-        tiles+((ssize_t) number_bins*(offset.y*clahe_info->x+offset.x)), /* Q21 */
-        &tile,lut,p);
+      Q12=(double) number_bins*(tile.y*clahe_info->x+tile.x);
+      Q22=(double) number_bins*(tile.y*clahe_info->x+offset.x);
+      Q11=(double) number_bins*(offset.y*clahe_info->x+tile.x);
+      Q21=(double) number_bins*(offset.y*clahe_info->x+offset.x);
+      InterpolateCLAHE(clahe_info,tiles+CastDoubleToPtrdiffT(Q12),
+        tiles+CastDoubleToPtrdiffT(Q22),tiles+CastDoubleToPtrdiffT(Q11),
+        tiles+CastDoubleToPtrdiffT(Q21),&tile,lut,p);
       p+=(ptrdiff_t) tile.width;
     }
-    p+=(ptrdiff_t) clahe_info->width*(tile.height-1);
+    p+=CastDoubleToPtrdiffT((double) clahe_info->width*(tile.height-1));
   }
   lut=(unsigned short *) RelinquishMagickMemory(lut);
   tile_cache=RelinquishVirtualMemory(tile_cache);
@@ -659,10 +663,10 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t width,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   range_info.min=0;
   range_info.max=NumberCLAHEGrays-1;
-  tile_info.width=width;
+  tile_info.width=MagickMax(width,2);
   if (tile_info.width == 0)
     tile_info.width=image->columns >> 3;
-  tile_info.height=height;
+  tile_info.height=MagickMax(height,2);
   if (tile_info.height == 0)
     tile_info.height=image->rows >> 3;
   tile_info.x=0;
