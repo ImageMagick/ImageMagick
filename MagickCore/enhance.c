@@ -663,12 +663,16 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t width,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   range_info.min=0;
   range_info.max=NumberCLAHEGrays-1;
-  tile_info.width=MagickMax(width,2);
+  tile_info.width=width;
   if (tile_info.width == 0)
     tile_info.width=image->columns >> 3;
-  tile_info.height=MagickMax(height,2);
+  if (tile_info.width < 2)
+    tile_info.width=2;
+  tile_info.height=height;
   if (tile_info.height == 0)
     tile_info.height=image->rows >> 3;
+  if (tile_info.height < 2)
+    tile_info.height=2;
   tile_info.x=0;
   if ((image->columns % tile_info.width) != 0)
     tile_info.x=(ssize_t) (tile_info.width-(image->columns % tile_info.width));
