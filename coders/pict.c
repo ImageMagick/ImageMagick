@@ -816,6 +816,101 @@ static MagickBooleanType ReadRectangle(Image *image,PICTRectangle *rectangle)
   return(MagickTrue);
 }
 
+static MagickBooleanType ReadHeaderUpToVersion(Image *image,
+  PICTRectangle *frame,ssize_t *version)
+{
+  BlobInfo
+    *starter_blob,
+    *original_blob;
+
+  char
+    header[2 + sizeof(PICTRectangle)];
+
+  int
+    c;
+
+  MagickBooleanType
+    success;
+
+  ssize_t
+    i;
+
+  original_blob=(BlobInfo *) NULL;
+
+  header[0]=(char) ReadBlobByte(image);
+  header[1]=(char) ReadBlobByte(image);
+  header[2]=(char) ReadBlobByte(image);
+  header[3]=(char) ReadBlobByte(image);
+  /*
+    If our first 4 bytes were not PICT, we have to rewind and retry reading
+    them as size and frame. As we cannot rewind image, we use an intermediate
+    Blob where we aggregate already read bytes with remaining ones.
+  */
+  if (!((header[0] == 0x50) && (header[1] == 0x49) &&
+      (header[2] == 0x43) && (header[3] == 0x54 )))
+    {
+      for (i=4; i < 2+sizeof(PICTRectangle); ++i)
+        if ((c = ReadBlobByte(image)) == EOF)
+          break;
+        else
+          header[i] = (char) c;
+      starter_blob = CloneBlobInfo(NULL);
+      if (starter_blob==NULL)
+        return(MagickFalse);
+      AttachBlob(starter_blob, header, i);
+      original_blob = image->blob;
+      image->blob = starter_blob;
+    }
+  (void) ReadBlobMSBShort(image);  /* skip picture size */
+  success=ReadRectangle(image,frame);
+  /*
+    Restore our Blob
+  */
+  if (original_blob!=NULL)
+    {
+      DestroyBlob(image);
+      image->blob=original_blob;
+    }
+  if (success == MagickFalse)
+    return MagickFalse;
+
+  switch (ReadBlobByte(image))
+  {
+    case 0x11:
+    {
+      /* version should be 1 */
+      *version = 1;
+      break;
+    }
+    case 0x00:
+    {
+      switch (ReadBlobByte(image))
+      {
+        case 0x11:
+        {
+          /* version should be 2 */
+          *version = 2;
+          break;
+        }
+        default:
+          return(MagickFalse);
+      }
+      break;
+    }
+    default:
+      return(MagickFalse);
+  }
+  /*
+    Ensure the next byte (version) is consistent with the magic
+  */
+  if (*version!=(ssize_t) ReadBlobByte(image))
+    return(MagickFalse);
+  if (*version==2 && ReadBlobByte(image)!=0xff)
+    return(MagickFalse);
+
+  return(MagickTrue);
+}
+
 static Image *ReadPICTImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -829,8 +924,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
 }
 
   char
-    geometry[MagickPathExtent],
-    header_ole[4];
+    geometry[MagickPathExtent];
 
   Image
     *image,
@@ -840,7 +934,6 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
     *read_info;
 
   int
-    c,
     code;
 
   MagickBooleanType
@@ -902,32 +995,19 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   pixmap.bits_per_pixel=0;
   pixmap.component_count=0;
   /*
-    Skip header : 512 for standard PICT and 4, ie "PICT" for OLE2.
+    Skip header : 512 for standard PICT, 4 (ie "PICT") for OLE2, or 0 (start
+    immediately with size and frame) for unpadded PICT.
+    Try to find an unpadded header, else skip bytes up to 512, and retry there.
   */
-  header_ole[0]=(char) ReadBlobByte(image);
-  header_ole[1]=(char) ReadBlobByte(image);
-  header_ole[2]=(char) ReadBlobByte(image);
-  header_ole[3]=(char) ReadBlobByte(image);
-  if (!((header_ole[0] == 0x50) && (header_ole[1] == 0x49) &&
-      (header_ole[2] == 0x43) && (header_ole[3] == 0x54 )))
-    for (i=0; i < 508; i++)
-      if (ReadBlobByte(image) == EOF)
-        break;
-  (void) ReadBlobMSBShort(image);  /* skip picture size */
-  if (ReadRectangle(image,&frame) == MagickFalse)
-    ThrowPICTException(CorruptImageError,"ImproperImageHeader");
-  while ((c=ReadBlobByte(image)) == 0) ;
-  if (c != 0x11)
-    ThrowPICTException(CorruptImageError,"ImproperImageHeader");
-  version=(ssize_t) ReadBlobByte(image);
-  if (version == 2)
+  if (ReadHeaderUpToVersion(image, &frame, &version) == MagickFalse)
     {
-      c=ReadBlobByte(image);
-      if (c != 0xff)
+      for (i=512-TellBlob(image); i > 0; i--)
+        if (ReadBlobByte(image) == EOF)
+          break;
+      if (ReadHeaderUpToVersion(image, &frame, &version) == MagickFalse)
         ThrowPICTException(CorruptImageError,"ImproperImageHeader");
     }
-  else
-    if (version != 1)
+  if (version != 1 && version != 2)
       ThrowPICTException(CorruptImageError,"ImproperImageHeader");
   if ((frame.left < 0) || (frame.right < 0) || (frame.top < 0) ||
       (frame.bottom < 0) || (frame.left >= frame.right) ||
