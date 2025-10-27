@@ -77,7 +77,7 @@ jobs:
         mv ChangeLog.md Artifacts/ChangeLog.md
 
     - name: Upload ChangeLog.md
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: ChangeLog
         path: Artifacts
@@ -199,7 +199,7 @@ jobs:
         subscription-id: ${{secrets.AZURE_SUBSCRIPTION_ID}}
         directory: Configure\Installer\Inno\Artifacts
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v5
       with:
         name: ImageMagick-${{needs.version.outputs.version}}-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.typeName}}-${{matrix.architecture}}.exe
         path: Configure\Installer\Inno\Artifacts
@@ -238,7 +238,7 @@ jobs:
         move ImageMagick source
         7z a ImageMagick-${{needs.version.outputs.version}}-Windows.7z .\source\*
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v5
       with:
         name: ImageMagick-${{needs.version.outputs.version}}-Windows.7z
         path: ImageMagick-${{needs.version.outputs.version}}-Windows.7z
@@ -322,7 +322,7 @@ jobs:
         Copy-Item "ImageMagick\LICENSE" "portable\LICENSE.txt"
         7z a ImageMagick-${{needs.version.outputs.version}}-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.architecture}}.7z .\portable\*
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v5
       with:
         name: ImageMagick-${{needs.version.outputs.version}}-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.architecture}}.7z
         path: ImageMagick-${{needs.version.outputs.version}}-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.architecture}}.7z
@@ -396,7 +396,7 @@ jobs:
         aip-commands: |
             SetVersion ${{needs.version.outputs.semantic_version}}
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v5
       if: github.event_name != 'pull_request'
       with:
         name: ImageMagick.${{matrix.quantum}}${{matrix.hdri_flag}}.msixbundle
@@ -476,7 +476,7 @@ jobs:
         find /appdir -executable -type f -exec ldd {} \; | grep " => /usr" | cut -d " " -f 2-3 | sort | uniq
 
     - name: Upload ImageMagick AppImage
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: AppImage-${{matrix.compiler}}
         path: artifacts
