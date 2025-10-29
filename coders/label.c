@@ -164,8 +164,10 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   AdjustTypeMetricBounds(&metrics);
   if ((image->columns == 0) && (image->rows == 0))
     {
-      image->columns=CastDoubleToSizeT(floor(metrics.width+draw_info->stroke_width+0.5));
-      image->rows=CastDoubleToSizeT(floor(metrics.height+draw_info->stroke_width+0.5));
+      image->columns=CastDoubleToSizeT(floor(metrics.width+
+        draw_info->stroke_width+0.5));
+      image->rows=CastDoubleToSizeT(floor(metrics.height+
+        draw_info->stroke_width+0.5));
     }
   else
     if ((status != MagickFalse) && (strlen(label) > 0) &&
@@ -214,9 +216,10 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
               if (status == MagickFalse)
                 break;
               AdjustTypeMetricBounds(&metrics);
-              width=CastDoubleToSizeT(metrics.width+draw_info->stroke_width+0.5);
-              height=CastDoubleToSizeT(metrics.height-metrics.underline_position+
-                draw_info->stroke_width+0.5);
+              width=CastDoubleToSizeT(metrics.width+draw_info->stroke_width+
+                0.5);
+              height=CastDoubleToSizeT(metrics.height-
+                metrics.underline_position+draw_info->stroke_width+0.5);
               if ((image->columns != 0) && (image->rows != 0))
                 {
                   if ((width > image->columns) && (height > image->rows))
@@ -282,13 +285,17 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
   AdjustTypeMetricBounds(&metrics);
   if (image->columns == 0)
-    image->columns=CastDoubleToSizeT(floor(metrics.width+draw_info->stroke_width+0.5));
+    image->columns=CastDoubleToSizeT(floor(metrics.width+
+      draw_info->stroke_width+0.5));
   if (image->columns == 0)
-    image->columns=CastDoubleToSizeT(floor(draw_info->pointsize+draw_info->stroke_width+0.5));
+    image->columns=CastDoubleToSizeT(floor(draw_info->pointsize+
+      draw_info->stroke_width+0.5));
   if (image->rows == 0)
-    image->rows=CastDoubleToSizeT(floor(metrics.height+draw_info->stroke_width+0.5));
+    image->rows=CastDoubleToSizeT(floor(metrics.height+
+      draw_info->stroke_width+0.5));
   if (image->rows == 0)
-    image->rows=CastDoubleToSizeT(floor(draw_info->pointsize+draw_info->stroke_width+0.5));
+    image->rows=CastDoubleToSizeT(floor(draw_info->pointsize+
+      draw_info->stroke_width+0.5));
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     {
