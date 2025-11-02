@@ -10797,6 +10797,101 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
          }
     }
 
+  /*
+    Generate text chunks.
+  */
+  if (mng_info->exclude_tEXt == MagickFalse || mng_info->exclude_zTXt == MagickFalse)
+  {
+    ResetImagePropertyIterator(image);
+    while ((property=GetNextImageProperty(image)) != (const char *) NULL)
+    {
+      /* Don't write any "png:" or "jpeg:" properties; those are just for
+       * "identify" or for passing through to another JPEG
+       */
+      if ((LocaleNCompare(property,"png:",4) == 0 ||
+           LocaleNCompare(property,"jpeg:",5) == 0))
+        continue;
+      /* Suppress density and units if we wrote a pHYs chunk */
+      if ((mng_info->exclude_pHYs == MagickFalse) && (
+          ((LocaleCompare(property,"exif:ResolutionUnit") == 0) ||
+           (LocaleCompare(property,"exif:XResolution") == 0) ||
+           (LocaleCompare(property,"exif:YResolution") == 0) ||
+           (LocaleCompare(property,"tiff:ResolutionUnit") == 0) ||
+           (LocaleCompare(property,"tiff:XResolution") == 0) ||
+           (LocaleCompare(property,"tiff:YResolution") == 0) ||
+           (LocaleCompare(property,"density") == 0) ||
+           (LocaleCompare(property,"units") == 0))))
+        continue;
+      /* Suppress the IM-generated date:create and date:modify */
+      if ((mng_info->exclude_date != MagickFalse) &&
+          (LocaleNCompare(property, "date:",5) == 0))
+        continue;
+      value=GetImageProperty(image,property,exception);
+      if (value == (const char *) NULL)
+        continue;
+      Magick_png_set_text(ping,ping_info,mng_info,image_info,property,value);
+    }
+  }
+
+  /* write eXIf profile */
+  if (ping_have_eXIf != MagickFalse && mng_info->exclude_eXIf == MagickFalse)
+    {
+      ResetImageProfileIterator(image);
+
+      for (name=GetNextImageProfile(image); name != (char *) NULL; )
+      {
+        if (LocaleCompare(name,"exif") == 0)
+          {
+            profile=GetImageProfile(image,name);
+
+            if (profile != (StringInfo *) NULL)
+              {
+                png_uint_32
+                  length;
+
+                unsigned char
+                  chunk[4],
+                  *data;
+
+                StringInfo
+                  *ping_profile;
+
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                    "  Have eXIf profile");
+
+                ping_profile=CloneStringInfo(profile);
+                data=GetStringInfoDatum(ping_profile),
+                length=(png_uint_32) GetStringInfoLength(ping_profile);
+
+                PNGType(chunk,mng_eXIf);
+                if (length < 7)
+                  {
+                    ping_profile=DestroyStringInfo(ping_profile);
+                    break;  /* otherwise crashes */
+                  }
+
+                if (*data == 'E' && *(data+1) == 'x' && *(data+2) == 'i' &&
+                    *(data+3) == 'f' && *(data+4) == '\0' && *(data+5) == '\0')
+                  {
+                    /* skip the "Exif\0\0" JFIF Exif Header ID */
+                    length -= 6;
+                    data += 6;
+                  }
+
+                LogPNGChunk(logging,chunk,length);
+                (void) WriteBlobMSBULong(image,length);
+                (void) WriteBlob(image,4,chunk);
+                (void) WriteBlob(image,length,data);
+                (void) WriteBlobMSBULong(image,crc32(crc32(0,chunk,4), data,
+                  (uInt) length));
+                ping_profile=DestroyStringInfo(ping_profile);
+                break;
+             }
+         }
+       name=GetNextImageProfile(image);
+     }
+  }
+
   png_write_info(ping,ping_info);
 
   /* write orNT if image->orientation is defined */
@@ -11220,100 +11315,6 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "    PNG Interlace method: %d",ping_interlace_method);
     }
-  /*
-    Generate text chunks after IDAT.
-  */
-  if (mng_info->exclude_tEXt == MagickFalse || mng_info->exclude_zTXt == MagickFalse)
-  {
-    ResetImagePropertyIterator(image);
-    while ((property=GetNextImageProperty(image)) != (const char *) NULL)
-    {
-      /* Don't write any "png:" or "jpeg:" properties; those are just for
-       * "identify" or for passing through to another JPEG
-       */
-      if ((LocaleNCompare(property,"png:",4) == 0 ||
-           LocaleNCompare(property,"jpeg:",5) == 0))
-        continue;
-      /* Suppress density and units if we wrote a pHYs chunk */
-      if ((mng_info->exclude_pHYs == MagickFalse) && (
-          ((LocaleCompare(property,"exif:ResolutionUnit") == 0) ||
-           (LocaleCompare(property,"exif:XResolution") == 0) ||
-           (LocaleCompare(property,"exif:YResolution") == 0) ||
-           (LocaleCompare(property,"tiff:ResolutionUnit") == 0) ||
-           (LocaleCompare(property,"tiff:XResolution") == 0) ||
-           (LocaleCompare(property,"tiff:YResolution") == 0) ||
-           (LocaleCompare(property,"density") == 0) ||
-           (LocaleCompare(property,"units") == 0))))
-        continue;
-      /* Suppress the IM-generated date:create and date:modify */
-      if ((mng_info->exclude_date != MagickFalse) &&
-          (LocaleNCompare(property, "date:",5) == 0))
-        continue;
-      value=GetImageProperty(image,property,exception);
-      if (value == (const char *) NULL)
-        continue;
-      Magick_png_set_text(ping,ping_info,mng_info,image_info,property,value);
-    }
-  }
-
-  /* write eXIf profile */
-  if (ping_have_eXIf != MagickFalse && mng_info->exclude_eXIf == MagickFalse)
-    {
-      ResetImageProfileIterator(image);
-
-      for (name=GetNextImageProfile(image); name != (char *) NULL; )
-      {
-        if (LocaleCompare(name,"exif") == 0)
-          {
-            profile=GetImageProfile(image,name);
-
-            if (profile != (StringInfo *) NULL)
-              {
-                png_uint_32
-                  length;
-
-                unsigned char
-                  chunk[4],
-                  *data;
-
-                StringInfo
-                  *ping_profile;
-
-                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                    "  Have eXIf profile");
-
-                ping_profile=CloneStringInfo(profile);
-                data=GetStringInfoDatum(ping_profile),
-                length=(png_uint_32) GetStringInfoLength(ping_profile);
-
-                PNGType(chunk,mng_eXIf);
-                if (length < 7)
-                  {
-                    ping_profile=DestroyStringInfo(ping_profile);
-                    break;  /* otherwise crashes */
-                  }
-
-                if (*data == 'E' && *(data+1) == 'x' && *(data+2) == 'i' &&
-                    *(data+3) == 'f' && *(data+4) == '\0' && *(data+5) == '\0')
-                  {
-                    /* skip the "Exif\0\0" JFIF Exif Header ID */
-                    length -= 6;
-                    data += 6;
-                  }
-
-                LogPNGChunk(logging,chunk,length);
-                (void) WriteBlobMSBULong(image,length);
-                (void) WriteBlob(image,4,chunk);
-                (void) WriteBlob(image,length,data);
-                (void) WriteBlobMSBULong(image,crc32(crc32(0,chunk,4), data,
-                  (uInt) length));
-                ping_profile=DestroyStringInfo(ping_profile);
-                break;
-             }
-         }
-       name=GetNextImageProfile(image);
-     }
-  }
 
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
