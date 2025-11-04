@@ -222,7 +222,7 @@ static unsigned int PNMInteger(Image *image,CommentInfo *comment_info,
       }
     c=ReadBlobByte(image);
     if (c == EOF)
-      return(0);
+      return(value);
   }
   if (c == (int) '#')
     c=PNMComment(image,comment_info,exception);
@@ -286,6 +286,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     is_gray = MagickTrue,
     is_mono = MagickTrue,
+    premature_eof = MagickFalse,
     status;
 
   QuantumAny
@@ -557,6 +558,10 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         Quantum
           intensity;
 
+        size_t
+          pixels_read = 0,
+          total_pixels = image->rows * image->columns;
+
         /*
           Convert PGM image to pixel packets.
         */
@@ -576,10 +581,23 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             intensity=ScaleAnyToQuantum(PNMInteger(image,&comment_info,10,
               exception),max_value);
-            if (EOFBlob(image) != MagickFalse)
-              break;
             SetPixelGray(image,intensity,q);
+            pixels_read++;
             q+=(ptrdiff_t) GetPixelChannels(image);
+            if (EOFBlob(image) != MagickFalse)
+              {
+                if (pixels_read < total_pixels)
+                  {
+                    premature_eof = MagickTrue;
+                    break; /* Premature EOF */
+                  }
+                else
+                  {
+                    /* EOF after all pixels read is OK */
+                    y = image->rows; /* Force outer loop exit */
+                    break;
+                  }
+              }
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -591,13 +609,21 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
             }
           if (EOFBlob(image) != MagickFalse)
-            break;
+            {
+              if (pixels_read < total_pixels)
+                premature_eof = MagickTrue;
+              break;
+            }
         }
         image->type=GrayscaleType;
         break;
       }
       case '3':
       {
+        size_t
+          pixels_read = 0,
+          total_pixels = image->rows * image->columns;
+
         /*
           Convert PNM image to pixel packets.
         */
@@ -619,15 +645,32 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
             pixel=ScaleAnyToQuantum(PNMInteger(image,&comment_info,10,
               exception),max_value);
+            SetPixelRed(image,pixel,q);
             if (EOFBlob(image) != MagickFalse)
               break;
-            SetPixelRed(image,pixel,q);
             pixel=ScaleAnyToQuantum(PNMInteger(image,&comment_info,10,
               exception),max_value);
             SetPixelGreen(image,pixel,q);
+            if (EOFBlob(image) != MagickFalse)
+              break;
             pixel=ScaleAnyToQuantum(PNMInteger(image,&comment_info,10,
               exception),max_value);
             SetPixelBlue(image,pixel,q);
+            pixels_read++;
+            if (EOFBlob(image) != MagickFalse)
+              {
+                if (pixels_read < total_pixels)
+                  {
+                    premature_eof = MagickTrue;
+                    break; /* Premature EOF */
+                  }
+                else
+                  {
+                    /* EOF after all pixels read is OK */
+                    y = image->rows; /* Force outer loop exit */
+                    break;
+                  }
+              }
             if ((is_gray != MagickFalse) &&
                 (IsPixelGray(image,q) == MagickFalse))
               is_gray=MagickFalse;
@@ -646,12 +689,14 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
             }
           if (EOFBlob(image) != MagickFalse)
-            break;
+            {
+              if (pixels_read < total_pixels)
+                premature_eof = MagickTrue;
+              break;
+            }
         }
         if (is_gray != MagickFalse)
-          image->type=GrayscaleType;
-        if (is_mono != MagickFalse)
-          image->type=BilevelType;
+          image->type=is_mono != MagickFalse ? BilevelType : GrayscaleType;
         break;
       }
       case '4':
@@ -1589,7 +1634,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     comment_info.comment=DestroyString(comment_info.comment);
     if (y < (ssize_t) image->rows)
       ThrowPNMException(CorruptImageError,"UnableToReadImageData");
-    if (EOFBlob(image) != MagickFalse)
+    if ((EOFBlob(image) != MagickFalse) && (premature_eof != MagickFalse))
       {
         (void) ThrowMagickException(exception,GetMagickModule(),
           CorruptImageError,"UnexpectedEndOfFile","`%s'",image->filename);
