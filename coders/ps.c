@@ -705,11 +705,11 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       page_geometry=GetPageGeometry(option);
       flags=ParseMetaGeometry(page_geometry,&page.x,&page.y,&page.width,
         &page.height);
+      page_geometry=DestroyString(page_geometry);
       if (flags == NoValue)
         {
           (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
             "InvalidGeometry","`%s'",option);
-          page_geometry=DestroyString(page_geometry);
           CleanupPSInfo(&info);
           image=DestroyImage(image);
           return((Image *) NULL);
@@ -718,7 +718,6 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->resolution.x/delta.x)-0.5));
       page.height=(size_t) ((ssize_t) ceil((double) (page.height*
         image->resolution.y/delta.y) -0.5));
-      page_geometry=DestroyString(page_geometry);
       fitPage=MagickTrue;
     }
   crop=MagickFalse;
