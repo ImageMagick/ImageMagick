@@ -231,12 +231,14 @@ jobs:
 
     - name: Create source archive
       shell: cmd
+      env:
+        VERSION: ${{needs.version.outputs.version}}
       run: |
         mkdir source
         move Configure source
         move Dependencies source
         move ImageMagick source
-        7z a ImageMagick-${{needs.version.outputs.version}}-Windows.7z .\source\*
+        7z a ImageMagick-%VERSION%-Windows.7z .\source\*
 
     - uses: actions/upload-artifact@v5
       with:
@@ -311,6 +313,8 @@ jobs:
 
     - name: Copy Files
       shell: pwsh
+      env:
+        VERSION: ${{needs.version.outputs.version}}
       run: |
         [void](New-Item -Name "portable" -ItemType directory)
         Copy-Item "Artifacts\bin\*.exe" "portable"
@@ -320,7 +324,7 @@ jobs:
         Copy-Item "Artifacts\NOTICE.txt" "portable"
         Copy-Item "ImageMagick\ChangeLog.md" "portable"
         Copy-Item "ImageMagick\LICENSE" "portable\LICENSE.txt"
-        7z a ImageMagick-${{needs.version.outputs.version}}-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.architecture}}.7z .\portable\*
+        7z a "ImageMagick-$env:VERSION-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.architecture}}.7z" .\portable\*
 
     - uses: actions/upload-artifact@v5
       with:
@@ -372,11 +376,13 @@ jobs:
 
     - name: Unzip artifacts
       shell: pwsh
+      env:
+        VERSION: ${{needs.version.outputs.version}}
       run: |
         cd ImageMagick-Windows\Installer\Msix\x64
-        7z x ImageMagick-${{needs.version.outputs.version}}-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-x64.7z
+        7z x "ImageMagick-$env:VERSION-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-x64.7z"
         cd ../arm64
-        7z x ImageMagick-${{needs.version.outputs.version}}-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-arm64.7z
+        7z x "ImageMagick-$env:VERSION-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-arm64.7z"
 
     - name: Azure CLI login with federated credential
       if: github.event_name != 'pull_request'
@@ -510,7 +516,8 @@ jobs:
     - name: Publish release
       env:
         GH_TOKEN: ${{github.token}}
-      run: gh release create ${{needs.version.outputs.version}} --title "${{needs.version.outputs.version}}" ${{github.workspace}}/artifacts/*.7z ${{github.workspace}}/artifacts/*.exe ${{github.workspace}}/artifacts/*.msixbundle ${{github.workspace}}/artifacts/*.AppImage
+        VERSION: ${{needs.version.outputs.version}}
+      run: gh release create $VERSION --title "$VERSION" ${{github.workspace}}/artifacts/*.7z ${{github.workspace}}/artifacts/*.exe ${{github.workspace}}/artifacts/*.msixbundle ${{github.workspace}}/artifacts/*.AppImage
 
   release_msix:
     name: Publish Msix ${{matrix.quantum}}${{matrix.hdri_flag}}
@@ -541,4 +548,7 @@ jobs:
       run: winget install wingetcreate --disable-interactivity --accept-source-agreements
 
     - name: Update manifest on winget
-      run: wingetcreate update --submit --replace --token ${{secrets.WINGET_TOKEN}} --urls https://github.com/ImageMagick/ImageMagick/releases/download/${{needs.version.outputs.version}}/ImageMagick.${{matrix.quantum}}${{matrix.hdri_flag}}.msixbundle --version ${{needs.version.outputs.semantic_version}} ImageMagick.${{matrix.quantum}}${{matrix.hdri_flag}}
+      env:
+        VERSION: ${{needs.version.outputs.version}}
+        SEMANTIC_VERSION: ${{needs.version.outputs.semantic_version}}
+      run: wingetcreate update --submit --replace --token ${{secrets.WINGET_TOKEN}} --urls "https://github.com/ImageMagick/ImageMagick/releases/download/$env:VERSION/ImageMagick.${{matrix.quantum}}${{matrix.hdri_flag}}.msixbundle" --version $env:SEMANTIC_VERSION "ImageMagick.${{matrix.quantum}}${{matrix.hdri_flag}}"
