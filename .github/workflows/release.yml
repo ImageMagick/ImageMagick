@@ -178,7 +178,7 @@ jobs:
         nmake release
 
     - name: Sign executables and libraries
-      uses: ImageMagick/.github/actions/code-signing@main
+      uses: ImageMagick/.github/actions/code-signing@757a0d61ad4171546b1056ac46263630037a4fc7
       with:
         client-id: ${{secrets.AZURE_CLIENT_ID}}
         tenant-id: ${{secrets.AZURE_TENANT_ID}}
@@ -192,7 +192,7 @@ jobs:
         "C:\Program Files (x86)\Inno Setup 6\iscc.exe" Configure\Installer\Inno\ImageMagick.iss
 
     - name: Sign installer
-      uses: ImageMagick/.github/actions/code-signing@main
+      uses: ImageMagick/.github/actions/code-signing@757a0d61ad4171546b1056ac46263630037a4fc7
       with:
         client-id: ${{secrets.AZURE_CLIENT_ID}}
         tenant-id: ${{secrets.AZURE_TENANT_ID}}
@@ -304,7 +304,7 @@ jobs:
         msbuild /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.architecture}}
 
     - name: Sign executables and libraries
-      uses: ImageMagick/.github/actions/code-signing@main
+      uses: ImageMagick/.github/actions/code-signing@757a0d61ad4171546b1056ac46263630037a4fc7
       with:
         client-id: ${{secrets.AZURE_CLIENT_ID}}
         tenant-id: ${{secrets.AZURE_TENANT_ID}}
@@ -386,7 +386,7 @@ jobs:
 
     - name: Azure CLI login with federated credential
       if: github.event_name != 'pull_request'
-      uses: azure/login@v2
+      uses: azure/login@a457da9ea143d694b1b9c7c869ebb04ebe844ef5 # v2.3.0
       with:
         client-id: ${{secrets.AZURE_CLIENT_ID}}
         tenant-id: ${{secrets.AZURE_TENANT_ID}}
@@ -394,7 +394,7 @@ jobs:
 
     - name: Create msixbundle with Advanced Installer
       if: github.event_name != 'pull_request'
-      uses: caphyon/advinst-github-action@v2.0
+      uses: caphyon/advinst-github-action@f7e45a75aba48b695fafc344f61adf634d41fe4e # v2.0
       with:
         advinst-license: ${{secrets.ADVINST_LICENSE_KEY}}
         aip-path: ImageMagick-Windows\Installer\Msix\ImageMagick.${{matrix.quantum}}${{matrix.hdri_flag}}.aip
@@ -524,7 +524,7 @@ jobs:
     needs:
       - version
       - release
-    runs-on: windows-2022
+    runs-on: windows-2025
 
     strategy:
       fail-fast: false
@@ -539,11 +539,6 @@ jobs:
             hdri_flag: -HDRI
 
     steps:
-    - name: Install winget
-      uses: Cyberboss/install-winget@v1
-      with:
-        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
     - name: Install wingetcreate
       run: winget install wingetcreate --disable-interactivity --accept-source-agreements
 
