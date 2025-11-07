@@ -26,6 +26,7 @@ jobs:
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Install dependencies
         run: npm install -g auto-changelog
@@ -86,6 +87,7 @@ jobs:
         uses: actions/checkout@v5
         with:
           repository: ImageMagick/msttcorefonts
+          persist-credentials: false
 
       - name: Install msttcorefonts
         run: |
@@ -93,6 +95,8 @@ jobs:
           ./install.sh
 
       - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
 
       - name: Configure ImageMagick
         env:
@@ -145,6 +149,7 @@ jobs:
         uses: actions/checkout@v5
         with:
           path: ImageMagick
+          persist-credentials: false
 
       - name: Download configure
         shell: cmd
@@ -188,6 +193,7 @@ jobs:
         uses: actions/checkout@v5
         with:
           path: ImageMagick
+          persist-credentials: false
 
       - name: Download configure
         shell: cmd
@@ -229,6 +235,8 @@ jobs:
         run: git config --global core.autocrlf false
 
       - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
 
       - uses: msys2/setup-msys2@v2
         with:
