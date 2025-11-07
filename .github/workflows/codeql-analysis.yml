@@ -25,47 +25,47 @@ jobs:
         modules: [ 'with-modules', 'without-modules' ]
 
     steps:
-    - uses: actions/checkout@v5
-      with:
-        fetch-depth: 2
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 2
 
-    - name: Install dependencies
-      run: |
-        set -e
-        export DEBIAN_FRONTEND=noninteractive
-        sudo apt-get update -y
-        sudo apt-get install -y libltdl-dev
+      - name: Install dependencies
+        run: |
+          set -e
+          export DEBIAN_FRONTEND=noninteractive
+          sudo apt-get update -y
+          sudo apt-get install -y libltdl-dev
 
-    - name: Configure ImageMagick
-      run: |
-        export CFLAGS="-Wno-deprecated-declarations"
-        autoreconf -fiv
-        ./configure --with-quantum-depth=${{matrix.quantum}} --enable-hdri=${{matrix.hdri}} --${{matrix.modules}}
-        echo "" > config.status
+      - name: Configure ImageMagick
+        run: |
+          export CFLAGS="-Wno-deprecated-declarations"
+          autoreconf -fiv
+          ./configure --with-quantum-depth=${{matrix.quantum}} --enable-hdri=${{matrix.hdri}} --${{matrix.modules}}
+          echo "" > config.status
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v4
-      with:
-        languages: c-cpp
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: c-cpp
 
-    - name: Build ImageMagick
-      run: |
-        make
+      - name: Build ImageMagick
+        run: |
+          make
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v4
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
 
   actions:
     name: CodeQL analysis (GitHub Actions)
     runs-on: ubuntu-24.04
 
     steps:
-    - uses: actions/checkout@v5
+      - uses: actions/checkout@v5
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v4
-      with:
-        languages: actions
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: actions
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v4
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4

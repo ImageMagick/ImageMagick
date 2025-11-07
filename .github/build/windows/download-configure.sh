@@ -28,4 +28,4 @@ download_configure()
   cd ..
 }
 
-download_configure "2025.10.09.0408"
+download_configure "2025.10.31.1925"

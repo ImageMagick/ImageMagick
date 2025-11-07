@@ -33,96 +33,96 @@ jobs:
             packages: clang
 
     steps:
-    - uses: actions/checkout@v5
+      - uses: actions/checkout@v5
 
-    - name: Install dependencies
-      run: |
-        set -e
-        export DEBIAN_FRONTEND=noninteractive
-        apt-get update -y
-        apt-get install -y autoconf git libtool make pkg-config ${{ matrix.packages }}
+      - name: Install dependencies
+        run: |
+          set -e
+          export DEBIAN_FRONTEND=noninteractive
+          apt-get update -y
+          apt-get install -y autoconf git libtool make pkg-config ${{ matrix.packages }}
 
-    - name: Configure ImageMagick
-      env:
-        CC: ${{ matrix.compiler }}
-        CXX: ${{ matrix.cxx_compiler }}
-        CFLAGS: ${{ matrix.compiler_flags }}
-        CXXFLAGS: ${{ matrix.compiler_flags }}
-      run: |
-        autoreconf -fiv
-        ./configure --with-quantum-depth=16 --enable-hdri=no --without-perl --prefix=/usr
+      - name: Configure ImageMagick
+        env:
+          CC: ${{ matrix.compiler }}
+          CXX: ${{ matrix.cxx_compiler }}
+          CFLAGS: ${{ matrix.compiler_flags }}
+          CXXFLAGS: ${{ matrix.compiler_flags }}
+        run: |
+          autoreconf -fiv
+          ./configure --with-quantum-depth=16 --enable-hdri=no --without-perl --prefix=/usr
 
-    - name: Build ImageMagick
-      run: |
-        make
+      - name: Build ImageMagick
+        run: |
+          make
 
-    - name: Test ImageMagick
-      run: |
-        make check || exit_code=$?
-        if [ "$exit_code" != "0" ] ; then cat ./test-suite.log ; fi
-        exit $exit_code
+      - name: Test ImageMagick
+        run: |
+          make check || exit_code=$?
+          if [ "$exit_code" != "0" ] ; then cat ./test-suite.log ; fi
+          exit $exit_code
 
-    - name: Install ImageMagick
-      run: |
-        make install
+      - name: Install ImageMagick
+        run: |
+          make install
 
   build_macos:
     name: Build MacOS
     runs-on: macos-13
 
     steps:
-    - uses: actions/checkout@v5
+      - uses: actions/checkout@v5
 
-    - name: Install dependencies
-      run: |
-        set -e
-        export HOMEBREW_NO_AUTO_UPDATE=1
-        brew install automake fftw flif jbigkit
+      - name: Install dependencies
+        run: |
+          set -e
+          export HOMEBREW_NO_AUTO_UPDATE=1
+          brew install automake fftw flif jbigkit
 
-    - name: Configure ImageMagick
-      run: |
-        export CFLAGS="-Wall -Wextra -Wdeclaration-after-statement -Wno-deprecated-declarations -Wno-incompatible-library-redeclaration -Wno-incompatible-pointer-types-discards-qualifiers -Wno-missing-declarations -Wno-unused-function -Wno-unused-parameter"
-        autoreconf -fiv
-        ./configure --with-quantum-depth=16 --enable-hdri=no --without-perl --with-fftw --with-flif
+      - name: Configure ImageMagick
+        run: |
+          export CFLAGS="-Wall -Wextra -Wdeclaration-after-statement -Wno-deprecated-declarations -Wno-incompatible-library-redeclaration -Wno-incompatible-pointer-types-discards-qualifiers -Wno-missing-declarations -Wno-unused-function -Wno-unused-parameter"
+          autoreconf -fiv
+          ./configure --with-quantum-depth=16 --enable-hdri=no --without-perl --with-fftw --with-flif
 
-    - name: Build ImageMagick
-      run: |
-        set -e
-        make install
+      - name: Build ImageMagick
+        run: |
+          set -e
+          make install
 
   build_macos_arm64:
     name: Build MacOS arm64
     runs-on: macos-14
 
     steps:
-    - uses: actions/checkout@v5
+      - uses: actions/checkout@v5
 
-    - name: Install dependencies
-      run: |
-        set -e
-        export HOMEBREW_NO_AUTO_UPDATE=1
-        brew install automake fftw flif jbigkit libraqm librsvg libtool libxml2 pango
+      - name: Install dependencies
+        run: |
+          set -e
+          export HOMEBREW_NO_AUTO_UPDATE=1
+          brew install automake fftw flif jbigkit libraqm librsvg libtool libxml2 pango
 
-    - name: Configure ImageMagick
-      run: |
-        export CFLAGS="-Wall -Wextra -Werror -Wdeclaration-after-statement -Wno-deprecated-declarations -Wno-incompatible-library-redeclaration -Wno-incompatible-pointer-types-discards-qualifiers -Wno-missing-declarations -Wno-unused-function -Wno-unused-parameter"
-        export LDFLAGS=$(pkg-config --libs libjpeg)
-        autoreconf -fiv
-        ./configure --with-quantum-depth=16 --enable-hdri=no --without-perl --with-fftw --with-flif --with-rsvg
+      - name: Configure ImageMagick
+        run: |
+          export CFLAGS="-Wall -Wextra -Werror -Wdeclaration-after-statement -Wno-deprecated-declarations -Wno-incompatible-library-redeclaration -Wno-incompatible-pointer-types-discards-qualifiers -Wno-missing-declarations -Wno-unused-function -Wno-unused-parameter"
+          export LDFLAGS=$(pkg-config --libs libjpeg)
+          autoreconf -fiv
+          ./configure --with-quantum-depth=16 --enable-hdri=no --without-perl --with-fftw --with-flif --with-rsvg
 
-    - name: Build ImageMagick
-      run: |
-        make
+      - name: Build ImageMagick
+        run: |
+          make
 
-    - name: Test ImageMagick
-      run: |
-        make check || exit_code=$?
-        if [ "$exit_code" != "0" ] ; then cat ./test-suite.log ; fi
-        exit $exit_code
+      - name: Test ImageMagick
+        run: |
+          make check || exit_code=$?
+          if [ "$exit_code" != "0" ] ; then cat ./test-suite.log ; fi
+          exit $exit_code
 
-    - name: Install ImageMagick
-      run: |
-        sudo make install
+      - name: Install ImageMagick
+        run: |
+          sudo make install
 
   build_windows:
     name: Build Windows ${{matrix.architecture}}
@@ -134,52 +134,52 @@ jobs:
         architecture: [ x64, arm64, x86 ]
 
     steps:
-    - name: Clone ImageMagick
-      uses: actions/checkout@v5
-      with:
-        path: ImageMagick
+      - name: Clone ImageMagick
+        uses: actions/checkout@v5
+        with:
+          path: ImageMagick
 
-    - name: Download configure
-      shell: cmd
-      run: |
-        ImageMagick\.github\build\windows\download-configure.cmd
+      - name: Download configure
+        shell: cmd
+        run: |
+          ImageMagick\.github\build\windows\download-configure.cmd
 
-    - name: Download dependencies
-      shell: cmd
-      run: |
-        ImageMagick\.github\build\windows\download-dependencies.cmd windows-${{matrix.architecture}}-static-openMP.zip
+      - name: Download dependencies
+        shell: cmd
+        run: |
+          ImageMagick\.github\build\windows\download-dependencies.cmd windows-${{matrix.architecture}}-static-openMP.zip
 
-    - name: Configure ImageMagick
-      shell: cmd
-      working-directory: Configure
-      run: |
-        Configure.Release.x64.exe /noWizard /VS2022 /${{matrix.architecture}} /static
+      - name: Configure ImageMagick
+        shell: cmd
+        working-directory: Configure
+        run: |
+          Configure.Release.x64.exe /noWizard /VS2022 /${{matrix.architecture}} /static
 
-    - name: Build ImageMagick
-      shell: cmd
-      run: |
-        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
-        msbuild IM7.Static.${{matrix.architecture}}.sln /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.architecture}}
+      - name: Build ImageMagick
+        shell: cmd
+        run: |
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
+          msbuild IM7.Static.${{matrix.architecture}}.sln /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.architecture}}
 
   build_msys2:
     name: Build MSYS2
     runs-on: windows-2022
 
     steps:
-    - name: Prepare git
-      run: git config --global core.autocrlf false
+      - name: Prepare git
+        run: git config --global core.autocrlf false
 
-    - uses: actions/checkout@v5
+      - uses: actions/checkout@v5
 
-    - uses: msys2/setup-msys2@v2
-      with:
-        install: mingw-w64-x86_64-toolchain base-devel binutils
-        update: true
-        cache: false
+      - uses: msys2/setup-msys2@v2
+        with:
+          install: mingw-w64-x86_64-toolchain base-devel binutils
+          update: true
+          cache: false
 
-    - name: Build ImageMagick
-      run: cd .github/build/msys2 && makepkg-mingw --noconfirm --syncdeps
-      env:
-        MINGW_ARCH: mingw64
-        PKGEXT: ".pkg.tar.xz"
-      shell: msys2 {0}
+      - name: Build ImageMagick
+        run: cd .github/build/msys2 && makepkg-mingw --noconfirm --syncdeps
+        env:
+          MINGW_ARCH: mingw64
+          PKGEXT: ".pkg.tar.xz"
+        shell: msys2 {0}
