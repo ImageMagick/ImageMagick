@@ -1589,12 +1589,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     comment_info.comment=DestroyString(comment_info.comment);
     if (y < (ssize_t) image->rows)
       ThrowPNMException(CorruptImageError,"UnableToReadImageData");
-    if (EOFBlob(image) != MagickFalse)
-      {
-        (void) ThrowMagickException(exception,GetMagickModule(),
-          CorruptImageError,"UnexpectedEndOfFile","`%s'",image->filename);
-        break;
-      }
     /*
       Proceed to next image.
     */
