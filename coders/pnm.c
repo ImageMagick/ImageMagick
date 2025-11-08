@@ -222,7 +222,7 @@ static unsigned int PNMInteger(Image *image,CommentInfo *comment_info,
       }
     c=ReadBlobByte(image);
     if (c == EOF)
-      return(0);
+      return(value);
   }
   if (c == (int) '#')
     c=PNMComment(image,comment_info,exception);
@@ -252,6 +252,17 @@ static char *PNMString(Image *image,char *string,const size_t extent)
   }
   string[i]='\0';
   return(string);
+}
+
+static inline MagickBooleanType PNMEOFBlob(const Image *image,ssize_t x,ssize_t y)
+{
+  if (EOFBlob(image) == MagickFalse)
+    return(MagickFalse);
+  if (x < (ssize_t) image->columns-1)
+    return(MagickTrue);
+  if (y != (ssize_t) image->rows-1)
+    return(MagickTrue);
+  return(MagickFalse);
 }
 
 static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
@@ -533,7 +544,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             SetPixelGray(image,PNMInteger(image,&comment_info,2,exception) ==
               0 ? QuantumRange : 0,q);
-            if (EOFBlob(image) != MagickFalse)
+            if (PNMEOFBlob(image,x,y) != MagickFalse)
               break;
             q+=(ptrdiff_t) GetPixelChannels(image);
           }
@@ -546,7 +557,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (status == MagickFalse)
                 break;
             }
-          if (EOFBlob(image) != MagickFalse)
+          if (PNMEOFBlob(image,x,y) != MagickFalse)
             break;
         }
         image->type=BilevelType;
@@ -576,7 +587,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             intensity=ScaleAnyToQuantum(PNMInteger(image,&comment_info,10,
               exception),max_value);
-            if (EOFBlob(image) != MagickFalse)
+            if (PNMEOFBlob(image,x,y) != MagickFalse)
               break;
             SetPixelGray(image,intensity,q);
             q+=(ptrdiff_t) GetPixelChannels(image);
@@ -590,7 +601,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (status == MagickFalse)
                 break;
             }
-          if (EOFBlob(image) != MagickFalse)
+          if (PNMEOFBlob(image,x,y) != MagickFalse)
             break;
         }
         image->type=GrayscaleType;
@@ -619,7 +630,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
             pixel=ScaleAnyToQuantum(PNMInteger(image,&comment_info,10,
               exception),max_value);
-            if (EOFBlob(image) != MagickFalse)
+            if (PNMEOFBlob(image,x,y) != MagickFalse)
               break;
             SetPixelRed(image,pixel,q);
             pixel=ScaleAnyToQuantum(PNMInteger(image,&comment_info,10,
@@ -645,7 +656,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (status == MagickFalse)
                 break;
             }
-          if (EOFBlob(image) != MagickFalse)
+          if (PNMEOFBlob(image,x,y) != MagickFalse)
             break;
         }
         if (is_gray != MagickFalse)
