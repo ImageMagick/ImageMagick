@@ -89,6 +89,7 @@
 #include "MagickCore/thread_.h"
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
+#include "MagickCore/utility-private.h"
 #include "coders/coders-private.h"
 #include "coders/psd-private.h"
 #if defined(MAGICKCORE_TIFF_DELEGATE)
@@ -328,9 +329,6 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
   char
     filename[MagickPathExtent];
 
-  FILE
-    *file;
-
   Image
     *image;
 
@@ -368,12 +366,10 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
   /*
     Write raw CCITT Group 4 wrapped as a TIFF image file.
   */
-  file=(FILE *) NULL;
   unique_file=AcquireUniqueFileResource(filename);
-  if (unique_file != -1)
-    file=fdopen(unique_file,"wb");
-  if ((unique_file == -1) || (file == (FILE *) NULL))
+  if (unique_file == -1)
     ThrowImageException(FileOpenError,"UnableToCreateTemporaryFile");
+  (void) close_utf8(unique_file);
   tiff=TIFFOpen(filename,"w");
   if (tiff == (TIFF *) NULL)
     {
