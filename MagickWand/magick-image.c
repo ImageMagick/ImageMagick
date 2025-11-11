@@ -3340,7 +3340,7 @@ WandExport MagickBooleanType MagickEqualizeImage(MagickWand *wand)
 %
 %      MagickBooleanType MagickEvaluateImage(MagickWand *wand,
 %        const MagickEvaluateOperator operator,const double value)
-%      MagickBooleanType MagickEvaluateImages(MagickWand *wand,
+%      MagickWand *MagickEvaluateImages(MagickWand *wand,
 %        const MagickEvaluateOperator operator)
 %
 %  A description of each parameter follows:
