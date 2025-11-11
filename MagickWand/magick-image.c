@@ -2642,7 +2642,7 @@ WandExport MagickBooleanType MagickCycleColormapImage(MagickWand *wand,
 %
 %      MagickBooleanType MagickConstituteImage(MagickWand *wand,
 %        const size_t columns,const size_t rows,const char *map,
-%        const StorageType storage,void *pixels)
+%        const StorageType storage,const void *pixels)
 %
 %  A description of each parameter follows:
 %
