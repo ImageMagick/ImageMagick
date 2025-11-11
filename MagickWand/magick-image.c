@@ -7302,7 +7302,7 @@ WandExport MagickBooleanType MagickMagnifyImage(MagickWand *wand)
 %  The format of the MagickMeanShiftImage method is:
 %
 %      MagickBooleanType MagickMeanShiftImage(MagickWand *wand,
-%        const size_t number_terms,const double *terms)
+%        const size_t width,const size_t height,const double color_distance)
 %
 %  A description of each parameter follows:
 %
@@ -7510,7 +7510,7 @@ WandExport MagickBooleanType MagickModulateImage(MagickWand *wand,
 %  The format of the MagickMontageImage method is:
 %
 %      MagickWand *MagickMontageImage(MagickWand *wand,
-%        const DrawingWand drawing_wand,const char *tile_geometry,
+%        const DrawingWand *drawing_wand,const char *tile_geometry,
 %        const char *thumbnail_geometry,const MontageMode mode,
 %        const char *frame)
 %
@@ -9364,7 +9364,7 @@ WandExport MagickBooleanType MagickResizeImage(MagickWand *wand,
 %  The format of the MagickRollImage method is:
 %
 %      MagickBooleanType MagickRollImage(MagickWand *wand,const ssize_t x,
-%        const size_t y)
+%        const ssize_t y)
 %
 %  A description of each parameter follows:
 %
@@ -10439,7 +10439,7 @@ WandExport MagickBooleanType MagickSetImageEndian(MagickWand *wand,
 %  The format of the MagickSetImageExtent method is:
 %
 %      MagickBooleanType MagickSetImageExtent(MagickWand *wand,
-%        const size_t columns,const unsigned rows)
+%        const size_t columns,const size_t rows)
 %
 %  A description of each parameter follows:
 %
@@ -10898,7 +10898,7 @@ WandExport MagickBooleanType MagickSetImageIterations(MagickWand *wand,
 %  The format of the MagickSetImageMatte method is:
 %
 %      MagickBooleanType MagickSetImageMatte(MagickWand *wand,
-%        const MagickBooleanType *matte)
+%        const MagickBooleanType matte)
 %
 %  A description of each parameter follows:
 %
@@ -12286,7 +12286,7 @@ WandExport MagickBooleanType MagickSpreadImage(MagickWand *wand,
 %  The format of the MagickStatisticImage method is:
 %
 %      MagickBooleanType MagickStatisticImage(MagickWand *wand,
-%        const StatisticType type,const double width,const size_t height)
+%        const StatisticType type,const size_t width,const size_t height)
 %
 %  A description of each parameter follows:
 %
@@ -13247,7 +13247,7 @@ WandExport MagickBooleanType MagickWaveletDenoiseImage(MagickWand *wand,
 %
 %  The format of the WhiteBalanceImage method is:
 %
-%      MagickBooleanType WhiteBalanceImage(MagickWand *wand)
+%      MagickBooleanType MagickWhiteBalanceImage(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %

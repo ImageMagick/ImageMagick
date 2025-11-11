@@ -4722,7 +4722,7 @@ red_mean=channel_statistics[RedPixelChannel].mean;
 <p>The format of the MagickMeanShiftImage method is:</p>
 
 <pre class="bg-light text-dark mx-4"><samp>MagickBooleanType MagickMeanShiftImage(MagickWand *wand,
-  const size_t number_terms,const double *terms)
+  const size_t width,const size_t height,const double color_distance)
 </samp></pre>
 
 <p>A description of each parameter follows:</p>
@@ -4843,7 +4843,7 @@ red_mean=channel_statistics[RedPixelChannel].mean;
 <p>The format of the MagickMontageImage method is:</p>
 
 <pre class="bg-light text-dark mx-4"><samp>MagickWand *MagickMontageImage(MagickWand *wand,
-  const DrawingWand drawing_wand,const char *tile_geometry,
+  const DrawingWand *drawing_wand,const char *tile_geometry,
   const char *thumbnail_geometry,const MontageMode mode,
   const char *frame)
 </samp></pre>
@@ -5925,7 +5925,7 @@ red_mean=channel_statistics[RedPixelChannel].mean;
 <p>The format of the MagickRollImage method is:</p>
 
 <pre class="bg-light text-dark mx-4"><samp>MagickBooleanType MagickRollImage(MagickWand *wand,const ssize_t x,
-  const size_t y)
+  const ssize_t y)
 </samp></pre>
 
 <p>A description of each parameter follows:</p>
@@ -6625,7 +6625,7 @@ red_mean=channel_statistics[RedPixelChannel].mean;
 <p>The format of the MagickSetImageExtent method is:</p>
 
 <pre class="bg-light text-dark mx-4"><samp>MagickBooleanType MagickSetImageExtent(MagickWand *wand,
-  const size_t columns,const unsigned rows)
+  const size_t columns,const size_t rows)
 </samp></pre>
 
 <p>A description of each parameter follows:</p>
@@ -6923,7 +6923,7 @@ red_mean=channel_statistics[RedPixelChannel].mean;
 <p>The format of the MagickSetImageMatte method is:</p>
 
 <pre class="bg-light text-dark mx-4"><samp>MagickBooleanType MagickSetImageMatte(MagickWand *wand,
-  const MagickBooleanType *matte)
+  const MagickBooleanType matte)
 </samp></pre>
 
 <p>A description of each parameter follows:</p>
@@ -7830,7 +7830,7 @@ void *client_data)
 <p>The format of the MagickStatisticImage method is:</p>
 
 <pre class="bg-light text-dark mx-4"><samp>MagickBooleanType MagickStatisticImage(MagickWand *wand,
-  const StatisticType type,const double width,const size_t height)
+  const StatisticType type,const size_t width,const size_t height)
 </samp></pre>
 
 <p>A description of each parameter follows:</p>
@@ -8376,7 +8376,7 @@ MagickBooleanType MagickThresholdImageChannel(MagickWand *wand,
 
 <p>The format of the WhiteBalanceImage method is:</p>
 
-<pre class="bg-light text-dark mx-4"><samp>MagickBooleanType WhiteBalanceImage(MagickWand *wand)
+<pre class="bg-light text-dark mx-4"><samp>MagickBooleanType MagickWhiteBalanceImage(MagickWand *wand)
 </samp></pre>
 
 <p>A description of each parameter follows:</p>
