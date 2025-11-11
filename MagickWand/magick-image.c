@@ -4075,7 +4075,7 @@ WandExport MagickBooleanType MagickGetImageAlphaChannel(MagickWand *wand)
 %
 %  The format of the MagickGetImageMask method is:
 %
-%      MagickWand *MagickGetImageMask(MagickWand *wand)
+%      MagickWand *MagickGetImageMask(MagickWand *wand, const PixelMask type)
 %
 %  A description of each parameter follows:
 %
@@ -4963,9 +4963,9 @@ WandExport MagickBooleanType MagickGetImageDistortion(MagickWand *wand,
 %
 %  Use MagickRelinquishMemory() to free the metrics when you are done with them.
 %
-%  The format of the MagickGetImageDistortion method is:
+%  The format of the MagickGetImageDistortions method is:
 %
-%      double *MagickGetImageDistortion(MagickWand *wand,
+%      double *MagickGetImageDistortions(MagickWand *wand,
 %        const MagickWand *reference,const MetricType metric)
 %
 %  A description of each parameter follows:

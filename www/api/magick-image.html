@@ -2762,7 +2762,7 @@ MagickWand *MagickEvaluateImages(MagickWand *wand,
 
 <p>The format of the MagickGetImageMask method is:</p>
 
-<pre class="bg-light text-dark mx-4"><samp>MagickWand *MagickGetImageMask(MagickWand *wand)
+<pre class="bg-light text-dark mx-4"><samp>MagickWand *MagickGetImageMask(MagickWand *wand, const PixelMask type)
 </samp></pre>
 
 <p>A description of each parameter follows:</p>
@@ -3315,9 +3315,9 @@ red_mean=channel_statistics[RedPixelChannel].mean;
 
 <p>Use MagickRelinquishMemory() to free the metrics when you are done with them.</p>
 
-<p>The format of the MagickGetImageDistortion method is:</p>
+<p>The format of the MagickGetImageDistortions method is:</p>
 
-<pre class="bg-light text-dark mx-4"><samp>double *MagickGetImageDistortion(MagickWand *wand,
+<pre class="bg-light text-dark mx-4"><samp>double *MagickGetImageDistortions(MagickWand *wand,
   const MagickWand *reference,const MetricType metric)
 </samp></pre>
 
