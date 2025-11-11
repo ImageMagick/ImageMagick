@@ -1,11 +1,11 @@
 #! /bin/sh
 # Common wrapper for a few potentially missing GNU and other programs.
 
-scriptversion=2024-06-07.14; # UTC
+scriptversion=2025-06-18.21; # UTC
 
 # shellcheck disable=SC2006,SC2268 # we must support pre-POSIX shells
 
-# Copyright (C) 1996-2024 Free Software Foundation, Inc.
+# Copyright (C) 1996-2025 Free Software Foundation, Inc.
 # Originally written by Fran,cois Pinard <pinard@iro.umontreal.ca>, 1996.
 
 # This program is free software; you can redistribute it and/or modify
@@ -228,9 +228,9 @@ give_advice "$1" | sed -e '1s/^/WARNING: /' \
 exit $st
 
 # Local variables:
-# eval: (add-hook 'before-save-hook 'time-stamp)
+# eval: (add-hook 'before-save-hook 'time-stamp nil t)
 # time-stamp-start: "scriptversion="
-# time-stamp-format: "%:y-%02m-%02d.%02H"
+# time-stamp-format: "%Y-%02m-%02d.%02H"
 # time-stamp-time-zone: "UTC0"
 # time-stamp-end: "; # UTC"
 # End:

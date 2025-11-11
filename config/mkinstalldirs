@@ -1,7 +1,7 @@
 #! /bin/sh
 # mkinstalldirs --- make directory hierarchy
 
-scriptversion=2024-06-19.01; # UTC
+scriptversion=2025-06-18.21; # UTC
 
 # Original author: Noah Friedman <friedman@prep.ai.mit.edu>
 # Created: 1993-05-16
@@ -156,9 +156,9 @@ exit $errstatus
 # Local Variables:
 # mode: shell-script
 # sh-indentation: 2
-# eval: (add-hook 'before-save-hook 'time-stamp)
+# eval: (add-hook 'before-save-hook 'time-stamp nil t)
 # time-stamp-start: "scriptversion="
-# time-stamp-format: "%:y-%02m-%02d.%02H"
+# time-stamp-format: "%Y-%02m-%02d.%02H"
 # time-stamp-time-zone: "UTC0"
 # time-stamp-end: "; # UTC"
 # End:

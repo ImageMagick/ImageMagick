@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2024 Free Software Foundation, Inc.
+# Copyright (C) 2011-2025 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
 # bugs to <bug-automake@gnu.org> or send patches to
 # <automake-patches@gnu.org>.
 
-scriptversion=2024-06-19.01; # UTC
+scriptversion=2025-06-18.21; # UTC
 
 # Make unconditional expansion of undefined variables an error.  This
 # helps a lot in preventing typo-related bugs.
@@ -52,8 +52,9 @@ Usage:
                 [--expect-failure {yes|no}] [--color-tests {yes|no}]
                 [--enable-hard-errors {yes|no}] [--ignore-exit]
                 [--diagnostic-string STRING] [--merge|--no-merge]
-                [--comments|--no-comments] [--] TEST-COMMAND
-The '--test-name', '-log-file' and '--trs-file' options are mandatory.
+                [--stderr-prefix STRING] [--comments|--no-comments]
+                [--] TEST-COMMAND
+The '--test-name', '--log-file' and '--trs-file' options are mandatory.
 
 Report bugs to <bug-automake@gnu.org>.
 GNU Automake home page: <https://www.gnu.org/software/automake/>.
@@ -69,6 +70,7 @@ trs_file=  # Where to save the metadata of the test run.
 expect_failure=0
 color_tests=0
 merge=0
+stderr_prefix=
 ignore_exit=0
 comments=0
 diag_string='#'
@@ -84,6 +86,7 @@ while test $# -gt 0; do
   --enable-hard-errors) shift;; # No-op.
   --merge) merge=1;;
   --no-merge) merge=0;;
+  --stderr-prefix) stderr_prefix=$2; shift;;
   --ignore-exit) ignore_exit=1;;
   --comments) comments=1;;
   --no-comments) comments=0;;
@@ -93,6 +96,44 @@ while test $# -gt 0; do
   esac
   shift
 done
+
+# Quadrigraph substitutions for `--stderr-prefix'.  Note that the empty
+# substitution MUST be done last, otherwise `@%@&t@:@' will become `#', not
+# `@%:@'.
+for q_r in '@%:@ #' '@&t@ '; do
+  q=${q_r%% *} # quadrigraph
+  r=${q_r#* } # replacement
+  while true; do
+    case $stderr_prefix in
+    *"$q"*) stderr_prefix=${stderr_prefix%%"$q"*}$r${stderr_prefix#*"$q"};;
+    *) break;;
+    esac
+  done
+done
+
+# Prefixes each line of its stdin with the first argument and writes the result
+# to stdout.  If the final line of stdin is non-empty and does not end with a
+# terminating newline, a newline is added.
+prefix_lines() {
+  # Implementation note: This function is used to prefix the test script's
+  # stderr lines.  Preserving the order of the test script's stdout and stderr
+  # lines is important for debugging, so this function is sensitive to input and
+  # output buffering.  A shell loop is used to prefix the lines instead of
+  # `$AM_TAP_AWK' (which would probably be more efficient) because `mawk'
+  # aggressively buffers its input (except with the `-Winteractive' command-line
+  # option), which would defeat the purpose of the `--merge' option.  `sed' or
+  # `perl' could be used instead of a shell loop, but those would add a
+  # dependency to this script.
+
+  # <https://stackoverflow.com/a/6399568> explains `IFS='.  The `||' check
+  # ensures that stdin's final line is written to stdout even if it is missing a
+  # terminating newline.
+  while IFS= read -r line || test -n "$line"; do
+    # `printf' is preferred over `echo' because `echo' might process backslash
+    # escapes or behave unexpectedly if its argument looks like an option.
+    printf %s\\n "$1$line"
+  done
+}
 
 test $# -gt 0 || usage_error "missing test command"
 
@@ -139,13 +180,61 @@ fi
     # <https://lists.gnu.org/archive/html/bug-autoconf/2011-09/msg00004.html>
     # <http://mail.opensolaris.org/pipermail/ksh93-integration-discuss/2009-February/004121.html>
     trap : 1 3 2 13 15
+    # Duplicate the stdout fd (which connects to awk's stdin) to fd 4 so that we
+    # can reuse fd 1 for pipelines and command substitutions below.
+    exec 4>&1
+    # Determine where to send the test script's stderr.  Only the test's stderr
+    # should go here; if `exec 2>&$stderr_fd' were run, this script's stderr
+    # (e.g., `set -x' output, if turned on to help with debugging) would mix
+    # with the test script's stderr and go to the log (via `awk', if `--merge'
+    # is enabled), not the terminal.
     if test $merge -gt 0; then
-      exec 2>&1
+      stderr_fd=4  # send stderr to awk, which will copy it to the log
     else
-      exec 2>&3
+      stderr_fd=3  # send stderr directly to the log file
     fi
-    "$@"
-    echo $?
+    if test -n "$stderr_prefix"; then
+      # Set to the test script's numeric exit status.
+      status=$(
+        exec 5>&1
+        {
+          {
+            "$@" 5>&-
+            # Capturing the status in a variable then writing the variable value
+            # to awk below may seem like unnecessary steps: Why not just write
+            # the status directly to awk here?  This avoids a race condition:
+            # The awk script below *requires* the final line of its input to be
+            # the test program's exit status.  Writing to fd 4 here would not
+            # provide that guarantee because this `echo' is running concurrently
+            # with `prefix_lines', which is writing to fd 4 if `--merge' is
+            # enabled.  Thus, a prefixed and merged stderr line could be written
+            # to fd 4 /after/ this status is written, which would break the awk
+            # script if the status was written directly to awk here.
+            printf %s\\n "$?" 1>&5
+          } |
+          # Each line of the test program's stdout is read then written
+          # unchanged to stdout.  This is an attempt to subvert buffering so
+          # that stderr and stdout lines are processed in approximately the same
+          # order as written by the test program.  (A less racy approach would
+          # be to use a select or poll loop over both stderr and stdout, but
+          # there is no portable (POSIX) way to do that from a shell script.)
+          #
+          # This also adds a terminating newline to the test program's final
+          # stdout line if missing.
+          while IFS= read -r line || test -n "$line"; do
+            printf %s\\n "$line"
+          done
+        } 2>&1 1>&4 3>&- 4>&- | prefix_lines "$stderr_prefix" 1>&$stderr_fd
+      )
+    else
+      # Avoid using `prefix_lines' for stderr if `$stderr_prefix' is the empty
+      # string.  This ensures that the test program's stderr and stdout are sent
+      # to awk in the order they were written by the test program.  (Only
+      # relevant if `--merge' is enabled.)
+      "$@" 2>&$stderr_fd 3>&- 4>&-
+      status=$?
+    fi
+    printf %s\\n "$status"
   ) | LC_ALL=C ${AM_TAP_AWK-awk} \
         -v me="$me" \
         -v test_script_name="$test_name" \
@@ -455,7 +544,7 @@ function get_test_exit_message(status)
   if (status == 0)
     return ""
   if (status !~ /^[1-9][0-9]*$/)
-    abort("getting exit status")
+    abort("getting exit status: not an integer: " status)
   if (status < 127)
     exit_details = ""
   else if (status == 127)
@@ -638,8 +727,6 @@ exit 0
 
 } # End of "BEGIN" block.
 '
-
-# TODO: document that we consume the file descriptor 3 :-(
 } 3>"$log_file"
 
 test $? -eq 0 || fatal "I/O or internal error"
@@ -647,9 +734,10 @@ test $? -eq 0 || fatal "I/O or internal error"
 # Local Variables:
 # mode: shell-script
 # sh-indentation: 2
-# eval: (add-hook 'before-save-hook 'time-stamp)
+# eval: (add-hook 'before-save-hook 'time-stamp nil t)
+# time-stamp-line-limit: 50
 # time-stamp-start: "scriptversion="
-# time-stamp-format: "%:y-%02m-%02d.%02H"
+# time-stamp-format: "%Y-%02m-%02d.%02H"
 # time-stamp-time-zone: "UTC0"
 # time-stamp-end: "; # UTC"
 # End:

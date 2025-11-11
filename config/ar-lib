@@ -2,9 +2,9 @@
 # Wrapper for Microsoft lib.exe
 
 me=ar-lib
-scriptversion=2024-06-19.01; # UTC
+scriptversion=2025-02-03.05; # UTC
 
-# Copyright (C) 2010-2024 Free Software Foundation, Inc.
+# Copyright (C) 2010-2025 Free Software Foundation, Inc.
 # Written by Peter Rosin <peda@lysator.liu.se>.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -51,9 +51,20 @@ func_file_conv ()
 	# lazily determine how to convert abs files
 	case `uname -s` in
 	  MINGW*)
-	    file_conv=mingw
+	    if test -n "$MSYSTEM" && (cygpath --version) >/dev/null 2>&1; then
+	      # MSYS2 environment.
+	      file_conv=cygwin
+	    else
+	      # Original MinGW environment.
+	      file_conv=mingw
+	    fi
 	    ;;
-	  CYGWIN* | MSYS*)
+	  MSYS*)
+	    # Old MSYS environment, or MSYS2 with 32-bit MSYS2 shell.
+	    file_conv=cygwin
+	    ;;
+	  CYGWIN*)
+	    # Cygwin environment.
 	    file_conv=cygwin
 	    ;;
 	  *)
@@ -65,8 +76,8 @@ func_file_conv ()
 	mingw)
 	  file=`cmd //C echo "$file " | sed -e 's/"\(.*\) " *$/\1/'`
 	  ;;
-	cygwin | msys)
-	  file=`cygpath -m "$file" || echo "$file"`
+	cygwin)
+	  file=`cygpath -w "$file" || echo "$file"`
 	  ;;
 	wine)
 	  file=`winepath -w "$file" || echo "$file"`
