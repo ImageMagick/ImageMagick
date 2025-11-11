@@ -1962,6 +1962,18 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
           image->rows);
         (void) WriteBlobString(image,buffer);
         quantum_type=GetQuantumType(image,exception);
+        if (quantum_type == IndexQuantum)
+          {
+            switch (image->colorspace)
+            {
+              case CMYKColorspace:
+                quantum_type=CMYKQuantum;
+                break;
+              case GRAYColorspace:
+                quantum_type=GrayQuantum;
+                break;
+            }
+          }
         switch (quantum_type)
         {
           case CMYKQuantum:
