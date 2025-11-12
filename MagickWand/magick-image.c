@@ -11384,7 +11384,7 @@ WandExport MagickBooleanType MagickSetImageScene(MagickWand *wand,
 %  The format of the MagickSetImageTicksPerSecond method is:
 %
 %      MagickBooleanType MagickSetImageTicksPerSecond(MagickWand *wand,
-%        const ssize_t ticks_per-second)
+%        const ssize_t ticks_per_second)
 %
 %  A description of each parameter follows:
 %
