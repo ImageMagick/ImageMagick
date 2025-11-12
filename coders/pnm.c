@@ -1964,15 +1964,10 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         quantum_type=GetQuantumType(image,exception);
         if (quantum_type == IndexQuantum)
           {
-            switch (image->colorspace)
-            {
-              case CMYKColorspace:
-                quantum_type=CMYKQuantum;
-                break;
-              case GRAYColorspace:
-                quantum_type=GrayQuantum;
-                break;
-            }
+            if (image->colorspace == CMYKColorspace)
+              quantum_type=CMYKQuantum;
+            else if (image->colorspace == GRAYColorspace)
+              quantum_type=GrayQuantum;
           }
         switch (quantum_type)
         {
