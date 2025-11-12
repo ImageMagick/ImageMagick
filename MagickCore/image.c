@@ -1036,7 +1036,7 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 %
 %      MagickBooleanType CopyImagePixels(Image *image,const Image *source_image,
 %        const RectangleInfo *geometry,const OffsetInfo *offset,
-%        ExceptionInfo *exception);
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %

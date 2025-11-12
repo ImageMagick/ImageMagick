@@ -4334,7 +4334,7 @@ MagickExport char *RemoveImageProperty(Image *image,const char *property)
 %
 %  The format of the ResetImagePropertyIterator method is:
 %
-%      ResetImagePropertyIterator(Image *image)
+%      void ResetImagePropertyIterator(const Image *image)
 %
 %  A description of each parameter follows:
 %

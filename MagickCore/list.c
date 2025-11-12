@@ -68,7 +68,7 @@
 %
 %  The format of the AppendImageToList method is:
 %
-%      AppendImageToList(Image *images,const Image *image)
+%      void AppendImageToList(Image **images,const Image *append)
 %
 %  A description of each parameter follows:
 %
@@ -316,7 +316,7 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
 %
 %  The format of the DeleteImageFromList method is:
 %
-%      DeleteImageFromList(Image **images)
+%      void DeleteImageFromList(Image **images)
 %
 %  A description of each parameter follows:
 %
@@ -357,7 +357,7 @@ MagickExport void DeleteImageFromList(Image **images)
 %
 %  The format of the DeleteImages method is:
 %
-%      DeleteImages(Image **images,const char *scenes,ExceptionInfo *exception)
+%      void DeleteImages(Image **images,const char *scenes,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -914,7 +914,7 @@ MagickExport Image **ImageListToArray(const Image *images,
 %
 %  The format of the InsertImageInList method is:
 %
-%      InsertImageInList(Image **images,Image *insert)
+%      void InsertImageInList(Image **images,Image *insert)
 %
 %  A description of each parameter follows:
 %
@@ -979,7 +979,7 @@ MagickExport Image *NewImageList(void)
 %
 %  The format of the PrependImageToList method is:
 %
-%      PrependImageToList(Image *images,Image *image)
+%      void PrependImageToList(Image **images,Image *prepend)
 %
 %  A description of each parameter follows:
 %
@@ -1178,7 +1178,7 @@ MagickExport Image *RemoveLastImageFromList(Image **images)
 %
 %  The format of the ReplaceImageInList method is:
 %
-%      ReplaceImageInList(Image **images,Image *replace)
+%      void ReplaceImageInList(Image **images,Image *replace)
 %
 %  A description of each parameter follows:
 %
@@ -1239,7 +1239,7 @@ MagickExport void ReplaceImageInList(Image **images,Image *replace)
 %
 %  The format of the ReplaceImageInList method is:
 %
-%      ReplaceImageInListReturnLast(Image **images,Image *replace)
+%      void ReplaceImageInListReturnLast(Image **images,Image *replace)
 %
 %  A description of each parameter follows:
 %
@@ -1343,7 +1343,7 @@ MagickExport void ReverseImageList(Image **images)
 %
 %  The format of the SpliceImageIntoList method is:
 %
-%      SpliceImageIntoList(Image **images,const size_t,
+%      Image *SpliceImageIntoList(Image **images,const size_t,
 %        const Image *splice)
 %
 %  A description of each parameter follows:
