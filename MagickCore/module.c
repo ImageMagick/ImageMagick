@@ -855,7 +855,7 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
 %
 %  The format of the IsModuleTreeInstantiated() method is:
 %
-%      IsModuleTreeInstantiated()
+%      MagickBooleanType IsModuleTreeInstantiated(void)
 %
 */
 
@@ -1564,7 +1564,7 @@ static void TagToFilterModuleName(const char *tag,char *name)
 %
 %  The format of the TagToModuleName module is:
 %
-%      TagToModuleName(const char *tag,const char *format,char *module)
+%      void TagToModuleName(const char *tag,const char *format,char *module)
 %
 %  A description of each parameter follows:
 %

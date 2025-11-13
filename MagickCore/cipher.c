@@ -951,7 +951,7 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
 %
 %  The format of the SetAESKey method is:
 %
-%      SetAESKey(AESInfo *aes_info,const StringInfo *key)
+%      void SetAESKey(AESInfo *aes_info,const StringInfo *key)
 %
 %  A description of each parameter follows:
 %

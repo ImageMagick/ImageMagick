@@ -1524,7 +1524,7 @@ MagickExport void *ResizeQuantumMemory(void *memory,const size_t count,
 %
 %  The format of the SetMagickAlignedMemoryMethods() method is:
 %
-%      SetMagickAlignedMemoryMethods(
+%      void SetMagickAlignedMemoryMethods(
 %        AcquireAlignedMemoryHandler acquire_aligned_memory_handler,
 %        RelinquishAlignedMemoryHandler relinquish_aligned_memory_handler)
 %
@@ -1561,7 +1561,7 @@ MagickExport void SetMagickAlignedMemoryMethods(
 %
 %  The format of the SetMagickMemoryMethods() method is:
 %
-%      SetMagickMemoryMethods(AcquireMemoryHandler acquire_memory_handler,
+%      void SetMagickMemoryMethods(AcquireMemoryHandler acquire_memory_handler,
 %        ResizeMemoryHandler resize_memory_handler,
 %        DestroyMemoryHandler destroy_memory_handler)
 %

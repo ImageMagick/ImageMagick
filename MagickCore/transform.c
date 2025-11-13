@@ -177,7 +177,7 @@ MagickExport Image *AutoOrientImage(const Image *image,
 %
 %  The format of the ChopImage method is:
 %
-%      Image *ChopImage(const Image *image,const RectangleInfo *chop_info)
+%      Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:

@@ -384,7 +384,7 @@ MagickExport void *RemoveImageRegistry(const char *key)
 %
 %  The format of the ResetImageRegistryIterator method is:
 %
-%      ResetImageRegistryIterator(void)
+%      void ResetImageRegistryIterator(void)
 %
 */
 MagickExport void ResetImageRegistryIterator(void)

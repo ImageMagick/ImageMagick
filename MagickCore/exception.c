@@ -140,7 +140,7 @@ MagickExport ExceptionInfo *AcquireExceptionInfo(void)
 %
 %  The format of the ClearMagickException method is:
 %
-%      ClearMagickException(ExceptionInfo *exception)
+%      void ClearMagickException(ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -194,7 +194,7 @@ MagickExport void ClearMagickException(ExceptionInfo *exception)
 %
 %  The format of the CatchException method is:
 %
-%      CatchException(ExceptionInfo *exception)
+%      void CatchException(ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -675,7 +675,7 @@ MagickExport const char *GetLocaleExceptionMessage(const ExceptionType severity,
 %
 %  The format of the InheritException method is:
 %
-%      InheritException(ExceptionInfo *exception,const ExceptionInfo *relative)
+%      void InheritException(ExceptionInfo *exception,const ExceptionInfo *relative)
 %
 %  A description of each parameter follows:
 %
@@ -725,7 +725,7 @@ MagickExport void InheritException(ExceptionInfo *exception,
 %
 %  The format of the InitializeExceptionInfo method is:
 %
-%      InitializeExceptionInfo(ExceptionInfo *exception)
+%      void InitializeExceptionInfo(ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %

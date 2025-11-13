@@ -1349,7 +1349,7 @@ MagickPrivate void MagickComponentTerminus(void)
 %
 %  The format of the MagickCoreGenesis function is:
 %
-%      MagickCoreGenesis(const char *path,
+%      void MagickCoreGenesis(const char *path,
 %        const MagickBooleanType establish_signal_handlers)
 %
 %  A description of each parameter follows:
@@ -1629,7 +1629,7 @@ MagickExport void MagickCoreGenesis(const char *path,
 %
 %  The format of the MagickCoreTerminus function is:
 %
-%      MagickCoreTerminus(void)
+%      void MagickCoreTerminus(void)
 %
 */
 MagickExport void MagickCoreTerminus(void)

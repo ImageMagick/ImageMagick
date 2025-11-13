@@ -174,7 +174,7 @@
 
 <p>The format of the AppendImageToList method is:</p>
 
-<pre class="bg-light text-dark mx-4"><samp>AppendImageToList(Image *images,const Image *image)
+<pre class="bg-light text-dark mx-4"><samp>void AppendImageToList(Image **images,const Image *append)
 </samp></pre>
 
 <p>A description of each parameter follows:</p>
@@ -258,7 +258,7 @@
 
 <p>The format of the DeleteImageFromList method is:</p>
 
-<pre class="bg-light text-dark mx-4"><samp>DeleteImageFromList(Image **images)
+<pre class="bg-light text-dark mx-4"><samp>void DeleteImageFromList(Image **images)
 </samp></pre>
 
 <p>A description of each parameter follows:</p>
@@ -283,7 +283,7 @@
 
 <p>The format of the DeleteImages method is:</p>
 
-<pre class="bg-light text-dark mx-4"><samp>DeleteImages(Image **images,const char *scenes,ExceptionInfo *exception)
+<pre class="bg-light text-dark mx-4"><samp>void DeleteImages(Image **images,const char *scenes,ExceptionInfo *exception)
 </samp></pre>
 
 <p>A description of each parameter follows:</p>
@@ -553,7 +553,7 @@
 
 <p>The format of the InsertImageInList method is:</p>
 
-<pre class="bg-light text-dark mx-4"><samp>InsertImageInList(Image **images,Image *insert)
+<pre class="bg-light text-dark mx-4"><samp>void InsertImageInList(Image **images,Image *insert)
 </samp></pre>
 
 <p>A description of each parameter follows:</p>
@@ -587,7 +587,7 @@
 
 <p>The format of the PrependImageToList method is:</p>
 
-<pre class="bg-light text-dark mx-4"><samp>PrependImageToList(Image *images,Image *image)
+<pre class="bg-light text-dark mx-4"><samp>void PrependImageToList(Image **images,Image *prepend)
 </samp></pre>
 
 <p>A description of each parameter follows:</p>
@@ -683,7 +683,7 @@
 
 <p>The format of the ReplaceImageInList method is:</p>
 
-<pre class="bg-light text-dark mx-4"><samp>ReplaceImageInList(Image **images,Image *replace)
+<pre class="bg-light text-dark mx-4"><samp>void ReplaceImageInList(Image **images,Image *replace)
 </samp></pre>
 
 <p>A description of each parameter follows:</p>
@@ -710,7 +710,7 @@
 
 <p>The format of the ReplaceImageInList method is:</p>
 
-<pre class="bg-light text-dark mx-4"><samp>ReplaceImageInListReturnLast(Image **images,Image *replace)
+<pre class="bg-light text-dark mx-4"><samp>void ReplaceImageInListReturnLast(Image **images,Image *replace)
 </samp></pre>
 
 <p>A description of each parameter follows:</p>
@@ -756,7 +756,7 @@
 
 <p>The format of the SpliceImageIntoList method is:</p>
 
-<pre class="bg-light text-dark mx-4"><samp>SpliceImageIntoList(Image **images,const size_t,
+<pre class="bg-light text-dark mx-4"><samp>Image *SpliceImageIntoList(Image **images,const size_t,
   const Image *splice)
 </samp></pre>
 

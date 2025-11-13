@@ -2318,7 +2318,7 @@ MagickExport MagickBooleanType GetImageQuantizeError(Image *image,
 %
 %  The format of the GetQuantizeInfo method is:
 %
-%      GetQuantizeInfo(QuantizeInfo *quantize_info)
+%      void GetQuantizeInfo(QuantizeInfo *quantize_info)
 %
 %  A description of each parameter follows:
 %

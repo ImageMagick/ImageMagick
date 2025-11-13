@@ -1520,7 +1520,7 @@ MagickExport StringInfo *RemoveImageProfile(Image *image,const char *name)
 %
 %  The format of the ResetImageProfileIterator method is:
 %
-%      ResetImageProfileIterator(Image *image)
+%      void ResetImageProfileIterator(const Image *image)
 %
 %  A description of each parameter follows:
 %

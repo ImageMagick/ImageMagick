@@ -2721,7 +2721,7 @@ WandExport MagickBooleanType MagickSetPointsize(MagickWand *wand,
 %
 %  The format of the MagickSetProgressMonitor method is:
 %
-%      MagickProgressMonitor MagickSetProgressMonitor(MagickWand *wand
+%      MagickProgressMonitor MagickSetProgressMonitor(MagickWand *wand,
 %        const MagickProgressMonitor progress_monitor,void *client_data)
 %
 %  A description of each parameter follows:
