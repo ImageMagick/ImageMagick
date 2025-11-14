@@ -1224,8 +1224,17 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
       if ((geometry_info.sigma != 0.0) &&
           (scale_factor > (jpeg_info->output_height/geometry_info.sigma)))
         scale_factor=jpeg_info->output_height/geometry_info.sigma;
+#if defined(LIBJPEG_TURBO_VERSION_NUMBER) || (JPEG_LIB_VERSION >= 70)
+      jpeg_info->scale_num=(unsigned int) (8.0/scale_factor+0.5);
+      if (jpeg_info->scale_num > 16U)
+        jpeg_info->scale_num=16U;
+      if (jpeg_info->scale_num < 1U)
+        jpeg_info->scale_num=1U;
+      jpeg_info->scale_denom=8U;
+#else
       jpeg_info->scale_num=1U;
       jpeg_info->scale_denom=(unsigned int) scale_factor;
+#endif
       jpeg_calc_output_dimensions(jpeg_info);
       if (image->debug != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
