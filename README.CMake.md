@@ -31,6 +31,8 @@ The build process will automatically identify available dependencies. It will lo
 
 This is implemented in `magick_find_delegate()` in the main `CMakeLists.txt`.
 
+If you suspect that a dependency is being imported incorrectly, the `-DCMAKE_VERBOSE_MAKEFILE=ON` `CMake` option can be used to troubleshoot it.
+
 ## `conan`
 
 `conan` is a source tarball repository with an unified build system fully integrated with `CMake`. Using `conan` is optional. It allows to easily retrieve specified versions of all the required dependencies and to automatically include them in the build.
