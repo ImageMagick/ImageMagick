@@ -256,26 +256,20 @@ static MagickBooleanType IsJPEG(const unsigned char *magick,const size_t length)
 %
 */
 
-static inline Quantum JPEGGetQuantum(
-  const struct jpeg_decompress_struct *jpeg_info,const JSAMPLE *p)
+static inline Quantum JPEGGetQuantum(const struct jpeg_decompress_struct *jpeg_info,
+  QuantumAny range,const JSAMPLE *p)
 {
   if (jpeg_info->data_precision == 8)
     return ScaleCharToQuantum(*p);
   else if (jpeg_info->data_precision == 16)
     return ScaleShortToQuantum(*(unsigned short *) p);
   else if (jpeg_info->data_precision < 8)
-    {
-      QuantumAny range=GetQuantumRange(jpeg_info->data_precision);
-      return ScaleAnyToQuantum(*p,range);
-    }
+    return ScaleAnyToQuantum(*p,range);
   else
-    {
-      QuantumAny range=GetQuantumRange(jpeg_info->data_precision);
-      return ScaleAnyToQuantum(*(unsigned short *) p,range);
-    }
+    return ScaleAnyToQuantum(*(unsigned short *) p,range);
 }
 
-static boolean FillInputBuffer(j_decompress_ptr compress_info)
+static boolean FillInputBuffer(const j_decompress_ptr compress_info)
 {
   SourceManager
     *source;
@@ -834,7 +828,7 @@ static void JPEGSourceManager(j_decompress_ptr compress_info,Image *image)
   source->image=image;
 }
 
-static void JPEGSetImageQuality(struct jpeg_decompress_struct *jpeg_info,
+static void JPEGSetImageQuality(const struct jpeg_decompress_struct *jpeg_info,
   Image *image)
 {
   image->quality=UndefinedCompressionQuality;
@@ -967,7 +961,8 @@ static void JPEGSetImageQuality(struct jpeg_decompress_struct *jpeg_info,
   }
 }
 
-static void JPEGSetImageSamplingFactor(struct jpeg_decompress_struct *jpeg_info,  Image *image,ExceptionInfo *exception)
+static void JPEGSetImageSamplingFactor(const struct jpeg_decompress_struct *jpeg_info,
+  Image *image,ExceptionInfo *exception)
 {
   char
     sampling_factor[MagickPathExtent];
@@ -1096,6 +1091,9 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
 
   MemoryInfo
     *memory_info;
+
+  QuantumAny
+    range;
 
   size_t
     bytes_per_pixel,
@@ -1466,6 +1464,7 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
           image->colormap[i].alpha=(MagickRealType) OpaqueAlpha;
         }
     }
+  range=GetQuantumRange(jpeg_info->data_precision);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     JDIMENSION
@@ -1521,7 +1520,8 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
           Quantum
             index;
 
-          unsigned short pixel;
+          unsigned short
+            pixel;
 
           if (jpeg_info->data_precision > 8)
             pixel=(*(unsigned short *) p);
@@ -1543,13 +1543,13 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
         */
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          SetPixelCyan(image,QuantumRange-JPEGGetQuantum(jpeg_info,p),q);
+          SetPixelCyan(image,QuantumRange-JPEGGetQuantum(jpeg_info,range,p),q);
           p+=(ptrdiff_t) bytes_per_pixel;
-          SetPixelMagenta(image,QuantumRange-JPEGGetQuantum(jpeg_info,p),q);
+          SetPixelMagenta(image,QuantumRange-JPEGGetQuantum(jpeg_info,range,p),q);
           p+=(ptrdiff_t) bytes_per_pixel;
-          SetPixelYellow(image,QuantumRange-JPEGGetQuantum(jpeg_info,p),q);
+          SetPixelYellow(image,QuantumRange-JPEGGetQuantum(jpeg_info,range,p),q);
           p+=(ptrdiff_t) bytes_per_pixel;
-          SetPixelBlack(image,QuantumRange-JPEGGetQuantum(jpeg_info,p),q);
+          SetPixelBlack(image,QuantumRange-JPEGGetQuantum(jpeg_info,range,p),q);
           p+=(ptrdiff_t) bytes_per_pixel;
           SetPixelAlpha(image,OpaqueAlpha,q);
           q+=(ptrdiff_t) GetPixelChannels(image);
@@ -1563,11 +1563,11 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
         */
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          SetPixelRed(image,JPEGGetQuantum(jpeg_info,p),q);
+          SetPixelRed(image,JPEGGetQuantum(jpeg_info,range,p),q);
           p+=(ptrdiff_t) bytes_per_pixel;
-          SetPixelGreen(image,JPEGGetQuantum(jpeg_info,p),q);
+          SetPixelGreen(image,JPEGGetQuantum(jpeg_info,range,p),q);
           p+=(ptrdiff_t) bytes_per_pixel;
-          SetPixelBlue(image,JPEGGetQuantum(jpeg_info,p),q);
+          SetPixelBlue(image,JPEGGetQuantum(jpeg_info,range,p),q);
           p+=(ptrdiff_t) bytes_per_pixel;
           SetPixelAlpha(image,OpaqueAlpha,q);
           q+=(ptrdiff_t) GetPixelChannels(image);
@@ -2359,22 +2359,16 @@ static char **SamplingFactorToList(const char *text)
 }
 
 static inline void JPEGSetSample(const struct jpeg_compress_struct *jpeg_info,
-  const Quantum pixel,JSAMPLE *q)
+  const Quantum pixel,QuantumAny range,JSAMPLE *q)
 {
   if (jpeg_info->data_precision == 8)
     *q=(JSAMPLE) ScaleQuantumToChar(pixel);
   else if (jpeg_info->data_precision == 16)
     (*(unsigned short *) q)=(unsigned short) ScaleQuantumToShort(pixel);
   else if (jpeg_info->data_precision < 8)
-    {
-      QuantumAny range=GetQuantumRange(jpeg_info->data_precision);
-      *q=(JSAMPLE) ScaleQuantumToAny(pixel,range);
-    }
+    *q=(JSAMPLE) ScaleQuantumToAny(pixel,range);
   else
-    {
-      QuantumAny range=GetQuantumRange(jpeg_info->data_precision);
-      (*(unsigned short *) q)=(unsigned short) ScaleQuantumToAny(pixel,range);
-    }
+    (*(unsigned short *) q)=(unsigned short) ScaleQuantumToAny(pixel,range);
 }
 
 static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
@@ -2415,6 +2409,9 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
 
   MemoryInfo
     *memory_info;
+
+  QuantumAny
+    range;
 
   ssize_t
     bytes_per_pixel,
@@ -3017,6 +3014,7 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
         jps_image=DestroyImage(jps_image);
       return(MagickFalse);
     }
+  range=GetQuantumRange(jpeg_info->data_precision);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     const Quantum
@@ -3044,8 +3042,7 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
         */
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          JPEGSetSample(jpeg_info,ClampToQuantum(GetPixelLuma(image,p)),
-            q);
+          JPEGSetSample(jpeg_info,ClampToQuantum(GetPixelLuma(image,p)),range,q);
           q+=(ptrdiff_t) bytes_per_pixel;
           p+=(ptrdiff_t) GetPixelChannels(image);
         }
@@ -3062,16 +3059,16 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
             Convert DirectClass packets to contiguous CMYK scanlines.
           */
           JPEGSetSample(jpeg_info,(Quantum) ((QuantumRange-
-            GetPixelCyan(image,p))),q);
+            GetPixelCyan(image,p))),range,q);
           q+=(ptrdiff_t) bytes_per_pixel;
           JPEGSetSample(jpeg_info,(Quantum) ((QuantumRange-
-            GetPixelMagenta(image,p))),q);
+            GetPixelMagenta(image,p))),range,q);
           q+=(ptrdiff_t) bytes_per_pixel;
           JPEGSetSample(jpeg_info,(Quantum) ((QuantumRange-
-            GetPixelYellow(image,p))),q);
+            GetPixelYellow(image,p))),range,q);
           q+=(ptrdiff_t) bytes_per_pixel;
           JPEGSetSample(jpeg_info,(Quantum) ((QuantumRange-
-            GetPixelBlack(image,p))),q);
+            GetPixelBlack(image,p))),range,q);
           q+=(ptrdiff_t) bytes_per_pixel;
           p+=(ptrdiff_t) GetPixelChannels(image);
         }
@@ -3084,11 +3081,11 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
         */
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          JPEGSetSample(jpeg_info,GetPixelRed(image,p),q);
+          JPEGSetSample(jpeg_info,GetPixelRed(image,p),range,q);
           q+=(ptrdiff_t) bytes_per_pixel;
-          JPEGSetSample(jpeg_info,GetPixelGreen(image,p),q);
+          JPEGSetSample(jpeg_info,GetPixelGreen(image,p),range,q);
           q+=(ptrdiff_t) bytes_per_pixel;
-          JPEGSetSample(jpeg_info,GetPixelBlue(image,p),q);
+          JPEGSetSample(jpeg_info,GetPixelBlue(image,p),range,q);
           q+=(ptrdiff_t) bytes_per_pixel;
           p+=(ptrdiff_t) GetPixelChannels(image);
         }
