@@ -225,7 +225,7 @@ jobs:
       - name: Clone repositories
         shell: cmd
         run: |
-          clone-repositories-im6.cmd
+          clone-repositories-im7.cmd
 
       - name: Download ChangeLog.md
         uses: actions/download-artifact@v6
