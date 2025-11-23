@@ -536,7 +536,7 @@ static inline void IncrementCipherNonce(const size_t length,
     if (nonce[i] != 0)
       return;
   }
-  ThrowFatalException(ResourceLimitFatalError,"Sequence wrap error `%s'");
+  ThrowFatalException(ResourceLimitFatalError,"Sequence wrap error");
 }
 
 MagickExport MagickBooleanType DecipherImage(Image *image,
