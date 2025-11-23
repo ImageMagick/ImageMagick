@@ -310,7 +310,7 @@ void Magick::Options::fontFamily(const std::string &family_)
 {
   if (family_.length() == 0)
     {
-      _drawInfo->family=(char *) RelinquishMagickMemory(_drawInfo->font);
+      _drawInfo->family=(char *) RelinquishMagickMemory(_drawInfo->family);
       DestroyString(RemoveImageOption(imageInfo(),"family"));
     }
   else
