@@ -1544,6 +1544,7 @@ static const OptionInfo
     { "Lanczos2Sharp", Lanczos2SharpFilter, UndefinedOptionFlag, MagickFalse },
     { "LanczosRadius", LanczosRadiusFilter, UndefinedOptionFlag, MagickFalse },
     { "LanczosSharp", LanczosSharpFilter, UndefinedOptionFlag, MagickFalse },
+    { "MagicKernel2011", QuadraticFilter, UndefinedOptionFlag, MagickFalse }, /* same kernel */
     { "MagicKernelSharp2013", MagicKernelSharp2013Filter, UndefinedOptionFlag, MagickFalse },
     { "MagicKernelSharp2021", MagicKernelSharp2021Filter, UndefinedOptionFlag, MagickFalse },
     { "Mitchell", MitchellFilter, UndefinedOptionFlag, MagickFalse },
