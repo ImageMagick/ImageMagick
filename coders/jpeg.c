@@ -1097,8 +1097,7 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
 
   size_t
     bytes_per_pixel,
-    max_memory_to_use,
-    units;
+    max_memory_to_use;
 
   ssize_t
     i,
@@ -1189,20 +1188,17 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
   /*
     Set image resolution.
   */
-  units=0;
-  if (jpeg_info->saw_JFIF_marker != 0)
+  if ((jpeg_info->saw_JFIF_marker != 0) && (jpeg_info->density_unit != 0))
     {
+      if (jpeg_info->density_unit == 1)
+        image->units=PixelsPerInchResolution;
+      else if (jpeg_info->density_unit == 2)
+        image->units = PixelsPerCentimeterResolution;
       if (jpeg_info->X_density != 0)
         image->resolution.x=(double) jpeg_info->X_density;
       if (jpeg_info->Y_density != 0)
         image->resolution.y=(double) jpeg_info->Y_density;
-      if (jpeg_info->density_unit != 0)
-        units=(size_t) jpeg_info->density_unit;
     }
-  if (units == 1)
-    image->units=PixelsPerInchResolution;
-  if (units == 2)
-    image->units=PixelsPerCentimeterResolution;
   number_pixels=(MagickSizeType) image->columns*image->rows;
   option=GetImageOption(image_info,"jpeg:size");
   if ((option != (const char *) NULL) &&
