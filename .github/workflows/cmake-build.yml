@@ -195,9 +195,10 @@ jobs:
     - name: Workaround for https://github.com/actions/runner-images/issues/13308
       shell: bash
       run: |
-        echo "CUSTOM_DELEGATES=-DCAIRO_DELEGATE=OFF" >> $GITHUB_ENV
-        echo "EXPECTED_DELEGATES=${EXPECTED_DELEGATES}" | sed s/cairo// >> $GITHUB_ENV
-      if: matrix.provider == 'system' && runner.os == 'macOS' && matrix.libtype == 'static'
+        echo "CXXFLAGS=${CXXFLAGS} -I/opt/homebrew/include" >> $GITHUB_ENV
+        echo "CFLAGS=${CFLAGS} -I/opt/homebrew/include" >> $GITHUB_ENV
+        echo "LDFLAGS=${LDFLAGS} -L/opt/homebrew/lib" >> $GITHUB_ENV
+      if: matrix.provider == 'system' && runner.os == 'macOS'
 
     - name: Generate CMake build
       shell: bash
