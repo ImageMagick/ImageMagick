@@ -72,7 +72,9 @@ extern "C" {
 
 #if defined(_MSC_VER)
 # if !defined(MAGICKCORE_MSC_VER)
-#   if (_MSC_VER >= 1930)
+#   if (_MSC_VER >= 1950)
+#     define MAGICKCORE_MSC_VER 2026
+#   elif (_MSC_VER >= 1930)
 #     define MAGICKCORE_MSC_VER 2022
 #   elif (_MSC_VER >= 1920)
 #     define MAGICKCORE_MSC_VER 2019
