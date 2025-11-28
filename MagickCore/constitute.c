@@ -445,14 +445,21 @@ MagickExport Image *PingImages(ImageInfo *image_info,const char *filename,
 %
 */
 
-static MagickBooleanType IsCoderAuthorized(const char *coder,
-  const PolicyRights rights,ExceptionInfo *exception)
+static MagickBooleanType IsCoderAuthorized(const char *module,
+  const char *coder,const PolicyRights rights,ExceptionInfo *exception)
 {
   if (IsRightsAuthorized(CoderPolicyDomain,rights,coder) == MagickFalse)
     {
       errno=EPERM;
       (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
         "NotAuthorized","`%s'",coder);
+      return(MagickFalse);
+    }
+  if (IsRightsAuthorized(ModulePolicyDomain,rights,module) == MagickFalse)
+    {
+      errno=EPERM;
+      (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
+        "NotAuthorized","`%s'",module);
       return(MagickFalse);
     }
   return(MagickTrue);
@@ -727,15 +734,14 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       /*
         Call appropriate image reader based on image type.
       */
-      if ((magick_info != (const MagickInfo *) NULL) &&
-          (GetMagickDecoderThreadSupport(magick_info) == MagickFalse))
+      if (GetMagickDecoderThreadSupport(magick_info) == MagickFalse)
         LockSemaphoreInfo(magick_info->semaphore);
-      status=IsCoderAuthorized(read_info->magick,ReadPolicyRights,exception);
+      status=IsCoderAuthorized(magick_info->magick_module,read_info->magick,
+        ReadPolicyRights,exception);
       image=(Image *) NULL;
       if (status != MagickFalse)
         image=decoder(read_info,exception);
-      if ((magick_info != (const MagickInfo *) NULL) &&
-          (GetMagickDecoderThreadSupport(magick_info) == MagickFalse))
+      if (GetMagickDecoderThreadSupport(magick_info) == MagickFalse)
         UnlockSemaphoreInfo(magick_info->semaphore);
     }
   else
@@ -792,7 +798,8 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       */
       if (GetMagickDecoderThreadSupport(magick_info) == MagickFalse)
         LockSemaphoreInfo(magick_info->semaphore);
-      status=IsCoderAuthorized(read_info->magick,ReadPolicyRights,exception);
+      status=IsCoderAuthorized(magick_info->magick_module,read_info->magick,
+        ReadPolicyRights,exception);
       image=(Image *) NULL;
       if (status != MagickFalse)
         image=(decoder)(read_info,exception);
@@ -1334,14 +1341,13 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
       /*
         Call appropriate image writer based on image type.
       */
-      if ((magick_info != (const MagickInfo *) NULL) &&
-          (GetMagickEncoderThreadSupport(magick_info) == MagickFalse))
+      if (GetMagickEncoderThreadSupport(magick_info) == MagickFalse)
         LockSemaphoreInfo(magick_info->semaphore);
-      status=IsCoderAuthorized(write_info->magick,WritePolicyRights,exception);
+      status=IsCoderAuthorized(magick_info->magick_module,write_info->magick,
+        WritePolicyRights,exception);
       if (status != MagickFalse)
         status=encoder(write_info,image,exception);
-      if ((magick_info != (const MagickInfo *) NULL) &&
-          (GetMagickEncoderThreadSupport(magick_info) == MagickFalse))
+      if (GetMagickEncoderThreadSupport(magick_info) == MagickFalse)
         UnlockSemaphoreInfo(magick_info->semaphore);
     }
   else
@@ -1409,8 +1415,8 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
               */
               if (GetMagickEncoderThreadSupport(magick_info) == MagickFalse)
                 LockSemaphoreInfo(magick_info->semaphore);
-              status=IsCoderAuthorized(write_info->magick,WritePolicyRights,
-                exception);
+              status=IsCoderAuthorized(magick_info->magick_module,write_info->magick,
+                WritePolicyRights,exception);
               if (status != MagickFalse)
                 status=encoder(write_info,image,exception);
               if (GetMagickEncoderThreadSupport(magick_info) == MagickFalse)
