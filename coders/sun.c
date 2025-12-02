@@ -315,8 +315,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     sun_info.maplength=ReadBlobMSBLong(image);
     if (sun_info.maplength > GetBlobSize(image))
       ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
-    extent=(size_t) (sun_info.height*sun_info.width);
-    if ((sun_info.height != 0) && (sun_info.width != (extent/sun_info.height)))
+    if (HeapOverflowSanityCheckGetSize(sun_info.width,sun_info.height,&extent) != MagickFalse)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     if ((sun_info.type != RT_STANDARD) && (sun_info.type != RT_ENCODED) &&
         (sun_info.type != RT_FORMAT_RGB))
