@@ -231,7 +231,8 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) ReadBlobLSBShort(image);
     width=ReadBlobLSBShort(image);
     height=ReadBlobLSBShort(image);
-    image_size=2*width*height;
+    if (HeapOverflowSanityCheckGetSize(2*width,height,&image_size) != MagickFalse)
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     if (image_size > GetBlobSize(image))
       ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
     bytes_per_line=width*2;
