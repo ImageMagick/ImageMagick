@@ -2479,25 +2479,29 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
   jpeg_info->image_height=(unsigned int) image->rows;
   jpeg_info->input_components=3;
   jpeg_info->data_precision=8;
+  option=GetImageOption(image_info,"jpeg:high-bit-depth");
+  if (IsStringTrue(option) != MagickFalse)
+    {
 #if defined(C_LOSSLESS_SUPPORTED)
-  if (image_info->compression == LosslessJPEGCompression)
-    {
+      if (image_info->compression == LosslessJPEGCompression)
+        {
 #if defined(LIBJPEG_TURBO_VERSION_NUMBER) && LIBJPEG_TURBO_VERSION_NUMBER >= 3000090
-      jpeg_info->data_precision=(int) image->depth;
+          jpeg_info->data_precision=(int) image->depth;
 #else
-      if (image->depth > 12)
-        jpeg_info->data_precision=16;
-      else if (image->depth > 8)
-        jpeg_info->data_precision=12;
+          if (image->depth > 12)
+            jpeg_info->data_precision=16;
+          else if (image->depth > 8)
+            jpeg_info->data_precision=12;
 #endif
-    }
-  else
+        }
+      else
 #endif
-    {
+        {
 #if defined(MAGICKCORE_HAVE_JPEG12_WRITE_SCANLINES)
-      if (image->depth > 8)
-        jpeg_info->data_precision=12;
+          if (image->depth > 8)
+            jpeg_info->data_precision=12;
 #endif
+        }
     }
   jpeg_info->in_color_space=JCS_RGB;
   switch (image->colorspace)
