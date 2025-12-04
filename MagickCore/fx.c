@@ -3453,8 +3453,8 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
             /* Old fx doesn't add 0.5. */
             new_value=~(size_t)(regA+0.5);
             regA=(fxFltType) new_value;
+            break;
           }
-          break;
         case oPow:
           regA = pow ((double) regA, (double) regB);
           break;
