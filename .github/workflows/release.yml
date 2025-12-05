@@ -338,6 +338,7 @@ jobs:
 
   windows_msix:
     name: Create Msix ${{matrix.quantum}}${{matrix.hdri_flag}}
+    if: github.event_name != 'pull_request'
     runs-on: windows-2022
     environment: release
     needs:
@@ -391,7 +392,6 @@ jobs:
           7z x "ImageMagick-$env:VERSION-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-arm64.7z"
 
       - name: Azure CLI login with federated credential
-        if: github.event_name != 'pull_request'
         uses: azure/login@a457da9ea143d694b1b9c7c869ebb04ebe844ef5 # v2.3.0
         with:
           client-id: ${{secrets.AZURE_CLIENT_ID}}
@@ -399,7 +399,6 @@ jobs:
           subscription-id: ${{secrets.AZURE_SUBSCRIPTION_ID}}
 
       - name: Create msixbundle with Advanced Installer
-        if: github.event_name != 'pull_request'
         uses: caphyon/advinst-github-action@f7e45a75aba48b695fafc344f61adf634d41fe4e # v2.0
         with:
           advinst-license: ${{secrets.ADVINST_LICENSE_KEY}}
@@ -409,7 +408,6 @@ jobs:
               SetVersion ${{needs.version.outputs.semantic_version}}
 
       - uses: actions/upload-artifact@v5
-        if: github.event_name != 'pull_request'
         with:
           name: ImageMagick.${{matrix.quantum}}${{matrix.hdri_flag}}.msixbundle
           path: ImageMagick-Windows\Installer\Msix\Artifacts\ImageMagick.${{matrix.quantum}}${{matrix.hdri_flag}}.msixbundle
