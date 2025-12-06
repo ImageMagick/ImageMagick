@@ -2483,7 +2483,7 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
   if (IsStringTrue(option) != MagickFalse)
     {
 #if defined(C_LOSSLESS_SUPPORTED)
-      if (image->quality == 100)
+      if (image_info->quality == 100)
         {
 #if defined(LIBJPEG_TURBO_VERSION_NUMBER) && LIBJPEG_TURBO_VERSION_NUMBER >= 3000090
           jpeg_info->data_precision=(int) image->depth;
