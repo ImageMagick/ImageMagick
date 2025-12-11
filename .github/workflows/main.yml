@@ -69,8 +69,8 @@ jobs:
           make install
 
   build_macos:
-    name: Build MacOS
-    runs-on: macos-13
+    name: Build MacOS x64
+    runs-on: macos-15-intel
 
     steps:
       - uses: actions/checkout@v6
