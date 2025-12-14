@@ -327,23 +327,13 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
       return(DestroyImageList(image));
-/*
-   printf("Length: %.20g, Memory size: %.20g\n", (double) length,(double)
-     image->depth);
-*/
      quantum_info=AcquireQuantumInfo(image_info,image);
      if (quantum_info == (QuantumInfo *) NULL)
        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
      status=SetQuantumFormat(image,quantum_info,quantum_format);
      if (status == MagickFalse)
        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-     pixels=(unsigned char *) GetQuantumPixels(quantum_info); 
-     if(image->columns != ipl_info.width){
-/*
-     printf("Columns not set correctly!  Wanted: %.20g, got: %.20g\n",
-       (double) ipl_info.width, (double) image->columns);
-*/
-     }
+     pixels=(unsigned char *) GetQuantumPixels(quantum_info);
 
     /* 
     Covert IPL binary to pixel packets
