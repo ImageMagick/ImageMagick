@@ -300,7 +300,12 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       quantum_format = UnsignedQuantumFormat;
       break;
   }
-  extent=ipl_info.width*ipl_info.height*ipl_info.z*ipl_info.depth/8;
+  if (HeapOverflowSanityCheckGetSize(ipl_info.width,ipl_info.height,&extent) != MagickFalse)
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  if (HeapOverflowSanityCheckGetSize(extent,ipl_info.z,&extent) != MagickFalse)
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  if (HeapOverflowSanityCheckGetSize(extent,ipl_info.depth/8,&extent) != MagickFalse)
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if (extent > GetBlobSize(image))
     ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
 
