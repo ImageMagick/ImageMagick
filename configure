@@ -5377,7 +5377,7 @@ MAGICK_PATCHLEVEL_VERSION=12
 
 MAGICK_VERSION=7.1.2-12
 
-MAGICK_GIT_REVISION=578d60d1b:20251214
+MAGICK_GIT_REVISION=544d7a851:20251218
 
 
 # Substitute library versioning
@@ -5411,7 +5411,7 @@ PACKAGE_LIB_VERSION=0x712
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,2,12
 
-PACKAGE_RELEASE_DATE=2025-12-14
+PACKAGE_RELEASE_DATE=2025-12-18
 
 
 # Ensure that make can run correctly
@@ -27726,7 +27726,41 @@ main (void)
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"
 then :
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
+else case e in #(
+  e) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+ { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether our compiler supports __FUNCTION__" >&5
+printf %s "checking whether our compiler supports __FUNCTION__... " >&6; }
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
 
+int
+main (void)
+{
+{ const char *func = __FUNCTION__; return(func != 0 ? 0 : 1); }
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
+
+printf "%s\n" "#define __func__ __FUNCTION__" >>confdefs.h
+
+else case e in #(
+  e) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+
+printf "%s\n" "#define __func__ __FILE__" >>confdefs.h
+ ;;
+esac
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext ;;
+esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
 
@@ -30066,7 +30100,7 @@ then :
   printf %s "(cached) " >&6
 else case e in #(
   e) ac_check_lib_save_LIBS=$LIBS
-LIBS="-lccmalloc  $LIBS"
+LIBS="-lccmalloc -ldl $LIBS"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -30105,9 +30139,6 @@ printf "%s\n" "$ac_cv_lib_ccmalloc_ccmalloc_malloc" >&6; }
 if test "x$ac_cv_lib_ccmalloc_ccmalloc_malloc" = xyes
 then :
   CCMALLOC_LIBS="$CCMALLOC_PREFIX/lib/ccmalloc-gcc.o -lccmalloc -ldl"
-else case e in #(
-  e) ,-ldl ;;
-esac
 fi
 
         if test -n "$CCMALLOC_LIBS"; then
@@ -33490,7 +33521,7 @@ else
 printf "%s\n" "#define MAGICK_FONT_PATH \"$with_fontpath\"" >>confdefs.h
 
 fi
-if test "$with_fontpath=" != ''; then
+if test "$with_fontpath" != ''; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-fontpath=$with_fontpath "
 fi
 
