@@ -71,7 +71,7 @@ namespace Magick
     // via the C language malloc() function, or "NewAllocator" if
     // memory is allocated via C++ 'new'.
     void updateNoCopy(void* data_,size_t length_,
-      const Allocator allocator_=NewAllocator);
+      Allocator allocator_=NewAllocator);
 
   private:
     BlobRef *_blobRef;
