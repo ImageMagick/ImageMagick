@@ -120,6 +120,7 @@ typedef struct _MSLInfo
     *exception;
 
   ssize_t
+    depth,
     n,
     number_groups;
 
@@ -328,6 +329,10 @@ static void MSLStartElement(void *context,const xmlChar *tag,
   RectangleInfo
     geometry;
 
+  size_t
+    height,
+    width;
+
   ssize_t
     i,
     j,
@@ -335,11 +340,6 @@ static void MSLStartElement(void *context,const xmlChar *tag,
     option,
     x,
     y;
-
-
-  size_t
-    height,
-    width;
 
   xmlParserCtxtPtr
     parser;
@@ -352,6 +352,13 @@ static void MSLStartElement(void *context,const xmlChar *tag,
   exception=AcquireExceptionInfo();
   parser=(xmlParserCtxtPtr) context;
   msl_info=(MSLInfo *) parser->_private;
+  if (msl_info->depth++ >= MagickMaxRecursionDepth)
+    {        
+      (void) ThrowMagickException(msl_info->exception,GetMagickModule(),
+        DrawError,"VectorGraphicsNestedTooDeeply","`%s'",tag);
+      xmlStopParser((xmlParserCtxtPtr) context);
+      return;
+    }
   n=msl_info->n;
   keyword=(const char *) NULL;
   value=(char *) NULL;
@@ -7057,14 +7064,14 @@ static void MSLStartElement(void *context,const xmlChar *tag,
 
 static void MSLEndElement(void *context,const xmlChar *tag)
 {
-  ssize_t
-    n;
-
   MSLInfo
     *msl_info;
 
   xmlParserCtxtPtr
     parser;
+
+  ssize_t
+    n;
 
   /*
     Called when the end of an element has been detected.
@@ -7158,6 +7165,7 @@ static void MSLEndElement(void *context,const xmlChar *tag)
   }
   if (msl_info->content != (char *) NULL)
     msl_info->content=DestroyString(msl_info->content);
+  msl_info->depth--;
 }
 
 static void MSLCharacters(void *context,const xmlChar *c,int length)

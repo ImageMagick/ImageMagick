@@ -1250,7 +1250,13 @@ static void SVGStartElement(void *context,const xmlChar *name,
     name);
   parser=(xmlParserCtxtPtr) context;
   svg_info=(SVGInfo *) parser->_private;
-  svg_info->n++;
+  if (svg_info->n++ > MagickMaxRecursionDepth)
+    {
+      (void) ThrowMagickException(svg_info->exception,GetMagickModule(),
+        DrawError,"VectorGraphicsNestedTooDeeply","`%s'",name);
+      xmlStopParser((xmlParserCtxtPtr) context);
+      return;
+    }
   svg_info->scale=(double *) ResizeQuantumMemory(svg_info->scale,(size_t)
     svg_info->n+1,sizeof(*svg_info->scale));
   if (svg_info->scale == (double *) NULL)
