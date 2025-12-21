@@ -43,7 +43,6 @@ namespace Magick
   private:
     // Copy constructor and assignment are not supported
     BlobRef(const BlobRef&);
-    BlobRef& operator=(const BlobRef&);
 
     MutexLock _mutexLock; // Mutex lock
     size_t    _refCount;  // Reference count
