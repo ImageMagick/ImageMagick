@@ -18,7 +18,7 @@ int main( int /*argc*/, char ** argv)
   // Initialize ImageMagick install location for Windows
   MagickPlusPlusGenesis genesis(*argv);
       
-  volatile int failures=0;
+  int failures=0;
       
   cout << "Checking for working exceptions (may crash) ... ";
   cout.flush();
