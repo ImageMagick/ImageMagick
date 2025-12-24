@@ -3283,7 +3283,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
           (void) memcpy(clone_info->scale,info.scale,clone_info->scale_size*
             sizeof(*clone_info->scale));
-          AppendValueToLinkedList(stack,clone_info);
+          if (AppendValueToLinkedList(stack,clone_info) == MagickFalse)
+            {
+              clone_info=(DCMInfo *) RelinquishDCMInfo(clone_info);
+              ThrowDCMException(ResourceLimitError,"MemoryAllocationFailed")
+            }
           sequence_depth++;
         }
       datum=0;
