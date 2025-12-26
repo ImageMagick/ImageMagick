@@ -5701,6 +5701,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               if ((LocaleCompare(clone_info->magick,"ftp") != 0) &&
                   (LocaleCompare(clone_info->magick,"http") != 0) &&
                   (LocaleCompare(clone_info->magick,"https") != 0) &&
+                  (LocaleCompare(clone_info->magick,"mvg") != 0) &&
                   (LocaleCompare(clone_info->magick,"vid") != 0))
                 composite_images=ReadImage(clone_info,exception);
               else
