@@ -1250,13 +1250,14 @@ static void SVGStartElement(void *context,const xmlChar *name,
     name);
   parser=(xmlParserCtxtPtr) context;
   svg_info=(SVGInfo *) parser->_private;
-  if (svg_info->n++ > MagickMaxRecursionDepth)
+  if (svg_info->n >= MagickMaxRecursionDepth)
     {
       (void) ThrowMagickException(svg_info->exception,GetMagickModule(),
         DrawError,"VectorGraphicsNestedTooDeeply","`%s'",name);
       xmlStopParser((xmlParserCtxtPtr) context);
       return;
     }
+  svg_info->n++;
   svg_info->scale=(double *) ResizeQuantumMemory(svg_info->scale,(size_t)
     svg_info->n+1,sizeof(*svg_info->scale));
   if (svg_info->scale == (double *) NULL)
@@ -4719,17 +4720,33 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
       }
       case PathPrimitive:
       {
-        int
-          number_attributes;
+        size_t
+          number_attributes,
+          quantum;
 
         (void) GetNextToken(q,&q,extent,token);
         number_attributes=1;
         for (p=token; *p != '\0'; p++)
           if (isalpha((int) ((unsigned char) *p)) != 0)
             number_attributes++;
-        if (i > ((ssize_t) number_points-6*BezierQuantum*number_attributes-1))
+        if ((6*BezierQuantum) >= (MAGICK_SSIZE_MAX/number_attributes))
           {
-            number_points+=(size_t) (6*BezierQuantum*number_attributes);
+            (void) ThrowMagickException(exception,GetMagickModule(),
+              ResourceLimitError,"MemoryAllocationFailed","`%s'",
+              image->filename);
+            break;
+          }
+        quantum=(size_t) 6*BezierQuantum*number_attributes;
+        if (number_points >= (MAGICK_SSIZE_MAX-quantum))
+          {
+            (void) ThrowMagickException(exception,GetMagickModule(),
+              ResourceLimitError,"MemoryAllocationFailed","`%s'",
+              image->filename);
+            break;
+          }
+        if (i > (ssize_t) (number_points-quantum-1))
+          {
+            number_points+=(size_t) quantum;
             primitive_info=(PrimitiveInfo *) ResizeQuantumMemory(primitive_info,
               number_points,sizeof(*primitive_info));
             if (primitive_info == (PrimitiveInfo *) NULL)
