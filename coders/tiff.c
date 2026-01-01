@@ -2008,9 +2008,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         }
         case ReadTileMethod:
         {
-          unsigned char
-            *p;
-
           size_t
             extent,
             length;
@@ -2026,6 +2023,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             rows;
 
           unsigned char
+            *p,
             *tile_pixels;
 
           /*
@@ -2114,7 +2112,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 if ((x+(ssize_t) columns) < (ssize_t) image->columns)
                   columns_remaining=columns;
                 size=TIFFReadTile(tiff,tile_pixels,(uint32_t) x,(uint32_t) y,
-                  0,(uint16_t)i);
+                  0,(uint16_t) i);
                 if (size == -1)
                   break;
                 p=tile_pixels;
