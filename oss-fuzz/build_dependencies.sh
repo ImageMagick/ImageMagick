@@ -70,7 +70,7 @@ popd
 
 # Build libde265
 pushd "$SRC/libde265"
-cmake . -DCMAKE_INSTALL_PREFIX=$WORK -DBUILD_SHARED_LIBS=off -DCMAKE_BUILD_TYPE=Release
+cmake . -DCMAKE_INSTALL_PREFIX=$WORK -DBUILD_SHARED_LIBS=off -DENABLE_DECODER=off -DCMAKE_BUILD_TYPE=Release
 make -j$(nproc)
 make install
 popd
