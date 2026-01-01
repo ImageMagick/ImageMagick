@@ -62,10 +62,12 @@ popd
 
 # Build freetype2
 pushd "$SRC/freetype"
-./autogen.sh
-./configure --prefix="$WORK" --disable-shared PKG_CONFIG_PATH="$WORK/lib/pkgconfig"
+mkdir "__build"
+pushd "__build"
+cmake .. -DCMAKE_INSTALL_PREFIX=$WORK -DBUILD_SHARED_LIBS=false -DCMAKE_DISABLE_FIND_PACKAGE_BZip2=true -DFT_DISABLE_HARFBUZZ=true
 make -j$(nproc)
 make install
+popd
 popd
 
 # Build libde265
