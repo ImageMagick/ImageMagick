@@ -911,10 +911,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           {
             if (((flags & XValue) != 0) || ((flags & YValue) != 0))
               {
-                Image
-                  *crop_image;
-
-                crop_image=CropImage(next,&geometry,exception);
+                Image *crop_image = CropImage(next,&geometry,exception);
                 if (crop_image != (Image *) NULL)
                   ReplaceImageInList(&next,crop_image);
               }
