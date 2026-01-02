@@ -278,7 +278,7 @@ static MagickBooleanType JP2ComponentHasAlpha(const ImageInfo* image_info,
 
   if (comp.alpha != 0)
     return(MagickTrue);
-  option=GetImageOption(image_info, "jp2:assume-alpha");
+  option=GetImageOption(image_info,"jp2:assume-alpha");
   return(IsStringTrue(option));
 }
 
