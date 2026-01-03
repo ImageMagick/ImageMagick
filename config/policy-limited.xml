@@ -40,14 +40,14 @@
   <!-- Set maximum amount of memory in bytes to allocate for the pixel cache
        from the heap. When this limit is exceeded, the image pixels are cached
        to memory-mapped disk. -->
-  <policy domain="resource" name="memory" value="512MiB"/>
+  <policy domain="resource" name="memory" value="768MiB"/>
   <!-- Set maximum amount of memory map in bytes to allocate for the pixel
        cache. When this limit is exceeded, the image pixels are cached to
        disk. -->
-  <policy domain="resource" name="map" value="1024MiB"/>
+  <policy domain="resource" name="map" value="2GiB"/>
   <!-- Set the maximum width * height of an image that can reside in the pixel
        cache memory. Images that exceed the area limit are cached to disk. -->
-  <policy domain="resource" name="area" value="32KP"/>
+  <policy domain="resource" name="area" value="8KP"/>
   <!-- Set maximum amount of disk space in bytes permitted for use by the pixel
        cache. When this limit is exceeded, the pixel cache is not be created
        and an exception is thrown. -->
