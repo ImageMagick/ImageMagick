@@ -876,16 +876,21 @@ static double **AcquireBilateralTLS(const size_t number_threads,
   double
     **weights;
 
+  size_t
+    count;
+
   ssize_t
     i;
 
+  if (HeapOverflowSanityCheckGetSize(height,sizeof(**weights),&count) != MagickFalse)
+    return((double **) NULL);
   weights=(double **) AcquireQuantumMemory(number_threads+1,sizeof(*weights));
   if (weights == (double **) NULL)
     return((double **) NULL);
-  (void) memset(weights,0,number_threads*sizeof(*weights));
+  (void) memset(weights,0,(number_threads+1)*sizeof(*weights));
   for (i=0; i <= (ssize_t) number_threads; i++)
   {
-    weights[i]=(double *) AcquireQuantumMemory(width,height*sizeof(**weights));
+    weights[i]=(double *) AcquireQuantumMemory(width,count);
     if (weights[i] == (double *) NULL)
       return(DestroyBilateralTLS(number_threads,weights));
   }
