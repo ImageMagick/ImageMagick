@@ -1249,7 +1249,7 @@ static MagickBooleanType WriteHEICImageRGBA(Image *image,
         {
           *(q++)=ScaleQuantumToChar(GetPixelGreen(image,p));
           *(q++)=ScaleQuantumToChar(GetPixelBlue(image,p));
-          if (image->alpha_trait != UndefinedPixelTrait)
+          if ((image->alpha_trait & BlendPixelTrait) != 0)
             *(q++)=ScaleQuantumToChar(GetPixelAlpha(image,p));
         }
       p+=(ptrdiff_t) GetPixelChannels(image);
@@ -1334,7 +1334,7 @@ static MagickBooleanType WriteHEICImageRRGGBBAA(Image *image,
           pixel=ScaleQuantumToShort(GetPixelBlue(image,p)) >> shift;
           *(q++)=(uint8_t) (pixel & 0xff);
           *(q++)=(uint8_t) (pixel >> 8);
-          if (image->alpha_trait != UndefinedPixelTrait)
+          if ((image->alpha_trait & BlendPixelTrait) != 0)
             {
               pixel=ScaleQuantumToShort(GetPixelAlpha(image,p)) >> shift;
               *(q++)=(uint8_t) (pixel & 0xff);
