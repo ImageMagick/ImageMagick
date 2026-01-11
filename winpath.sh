@@ -4,7 +4,7 @@
 #
 # This program is covered by multiple licenses, which are described in
 # LICENSE. You should have received a copy of LICENSE with this
-# package; otherwise see https://imagemagick.org/script/license.php.
+# package; otherwise see https://imagemagick.org/license/.
 #
 # Convert the specified POSIX path to a Windows path under MinGW and Cygwin
 # The optional second parameter specifies the level of backslash escaping

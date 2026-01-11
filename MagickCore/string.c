@@ -23,7 +23,7 @@
 %  You may not use this file except in compliance with the license.  You may  %
 %  obtain a copy of the license at                                            %
 %                                                                             %
-%    https://imagemagick.org/script/license.php                               %
+%    https://imagemagick.org/license/                                         %
 %                                                                             %
 %  unless required by applicable law or agreed to in writing, software        %
 %  distributed under the license is distributed on an "as is" basis,          %
