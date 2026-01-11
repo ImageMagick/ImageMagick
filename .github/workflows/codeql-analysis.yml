@@ -8,10 +8,11 @@ on:
     paths:
     - .github/workflows/codeql-analysis.yml
 
-name: Codeql analysis
 permissions:
   contents: read
   security-events: write
+
+name: Codeql analysis
 jobs:
   c_cpp:
     name: Linux Q${{matrix.quantum}}-x64 hdri=${{matrix.hdri}} (${{matrix.modules}})

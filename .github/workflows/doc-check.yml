@@ -13,9 +13,10 @@ on:
   schedule:
     - cron: 0 6 * * 1
 
-name: Documentation check for Magick++
 permissions:
   contents: read
+
+name: Documentation check for Magick++
 jobs:
   doxygen-check:
     name: Documentation check

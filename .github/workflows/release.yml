@@ -17,9 +17,10 @@ on:
     paths:
     - .github/workflows/release.yml
 
-name: Release
 permissions:
   contents: read
+
+name: Release
 jobs:
   version:
     name: Set version
