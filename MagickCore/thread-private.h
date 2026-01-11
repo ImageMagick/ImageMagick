@@ -62,7 +62,7 @@ static inline int GetMagickNumberThreads(const Image *source,
   /*
     Determine number of threads based on workload.
   */
-  number_threads=(chunk <= workload_factor) ? 1UL : 
+  number_threads=(chunk <= workload_factor) ? 1UL :
     (chunk >= (workload_factor << 6)) ? max_threads :
     1UL+(chunk-workload_factor)*(max_threads-1L)/(((workload_factor << 6))-1L);
   /*
