@@ -751,6 +751,21 @@ MagickPrivate cl_kernel AcquireOpenCLKernel(MagickCLDevice device,
 */
 
 #if !MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
+static MagickCLDeviceBenchmark* RelinquishDeviceBenchmark(
+  MagickCLDeviceBenchmark *device_benchmark)
+{
+  device_benchmark->platform_name=(char *) RelinquishMagickMemory(
+    device_benchmark->platform_name);
+  device_benchmark->vendor_name=(char *) RelinquishMagickMemory(
+    device_benchmark->vendor_name);
+  device_benchmark->name=(char *) RelinquishMagickMemory(
+    device_benchmark->name);
+  device_benchmark->version=(char *) RelinquishMagickMemory(
+    device_benchmark->version);
+  return((MagickCLDeviceBenchmark *) RelinquishMagickMemory(
+    device_benchmark));
+}
+
 static void LoadOpenCLDeviceBenchmark(MagickCLEnv clEnv,const char *xml)
 {
   char
@@ -836,17 +851,7 @@ static void LoadOpenCLDeviceBenchmark(MagickCLEnv clEnv,const char *xml)
                 }
               }
           }
-
-        device_benchmark->platform_name=(char *) RelinquishMagickMemory(
-          device_benchmark->platform_name);
-        device_benchmark->vendor_name=(char *) RelinquishMagickMemory(
-          device_benchmark->vendor_name);
-        device_benchmark->name=(char *) RelinquishMagickMemory(
-          device_benchmark->name);
-        device_benchmark->version=(char *) RelinquishMagickMemory(
-          device_benchmark->version);
-        device_benchmark=(MagickCLDeviceBenchmark *) RelinquishMagickMemory(
-          device_benchmark);
+        device_benchmark=RelinquishDeviceBenchmark(device_benchmark);
         continue;
       }
     (void) GetNextToken(q,(const char **) NULL,extent,token);
@@ -906,8 +911,7 @@ static void LoadOpenCLDeviceBenchmark(MagickCLEnv clEnv,const char *xml)
     }
   }
   token=(char *) RelinquishMagickMemory(token);
-  device_benchmark=(MagickCLDeviceBenchmark *) RelinquishMagickMemory(
-    device_benchmark);
+  device_benchmark=RelinquishDeviceBenchmark(device_benchmark);
 }
 
 static MagickBooleanType CanWriteProfileToFile(const char *filename)
