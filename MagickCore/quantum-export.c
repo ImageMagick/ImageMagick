@@ -438,7 +438,7 @@ static void ExportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
       range=GetQuantumRange(quantum_info->depth);
       if (quantum_info->pack == MagickFalse)
         {
-          for (x=0; x < (ssize_t) (3*number_pixels-1); x+=2)
+          for (x=0; x < (3*(ssize_t) number_pixels-1); x+=2)
           {
             switch (x % 3)
             {
@@ -1839,7 +1839,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
       unsigned char
         pixel;
 
-      for (x=0; x < (ssize_t) (number_pixels-1) ; x+=2)
+      for (x=0; x < ((ssize_t) number_pixels-1) ; x+=2)
       {
         pixel=ScaleQuantumToChar(ClampToQuantum(GetPixelLuma(image,p)));
         *q=(((pixel >> 4) & 0xf) << 4);
@@ -1880,7 +1880,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
           unsigned int
             pixel;
 
-          for (x=0; x < (ssize_t) (number_pixels-2); x+=3)
+          for (x=0; x < ((ssize_t) number_pixels-2); x+=3)
           {
             pixel=(unsigned int) (ScaleQuantumToAny(ClampToQuantum(
               GetPixelLuma(image,p+2*GetPixelChannels(image))),range) << 22 |
@@ -1894,7 +1894,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
           if (x < (ssize_t) number_pixels)
             {
               pixel=0U;
-              if (x++ < (ssize_t) (number_pixels-1))
+              if (x++ < ((ssize_t) number_pixels-1))
                 pixel|=ScaleQuantumToAny(ClampToQuantum(GetPixelLuma(image,p+
                   GetPixelChannels(image))),range) << 12;
               if (x++ < (ssize_t) number_pixels)
@@ -2304,7 +2304,7 @@ static void ExportIndexQuantum(const Image *image,QuantumInfo *quantum_info,
       unsigned char
         pixel;
 
-      for (x=0; x < (ssize_t) (number_pixels-1) ; x+=2)
+      for (x=0; x < ((ssize_t) number_pixels-1) ; x+=2)
       {
         pixel=(unsigned char) ((ssize_t) GetPixelIndex(image,p));
         *q=((pixel & 0xf) << 4);
@@ -2929,7 +2929,7 @@ static void ExportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
       range=GetQuantumRange(quantum_info->depth);
       if (quantum_info->pack == MagickFalse)
         {
-          for (x=0; x < (ssize_t) (3*number_pixels-1); x+=2)
+          for (x=0; x < (3*(ssize_t) number_pixels-1); x+=2)
           {
             switch (x % 3)
             {

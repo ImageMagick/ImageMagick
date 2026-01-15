@@ -894,7 +894,7 @@ static void SVGProcessStyleElement(SVGInfo *svg_info,const xmlChar *name,
   tokens=SVGKeyValuePairs(svg_info,':',';',style,&number_tokens);
   if (tokens == (char **) NULL)
     return;
-  for (i=0; i < (ssize_t) (number_tokens-1); i+=2)
+  for (i=0; i < ((ssize_t) number_tokens-1); i+=2)
   {
     keyword=(char *) tokens[i];
     value=(char *) tokens[i+1];
@@ -906,7 +906,7 @@ static void SVGProcessStyleElement(SVGInfo *svg_info,const xmlChar *name,
   }
   color=AcquireString("none");
   units=AcquireString("userSpaceOnUse");
-  for (i=0; i < (ssize_t) (number_tokens-1); i+=2)
+  for (i=0; i < ((ssize_t) number_tokens-1); i+=2)
   {
     keyword=(char *) tokens[i];
     value=(char *) tokens[i+1];
@@ -1835,7 +1835,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
               tokens=SVGKeyValuePairs(svg_info,'(',')',value,&number_tokens);
               if (tokens == (char **) NULL)
                 break;
-              for (j=0; j < (ssize_t) (number_tokens-1); j+=2)
+              for (j=0; j < ((ssize_t) number_tokens-1); j+=2)
               {
                 keyword=(char *) tokens[j];
                 if (keyword == (char *) NULL)
@@ -2235,7 +2235,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
               tokens=SVGKeyValuePairs(svg_info,'(',')',value,&number_tokens);
               if (tokens == (char **) NULL)
                 break;
-              for (j=0; j < (ssize_t) (number_tokens-1); j+=2)
+              for (j=0; j < ((ssize_t) number_tokens-1); j+=2)
               {
                 keyword=(char *) tokens[j];
                 value=(char *) tokens[j+1];
@@ -2791,7 +2791,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
             &number_tokens);
           if (tokens == (char **) NULL)
             break;
-          for (j=0; j < (ssize_t) (number_tokens-1); j+=2)
+          for (j=0; j < ((ssize_t) number_tokens-1); j+=2)
           {
             keyword=(char *) tokens[j];
             value=(char *) tokens[j+1];
@@ -4530,7 +4530,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
       primitive_info[i].coordinates=0;
       primitive_info[i].method=FloodfillMethod;
       i++;
-      if (i < (ssize_t) (number_points-6*BezierQuantum-360))
+      if (i < ((ssize_t) number_points-6*BezierQuantum-360))
         continue;
       number_points+=6*BezierQuantum+360;
       primitive_info=(PrimitiveInfo *) ResizeQuantumMemory(primitive_info,
@@ -4744,7 +4744,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
               image->filename);
             break;
           }
-        if (i > (ssize_t) (number_points-quantum-1))
+        if (i > ((ssize_t) number_points-quantum-1))
           {
             number_points+=(size_t) quantum;
             primitive_info=(PrimitiveInfo *) ResizeQuantumMemory(primitive_info,

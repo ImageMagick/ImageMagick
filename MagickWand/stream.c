@@ -257,7 +257,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
       DestroyStream();
       return(MagickFalse);
     }
-  for (i=1; i < (ssize_t) (argc-1); i++)
+  for (i=1; i < ((ssize_t) argc-1); i++)
   {
     option=argv[i];
     if (LocaleCompare(option,"(") == 0)
@@ -286,7 +286,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
         */
         FireImageStack(MagickFalse,MagickFalse,pend);
         filename=argv[i];
-        if ((LocaleCompare(filename,"--") == 0) && (i < (ssize_t) (argc-1)))
+        if ((LocaleCompare(filename,"--") == 0) && (i < ((ssize_t) argc-1)))
           filename=argv[++i];
         (void) CopyMagickString(image_info->filename,filename,MagickPathExtent);
         images=StreamImage(image_info,stream_info,exception);
@@ -749,7 +749,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
   }
   if (k != 0)
     ThrowStreamException(OptionError,"UnbalancedParenthesis",argv[i]);
-  if (i-- != (ssize_t) (argc-1))
+  if (i-- != ((ssize_t) argc-1))
     ThrowStreamException(OptionError,"MissingAnImageFilename",argv[i]);
   if (image == (Image *) NULL)
     ThrowStreamException(OptionError,"MissingAnImageFilename",argv[i]);

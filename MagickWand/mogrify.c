@@ -3853,7 +3853,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
         */
         FireImageStack(MagickFalse,MagickFalse,pend);
         filename=argv[i];
-        if ((LocaleCompare(filename,"--") == 0) && (i < (ssize_t) (argc-1)))
+        if ((LocaleCompare(filename,"--") == 0) && (i < ((ssize_t) argc-1)))
           filename=argv[++i];
         images=ReadImages(image_info,filename,exception);
         status&=(MagickStatusType) (images != (Image *) NULL) &&

@@ -4302,7 +4302,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image_info->number_scenes != 0)
         if (image->scene >= (image_info->scene+image_info->number_scenes-1))
           break;
-      if (scene < (ssize_t) (number_scenes-1))
+      if (scene < ((ssize_t) number_scenes-1))
         {
           /*
             Allocate next image structure.

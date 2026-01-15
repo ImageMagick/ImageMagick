@@ -485,7 +485,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
         */
         FireImageStack(MagickFalse,MagickFalse,pend);
         filename=option;
-        if ((LocaleCompare(filename,"--") == 0) && (i < (ssize_t) (argc-1)))
+        if ((LocaleCompare(filename,"--") == 0) && (i < ((ssize_t) argc-1)))
           {
             option=argv[++i];
             filename=option;
@@ -632,7 +632,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if ((state & FormerImageState) != 0)
               {
 
-                for (i=1; i < (ssize_t) (argc-2); i++)
+                for (i=1; i < ((ssize_t) argc-2); i++)
                   if (last_image == image_marker[i])
                     break;
                 image_number=(ssize_t) image_marker[i]+1;

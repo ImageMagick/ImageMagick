@@ -515,7 +515,7 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
   if (status == MagickFalse)
     ThrowCompositeException(ResourceLimitError,"MemoryAllocationFailed",
       GetExceptionMessage(errno));
-  for (i=1; i < (ssize_t) (argc-1); i++)
+  for (i=1; i < ((ssize_t) argc-1); i++)
   {
     option=argv[i];
     if (LocaleCompare(option,"(") == 0)
@@ -542,7 +542,7 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
         */
         FireImageStack(MagickFalse,MagickFalse,pend);
         filename=argv[i];
-        if ((LocaleCompare(filename,"--") == 0) && (i < (ssize_t) (argc-1)))
+        if ((LocaleCompare(filename,"--") == 0) && (i < ((ssize_t) argc-1)))
           filename=argv[++i];
         images=ReadImages(image_info,filename,exception);
         status&=(MagickStatusType) (images != (Image *) NULL) &&
@@ -1637,7 +1637,7 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
   }
   if (k != 0)
     ThrowCompositeException(OptionError,"UnbalancedParenthesis",argv[i]);
-  if (i-- != (ssize_t) (argc-1))
+  if (i-- != ((ssize_t) argc-1))
     ThrowCompositeException(OptionError,"MissingAnImageFilename",argv[i]);
   if ((image == (Image *) NULL) || (GetImageListLength(image) < 2))
     ThrowCompositeException(OptionError,"MissingAnImageFilename",argv[argc-1]);

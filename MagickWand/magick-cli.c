@@ -147,7 +147,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
   iterations=1;
   status=MagickTrue;
   regard_warnings=MagickFalse;
-  for (i=1; i < (ssize_t) (argc-1); i++)
+  for (i=1; i < ((ssize_t) argc-1); i++)
   {
     option=argv[i];
     if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
@@ -1263,7 +1263,7 @@ static MagickBooleanType ConcatenateImages(int argc,char **argv,
       return(MagickFalse);
     }
   status=MagickTrue;
-  for (i=2; i < (ssize_t) (argc-1); i++)
+  for (i=2; i < ((ssize_t) argc-1); i++)
   {
     input=fopen_utf8(argv[i],"rb");
     if (input == (FILE *) NULL)

@@ -114,7 +114,7 @@ static MagickBooleanType ConcatenateImages(int argc,char **argv,
       return(MagickFalse);
     }
   status=MagickTrue;
-  for (i=2; i < (ssize_t) (argc-1); i++)
+  for (i=2; i < ((ssize_t) argc-1); i++)
   {
     input=fopen_utf8(argv[i],"rb");
     if (input == (FILE *) NULL)
@@ -592,7 +592,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
       GetExceptionMessage(errno));
   if ((argc > 2) && (LocaleCompare("-concatenate",argv[1]) == 0))
     return(ConcatenateImages(argc,argv,exception));
-  for (i=1; i < (ssize_t) (argc-1); i++)
+  for (i=1; i < ((ssize_t) argc-1); i++)
   {
     option=argv[i];
     if (LocaleCompare(option,"(") == 0)
@@ -622,7 +622,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         */
         FireImageStack(MagickTrue,MagickTrue,pend);
         filename=argv[i];
-        if ((LocaleCompare(filename,"--") == 0) && (i < (ssize_t) (argc-1)))
+        if ((LocaleCompare(filename,"--") == 0) && (i < ((ssize_t) argc-1)))
           filename=argv[++i];
         if (image_info->ping != MagickFalse)
           images=PingImages(image_info,filename,exception);
@@ -3361,7 +3361,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
   }
   if (k != 0)
     ThrowConvertException(OptionError,"UnbalancedParenthesis",argv[i]);
-  if (i-- != (ssize_t) (argc-1))
+  if (i-- != ((ssize_t) argc-1))
     ThrowConvertException(OptionError,"MissingAnImageFilename",argv[argc-1]);
   FinalizeImageSettings(image_info,image,MagickTrue);
   if (image == (Image *) NULL)

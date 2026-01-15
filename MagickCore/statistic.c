@@ -766,7 +766,7 @@ MagickExport Image *EvaluateImages(const Image *images,
             {
               for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
               {
-                for (j=0; j < (ssize_t) (number_images-1); j++)
+                for (j=0; j < ((ssize_t) number_images-1); j++)
                   evaluate_pixel[x].channel[i]*=QuantumScale;
               }
               break;

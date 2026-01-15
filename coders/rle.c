@@ -367,7 +367,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
               *p++=background_color[j];
           else
             {
-              for (j=0; j < (ssize_t) (number_planes-1); j++)
+              for (j=0; j < ((ssize_t) number_planes-1); j++)
                 *p++=background_color[j];
               *p++=0;  /* initialize matte channel */
             }

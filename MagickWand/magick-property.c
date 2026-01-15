@@ -2871,7 +2871,7 @@ WandExport MagickBooleanType MagickSetSamplingFactors(MagickWand *wand,
       RelinquishMagickMemory(wand->image_info->sampling_factor);
   if (number_factors == 0)
     return(MagickTrue);
-  for (i=0; i < (ssize_t) (number_factors-1); i++)
+  for (i=0; i < ((ssize_t) number_factors-1); i++)
   {
     (void) FormatLocaleString(sampling_factor,MagickPathExtent,"%g:",
       sampling_factors[i]);
