@@ -401,7 +401,7 @@ jobs:
 
       - name: Install TrustedSigningClientTools
         run: |
-          winget install -e --id Microsoft.Azure.TrustedSigningClientTools
+          winget install -e --id Microsoft.Azure.TrustedSigningClientTools --accept-source-agreements
 
       - name: Create msixbundle with Advanced Installer
         uses: caphyon/advinst-github-action@f7e45a75aba48b695fafc344f61adf634d41fe4e # v2.0
