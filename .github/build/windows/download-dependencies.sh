@@ -52,4 +52,4 @@ if [[ -z "$dependenciesArtifact" ]]; then
   exit 1
 fi
 
-download_dependencies "2025.12.27.1720" "$dependenciesArtifact"
+download_dependencies "2026.01.15.2145" "$dependenciesArtifact"
