@@ -4744,7 +4744,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
               image->filename);
             break;
           }
-        if (i > ((ssize_t) number_points-quantum-1))
+        if (i > ((ssize_t) number_points-(ssize_t) quantum-1))
           {
             number_points+=(size_t) quantum;
             primitive_info=(PrimitiveInfo *) ResizeQuantumMemory(primitive_info,
