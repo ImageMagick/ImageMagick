@@ -399,6 +399,10 @@ jobs:
           tenant-id: ${{secrets.AZURE_TENANT_ID}}
           subscription-id: ${{secrets.AZURE_SUBSCRIPTION_ID}}
 
+      - name: Install TrustedSigningClientTools
+        run: |
+          winget install -e --id Microsoft.Azure.TrustedSigningClientTools
+
       - name: Create msixbundle with Advanced Installer
         uses: caphyon/advinst-github-action@f7e45a75aba48b695fafc344f61adf634d41fe4e # v2.0
         with:
