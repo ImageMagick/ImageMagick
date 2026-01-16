@@ -1321,9 +1321,12 @@ static MagickBooleanType ReadPSDChannelZip(Image *image,
       image->filename);
 
   packet_size=GetPSDPacketSize(image);
-  row_size=image->columns*packet_size;
-  count=image->rows*row_size;
-
+  if (HeapOverflowSanityCheckGetSize(image->columns,packet_size,&row_size) != MagickFalse)
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      image->filename);
+  if (HeapOverflowSanityCheckGetSize(image->rows,row_size,&count) != MagickFalse)
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      image->filename);
   pixels=(unsigned char *) AcquireQuantumMemory(count,sizeof(*pixels));
   if (pixels == (unsigned char *) NULL)
     {
