@@ -401,7 +401,17 @@ jobs:
 
       - name: Install TrustedSigningClientTools
         run: |
-          winget install -e --id Microsoft.Azure.TrustedSigningClientTools --accept-source-agreements
+          $DownloadUrl = "https://download.microsoft.com/download/6d9cb638-4d5f-438d-9f21-23f0f4405944/TrustedSigningClientTools.msi"
+          $DownloadPath = "$env:TEMP\TrustedSigningClientTools.msi"         
+          Invoke-WebRequest -Uri $DownloadUrl -OutFile $DownloadPath -UseBasicParsing
+
+          $InstallDir = "$env:ProgramData\Caphyon\Advanced Installer\TrustedSigningClientTools\1.0.0"
+          New-Item -ItemType Directory -Path $InstallDir -Force | Out-Null
+
+          $process = Start-Process -FilePath "msiexec.exe" -ArgumentList @("/a", "`"$DownloadPath`"", "/qr", "TARGETDIR=`"$InstallDir`"") -Wait -PassThru -NoNewWindow
+          if ($process.ExitCode -ne 0) {
+            throw "Install failed with exit code: $($process.ExitCode)"
+          }
 
       - name: Create msixbundle with Advanced Installer
         uses: caphyon/advinst-github-action@f7e45a75aba48b695fafc344f61adf634d41fe4e # v2.0
