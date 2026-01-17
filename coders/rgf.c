@@ -144,8 +144,10 @@ static Image *ReadRGFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read RGF header.
   */
-  image->columns = (unsigned long) ReadBlobByte(image);
-  image->rows = (unsigned long) ReadBlobByte(image);
+  image->columns=(unsigned long) ReadBlobByte(image);
+  image->rows=(unsigned long) ReadBlobByte(image);
+  if (EOFBlob(image) != MagickFalse)
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   image->depth=8;
   image->storage_class=PseudoClass;
   image->colors=2;
@@ -179,11 +181,11 @@ static Image *ReadRGFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (data == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   p=data;
-  for (i=0; i < (ssize_t) (image->columns * image->rows); i++) 
-    {
-      *p++=(char) ReadBlobByte(image);
-    }
-
+  for (i=0; i < (ssize_t) (image->columns*image->rows); i++) 
+    *p++=(char) ReadBlobByte(image);
+  if (EOFBlob(image) != MagickFalse)
+    ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+      image->filename);
   /*
     Convert RGF image to pixel packets.
   */
