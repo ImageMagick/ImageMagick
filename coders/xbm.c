@@ -197,6 +197,10 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   short int
     hex_digits[256];
 
+  size_t
+    bytes_per_line,
+    length;
+
   ssize_t
     i,
     x,
@@ -209,8 +213,6 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned int
     bit,
     byte,
-    bytes_per_line,
-    length,
     padding,
     version;
 
@@ -345,15 +347,15 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (((image->columns % 16) != 0) && ((image->columns % 16) < 9) &&
       (version == 10))
     padding=1;
-  bytes_per_line=(unsigned int) (image->columns+7)/8+padding;
-  length=(unsigned int) image->rows;
-  data=(unsigned char *) AcquireQuantumMemory(length,bytes_per_line*
-    sizeof(*data));
+  bytes_per_line=(image->columns+7)/8+padding;
+  if (HeapOverflowSanityCheckGetSize(bytes_per_line,image->rows,&length) != MagickFalse)
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  data=(unsigned char *) AcquireQuantumMemory(length,sizeof(*data));
   if (data == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   p=data;
   if (version == 10)
-    for (i=0; i < (ssize_t) (bytes_per_line*image->rows); (i+=2))
+    for (i=0; i < (ssize_t) length; i+=2)
     {
       c=XBMInteger(image,hex_digits);
       if (c < 0)
@@ -366,7 +368,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         *p++=(unsigned char) (c >> 8);
     }
   else
-    for (i=0; i < (ssize_t) (bytes_per_line*image->rows); i++)
+    for (i=0; i < (ssize_t) length; i++)
     {
       c=XBMInteger(image,hex_digits);
       if (c < 0)
