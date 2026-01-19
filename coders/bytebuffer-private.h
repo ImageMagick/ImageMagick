@@ -83,14 +83,14 @@ static inline char *GetMagickByteBufferDatum(MagickByteBuffer *buffer)
   return((char *) buffer->data);
 }
 
-static void CheckMagickByteBuffer(MagickByteBuffer *buffer,
+static inline void CheckMagickByteBuffer(MagickByteBuffer *buffer,
   const size_t length)
 {
   if ((buffer->offset+(ssize_t) length) > (ssize_t) sizeof(buffer->data))
     (void) GetMagickByteBufferDatum(buffer);
 }
 
-static MagickBooleanType CompareMagickByteBuffer(MagickByteBuffer *buffer,
+static inline MagickBooleanType CompareMagickByteBuffer(MagickByteBuffer *buffer,
   const char *p,const size_t length)
 {
   const char
