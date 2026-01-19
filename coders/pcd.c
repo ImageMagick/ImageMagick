@@ -147,16 +147,8 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
   PCDTable
     *pcd_table[3];
 
-  ssize_t
-    i,
-    j;
-
   PCDTable
     *r;
-
-  unsigned char
-    *p,
-    *q;
 
   size_t
     bits,
@@ -167,9 +159,13 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
     sum;
 
   ssize_t
+    i,
+    j,
     quantum;
 
   unsigned char
+    *p,
+    *q,
     *buffer;
 
   /*
