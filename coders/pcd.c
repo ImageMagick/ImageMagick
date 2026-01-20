@@ -509,6 +509,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     number_pixels,
     rotate,
     scene,
+    size,
     width;
 
   ssize_t
@@ -608,11 +609,15 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Allocate luma and chroma memory.
   */
-  pixel_info=AcquireVirtualMemory(image->columns+1UL,30*image->rows*
-    sizeof(*luma));
+  if (HeapOverflowSanityCheckGetSize(image->columns+1UL,image->rows,&size) != MagickFalse)
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  if (HeapOverflowSanityCheckGetSize(size,10,&number_pixels) != MagickFalse)
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  if (HeapOverflowSanityCheckGetSize(size,30,&size) != MagickFalse)
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  pixel_info=AcquireVirtualMemory(size,sizeof(*luma));
   if (pixel_info == (MemoryInfo *) NULL)
     ThrowPCDException(ResourceLimitError,"MemoryAllocationFailed");
-  number_pixels=(image->columns+1UL)*10*image->rows*sizeof(*luma);
   luma=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
   chroma1=(unsigned char *) GetVirtualMemoryBlob(pixel_info)+number_pixels;
   chroma2=(unsigned char *) GetVirtualMemoryBlob(pixel_info)+2*number_pixels;
