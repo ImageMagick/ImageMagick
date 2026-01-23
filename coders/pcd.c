@@ -127,7 +127,11 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
       { \
         byte_count=ReadBlob(image,0x800,buffer); \
         if (byte_count != 0x800) \
-          break; \
+          { \
+            (void) ThrowMagickException(exception,GetMagickModule(), \
+              CorruptImageWarning,"CorruptImage","`%s'",image->filename); \
+            break; \
+          } \
         p=buffer; \
       } \
     sum|=(((unsigned int) (*p)) << (24-bits)); \
@@ -135,7 +139,11 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
     p++; \
   } \
   if (byte_count != 0x800) \
-    break; \
+    { \
+      (void) ThrowMagickException(exception,GetMagickModule(), \
+        CorruptImageWarning,"CorruptImage","`%s'",image->filename); \
+      break; \
+    } \
 }
 
   typedef struct PCDTable
