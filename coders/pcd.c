@@ -116,19 +116,26 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
 #define IsSync(sum)  ((sum & 0xffffff00UL) == 0xfffffe00UL)
 #define PCDGetBits(n) \
 {  \
+  ssize_t \
+    byte_count = 0x800; \
+  \
   sum=(sum << n) & 0xffffffff; \
   bits-=n; \
   while (bits <= 24) \
   { \
     if (p >= (buffer+0x800)) \
       { \
-        (void) ReadBlob(image,0x800,buffer); \
+        byte_count=ReadBlob(image,0x800,buffer); \
+        if (byte_count != 0x800) \
+          break; \
         p=buffer; \
       } \
     sum|=(((unsigned int) (*p)) << (24-bits)); \
     bits+=8; \
     p++; \
   } \
+  if (byte_count != 0x800) \
+    break; \
 }
 
   typedef struct PCDTable
@@ -164,9 +171,9 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
     quantum;
 
   unsigned char
+    *buffer,
     *p,
-    *q,
-    *buffer;
+    *q;
 
   /*
     Initialize Huffman tables.
@@ -491,36 +498,32 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MemoryInfo
     *pixel_info;
 
-  ssize_t
-    i,
-    y;
-
   Quantum
     *q;
 
-  unsigned char
-    *c1,
-    *c2,
-    *yy;
-
   size_t
+    extent,
     height,
     number_images,
     number_pixels,
     rotate,
     scene,
-    size,
     width;
 
   ssize_t
     count,
-    x;
+    i,
+    x,
+    y;
 
   unsigned char
+    *c1,
+    *c2,
     *chroma1,
     *chroma2,
     *header,
-    *luma;
+    *luma,
+    *yy;
 
   unsigned int
     overview;
@@ -609,13 +612,13 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Allocate luma and chroma memory.
   */
-  if (HeapOverflowSanityCheckGetSize(image->columns+1UL,image->rows,&size) != MagickFalse)
+  if (HeapOverflowSanityCheckGetSize(image->columns+1UL,image->rows,&extent) != MagickFalse)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  if (HeapOverflowSanityCheckGetSize(size,10,&number_pixels) != MagickFalse)
+  if (HeapOverflowSanityCheckGetSize(extent,10,&number_pixels) != MagickFalse)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  if (HeapOverflowSanityCheckGetSize(size,30,&size) != MagickFalse)
+  if (HeapOverflowSanityCheckGetSize(extent,30,&extent) != MagickFalse)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  pixel_info=AcquireVirtualMemory(size,sizeof(*luma));
+  pixel_info=AcquireVirtualMemory(extent,sizeof(*luma));
   if (pixel_info == (MemoryInfo *) NULL)
     ThrowPCDException(ResourceLimitError,"MemoryAllocationFailed");
   luma=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
