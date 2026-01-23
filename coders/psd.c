@@ -2639,19 +2639,23 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       (void) SeekBlob(image,offset+(MagickOffsetType) length,SEEK_SET);
     }
-  /*
-    If we are only "pinging" the image, then we're done - so return.
-  */
   if (EOFBlob(image) != MagickFalse)
     {
       if (profile != (StringInfo *) NULL)
         profile=DestroyStringInfo(profile);
       ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
     }
+  /*
+    If we are only "pinging" the image, then we're done - so return.
+  */
   if (image_info->ping != MagickFalse)
     {
       if (profile != (StringInfo *) NULL)
-        profile=DestroyStringInfo(profile);
+        {
+          (void) SetImageProfile(image,GetStringInfoName(profile),profile,
+            exception);
+          profile=DestroyStringInfo(profile);
+        }
       (void) CloseBlob(image);
       return(GetFirstImageInList(image));
     }
