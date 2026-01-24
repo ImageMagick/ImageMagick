@@ -4235,6 +4235,9 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
             if (LocaleCompare("graphic-context",token) == 0)
               {
                 n++;
+                if (n == MagickMaxRecursionDepth)
+                  ThrowWriterException(DrawError,
+                    "VectorGraphicsNestedTooDeeply");
                 if (active)
                   {
                     AffineToTransform(image,&affine);
