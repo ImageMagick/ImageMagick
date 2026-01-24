@@ -168,6 +168,7 @@ static MagickBooleanType MontageUsage(void)
       "  -monitor             monitor progress\n"
       "  -page geometry       size and location of an image canvas (setting)\n"
       "  -pointsize value     font point size\n"
+      "  -precision value     maximum number of significant digits to print\n"
       "  -profile filename    add, delete, or apply an image profile\n"
       "  -quality value       JPEG/MIFF/PNG compression level\n"
       "  -quantize colorspace reduce colors in this colorspace\n"
@@ -1339,6 +1340,17 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             break;
           }
         if (LocaleCompare("polaroid",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMontageException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMontageInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("precision",option+1) == 0)
           {
             if (*option == '+')
               break;
