@@ -754,6 +754,9 @@ MagickPrivate cl_kernel AcquireOpenCLKernel(MagickCLDevice device,
 static MagickCLDeviceBenchmark* RelinquishDeviceBenchmark(
   MagickCLDeviceBenchmark *device_benchmark)
 {
+  if (device_benchmark == (MagickCLDeviceBenchmark*) NULL)
+    return((MagickCLDeviceBenchmark *) NULL);
+
   device_benchmark->platform_name=(char *) RelinquishMagickMemory(
     device_benchmark->platform_name);
   device_benchmark->vendor_name=(char *) RelinquishMagickMemory(
