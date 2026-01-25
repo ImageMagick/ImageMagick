@@ -8,15 +8,17 @@ on:
     paths:
     - .github/workflows/codeql-analysis.yml
 
-permissions:
-  contents: read
-  security-events: write
+permissions: {}
 
 name: Codeql analysis
 jobs:
   c_cpp:
     name: Linux Q${{matrix.quantum}}-x64 hdri=${{matrix.hdri}} (${{matrix.modules}})
     runs-on: ubuntu-24.04
+
+    permissions:
+      contents: read
+      security-events: write
 
     strategy:
       fail-fast: false
@@ -60,6 +62,10 @@ jobs:
   actions:
     name: CodeQL analysis (GitHub Actions)
     runs-on: ubuntu-24.04
+
+    permissions:
+      contents: read
+      security-events: write
 
     steps:
       - uses: actions/checkout@v6
