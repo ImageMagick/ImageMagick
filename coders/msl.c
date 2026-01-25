@@ -381,7 +381,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           /*
             Add noise image.
           */
-          if ((n < 1) || ((n < 1) || (msl_info->image[n] == (Image *) NULL)))
+          if ((n < 1) || (msl_info->image[n] == (Image *) NULL))
             {
               ThrowMSLException(OptionError,"NoImagesDefined",
                 (const char *) tag);
