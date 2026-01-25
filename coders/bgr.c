@@ -125,6 +125,7 @@ static Image *ReadBGRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     length;
 
   ssize_t
+    columns,
     count,
     y;
 
@@ -203,6 +204,7 @@ static Image *ReadBGRImage(const ImageInfo *image_info,ExceptionInfo *exception)
   scene=0;
   status=MagickTrue;
   stream=NULL;
+  columns=(ssize_t) MagickMin(image->columns,canvas_image->columns);
   do
   {
     /*
@@ -264,7 +266,7 @@ static Image *ReadBGRImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if ((p == (const Quantum *) NULL) ||
                   (q == (Quantum *) NULL))
                 break;
-              for (x=0; x < (ssize_t) image->columns; x++)
+              for (x=0; x < columns; x++)
               {
                 SetPixelRed(image,GetPixelRed(canvas_image,p),q);
                 SetPixelGreen(image,GetPixelGreen(canvas_image,p),q);
@@ -347,7 +349,7 @@ static Image *ReadBGRImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if ((p == (const Quantum *) NULL) ||
                     (q == (Quantum *) NULL))
                   break;
-                for (x=0; x < (ssize_t) image->columns; x++)
+                for (x=0; x < columns; x++)
                 {
                   switch (quantum_type)
                   {
@@ -443,7 +445,7 @@ static Image *ReadBGRImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if ((p == (const Quantum *) NULL) ||
                   (q == (Quantum *) NULL))
                 break;
-              for (x=0; x < (ssize_t) image->columns; x++)
+              for (x=0; x < columns; x++)
               {
                 SetPixelRed(image,GetPixelRed(canvas_image,p),q);
                 p+=(ptrdiff_t) GetPixelChannels(canvas_image);
@@ -496,7 +498,7 @@ static Image *ReadBGRImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if ((p == (const Quantum *) NULL) ||
                   (q == (Quantum *) NULL))
                 break;
-              for (x=0; x < (ssize_t) image->columns; x++)
+              for (x=0; x < columns; x++)
               {
                 SetPixelGreen(image,GetPixelGreen(canvas_image,p),q);
                 p+=(ptrdiff_t) GetPixelChannels(canvas_image);
@@ -549,7 +551,7 @@ static Image *ReadBGRImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if ((p == (const Quantum *) NULL) ||
                   (q == (Quantum *) NULL))
                 break;
-              for (x=0; x < (ssize_t) image->columns; x++)
+              for (x=0; x < columns; x++)
               {
                 SetPixelBlue(image,GetPixelBlue(canvas_image,p),q);
                 p+=(ptrdiff_t) GetPixelChannels(canvas_image);
@@ -611,7 +613,7 @@ static Image *ReadBGRImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   if ((p == (const Quantum *) NULL) ||
                       (q == (Quantum *) NULL))
                     break;
-                  for (x=0; x < (ssize_t) image->columns; x++)
+                  for (x=0; x < columns; x++)
                   {
                     SetPixelAlpha(image,GetPixelAlpha(canvas_image,p),q);
                     p+=(ptrdiff_t) GetPixelChannels(canvas_image);
@@ -702,7 +704,7 @@ static Image *ReadBGRImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if ((p == (const Quantum *) NULL) ||
                   (q == (Quantum *) NULL))
                 break;
-              for (x=0; x < (ssize_t) image->columns; x++)
+              for (x=0; x < columns; x++)
               {
                 SetPixelRed(image,GetPixelRed(canvas_image,p),q);
                 p+=(ptrdiff_t) GetPixelChannels(canvas_image);
@@ -774,7 +776,7 @@ static Image *ReadBGRImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if ((p == (const Quantum *) NULL) ||
                   (q == (Quantum *) NULL))
                 break;
-              for (x=0; x < (ssize_t) image->columns; x++)
+              for (x=0; x < columns; x++)
               {
                 SetPixelGreen(image,GetPixelGreen(canvas_image,p),q);
                 p+=(ptrdiff_t) GetPixelChannels(canvas_image);
@@ -846,7 +848,7 @@ static Image *ReadBGRImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if ((p == (const Quantum *) NULL) ||
                   (q == (Quantum *) NULL))
                 break;
-              for (x=0; x < (ssize_t) image->columns; x++)
+              for (x=0; x < columns; x++)
               {
                 SetPixelBlue(image,GetPixelBlue(canvas_image,p),q);
                 p+=(ptrdiff_t) GetPixelChannels(canvas_image);
@@ -920,7 +922,7 @@ static Image *ReadBGRImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   if ((p == (const Quantum *) NULL) ||
                       (q == (Quantum *) NULL))
                     break;
-                  for (x=0; x < (ssize_t) image->columns; x++)
+                  for (x=0; x < columns; x++)
                   {
                     SetPixelAlpha(image,GetPixelAlpha(canvas_image,p),q);
                     p+=(ptrdiff_t) GetPixelChannels(canvas_image);
