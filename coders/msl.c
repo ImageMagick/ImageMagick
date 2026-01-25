@@ -7312,11 +7312,34 @@ static void MSLError(void *context,const char *format,...)
 }
 #endif
 
+static void DestroyMSLInfo(MSLInfo *msl_info)
+{
+  while (msl_info->n >= 0)
+  {
+    if (msl_info->image[msl_info->n] != (Image *) NULL)
+      msl_info->image[msl_info->n]=DestroyImage(msl_info->image[msl_info->n]);
+    msl_info->attributes[msl_info->n]=DestroyImage(msl_info->attributes[msl_info->n]);
+    msl_info->draw_info[msl_info->n]=DestroyDrawInfo(msl_info->draw_info[msl_info->n]);
+    msl_info->image_info[msl_info->n]=DestroyImageInfo(msl_info->image_info[msl_info->n]);
+    msl_info->n--;
+  } 
+  msl_info->draw_info=(DrawInfo **) RelinquishMagickMemory(msl_info->draw_info);
+  msl_info->image=(Image **) RelinquishMagickMemory(msl_info->image);
+  msl_info->attributes=(Image **) RelinquishMagickMemory(msl_info->attributes);
+  msl_info->image_info=(ImageInfo **) RelinquishMagickMemory(msl_info->image_info);
+  msl_info->group_info=(MSLGroupInfo *) RelinquishMagickMemory(msl_info->group_info);
+  if (msl_info->content != (char *) NULL)
+    msl_info->content=DestroyString(msl_info->content);
+}
+
 static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
   Image **image,ExceptionInfo *exception)
 {
   char
     message[MagickPathExtent];
+
+  const char
+    *option;
 
   Image
     *msl_image;
@@ -7408,17 +7431,18 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
   sax_handler=(&sax_modules);
   parser=xmlCreatePushParserCtxt(sax_handler,(void *) NULL,(char *) NULL,
     0,msl_image->filename);
-  if (parser != (xmlParserCtxtPtr) NULL)
+  if (parser == (xmlParserCtxtPtr) NULL)
     {
-      const char *option;
-      parser->_private=(MSLInfo *) &msl_info;
-      option = GetImageOption(image_info,"msl:parse-huge");
-      if ((option != (char *) NULL) && (IsStringTrue(option) != MagickFalse))
-        (void) xmlCtxtUseOptions(parser,XML_PARSE_HUGE);
-      option=GetImageOption(image_info,"msl:substitute-entities");
-      if ((option != (char *) NULL) && (IsStringTrue(option) != MagickFalse))
-        (void) xmlCtxtUseOptions(parser,XML_PARSE_NOENT);
+      DestroyMSLInfo(&msl_info);
+      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed","");
     }
+  parser->_private=(MSLInfo *) &msl_info;
+  option = GetImageOption(image_info,"msl:parse-huge");
+  if ((option != (char *) NULL) && (IsStringTrue(option) != MagickFalse))
+    (void) xmlCtxtUseOptions(parser,XML_PARSE_HUGE);
+  option=GetImageOption(image_info,"msl:substitute-entities");
+  if ((option != (char *) NULL) && (IsStringTrue(option) != MagickFalse))
+    (void) xmlCtxtUseOptions(parser,XML_PARSE_NOENT);
   while (ReadBlobString(msl_image,message) != (char *) NULL)
   {
     n=(ssize_t) strlen(message);
@@ -7445,27 +7469,7 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"end SAX");
   if (*image == (Image *) NULL)
     *image=CloneImage(*msl_info.image,0,0,MagickTrue,exception);
-  while (msl_info.n >= 0)
-  {
-    if (msl_info.image[msl_info.n] != (Image *) NULL)
-      msl_info.image[msl_info.n]=DestroyImage(msl_info.image[msl_info.n]);
-    msl_info.attributes[msl_info.n]=DestroyImage(
-      msl_info.attributes[msl_info.n]);
-    msl_info.draw_info[msl_info.n]=DestroyDrawInfo(
-      msl_info.draw_info[msl_info.n]);
-    msl_info.image_info[msl_info.n]=DestroyImageInfo(
-      msl_info.image_info[msl_info.n]);
-    msl_info.n--;
-  } 
-  msl_info.draw_info=(DrawInfo **) RelinquishMagickMemory(msl_info.draw_info);
-  msl_info.image=(Image **) RelinquishMagickMemory(msl_info.image);
-  msl_info.attributes=(Image **) RelinquishMagickMemory(msl_info.attributes);
-  msl_info.image_info=(ImageInfo **) RelinquishMagickMemory(
-    msl_info.image_info);
-  msl_info.group_info=(MSLGroupInfo *) RelinquishMagickMemory(
-    msl_info.group_info);
-  if (msl_info.content != (char *) NULL)
-    msl_info.content=DestroyString(msl_info.content);
+  DestroyMSLInfo(&msl_info);
   if (msl_info.exception->severity != UndefinedException)
     return(MagickFalse);
   return(MagickTrue);
