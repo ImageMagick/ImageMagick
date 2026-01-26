@@ -1409,13 +1409,24 @@ Magick_Command_Cleanup:
          (cli_wand->image_info_stack->next != (CLIStack *) NULL))
     CLIOption(cli_wand,"}");
 
-  /* assert we have recovered the original structures */
-  assert(cli_wand->wand.image_info == image_info);
-  assert(cli_wand->wand.exception == exception);
+  if ((cli_wand->wand.image_info != image_info) ||
+      (cli_wand->wand.exception != exception))
+    {
+      CLIStack
+        *node;
+      
+      /*
+        Pop image_info settings from stack.
+      */
+      node=(CLIStack *) cli_wand->image_info_stack;
+      cli_wand->image_info_stack=node->next;
+      (void) DestroyImageInfo(cli_wand->wand.image_info);
+      cli_wand->wand.image_info=(ImageInfo *) node->data;
+      node=(CLIStack *) RelinquishMagickMemory(node);
+    }
 
   /* Handle metadata for ImageMagickObject COM object for Windows VBS */
-  if ((cli_wand->wand.images != (Image *) NULL) &&
-      (metadata != (char **) NULL))
+  if ((cli_wand->wand.images != (Image *) NULL) && (metadata != (char **) NULL))
     {
       const char
         *format;
@@ -1427,8 +1438,9 @@ Magick_Command_Cleanup:
       text=InterpretImageProperties(image_info,cli_wand->wand.images,format,
         exception);
       if (text == (char *) NULL)
-        (void) ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
-          "MemoryAllocationFailed","`%s'", GetExceptionMessage(errno));
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          ResourceLimitError,"MemoryAllocationFailed","`%s'",
+          GetExceptionMessage(errno));
       else
         {
           (void) ConcatenateString(&(*metadata),text);
