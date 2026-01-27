@@ -307,7 +307,7 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
       Decode luminance or chrominance deltas.
     */
     r=pcd_table[plane];
-    for (i=0; ((i < pcd_length[plane]) && ((sum & r->mask) != r->sequence)); i++)
+    for (i=1; ((i < pcd_length[plane]) && ((sum & r->mask) != r->sequence)); i++)
       r++;
     if ((row > image->rows) || (r == (PCDTable *) NULL))
       {
