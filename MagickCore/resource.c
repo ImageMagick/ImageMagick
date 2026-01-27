@@ -1354,6 +1354,43 @@ MagickPrivate MagickBooleanType ResourceComponentGenesis(void)
   return(MagickTrue);
 }
 
+#ifdef FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e s e t M a g i c k R e s o u r c e C o u n t e r s                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ResetMagickResourceCounters() resets the current resource usage counters
+%  to zero. This is useful for fuzzing to ensure deterministic behavior
+%  between iterations.
+%
+%  The format of the ResetMagickResourceCounters() method is:
+%
+%      void ResetMagickResourceCounters(void)
+%
+*/
+MagickExport void ResetMagickResourceCounters(void)
+{
+  resource_info.width=0;
+  resource_info.height=0;
+  resource_info.list_length=0;
+  resource_info.area=0;
+  resource_info.memory=0;
+  resource_info.map=0;
+  resource_info.disk=0;
+  resource_info.file=0;
+  resource_info.thread=0;
+  resource_info.throttle=0;
+  resource_info.time=0;
+}
+#endif
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
