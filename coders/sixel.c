@@ -250,12 +250,8 @@ static MagickBooleanType sixel_decode(Image *image,unsigned char *p,
     background_color_index,
     c,
     color_index,
-    dmsx,
-    dmsy,
     g,
     i,
-    imsx,
-    imsy,
     n,
     max_color_index,
     max_x,
@@ -277,6 +273,12 @@ static MagickBooleanType sixel_decode(Image *image,unsigned char *p,
   size_t
     extent,
     offset;
+
+  ssize_t
+    dmsx,
+    dmsy,
+    imsx,
+    imsy;
 
   extent=strlen((char *) p);
   position_x=position_y=0;
@@ -487,7 +489,7 @@ static MagickBooleanType sixel_decode(Image *image,unsigned char *p,
       {
         if ((imsx < (position_x + repeat_count)) || (imsy < (position_y + 6)))
           {
-            int
+            ssize_t
               nx,
               ny;
 
