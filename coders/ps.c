@@ -1086,7 +1086,7 @@ static inline unsigned char *PopHexPixel(const char hex_digits[][3],
   return(pixels);
 }
 
-static void inline FilenameToTitle(const char *filename,char *title,
+static inline void FilenameToTitle(const char *filename,char *title,
   const size_t extent)
 {
   int

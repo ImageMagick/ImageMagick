@@ -225,7 +225,7 @@ static MagickBooleanType Huffman2DEncodeImage(const ImageInfo *image_info,
   return(status);
 }
 
-static void inline FilenameToTitle(const char *filename,char *title,
+static inline void FilenameToTitle(const char *filename,char *title,
   const size_t extent)
 {
   int
