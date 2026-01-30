@@ -288,7 +288,7 @@ static inline char *realpath_utf8(const char *path)
 
   int
     length,
-    utf8_length,
+    utf8_length;
 
   wchar_t
     *clean_path,
