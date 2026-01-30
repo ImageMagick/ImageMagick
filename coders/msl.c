@@ -4778,7 +4778,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     (void) CopyMagickString(msl_info->image_info[n]->filename,
                       value,MagickPathExtent);
                     (void) SetImageInfo(msl_info->image_info[n],1,exception);
-                    if (LocaleCompare(msl_info->image_info[n]->magick,"msl") != 0)
+                    if ((LocaleCompare(msl_info->image_info[n]->magick,"msl") != 0) ||
+                        (LocaleCompare(msl_info->image_info[n]->magick,"svg") != 0))
                       next=ReadImage(msl_info->image_info[n],exception);
                     else
                       (void) ThrowMagickException(msl_info->exception,
