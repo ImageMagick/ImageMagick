@@ -286,7 +286,7 @@ static void inline FilenameToTitle(const char *filename,char *title,
   /*
     If parentheses remain unbalanced, close them.
   */
-  while ((depth > 0) && ((offset+1) < extent)) {
+  while ((depth > 0) && ((offset+1) < (ssize_t) extent)) {
     title[offset++]=')';
     depth--;
   }
