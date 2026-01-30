@@ -296,7 +296,7 @@ static inline void FilenameToTitle(const char *filename,char *title,
   */
   if (offset == 0)
     {
-      (void) strncpy(title,"Untitled",extent-1);
+      (void) CopyMagickString(title,"Untitled",extent-1);
       title[extent-1]='\0';
     }
 }
