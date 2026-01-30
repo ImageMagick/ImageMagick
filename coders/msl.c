@@ -4770,13 +4770,21 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 if (LocaleCompare(keyword,"filename") == 0)
                   {
                     Image
-                      *next;
+                      *next = (Image *) NULL;
 
                     if (value == (char *) NULL)
                       break;
+                    *msl_info->image_info[n]->magick='\0';
                     (void) CopyMagickString(msl_info->image_info[n]->filename,
                       value,MagickPathExtent);
-                    next=ReadImage(msl_info->image_info[n],exception);
+                    (void) SetImageInfo(msl_info->image_info[n],1,exception);
+                    if (LocaleCompare(msl_info->image_info[n]->magick,"msl") != 0)
+                      next=ReadImage(msl_info->image_info[n],exception);
+                    else
+                      (void) ThrowMagickException(msl_info->exception,
+                        GetMagickModule(),DrawError,
+                        "VectorGraphicsNestedTooDeeply","`%s'",
+                        msl_info->image_info[n]->filename);
                     CatchException(exception);
                     if (next == (Image *) NULL)
                       continue;
@@ -5825,10 +5833,11 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   Quantum  opac = OpaqueAlpha;
                   ssize_t len = (ssize_t) strlen( value );
 
-                  if (value[len-1] == '%') {
-                    char  tmp[100];
+                  if ((len > 0) && (value[len-1] == '%')) {
+                    char *tmp = AcquireString(value);
                     (void) CopyMagickString(tmp,value,(size_t) len);
                     opac = (Quantum) StringToLong( tmp );
+                    tmp=DestroyString(tmp);
                     opac = (Quantum)(QuantumRange * ((float)opac/100));
                   } else
                     opac = (Quantum) StringToLong( value );
@@ -7039,6 +7048,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
 
           /* process */
           {
+            *msl_info->image_info[n]->magick='\0';
             (void) CopyMagickString(msl_info->image_info[n]->filename,
               msl_info->image[n]->filename,MagickPathExtent);
             (void) SetImageInfo(msl_info->image_info[n],1,exception);
@@ -7889,6 +7899,7 @@ static MagickBooleanType WriteMSLImage(const ImageInfo *image_info,Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   msl_image=CloneImage(image,0,0,MagickTrue,exception);
   status=ProcessMSLScript(image_info,&msl_image,exception);
+  msl_image=DestroyImage(msl_image);
   return(status);
 }
 #endif

@@ -671,18 +671,31 @@ MagickExport MagickBooleanType IsRightsAuthorized(const PolicyDomain domain,
       *policy;
 
     policy=(const PolicyInfo *) p->value;
-    if ((policy->domain == domain) &&
-        (GlobExpression(pattern,policy->pattern,MagickFalse) != MagickFalse))
+    if (policy->domain == domain)
       {
-        if ((rights & ReadPolicyRights) != 0)
-          authorized=(policy->rights & ReadPolicyRights) != 0 ? MagickTrue :
-            MagickFalse;
-        if ((rights & WritePolicyRights) != 0)
-          authorized=(policy->rights & WritePolicyRights) != 0 ? MagickTrue :
-            MagickFalse;
-        if ((rights & ExecutePolicyRights) != 0)
-          authorized=(policy->rights & ExecutePolicyRights) != 0 ? MagickTrue :
-            MagickFalse;
+        char
+          *real_pattern = (char *) pattern;
+
+        if (policy->domain == PathPolicyDomain)
+          {
+            real_pattern=realpath_utf8(pattern);
+            if (real_pattern == (char *) NULL)
+              real_pattern=AcquireString(pattern);
+          }
+        if (GlobExpression(real_pattern,policy->pattern,MagickFalse) != MagickFalse)
+          {
+            if ((rights & ReadPolicyRights) != 0)
+              authorized=(policy->rights & ReadPolicyRights) != 0 ? MagickTrue :
+                MagickFalse;
+            if ((rights & WritePolicyRights) != 0)
+              authorized=(policy->rights & WritePolicyRights) != 0 ?
+                MagickTrue : MagickFalse;
+            if ((rights & ExecutePolicyRights) != 0)
+              authorized=(policy->rights & ExecutePolicyRights) != 0 ?
+                MagickTrue : MagickFalse;
+          }
+        if (policy->domain == PathPolicyDomain)
+          real_pattern=DestroyString(real_pattern);
       }
     p=p->next;
   }
