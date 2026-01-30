@@ -215,7 +215,7 @@ static void inline FilenameToTitle(const char *filename,char *title,
 
   if (extent == 0)
     return;
-  for (i=0; (filename[i] != '\0') && ((offset+1) < extent); i++)
+  for (i=0; (filename[i] != '\0') && ((offset+1) < (ssize_t) extent); i++)
   {
     unsigned char
       c = filename[i];
