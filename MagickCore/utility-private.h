@@ -318,7 +318,7 @@ static inline char *realpath_utf8(const char *path)
       return((char *) NULL);
     }
   full_path=(wchar_t *) AcquireQuantumMemory(full_path_length,sizeof(wchar_t));
-  if (full_path == (wchar_t *) NULL);
+  if (full_path == (wchar_t *) NULL)
     {
       wide_path=(wchar_t *) RelinquishMagickMemory(wide_path);
       return((char *) NULL);
