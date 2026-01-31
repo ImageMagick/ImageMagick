@@ -1612,7 +1612,7 @@ static Image *DrawClippingMask(Image *image,const DrawInfo *draw_info,
   clone_info=DestroyDrawInfo(clone_info);
   separate_mask=SeparateImage(clip_mask,AlphaChannel,exception);
   if (separate_mask == (Image *) NULL)
-    status=MagickFalse; 
+    status=MagickFalse;
   else
     {
       clip_mask=DestroyImage(clip_mask);
@@ -3461,7 +3461,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
                     continue;
                   break;
                 }
-                if ((q == (char *) NULL) || (*q == '\0') || 
+                if ((q == (char *) NULL) || (*q == '\0') ||
                     (p == (char *) NULL) || ((q-4) < p))
                   {
                     status=MagickFalse;
@@ -4383,7 +4383,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
       case PathPrimitive:
       {
         coordinates=(double) TracePath(&mvg_info,token,exception);
-        primitive_info=(*mvg_info.primitive_info); 
+        primitive_info=(*mvg_info.primitive_info);
         if (coordinates < 0.0)
           {
             status=MagickFalse;
@@ -5652,65 +5652,27 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
       else
         if (*primitive_info->text != '\0')
           {
-            const char
-              *option;
-
-            MagickBooleanType
-              path_status;
-
-            struct stat
-              attributes;
-
             /*
               Read composite image.
             */
             (void) CopyMagickString(clone_info->filename,primitive_info->text,
               MagickPathExtent);
             (void) SetImageInfo(clone_info,1,exception);
-            option=GetImageOption(clone_info,"svg:embedding");
-            if ((option == (char *) NULL) &&
-                (IsStringTrue(option) == MagickFalse))
-              {
-                const MagickInfo
-                  *magick_info;
-
-                magick_info=GetMagickInfo(clone_info->magick,exception);
-                if ((magick_info != (const MagickInfo*) NULL) &&
-                    (LocaleCompare(magick_info->magick_module,"SVG") == 0))
-                  {
-                    (void) ThrowMagickException(exception,GetMagickModule(),
-                      CorruptImageError,"ImageTypeNotSupported","`%s'",
-                      clone_info->filename);
-                    clone_info=DestroyImageInfo(clone_info);
-                    break;
-                  }
-              }
             (void) CopyMagickString(clone_info->filename,primitive_info->text,
               MagickPathExtent);
             if (clone_info->size != (char *) NULL)
               clone_info->size=DestroyString(clone_info->size);
             if (clone_info->extract != (char *) NULL)
               clone_info->extract=DestroyString(clone_info->extract);
-            path_status=GetPathAttributes(clone_info->filename,&attributes);
-            if (path_status != MagickFalse)
-              {
-                if (S_ISCHR(attributes.st_mode) == 0)
-                  composite_images=ReadImage(clone_info,exception);
-                else
-                  (void) ThrowMagickException(exception,GetMagickModule(),
-                    FileOpenError,"UnableToOpenFile","`%s'",
-                      clone_info->filename);
-              }
+            if ((LocaleCompare(clone_info->magick,"ftp") != 0) &&
+                (LocaleCompare(clone_info->magick,"http") != 0) &&
+                (LocaleCompare(clone_info->magick,"https") != 0) &&
+                (LocaleCompare(clone_info->magick,"mvg") != 0) &&
+                (LocaleCompare(clone_info->magick,"vid") != 0))
+              composite_images=ReadImage(clone_info,exception);
             else
-              if ((LocaleCompare(clone_info->magick,"ftp") != 0) &&
-                  (LocaleCompare(clone_info->magick,"http") != 0) &&
-                  (LocaleCompare(clone_info->magick,"https") != 0) &&
-                  (LocaleCompare(clone_info->magick,"mvg") != 0) &&
-                  (LocaleCompare(clone_info->magick,"vid") != 0))
-                composite_images=ReadImage(clone_info,exception);
-              else
-                (void) ThrowMagickException(exception,GetMagickModule(),
-                  FileOpenError,"UnableToOpenFile","`%s'",clone_info->filename);
+              (void) ThrowMagickException(exception,GetMagickModule(),
+                FileOpenError,"UnableToOpenFile","`%s'",clone_info->filename);
           }
       clone_info=DestroyImageInfo(clone_info);
       if (composite_images == (Image *) NULL)
