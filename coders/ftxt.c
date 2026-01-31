@@ -197,11 +197,11 @@ static int ReadInt(Image * image,MagickBooleanType *eofInp,int *chPushed,
     if (p-buffer >= MaxTextExtent)
       {
         *eofInp=MagickTrue;
-        continue;
+        break;
       }
     chIn=ReadChar(image,chPushed);
   }
-  if (p==buffer)
+  if (p == buffer)
     {
       *eofInp=MagickTrue;
       return(0);
