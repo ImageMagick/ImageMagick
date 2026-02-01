@@ -549,7 +549,7 @@ static MagickBooleanType sixel_decode(Image *image,unsigned char *p,
                       if (max_x < position_x)
                           max_x = position_x;
                       if (max_y < (position_y + i))
-                          max_y = position_y + i;
+                          max_y = (int) (position_y + i);
                     }
                   sixel_vertical_mask <<= 1;
                 }
@@ -583,7 +583,7 @@ static MagickBooleanType sixel_decode(Image *image,unsigned char *p,
                       if (max_x < (position_x+repeat_count-1))
                         max_x = position_x+repeat_count-1;
                       if (max_y < (position_y+i+n-1))
-                        max_y = position_y+i+n-1;
+                        max_y = (int) (position_y+i+n-1);
                       i+=(n-1);
                       sixel_vertical_mask <<= (n-1);
                     }
