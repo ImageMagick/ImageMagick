@@ -84,6 +84,7 @@
 #include "MagickCore/segment.h"
 #include "MagickCore/shear.h"
 #include "MagickCore/signature.h"
+#include "MagickCore/splay-tree.h"
 #include "MagickCore/statistic.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
@@ -140,8 +141,13 @@ typedef struct _MSLInfo
   MSLGroupInfo
     *group_info;
 } MSLInfo;
-
-
+
+/*    
+  Global declarations.
+*/  
+static SplayTreeInfo
+  *msl_tree = (SplayTreeInfo *) NULL;
+
 /*
   Forward declarations.
 */
@@ -4771,13 +4777,24 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 if (LocaleCompare(keyword,"filename") == 0)
                   {
                     Image
-                      *next;
+                      *next = (Image *) NULL;
 
                     if (value == (char *) NULL)
                       break;
+                    if (GetValueFromSplayTree(msl_tree,value) != (const char *) NULL)
+                      {
+                        (void) ThrowMagickException(msl_info->exception,
+                          GetMagickModule(),DrawError,
+                          "VectorGraphicsNestedTooDeeply","`%s'",value);
+                        break;
+                      }
+                    (void) AddValueToSplayTree(msl_tree,ConstantString(value),
+                      (void *) 1);
+                    *msl_info->image_info[n]->magick='\0';
                     (void) CopyMagickString(msl_info->image_info[n]->filename,
                       value,MagickPathExtent);
                     next=ReadImage(msl_info->image_info[n],exception);
+                    (void) DeleteNodeFromSplayTree(msl_tree,value);
                     CatchException(exception);
                     if (next == (Image *) NULL)
                       continue;
@@ -7041,6 +7058,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
 
           /* process */
           {
+            *msl_info->image_info[n]->magick='\0';
             (void) CopyMagickString(msl_info->image_info[n]->filename,
               msl_info->image[n]->filename,MagickPathExtent);
             (void) SetImageInfo(msl_info->image_info[n],1,exception);
@@ -7524,6 +7542,9 @@ ModuleExport size_t RegisterMSLImage(void)
   MagickInfo
     *entry;
 
+  if (msl_tree == (SplayTreeInfo *) NULL)
+    msl_tree=NewSplayTree(CompareSplayTreeString,RelinquishMagickMemory,
+      (void *(*)(void *)) NULL);
   entry=AcquireMagickInfo("MSL","MSL","Magick Scripting Language");
 #if defined(MAGICKCORE_XML_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadMSLImage;
@@ -7844,9 +7865,10 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
 ModuleExport void UnregisterMSLImage(void)
 {
   (void) UnregisterMagickInfo("MSL");
+  if (msl_tree != (SplayTreeInfo *) NULL)
+    msl_tree=DestroySplayTree(msl_tree);
 }
-
-
+
 #if defined(MAGICKCORE_XML_DELEGATE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
