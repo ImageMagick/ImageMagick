@@ -576,7 +576,7 @@ static Image *ASHLARImage(ImageInfo *image_info,Image *image,
       if (tiles != (CanvasInfo *) NULL)
         tiles=(CanvasInfo *) RelinquishMagickMemory(tiles);
       if (nodes != (NodeInfo *) NULL)
-        nodes=(NodeInfo *) RelinquishMagickMemory(tiles);
+        nodes=(NodeInfo *) RelinquishMagickMemory(nodes);
       ashlar_image=DestroyImageList(ashlar_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
