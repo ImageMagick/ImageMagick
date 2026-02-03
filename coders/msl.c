@@ -140,7 +140,8 @@ typedef struct _MSLInfo
   MSLGroupInfo
     *group_info;
 } MSLInfo;
-
+
+
 /*
   Forward declarations.
 */
@@ -7843,7 +7844,8 @@ ModuleExport void UnregisterMSLImage(void)
 {
   (void) UnregisterMagickInfo("MSL");
 }
-
+
+
 #if defined(MAGICKCORE_XML_DELEGATE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
