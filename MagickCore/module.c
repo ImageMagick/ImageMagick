@@ -595,16 +595,15 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
           (void) ConcatenateMagickString(path,DirectorySeparator,
             MagickPathExtent);
         (void) ConcatenateMagickString(path,filename,MagickPathExtent);
+#if defined(MAGICKCORE_HAVE_REALPATH)
         {
           char
-            *real_path = realpath_utf8(path);
+            resolved_path[PATH_MAX+1];
 
-          if (real_path != (char *) NULL)
-            {
-              (void) CopyMagickString(path,real_path,MagickPathExtent);
-              real_path=DestroyString(real_path);
-            }
+          if (realpath(path,resolved_path) != (char *) NULL)
+            (void) CopyMagickString(path,resolved_path,MagickPathExtent);
         }
+#endif
         if (IsPathAccessible(path) != MagickFalse)
           {
             module_path=DestroyString(module_path);

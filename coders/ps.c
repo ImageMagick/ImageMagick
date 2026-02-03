@@ -1086,82 +1086,6 @@ static inline unsigned char *PopHexPixel(const char hex_digits[][3],
   return(pixels);
 }
 
-static inline void FilenameToTitle(const char *filename,char *title,
-  const size_t extent)
-{
-  int
-    depth = 0;
-
-  ssize_t
-    i,
-    offset = 0;
-
-  if (extent == 0)
-    return;
-  for (i=0; (filename[i] != '\0') && ((offset+1) < (ssize_t) extent); i++)
-  {
-    unsigned char
-      c = filename[i];
-
-    /*
-      Only allow printable ASCII.
-    */
-    if ((c < 32) || (c > 126))
-      {
-        title[offset++]='_';
-        continue;
-      }
-    /*
-      Percent signs break DSC parsing.
-    */
-    if (c == '%')
-      {
-        title[offset++]='_';
-        continue;
-      }
-    /*
-      Parentheses must remain balanced.
-    */
-    if (c == '(')
-      {
-        depth++;
-        title[offset++] = '(';
-        continue;
-      }
-    if (c == ')')
-      {
-        if (depth <= 0)
-          title[offset++]='_';
-        else
-          {
-            depth--;
-            title[offset++]=')';
-          }
-         continue;
-     }
-    /*
-      Everything else is allowed.
-    */
-    title[offset++]=c;
-  }
-  /*
-    If parentheses remain unbalanced, close them.
-  */
-  while ((depth > 0) && ((offset+1) < (ssize_t) extent)) {
-    title[offset++]=')';
-    depth--;
-  }
-  title[offset]='\0';
-  /*
-    Ensure non-empty result.
-  */
-  if (offset == 0)
-    {
-      (void) CopyMagickString(title,"Untitled",extent-1);
-      title[extent-1]='\0';
-    }
-}
-
 static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
@@ -1630,9 +1554,6 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
       text_size=(size_t) (MultilineCensus(value)*pointsize+12);
     if (page == 1)
       {
-        char
-          title[MagickPathExtent];
-
         /*
           Output Postscript header.
         */
@@ -1643,9 +1564,8 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
             MagickPathExtent);
         (void) WriteBlobString(image,buffer);
         (void) WriteBlobString(image,"%%Creator: (ImageMagick)\n");
-        FilenameToTitle(image->filename,title,MagickPathExtent);
         (void) FormatLocaleString(buffer,MagickPathExtent,"%%%%Title: (%s)\n",
-          title);
+          image->filename);
         (void) WriteBlobString(image,buffer);
         timer=GetMagickTime();
         (void) FormatMagickTime(timer,sizeof(date),date);

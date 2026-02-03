@@ -1042,23 +1042,16 @@ MagickPrivate MagickBooleanType GetExecutionPath(char *path,const size_t extent)
 #if defined(MAGICKCORE_HAVE__NSGETEXECUTABLEPATH)
   {
     char
-      executable_path[PATH_MAX << 1];
+      executable_path[PATH_MAX << 1],
+      execution_path[PATH_MAX+1];
 
     uint32_t
       length;
 
     length=sizeof(executable_path);
-    if (_NSGetExecutablePath(executable_path,&length) == 0)
-      {
-        char
-          *real_path = realpath_utf8(executable_path);
-
-        if (real_path != (char *) NULL)
-          {
-            (void) CopyMagickString(path,real_path,extent);
-            real_path=DestroyString(real_path);
-          }
-      }
+    if ((_NSGetExecutablePath(executable_path,&length) == 0) &&
+        (realpath(executable_path,execution_path) != (char *) NULL))
+      (void) CopyMagickString(path,execution_path,extent);
   }
 #endif
 #if defined(MAGICKCORE_HAVE_GETEXECNAME)
@@ -1104,13 +1097,10 @@ MagickPrivate MagickBooleanType GetExecutionPath(char *path,const size_t extent)
     if (count != -1)
       {
         char
-          *real_path = realpath_utf8(program_name);
+          execution_path[PATH_MAX+1];
 
-        if (real_path != (char *) NULL)
-          {
-            (void) CopyMagickString(path,real_path,extent);
-            real_path=DestroyString(real_path);
-          }
+        if (realpath(program_name,execution_path) != (char *) NULL)
+          (void) CopyMagickString(path,execution_path,extent);
       }
     if (program_name != program_invocation_name)
       program_name=(char *) RelinquishMagickMemory(program_name);
@@ -1892,7 +1882,7 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
     {
       char
         *property;
-
+          
       passes=0;
       property=GetEnvironmentValue("MAGICK_SHRED_PASSES");
       if (property != (char *) NULL)
