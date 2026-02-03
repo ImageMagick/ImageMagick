@@ -809,7 +809,7 @@ static ssize_t parse8BIMW(Image *ifile, Image *ofile)
 
                     n=0;
                     outputlen += len;
-                    while (len--)
+                    while (len-- > 0)
                       (void) WriteBlobByte(ofile,(unsigned char) token[n++]);
 
                     if (outputlen & 1)
@@ -843,7 +843,7 @@ static ssize_t parse8BIMW(Image *ifile, Image *ofile)
                     outputlen += 5;
                     n=0;
                     outputlen += len;
-                    while (len--)
+                    while (len-- > 0)
                       (void) WriteBlobByte(ofile,(unsigned char) token[n++]);
                   }
               }
