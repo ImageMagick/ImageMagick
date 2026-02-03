@@ -3813,7 +3813,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
       cache_info->storage_class=UndefinedClass;
       cache_info->length=0;
       ThrowBinaryException(ResourceLimitError,"PixelCacheAllocationFailed",
-      image->filename);
+        image->filename);
     }
   columns=(size_t) (length/cache_info->rows/packet_size);
   if ((cache_info->columns != columns) || ((ssize_t) cache_info->columns < 0) ||
