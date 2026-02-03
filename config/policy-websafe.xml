@@ -86,6 +86,7 @@
   <policy domain="filter" rights="none" pattern="*"/>
   <!-- Don't read/write from/to stdin/stdout. -->
   <policy domain="path" rights="none" pattern="-"/>
+  <policy domain="path" rights="none" pattern="fd:*"/>
   <!-- don't read sensitive paths. -->
   <policy domain="path" rights="none" pattern="/etc/*"/>
   <!-- Indirect reads are not permitted. -->

@@ -331,6 +331,7 @@
   &lt;policy domain="filter" rights="none" pattern="*"/>
   &lt;!-- Don't read/write from/to stdin/stdout. -->
   &lt;policy domain="path" rights="none" pattern="-"/>
+  &lt;policy domain="path" rights="none" pattern="fd:*"/>
   &lt;!-- don't read sensitive paths. -->
   &lt;policy domain="path" rights="none" pattern="/etc/*"/>
   &lt;!-- Indirect reads are not permitted. -->
