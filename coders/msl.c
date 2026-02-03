@@ -1634,12 +1634,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     for (j=0; j < msl_info->n; j++)
                     {
                       const char
-                        *prop;
+                        *property;
 
-                      prop=GetImageProperty(msl_info->attributes[j],"id",
+                      property=GetImageProperty(msl_info->attributes[j],"id",
                         exception);
-                      if ((prop != (const char *) NULL)  &&
-                          (LocaleCompare(value,value) == 0))
+                      if ((property != (const char *) NULL)  &&
+                          (LocaleCompare(property,value) == 0))
                         {
                           SetImageType(composite_image,TrueColorAlphaType,
                             exception);

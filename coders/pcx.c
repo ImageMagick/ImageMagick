@@ -401,6 +401,15 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     if ((MagickSizeType) (pcx_packets/32+128) > GetBlobSize(image))
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
+    {
+      size_t bytes_per_line = image->columns*pcx_info.bits_per_pixel;
+      if (bytes_per_line != 0)
+        bytes_per_line+=7U;
+      if (bytes_per_line != 0)
+        bytes_per_line/=8U;
+      if ((bytes_per_line == 0) || (pcx_info.bytes_per_line < bytes_per_line))
+        ThrowPCXException(CorruptImageError,"ImproperImageHeader");
+    }
     scanline=(unsigned char *) AcquireQuantumMemory(MagickMax(image->columns,
       pcx_info.bytes_per_line),MagickMax(pcx_info.planes,8)*sizeof(*scanline));
     pixel_info=AcquireVirtualMemory(pcx_packets,2*sizeof(*pixels));
