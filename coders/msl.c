@@ -5826,10 +5826,11 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   Quantum  opac = OpaqueAlpha;
                   ssize_t len = (ssize_t) strlen( value );
 
-                  if (value[len-1] == '%') {
-                    char  tmp[100];
+                  if ((len > 0) && (value[len-1] == '%')) {
+                    char *tmp = AcquireString(value);
                     (void) CopyMagickString(tmp,value,(size_t) len);
                     opac = (Quantum) StringToLong( tmp );
+                    tmp=DestroyString(tmp);
                     opac = (Quantum)(QuantumRange * ((float)opac/100));
                   } else
                     opac = (Quantum) StringToLong( value );
