@@ -267,6 +267,121 @@ static inline FILE *popen_utf8(const char *command,const char *type)
 #endif
 }
 
+static inline char *realpath_utf8(const char *path)
+{
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
+#if defined(MAGICKCORE_HAVE_REALPATH)
+  return(realpath(path,(char *) NULL));
+#else
+  return(AcquireString(path));
+#endif
+#else
+  char
+    *real_path;
+
+  DWORD
+    final_path_length,
+    full_path_length;
+
+  HANDLE
+    file_handle;
+
+  int
+    length,
+    utf8_length;
+
+  wchar_t
+    *clean_path,
+    *full_path,
+    *wide_path;
+
+  /*
+    Convert UTF-8 to UTF-16.
+  */
+  if (path == (const char *) NULL)
+    return((char *) NULL);
+  length=MultiByteToWideChar(CP_UTF8,0,path,-1,NULL,0);
+  if (length <= 0)
+    return((char *) NULL);
+  wide_path=(wchar_t *) AcquireQuantumMemory(length,sizeof(wchar_t));
+  if (wide_path == (wchar_t *) NULL)
+    return((char *) NULL);
+  MultiByteToWideChar(CP_UTF8,0,path,-1,wide_path,length);
+  /*
+    Normalize syntactically.
+  */
+  full_path_length=GetFullPathNameW(wide_path,0,NULL,NULL);
+  if (full_path_length == 0)
+    {
+      wide_path=(wchar_t *) RelinquishMagickMemory(wide_path);
+      return((char *) NULL);
+    }
+  full_path=(wchar_t *) AcquireQuantumMemory(full_path_length,sizeof(wchar_t));
+  if (full_path == (wchar_t *) NULL)
+    {
+      wide_path=(wchar_t *) RelinquishMagickMemory(wide_path);
+      return((char *) NULL);
+    }
+  GetFullPathNameW(wide_path,full_path_length,full_path,NULL);
+  wide_path=(wchar_t *) RelinquishMagickMemory(wide_path);
+  /*
+    Open the file/directory to resolve symlinks.
+  */
+  file_handle=CreateFileW(full_path,GENERIC_READ,FILE_SHARE_READ |
+    FILE_SHARE_WRITE | FILE_SHARE_DELETE,NULL,OPEN_EXISTING,
+    FILE_FLAG_BACKUP_SEMANTICS,NULL);
+  if (file_handle != INVALID_HANDLE_VALUE)
+    {
+      /*
+        Resolve final canonical path.
+      */
+      final_path_length=GetFinalPathNameByHandleW(file_handle,NULL,0,
+        FILE_NAME_NORMALIZED);
+      if (final_path_length == 0)
+        {
+          CloseHandle(file_handle);
+          full_path=(wchar_t *) RelinquishMagickMemory(full_path);
+          return((char *) NULL);
+        }
+      full_path=(wchar_t *) RelinquishMagickMemory(full_path);
+      full_path=(wchar_t *) AcquireQuantumMemory(final_path_length,
+        sizeof(wchar_t));
+      if (full_path == (wchar_t *) NULL)
+        {
+          CloseHandle(file_handle);
+          return((char *) NULL);
+        }
+      GetFinalPathNameByHandleW(file_handle,full_path,final_path_length,
+        FILE_NAME_NORMALIZED);
+      CloseHandle(file_handle);
+    }
+  /*
+    Remove \\?\ prefix for POSIX-like behavior.
+  */
+  clean_path=full_path;
+  if (wcsncmp(full_path,L"\\\\?\\",4) == 0)
+    clean_path=full_path+4;
+  /*
+    Convert UTF-16 to UTF-8.
+  */
+  utf8_length=WideCharToMultiByte(CP_UTF8,0,clean_path,-1,NULL,0,NULL,NULL);
+  if (utf8_length <= 0)
+    {
+      full_path=(wchar_t *) RelinquishMagickMemory(full_path);
+      return NULL;
+    }
+  real_path=(char *) AcquireQuantumMemory(utf8_length,sizeof(char));
+  if (real_path == (char *) NULL)
+    {
+      full_path=(wchar_t *) RelinquishMagickMemory(full_path);
+      return NULL;
+    }
+  WideCharToMultiByte(CP_UTF8,0,clean_path,-1,real_path,utf8_length,NULL,NULL);
+  full_path=(wchar_t *) RelinquishMagickMemory(full_path);
+  return(real_path);
+#endif
+}
+
 static inline int remove_utf8(const char *path)
 {
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)

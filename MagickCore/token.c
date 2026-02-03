@@ -518,6 +518,7 @@ MagickExport MagickBooleanType GlobExpression(
         target=DestroyString(target);
         break;
       }
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
       case '\\':
       {
         pattern+=GetUTFOctets(pattern);
@@ -525,6 +526,7 @@ MagickExport MagickBooleanType GlobExpression(
           break;
         magick_fallthrough;
       }
+#endif
       default:
       {
         if (case_insensitive != MagickFalse)
