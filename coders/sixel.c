@@ -214,8 +214,15 @@ static unsigned char *get_params(unsigned char *p, int *param, int *len)
       {
         for (n = 0; isdigit((int) ((unsigned char) *p)); p++)
         {
-          if (n <= (INT_MAX/10))
-            n=(int) ((ssize_t) n*10+(*p-'0'));
+          int digit = *p-'0';
+          ssize_t tmp = (ssize_t) n*10+digit;
+
+          if (tmp > INT_MAX)
+            {
+              n=INT_MAX;
+              break;
+            }
+          n=(int) tmp;
         }
         if (*len < 10)
           param[(*len)++]=n;
