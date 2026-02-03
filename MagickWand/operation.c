@@ -5223,9 +5223,9 @@ static void CLINoImageOperator(MagickCLI *cli_wand,
           arg1=AcquireString("-1");
         if (IsSceneGeometry(arg1,MagickFalse) == MagickFalse)
           CLIWandExceptionBreak(OptionError,"InvalidArgument",option);
-        if ( cli_wand->image_list_stack == (CLIStack *) NULL)
-          CLIWandExceptionBreak(OptionError,"UnableToCloneImage",option);
-        new_images = (Image *)cli_wand->image_list_stack->data;
+        new_images=cli_wand->wand.images;     
+        if (cli_wand->image_list_stack != (CLIStack *) NULL)
+          new_images=(Image *) cli_wand->image_list_stack->data;
         if (new_images == (Image *) NULL)
           CLIWandExceptionBreak(OptionError,"UnableToCloneImage",option);
         new_images=CloneImages(new_images,arg1,_exception);
