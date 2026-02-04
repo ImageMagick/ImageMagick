@@ -656,13 +656,13 @@ static Image *ASHLARImage(ImageInfo *image_info,Image *image,
           *label,
           offset[MagickPathExtent];
 
-        DrawInfo
-          *draw_info = CloneDrawInfo(image_info,(DrawInfo *) NULL);
-
         label=InterpretImageProperties((ImageInfo *) image_info,tile_image,
           value,exception);
         if (label != (const char *) NULL)
           {
+            DrawInfo
+              *draw_info = CloneDrawInfo(image_info,(DrawInfo *) NULL);
+
             (void) CloneString(&draw_info->text,label);
             label=DestroyString(label);
             (void) FormatLocaleString(offset,MagickPathExtent,"%+g%+g",(double)
@@ -670,6 +670,7 @@ static Image *ASHLARImage(ImageInfo *image_info,Image *image,
               geometry.y/2.0+4);
             (void) CloneString(&draw_info->geometry,offset);
             status=AnnotateImage(ashlar_image,draw_info,exception);
+            draw_info=DestroyDrawInfo(draw_info);
           }
       }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
