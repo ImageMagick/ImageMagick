@@ -145,14 +145,15 @@ static IconDirectory *AcquireIconDirectory(size_t count)
   if (directory->icons == (IconEntry **) NULL)
     return(RelinquishIconDirectory(directory));
   memset(directory->icons,0,count*sizeof(*directory->icons));
+  directory->count=0;
   for (i=0; i < (ssize_t) count; i++)
   {
     directory->icons[i]=(IconEntry *) AcquireMagickMemory(
       sizeof(**directory->icons));
     if (directory->icons[i] == (IconEntry *) NULL)
       return(RelinquishIconDirectory(directory));
+    directory->count++;
   }
-  directory->count=count;
   return(directory);
 }
 
