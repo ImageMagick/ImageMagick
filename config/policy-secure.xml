@@ -94,7 +94,7 @@
   <!-- don't read sensitive paths. -->
   <policy domain="path" rights="none" pattern="/etc/*"/>
   <!-- Relative paths are not permitted. -->
-  <policy domain="path" rights="none" pattern="\.\.\/"/>
+  <policy domain="path" rights="none" pattern="*../*"/>
   <!-- Indirect reads are not permitted. -->
   <policy domain="path" rights="none" pattern="@*"/>
   <!-- These image types are security risks on read, but write is fine -->
