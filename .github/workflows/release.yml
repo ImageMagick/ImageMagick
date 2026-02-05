@@ -66,7 +66,7 @@ jobs:
           persist-credentials: false
 
       - name: Install dependencies
-        run: npm install -g auto-changelog@2.5.0
+        run: npm install -g git+https://github.com/CookPete/auto-changelog.git#5ba380ad0044dd5be1b2bf4067f64d87202c98bd #v2.5.0
 
       - name: Create ChangeLog.md
         env:
