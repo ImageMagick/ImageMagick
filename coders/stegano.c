@@ -219,7 +219,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
         if (c == 3)
           c=0;
         k++;
-        if (k == (ssize_t) (watermark->columns*watermark->columns))
+        if (k == (ssize_t) (watermark->columns*watermark->rows))
           k=0;
         if (k == image->offset)
           j++;
