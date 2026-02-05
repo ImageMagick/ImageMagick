@@ -2921,7 +2921,7 @@ static MagickBooleanType ReadDCMPixels(Image *image,DCMInfo *info,
 
               scaled_value=pixel_value*info->rescale_slope+
                 info->rescale_intercept;
-              index=(int) scaled_value;
+              index=CastDoubleToInt(scaled_value);
               if (info->window_width != 0)
                 {
                   double
@@ -2936,10 +2936,11 @@ static MagickBooleanType ReadDCMPixels(Image *image,DCMInfo *info,
                     index=0;
                   else
                     if (scaled_value > window_max)
-                      index=(int) info->max_value;
+                      index=CastDoubleToInt(info->max_value);
                     else
-                      index=(int) (info->max_value*(((scaled_value-
-                        info->window_center-0.5)/(info->window_width-1))+0.5));
+                      index=CastDoubleToInt(info->max_value*(((scaled_value-
+                        info->window_center-0.5)*MagickSafeReciprocal(
+                        info->window_width-1.0))+0.5));
                 }
             }
           index&=(ssize_t) info->mask;

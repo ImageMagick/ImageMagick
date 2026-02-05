@@ -43,6 +43,7 @@ extern "C" {
 #define LoadImageTag  "Load/Image"
 #define Magick2PI    6.28318530717958647692528676655900576839433879875020
 #define MagickAbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
+#define MAGICK_INT_MAX  (INT_MAX)
 #define MagickPHI    1.61803398874989484820458683436563811772030917980576
 #define MagickPI2    1.57079632679489661923132169163975144209858469968755
 #define MagickPI     3.1415926535897932384626433832795028841971693993751058209749445923078164062
@@ -68,6 +69,30 @@ extern "C" {
 #define TransparentColorRGBA  (Quantum) 0,(Quantum) 0,(Quantum) 0,TransparentAlpha
 #define UndefinedCompressionQuality  0UL
 #define UndefinedTicksPerSecond  100L
+
+static inline int CastDoubleToInt(const double x)
+{
+  double
+    value;
+
+  if (IsNaN(x) != 0)
+    {
+      errno=ERANGE;
+      return(0);
+    }
+  value=(x < 0.0) ? ceil(x) : floor(x);
+  if (value < 0.0)
+    {
+      errno=ERANGE;
+      return(0);
+    }
+  if (value > ((double) MAGICK_INT_MAX))
+    {
+      errno=ERANGE;
+      return(MAGICK_INT_MAX);
+    }
+  return((int) value);
+}
 
 static inline ptrdiff_t CastDoubleToPtrdiffT(const double x)
 {
