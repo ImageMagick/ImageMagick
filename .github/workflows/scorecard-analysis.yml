@@ -10,6 +10,7 @@ on:
 
 permissions: read-all
 
+name: Scorecard analysis
 jobs:
   analysis:
     name: Scorecard analysis
