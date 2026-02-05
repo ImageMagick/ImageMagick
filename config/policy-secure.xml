@@ -91,11 +91,11 @@
   <!-- Don't read/write from/to stdin/stdout. -->
   <policy domain="path" rights="none" pattern="-"/>
   <policy domain="path" rights="none" pattern="fd:*"/>
-  <!-- don't read sensitive paths. -->
+  <!-- Sensitive paths are not permitted. -->
   <policy domain="path" rights="none" pattern="/etc/*"/>
   <!-- Relative paths are not permitted. -->
   <policy domain="path" rights="none" pattern="*../*"/>
-  <!-- Indirect reads are not permitted. -->
+  <!-- Indirect reading is not permitted. -->
   <policy domain="path" rights="none" pattern="@*"/>
   <!-- These image types are security risks on read, but write is fine -->
   <policy domain="module" rights="write" pattern="{MSL,MVG,PS,SVG,URL,XPS}"/>
