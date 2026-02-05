@@ -2667,11 +2667,13 @@ static void SVGEndElement(void *context,const xmlChar *name)
 
           if (svg_info->url == (char*) NULL)
             {
+              image_info=DestroyImageInfo(image_info);
               (void) FormatLocaleFile(svg_info->file,"pop graphic-context\n");
               break;
             }
           if (GetValueFromSplayTree(svg_tree,svg_info->url) != (const char *) NULL)
             {
+              image_info=DestroyImageInfo(image_info);
               (void) ThrowMagickException(svg_info->exception,GetMagickModule(),
                 DrawError,"VectorGraphicsNestedTooDeeply","`%s'",svg_info->url);
               break;
@@ -2681,8 +2683,10 @@ static void SVGEndElement(void *context,const xmlChar *name)
           (void) CopyMagickString(image_info->filename,svg_info->url,
             MagickPathExtent);
           image=ReadImage(image_info,svg_info->exception);
+          image_info=DestroyImageInfo(image_info);
           if (image != (Image *) NULL)
             image=DestroyImage(image);
+
           (void) DeleteNodeFromSplayTree(svg_tree,svg_info->url);
           (void) FormatLocaleFile(svg_info->file,
             "image Over %g,%g %g,%g \"%s\"\n",svg_info->bounds.x,
