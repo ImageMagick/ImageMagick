@@ -2936,11 +2936,11 @@ static MagickBooleanType ReadDCMPixels(Image *image,DCMInfo *info,
                     index=0;
                   else
                     if (scaled_value > window_max)
-                      index=CastDoubleToInt(info->max_value);
+                      index=CastDoubleToInt((double) info->max_value);
                     else
-                      index=CastDoubleToInt(info->max_value*(((scaled_value-
-                        info->window_center-0.5)*MagickSafeReciprocal(
-                        info->window_width-1.0))+0.5));
+                      index=CastDoubleToInt((double) info->max_value*(((
+                        scaled_value-info->window_center-0.5)*
+                        MagickSafeReciprocal(info->window_width-1.0))+0.5));
                 }
             }
           index&=(ssize_t) info->mask;
