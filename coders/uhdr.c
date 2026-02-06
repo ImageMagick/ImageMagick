@@ -618,20 +618,28 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
   {
     /* Classify image as hdr/sdr intent basing on depth */
     int
-      bpp = image->depth >= hdrIntentMinDepth ? 2 : 1;
-
-    int
-      aligned_width = image->columns + (image->columns & 1);
-
-    int
-      aligned_height = image->rows + (image->rows & 1);
+      bpp;
 
     ssize_t
-      picSize = aligned_width * aligned_height * bpp * 1.5 /* 2x2 sub-sampling */;
+      aligned_height,
+      aligned_width;
+
+    size_t
+      picSize;
 
     void
       *crBuffer = NULL, *cbBuffer = NULL, *yBuffer = NULL;
 
+    if (((double) image->columns > sqrt(MAGICK_SSIZE_MAX/3.0)) ||
+        ((double) image->rows > sqrt(MAGICK_SSIZE_MAX/3.0)))
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
+          "WidthOrHeightExceedsLimit","%s",image->filename);
+        goto next_image;
+    }
+    bpp = image->depth >= hdrIntentMinDepth ? 2 : 1;
+    aligned_width = image->columns + (image->columns & 1);
+    picSize = aligned_width * aligned_height * bpp * 1.5 /* 2x2 sub-sampling */;
     if (IssRGBCompatibleColorspace(image->colorspace) && !IsGrayColorspace(image->colorspace))
     {
       if (image->depth >= hdrIntentMinDepth && hdr_ct == UHDR_CT_LINEAR)
