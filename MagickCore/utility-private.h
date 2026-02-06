@@ -104,6 +104,10 @@ static inline char *realpath_utf8(const char *path)
 {
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
 #if defined(MAGICKCORE_HAVE_REALPATH)
+  /*
+    This does not work for non-existing files so we should fine another way
+    to do this in the future. This is only a possible issue when writing files.
+  */
   return(realpath(path,(char *) NULL));
 #else
   return(AcquireString(path));
