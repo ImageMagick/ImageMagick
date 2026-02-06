@@ -2168,110 +2168,69 @@ MagickPrivate struct dirent *NTReadDirectory(DIR *entry)
 %    o path: the file path.
 %
 */
+static inline wchar_t* resolve_symlink(const wchar_t* path)
+{
+  DWORD
+    link_length;
+
+  HANDLE
+    file_handle;
+
+  wchar_t
+    *link;
+
+  file_handle=CreateFileW(path,GENERIC_READ,FILE_SHARE_READ |FILE_SHARE_WRITE |
+    FILE_SHARE_DELETE,NULL,OPEN_EXISTING,FILE_FLAG_BACKUP_SEMANTICS,NULL);
+  if (file_handle == INVALID_HANDLE_VALUE)
+    return((wchar_t *) NULL);
+  link_length=GetFinalPathNameByHandleW(file_handle,NULL,0,
+    FILE_NAME_NORMALIZED);
+  link=(wchar_t *) AcquireQuantumMemory(link_length,sizeof(wchar_t));
+  if (link == (wchar_t *) NULL)
+    {
+      CloseHandle(file_handle);
+      return((wchar_t *) NULL);
+    }
+  GetFinalPathNameByHandleW(file_handle,link,link_length,FILE_NAME_NORMALIZED);
+  CloseHandle(file_handle);
+  return(link);
+}
+
 MagickExport char *NTRealPathWide(const char *path)
 {
   char
     *real_path;
 
-  DWORD
-    final_path_length,
-    full_path_length;
-
-  HANDLE
-    file_handle;
-
-  int
-    length,
-    utf8_length;
-
   wchar_t
-    *clean_path,
-    *full_path,
+    *wide_real_path,
     *wide_path;
 
-  /*
-    Convert UTF-8 to UTF-16.
-  */
-  if (path == (const char *) NULL)
-    return((char *) NULL);
-  length=MultiByteToWideChar(CP_UTF8,0,path,-1,NULL,0);
-  if (length <= 0)
-    return((char *) NULL);
-  wide_path=(wchar_t *) AcquireQuantumMemory(length,sizeof(wchar_t));
-  if (wide_path == (wchar_t *) NULL)
-    return((char *) NULL);
-  MultiByteToWideChar(CP_UTF8,0,path,-1,wide_path,length);
-  /*
-    Normalize syntactically.
-  */
-  full_path_length=GetFullPathNameW(wide_path,0,NULL,NULL);
-  if (full_path_length == 0)
+  wide_path=NTCreateWidePath(path);
+  wide_real_path=resolve_symlink(wide_path);
+  if (wide_real_path == (wchar_t*) NULL)
     {
-      wide_path=(wchar_t *) RelinquishMagickMemory(wide_path);
-      return((char *) NULL);
-    }
-  full_path=(wchar_t *) AcquireQuantumMemory(full_path_length,sizeof(wchar_t));
-  if (full_path == (wchar_t *) NULL)
-    {
-      wide_path=(wchar_t *) RelinquishMagickMemory(wide_path);
-      return((char *) NULL);
-    }
-  GetFullPathNameW(wide_path,full_path_length,full_path,NULL);
-  wide_path=(wchar_t *) RelinquishMagickMemory(wide_path);
-  /*
-    Open the file/directory to resolve symlinks.
-  */
-  file_handle=CreateFileW(full_path,GENERIC_READ,FILE_SHARE_READ |
-    FILE_SHARE_WRITE | FILE_SHARE_DELETE,NULL,OPEN_EXISTING,
-    FILE_FLAG_BACKUP_SEMANTICS,NULL);
-  if (file_handle != INVALID_HANDLE_VALUE)
-    {
-      /*
-        Resolve final canonical path.
-      */
-      final_path_length=GetFinalPathNameByHandleW(file_handle,NULL,0,
-        FILE_NAME_NORMALIZED);
-      if (final_path_length == 0)
-        {
-          CloseHandle(file_handle);
-          full_path=(wchar_t *) RelinquishMagickMemory(full_path);
-          return((char *) NULL);
-        }
-      full_path=(wchar_t *) RelinquishMagickMemory(full_path);
-      full_path=(wchar_t *) AcquireQuantumMemory(final_path_length,
+      DWORD
+        full_path_length;
+
+      full_path_length=GetFullPathNameW(wide_path,0,NULL,NULL);
+      wide_real_path=(wchar_t *) AcquireQuantumMemory(full_path_length,
         sizeof(wchar_t));
-      if (full_path == (wchar_t *) NULL)
+      if (wide_real_path == (wchar_t*) NULL)
         {
-          CloseHandle(file_handle);
-          return((char *) NULL);
+          wide_path=(wchar_t *) RelinquishMagickMemory(wide_path);
+          return((char*) NULL);
         }
-      GetFinalPathNameByHandleW(file_handle,full_path,final_path_length,
-        FILE_NAME_NORMALIZED);
-      CloseHandle(file_handle);
+      GetFullPathNameW(wide_path,full_path_length,wide_real_path,NULL);
     }
+  wide_path=(wchar_t *) RelinquishMagickMemory(wide_path);
   /*
     Remove \\?\ prefix for POSIX-like behavior.
   */
-  clean_path=full_path;
-  if (wcsncmp(full_path,L"\\\\?\\",4) == 0)
-    clean_path=full_path+4;
-  /*
-    Convert UTF-16 to UTF-8.
-  */
-  utf8_length=WideCharToMultiByte(CP_UTF8,0,clean_path,-1,NULL,0,NULL,NULL);
-  if (utf8_length <= 0)
-    {
-      full_path=(wchar_t *) RelinquishMagickMemory(full_path);
-      return NULL;
-    }
-  real_path=(char *) AcquireQuantumMemory(utf8_length,sizeof(char));
-  if (real_path == (char *) NULL)
-    {
-      full_path=(wchar_t *) RelinquishMagickMemory(full_path);
-      return NULL;
-    }
-  WideCharToMultiByte(CP_UTF8,0,clean_path,-1,real_path,utf8_length,NULL,NULL);
-  full_path=(wchar_t *) RelinquishMagickMemory(full_path);
+  if (wcsncmp(wide_real_path,L"\\\\?\\",4) == 0)
+    real_path=create_utf8_string(wide_real_path+4);
+  else
+    real_path=create_utf8_string(wide_real_path);
+  wide_real_path=(wchar_t *) RelinquishMagickMemory(wide_real_path);
   return(real_path);
 }
 
