@@ -540,7 +540,7 @@ MagickExport MagickBooleanType GetMagickEncoderThreadSupport(
 {
   assert(magick_info != (MagickInfo *) NULL);
   assert(magick_info->signature == MagickCoreSignature);
-  return(((magick_info->flags & CoderDecoderThreadSupportFlag) == 0) ?
+  return(((magick_info->flags & CoderEncoderThreadSupportFlag) == 0) ?
     MagickFalse : MagickTrue);
 }
 
