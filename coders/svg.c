@@ -3379,6 +3379,7 @@ ModuleExport size_t RegisterSVGImage(void)
   entry=AcquireMagickInfo("SVG","SVG","Scalable Vector Graphics");
   entry->decoder=(DecodeImageHandler *) ReadSVGImage;
   entry->encoder=(EncodeImageHandler *) WriteSVGImage;
+  entry->flags^=CoderDecoderThreadSupportFlag;
   entry->mime_type=ConstantString("image/svg+xml");
   if (*version != '\0')
     entry->version=ConstantString(version);
@@ -3389,6 +3390,7 @@ ModuleExport size_t RegisterSVGImage(void)
   entry->decoder=(DecodeImageHandler *) ReadSVGImage;
 #endif
   entry->encoder=(EncodeImageHandler *) WriteSVGImage;
+  entry->flags^=CoderDecoderThreadSupportFlag;
   entry->mime_type=ConstantString("image/svg+xml");
   if (*version != '\0')
     entry->version=ConstantString(version);
@@ -3398,6 +3400,7 @@ ModuleExport size_t RegisterSVGImage(void)
   entry=AcquireMagickInfo("SVG","RSVG","Librsvg SVG renderer");
   entry->decoder=(DecodeImageHandler *) ReadSVGImage;
   entry->encoder=(EncodeImageHandler *) WriteSVGImage;
+  entry->flags^=CoderDecoderThreadSupportFlag;
   entry->mime_type=ConstantString("image/svg+xml");
   if (*version != '\0')
     entry->version=ConstantString(version);
@@ -3410,6 +3413,7 @@ ModuleExport size_t RegisterSVGImage(void)
   entry->decoder=(DecodeImageHandler *) ReadSVGImage;
 #endif
   entry->encoder=(EncodeImageHandler *) WriteSVGImage;
+  entry->flags^=CoderDecoderThreadSupportFlag;
   entry->magick=(IsImageFormatHandler *) IsSVG;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
