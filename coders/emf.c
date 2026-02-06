@@ -714,7 +714,7 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
     Gdiplus::Status::Ok)
     ThrowReaderException(CoderError, "GdiplusStartupFailed");
   source=(Gdiplus::Image *) NULL;
-  path=create_wchar_path(image->filename);
+  path=NTCreateWidePath(image->filename);
   if (path != (wchar_t *) NULL)
     {
       source=Gdiplus::Image::FromFile(path);

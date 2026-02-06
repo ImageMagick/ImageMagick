@@ -3254,7 +3254,7 @@ static inline gzFile gzopen_utf8(const char *path,const char *mode)
    wchar_t
      *path_wide;
 
-   path_wide=create_wchar_path(path);
+   path_wide=NTCreateWidePath(path);
    if (path_wide == (wchar_t *) NULL)
      return((gzFile) NULL);
    file=gzopen_w(path_wide,mode);

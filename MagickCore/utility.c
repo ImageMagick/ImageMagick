@@ -745,6 +745,23 @@ MagickPrivate void ExpandFilename(char *path)
 %      line arguments.
 %
 */
+static inline void getcwd_utf8(char *path,size_t extent)
+{
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
+  char
+    *directory;
+
+   directory=getcwd(path,extent);
+   (void) directory;
+#else
+  wchar_t
+    wide_path[MagickPathExtent];
+
+  (void) _wgetcwd(wide_path,MagickPathExtent-1);
+  (void) WideCharToMultiByte(CP_UTF8,0,wide_path,-1,path,(int) extent,NULL,NULL);
+#endif
+}
+
 MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
   char ***arguments)
 {
