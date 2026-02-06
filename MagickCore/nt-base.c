@@ -3082,7 +3082,7 @@ MagickPrivate void NTWindowsGenesis(void)
         wchar_t
           *lib_path;
 
-        lib_path=create_wchar_path((const char *) path);
+        lib_path=CreateWidePath((const char *) path);
         if (lib_path != (wchar_t *) NULL)
           {
             SetDllDirectoryW(lib_path);
