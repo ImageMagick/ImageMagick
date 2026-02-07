@@ -1344,7 +1344,10 @@ static MagickBooleanType WriteBGRImage(const ImageInfo *image_info,Image *image,
         status=OpenBlob(image_info,image,scene == 0 ? WriteBinaryBlobMode :
           AppendBinaryBlobMode,exception);
         if (status == MagickFalse)
-          return(status);
+          {
+            quantum_info=DestroyQuantumInfo(quantum_info);
+            return(status);
+          }
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           const Quantum
@@ -1371,7 +1374,10 @@ static MagickBooleanType WriteBGRImage(const ImageInfo *image_info,Image *image,
         status=OpenBlob(image_info,image,scene == 0 ? WriteBinaryBlobMode :
           AppendBinaryBlobMode,exception);
         if (status == MagickFalse)
-          return(status);
+          {
+            quantum_info=DestroyQuantumInfo(quantum_info);
+            return(status);
+          }
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           const Quantum
@@ -1398,7 +1404,10 @@ static MagickBooleanType WriteBGRImage(const ImageInfo *image_info,Image *image,
         status=OpenBlob(image_info,image,scene == 0 ? WriteBinaryBlobMode :
           AppendBinaryBlobMode,exception);
         if (status == MagickFalse)
-          return(status);
+          {
+            quantum_info=DestroyQuantumInfo(quantum_info);
+            return(status);
+          }
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           const Quantum
@@ -1428,7 +1437,10 @@ static MagickBooleanType WriteBGRImage(const ImageInfo *image_info,Image *image,
             status=OpenBlob(image_info,image,scene == 0 ? WriteBinaryBlobMode :
               AppendBinaryBlobMode,exception);
             if (status == MagickFalse)
-              return(status);
+              {
+                quantum_info=DestroyQuantumInfo(quantum_info);
+                return(status);
+              }
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               const Quantum

@@ -1291,7 +1291,10 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
         status=OpenBlob(image_info,image,scene == 0 ? WriteBinaryBlobMode :
           AppendBinaryBlobMode,exception);
         if (status == MagickFalse)
-          return(status);
+          {
+            quantum_info=DestroyQuantumInfo(quantum_info);
+            return(status);
+          }
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
@@ -1315,7 +1318,10 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
         status=OpenBlob(image_info,image,scene == 0 ? WriteBinaryBlobMode :
           AppendBinaryBlobMode,exception);
         if (status == MagickFalse)
-          return(status);
+          {
+            quantum_info=DestroyQuantumInfo(quantum_info);
+            return(status);
+          }
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
@@ -1339,7 +1345,10 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
         status=OpenBlob(image_info,image,scene == 0 ? WriteBinaryBlobMode :
           AppendBinaryBlobMode,exception);
         if (status == MagickFalse)
-          return(status);
+          {
+            quantum_info=DestroyQuantumInfo(quantum_info);
+            return(status);
+          }
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
@@ -1365,7 +1374,10 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
             status=OpenBlob(image_info,image,scene == 0 ? WriteBinaryBlobMode :
               AppendBinaryBlobMode,exception);
             if (status == MagickFalse)
-              return(status);
+              {
+                quantum_info=DestroyQuantumInfo(quantum_info);
+                return(status);
+              }
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               p=GetVirtualPixels(image,0,y,image->columns,1,exception);
