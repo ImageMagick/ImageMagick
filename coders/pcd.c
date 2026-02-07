@@ -181,7 +181,8 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
   unsigned char
     *buffer,
     *p,
-    *q;
+    *q,
+    *sentinel;
 
   /*
     Initialize Huffman tables.
@@ -259,6 +260,7 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
   */
   plane=0;
   row=0;
+  sentinel=luma+3*(image->columns+1)*image->rows;
   for (q=luma; EOFBlob(image) == MagickFalse; )
   {
     if (IsSync(sum) != 0)
@@ -323,6 +325,8 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
       quantum=(ssize_t) (*q)+r->key;
     else
       quantum=(ssize_t) (*q)+r->key-256;
+    if ((q < luma) || (q >= sentinel))
+      break;
     *q=(unsigned char) ((quantum < 0) ? 0 : (quantum > 255) ? 255 : quantum);
     q++;
     PCDGetBits(r->length);
@@ -333,6 +337,8 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
   for (i=0; i < pcd_count; i++)
     pcd_table[i]=(PCDTable *) RelinquishMagickMemory(pcd_table[i]);
   buffer=(unsigned char *) RelinquishMagickMemory(buffer);
+  if ((q < luma) || (q >= sentinel))
+    ThrowBinaryException(CorruptImageError,"CorruptImage",image->filename);
   return(MagickTrue);
 }
 
@@ -771,7 +777,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (i=0; i < (4*0x800); i++)
         (void) ReadBlobByte(image);
       status=DecodeImage(image,luma,chroma1,chroma2,exception);
-      if ((scene >= 5) && status)
+      if ((scene >= 5) && (status != MagickFalse))
         {
           /*
             Recover luminance deltas for 3072x2048 image.
@@ -868,6 +874,8 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->scene != 0)
     for (i=0; i < (ssize_t) image_info->scene; i++)
       AppendImageToList(&image,CloneImage(image,0,0,MagickTrue,exception));
+  if (status == MagickFalse)
+    return(image=DestroyImageList(image));
   return(GetFirstImageInList(image));
 }
 
