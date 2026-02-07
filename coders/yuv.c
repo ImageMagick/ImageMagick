@@ -261,7 +261,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
             chroma_image->columns,1,exception);
           if (chroma_pixels == (Quantum *) NULL)
             break;
-          for (x=0; x < (ssize_t) image->columns; x+=2)
+          for (x=0; x < (ssize_t) (image->columns-1); x+=2)
           {
             SetPixelRed(chroma_image,0,chroma_pixels);
             if (quantum == 1)
@@ -740,7 +740,7 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
             exception);
           if (s == (const Quantum *) NULL)
             break;
-          for (x=0; x < (ssize_t) yuv_image->columns; x+=2)
+          for (x=0; x < (ssize_t) (yuv_image->columns-1); x+=2)
           {
             if (quantum == 1)
               {
