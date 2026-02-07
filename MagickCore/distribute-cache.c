@@ -75,6 +75,9 @@
 #include "MagickCore/utility-private.h"
 #include "MagickCore/version.h"
 #include "MagickCore/version-private.h"
+#ifdef FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION
+#undef MAGICKCORE_DPC_SUPPORT
+#endif
 #undef MAGICKCORE_HAVE_DISTRIBUTE_CACHE
 #define SOCKET_TYPE int
 #if defined(MAGICKCORE_DPC_SUPPORT)
