@@ -2659,6 +2659,9 @@ static void SVGEndElement(void *context,const xmlChar *name)
     {
       if (LocaleCompare((const char *) name,"image") == 0)
         {
+          char
+            *text;
+
           Image
             *image;
 
@@ -2686,12 +2689,13 @@ static void SVGEndElement(void *context,const xmlChar *name)
           image_info=DestroyImageInfo(image_info);
           if (image != (Image *) NULL)
             image=DestroyImage(image);
-
           (void) DeleteNodeFromSplayTree(svg_tree,svg_info->url);
+          text=EscapeString(svg_info->url,'\"');
           (void) FormatLocaleFile(svg_info->file,
             "image Over %g,%g %g,%g \"%s\"\n",svg_info->bounds.x,
             svg_info->bounds.y,svg_info->bounds.width,svg_info->bounds.height,
-            svg_info->url);
+            text);
+          text=DestroyString(text);
           (void) FormatLocaleFile(svg_info->file,"pop graphic-context\n");
           break;
         }
@@ -2904,11 +2908,15 @@ static void SVGEndElement(void *context,const xmlChar *name)
     {
       if (LocaleCompare((char *) name,"use") == 0)
         {
+          char
+            *text;
+
           if ((svg_info->bounds.x != 0.0) || (svg_info->bounds.y != 0.0))
             (void) FormatLocaleFile(svg_info->file,"translate %g,%g\n",
               svg_info->bounds.x,svg_info->bounds.y);
-          (void) FormatLocaleFile(svg_info->file,"use \"url(%s)\"\n",
-            svg_info->url);
+          text=EscapeString(svg_info->url,'\"');
+          (void) FormatLocaleFile(svg_info->file,"use \"url(%s)\"\n",text);
+          text=DestroyString(text);
           (void) FormatLocaleFile(svg_info->file,"pop graphic-context\n");
           break;
         }
