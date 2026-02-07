@@ -240,7 +240,7 @@ static int IsPathDirectory(const char *path)
   return(1);
 }
 
-static void MSLPushImage(MSLInfo *msl_info,Image *image)
+static ssize_t MSLPushImage(MSLInfo *msl_info,Image *image)
 {
   ssize_t
     n;
@@ -274,6 +274,7 @@ static void MSLPushImage(MSLInfo *msl_info,Image *image)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed")
   if (msl_info->number_groups != 0)
     msl_info->group_info[msl_info->number_groups-1].numImages++;
+  return(n);
 }
 
 static void MSLPopImage(MSLInfo *msl_info)
@@ -3071,7 +3072,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
     {
       if (LocaleCompare((const char *) tag,"image") == 0)
         {
-          MSLPushImage(msl_info,(Image *) NULL);
+          n=MSLPushImage(msl_info,(Image *) NULL);
           if (attributes == (const xmlChar **) NULL)
             break;
           for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
