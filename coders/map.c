@@ -160,6 +160,8 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (status == MagickFalse)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   depth=GetImageQuantumDepth(image,MagickTrue);
+  if ((depth <= 8) && (image->colors > 256))
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   packet_size=(size_t) (depth/8);
   pixels=(unsigned char *) AcquireQuantumMemory(image->columns,packet_size*
     sizeof(*pixels));
@@ -236,8 +238,8 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       p++;
       if (image->colors > 256)
         {
-          index=(Quantum) ConstrainColormapIndex(image,(ssize_t) (((size_t) index << 8)+
-            (size_t) (*p)),exception);
+          index=(Quantum) ConstrainColormapIndex(image,(ssize_t)
+            (((size_t) index << 8)+(size_t) (*p)),exception);
           p++;
         }
       SetPixelIndex(image,index,q);
