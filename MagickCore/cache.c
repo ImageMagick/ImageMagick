@@ -3978,6 +3978,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
       if ((source_info.storage_class != UndefinedClass) && (mode != ReadMode))
         RelinquishPixelCachePixels(&source_info);
       cache_info->type=UndefinedCache;
+      (void) memset(image->channel_map,0,MaxPixelChannels*
+        sizeof(*image->channel_map));
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
         "CacheResourcesExhausted","`%s'",image->filename);
       return(MagickFalse);
@@ -3990,6 +3992,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
       if ((source_info.storage_class != UndefinedClass) && (mode != ReadMode))
         RelinquishPixelCachePixels(&source_info);
       cache_info->type=UndefinedCache;
+      (void) memset(image->channel_map,0,MaxPixelChannels*
+        sizeof(*image->channel_map));
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
         "CacheResourcesExhausted","`%s'",image->filename);
       return(MagickFalse);
@@ -4197,6 +4201,9 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
   status=AcquireMagickResource(DiskResource,cache_info->length);
   if (status == MagickFalse)
     {
+      cache_info->type=UndefinedCache;
+      (void) memset(image->channel_map,0,MaxPixelChannels*
+        sizeof(*image->channel_map));
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
         "CacheResourcesExhausted","`%s'",image->filename);
       return(MagickFalse);
