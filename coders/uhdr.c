@@ -636,17 +636,14 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
         (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
           "WidthOrHeightExceedsLimit","%s",image->filename);
         goto next_image;
-    }
+      }
     bpp = image->depth >= hdrIntentMinDepth ? 2 : 1;
-    aligned_width = image->columns + (image->columns & 1);
-    picSize = aligned_width * aligned_height * bpp * 1.5 /* 2x2 sub-sampling */;
     if (IssRGBCompatibleColorspace(image->colorspace) && !IsGrayColorspace(image->colorspace))
     {
       if (image->depth >= hdrIntentMinDepth && hdr_ct == UHDR_CT_LINEAR)
         bpp = 8; /* rgbahalf float */
       else
         bpp = 4; /* rgba1010102 or rgba8888 */
-      picSize = aligned_width * aligned_height * bpp;
     }
     else if (IsYCbCrCompatibleColorspace(image->colorspace))
     {
@@ -664,6 +661,27 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
         "Received image with color space incompatible with RGB/YCbCr, ","%s","ignoring ...");
       goto next_image;
     }
+
+    aligned_width = image->columns + (image->columns & 1);
+    aligned_height = image->rows + (image->rows & 1);
+    if (HeapOverflowSanityCheckGetSize(aligned_width,aligned_height,&picSize) != MagickFalse)
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+          "ImproperImageHeader","%s",image->filename);
+        goto next_image;
+      }
+    if (HeapOverflowSanityCheckGetSize(picSize,bpp,&picSize) != MagickFalse)
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+          "ImproperImageHeader","%s",image->filename);
+        goto next_image;
+      }
+    if ((bpp < 4) && (HeapOverflowSanityCheckGetSize(picSize,1.5,&picSize) != MagickFalse))
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+          "ImproperImageHeader","%s",image->filename);
+        goto next_image;
+      }
 
     if (image->depth < hdrIntentMinDepth && image->depth != 8)
     {
@@ -828,7 +846,7 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
             b = ScaleQuantumToShort(GetPixelBlue(image, p)) & 0xFFC0;
 
             rgbBase[y * hdrImgDescriptor.stride[UHDR_PLANE_PACKED] + x] =
-                (0x3 << 30) | (b << 14) | (g << 4) | (r >> 6);
+                (0x3U << 30) | (b << 14) | (g << 4) | (r >> 6);
           }
         }
         else if (image->depth == 8)
