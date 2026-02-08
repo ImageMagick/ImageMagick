@@ -767,7 +767,7 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
                   GetPixelRed(yuv_image,p)));
               }
             p+=(ptrdiff_t) GetPixelChannels(yuv_image);
-            s++;
+            s+=(ptrdiff_t) GetPixelChannels(chroma_image);
           }
           if (image->previous == (Image *) NULL)
             {
