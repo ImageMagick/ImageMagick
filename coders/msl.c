@@ -7430,7 +7430,7 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
   /* the first slot is used to point to the MSL file image */
   *msl_info.image=msl_image;
   if (*image != (Image *) NULL)
-    MSLPushImage(&msl_info,*image);
+    MSLPushImage(&msl_info,CloneImage(*image,0,0,MagickTrue,exception));
   xmlInitParser();
   /*
     TODO: Upgrade to SAX version 2 (startElementNs/endElementNs)
@@ -7456,7 +7456,7 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed","");
     }
   parser->_private=(MSLInfo *) &msl_info;
-  option = GetImageOption(image_info,"msl:parse-huge");
+  option=GetImageOption(image_info,"msl:parse-huge");
   if ((option != (char *) NULL) && (IsStringTrue(option) != MagickFalse))
     (void) xmlCtxtUseOptions(parser,XML_PARSE_HUGE);
   option=GetImageOption(image_info,"msl:substitute-entities");
@@ -7921,6 +7921,7 @@ static MagickBooleanType WriteMSLImage(const ImageInfo *image_info,Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   msl_image=CloneImage(image,0,0,MagickTrue,exception);
   status=ProcessMSLScript(image_info,&msl_image,exception);
+  msl_image=DestroyImage(msl_image);
   return(status);
 }
 #endif
