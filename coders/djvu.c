@@ -330,7 +330,6 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
     *image;
 
   int
-    ret,
     stride;
 
   unsigned char
@@ -372,14 +371,13 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
         ddjvu_format_set_row_order(format, 1);
         ddjvu_format_set_y_direction(format, 1);
 
-        ret = ddjvu_page_render(page,
+        (void) ddjvu_page_render(page,
                                     DDJVU_RENDER_COLOR, /* ddjvu_render_mode_t */
                                     &rect,
                                     &rect,     /* mmc: ?? */
                                     format,
                                     (size_t) stride, /* ?? */
                                     (char*)q);
-        (void) ret;
         ddjvu_format_release(format);
 
 
