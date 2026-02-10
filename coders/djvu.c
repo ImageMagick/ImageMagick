@@ -329,7 +329,7 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
   Image
     *image;
 
-  int
+  size_t
     stride;
 
   unsigned char
@@ -348,7 +348,7 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
         stride = (type == DDJVU_PAGETYPE_BITONAL)?
                 (image->columns + 7)/8 : image->columns *3;
 
-        q = (unsigned char *) AcquireQuantumMemory(image->rows,(size_t) stride);
+        q = (unsigned char *) AcquireQuantumMemory(image->rows,stride);
         if (q == (unsigned char *) NULL)
           return;
 
