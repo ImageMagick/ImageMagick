@@ -7499,6 +7499,9 @@ static Image *ReadMSLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
+  MagickBooleanType
+    status;
+
   /*
     Open image file.
   */
@@ -7510,7 +7513,9 @@ static Image *ReadMSLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   image=(Image *) NULL;
-  (void) ProcessMSLScript(image_info,&image,exception);
+  status=ProcessMSLScript(image_info,&image,exception);
+  if ((status == MagickFalse) && (image != (Image *) NULL))
+    image=DestroyImage(image);
   return(GetFirstImageInList(image));
 }
 #endif
@@ -7916,7 +7921,6 @@ static MagickBooleanType WriteMSLImage(const ImageInfo *image_info,Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   msl_image=CloneImage(image,0,0,MagickTrue,exception);
   status=ProcessMSLScript(image_info,&msl_image,exception);
-  msl_image=DestroyImage(msl_image);
   return(status);
 }
 #endif
