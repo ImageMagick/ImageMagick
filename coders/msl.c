@@ -3064,8 +3064,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
         sizeof(*msl_info->group_info));
       if (msl_info->group_info == (MSLGroupInfo *) NULL)
         {
-          ThrowMSLException(ResourceLimitFatalError,"UnableToInterpretMSLImage",
-            keyword);
+          ThrowMSLException(ResourceLimitFatalError,
+            "UnableToInterpretMSLImage",tag);
           break;
         }
       msl_info->group_info[msl_info->number_groups].numImages=0;
