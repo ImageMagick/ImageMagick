@@ -1902,7 +1902,7 @@ static void formatIPTC(Image *ifile, Image *ofile)
 
   foundiptc = 0; /* found the IPTC-Header */
 
-  c = ReadBlobByte(ifile);
+  c=ReadBlobByte(ifile);
   while (c != EOF)
   {
     if (c == 0x1c)
@@ -1913,17 +1913,17 @@ static void formatIPTC(Image *ifile, Image *ofile)
           return;
         else
           {
-            c=0;
+            c=ReadBlobByte(ifile);
             continue;
           }
       }
 
     /* we found the 0x1c tag and now grab the dataset and record number tags */
-    c = ReadBlobByte(ifile);
+    c=ReadBlobByte(ifile);
     if (c == EOF)
       return;
     dataset = (unsigned char) c;
-    c = ReadBlobByte(ifile);
+    c=ReadBlobByte(ifile);
     if (c == EOF)
       return;
     recnum = (unsigned char) c;
