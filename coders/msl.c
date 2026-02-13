@@ -7437,7 +7437,7 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
   /* the first slot is used to point to the MSL file image */
   *msl_info.image=msl_image;
   if (*image != (Image *) NULL)
-    MSLPushImage(&msl_info,CloneImage(*image,0,0,MagickTrue,exception));
+    MSLPushImage(&msl_info,*image);
   xmlInitParser();
   /*
     TODO: Upgrade to SAX version 2 (startElementNs/endElementNs)
