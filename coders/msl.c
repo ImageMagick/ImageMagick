@@ -7563,7 +7563,6 @@ ModuleExport size_t RegisterMSLImage(void)
   entry->decoder=(DecodeImageHandler *) ReadMSLImage;
   entry->encoder=(EncodeImageHandler *) WriteMSLImage;
 #endif
-  entry->flags^=CoderDecoderThreadSupportFlag;
   entry->format_type=ImplicitFormatType;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);

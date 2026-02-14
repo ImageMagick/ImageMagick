@@ -145,7 +145,7 @@ extern const MagickExport MagickInfo
   **GetMagickInfoList(const char *,size_t *,ExceptionInfo *);
 
 extern MagickExport MagickInfo
-  *AcquireMagickInfo(const char *, const char *, const char *);
+  *AcquireMagickInfo(const char *,const char *,const char *);
 
 extern MagickExport void
   MagickCoreGenesis(const char *,const MagickBooleanType),
