@@ -321,12 +321,12 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
           PCDGetBits(1);
         continue;
       }
+    if ((q < luma) || (q >= sentinel))
+      break;
     if (r->key < 128)
       quantum=(ssize_t) (*q)+r->key;
     else
       quantum=(ssize_t) (*q)+r->key-256;
-    if ((q < luma) || (q >= sentinel))
-      break;
     *q=(unsigned char) ((quantum < 0) ? 0 : (quantum > 255) ? 255 : quantum);
     q++;
     PCDGetBits(r->length);
