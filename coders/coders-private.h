@@ -20,6 +20,7 @@
 #include "MagickCore/colorspace-private.h"
 #include "MagickCore/property.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/thread-private.h"
 
 #define MagickCoderHeader(coder,offset,magic) \
   { coder, offset, (const unsigned char *) (magic), sizeof(magic)-1, MagickFalse },
@@ -34,6 +35,13 @@ extern ModuleExport size_t \
   Register ## coder ## Image(void); \
 extern ModuleExport void \
   Unregister ## coder ## Image(void);
+
+static inline void DecorateFilenameWithThreadId(const char *filename,
+  char *thread_filename)
+{
+  (void) FormatLocaleString(thread_filename,MagickPathExtent,"%.20g|%s",
+    (double) GetMagickThreadId(),filename);
+}
 
 static inline ImageType IdentifyImageCoderType(const Image *image,
   ExceptionInfo *exception)

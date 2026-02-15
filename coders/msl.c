@@ -89,10 +89,12 @@
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
+#include "MagickCore/thread-private.h"
 #include "MagickCore/transform.h"
 #include "MagickCore/threshold.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/visual-effects.h"
+#include "coders/coders-private.h"
 #if defined(MAGICKCORE_XML_DELEGATE)
 #  include <libxml/xmlmemory.h>
 #  include <libxml/parserInternals.h>
@@ -4311,12 +4313,6 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           /*
             Query font metrics.
           */
-          if ((n < 1) || (msl_info->image[n] == (Image *) NULL))
-            {
-              ThrowMSLException(OptionError,"NoImagesDefined",
-                (const char *) tag);
-              break;
-            }
           draw_info=CloneDrawInfo(msl_info->image_info[n],
             msl_info->draw_info[n]);
           angle=0.0;
@@ -4790,25 +4786,28 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               {
                 if (LocaleCompare(keyword,"filename") == 0)
                   {
+                    char
+                      thread_filename[MagickPathExtent];
+
                     Image
                       *next = (Image *) NULL;
 
                     if (value == (char *) NULL)
                       break;
-                    if (GetValueFromSplayTree(msl_tree,value) != (const char *) NULL)
+                    DecorateFilenameWithThreadId(value,thread_filename);
+                    if (GetValueFromSplayTree(msl_tree,thread_filename) != (const char *) NULL)
                       {
                         (void) ThrowMagickException(msl_info->exception,
                           GetMagickModule(),DrawError,
                           "VectorGraphicsNestedTooDeeply","`%s'",value);
                         break;
                       }
-                    (void) AddValueToSplayTree(msl_tree,ConstantString(value),
-                      (void *) 1);
+                    (void) AddValueToSplayTree(msl_tree,ConstantString(
+                      thread_filename),(void *) 1);
                     *msl_info->image_info[n]->magick='\0';
                     (void) CopyMagickString(msl_info->image_info[n]->filename,
                       value,MagickPathExtent);
                     next=ReadImage(msl_info->image_info[n],exception);
-                    (void) DeleteNodeFromSplayTree(msl_tree,value);
                     CatchException(exception);
                     if (next == (Image *) NULL)
                       continue;
@@ -7177,7 +7176,18 @@ static void MSLEndElement(void *context,const xmlChar *tag)
     case 'i':
     {
       if (LocaleCompare((const char *) tag, "image") == 0)
-        MSLPopImage(msl_info);
+        {
+          if (msl_info->image_info[msl_info->n] != (ImageInfo *) NULL)
+            {
+              char
+                thread_filename[MagickPathExtent];
+
+              DecorateFilenameWithThreadId(
+                msl_info->image_info[msl_info->n]->filename,thread_filename);
+              (void) DeleteNodeFromSplayTree(msl_tree,thread_filename);
+            }
+          MSLPopImage(msl_info);
+        }
       break;
     }
     case 'L':
