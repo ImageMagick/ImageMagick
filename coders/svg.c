@@ -189,6 +189,11 @@ typedef struct _SVGInfo
 /*    
   Global declarations.
 */
+#if defined(MAGICKCORE_RSVG_DELEGATE)
+static SemaphoreInfo
+  *rsvg_semaphore = (SemaphoreInfo *) NULL;
+#endif
+
 static SplayTreeInfo
   *svg_tree = (SplayTreeInfo *) NULL;
 
@@ -3324,7 +3329,11 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
         }
 #if defined(MAGICKCORE_RSVG_DELEGATE)
+      if (rsvg_semaphore == (SemaphoreInfo *) NULL)
+        ActivateSemaphoreInfo(&rsvg_semaphore);
+      LockSemaphoreInfo(rsvg_semaphore);
       image=RenderRSVGImage(image_info,image,exception);
+      UnlockSemaphoreInfo(rsvg_semaphore);
       return(image);
 #endif
     }
@@ -3385,7 +3394,6 @@ ModuleExport size_t RegisterSVGImage(void)
   entry=AcquireMagickInfo("SVG","SVG","Scalable Vector Graphics");
   entry->decoder=(DecodeImageHandler *) ReadSVGImage;
   entry->encoder=(EncodeImageHandler *) WriteSVGImage;
-  entry->flags^=CoderDecoderThreadSupportFlag;
   entry->mime_type=ConstantString("image/svg+xml");
   if (*version != '\0')
     entry->version=ConstantString(version);
@@ -3396,7 +3404,6 @@ ModuleExport size_t RegisterSVGImage(void)
   entry->decoder=(DecodeImageHandler *) ReadSVGImage;
 #endif
   entry->encoder=(EncodeImageHandler *) WriteSVGImage;
-  entry->flags^=CoderDecoderThreadSupportFlag;
   entry->mime_type=ConstantString("image/svg+xml");
   if (*version != '\0')
     entry->version=ConstantString(version);
