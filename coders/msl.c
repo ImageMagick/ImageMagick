@@ -4313,6 +4313,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           /*
             Query font metrics.
           */
+          if ((n < 1) || (msl_info->image[n] == (Image *) NULL))
+            {
+              ThrowMSLException(OptionError,"NoImagesDefined",
+                (const char *) tag);
+              break;
+            }
           draw_info=CloneDrawInfo(msl_info->image_info[n],
             msl_info->draw_info[n]);
           angle=0.0;
