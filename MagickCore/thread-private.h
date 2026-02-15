@@ -103,7 +103,7 @@ static inline void DecorateFilenameWithThreadId(const char *filename,
   id=GetMagickThreadId();
   (void) memcpy(bytes,&id,sizeof(id));
   for (i=0; i < (ssize_t) sizeof(bytes); i++)
-    (void) sprintf(thread_id+2*i,"%02x",bytes[i]);
+    (void) FormatLocaleString(thread_id+2*i,MagickPathExtent,"%02x",bytes[i]);
   thread_id[sizeof(thread_id)-1]='\0';
   (void) FormatLocaleString(thread_filename,MagickPathExtent,"%s|%s",thread_id,
     filename);
