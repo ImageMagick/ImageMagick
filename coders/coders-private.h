@@ -36,13 +36,6 @@ extern ModuleExport size_t \
 extern ModuleExport void \
   Unregister ## coder ## Image(void);
 
-static inline void DecorateFilenameWithThreadId(const char *filename,
-  char *thread_filename)
-{
-  (void) FormatLocaleString(thread_filename,MagickPathExtent,"%.20g|%s",
-    (double) GetMagickThreadId(),filename);
-}
-
 static inline ImageType IdentifyImageCoderType(const Image *image,
   ExceptionInfo *exception)
 {
