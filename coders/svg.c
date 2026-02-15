@@ -3311,21 +3311,17 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   if (LocaleCompare(image_info->magick,"MSVG") != 0)
     {
-      Image
-        *svg_image;
+      if (LocaleCompare(image_info->magick,"RSVG") != 0)
+        {
+          Image
+            *svg_image;
 
-#if defined(MAGICKCORE_RSVG_DELEGATE)
-      if (LocaleCompare(image_info->magick,"RSVG") == 0)
-        {
-          image=RenderRSVGImage(image_info,image,exception);
-          return(image);
-        }
-#endif
-      svg_image=RenderSVGImage(image_info,image,exception);
-      if (svg_image != (Image *) NULL)
-        {
-          image=DestroyImageList(image);
-          return(svg_image);
+          svg_image=RenderSVGImage(image_info,image,exception);
+          if (svg_image != (Image *) NULL)
+            {
+              image=DestroyImageList(image);
+              return(svg_image);
+            }
         }
 #if defined(MAGICKCORE_RSVG_DELEGATE)
       image=RenderRSVGImage(image_info,image,exception);
