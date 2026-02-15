@@ -4800,7 +4800,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
 
                     if (value == (char *) NULL)
                       break;
-                    DecorateFilenameWithThreadId(value,thread_filename);
+                    GetMagickThreadFilename(value,thread_filename);
                     if (GetValueFromSplayTree(msl_tree,thread_filename) != (const char *) NULL)
                       {
                         (void) ThrowMagickException(msl_info->exception,
@@ -7188,7 +7188,7 @@ static void MSLEndElement(void *context,const xmlChar *tag)
               char
                 thread_filename[MagickPathExtent];
 
-              DecorateFilenameWithThreadId(
+              GetMagickThreadFilename(
                 msl_info->image_info[msl_info->n]->filename,thread_filename);
               (void) DeleteNodeFromSplayTree(msl_tree,thread_filename);
             }

@@ -2692,7 +2692,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
               (void) FormatLocaleFile(svg_info->file,"pop graphic-context\n");
               break;
             }
-          DecorateFilenameWithThreadId(svg_info->url,thread_filename);
+          GetMagickThreadFilename(svg_info->url,thread_filename);
           if (GetValueFromSplayTree(svg_tree,thread_filename) != (const char *) NULL)
             {
               image_info=DestroyImageInfo(image_info);

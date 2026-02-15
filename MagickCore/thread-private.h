@@ -85,7 +85,7 @@ static inline MagickThreadType GetMagickThreadId(void)
 #endif
 }
 
-static inline void DecorateFilenameWithThreadId(const char *filename,
+static inline void GetMagickThreadFilename(const char *filename,
   char *thread_filename)
 {
   MagickThreadType
