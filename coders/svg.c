@@ -808,7 +808,7 @@ static void SVGStripString(const MagickBooleanType trim,char *message)
     Convert newlines to a space.
   */
   for (p=message; *p != '\0'; p++)
-    if (*p == '\n')
+    if ((*p == '\n') || (*p == '\r'))
       *p=' ';
 }
 
@@ -893,7 +893,7 @@ static inline char *SVGEscapeString(const char* value)
 
   escaped_value=EscapeString(value,'\"');
   for (p=escaped_value; *p != '\0'; p++)
-    if (*p == '\n')
+    if ((*p == '\n') || (*p == '\r'))
       *p=' ';
   return(escaped_value);
 }
