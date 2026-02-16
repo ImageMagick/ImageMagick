@@ -2076,11 +2076,13 @@ MagickPrivate MagickBooleanType TransformImage(Image **image,
         }
       *image=transform_image;
     }
-  if (image_geometry == (const char *) NULL)
-    return(MagickTrue);
+  if (transform_image == (Image *) NULL)
+    return(MagickFalse);
   /*
     Scale image to a user specified size.
   */
+  if (image_geometry == (const char *) NULL)
+    return(MagickTrue);
   (void) ParseRegionGeometry(transform_image,image_geometry,&geometry,
     exception);
   if ((transform_image->columns == geometry.width) &&

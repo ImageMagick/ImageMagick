@@ -4311,11 +4311,11 @@ MagickExport size_t ImportQuantumPixels(const Image *image,
   const QuantumType quantum_type,const unsigned char *magick_restrict pixels,
   ExceptionInfo *exception)
 {
-  MagickSizeType
-    number_pixels;
-
   const unsigned char
     *magick_restrict p;
+
+  MagickSizeType
+    number_pixels;
 
   ssize_t
     x;
@@ -4348,6 +4348,8 @@ MagickExport size_t ImportQuantumPixels(const Image *image,
       number_pixels=GetCacheViewExtent(image_view);
       q=GetCacheViewAuthenticPixelQueue(image_view);
     }
+  if (q == (Quantum *) NULL)
+    return(0);
   ResetQuantumState(quantum_info);
   extent=GetQuantumExtent(image,quantum_info,quantum_type);
   switch (quantum_type)

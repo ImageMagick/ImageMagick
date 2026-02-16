@@ -1360,10 +1360,14 @@ static void ExportCMYKQuantum(const Image *image,QuantumInfo *quantum_info,
         {
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            q=PopQuantumFloatPixel(quantum_info,(float) GetPixelRed(image,p),q);
-            q=PopQuantumFloatPixel(quantum_info,(float) GetPixelGreen(image,p),q);
-            q=PopQuantumFloatPixel(quantum_info,(float) GetPixelBlue(image,p),q);
-            q=PopQuantumFloatPixel(quantum_info,(float) GetPixelBlack(image,p),q);
+            q=PopQuantumFloatPixel(quantum_info,(float) GetPixelRed(image,p),
+              q);
+            q=PopQuantumFloatPixel(quantum_info,(float) GetPixelGreen(image,p),
+              q);
+            q=PopQuantumFloatPixel(quantum_info,(float) GetPixelBlue(image,p),
+              q);
+            q=PopQuantumFloatPixel(quantum_info,(float) GetPixelBlack(image,p),
+              q);
             p+=(ptrdiff_t) GetPixelChannels(image);
             q+=(ptrdiff_t) quantum_info->pad;
           }
@@ -1390,10 +1394,14 @@ static void ExportCMYKQuantum(const Image *image,QuantumInfo *quantum_info,
         {
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            q=PopQuantumDoublePixel(quantum_info,(double) GetPixelRed(image,p),q);
-            q=PopQuantumDoublePixel(quantum_info,(double) GetPixelGreen(image,p),q);
-            q=PopQuantumDoublePixel(quantum_info,(double) GetPixelBlue(image,p),q);
-            q=PopQuantumDoublePixel(quantum_info,(double) GetPixelBlack(image,p),q);
+            q=PopQuantumDoublePixel(quantum_info,(double)
+              GetPixelRed(image,p),q);
+            q=PopQuantumDoublePixel(quantum_info,(double)
+              GetPixelGreen(image,p),q);
+            q=PopQuantumDoublePixel(quantum_info,(double)
+              GetPixelBlue(image,p),q);
+            q=PopQuantumDoublePixel(quantum_info,(double)
+              GetPixelBlack(image,p),q);
             p+=(ptrdiff_t) GetPixelChannels(image);
             q+=(ptrdiff_t) quantum_info->pad;
           }
@@ -1694,9 +1702,12 @@ static void ExportCMYKOQuantum(const Image *image,QuantumInfo *quantum_info,
               float_pixel;
 
             q=PopQuantumFloatPixel(quantum_info,(float) GetPixelRed(image,p),q);
-            q=PopQuantumFloatPixel(quantum_info,(float) GetPixelGreen(image,p),q);
-            q=PopQuantumFloatPixel(quantum_info,(float) GetPixelBlue(image,p),q);
-            q=PopQuantumFloatPixel(quantum_info,(float) GetPixelBlack(image,p),q);
+            q=PopQuantumFloatPixel(quantum_info,(float) GetPixelGreen(image,p),
+              q);
+            q=PopQuantumFloatPixel(quantum_info,(float) GetPixelBlue(image,p),
+              q);
+            q=PopQuantumFloatPixel(quantum_info,(float) GetPixelBlack(image,p),
+              q);
             float_pixel=(float) (GetPixelOpacity(image,p));
             q=PopQuantumFloatPixel(quantum_info,float_pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
@@ -1730,10 +1741,14 @@ static void ExportCMYKOQuantum(const Image *image,QuantumInfo *quantum_info,
 
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            q=PopQuantumDoublePixel(quantum_info,(double) GetPixelRed(image,p),q);
-            q=PopQuantumDoublePixel(quantum_info,(double) GetPixelGreen(image,p),q);
-            q=PopQuantumDoublePixel(quantum_info,(double) GetPixelBlue(image,p),q);
-            q=PopQuantumDoublePixel(quantum_info,(double) GetPixelBlack(image,p),q);
+            q=PopQuantumDoublePixel(quantum_info,(double)
+              GetPixelRed(image,p),q);
+            q=PopQuantumDoublePixel(quantum_info,(double)
+              GetPixelGreen(image,p),q);
+            q=PopQuantumDoublePixel(quantum_info,(double)
+              GetPixelBlue(image,p),q);
+            q=PopQuantumDoublePixel(quantum_info,(double)
+              GetPixelBlack(image,p),q);
             pixel=(double) (GetPixelOpacity(image,p));
             q=PopQuantumDoublePixel(quantum_info,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
@@ -1759,8 +1774,8 @@ static void ExportCMYKOQuantum(const Image *image,QuantumInfo *quantum_info,
           range),q);
         q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(GetPixelBlack(image,p),
           range),q);
-        q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(GetPixelOpacity(image,p),
-          range),q);
+        q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(
+          GetPixelOpacity(image,p),range),q);
         p+=(ptrdiff_t) GetPixelChannels(image);
         q+=(ptrdiff_t) quantum_info->pad;
       }
@@ -3654,11 +3669,11 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
   const QuantumType quantum_type,unsigned char *magick_restrict pixels,
   ExceptionInfo *exception)
 {
-  MagickSizeType
-    number_pixels;
-
   const Quantum
     *magick_restrict p;
+
+  MagickSizeType
+    number_pixels;
 
   size_t
     extent;
@@ -3689,6 +3704,8 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
       number_pixels=GetCacheViewExtent(image_view);
       p=GetCacheViewVirtualPixelQueue(image_view);
     }
+  if (p == (Quantum *) NULL)
+    return(0);
   if (quantum_info->alpha_type == AssociatedQuantumAlpha)
     {
       double
@@ -3815,7 +3832,8 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
     case GreenQuantum:
     case MagentaQuantum:
     {
-      ExportPixelChannel(image,quantum_info,number_pixels,p,q,GreenPixelChannel);
+      ExportPixelChannel(image,quantum_info,number_pixels,p,q,
+        GreenPixelChannel);
       break;
     }
     case IndexQuantum:

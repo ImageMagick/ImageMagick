@@ -2273,9 +2273,7 @@ MagickExport XMLTreeInfo *NewXMLTreeTag(const char *tag)
   XMLTreeRoot
     *root;
 
-  root=(XMLTreeRoot *) AcquireMagickMemory(sizeof(*root));
-  if (root == (XMLTreeRoot *) NULL)
-    return((XMLTreeInfo *) NULL);
+  root=(XMLTreeRoot *) AcquireCriticalMemory(sizeof(*root));
   (void) memset(root,0,sizeof(*root));
   root->root.tag=(char *) NULL;
   if (tag != (char *) NULL)
