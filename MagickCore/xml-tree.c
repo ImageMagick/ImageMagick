@@ -2280,9 +2280,7 @@ MagickExport XMLTreeInfo *NewXMLTreeTag(const char *tag)
     root->root.tag=ConstantString(tag);
   root->node=(&root->root);
   root->root.content=ConstantString("");
-  root->entities=(char **) AcquireMagickMemory(sizeof(predefined_entities));
-  if (root->entities == (char **) NULL)
-    return((XMLTreeInfo *) NULL);
+  root->entities=(char **) AcquireCriticalMemory(sizeof(predefined_entities));
   (void) memcpy(root->entities,predefined_entities,sizeof(predefined_entities));
   root->root.attributes=sentinel;
   root->attributes=(char ***) root->root.attributes;
