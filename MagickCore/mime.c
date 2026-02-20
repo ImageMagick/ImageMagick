@@ -903,6 +903,7 @@ static MagickBooleanType LoadMimeCache(LinkedListInfo *cache,const char *xml,
 
         token=AcquireString(attribute);
         (void) SubstituteString(&token,"&lt;","<");
+        (void) SubstituteString(&token,"&gt;",">");
         (void) SubstituteString(&token,"&amp;","&");
         (void) SubstituteString(&token,"&quot;","\"");
         (void) SubstituteString(&token,"&apos;","'");
