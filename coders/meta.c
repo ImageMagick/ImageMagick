@@ -608,7 +608,7 @@ static char *super_fgets_w(char **b, size_t *blen, Image *file)
   }
   *b=(char *) p;
   *blen=0;
-  if ((*b) != (char *) NULL)
+  if (p != (unsigned char *) NULL)
     {
       size_t
         tlen;
