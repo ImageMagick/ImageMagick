@@ -273,11 +273,9 @@ static char *super_fgets(char **b, size_t *blen, Image *file)
         tlen=(size_t) (q-p);
         len<<=1;
         buffer=(unsigned char *) ResizeQuantumMemory(p,len+2UL,sizeof(*p));
+        p=(unsigned char *) NULL;
         if (buffer == (unsigned char *) NULL)
-          {
-            p=(unsigned char *) RelinquishMagickMemory(p);
-            break;
-          }
+          break;
         p=buffer;
         q=p+tlen;
       }
@@ -600,6 +598,7 @@ static char *super_fgets_w(char **b, size_t *blen, Image *file)
         tlen=(size_t) (q-p);
         len<<=1;
         buffer=(unsigned char *) ResizeQuantumMemory(p,len+2,sizeof(*p));
+        p=(unsigned char *) NULL;
         if (buffer == (unsigned char *) NULL)
           break;
         p=buffer;
