@@ -490,6 +490,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   size_t
     bytes_per_line,
+    extent,
     length;
 
   ssize_t
@@ -671,9 +672,14 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   if (dib_info.compression == DibRle4Compression)
     dib_info.bits_per_pixel<<=1;
-  bytes_per_line=4*((image->columns*dib_info.bits_per_pixel+31)/32);
-  length=bytes_per_line*image->rows;
-  if ((MagickSizeType) length > (256*GetBlobSize(image)))
+  if (HeapOverflowSanityCheckGetSize(image->columns,
+      (size_t) dib_info.bits_per_pixel,&extent) != MagickFalse)
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  bytes_per_line=4*((extent+31)/32);
+  if (HeapOverflowSanityCheckGetSize(bytes_per_line,image->rows,
+      &length) != MagickFalse)
+    ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+  if ((MagickSizeType) (length/256) > GetBlobSize(image))
     ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
   pixel_info=AcquireVirtualMemory(image->rows,MagickMax(bytes_per_line,
     image->columns+256UL)*sizeof(*pixels));
@@ -1117,7 +1123,9 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image,
     *q;
 
   size_t
-    bytes_per_line;
+    bytes_per_line,
+    extent,
+    length;
 
   ssize_t
     y;
@@ -1169,14 +1177,20 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image,
       dib_info.number_colors=(unsigned int) (dib_info.bits_per_pixel == 16 ? 0 :
         (1UL << dib_info.bits_per_pixel));
     }
-  bytes_per_line=4*((image->columns*dib_info.bits_per_pixel+31)/32);
+  if (HeapOverflowSanityCheckGetSize(image->columns,
+      (size_t) dib_info.bits_per_pixel,&extent) != MagickFalse)
+    ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
+  bytes_per_line=4*((extent+31)/32);
+  if (HeapOverflowSanityCheckGetSize(bytes_per_line,image->rows,
+      &length) != MagickFalse)
+    ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
   dib_info.size=40;
   dib_info.width=(int) image->columns;
   dib_info.height=(int) image->rows;
   dib_info.planes=1;
   dib_info.compression=(unsigned int) (dib_info.bits_per_pixel == 16 ?
     DibBitfieldsCompression : DibRgbCompression);
-  dib_info.image_size=(unsigned int) (bytes_per_line*image->rows);
+  dib_info.image_size=(unsigned int) length;
   dib_info.x_pixels=75*39;
   dib_info.y_pixels=75*39;
   switch (image->units)
@@ -1203,7 +1217,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image,
     bytes_per_line,image->columns+256UL)*sizeof(*pixels));
   if (pixels == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-  (void) memset(pixels,0,dib_info.image_size);
+  (void) memset(pixels,0,length);
   switch (dib_info.bits_per_pixel)
   {
     case 1:
