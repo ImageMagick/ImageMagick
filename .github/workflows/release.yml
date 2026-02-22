@@ -184,10 +184,10 @@ jobs:
       - name: Sign executables and libraries
         uses: ImageMagick/.github/actions/code-signing@e535c88db29bcffe05a25dcf3cc92b68ed171f05
         with:
-          client-id: ${{secrets.AZURE_CLIENT_ID}}
-          tenant-id: ${{secrets.AZURE_TENANT_ID}}
-          subscription-id: ${{secrets.AZURE_SUBSCRIPTION_ID}}
-          directory: Artifacts\bin
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          directory: ${{ github.workspace }}\Artifacts\bin
 
       - name: Create installer
         shell: cmd
@@ -198,10 +198,10 @@ jobs:
       - name: Sign installer
         uses: ImageMagick/.github/actions/code-signing@e535c88db29bcffe05a25dcf3cc92b68ed171f05
         with:
-          client-id: ${{secrets.AZURE_CLIENT_ID}}
-          tenant-id: ${{secrets.AZURE_TENANT_ID}}
-          subscription-id: ${{secrets.AZURE_SUBSCRIPTION_ID}}
-          directory: Configure\Installer\Inno\Artifacts
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          directory: ${{ github.workspace }}\Configure\Installer\Inno\Artifacts
 
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f #v6.0.0
         with:
@@ -312,10 +312,10 @@ jobs:
       - name: Sign executables and libraries
         uses: ImageMagick/.github/actions/code-signing@e535c88db29bcffe05a25dcf3cc92b68ed171f05
         with:
-          client-id: ${{secrets.AZURE_CLIENT_ID}}
-          tenant-id: ${{secrets.AZURE_TENANT_ID}}
-          subscription-id: ${{secrets.AZURE_SUBSCRIPTION_ID}}
-          directory: Artifacts\bin
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          directory: ${{ github.workspace }}\Artifacts\bin
 
       - name: Copy Files
         shell: pwsh
