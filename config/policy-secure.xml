@@ -108,6 +108,4 @@
   <!-- Set the maximum amount of memory in bytes that are permitted for
        allocation requests. -->
   <policy domain="system" name="max-memory-request" value="256MiB"/>
-  <!-- If the basename of path is a symbolic link, the open fails -->
-  <policy domain="system" name="symlink" rights="none" pattern="follow"/>
 </policymap>
