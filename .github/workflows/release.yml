@@ -363,31 +363,29 @@ jobs:
             hdri_flag: -HDRI
 
     steps:
-      - name: Clone ImageMagick-Windows
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #v6.0.2
-        with:
-          repository: ImageMagick/ImageMagick-Windows
-          path: ImageMagick-Windows
-          persist-credentials: false
+      - name: Download configure
+        shell: cmd
+        run: |
+          ImageMagick\.github\build\windows\download-configure.cmd
 
       - name: Download x64 artifacts
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 #v7.0.0
         with:
           name: ImageMagick-${{needs.version.outputs.version}}-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-x64.7z
-          path: ImageMagick-Windows\Installer\Msix\x64
+          path: Configure\Installer\Msix\x64
 
       - name: Download arm64 artifacts
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 #v7.0.0
         with:
           name: ImageMagick-${{needs.version.outputs.version}}-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-arm64.7z
-          path: ImageMagick-Windows\Installer\Msix\arm64
+          path: Configure\Installer\Msix\arm64
 
       - name: Unzip artifacts
         shell: pwsh
         env:
           VERSION: ${{needs.version.outputs.version}}
         run: |
-          cd ImageMagick-Windows\Installer\Msix\x64
+          cd Configure\Installer\Msix\x64
           7z x "ImageMagick-$env:VERSION-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-x64.7z"
           cd ../arm64
           7z x "ImageMagick-$env:VERSION-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-arm64.7z"
@@ -403,7 +401,7 @@ jobs:
         uses: caphyon/advinst-github-action@f7e45a75aba48b695fafc344f61adf634d41fe4e # v2.0
         with:
           advinst-license: ${{secrets.ADVINST_LICENSE_KEY}}
-          aip-path: ImageMagick-Windows\Installer\Msix\ImageMagick.${{matrix.quantum}}${{matrix.hdri_flag}}.aip
+          aip-path: Configure\Installer\Msix\ImageMagick.${{matrix.quantum}}${{matrix.hdri_flag}}.aip
           aip-build-name: Build_MSIX
           aip-commands: |
               SetVersion ${{needs.version.outputs.semantic_version}}
@@ -411,7 +409,7 @@ jobs:
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f #v6.0.0
         with:
           name: ImageMagick.${{matrix.quantum}}${{matrix.hdri_flag}}.msixbundle
-          path: ImageMagick-Windows\Installer\Msix\Artifacts\ImageMagick.${{matrix.quantum}}${{matrix.hdri_flag}}.msixbundle
+          path: Configure\Installer\Msix\Artifacts\ImageMagick.${{matrix.quantum}}${{matrix.hdri_flag}}.msixbundle
 
   linux_app_image:
     name: Linux AppImage
