@@ -182,7 +182,7 @@ jobs:
           nmake release
 
       - name: Sign executables and libraries
-        uses: ImageMagick/.github/actions/code-signing@757a0d61ad4171546b1056ac46263630037a4fc7
+        uses: ImageMagick/.github/actions/code-signing@e535c88db29bcffe05a25dcf3cc92b68ed171f05
         with:
           client-id: ${{secrets.AZURE_CLIENT_ID}}
           tenant-id: ${{secrets.AZURE_TENANT_ID}}
@@ -196,7 +196,7 @@ jobs:
           "C:\Program Files (x86)\Inno Setup 6\iscc.exe" Configure\Installer\Inno\ImageMagick.iss
 
       - name: Sign installer
-        uses: ImageMagick/.github/actions/code-signing@757a0d61ad4171546b1056ac46263630037a4fc7
+        uses: ImageMagick/.github/actions/code-signing@e535c88db29bcffe05a25dcf3cc92b68ed171f05
         with:
           client-id: ${{secrets.AZURE_CLIENT_ID}}
           tenant-id: ${{secrets.AZURE_TENANT_ID}}
@@ -310,7 +310,7 @@ jobs:
           msbuild /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.architecture}}
 
       - name: Sign executables and libraries
-        uses: ImageMagick/.github/actions/code-signing@757a0d61ad4171546b1056ac46263630037a4fc7
+        uses: ImageMagick/.github/actions/code-signing@e535c88db29bcffe05a25dcf3cc92b68ed171f05
         with:
           client-id: ${{secrets.AZURE_CLIENT_ID}}
           tenant-id: ${{secrets.AZURE_TENANT_ID}}
