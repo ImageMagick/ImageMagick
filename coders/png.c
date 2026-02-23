@@ -12356,6 +12356,13 @@ static MagickBooleanType WriteOneJNGImage(MngWriteInfo *mng_info,
           blob=(unsigned char *) ImageToBlob(jpeg_image_info,jpeg_image,
             &length,exception);
 
+          if (blob == (unsigned char *) NULL)
+            {
+              jpeg_image=DestroyImage(jpeg_image);
+              jpeg_image_info=DestroyImageInfo(jpeg_image_info);
+              return(MagickFalse);
+            }
+
           /* Retrieve sample depth used */
           value=GetImageProperty(jpeg_image,"png:bit-depth-written",exception);
           if (value != (char *) NULL)
@@ -12725,6 +12732,15 @@ static MagickBooleanType WriteOneJNGImage(MngWriteInfo *mng_info,
   blob=(unsigned char *) ImageToBlob(jpeg_image_info,jpeg_image,&length,
     exception);
 
+  if (blob == (unsigned char *) NULL)
+    {         
+      if (jpeg_image != (Image *)NULL)
+        jpeg_image=DestroyImage(jpeg_image);     
+      if (jpeg_image_info != (ImageInfo *)NULL)
+        jpeg_image_info=DestroyImageInfo(jpeg_image_info);
+      return(MagickFalse);
+    }       
+
   if (logging != MagickFalse)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -12900,7 +12916,9 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
   mng_info->image=image;
   write_mng=LocaleCompare(image_info->magick,"MNG") == 0 ?
     MagickTrue : MagickFalse;
-
+  if ((write_mng != MagickFalse) && (image->storage_class == PseudoClass) &&
+      (image->colors > 256))
+    (void) SetImageStorageClass(image,DirectClass,exception);
   /*
    * See if user has requested a specific PNG subformat to be used
    * for all of the PNGs in the MNG being written, e.g.,
