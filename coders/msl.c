@@ -155,9 +155,6 @@ static SplayTreeInfo
 */
 #if defined(MAGICKCORE_XML_DELEGATE)
 static MagickBooleanType
-  WriteMSLImage(const ImageInfo *,Image *,ExceptionInfo *);
-
-static MagickBooleanType
   SetMSLAttributes(MSLInfo *,const char *,const char *);
 #endif
 
@@ -3070,7 +3067,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             "UnableToInterpretMSLImage",tag);
           break;
         }
-      msl_info->group_info[msl_info->number_groups].numImages=0;
+      msl_info->group_info[msl_info->number_groups-1].numImages=0;
       break;
     }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
@@ -7586,7 +7583,6 @@ ModuleExport size_t RegisterMSLImage(void)
   entry=AcquireMagickInfo("MSL","MSL","Magick Scripting Language");
 #if defined(MAGICKCORE_XML_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadMSLImage;
-  entry->encoder=(EncodeImageHandler *) WriteMSLImage;
 #endif
   entry->format_type=ImplicitFormatType;
   (void) RegisterMagickInfo(entry);
@@ -7906,53 +7902,3 @@ ModuleExport void UnregisterMSLImage(void)
   if (msl_tree != (SplayTreeInfo *) NULL)
     msl_tree=DestroySplayTree(msl_tree);
 }
-
-#if defined(MAGICKCORE_XML_DELEGATE)
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   W r i t e M S L I m a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  WriteMSLImage() writes an image to a file in MVG image format.
-%
-%  The format of the WriteMSLImage method is:
-%
-%      MagickBooleanType WriteMSLImage(const ImageInfo *image_info,
-%        Image *image,ExceptionInfo *exception)
-%
-%  A description of each parameter follows.
-%
-%    o image_info: the image info.
-%
-%    o image:  The image.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-static MagickBooleanType WriteMSLImage(const ImageInfo *image_info,Image *image,
-  ExceptionInfo *exception)
-{
-  Image
-    *msl_image;
-
-  MagickBooleanType
-    status;
-
-  assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickCoreSignature);
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickCoreSignature);
-  if (IsEventLogging() != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  msl_image=CloneImage(image,0,0,MagickTrue,exception);
-  status=ProcessMSLScript(image_info,&msl_image,exception);
-  msl_image=DestroyImage(msl_image);
-  return(status);
-}
-#endif
