@@ -833,14 +833,14 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image,
       }
       case RLECompression:
       {
-        compress_pixels=(unsigned char *) AcquireQuantumMemory(length+256,
-          sizeof(*compress_pixels));
+        compress_pixels=(unsigned char *) AcquireQuantumMemory(length+
+          (length/127)+256,sizeof(*compress_pixels));
         if (compress_pixels == (unsigned char *) NULL)
           {
             pixels=(unsigned char *) RelinquishMagickMemory(pixels);
             ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
           }
-        (void) memset(compress_pixels,0,(length+256)*
+        (void) memset(compress_pixels,0,(length+(length/127)+256)*
           sizeof(*compress_pixels));
         (void) FormatLocaleString(buffer,MagickPathExtent,"\033*b2M");
         (void) WriteBlobString(image,buffer);
