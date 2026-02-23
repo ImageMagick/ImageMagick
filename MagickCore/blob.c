@@ -1626,6 +1626,7 @@ MagickExport void *FileToBlob(const char *filename,const size_t extent,
 %    o filename: the filename.
 %
 */
+
 static inline ssize_t WriteBlobStream(Image *image,const size_t length,
   const void *magick_restrict data)
 {
@@ -2316,8 +2317,8 @@ MagickExport void ImageToCustomStream(const ImageInfo *image_info,Image *image,
           ssize_t
             count;
 
-          (void) FormatLocaleString(image->filename,MagickPathExtent,
-            "%s:%s",image->magick,unique);
+          (void) FormatLocaleString(image->filename,MagickPathExtent,"%s:%s",
+            image->magick,unique);
           status=WriteImage(clone_info,image,exception);
           if (status != MagickFalse)
             {
@@ -3373,8 +3374,8 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
     {
       flags=O_RDWR | O_CREAT | O_TRUNC | O_BINARY;
       type="w+b";
-      status=IsRightsAuthorized(SystemPolicyDomain,(const PolicyRights) (
-        ReadPolicyRights | WritePolicyRights),"follow");
+      status=IsRightsAuthorized(SystemPolicyDomain,ReadPolicyRights,"follow") &&
+        IsRightsAuthorized(SystemPolicyDomain,WritePolicyRights,"follow");
       break;
     }
     case AppendBlobMode:
@@ -3388,8 +3389,8 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
     {
       flags=O_RDWR | O_CREAT | O_APPEND | O_BINARY;
       type="a+b";
-      status=IsRightsAuthorized(SystemPolicyDomain,(const PolicyRights)
-        (ReadPolicyRights | WritePolicyRights),"follow");
+      status=IsRightsAuthorized(SystemPolicyDomain,ReadPolicyRights,"follow") &&
+        IsRightsAuthorized(SystemPolicyDomain,WritePolicyRights,"follow");
       break;
     }
     default:
