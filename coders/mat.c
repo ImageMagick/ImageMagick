@@ -1153,19 +1153,19 @@ MATLAB_KO:
       case miUINT16:
         sample_size = 16;
         image->depth = 16;        /* Word type cell */
-        ldblk = (ssize_t) (2 * MATLAB_HDR.SizeX);
+        ldblk = (2 * (ssize_t) MATLAB_HDR.SizeX);
         break;
       case miINT32:
       case miUINT32:
         sample_size = 32;
         image->depth = 32;        /* Dword type cell */
-        ldblk = (ssize_t) (4 * MATLAB_HDR.SizeX);
+        ldblk = (4 * (ssize_t) MATLAB_HDR.SizeX);
         break;
       case miINT64:
       case miUINT64:
         sample_size = 64;
         image->depth = 64;        /* Qword type cell */
-        ldblk = (ssize_t) (8 * MATLAB_HDR.SizeX);
+        ldblk = (8 * (ssize_t) MATLAB_HDR.SizeX);
         break;
       case miSINGLE:
         sample_size = 32;
@@ -1174,7 +1174,7 @@ MATLAB_KO:
         if (MATLAB_HDR.StructureFlag & FLAG_COMPLEX)
           {              /* complex float type cell */
           }
-        ldblk = (ssize_t) (4 * MATLAB_HDR.SizeX);
+        ldblk = (4 * (ssize_t) MATLAB_HDR.SizeX);
         break;
       case miDOUBLE:
         sample_size = 64;
@@ -1193,7 +1193,7 @@ RestoreMSCWarning
         if (MATLAB_HDR.StructureFlag & FLAG_COMPLEX)
           {                         /* complex double type cell */
           }
-        ldblk = (ssize_t) (8 * MATLAB_HDR.SizeX);
+        ldblk = (8 * (ssize_t) MATLAB_HDR.SizeX);
         break;
       default:
         if ((image != image2) && (image2 != (Image *) NULL))
