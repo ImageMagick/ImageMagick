@@ -180,8 +180,13 @@ MagickExport MagickBooleanType AcquireUniqueSymbolicLink(const char *source,
     char
       *passes;
 
+    /*
+      Does policy permit symbolic links?
+    */
+    status=IsRightsAuthorized(SystemPolicyDomain,ReadPolicyRights |
+      WritePolicyRights,"follow");
     passes=GetPolicyValue("system:shred");
-    if (passes != (char *) NULL)
+    if ((passes != (char *) NULL) || (status == MagickFalse))
       passes=DestroyString(passes);
     else
       {
@@ -209,6 +214,9 @@ MagickExport MagickBooleanType AcquireUniqueSymbolicLink(const char *source,
       }
   }
 #endif
+  /*
+    Copy file from source to destination.
+  */
   destination_file=AcquireUniqueFileResource(destination);
   if (destination_file == -1)
     return(MagickFalse);
