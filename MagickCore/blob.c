@@ -1645,6 +1645,8 @@ static inline ssize_t WriteBlobStream(Image *image,const size_t length,
   blob_info=image->blob;
   if (blob_info->type != BlobStream)
     return(WriteBlob(image,length,(const unsigned char *) data));
+  if (blob_info->offset > (MagickOffsetType) (MAGICK_SSIZE_MAX-length))
+    return(0);
   extent=(MagickSizeType) (blob_info->offset+(MagickOffsetType) length);
   if (extent >= blob_info->extent)
     {
@@ -3375,7 +3377,8 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
       flags=O_RDWR | O_CREAT | O_TRUNC | O_BINARY;
       type="w+b";
       status=IsRightsAuthorized(SystemPolicyDomain,ReadPolicyRights,"follow") &&
-        IsRightsAuthorized(SystemPolicyDomain,WritePolicyRights,"follow");
+        IsRightsAuthorized(SystemPolicyDomain,WritePolicyRights,"follow") ?
+        MagickTrue : MagickFalse;
       break;
     }
     case AppendBlobMode:
@@ -3390,7 +3393,8 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
       flags=O_RDWR | O_CREAT | O_APPEND | O_BINARY;
       type="a+b";
       status=IsRightsAuthorized(SystemPolicyDomain,ReadPolicyRights,"follow") &&
-        IsRightsAuthorized(SystemPolicyDomain,WritePolicyRights,"follow");
+        IsRightsAuthorized(SystemPolicyDomain,WritePolicyRights,"follow") ?
+        MagickTrue : MagickFalse;
       break;
     }
     default:
