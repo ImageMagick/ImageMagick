@@ -183,8 +183,8 @@ MagickExport MagickBooleanType AcquireUniqueSymbolicLink(const char *source,
     /*
       Does policy permit symbolic links?
     */
-    status=IsRightsAuthorized(SystemPolicyDomain,ReadPolicyRights |
-      WritePolicyRights,"follow");
+    status=IsRightsAuthorized(SystemPolicyDomain,(PolicyRights) 
+      (ReadPolicyRights | WritePolicyRights),"follow");
     passes=GetPolicyValue("system:shred");
     if ((passes != (char *) NULL) || (status == MagickFalse))
       passes=DestroyString(passes);
