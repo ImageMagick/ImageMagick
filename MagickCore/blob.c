@@ -3685,7 +3685,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
               file;
 
             blob_info->file_info.file=(FILE *) NULL;
-            file=open_utf8(filename,flags,0666);
+            file=open_utf8(filename,flags,S_MODE);
             if (file >= 0)
               blob_info->file_info.file=fdopen(file,type);
             if (blob_info->file_info.file != (FILE *) NULL)
