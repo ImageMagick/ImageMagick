@@ -595,7 +595,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             SetPixelGreen(image,ScaleShortToQuantum(*p++),q);
             SetPixelBlue(image,ScaleShortToQuantum(*p++),q);
           }
-        if ((raw_image->colors) == 2 || (raw_image->colors > 3))
+        if ((raw_image->colors == 2) || (raw_image->colors > 3))
           SetPixelAlpha(image,ScaleShortToQuantum(*p++),q);
         q+=(ptrdiff_t) GetPixelChannels(image);
       }
