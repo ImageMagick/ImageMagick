@@ -2792,18 +2792,39 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case ColorBurnCompositeOp:
           {
+#define MagickClamp(x)  MagickMin(1.0,MagickMax(0.0,(x)))
+
+            double
+              Bca,
+              burn = 0.0,
+              Dd = (Da > 0.0) ? (Dca/Da) : 0.0,  /* unpremultiplied dest */
+              Sd = (Sa > 0.0) ? (Sca/Sa) : 0.0,  /* unpremultiplied source */
+              value;
+
+            if (Sa == 0.0)
+              {
+                /*
+                  No source contribution.
+                */
+                value=Dca*(1.0-Sa);  /* = Dca */
+                pixel=(double) QuantumRange*gamma*MagickClamp(value);
+                break;
+            }
             if ((Sca == 0.0) && (Dca == Da))
               {
-                pixel=(double) QuantumRange*gamma*(Sa*Da+Dca*(1.0-Sa));
+                /*
+                  Fully opaque destination, zero source color.
+                */
+                value=Sa*Da+Dca*(1.0-Sa);
+                pixel=(double) QuantumRange*gamma*MagickClamp(value);
                 break;
               }
-            if (Sca == 0.0)
-              {
-                pixel=(double) QuantumRange*gamma*(Dca*(1.0-Sa));
-                break;
-              }
-            pixel=(double) QuantumRange*gamma*(Sa*Da-Sa*Da*MagickMin(1.0,
-              (1.0-DcaDa)*SaSca)+Sca*(1.0-Da)+Dca*(1.0-Sa));
+            if (Sd > 0.0)
+              burn=1.0-(1.0-Dd)/Sd;
+            burn=MagickClamp(burn);
+            Bca=Sa*Da*burn+Sca*(1.0-Da)+Dca*(1.0-Sa);
+            value=MagickClamp(Bca);
+            pixel=(double) QuantumRange*gamma*value;
             break;
           }
           case ColorDodgeCompositeOp:
@@ -2929,7 +2950,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           {
             if (compose_sync == MagickFalse)
               {
-                pixel=(double) QuantumRange*(Sc/MagickSafeReciprocal(Dc));
+                pixel=(double) QuantumRange*(Sc*MagickSafeReciprocal(Dc));
                 break;
               }
             if ((fabs((double) Sca) < MagickEpsilon) &&
@@ -2952,7 +2973,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           {
             if (compose_sync == MagickFalse)
               {
-                pixel=(double) QuantumRange*(Dc/MagickSafeReciprocal(Sc));
+                pixel=(double) QuantumRange*(Dc*MagickSafeReciprocal(Sc));
                 break;
               }
             if ((fabs((double) Dca) < MagickEpsilon) &&
