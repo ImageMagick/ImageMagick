@@ -1265,22 +1265,27 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
       color_correction.blue.offset,color_correction.blue.power))));
   }
   if (image->storage_class == PseudoClass)
-    for (i=0; i < (ssize_t) image->colors; i++)
     {
-      /*
-        Apply transfer function to colormap.
-      */
-      double
-        luma;
+      for (i=0; i < (ssize_t) image->colors; i++)
+      {
+        /*
+          Apply transfer function to colormap.
+        */
+        double
+          luma;
 
-      luma=0.21267*image->colormap[i].red+0.71526*image->colormap[i].green+
-        0.07217*image->colormap[i].blue;
-      image->colormap[i].red=luma+color_correction.saturation*cdl_map[
-        ScaleQuantumToMap(ClampToQuantum(image->colormap[i].red))].red-luma;
-      image->colormap[i].green=luma+color_correction.saturation*cdl_map[
-        ScaleQuantumToMap(ClampToQuantum(image->colormap[i].green))].green-luma;
-      image->colormap[i].blue=luma+color_correction.saturation*cdl_map[
-        ScaleQuantumToMap(ClampToQuantum(image->colormap[i].blue))].blue-luma;
+        luma=0.21267*image->colormap[i].red+0.71526*image->colormap[i].green+
+          0.07217*image->colormap[i].blue;
+        image->colormap[i].red=luma+color_correction.saturation*cdl_map[
+          ScaleQuantumToMap(ClampToQuantum(image->colormap[i].red))].red-luma;
+        image->colormap[i].green=luma+color_correction.saturation*cdl_map[
+          ScaleQuantumToMap(ClampToQuantum(image->colormap[i].green))].green-luma;
+        image->colormap[i].blue=luma+color_correction.saturation*cdl_map[
+          ScaleQuantumToMap(ClampToQuantum(image->colormap[i].blue))].blue-luma;
+      }
+      cdl_map=(PixelInfo *) RelinquishMagickMemory(cdl_map);
+      (void) SyncImage(image, exception);
+      return(MagickTrue);
     }
   /*
     Apply transfer function to image.
