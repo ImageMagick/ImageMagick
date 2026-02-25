@@ -1409,6 +1409,7 @@ Magick_Command_Cleanup:
          (cli_wand->image_info_stack->next != (CLIStack *) NULL))
     CLIOption(cli_wand,"}");
 
+Magick_Command_Exit:
   if ((cli_wand->wand.image_info != image_info) ||
       (cli_wand->wand.exception != exception))
     {
@@ -1448,7 +1449,6 @@ Magick_Command_Cleanup:
         }
     }
 
-Magick_Command_Exit:
   cli_wand->location="Exiting";
   cli_wand->filename=argv[0];
   if (cli_wand->wand.debug != MagickFalse)
