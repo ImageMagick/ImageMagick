@@ -84,11 +84,6 @@
 #include "MagickCore/version.h"
 
 /*
-  Define declarations.
-*/
-#define MagickClamp(x)  MagickMin(1.0,MagickMax(0.0,(x)))
-
-/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -2797,48 +2792,28 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case ColorBurnCompositeOp:
           {
-            double
-              burn = 0.0,
-              Dd = (Da > 0.0) ? (Dca/Da) : 0.0,  /* unpremultiplied dest */
-              Sd = (Sa > 0.0) ? (Sca/Sa) : 0.0;  /* unpremultiplied source */
-
-            if (Sa == 0.0)
-              {
-                /*
-                  No source contribution.
-                */
-                pixel=(double) QuantumRange*gamma*MagickClamp(Dca*(1.0-Sa));
-                break;
-              }
             if ((Sca == 0.0) && (Dca == Da))
               {
-                /*
-                  Fully opaque destination, zero source color.
-                */
-                pixel=(double) QuantumRange*gamma*MagickClamp(Sa*Da+Dca*
-                  (1.0-Sa));
+                pixel=(double) QuantumRange*gamma*(Sa*Da+Dca*(1.0-Sa));
                 break;
               }
-            if (Sd > 0.0)
-              burn=1.0-(1.0-Dd)/Sd;
-            pixel=(double) QuantumRange*gamma*MagickClamp(Sa*Da*
-              MagickClamp(burn)+Sca*(1.0-Da)+Dca*(1.0-Sa));
+            if (Sca == 0.0)
+              {
+                pixel=(double) QuantumRange*gamma*(Dca*(1.0-Sa));
+                break;
+              }
+            pixel=(double) QuantumRange*gamma*(Sa*Da-Sa*Da*MagickMin(1.0,
+              (1.0-DcaDa)*SaSca)+Sca*(1.0-Da)+Dca*(1.0-Sa));
             break;
           }
           case ColorDodgeCompositeOp:
           {
-            double
-              d = MagickClamp(Dca),
-              da = MagickClamp(Da),
-              s = MagickClamp(Sca),
-              sa = MagickClamp(Sa);
-
-            if ((s*da+d*sa) >= (sa*da))
-              pixel=sa*da+s*(1.0-da)+d*(1.0-sa);
+            if ((Sca*Da+Dca*Sa) >= Sa*Da)
+              pixel=(double) QuantumRange*gamma*(Sa*Da+Sca*(1.0-Da)+Dca*
+                (1.0-Sa));
             else
-              pixel=(((sa-s) != 0.0) ? (d*sa*sa/(sa-s)) : 1.0)+s*(1.0-da)+d*
-                (1.0-sa);
-            pixel=QuantumRange*MagickClamp(pixel*gamma);
+              pixel=(double) QuantumRange*gamma*(Dca*Sa*Sa*
+                MagickSafeReciprocal(Sa-Sca)+Sca*(1.0-Da)+Dca*(1.0-Sa));
             break;
           }
           case ColorizeCompositeOp:
@@ -2954,50 +2929,46 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           {
             if (compose_sync == MagickFalse)
               {
-                pixel=QuantumRange*MagickClamp((double) Sc*
-                  MagickSafeReciprocal((double) Dc));
+                pixel=(double) QuantumRange*(Sc/MagickSafeReciprocal(Dc));
                 break;
               }
             if ((fabs((double) Sca) < MagickEpsilon) &&
                 (fabs((double) Dca) < MagickEpsilon))
               {
-                pixel=(double) QuantumRange*MagickClamp(gamma*(Sca*(1.0-Da)+
-                  Dca*(1.0-Sa)));
+                pixel=(double) QuantumRange*gamma*(Sca*(1.0-Da)+Dca*(1.0-Sa));
                 break;
               }
             if (fabs((double) Dca) < MagickEpsilon)
               {
-                pixel=(double) QuantumRange*MagickClamp(gamma*(Sa*Da+
-                  Sca*(1.0-Da)+Dca*(1.0-Sa)));
+                pixel=(double) QuantumRange*gamma*(Sa*Da+Sca*(1.0-Da)+Dca*
+                  (1.0-Sa));
                 break;
               }
-            pixel=(double) QuantumRange*MagickClamp(gamma*(Sca*Da*Da/
-              Dca+Sca*(1.0-Da)+Dca*(1.0-Sa)));
+            pixel=(double) QuantumRange*gamma*(Sca*Da*Da/Dca+Sca*(1.0-Da)+Dca*
+              (1.0-Sa));
             break;
           }
           case DivideSrcCompositeOp:
           {
             if (compose_sync == MagickFalse)
               {
-                pixel=(double) QuantumRange*MagickClamp(Dc*
-                  MagickSafeReciprocal(Sc));
+                pixel=(double) QuantumRange*(Dc/MagickSafeReciprocal(Sc));
                 break;
               }
             if ((fabs((double) Dca) < MagickEpsilon) &&
                 (fabs((double) Sca) < MagickEpsilon))
               {
-                pixel=(double) QuantumRange*MagickClamp(gamma*(Dca*(1.0-Sa)+
-                  Sca*(1.0-Da)));
+                pixel=(double) QuantumRange*gamma*(Dca*(1.0-Sa)+Sca*(1.0-Da));
                 break;
               }
             if (fabs((double) Sca) < MagickEpsilon)
               {
-                pixel=(double) QuantumRange*MagickClamp(gamma*(Da*Sa+Dca*
-                  (1.0-Sa)+Sca*(1.0-Da)));
+                pixel=(double) QuantumRange*gamma*(Da*Sa+Dca*(1.0-Sa)+Sca*
+                  (1.0-Da));
                 break;
               }
-            pixel=(double) QuantumRange*MagickClamp(gamma*(Dca*Sa*SaSca+Dca*
-              (1.0-Sa)+Sca*(1.0-Da)));
+            pixel=(double) QuantumRange*gamma*(Dca*Sa*SaSca+Dca*(1.0-Sa)+Sca*
+              (1.0-Da));
             break;
           }
           case DstAtopCompositeOp:
@@ -3028,17 +2999,22 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case FreezeCompositeOp:
           {
-            pixel=ClampToQuantum(QuantumRange*gamma*(1.0-(1.0-Sca)*(1.0-Sca)*
-              MagickSafeReciprocal(Dca)));
+            pixel=(double) QuantumRange*gamma*(1.0-(1.0-Sca)*(1.0-Sca)*
+              MagickSafeReciprocal(Dca));
+            if (pixel < 0.0)
+              pixel=0.0;
             break;
           }
           case HardLightCompositeOp:
           {
             if ((2.0*Sca) < Sa)
-              pixel=2.0*Sca*Dca+Sca*(1.0-Da)+Dca*(1.0-Sa);
-            else
-              pixel=Sa*Da-2.0*(Da-Dca)*(Sa-Sca)+Sca*(1.0-Da)+Dca*(1.0-Sa);
-            pixel=(double) QuantumRange*MagickClamp(gamma*pixel);
+              {
+                pixel=(double) QuantumRange*gamma*(2.0*Sca*Dca+Sca*(1.0-Da)+Dca*
+                  (1.0-Sa));
+                break;
+              }
+            pixel=(double) QuantumRange*gamma*(Sa*Da-2.0*(Da-Dca)*(Sa-Sca)+Sca*
+              (1.0-Da)+Dca*(1.0-Sa));
             break;
           }
           case HardMixCompositeOp:
@@ -3474,33 +3450,40 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           case SoftBurnCompositeOp:
           {
             if ((Sca+Dca) < 1.0)
-              pixel=0.5*Dca*MagickSafeReciprocal(1.0-Sca);
+              pixel=(double) QuantumRange*gamma*(0.5*Dca*
+                MagickSafeReciprocal(1.0-Sca));
             else
-              pixel=1.0-0.5*(1.0-Sca)*MagickSafeReciprocal(Dca);
-            pixel=ClampToQuantum(QuantumRange*gamma*MagickClamp(pixel));
+              pixel=(double) QuantumRange*gamma*(1.0-0.5*(1.0-Sca)*
+                MagickSafeReciprocal(Dca));
             break;
           }
           case SoftDodgeCompositeOp:
           {
             if ((Sca+Dca) < 1.0)
-              pixel=0.5*Sca*MagickSafeReciprocal(1.0-Dca);
+              pixel=(double) QuantumRange*gamma*(0.5*Sca*
+                MagickSafeReciprocal(1.0-Dca));
             else
-              pixel=1.0-0.5*(1.0-Dca)*MagickSafeReciprocal(Sca);
-            pixel=(double) QuantumRange*gamma*MagickClamp(pixel);
+              pixel=(double) QuantumRange*gamma*(1.0-0.5*(1.0-Dca)*
+                MagickSafeReciprocal(Sca));
             break;
           }
           case SoftLightCompositeOp:
           {
             if ((2.0*Sca) < Sa)
-              pixel=Dca*(Sa+(2.0*Sca-Sa)*(1.0-DcaDa))+Sca*(1.0-Da)+Dca*(1.0-Sa);
-            else
-              if ((2.0*Sca) > Sa && (4.0*Dca) <= Da)
-                pixel=Dca*Sa+Da*(2.0*Sca-Sa)*(4.0*DcaDa*(4.0*DcaDa+1.0)*
-                  (DcaDa-1.0)+7.0*DcaDa)+Sca*(1.0-Da)+Dca*(1.0-Sa);
-            else
-              pixel=Dca*Sa+Da*(2.0*Sca-Sa)*(sqrt(DcaDa)-DcaDa)+Sca*(1.0-Da)+
-                Dca*(1.0-Sa);
-            pixel=(double) QuantumRange*MagickClamp(gamma*pixel);
+              {
+                pixel=(double) QuantumRange*gamma*(Dca*(Sa+(2.0*Sca-Sa)*
+                  (1.0-DcaDa))+Sca*(1.0-Da)+Dca*(1.0-Sa));
+                break;
+              }
+            if (((2.0*Sca) > Sa) && ((4.0*Dca) <= Da))
+              {
+                pixel=(double) QuantumRange*gamma*(Dca*Sa+Da*(2.0*Sca-Sa)*
+                  (4.0*DcaDa*(4.0*DcaDa+1.0)*(DcaDa-1.0)+7.0*DcaDa)+Sca*
+                  (1.0-Da)+Dca*(1.0-Sa));
+                break;
+              }
+            pixel=(double) QuantumRange*gamma*(Dca*Sa+Da*(2.0*Sca-Sa)*
+              (pow(DcaDa,0.5)-DcaDa)+Sca*(1.0-Da)+Dca*(1.0-Sa));
             break;
           }
           case StampCompositeOp:
