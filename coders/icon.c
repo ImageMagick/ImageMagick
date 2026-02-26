@@ -910,9 +910,9 @@ ModuleExport void UnregisterICONImage(void)
 %  image format, version 3 for Windows or (if the image has a matte channel)
 %  version 4.
 %
-%  It encodes any subimage as a compressed PNG image ("BI_PNG)", only when its
-%  dimensions are 256x256 and image->compression is undefined or is defined as
-%  ZipCompression.
+%  It encodes any subimage as a compressed PNG image ("BI_PNG)", when its
+%  dimensions are 256x256 and image->compression is defined as ZipCompression,
+%  or for every dimensions if image->compression is defined as FullCompression.
 %
 %  The format of the WriteICONImage method is:
 %
@@ -1100,9 +1100,9 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
       bits_per_pixel,
       planes;
 
-    if ((next->columns > 256L) && (next->rows > 256L) &&
-        ((next->compression == UndefinedCompression) ||
-        (next->compression == ZipCompression)))
+    if (((next->columns > 255L) && (next->rows > 255L) &&
+        (next->compression == ZipCompression)) ||
+        (next->compression == FullCompression))
       {
         Image
           *write_image;
@@ -1155,7 +1155,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         (void) WriteBlob(image,(size_t) length,png);
         png=(unsigned char *) RelinquishMagickMemory(png);
       }
-    else
+    else if ((next->compression == UndefinedCompression) || (next->compression == ZipCompression))
       {
         size_t
           image_size,
@@ -1383,9 +1383,8 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         /*
           Write 40-byte version 3+ bitmap header.
         */
-        /* The value 0 is accepted as representing a width of 256 */
-        directory->icons[scene]->width=(unsigned char) width % 256;
-        directory->icons[scene]->height=(unsigned char) height % 256;
+        directory->icons[scene]->width=(unsigned char) width;
+        directory->icons[scene]->height=(unsigned char) height;
         directory->icons[scene]->colors=(unsigned char) number_colors;
         directory->icons[scene]->reserved=0;
         directory->icons[scene]->planes=planes;
