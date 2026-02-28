@@ -1870,12 +1870,15 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 break;
               for (j=0; j < ((ssize_t) number_tokens-1); j+=2)
               {
+                char
+                  *token_value;
+
                 keyword=(char *) tokens[j];
                 if (keyword == (char *) NULL)
                   continue;
-                value=(char *) tokens[j+1];
+                token_value=(char *) tokens[j+1];
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "    %s: %s",keyword,value);
+                  "    %s: %s",keyword,token_value);
                 current=transform;
                 GetAffineMatrix(&affine);
                 switch (*keyword)
@@ -1885,9 +1888,9 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   {
                     if (LocaleCompare(keyword,"matrix") == 0)
                       {
-                        p=value;
+                        p=token_value;
                         (void) GetNextToken(p,&p,MagickPathExtent,token);
-                        affine.sx=StringToDouble(value,(char **) NULL);
+                        affine.sx=StringToDouble(token_value,(char **) NULL);
                         (void) GetNextToken(p,&p,MagickPathExtent,token);
                         if (*token == ',')
                           (void) GetNextToken(p,&p,MagickPathExtent,token);
@@ -1920,7 +1923,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                         double
                           angle;
 
-                        angle=GetUserSpaceCoordinateValue(svg_info,0,value);
+                        angle=GetUserSpaceCoordinateValue(svg_info,0,token_value);
                         affine.sx=cos(DegreesToRadians(fmod(angle,360.0)));
                         affine.rx=sin(DegreesToRadians(fmod(angle,360.0)));
                         affine.ry=(-sin(DegreesToRadians(fmod(angle,360.0))));
@@ -1934,11 +1937,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   {
                     if (LocaleCompare(keyword,"scale") == 0)
                       {
-                        for (p=value; *p != '\0'; p++)
+                        for (p=token_value; *p != '\0'; p++)
                           if ((isspace((int) ((unsigned char) *p)) != 0) ||
                               (*p == ','))
                             break;
-                        affine.sx=GetUserSpaceCoordinateValue(svg_info,1,value);
+                        affine.sx=GetUserSpaceCoordinateValue(svg_info,1,token_value);
                         affine.sy=affine.sx;
                         if (*p != '\0')
                           affine.sy=
@@ -1950,7 +1953,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                       {
                         affine.sx=svg_info->affine.sx;
                         affine.ry=tan(DegreesToRadians(fmod(
-                          GetUserSpaceCoordinateValue(svg_info,1,value),
+                          GetUserSpaceCoordinateValue(svg_info,1,token_value),
                           360.0)));
                         affine.sy=svg_info->affine.sy;
                         break;
@@ -1959,7 +1962,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                       {
                         affine.sx=svg_info->affine.sx;
                         affine.rx=tan(DegreesToRadians(fmod(
-                          GetUserSpaceCoordinateValue(svg_info,-1,value),
+                          GetUserSpaceCoordinateValue(svg_info,-1,token_value),
                           360.0)));
                         affine.sy=svg_info->affine.sy;
                         break;
@@ -1971,11 +1974,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   {
                     if (LocaleCompare(keyword,"translate") == 0)
                       {
-                        for (p=value; *p != '\0'; p++)
+                        for (p=token_value; *p != '\0'; p++)
                           if ((isspace((int) ((unsigned char) *p)) != 0) ||
                               (*p == ','))
                             break;
-                        affine.tx=GetUserSpaceCoordinateValue(svg_info,1,value);
+                        affine.tx=GetUserSpaceCoordinateValue(svg_info,1,token_value);
                         affine.ty=affine.tx;
                         if (*p != '\0')
                           affine.ty=
@@ -2270,10 +2273,13 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 break;
               for (j=0; j < ((ssize_t) number_tokens-1); j+=2)
               {
+                char
+                  *token_value;
+
                 keyword=(char *) tokens[j];
-                value=(char *) tokens[j+1];
+                token_value=(char *) tokens[j+1];
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "    %s: %s",keyword,value);
+                  "    %s: %s",keyword,token_value);
                 current=transform;
                 GetAffineMatrix(&affine);
                 switch (*keyword)
@@ -2283,9 +2289,9 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   {
                     if (LocaleCompare(keyword,"matrix") == 0)
                       {
-                        p=value;
+                        p=token_value;
                         (void) GetNextToken(p,&p,MagickPathExtent,token);
-                        affine.sx=StringToDouble(value,(char **) NULL);
+                        affine.sx=StringToDouble(token_value,(char **) NULL);
                         (void) GetNextToken(p,&p,MagickPathExtent,token);
                         if (*token == ',')
                           (void) GetNextToken(p,&p,MagickPathExtent,token);
@@ -2320,9 +2326,9 @@ static void SVGStartElement(void *context,const xmlChar *name,
                           x,
                           y;
 
-                        p=value;
+                        p=token_value;
                         (void) GetNextToken(p,&p,MagickPathExtent,token);
-                        angle=StringToDouble(value,(char **) NULL);
+                        angle=StringToDouble(token_value,(char **) NULL);
                         affine.sx=cos(DegreesToRadians(fmod(angle,360.0)));
                         affine.rx=sin(DegreesToRadians(fmod(angle,360.0)));
                         affine.ry=(-sin(DegreesToRadians(fmod(angle,360.0))));
@@ -2351,11 +2357,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   {
                     if (LocaleCompare(keyword,"scale") == 0)
                       {
-                        for (p=value; *p != '\0'; p++)
+                        for (p=token_value; *p != '\0'; p++)
                           if ((isspace((int) ((unsigned char) *p)) != 0) ||
                               (*p == ','))
                             break;
-                        affine.sx=GetUserSpaceCoordinateValue(svg_info,1,value);
+                        affine.sx=GetUserSpaceCoordinateValue(svg_info,1,token_value);
                         affine.sy=affine.sx;
                         if (*p != '\0')
                           affine.sy=GetUserSpaceCoordinateValue(svg_info,-1,
@@ -2367,7 +2373,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                       {
                         affine.sx=svg_info->affine.sx;
                         affine.ry=tan(DegreesToRadians(fmod(
-                          GetUserSpaceCoordinateValue(svg_info,1,value),
+                          GetUserSpaceCoordinateValue(svg_info,1,token_value),
                           360.0)));
                         affine.sy=svg_info->affine.sy;
                         break;
@@ -2376,7 +2382,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                       {
                         affine.sx=svg_info->affine.sx;
                         affine.rx=tan(DegreesToRadians(fmod(
-                          GetUserSpaceCoordinateValue(svg_info,-1,value),
+                          GetUserSpaceCoordinateValue(svg_info,-1,token_value),
                           360.0)));
                         affine.sy=svg_info->affine.sy;
                         break;
@@ -2388,11 +2394,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   {
                     if (LocaleCompare(keyword,"translate") == 0)
                       {
-                        for (p=value; *p != '\0'; p++)
+                        for (p=token_value; *p != '\0'; p++)
                           if ((isspace((int) ((unsigned char) *p)) != 0) ||
                               (*p == ','))
                             break;
-                        affine.tx=GetUserSpaceCoordinateValue(svg_info,1,value);
+                        affine.tx=GetUserSpaceCoordinateValue(svg_info,1,token_value);
                         affine.ty=0;
                         if (*p != '\0')
                           affine.ty=GetUserSpaceCoordinateValue(svg_info,-1,
