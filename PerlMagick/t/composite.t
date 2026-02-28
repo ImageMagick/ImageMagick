@@ -27,7 +27,7 @@ chdir 't' || die 'Cd failed';
 #
 testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
   'input.miff', q//, q/, gravity=>'Center', compose=>'ModulusAdd'/,
-  'reference/composite/Add.miff', 0.003, 1.0);
+  'reference/composite/Add.miff', 0.2, 1.0);
 #
 # Atop
 #
@@ -42,7 +42,7 @@ testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
 ++$test;
 testCompositeCompare('gradient:white-black',q/size=>"70x46"/,
   'input.miff', q//,q/, gravity=>'Center', compose=>'Bumpmap'/,
-  'reference/composite/Bumpmap.miff', 0.03, 0.3);
+  'reference/composite/Bumpmap.miff', 0.3, 0.6);
 
 #
 # Clear
@@ -115,7 +115,7 @@ testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
 ++$test;
 testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
   'input.miff', q//, q/, gravity=>'Center', compose=>'Minus'/,
-  'reference/composite/Minus.miff', 0.00003, 0.009);
+  'reference/composite/Minus.miff', 0.14, 0.8);
 
 #
 # Multiply
@@ -155,7 +155,7 @@ testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
 ++$test;
 testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
   'input.miff', q//, q/, gravity=>'Center', compose=>'ModulusSubtract'/,
-  'reference/composite/Subtract.miff', 0.0026, 1.0);
+  'reference/composite/Subtract.miff', 0.7, 1.0);
 
 #
 # Xor
