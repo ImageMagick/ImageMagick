@@ -591,7 +591,7 @@ static MagickBooleanType sixel_decode(Image *image,unsigned char *p,
                             return(MagickFalse);
                           }
                         for (x = 0; x < repeat_count; x++)
-                          imbuf[(int) offset+x]=(sixel_pixel_t) color_index;
+                          imbuf[(size_t) offset+x]=(sixel_pixel_t) color_index;
                       }
                       if (max_x < (position_x+repeat_count-1))
                         max_x = position_x+repeat_count-1;
