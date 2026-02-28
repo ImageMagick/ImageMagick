@@ -804,8 +804,7 @@ static MagickBooleanType WriteXWDImage(const ImageInfo *image_info,Image *image,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
-  if ((image->columns != (CARD32) image->columns) ||
-      (image->rows != (CARD32) image->rows))
+  if ((image->columns > 65535UL) || (image->rows > 65535UL))
     ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
   if ((image->storage_class == PseudoClass) && (image->colors > 256))
     (void) SetImageType(image,TrueColorType,exception);
