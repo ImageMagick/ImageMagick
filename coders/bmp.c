@@ -2042,6 +2042,9 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
               }
           }
       }
+    if (BMPOverflowCheck(image->columns,(size_t) bmp_info.bits_per_pixel) !=
+        MagickFalse)
+      ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
     extent=image->columns*(size_t) bmp_info.bits_per_pixel;
     bytes_per_line=4*((extent+31)/32);
     if (BMPOverflowCheck(bytes_per_line,image->rows) != MagickFalse)
