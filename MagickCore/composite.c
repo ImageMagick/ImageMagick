@@ -2777,7 +2777,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 pixel=Dc;
                 break;
               }
-            pixel=Dc+(QuantumScale*Si-0.5)*Dc;
+            pixel=(QuantumScale*Si)*Dc;
             break;
           }
           case ChangeMaskCompositeOp:
@@ -3178,17 +3178,22 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case MinusDstCompositeOp:
           {
-            if (compose_sync == MagickFalse)
+           if (compose_sync == MagickFalse)
               {
                 pixel=Dc-Sc;
                 break;
               }
-            pixel=gamma*(Da*Dc-Sa*Sc);
+            pixel=gamma*(Sa*Sc+Da*Dc-2.0*Da*Dc*Sa);
             break;
           }
           case MinusSrcCompositeOp:
           {
-            pixel=Sc-Dc;
+            if (compose_sync == MagickFalse)
+              {
+                pixel=Sc-Dc;
+                break;
+              }
+            pixel=gamma*(Da*Dc+Sa*Sc-2.0*Sa*Sc*Da);
             break;
           }
           case ModulateCompositeOp:
@@ -3225,22 +3230,22 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case ModulusAddCompositeOp:
           {
-            pixel=(double) QuantumRange*(Sc+Dc-floor(Sc+Dc));
+            if (compose_sync == MagickFalse)
+              {
+                pixel=(Quantum) QuantumRange*((Sc+Dc)-floor(Sc+Dc));
+                break;
+              }
+            pixel=(Quantum) QuantumRange*((Sca+Dca)-floor(Sca+Dca));
             break;
           }
           case ModulusSubtractCompositeOp:
           {
-            D=(Da > 0.0) ? (Dc/Da) : 0.0;
-            S=(Sa > 0.0) ? (Sc/Sa) : 0.0;
-            blend=S-D;
-            if (blend < 0.0)
-              blend+=1.0;
             if (compose_sync == MagickFalse)
               {
-                pixel=(double) QuantumRange*(blend*Sa);
+                pixel=(Quantum) QuantumRange*((Sc-Dc)-floor(Sc-Dc));
                 break;
               }
-            pixel=(double) QuantumRange*(blend*Sa);
+            pixel=(Quantum) QuantumRange*((Sca-Dca)-floor(Sca-Dca));
             break;
           }
           case MultiplyCompositeOp:
