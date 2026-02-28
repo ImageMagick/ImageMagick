@@ -6029,6 +6029,11 @@ MagickExport ssize_t WriteBlob(Image *image,const size_t length,
       MagickSizeType
         extent;
 
+      if (blob_info->offset > (MagickOffsetType) (MAGICK_SSIZE_MAX-length))
+        {
+          errno=EOVERFLOW;
+          return(0);
+        }
       extent=(MagickSizeType) (blob_info->offset+(MagickOffsetType) length);
       if (extent >= blob_info->extent)
         {
