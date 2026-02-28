@@ -8907,8 +8907,8 @@ Mogrify(ref,...)
                   */
                   mask_image=CloneImage(argument_list[10].image_reference,0,0,
                     MagickTrue,exception);
-                  (void) SetImageMask(composite_image,ReadPixelMask,mask_image,
-                    exception);
+                  (void) CompositeImage(composite_image,mask_image,
+                    CopyAlphaCompositeOp,clip_to_self,0,0,exception);
                   mask_image=DestroyImage(mask_image);
                 }
             }
