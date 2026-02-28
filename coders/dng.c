@@ -73,7 +73,11 @@
 #include "MagickCore/xml-tree.h"
 #include "MagickCore/xml-tree-private.h"
 #if defined(MAGICKCORE_RAW_R_DELEGATE)
+#if defined(MAGICKCORE_HAVE_LIBRAW_LIBRAW_H)
+#include <libraw/libraw.h>
+#else
 #include <libraw.h>
+#endif
 #endif
 
 /*

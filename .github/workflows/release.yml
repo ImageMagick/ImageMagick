@@ -1,21 +1,21 @@
 on:
   workflow_dispatch:
-  schedule:
-  - cron: 0 6 * * *
-  push:
-    branches:
-    - main
-    paths:
-    - configure
-    - m4/version.m4
-    - .github/build/windows/download-configure.sh
-    - .github/build/windows/download-dependencies.sh
-    - .github/workflows/release.yml
-  pull_request:
-    branches:
-    - main
-    paths:
-    - .github/workflows/release.yml
+  #schedule:
+  #- cron: 0 6 * * *
+  #push:
+  #  branches:
+  #  - main
+  #  paths:
+  #  - configure
+  #  - m4/version.m4
+  #  - .github/build/windows/download-configure.sh
+  #  - .github/build/windows/download-dependencies.sh
+  #  - .github/workflows/release.yml
+  #pull_request:
+  #  branches:
+  #  - main
+  #  paths:
+  #  - .github/workflows/release.yml
 
 permissions:
   contents: read
