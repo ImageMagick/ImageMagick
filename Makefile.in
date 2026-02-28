@@ -6195,6 +6195,7 @@ TESTS_XFAIL_TESTS =
 TESTS_TESTS = \
   tests/cli-colorspace.tap \
   tests/cli-pipe.tap \
+  tests/cli-svg.tap \
   tests/validate-colorspace.tap \
   tests/validate-compare.tap \
   tests/validate-composite.tap \
@@ -6213,6 +6214,7 @@ TESTS_TESTS = \
 TESTS_EXTRA_DIST = \
   tests/common.shi \
   tests/rose.pnm \
+  tests/input_svg_gradient_transform.svg \
   tests/input_256c.miff \
   tests/input_bilevel.miff \
   tests/input_gray.miff \
