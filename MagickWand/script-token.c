@@ -269,7 +269,7 @@ WandExport ScriptTokenInfo * DestroyScriptTokenInfo(ScriptTokenInfo *token_info)
   assert(token_info->signature == MagickWandSignature);
 
   if ( token_info->opened != MagickFalse )
-    fclose(token_info->stream);
+    (void) fclose(token_info->stream);
 
   if (token_info->token != (char *) NULL )
     token_info->token=(char *) RelinquishMagickMemory(token_info->token);

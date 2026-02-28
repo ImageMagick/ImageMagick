@@ -1357,9 +1357,6 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image,
   if (dib_info.bits_per_pixel == 8)
     if (image_info->compression != NoCompression)
       {
-        size_t
-          length;
-
         /*
           Convert run-length encoded raster pixels.
         */
