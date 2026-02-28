@@ -553,7 +553,7 @@ static MagickBooleanType sixel_decode(Image *image,unsigned char *p,
                     {
                       offset=(ssize_t) (imsx*((ssize_t) position_y+i)+
                         (ssize_t) position_x);
-                      if (offset >= (imsx*imsy))
+                      if ((offset < 0) || (offset >= (imsx*imsy)))
                         {
                           imbuf=(sixel_pixel_t *) RelinquishMagickMemory(imbuf);
                           return(MagickFalse);
@@ -584,7 +584,7 @@ static MagickBooleanType sixel_decode(Image *image,unsigned char *p,
                       for (y = position_y + i; y < position_y + i + n; ++y)
                       {
                         offset=(imsx*y+position_x);
-                        if ((offset+repeat_count) >= (imsx*imsy))
+                        if ((offset < 0) || ((offset+repeat_count) >= (imsx*imsy)))
                           {
                             imbuf=(sixel_pixel_t *)
                               RelinquishMagickMemory(imbuf);
