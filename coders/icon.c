@@ -1385,21 +1385,13 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
           Write 40-byte version 3+ bitmap header.
         */
         if (width < 256)
-          {
-            directory->icons[scene]->width=(unsigned char) width;
-          }
+          directory->icons[scene]->width=(unsigned char) width;
         else
-          {
-            directory->icons[scene]->width=(unsigned char) 0;
-          }
+          directory->icons[scene]->width=(unsigned char) 0;
         if (height < 256)
-          {
-            directory->icons[scene]->height=(unsigned char) height;
-          }
+          directory->icons[scene]->height=(unsigned char) height;
         else
-          {
-            directory->icons[scene]->height=(unsigned char) 0;
-          }
+          directory->icons[scene]->height=(unsigned char) 0;
         directory->icons[scene]->colors=(unsigned char) number_colors;
         directory->icons[scene]->reserved=0;
         directory->icons[scene]->planes=planes;
