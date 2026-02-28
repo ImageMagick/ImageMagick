@@ -205,7 +205,9 @@ MagickExport TimerInfo *DestroyTimerInfo(TimerInfo *timer_info)
 */
 static double ElapsedTime(void)
 {
-#if defined(MAGICKCORE_HAVE_CLOCK_GETTIME)
+#ifdef FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION
+  return(1.0);  /* Deterministic for fuzzing */
+#elif defined(MAGICKCORE_HAVE_CLOCK_GETTIME)
 #define NANOSECONDS_PER_SECOND  1000000000.0
 #if defined(CLOCK_HIGHRES)
 #  define CLOCK_ID CLOCK_HIGHRES
@@ -377,10 +379,14 @@ static void InitializeEpoch(void)
 
 MagickExport time_t GetMagickTime(void)
 {
+#ifdef FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION
+  return((time_t) 1234567890);  /* Deterministic for fuzzing */
+#else
   InitializeEpoch();
   if (magick_epoch != 0)
     return(magick_epoch);
   return(time((time_t *) NULL));
+#endif
 }
 
 /*
