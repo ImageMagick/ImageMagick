@@ -979,7 +979,8 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     memory_manager_info;
 
   size_t
-    bytes_per_row;
+    bytes_per_row,
+    channels_size;
 
   unsigned char
     *pixels;
@@ -1146,17 +1147,22 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
   /*
     Write image as a JXL stream.
   */
-  bytes_per_row=image->columns*
-    (((image->alpha_trait & BlendPixelTrait) != 0) ? 4 : 3)*
+  channels_size=(((image->alpha_trait & BlendPixelTrait) != 0) ? 4 : 3)*
     ((pixel_format.data_type == JXL_TYPE_FLOAT) ? sizeof(float) :
      (pixel_format.data_type == JXL_TYPE_UINT16) ? sizeof(short) :
      sizeof(char));
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    bytes_per_row=image->columns*
-      (((image->alpha_trait & BlendPixelTrait) != 0) ? 2 : 1)*
+    channels_size=(((image->alpha_trait & BlendPixelTrait) != 0) ? 2 : 1)*
       ((pixel_format.data_type == JXL_TYPE_FLOAT) ? sizeof(float) :
        (pixel_format.data_type == JXL_TYPE_UINT16) ? sizeof(short) :
        sizeof(char));
+  if (HeapOverflowSanityCheck(image->columns,channels_size) != MagickFalse)
+    {
+      JxlThreadParallelRunnerDestroy(runner);
+      JxlEncoderDestroy(jxl_info);
+      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    }
+  bytes_per_row=image->columns*channels_size;
   pixel_info=AcquireVirtualMemory(bytes_per_row,image->rows*sizeof(*pixels));
   if (pixel_info == (MemoryInfo *) NULL)
     {
