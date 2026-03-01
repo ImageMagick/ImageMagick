@@ -815,6 +815,8 @@ static MagickBooleanType sixel_encode_impl(sixel_pixel_t *pixels,size_t width,
   context->pos = 0;
   if (ncolors < 1)
     return(MagickFalse);
+  if (HeapOverflowSanityCheck(ncolors,width) != MagickFalse)
+    return(MagickFalse);
   len=ncolors*width;
   context->active_palette=(-1);
   map=(sixel_pixel_t *) AcquireQuantumMemory(len,sizeof(sixel_pixel_t));
