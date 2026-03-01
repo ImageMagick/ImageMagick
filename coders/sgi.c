@@ -1115,6 +1115,7 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image,
           *packet_info;
 
         size_t
+          extent,
           length,
           number_packets,
           *runlength;
@@ -1133,8 +1134,17 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image,
           iris_info.depth*sizeof(*offsets));
         runlength=(size_t *) AcquireQuantumMemory(iris_info.rows,
           iris_info.depth*sizeof(*runlength));
-        packet_info=AcquireVirtualMemory((2*(size_t) iris_info.columns+10)*
-          image->rows,4*sizeof(*packets));
+        extent=(2*(size_t) iris_info.columns+10);
+        if (HeapOverflowSanityCheck(extent,image->rows) != MagickFalse)
+          {
+            if (offsets != (ssize_t *) NULL)
+              offsets=(ssize_t *) RelinquishMagickMemory(offsets);
+            if (runlength != (size_t *) NULL)
+              runlength=(size_t *) RelinquishMagickMemory(runlength);
+            ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+          }
+        packet_info=AcquireVirtualMemory(extent*image->rows,
+          4*sizeof(*packets));
         if ((offsets == (ssize_t *) NULL) ||
             (runlength == (size_t *) NULL) ||
             (packet_info == (MemoryInfo *) NULL))
