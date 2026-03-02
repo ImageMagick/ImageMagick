@@ -1039,8 +1039,8 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
           double
             intensity;
 
-          r=p+(ssize_t) (GetPixelChannels(image)*MagickMax(width,1)*
-            (size_t) (mid.y-v)+GetPixelChannels(image)*(size_t) (mid.x-u));
+          r=p+(ssize_t) GetPixelChannels(image)*(ssize_t) MagickMax(width,1)*
+            (v-mid.y)+(ssize_t) GetPixelChannels(image)*(u-mid.x);
           intensity=ScaleQuantumToChar((const Quantum) GetPixelIntensity(image,r))-
             (double) ScaleQuantumToChar((const Quantum) GetPixelIntensity(image,p));
           if ((intensity >= -MaxIntensity) && (intensity <= MaxIntensity))
@@ -1084,8 +1084,8 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
             {
               for (u=0; u < (ssize_t) MagickMax(width,1); u++)
               {
-                r=p+GetPixelChannels(image)*MagickMax(width,1)*(size_t)
-                  (mid.y-v)+GetPixelChannels(image)*(size_t) (mid.x-u);
+                r=p+(ssize_t) GetPixelChannels(image)*(ssize_t) MagickMax(width,1)*
+                  (v-mid.y)+(ssize_t) GetPixelChannels(image)*(u-mid.x);
                 pixel+=weights[id][n]*(double) r[i];
                 gamma+=weights[id][n];
                 n++;
@@ -1106,8 +1106,8 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
               alpha,
               beta;
 
-            r=p+GetPixelChannels(image)*MagickMax(width,1)*(size_t) (mid.y-v)+
-              GetPixelChannels(image)*(size_t) (mid.x-u);
+            r=p+(ssize_t) GetPixelChannels(image)*(ssize_t) MagickMax(width,1)*
+              (v-mid.y)+(ssize_t) GetPixelChannels(image)*(u-mid.x);
             alpha=(double) (QuantumScale*(double) GetPixelAlpha(image,p));
             beta=(double) (QuantumScale*(double) GetPixelAlpha(image,r));
             pixel+=weights[id][n]*(double) r[i];
