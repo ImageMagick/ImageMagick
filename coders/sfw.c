@@ -250,12 +250,12 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read image into a buffer.
   */
-  if (GetBlobSize(image) != (size_t) GetBlobSize(image))
+  extent=(size_t) GetBlobSize(image)+MagickPathExtent;
+  if (GetBlobSize(image) != extent)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   if (GetBlobSize(image) < 141)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  buffer=(unsigned char *) AcquireQuantumMemory((size_t) GetBlobSize(image)+
-    MagickPathExtent,sizeof(*buffer));
+  buffer=(unsigned char *) AcquireQuantumMemory(extent,sizeof(*buffer));
   if (buffer == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   count=ReadBlob(image,(size_t) GetBlobSize(image),buffer);
