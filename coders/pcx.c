@@ -466,46 +466,6 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image->storage_class == DirectClass)
       image->alpha_trait=pcx_info.planes > 3 ? BlendPixelTrait :
         UndefinedPixelTrait;
-    else
-      if ((pcx_info.version == 5) ||
-          ((pcx_info.bits_per_pixel*pcx_info.planes) == 1))
-        {
-          /*
-            Initialize image colormap.
-          */
-          if (image->colors > 256)
-            ThrowPCXException(CorruptImageError,"ColormapExceeds256Colors");
-          if ((pcx_info.bits_per_pixel*pcx_info.planes) == 1)
-            {
-              /*
-                Monochrome colormap.
-              */
-              image->colormap[0].red=(Quantum) 0;
-              image->colormap[0].green=(Quantum) 0;
-              image->colormap[0].blue=(Quantum) 0;
-              image->colormap[1].red=QuantumRange;
-              image->colormap[1].green=QuantumRange;
-              image->colormap[1].blue=QuantumRange;
-            }
-          else
-            if (image->colors > 16)
-              {
-                /*
-                  256 color images have their color map at the end of the file.
-                */
-                offset=SeekBlob(image,(MagickOffsetType) GetBlobSize(image)-3*
-                  image->colors-1,SEEK_SET);
-                pcx_info.colormap_signature=(unsigned char) ReadBlobByte(image);
-                count=ReadBlob(image,3*image->colors,pcx_colormap);
-                p=pcx_colormap;
-                for (i=0; i < (ssize_t) image->colors; i++)
-                {
-                  image->colormap[i].red=ScaleCharToQuantum(*p++);
-                  image->colormap[i].green=ScaleCharToQuantum(*p++);
-                  image->colormap[i].blue=ScaleCharToQuantum(*p++);
-                }
-            }
-        }
     /*
       Convert PCX raster image to pixel packets.
     */
@@ -658,7 +618,46 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
     }
     if (image->storage_class == PseudoClass)
-      (void) SyncImage(image,exception);
+      {
+        if ((pcx_info.version == 5) ||
+            ((pcx_info.bits_per_pixel*pcx_info.planes) == 1))
+          {
+            /*
+              Initialize image colormap.
+            */
+            if (image->colors > 256)
+              ThrowPCXException(CorruptImageError,"ColormapExceeds256Colors");
+            if ((pcx_info.bits_per_pixel*pcx_info.planes) == 1)
+              {
+                /*
+                  Monochrome colormap.
+                */
+                image->colormap[0].red=(Quantum) 0;
+                image->colormap[0].green=(Quantum) 0;
+                image->colormap[0].blue=(Quantum) 0;
+                image->colormap[1].red=QuantumRange;
+                image->colormap[1].green=QuantumRange;
+                image->colormap[1].blue=QuantumRange;
+              }
+            else
+              if (image->colors > 16)
+                {
+                  /*
+                    256 color images have their color map at the end of the file.
+                  */
+                  pcx_info.colormap_signature=(unsigned char) ReadBlobByte(image);
+                  count=ReadBlob(image,3*image->colors,pcx_colormap);
+                  p=pcx_colormap;
+                  for (i=0; i < (ssize_t) image->colors; i++)
+                  {
+                    image->colormap[i].red=ScaleCharToQuantum(*p++);
+                    image->colormap[i].green=ScaleCharToQuantum(*p++);
+                    image->colormap[i].blue=ScaleCharToQuantum(*p++);
+                  }
+              }
+          }
+        (void) SyncImage(image,exception);
+      }
     scanline=(unsigned char *) RelinquishMagickMemory(scanline);
     pixel_info=RelinquishVirtualMemory(pixel_info);
     if (EOFBlob(image) != MagickFalse)
