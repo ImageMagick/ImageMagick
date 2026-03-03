@@ -375,10 +375,12 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
 #ifdef FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION
   /* Deterministic entropy for fuzzing */
   {
-    unsigned char *datum;
-    SetStringInfoLength(entropy, MaxEntropyExtent);
-    datum = GetStringInfoDatum(entropy);
-    (void) memset(datum, 0x42, MaxEntropyExtent);
+    unsigned char
+      *datum;
+
+    SetStringInfoLength(entropy,MaxEntropyExtent);
+    datum=GetStringInfoDatum(entropy);
+    (void) memset(datum,0x42,MaxEntropyExtent);
     UnlockSemaphoreInfo(random_info->semaphore);
     return(entropy);
   }
@@ -897,7 +899,7 @@ MagickExport void SetRandomKey(RandomInfo *random_info,const size_t length,
     return;
 #ifdef FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION
   /* Deterministic random key for fuzzing */
-  (void) memset(key, 0x42, length);
+  (void) memset(key,0x42,length);
   return;
 #endif
   LockSemaphoreInfo(random_info->semaphore);

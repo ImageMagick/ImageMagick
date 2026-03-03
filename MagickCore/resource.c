@@ -1390,7 +1390,7 @@ MagickExport void ResetMagickResourceCounters(void)
   resource_info.time=0;
 }
 #endif
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
