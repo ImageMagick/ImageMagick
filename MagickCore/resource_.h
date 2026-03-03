@@ -57,11 +57,6 @@ extern MagickExport MagickSizeType
 extern MagickExport void
   RelinquishMagickResource(const ResourceType,const MagickSizeType);
 
-#ifdef FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION
-extern MagickExport void
-  ResetMagickResourceCounters(void);
-#endif
-
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
