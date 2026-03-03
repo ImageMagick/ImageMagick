@@ -182,12 +182,13 @@ jobs:
           nmake release
 
       - name: Sign executables and libraries
-        uses: ImageMagick/.github/actions/code-signing@e535c88db29bcffe05a25dcf3cc92b68ed171f05
+        uses: ImageMagick/code-signing-action@4d19869732e1cd97bb823ad21ebffb26ad10836c # v1.0.0
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           directory: ${{ github.workspace }}\Artifacts\bin
+          files: '*.exe *.dll'
 
       - name: Create installer
         shell: cmd
@@ -196,12 +197,13 @@ jobs:
           "C:\Program Files (x86)\Inno Setup 6\iscc.exe" Configure\Installer\Inno\ImageMagick.iss
 
       - name: Sign installer
-        uses: ImageMagick/.github/actions/code-signing@e535c88db29bcffe05a25dcf3cc92b68ed171f05
+        uses: ImageMagick/code-signing-action@4d19869732e1cd97bb823ad21ebffb26ad10836c # v1.0.0
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           directory: ${{ github.workspace }}\Configure\Installer\Inno\Artifacts
+          files: '*.exe'
 
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f #v6.0.0
         with:
@@ -310,12 +312,13 @@ jobs:
           msbuild /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.architecture}}
 
       - name: Sign executables and libraries
-        uses: ImageMagick/.github/actions/code-signing@e535c88db29bcffe05a25dcf3cc92b68ed171f05
+        uses: ImageMagick/code-signing-action@4d19869732e1cd97bb823ad21ebffb26ad10836c # v1.0.0
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           directory: ${{ github.workspace }}\Artifacts\bin
+          files: '*.exe *.dll'
 
       - name: Copy Files
         shell: pwsh
