@@ -186,7 +186,7 @@ typedef struct _SVGInfo
     svgDepth;
 } SVGInfo;
 
-/*    
+/*
   Global declarations.
 */
 #if defined(MAGICKCORE_RSVG_DELEGATE)
@@ -3571,7 +3571,7 @@ static MagickBooleanType IsPoint(const char *point)
 static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
 {
   MagickBooleanType
-    status = MagickTrue; 
+    status = MagickTrue;
 
 #if defined(MAGICKCORE_AUTOTRACE_DELEGATE)
   {

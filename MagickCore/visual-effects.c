@@ -3594,14 +3594,12 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
   noise_view=AcquireAuthenticCacheView(noise_image,exception);
   for (channel=0; channel < (ssize_t) GetPixelChannels(image); channel++)
   {
-    ssize_t
-      i;
-
     size_t
-      high_pass,
-      low_pass;
+      high_pass = 0,
+      low_pass = 0;
 
     ssize_t
+      i,
       level,
       y;
 
