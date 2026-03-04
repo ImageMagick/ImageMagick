@@ -437,6 +437,18 @@ AC_ARG_WITH([pkgconfigdir], AS_HELP_STRING([--with-pkgconfigdir=DIR],
             [pkgconfigdir="$withval"], [pkgconfigdir='${libdir}/pkgconfig'])
 AC_SUBST([pkgconfigdir])
 
+# Additional flags to pkgconf
+AC_ARG_WITH([pkgconfigstatic], AS_HELP_STRING([--with-pkgconfig-static],
+            [Pass additional flags to pkg-config]),
+            [pkgconfigstatic="$withval"], [pkgconfigstatic=''])
+AC_SUBST([pkgconfigstatic])
+
+AC_ARG_WITH([pkgconfig-static],
+    [AS_HELP_STRING([--with-pkgconfig-static],
+                    [Use static linking with pkg-config packages])],
+    [with_pkgconfigstatic=$withval],
+    [with_pkgconfigstatic='no'])
+
 #
 # Enable support for POSIX thread APIs
 #
@@ -1506,7 +1518,11 @@ if test "$with_bzlib" != 'no'; then
   passed=0
   found_libbz=0
 
-  PKG_CHECK_MODULES([BZLIB],[bzip2 >= 1.0.0],[have_bzlib=yes],[have_bzlib=no])
+  if test "$with_pkgconfigstatic" != 'yes'; then
+    PKG_CHECK_MODULES([BZLIB],[bzip2 >= 1.0.0],[have_bzlib=yes],[have_bzlib=no])
+  else
+    PKG_CHECK_MODULES_STATIC([BZLIB],[bzip2 >= 1.0.0],[have_bzlib=yes],[have_bzlib=no])
+  fi
   CFLAGS="$CFLAGS $BZLIB_CFLAGS"
   LIBS="$LIBS $BZLIB_LIBS"
 
@@ -1612,7 +1628,11 @@ ZIP_LIBS=""
 ZIP_PKG=""
 if test "x$with_zip" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([ZIP],[libzip >= 1.0.0],[have_zip=yes],[have_zip=no])
+  if test "$with_pkgconfigstatic" != 'yes'; then
+    PKG_CHECK_MODULES([ZIP],[libzip >= 1.0.0],[have_zip=yes],[have_zip=no])
+  else
+    PKG_CHECK_MODULES_STATIC([ZIP],[libzip >= 1.0.0],[have_zip=yes],[have_zip=no])
+  fi
   AC_MSG_RESULT([])
 fi
 
@@ -1647,7 +1667,11 @@ ZLIB_LIBS=""
 ZLIB_PKG=""
 if test "x$with_zlib" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([ZLIB],[zlib >= 1.0.0],[have_zlib=yes],[have_zlib=no])
+  if test "$with_pkgconfigstatic" != 'yes'; then
+    PKG_CHECK_MODULES([ZLIB],[zlib >= 1.0.0],[have_zlib=yes],[have_zlib=no])
+  else
+    PKG_CHECK_MODULES_STATIC([ZLIB],[zlib >= 1.0.0],[have_zlib=yes],[have_zlib=no])
+  fi
   AC_MSG_RESULT([])
 fi
 
@@ -1682,7 +1706,11 @@ ZSTD_LIBS=""
 ZSTD_PKG=""
 if test "x$with_zstd" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([LIBZSTD],[libzstd >= 1.0.0],[have_zstd=yes],[have_zstd=no])
+  if test "$with_pkgconfigstatic" != 'yes'; then
+    PKG_CHECK_MODULES([LIBZSTD],[libzstd >= 1.0.0],[have_zstd=yes],[have_zstd=no])
+  else
+    PKG_CHECK_MODULES_STATIC([LIBZSTD],[libzstd >= 1.0.0],[have_zstd=yes],[have_zstd=no])
+  fi
   AC_MSG_RESULT([])
 fi
 
@@ -1788,7 +1816,11 @@ AUTOTRACE_LIBS=""
 AUTOTRACE_PKG=""
 if test "x$with_autotrace" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([AUTOTRACE],[autotrace >= 0.31.2],[have_autotrace=yes],[have_autotrace=no])
+  if test "$with_pkgconfigstatic" != 'yes'; then
+    PKG_CHECK_MODULES([AUTOTRACE],[autotrace >= 0.31.2],[have_autotrace=yes],[have_autotrace=no])
+  else
+    PKG_CHECK_MODULES_STATIC([AUTOTRACE],[autotrace >= 0.31.2],[have_autotrace=yes],[have_autotrace=no])
+  fi
   AC_MSG_RESULT([])
 fi
 
@@ -1906,7 +1938,11 @@ FFTW_LIBS=""
 FFTW_PKG=""
 if test "x$with_fftw" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([fftw3],[fftw3 >= 3.0.0],[have_fftw=yes],[have_fftw=no])
+  if test "$with_pkgconfigstatic" != 'yes'; then
+    PKG_CHECK_MODULES([fftw3],[fftw3 >= 3.0.0],[have_fftw=yes],[have_fftw=no])
+  else
+    PKG_CHECK_MODULES_STATIC([fftw3],[fftw3 >= 3.0.0],[have_fftw=yes],[have_fftw=no])
+  fi
   AC_MSG_RESULT([])
 fi
 
@@ -2033,7 +2069,11 @@ DJVU_LIBS=""
 DJVU_PKG=""
 if test "x$with_djvu" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([ddjvuapi],[ddjvuapi >= 3.5.0],[have_djvu=yes],[have_djvu=no])
+  if test "$with_pkgconfigstatic" != 'yes'; then
+    PKG_CHECK_MODULES([ddjvuapi],[ddjvuapi >= 3.5.0],[have_djvu=yes],[have_djvu=no])
+  else
+    PKG_CHECK_MODULES_STATIC([ddjvuapi],[ddjvuapi >= 3.5.0],[have_djvu=yes],[have_djvu=no])
+  fi
   AC_MSG_RESULT([])
 fi
 
@@ -2069,7 +2109,11 @@ FONTCONFIG_LIBS=""
 FONTCONFIG_PKG=""
 if test "x$with_fontconfig" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([FONTCONFIG],[fontconfig >= 2.1.0],[have_fontconfig=yes],[have_fontconfig=no])
+  if test "$with_pkgconfigstatic" != 'yes'; then
+    PKG_CHECK_MODULES([FONTCONFIG],[fontconfig >= 2.1.0],[have_fontconfig=yes],[have_fontconfig=no])
+  else
+    PKG_CHECK_MODULES_STATIC([FONTCONFIG],[fontconfig >= 2.1.0],[have_fontconfig=yes],[have_fontconfig=no])
+  fi
   AC_MSG_RESULT([])
 fi
 
@@ -2103,7 +2147,11 @@ FREETYPE_LIBS=""
 FREETYPE_PKG=""
 if test "x$with_freetype" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([FREETYPE],[freetype2 >= 2.8.0],[have_freetype=yes],[have_freetype=no])
+  if test "$with_pkgconfigstatic" != 'yes'; then
+    PKG_CHECK_MODULES([FREETYPE],[freetype2 >= 2.8.0],[have_freetype=yes],[have_freetype=no])
+  else
+    PKG_CHECK_MODULES_STATIC([FREETYPE],[freetype2 >= 2.8.0],[have_freetype=yes],[have_freetype=no])
+  fi
   AC_MSG_RESULT([])
 fi
 
@@ -2140,7 +2188,11 @@ RAQM_LIBS=""
 RAQM_PKG=""
 if test "x$with_raqm" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([RAQM],[raqm],[have_raqm=yes],[have_raqm=no])
+  if test "$with_pkgconfigstatic" != 'yes'; then
+    PKG_CHECK_MODULES([RAQM],[raqm],[have_raqm=yes],[have_raqm=no])
+  else
+    PKG_CHECK_MODULES_STATIC([RAQM],[raqm],[have_raqm=yes],[have_raqm=no])
+  fi
   AC_MSG_RESULT([])
 fi
 
@@ -2307,7 +2359,11 @@ fi
 GVC_PKG=""
 if test "x$with_gvc" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([GVC],[libgvc >= 2.9.0],[have_gvc=yes],[have_gvc=no])
+  if test "$with_pkgconfigstatic" != 'yes'; then
+    PKG_CHECK_MODULES([GVC],[libgvc >= 2.9.0],[have_gvc=yes],[have_gvc=no])
+  else
+    PKG_CHECK_MODULES_STATIC([GVC],[libgvc >= 2.9.0],[have_gvc=yes],[have_gvc=no])
+  fi
   AC_MSG_RESULT([])
 fi
 
@@ -2340,7 +2396,11 @@ DMR_LIBS=""
 DMR_PKG=""
 if test "x$with_dmr" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([MagickCache],[MagickCache >= 0.9.3],[have_dmr=yes],[have_dmr=no])
+  if test "$with_pkgconfigstatic" != 'yes'; then
+    PKG_CHECK_MODULES([MagickCache],[MagickCache >= 0.9.3],[have_dmr=yes],[have_dmr=no])
+  else
+    PKG_CHECK_MODULES_STATIC([MagickCache],[MagickCache >= 0.9.3],[have_dmr=yes],[have_dmr=no])
+  fi
   AC_MSG_RESULT([])
 fi
 
@@ -2376,7 +2436,11 @@ HEIF_LIBS=""
 HEIF_PKG=""
 if test "x$with_heic" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([HEIF],[libheif >= 1.4.0],[have_heic=yes],[have_heic=no])
+  if test "$with_pkgconfigstatic" != 'yes'; then
+    PKG_CHECK_MODULES([HEIF],[libheif >= 1.4.0],[have_heic=yes],[have_heic=no])
+  else
+    PKG_CHECK_MODULES_STATIC([HEIF],[libheif >= 1.4.0],[have_heic=yes],[have_heic=no])
+  fi
   AC_MSG_RESULT([])
 fi
 
@@ -2454,7 +2518,11 @@ if test "$with_jpeg" != 'no'; then
     failed=0
     passed=0
 
-    PKG_CHECK_MODULES([JPEG],[libjpeg >= 2.0.0],[have_jpeg=yes],[have_jpeg=no])
+    if test "$with_pkgconfigstatic" != 'yes'; then
+      PKG_CHECK_MODULES([JPEG],[libjpeg >= 2.0.0],[have_jpeg=yes],[have_jpeg=no])
+    else
+      PKG_CHECK_MODULES_STATIC([JPEG],[libjpeg >= 2.0.0],[have_jpeg=yes],[have_jpeg=no])
+    fi
     CFLAGS="$CFLAGS $JPEG_CFLAGS"
     LIBS="$LIBS $JPEG_LIBS"
 
@@ -2505,7 +2573,11 @@ JXL_LIBS=''
 JXL_PKG=''
 if test "$with_jxl" != 'no'; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([JXL],[libjxl >= 0.7.0 libjxl_threads],[have_jxl=yes],[have_jxl=no])
+  if test "$with_pkgconfigstatic" != 'yes'; then
+    PKG_CHECK_MODULES([JXL],[libjxl >= 0.7.0 libjxl_threads],[have_jxl=yes],[have_jxl=no])
+  else
+    PKG_CHECK_MODULES_STATIC([JXL],[libjxl >= 0.7.0 libjxl_threads],[have_jxl=yes],[have_jxl=no])
+  fi
   AC_MSG_RESULT([])
 fi
 
@@ -2537,7 +2609,11 @@ LCMS_LIBS=""
 LCMS_PKG=""
 if test "x$with_lcms" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([LCMS2],[lcms2 >= 2.0.0],[have_lcms=yes],[have_lcms=no])
+  if test "$with_pkgconfigstatic" != 'yes'; then
+    PKG_CHECK_MODULES([LCMS2],[lcms2 >= 2.0.0],[have_lcms=yes],[have_lcms=no])
+  else
+    PKG_CHECK_MODULES_STATIC([LCMS2],[lcms2 >= 2.0.0],[have_lcms=yes],[have_lcms=no])
+  fi
   AC_MSG_RESULT([])
 fi
 
@@ -2579,7 +2655,11 @@ LIBOPENJP2_LIBS=""
 LIBOPENJP2_PKG=""
 if test "$with_openjp2" != 'no'; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([LIBOPENJP2],[libopenjp2 >= 2.1.0],[have_openjp2=yes],[have_openjp2=no])
+  if test "$with_pkgconfigstatic" != 'yes'; then
+    PKG_CHECK_MODULES([LIBOPENJP2],[libopenjp2 >= 2.1.0],[have_openjp2=yes],[have_openjp2=no])
+  else
+    PKG_CHECK_MODULES_STATIC([LIBOPENJP2],[libopenjp2 >= 2.1.0],[have_openjp2=yes],[have_openjp2=no])
+  fi
   AC_MSG_RESULT([])
 fi
 
@@ -2614,7 +2694,11 @@ LQR_LIBS=""
 LQR_PKG=""
 if test "x$with_lqr" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([LQR],[lqr-1 >= 0.1.0],[have_lqr=yes],[have_lqr=no])
+  if test "$with_pkgconfigstatic" != 'yes'; then
+    PKG_CHECK_MODULES([LQR],[lqr-1 >= 0.1.0],[have_lqr=yes],[have_lqr=no])
+  else
+    PKG_CHECK_MODULES_STATIC([LQR],[lqr-1 >= 0.1.0],[have_lqr=yes],[have_lqr=no])
+  fi
   AC_MSG_RESULT([])
 fi
 
@@ -2641,7 +2725,11 @@ fi
 LZMA_PKG=""
 if test "x$with_lzma" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([LZMA],[liblzma >= 2.9.0],[have_lzma=yes],[have_lzma=no])
+  if test "$with_pkgconfigstatic" != 'yes'; then
+    PKG_CHECK_MODULES([LZMA],[liblzma >= 2.9.0],[have_lzma=yes],[have_lzma=no])
+  else
+    PKG_CHECK_MODULES_STATIC([LZMA],[liblzma >= 2.9.0],[have_lzma=yes],[have_lzma=no])
+  fi
   AC_MSG_RESULT([])
 else
   have_lzma=no
@@ -2677,7 +2765,11 @@ OPENEXR_LIBS=""
 OPENEXR_PKG=""
 if test "x$with_openexr" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([OPENEXR],[OpenEXR >= 1.0.6],[have_openexr=yes],[have_openexr=no])
+  if test "$with_pkgconfigstatic" != 'yes'; then
+    PKG_CHECK_MODULES([OPENEXR],[OpenEXR >= 1.0.6],[have_openexr=yes],[have_openexr=no])
+  else
+    PKG_CHECK_MODULES_STATIC([OPENEXR],[OpenEXR >= 1.0.6],[have_openexr=yes],[have_openexr=no])
+  fi
   AC_MSG_RESULT([])
 fi
 
@@ -2712,10 +2804,17 @@ PANGO_LIBS=""
 PANGO_PKG=""
 if test "x$with_pango" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([PANGO],[pangocairo >= 1.28.1],[have_pangocairo=yes],[have_pangocairo=no])
-  AC_MSG_RESULT([])
-  PKG_CHECK_MODULES([PANGO],[pango >= 1.28.1],[have_pango=yes],[have_pango=no])
-  AC_MSG_RESULT([])
+  if test "$with_pkgconfigstatic" != 'yes'; then
+    PKG_CHECK_MODULES([PANGO],[pangocairo >= 1.28.1],[have_pangocairo=yes],[have_pangocairo=no])
+    AC_MSG_RESULT([])
+    PKG_CHECK_MODULES([PANGO],[pango >= 1.28.1],[have_pango=yes],[have_pango=no])
+    AC_MSG_RESULT([])
+  else
+    PKG_CHECK_MODULES_STATIC([PANGO],[pangocairo >= 1.28.1],[have_pangocairo=yes],[have_pangocairo=no])
+    AC_MSG_RESULT([])
+    PKG_CHECK_MODULES_STATIC([PANGO],[pango >= 1.28.1],[have_pango=yes],[have_pango=no])
+    AC_MSG_RESULT([])
+  fi
 fi
 
 if test "${have_pango}x${have_pangocairo}" = 'yesxyes'; then
@@ -2747,7 +2846,11 @@ PNG_LIBS=""
 PNG_PKG=""
 if test "x$with_png" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([PNG],[libpng >= 1.0.0],[have_png=yes],[have_png=no])
+  if test "$with_pkgconfigstatic" != 'yes'; then
+    PKG_CHECK_MODULES([PNG],[libpng >= 1.0.0],[have_png=yes],[have_png=no])
+  else
+    PKG_CHECK_MODULES_STATIC([PNG],[libpng >= 1.0.0],[have_png=yes],[have_png=no])
+  fi
   AC_MSG_RESULT([])
 fi
 
@@ -2781,7 +2884,11 @@ RAW_R_LIBS=""
 RAW_R_PKG=""
 if test "x$with_raw" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([RAW_R],[libraw_r >= 0.14.8],[have_raw=yes],[have_raw=no])
+  if test "$with_pkgconfigstatic" != 'yes'; then
+    PKG_CHECK_MODULES([RAW_R],[libraw_r >= 0.14.8],[have_raw=yes],[have_raw=no])
+  else
+    PKG_CHECK_MODULES_STATIC([RAW_R],[libraw_r >= 0.14.8],[have_raw=yes],[have_raw=no])
+  fi
   AC_MSG_RESULT([])
 fi
 
@@ -2816,10 +2923,17 @@ RSVG_LIBS=""
 RSVG_PKG=""
 if test "x$with_rsvg" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([RSVG],[librsvg-2.0 >= 2.9.0],[have_rsvg=yes],[have_rsvg=no])
-  AC_MSG_RESULT([])
-  PKG_CHECK_MODULES([CAIRO_SVG],[cairo-svg],[have_cairo=yes],[have_cairo=no])
-  AC_MSG_RESULT([])
+  if test "$with_pkgconfigstatic" != 'yes'; then
+    PKG_CHECK_MODULES([RSVG],[librsvg-2.0 >= 2.9.0],[have_rsvg=yes],[have_rsvg=no])
+    AC_MSG_RESULT([])
+    PKG_CHECK_MODULES([CAIRO_SVG],[cairo-svg],[have_cairo=yes],[have_cairo=no])
+    AC_MSG_RESULT([])
+  else
+    PKG_CHECK_MODULES_STATIC([RSVG],[librsvg-2.0 >= 2.9.0],[have_rsvg=yes],[have_rsvg=no])
+    AC_MSG_RESULT([])
+    PKG_CHECK_MODULES_STATIC([CAIRO_SVG],[cairo-svg],[have_cairo=yes],[have_cairo=no])
+    AC_MSG_RESULT([])
+  fi
 fi
 
 if test "$have_rsvg" = 'yes'; then
@@ -2857,7 +2971,11 @@ TIFF_LIBS=""
 TIFF_PKG=""
 if test "x$with_tiff" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([TIFF],[libtiff-4 >= 4.0.0],[have_tiff=yes],[have_tiff=no])
+  if test "$with_pkgconfigstatic" != 'yes'; then
+    PKG_CHECK_MODULES([TIFF],[libtiff-4 >= 4.0.0],[have_tiff=yes],[have_tiff=no])
+  else
+    PKG_CHECK_MODULES_STATIC([TIFF],[libtiff-4 >= 4.0.0],[have_tiff=yes],[have_tiff=no])
+  fi
   AC_MSG_RESULT([])
 fi
 
@@ -2891,7 +3009,11 @@ UHDR_LIBS=""
 UHDR_PKG=""
 if test "$with_uhdr" != 'no'; then
     AC_MSG_RESULT([-------------------------------------------------------------])
-    PKG_CHECK_MODULES([UHDR],[libuhdr >= 1.3.0],[have_uhdr=yes],[have_uhdr=no])
+    if test "$with_pkgconfigstatic" != 'yes'; then
+      PKG_CHECK_MODULES([UHDR],[libuhdr >= 1.3.0],[have_uhdr=yes],[have_uhdr=no])
+    else
+      PKG_CHECK_MODULES_STATIC([UHDR],[libuhdr >= 1.3.0],[have_uhdr=yes],[have_uhdr=no])
+    fi
     AC_MSG_RESULT([])
 fi
 
@@ -2959,8 +3081,13 @@ WEBPMUX_LIBS=""
 WEBPMUX_PKG=""
 if test "x$with_webp" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([WEBP],[libwebp >= 0.4.1],[have_webp=yes],[have_webp=no])
-  PKG_CHECK_MODULES([WEBPMUX],[libwebpmux >= 0.5.0 libwebpdemux >= 0.5.0],[have_webpmux=yes],[have_webpmux=no])
+  if test "$with_pkgconfigstatic" != 'yes'; then
+    PKG_CHECK_MODULES([WEBP],[libwebp >= 0.4.1],[have_webp=yes],[have_webp=no])
+    PKG_CHECK_MODULES([WEBPMUX],[libwebpmux >= 0.5.0 libwebpdemux >= 0.5.0],[have_webpmux=yes],[have_webpmux=no])
+  else
+    PKG_CHECK_MODULES_STATIC([WEBP],[libwebp >= 0.4.1],[have_webp=yes],[have_webp=no])
+    PKG_CHECK_MODULES_STATIC([WEBPMUX],[libwebpmux >= 0.5.0 libwebpdemux >= 0.5.0],[have_webpmux=yes],[have_webpmux=no])
+  fi
   AC_MSG_RESULT([])
 fi
 
@@ -3070,7 +3197,11 @@ XML_LIBS=""
 XML_PKG=""
 if test "x$with_xml" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([XML],[libxml-2.0 >= 2.0.0],[have_xml=yes],[have_xml=no])
+  if test "$with_pkgconfigstatic" != 'yes'; then
+    PKG_CHECK_MODULES([XML],[libxml-2.0 >= 2.0.0],[have_xml=yes],[have_xml=no])
+  else
+    PKG_CHECK_MODULES_STATIC([XML],[libxml-2.0 >= 2.0.0],[have_xml=yes],[have_xml=no])
+  fi
   AC_MSG_RESULT([])
 fi
 
