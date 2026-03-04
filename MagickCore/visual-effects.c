@@ -3585,7 +3585,7 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
   status=MagickTrue;
   number_pixels=(MagickSizeType) image->columns*image->rows;
   while ((number_levels > 0) &&
-         ((1UL << (number_levels-1)) >= MagickMin(image->columns,image->rows)))
+         (((size_t) 1 << (number_levels-1)) >= MagickMin(image->columns,image->rows)))
     number_levels--;
   image_view=AcquireAuthenticCacheView(image,exception);
   noise_view=AcquireAuthenticCacheView(noise_image,exception);
