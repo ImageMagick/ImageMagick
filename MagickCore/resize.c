@@ -3058,7 +3058,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   for (y=0; y < (ssize_t) source_image->rows; y++)
   {
     Quantum
-      r[128]; /* to hold result pixels */
+      r[magnification*magnification*MaxPixelChannels];  /* result pixels */
 
     Quantum
       *magick_restrict q;
