@@ -2909,6 +2909,9 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   RectangleInfo
     rectangle;
 
+  size_t
+    extent;
+
   ssize_t
     y;
 
@@ -3048,6 +3051,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     Magnify the image.
   */
   status=MagickTrue;
+  extent=magnification*magnification*MaxPixelChannels;
   progress=0;
   image_view=AcquireVirtualCacheView(source_image,exception);
   magnify_view=AcquireAuthenticCacheView(magnify_image,exception);
@@ -3058,7 +3062,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   for (y=0; y < (ssize_t) source_image->rows; y++)
   {
     Quantum
-      r[magnification*magnification*MaxPixelChannels];  /* result pixels */
+      r[extent];  /* result pixels */
 
     Quantum
       *magick_restrict q;
