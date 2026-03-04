@@ -1191,6 +1191,8 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
         scale=100.0;
       if (pixel->colorspace == XYZColorspace)
         color/=2.55;
+      if (pixel->colorspace == OklchColorspace)
+        scale=1.0;
       break;
     }
     case GreenPixelChannel:
@@ -1203,6 +1205,8 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
         color-=QuantumRange/2.0;
       if (pixel->colorspace == XYZColorspace)
         color/=2.55;
+      if (pixel->colorspace == OklchColorspace)
+        scale=1.0;
       break;
     }
     case BluePixelChannel:
@@ -1218,6 +1222,8 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
         color*=360.0/255.0;
       if (pixel->colorspace == XYZColorspace)
         color/=2.55;
+      if (pixel->colorspace == OklchColorspace)
+        scale=1.0;
       break;
     }
     case AlphaPixelChannel:
@@ -1240,13 +1246,17 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
     default:
       break;
   }
-  if ((scale != 100.0) ||
-      (IsLabCompatibleColorspace(pixel->colorspace) != MagickFalse))
+  if ((pixel->colorspace == OklchColorspace) && (channel == BluePixelChannel))
     (void) FormatLocaleString(component,MagickPathExtent,"%.*g",
-      GetMagickPrecision(),scale*QuantumScale*color);
+      GetMagickPrecision(),RadiansToDegrees(scale*QuantumScale*color));
   else
-    (void) FormatLocaleString(component,MagickPathExtent,"%.*g%%",
-      GetMagickPrecision(),scale*QuantumScale*color);
+    if ((scale != 100.0) ||
+        (IsLabCompatibleColorspace(pixel->colorspace) != MagickFalse))
+      (void) FormatLocaleString(component,MagickPathExtent,"%.*g",
+        GetMagickPrecision(),scale*QuantumScale*color);
+      else
+        (void) FormatLocaleString(component,MagickPathExtent,"%.*g%%",
+          GetMagickPrecision(),scale*QuantumScale*color);
   (void) ConcatenateMagickString(tuple,component,MagickPathExtent);
 }
 
@@ -2509,29 +2519,42 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
           colorname=DestroyString(colorname);
           return(status);
         }
-      if (IsLabCompatibleColorspace(color->colorspace) != MagickFalse)
-        {
-          color->red=(MagickRealType) ClampToQuantum((MagickRealType)
-            ((double) QuantumRange*geometry_info.rho/100.0));
-          if ((flags & SigmaValue) != 0)
-            color->green=(MagickRealType) ClampToQuantum((MagickRealType)
-              (scale*geometry_info.sigma+((double) QuantumRange+1)/2.0));
-          if ((flags & XiValue) != 0)
-            color->blue=(MagickRealType) ClampToQuantum((MagickRealType)
-              (scale*geometry_info.xi+((double) QuantumRange+1)/2.0));
-        }
+      if (color->colorspace == OklchColorspace)
+         {
+           if ((flags & RhoValue) != 0)
+             color->red=(MagickRealType) ClampToQuantum((double) QuantumRange*
+                geometry_info.rho);
+           if ((flags & SigmaValue) != 0)
+             color->green=(MagickRealType) ClampToQuantum((double) QuantumRange*
+                geometry_info.sigma);
+           if ((flags & XiValue) != 0)
+             color->blue=(MagickRealType) ClampToQuantum((double) QuantumRange*
+                DegreesToRadians(geometry_info.xi));
+         }
       else
-        {
-          if ((flags & RhoValue) != 0)
-            color->red=(double) ClampToQuantum((MagickRealType) (scale*
-              geometry_info.rho));
-          if ((flags & SigmaValue) != 0)
-            color->green=(double) ClampToQuantum((MagickRealType) (scale*
-              geometry_info.sigma));
-          if ((flags & XiValue) != 0)
-            color->blue=(double) ClampToQuantum((MagickRealType) (scale*
-              geometry_info.xi));
-        }
+        if (IsLabCompatibleColorspace(color->colorspace) != MagickFalse)
+          {
+            color->red=(MagickRealType) ClampToQuantum((MagickRealType)
+              ((double) QuantumRange*geometry_info.rho/100.0));
+            if ((flags & SigmaValue) != 0)
+              color->green=(MagickRealType) ClampToQuantum((MagickRealType)
+                (scale*geometry_info.sigma+((double) QuantumRange+1)/2.0));
+            if ((flags & XiValue) != 0)
+              color->blue=(MagickRealType) ClampToQuantum((MagickRealType)
+                (scale*geometry_info.xi+((double) QuantumRange+1)/2.0));
+          }
+        else
+          {
+            if ((flags & RhoValue) != 0)
+              color->red=(double) ClampToQuantum((MagickRealType) (scale*
+                geometry_info.rho));
+            if ((flags & SigmaValue) != 0)
+              color->green=(double) ClampToQuantum((MagickRealType) (scale*
+                geometry_info.sigma));
+            if ((flags & XiValue) != 0)
+              color->blue=(double) ClampToQuantum((MagickRealType) (scale*
+                geometry_info.xi));
+          }
       if ((flags & AlphaValue) != 0)
         color->alpha_trait=BlendPixelTrait;
       color->alpha=(double) OpaqueAlpha;

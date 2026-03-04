@@ -1541,15 +1541,29 @@ static inline void ConvertOklabToRGB(const double L,const double a,
 }
 
 static inline void ConvertOklchToRGB(const double L,const double C,
-  const double h,double *red,double *green,double *blue)
+  const double H,double *red,double *green,double *blue)
 {
-  double
-    a,
-    b;
+  /* OKLCH → OKLab */
+  const double a = C*cos(H);
+  const double b_ = C*sin(H);
 
-  a=C*cos(2.0*MagickPI*h);
-  b=C*sin(2.0*MagickPI*h);
-  ConvertOklabToRGB(L,a,b,red,green,blue);
+  /* OKLab → nonlinear LMS */
+  const double l_ = L+Oklab_la*a+Oklab_lb*b_;
+  const double m_ = L+Oklab_ma*a+Oklab_mb*b_;
+  const double s_ = L+Oklab_sa*a+Oklab_sb*b_;
+
+  /* Undo nonlinear transform */
+  const double l = l_*l_*l_;
+  const double m = m_*m_*m_;
+  const double s = s_*s_*s_;
+
+  /* LMS → linear RGB */
+  *red=EncodePixelGamma((double) QuantumRange*(Oklab_Rl*l+Oklab_Rm*m+
+    Oklab_Rs*s));
+  *green=EncodePixelGamma((double) QuantumRange*(Oklab_Gl*l+Oklab_Gm*m+
+    Oklab_Gs*s));
+  *blue=EncodePixelGamma((double) QuantumRange*(Oklab_Bl*l+Oklab_Bm*m+
+    Oklab_Bs*s));
 }
 
 static inline void ConvertRGBToOklab(const double red,const double green,
@@ -1615,15 +1629,38 @@ static inline void ConvertRGBToOklab(const double red,const double green,
 }
 
 static inline void ConvertRGBToOklch(const double red,const double green,
-  const double blue,double *L,double *C,double *h)
+  const double blue,double *L,double *C,double *H)
 {
-  double
-    a,
-    b;
+  /* Linear RGB → LMS */
+  const double l = Oklab_lR*QuantumScale*DecodePixelGamma(red)+
+    Oklab_lG*QuantumScale*DecodePixelGamma(green)+
+    Oklab_lB*QuantumScale*DecodePixelGamma(blue);
+  const double m = Oklab_mR*QuantumScale*DecodePixelGamma(red)+
+    Oklab_mG*QuantumScale*DecodePixelGamma(green)+
+    Oklab_mB*QuantumScale*DecodePixelGamma(blue);
+  const double s = Oklab_sR*QuantumScale*DecodePixelGamma(red)+
+    Oklab_sG*QuantumScale*DecodePixelGamma(green)+
+    Oklab_sB*QuantumScale*DecodePixelGamma(blue);
 
-  ConvertRGBToOklab(red,green,blue,L,&a,&b);
-  *C=sqrt(a*a+b*b);
-  *h=0.5+0.5*atan2(-b,-a)/MagickPI;
+  /* Nonlinear transform */
+  const double l_ = cbrt(l);
+  const double m_ = cbrt(m);
+  const double s_ = cbrt(s);
+
+  /* LMS → OKLab */
+  const double L_ok = Oklab_Ll*l_+Oklab_Lm*m_+Oklab_Ls*s_;
+  const double a_ok = Oklab_al*l_+Oklab_am*m_+Oklab_as*s_;
+  const double b_ok = Oklab_bl*l_+Oklab_bm*m_+Oklab_bs*s_;
+
+  /* OKLab → OKLCH */
+  const double C_ok = sqrt(a_ok*a_ok+b_ok*b_ok);
+  double H_ok = atan2(b_ok,a_ok);  /* radians */
+
+  if (H_ok < 0.0)
+    H_ok+=2.0*M_PI;
+  *L=L_ok;
+  *C=C_ok;
+  *H=H_ok;
 }
 
 static inline void ConvertRGBToYDbDr(const double red,const double green,
@@ -1817,7 +1854,7 @@ static inline MagickBooleanType IsLabCompatibleColorspace(
 {
   if ((colorspace == LabColorspace) || (colorspace == LCHColorspace) ||
       (colorspace == LCHabColorspace) || (colorspace == LCHuvColorspace) ||
-      (colorspace == OklabColorspace) || (colorspace == OklchColorspace))
+      (colorspace == OklabColorspace))
     return(MagickTrue);
   return(MagickFalse);
 }
