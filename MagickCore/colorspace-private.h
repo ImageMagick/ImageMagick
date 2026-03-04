@@ -1657,7 +1657,7 @@ static inline void ConvertRGBToOklch(const double red,const double green,
   double H_ok = atan2(b_ok,a_ok);  /* radians */
 
   if (H_ok < 0.0)
-    H_ok+=2.0*M_PI;
+    H_ok+=2.0*MagickPI;
   *L=L_ok;
   *C=C_ok;
   *H=H_ok;
