@@ -3595,8 +3595,8 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
       i;
 
     size_t
-      high_pass,
-      low_pass;
+      high_pass = 0,
+      low_pass = 0;
 
     ssize_t
       level,
