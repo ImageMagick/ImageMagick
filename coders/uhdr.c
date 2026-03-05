@@ -683,7 +683,7 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
           "ImproperImageHeader","%s",image->filename);
         goto next_image;
       }
-    picSize=3*picsize/2;
+    picSize=3*picSize/2;
 
     if ((image->depth < hdrIntentMinDepth) && (image->depth != 8))
     {
