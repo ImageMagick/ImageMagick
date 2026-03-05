@@ -625,8 +625,7 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
       aligned_width;
 
     size_t
-      picSize,
-      sans;
+      picSize;
 
     void
       *crBuffer = NULL, *cbBuffer = NULL, *yBuffer = NULL;
@@ -667,23 +666,26 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
     aligned_height = image->rows + (image->rows & 1);
     if (HeapOverflowSanityCheckGetSize(aligned_width,aligned_height,&picSize) != MagickFalse)
       {
-        (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
-          "ImproperImageHeader","%s",image->filename);
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          CorruptImageError,"ImproperImageHeader","%s",image->filename);
         goto next_image;
       }
     if (HeapOverflowSanityCheckGetSize(picSize,bpp,&picSize) != MagickFalse)
       {
-        (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
-          "ImproperImageHeader","%s",image->filename);
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          CorruptImageError,"ImproperImageHeader","%s",image->filename);
         goto next_image;
       }
-    if ((bpp < 4) && (HeapOverflowSanityCheckGetSize(picSize,3,&sans) != MagickFalse))
+    if (bpp < 4)
       {
-        (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
-          "ImproperImageHeader","%s",image->filename);
-        goto next_image;
+        if (HeapOverflowSanityCheckGetSize(picSize,3,&picSize) != MagickFalse)
+          {
+            (void) ThrowMagickException(exception,GetMagickModule(),
+              CorruptImageError,"ImproperImageHeader","%s",image->filename);
+            goto next_image;
+          }
+        picSize/=2;
       }
-    picSize=3*picSize/2;
 
     if ((image->depth < hdrIntentMinDepth) && (image->depth != 8))
     {
