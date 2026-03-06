@@ -2885,6 +2885,7 @@ static inline void Scale3X(const Image *magick_unused(source),
 MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
 {
 #define MagnifyImageTag  "Magnify/Image"
+#define MaxMagnification  9
 
   CacheView
     *image_view,
@@ -2909,12 +2910,12 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   RectangleInfo
     rectangle;
 
-  ssize_t
-    y;
-
-  unsigned char
+  size_t
     magnification,
     width;
+
+  ssize_t
+    y;
 
   void
     (*scaling_method)(const Image *,const Quantum *,Quantum *,size_t);
@@ -3021,6 +3022,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     default:
       break;
   }
+  assert((magnification*magnification) <= MaxMagnification);
   /*
     Make a working copy of the source image and convert it to RGB colorspace.
   */
@@ -3058,7 +3060,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   for (y=0; y < (ssize_t) source_image->rows; y++)
   {
     Quantum
-      r[9*MaxPixelChannels];  /* result pixels */
+      r[MaxMagnification*MaxPixelChannels];  /* result pixels */
 
     Quantum
       *magick_restrict q;
