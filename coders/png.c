@@ -7668,11 +7668,10 @@ ModuleExport void UnregisterPNGImage(void)
 %    transparent region at the top and/or left.
 */
 
-static void
-Magick_png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
-  png_info *ping_info, unsigned char *profile_type, unsigned char
-  *profile_description, unsigned char *profile_data, png_uint_32 length,
-  ExceptionInfo *exception)
+static void Magick_png_write_raw_profile(const ImageInfo *image_info,
+  png_struct *ping,png_info *ping_info,unsigned char *profile_type,
+  unsigned char *profile_description,unsigned char *profile_data,
+  png_uint_32 length,ExceptionInfo *exception)
 {
    png_charp
      dp;
@@ -7705,7 +7704,7 @@ Magick_png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
    description_length=(png_uint_32) strlen((const char *) profile_description);
    allocated_length=(png_uint_32) (2*length+(length >> 5)+description_length+
      20);
-   if (allocated_length < length)
+   if ((allocated_length < length) || (length >= (PNG_UINT_31_MAX / 2)))
      {
        (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
          "maximum profile length exceeded","`%s'",image_info->filename);
