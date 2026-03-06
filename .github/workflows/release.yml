@@ -152,7 +152,7 @@ jobs:
           ImageMagick\.github\build\windows\download-dependencies.cmd windows-${{matrix.architecture}}-${{matrix.buildType}}-openMP.zip
 
       - name: Download ChangeLog.md
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 #v7.0.0
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 #v8.0.0
         with:
           name: ChangeLog
           path: ImageMagick
@@ -231,7 +231,7 @@ jobs:
           clone-repositories-im7.cmd
 
       - name: Download ChangeLog.md
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 #v7.0.0
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 #v8.0.0
         with:
           name: ChangeLog
           path: ImageMagick
@@ -294,7 +294,7 @@ jobs:
           ImageMagick\.github\build\windows\download-dependencies.cmd windows-${{matrix.architecture}}-static-openMP-linked-runtime.zip
 
       - name: Download ChangeLog.md
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 #v7.0.0
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 #v8.0.0
         with:
           name: ChangeLog
           path: ImageMagick
@@ -378,13 +378,13 @@ jobs:
           ImageMagick\.github\build\windows\download-configure.cmd
 
       - name: Download x64 artifacts
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 #v7.0.0
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 #v8.0.0
         with:
           name: ImageMagick-${{needs.version.outputs.version}}-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-x64.7z
           path: Configure\Installer\Msix\x64
 
       - name: Download arm64 artifacts
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 #v7.0.0
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 #v8.0.0
         with:
           name: ImageMagick-${{needs.version.outputs.version}}-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-arm64.7z
           path: Configure\Installer\Msix\arm64
@@ -524,7 +524,7 @@ jobs:
           persist-credentials: false
 
       - name: Download artifacts
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 #v7.0.0
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 #v8.0.0
         with:
           path: artifacts
           merge-multiple: true
