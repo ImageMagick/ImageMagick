@@ -186,7 +186,11 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
   image->channel_mask=AllChannels;
   image->channel_map=AcquirePixelChannelMap();
   image->blob=CloneBlobInfo((BlobInfo *) NULL);
+#ifdef FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION
+  image->timestamp=0;  /* Deterministic for fuzzing */
+#else
   image->timestamp=time((time_t *) NULL);
+#endif
   time_limit=GetMagickResourceLimit(TimeResource);
   if (time_limit != MagickResourceInfinity)
     image->ttl=image->timestamp+(time_t) time_limit;

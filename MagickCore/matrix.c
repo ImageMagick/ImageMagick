@@ -193,7 +193,7 @@ static MagickBooleanType SetMatrixExtent(
   if (matrix_info->synchronize != MagickFalse)
     (void) posix_fallocate(matrix_info->file,offset+1,extent-offset);
 #endif
-#if defined(SIGBUS)
+#if defined(SIGBUS) && !defined(FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION)
   (void) signal(SIGBUS,MatrixSignalHandler);
 #endif
   return(count != (MagickOffsetType) 1 ? MagickFalse : MagickTrue);
