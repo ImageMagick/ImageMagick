@@ -6501,6 +6501,10 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
                 large_image->columns=magnified_width;
                 large_image->rows=magnified_height;
 
+                status=SetImageExtent(image,image->columns,image->rows,exception);
+                if (status == MagickFalse)
+                  return(DestroyImageList(image));
+
                 magn_methx=mng_info->magn_methx;
                 magn_methy=mng_info->magn_methy;
 
