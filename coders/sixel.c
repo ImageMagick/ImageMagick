@@ -1399,6 +1399,8 @@ static MagickBooleanType WriteSIXELImage(const ImageInfo *image_info,
           image->colormap[opacity].blue=image->transparent_color.blue;
         }
     }
+  if (image->colors > SIXEL_PALETTE_MAX)
+    return(MagickFalse);
   /*
     SIXEL header.
   */
