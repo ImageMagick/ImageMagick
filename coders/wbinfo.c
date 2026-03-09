@@ -1034,6 +1034,12 @@ newicon_cleanup:
                 chunk_pos=search_pos+12;  /* past FORM+size+ICON */
                 icon_width=0;
                 icon_height=0;
+                {
+                unsigned char
+                  *last_pal_data = (unsigned char *) NULL;
+
+                size_t
+                  last_pal_count = 0;
                 /*
                   Parse IFF chunks: FACE, IMAG, ARGB.
                 */
@@ -1174,33 +1180,57 @@ newicon_cleanup:
                         }
                       }
                       /*
-                        Render GlowIcon to image.
+                        Render GlowIcon to image.  If this IMAG has no
+                        palette, reuse the palette from the previous IMAG.
                       */
-                      if (AppendAmigaImage(&image,icon_width,icon_height,
-                          scene,image_info,exception) == MagickFalse)
                       {
-                        pixel_data=(unsigned char *)
-                          RelinquishMagickMemory(pixel_data);
+                        const unsigned char
+                          *render_pal;
+
+                        size_t
+                          render_pal_entries;
+
                         if (pal_data != (unsigned char *) NULL)
-                          pal_data=(unsigned char *)
-                            RelinquishMagickMemory(pal_data);
-                        rest_data=(unsigned char *)
-                          RelinquishMagickMemory(rest_data);
-                        return(DestroyImageList(image));
+                        {
+                          render_pal=pal_data;
+                          render_pal_entries=pal_count/3;
+                        }
+                        else
+                        {
+                          render_pal=last_pal_data;
+                          render_pal_entries=last_pal_count/3;
+                        }
+                        if (AppendAmigaImage(&image,icon_width,icon_height,
+                            scene,image_info,exception) == MagickFalse)
+                        {
+                          pixel_data=(unsigned char *)
+                            RelinquishMagickMemory(pixel_data);
+                          if (pal_data != (unsigned char *) NULL)
+                            pal_data=(unsigned char *)
+                              RelinquishMagickMemory(pal_data);
+                          rest_data=(unsigned char *)
+                            RelinquishMagickMemory(rest_data);
+                          if (last_pal_data != (unsigned char *) NULL)
+                            last_pal_data=(unsigned char *)
+                              RelinquishMagickMemory(last_pal_data);
+                          return(DestroyImageList(image));
+                        }
+                        RenderPalettedAmigaImage(image,icon_width,icon_height,
+                          pixel_data,pixel_count,render_pal,render_pal_entries,
+                          has_transparent ? MagickTrue : MagickFalse,
+                          transparent_color,exception);
                       }
-                      RenderPalettedAmigaImage(image,icon_width,icon_height,
-                        pixel_data,pixel_count,pal_data,pal_count/3,
-                        has_transparent ? MagickTrue : MagickFalse,
-                        transparent_color,exception);
                       pixel_data=(unsigned char *)
                         RelinquishMagickMemory(pixel_data);
                       if (pal_data != (unsigned char *) NULL)
-                        pal_data=(unsigned char *)
-                          RelinquishMagickMemory(pal_data);
+                      {
+                        if (last_pal_data != (unsigned char *) NULL)
+                          last_pal_data=(unsigned char *)
+                            RelinquishMagickMemory(last_pal_data);
+                        last_pal_data=pal_data;
+                        last_pal_count=pal_count;
+                      }
                       scene++;
-                      /*
-                        Skip the selected IMAG (second one).
-                      */
                     }
                   }
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
@@ -1277,6 +1307,10 @@ newicon_cleanup:
                     }
                   }
 #endif
+                }
+                if (last_pal_data != (unsigned char *) NULL)
+                  last_pal_data=(unsigned char *)
+                    RelinquishMagickMemory(last_pal_data);
                 }
                 break;  /* only process first FORM ICON */
               }
