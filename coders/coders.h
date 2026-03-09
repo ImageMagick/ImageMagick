@@ -20,6 +20,7 @@
   Include declarations.
 */
 #include "coders/aai.h"
+#include "coders/amigaicon.h"
 #include "coders/art.h"
 #include "coders/ase.h"
 #include "coders/ashlar.h"
