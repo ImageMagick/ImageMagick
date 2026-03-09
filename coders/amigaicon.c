@@ -112,6 +112,32 @@ static unsigned int BitsToUInt(const unsigned char *data, size_t total_bits,
 }
 
 /*
+  Count expanded bits from a NewIcon encoded line (for buffer sizing).
+*/
+static size_t NewIconLineBitCount(const char *src, size_t src_len)
+{
+  size_t
+    bit_count,
+    ch_idx;
+
+  bit_count=0;
+  for (ch_idx=0; ch_idx < src_len; ch_idx++)
+  {
+    unsigned int
+      byte;
+
+    byte=(unsigned int) (unsigned char) src[ch_idx];
+    if (byte < 0x20)
+      continue;
+    if (byte <= 0xD0)
+      bit_count+=7;
+    else
+      bit_count+=(size_t) (byte-0xD0)*7;
+  }
+  return(bit_count);
+}
+
+/*
   Decode one NewIcon 7-bit encoded line into a bit buffer.
 
   Each character maps to 7 bits; characters 0xD1+ are RLE zero runs.
@@ -137,9 +163,9 @@ static size_t DecodeNewIconLine(const char *src, size_t src_len,
     byte=(unsigned int) (unsigned char) src[ch_idx];
     if (byte < 0x20)
       continue;
-    if (byte <= 0x6F)
+    if (byte <= 0x9F)
       val=byte-0x20;
-    else if ((byte >= 0xA1) && (byte <= 0xD0))
+    else if (byte <= 0xD0)
       val=byte-0x51;
     else if (byte >= 0xD1)
     {
@@ -321,6 +347,308 @@ static void RenderPalettedAmigaImage(Image *image, size_t width, size_t height,
 }
 
 /*
+  Read and render a classic planar Amiga icon image from the blob.
+
+  Reads the 20-byte Image header, bitplane data, selects the system palette,
+  renders to a new scene, and increments *scene.  Returns MagickTrue on
+  success.  On failure the blob position is indeterminate.
+*/
+static MagickBooleanType ReadAndRenderClassicImage(Image **image,
+  size_t *scene, unsigned int user_data, const ImageInfo *image_info,
+  ExceptionInfo *exception)
+{
+  unsigned short
+    img_width,
+    img_height,
+    img_depth;
+
+  unsigned char
+    plane_pick,
+    plane_on_off,
+    **planes;
+
+  size_t
+    words_per_row,
+    bytes_per_row,
+    plane_size,
+    num_colors,
+    p_idx;
+
+  const unsigned char
+    (*palette)[3];
+
+  ssize_t
+    y;
+
+  (void) ReadBlobMSBShort(*image);  /* left_edge */
+  (void) ReadBlobMSBShort(*image);  /* top_edge */
+  img_width=ReadBlobMSBShort(*image);
+  img_height=ReadBlobMSBShort(*image);
+  img_depth=ReadBlobMSBShort(*image);
+  (void) ReadBlobMSBLong(*image);   /* image_data ptr */
+  plane_pick=(unsigned char) ReadBlobByte(*image);
+  plane_on_off=(unsigned char) ReadBlobByte(*image);
+  (void) ReadBlobMSBLong(*image);   /* next ptr */
+  if (EOFBlob(*image) != MagickFalse)
+    return(MagickFalse);
+  if ((img_width == 0) || (img_height == 0) || (img_depth == 0) ||
+      (img_width > MaxAmigaIconDimension) ||
+      (img_height > MaxAmigaIconDimension) || (img_depth > 8))
+    return(MagickFalse);
+  words_per_row=((size_t) img_width+15)/16;
+  bytes_per_row=words_per_row*2;
+  plane_size=bytes_per_row*(size_t) img_height;
+  if (plane_size * (size_t) img_depth > GetBlobSize(*image))
+    return(MagickFalse);
+  planes=(unsigned char **) AcquireQuantumMemory((size_t) img_depth,
+    sizeof(*planes));
+  if (planes == (unsigned char **) NULL)
+    return(MagickFalse);
+  (void) memset(planes,0,(size_t) img_depth*sizeof(*planes));
+  for (p_idx=0; p_idx < (size_t) img_depth; p_idx++)
+  {
+    planes[p_idx]=(unsigned char *) AcquireQuantumMemory(plane_size,
+      sizeof(*planes[p_idx]));
+    if (planes[p_idx] == (unsigned char *) NULL)
+    {
+      size_t j;
+      for (j=0; j < p_idx; j++)
+        planes[j]=(unsigned char *) RelinquishMagickMemory(planes[j]);
+      planes=(unsigned char **) RelinquishMagickMemory(planes);
+      return(MagickFalse);
+    }
+    if (ReadBlob(*image,plane_size,planes[p_idx]) != (ssize_t) plane_size)
+    {
+      size_t j;
+      for (j=0; j <= p_idx; j++)
+        planes[j]=(unsigned char *) RelinquishMagickMemory(planes[j]);
+      planes=(unsigned char **) RelinquishMagickMemory(planes);
+      return(MagickFalse);
+    }
+  }
+  if (user_data & 0xFF)
+  {
+    palette=AmigaWB2x;
+    num_colors=8;
+  }
+  else
+  {
+    palette=AmigaWB1x;
+    num_colors=4;
+  }
+  if (AppendAmigaImage(image,(size_t) img_width,(size_t) img_height,
+      *scene,image_info,exception) == MagickFalse)
+  {
+    size_t j;
+    for (j=0; j < (size_t) img_depth; j++)
+      planes[j]=(unsigned char *) RelinquishMagickMemory(planes[j]);
+    planes=(unsigned char **) RelinquishMagickMemory(planes);
+    return(MagickFalse);
+  }
+  for (y=0; y < (ssize_t) img_height; y++)
+  {
+    Quantum
+      *q;
+
+    ssize_t
+      x;
+
+    q=QueueAuthenticPixels(*image,0,y,(size_t) img_width,1,exception);
+    if (q == (Quantum *) NULL)
+      break;
+    for (x=0; x < (ssize_t) img_width; x++)
+    {
+      size_t
+        byte_idx,
+        bit_idx,
+        plane_num,
+        data_plane;
+
+      unsigned int
+        color_index;
+
+      byte_idx=(size_t) y*bytes_per_row+((size_t) x >> 3);
+      bit_idx=7-((size_t) x & 7);
+      color_index=0;
+      data_plane=0;
+      for (plane_num=0; plane_num < (size_t) img_depth; plane_num++)
+      {
+        if (plane_pick & (1 << plane_num))
+        {
+          if (data_plane < (size_t) img_depth)
+            color_index|=(unsigned int)
+              (((planes[data_plane][byte_idx] >> bit_idx) & 1) << plane_num);
+          data_plane++;
+        }
+        else if (plane_on_off & (1 << plane_num))
+          color_index|=(1U << plane_num);
+      }
+      if (color_index == 0)
+        SetAmigaPixelRGBA(*image,q,0,0,0,0);
+      else if (color_index < num_colors)
+        SetAmigaPixelRGBA(*image,q,palette[color_index][0],
+          palette[color_index][1],palette[color_index][2],255);
+      else
+        SetAmigaPixelRGBA(*image,q,0,0,0,255);
+      q+=(ptrdiff_t) GetPixelChannels(*image);
+    }
+    if (SyncAuthenticPixels(*image,exception) == MagickFalse)
+      break;
+  }
+  for (p_idx=0; p_idx < (size_t) img_depth; p_idx++)
+    planes[p_idx]=(unsigned char *) RelinquishMagickMemory(planes[p_idx]);
+  planes=(unsigned char **) RelinquishMagickMemory(planes);
+  (*scene)++;
+  return(MagickTrue);
+}
+
+/*
+  Decode and render a NewIcon image from collected IM1=/IM2= lines.
+
+  Returns MagickTrue if an image was successfully decoded and rendered.
+*/
+static MagickBooleanType DecodeAndRenderNewIcon(Image **image, size_t *scene,
+  char **im_lines, size_t im_count, const ImageInfo *image_info,
+  ExceptionInfo *exception)
+{
+  char
+    *first_line;
+
+  size_t
+    ni_width,
+    ni_height,
+    ni_num_colors,
+    ni_depth,
+    ni_transparent,
+    bit_count,
+    bit_pos,
+    pal_idx,
+    pix_count,
+    line_idx,
+    line_bits_alloc,
+    line_bits_bytes;
+
+  unsigned char
+    *ni_palette,
+    *ni_pixels,
+    *line_bits;
+
+  if ((im_count == 0) || (im_lines == (char **) NULL))
+    return(MagickFalse);
+  first_line=im_lines[0];
+  if (strlen(first_line) < 5)
+    return(MagickFalse);
+  ni_transparent=((unsigned char) first_line[0] == 0x42) ? 1 : 0;
+  if (((unsigned char) first_line[1] < 0x21) ||
+      ((unsigned char) first_line[2] < 0x21))
+    return(MagickFalse);
+  ni_width=(size_t) ((unsigned char) first_line[1]-0x21);
+  ni_height=(size_t) ((unsigned char) first_line[2]-0x21);
+  ni_num_colors=(size_t)
+    (((unsigned char) first_line[3]-0x21) << 6) +
+    (size_t) ((unsigned char) first_line[4]-0x21);
+  if ((ni_width == 0) || (ni_height == 0) || (ni_num_colors == 0) ||
+      (ni_width > MaxAmigaIconDimension) ||
+      (ni_height > MaxAmigaIconDimension) ||
+      (ni_num_colors > 256))
+    return(MagickFalse);
+  ni_depth=1;
+  while ((1UL << ni_depth) < ni_num_colors)
+    ni_depth++;
+  /*
+    Find max expanded bit count to size the reusable decode buffer.
+  */
+  line_bits_alloc=NewIconLineBitCount(first_line+5,strlen(first_line+5));
+  for (line_idx=1; line_idx < im_count; line_idx++)
+  {
+    size_t
+      ll;
+
+    ll=NewIconLineBitCount(im_lines[line_idx],strlen(im_lines[line_idx]));
+    if (ll > line_bits_alloc)
+      line_bits_alloc=ll;
+  }
+  line_bits_alloc+=7;
+  line_bits_bytes=(line_bits_alloc+7)/8+1;
+  line_bits=(unsigned char *) AcquireQuantumMemory(line_bits_bytes,
+    sizeof(*line_bits));
+  if (line_bits == (unsigned char *) NULL)
+    return(MagickFalse);
+  /*
+    First line: extract palette only, discard remaining bits.
+  */
+  (void) memset(line_bits,0,line_bits_bytes*sizeof(*line_bits));
+  bit_count=DecodeNewIconLine(first_line+5,strlen(first_line+5),
+    line_bits,line_bits_bytes,0);
+  ni_palette=(unsigned char *) AcquireQuantumMemory(ni_num_colors*3+3,
+    sizeof(*ni_palette));
+  if (ni_palette == (unsigned char *) NULL)
+  {
+    line_bits=(unsigned char *) RelinquishMagickMemory(line_bits);
+    return(MagickFalse);
+  }
+  (void) memset(ni_palette,0,(ni_num_colors*3+3)*sizeof(*ni_palette));
+  bit_pos=0;
+  for (pal_idx=0; pal_idx < ni_num_colors; pal_idx++)
+  {
+    ni_palette[pal_idx*3]=(unsigned char) BitsToUInt(line_bits,
+      bit_count,&bit_pos,8);
+    ni_palette[pal_idx*3+1]=(unsigned char) BitsToUInt(line_bits,
+      bit_count,&bit_pos,8);
+    ni_palette[pal_idx*3+2]=(unsigned char) BitsToUInt(line_bits,
+      bit_count,&bit_pos,8);
+  }
+  /*
+    Subsequent lines: extract pixels per-line, discard leftover bits.
+  */
+  ni_pixels=(unsigned char *) AcquireQuantumMemory(ni_width*ni_height+1,
+    sizeof(*ni_pixels));
+  if (ni_pixels == (unsigned char *) NULL)
+  {
+    ni_palette=(unsigned char *) RelinquishMagickMemory(ni_palette);
+    line_bits=(unsigned char *) RelinquishMagickMemory(line_bits);
+    return(MagickFalse);
+  }
+  (void) memset(ni_pixels,0,(ni_width*ni_height+1)*sizeof(*ni_pixels));
+  pix_count=0;
+  for (line_idx=1; line_idx < im_count &&
+       pix_count < ni_width*ni_height; line_idx++)
+  {
+    size_t
+      lbp;
+
+    (void) memset(line_bits,0,line_bits_bytes*sizeof(*line_bits));
+    bit_count=DecodeNewIconLine(im_lines[line_idx],
+      strlen(im_lines[line_idx]),line_bits,line_bits_bytes,0);
+    lbp=0;
+    while ((lbp+ni_depth <= bit_count) &&
+           (pix_count < ni_width*ni_height))
+    {
+      ni_pixels[pix_count++]=(unsigned char) BitsToUInt(
+        line_bits,bit_count,&lbp,ni_depth);
+    }
+  }
+  line_bits=(unsigned char *) RelinquishMagickMemory(line_bits);
+  /*
+    Render NewIcon to image.
+  */
+  if (AppendAmigaImage(image,ni_width,ni_height,*scene,image_info,
+      exception) == MagickFalse)
+  {
+    ni_pixels=(unsigned char *) RelinquishMagickMemory(ni_pixels);
+    ni_palette=(unsigned char *) RelinquishMagickMemory(ni_palette);
+    return(MagickFalse);
+  }
+  RenderPalettedAmigaImage(*image,ni_width,ni_height,
+    ni_pixels,pix_count,ni_palette,ni_num_colors,
+    ni_transparent ? MagickTrue : MagickFalse,0,exception);
+  ni_pixels=(unsigned char *) RelinquishMagickMemory(ni_pixels);
+  ni_palette=(unsigned char *) RelinquishMagickMemory(ni_palette);
+  (*scene)++;
+  return(MagickTrue);
+}
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -439,193 +767,15 @@ static Image *ReadAMIGAICONImage(const ImageInfo *image_info,
   */
   if (gadget_render)
   {
-    unsigned short
-      img_width,
-      img_height,
-      img_depth;
-
-    unsigned char
-      plane_pick,
-      plane_on_off;
-
-    size_t
-      words_per_row,
-      bytes_per_row,
-      plane_size;
-
-    unsigned char
-      **planes;
-
-    ssize_t
-      y;
-
-    size_t
-      num_colors,
-      p_idx;
-
-    const unsigned char
-      (*palette)[3];
-
-    (void) ReadBlobMSBShort(image);  /* left_edge */
-    (void) ReadBlobMSBShort(image);  /* top_edge */
-    img_width=ReadBlobMSBShort(image);
-    img_height=ReadBlobMSBShort(image);
-    img_depth=ReadBlobMSBShort(image);
-    (void) ReadBlobMSBLong(image);   /* image_data ptr */
-    plane_pick=(unsigned char) ReadBlobByte(image);
-    plane_on_off=(unsigned char) ReadBlobByte(image);
-    (void) ReadBlobMSBLong(image);   /* next ptr */
-    /* 20 bytes consumed */
-    if (EOFBlob(image) != MagickFalse)
-      ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
-    if ((img_width == 0) || (img_height == 0) || (img_depth == 0) ||
-        (img_width > MaxAmigaIconDimension) ||
-        (img_height > MaxAmigaIconDimension) || (img_depth > 8))
+    if (ReadAndRenderClassicImage(&image,&scene,user_data,image_info,
+        exception) == MagickFalse)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-    words_per_row=((size_t) img_width+15)/16;
-    bytes_per_row=words_per_row*2;
-    plane_size=bytes_per_row*(size_t) img_height;
-    if (plane_size * (size_t) img_depth > GetBlobSize(image))
-      ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
-    /*
-      Read bitplane data.
-    */
-    planes=(unsigned char **) AcquireQuantumMemory((size_t) img_depth,
-      sizeof(*planes));
-    if (planes == (unsigned char **) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    (void) memset(planes,0,(size_t) img_depth*sizeof(*planes));
-    for (p_idx=0; p_idx < (size_t) img_depth; p_idx++)
-    {
-      planes[p_idx]=(unsigned char *) AcquireQuantumMemory(plane_size,
-        sizeof(*planes[p_idx]));
-      if (planes[p_idx] == (unsigned char *) NULL)
-      {
-        size_t j;
-        for (j=0; j < p_idx; j++)
-          planes[j]=(unsigned char *) RelinquishMagickMemory(planes[j]);
-        planes=(unsigned char **) RelinquishMagickMemory(planes);
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-      }
-      if (ReadBlob(image,plane_size,planes[p_idx]) != (ssize_t) plane_size)
-      {
-        size_t j;
-        for (j=0; j <= p_idx; j++)
-          planes[j]=(unsigned char *) RelinquishMagickMemory(planes[j]);
-        planes=(unsigned char **) RelinquishMagickMemory(planes);
-        ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
-      }
-    }
-    /*
-      Select palette.
-    */
-    if (user_data & 0xFF)
-    {
-      palette=AmigaWB2x;
-      num_colors=8;
-    }
-    else
-    {
-      palette=AmigaWB1x;
-      num_colors=4;
-    }
-    /*
-      Render classic image to DirectClass RGBA.
-    */
-    if (AppendAmigaImage(&image,(size_t) img_width,(size_t) img_height,
-        scene,image_info,exception) == MagickFalse)
-    {
-      size_t j;
-      for (j=0; j < (size_t) img_depth; j++)
-        planes[j]=(unsigned char *) RelinquishMagickMemory(planes[j]);
-      planes=(unsigned char **) RelinquishMagickMemory(planes);
-      return(DestroyImageList(image));
-    }
-    for (y=0; y < (ssize_t) img_height; y++)
-    {
-      Quantum
-        *q;
-
-      ssize_t
-        x;
-
-      q=QueueAuthenticPixels(image,0,y,(size_t) img_width,1,exception);
-      if (q == (Quantum *) NULL)
-        break;
-      for (x=0; x < (ssize_t) img_width; x++)
-      {
-        size_t
-          byte_idx,
-          bit_idx,
-          plane_num,
-          data_plane;
-
-        unsigned int
-          color_index;
-
-        byte_idx=(size_t) y*bytes_per_row+((size_t) x >> 3);
-        bit_idx=7-((size_t) x & 7);
-        color_index=0;
-        data_plane=0;
-        for (plane_num=0; plane_num < (size_t) img_depth; plane_num++)
-        {
-          if (plane_pick & (1 << plane_num))
-          {
-            if (data_plane < (size_t) img_depth)
-              color_index|=(unsigned int)
-                (((planes[data_plane][byte_idx] >> bit_idx) & 1) << plane_num);
-            data_plane++;
-          }
-          else if (plane_on_off & (1 << plane_num))
-            color_index|=(1U << plane_num);
-        }
-        if (color_index < num_colors)
-          SetAmigaPixelRGBA(image,q,palette[color_index][0],
-            palette[color_index][1],palette[color_index][2],255);
-        else
-          SetAmigaPixelRGBA(image,q,0,0,0,255);
-        q+=(ptrdiff_t) GetPixelChannels(image);
-      }
-      if (SyncAuthenticPixels(image,exception) == MagickFalse)
-        break;
-    }
-    for (p_idx=0; p_idx < (size_t) img_depth; p_idx++)
-      planes[p_idx]=(unsigned char *) RelinquishMagickMemory(planes[p_idx]);
-    planes=(unsigned char **) RelinquishMagickMemory(planes);
-    scene++;
   }
-
-  /*
-    Skip selected classic image if present.
-  */
   if (select_render)
   {
-    unsigned short
-      sel_width,
-      sel_height,
-      sel_depth;
-
-    size_t
-      sel_plane_size;
-
-    (void) ReadBlobMSBShort(image);  /* left_edge */
-    (void) ReadBlobMSBShort(image);  /* top_edge */
-    sel_width=ReadBlobMSBShort(image);
-    sel_height=ReadBlobMSBShort(image);
-    sel_depth=ReadBlobMSBShort(image);
-    (void) ReadBlobMSBLong(image);   /* image_data ptr */
-    (void) ReadBlobByte(image);      /* plane_pick */
-    (void) ReadBlobByte(image);      /* plane_on_off */
-    (void) ReadBlobMSBLong(image);   /* next */
-    if ((sel_width > 0) && (sel_height > 0) && (sel_depth > 0) &&
-        (sel_width <= MaxAmigaIconDimension) &&
-        (sel_height <= MaxAmigaIconDimension) && (sel_depth <= 8))
-    {
-      sel_plane_size=(((size_t) sel_width+15)/16*2)*(size_t) sel_height;
-      if (SeekBlob(image,(MagickOffsetType) sel_plane_size*
-          (size_t) sel_depth,SEEK_CUR) < 0)
-        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-    }
+    if (ReadAndRenderClassicImage(&image,&scene,user_data,image_info,
+        exception) == MagickFalse)
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   }
 
   /*
@@ -653,17 +803,16 @@ static Image *ReadAMIGAICONImage(const ImageInfo *image_info,
 
     size_t
       num_entries,
-      tt_idx;
-
-    char
-      **tooltypes;
-
-    size_t
+      tt_idx,
       im1_count,
-      im1_alloc;
+      im1_alloc,
+      im2_count,
+      im2_alloc;
 
     char
-      **im1_lines;
+      **tooltypes,
+      **im1_lines,
+      **im2_lines;
 
     if (EOFBlob(image) != MagickFalse)
       goto newicon_cleanup;
@@ -675,12 +824,15 @@ static Image *ReadAMIGAICONImage(const ImageInfo *image_info,
     if (num_entries > GetBlobSize(image) / 4)
       num_entries=0;
     /*
-      Read all tooltype strings, collect IM1= lines.
+      Read all tooltype strings, collect IM1=/IM2= lines.
     */
     tooltypes=(char **) NULL;
     im1_lines=(char **) NULL;
+    im2_lines=(char **) NULL;
     im1_count=0;
     im1_alloc=0;
+    im2_count=0;
+    im2_alloc=0;
     if (num_entries > 0)
     {
       tooltypes=(char **) AcquireQuantumMemory(num_entries,sizeof(*tooltypes));
@@ -722,161 +874,31 @@ static Image *ReadAMIGAICONImage(const ImageInfo *image_info,
         }
         im1_lines[im1_count++]=tooltypes[tt_idx]+4;
       }
-    }
-    /*
-      Decode NewIcon from IM1= lines.
-    */
-    if ((im1_count > 0) && (im1_lines != (char **) NULL))
-    {
-      char
-        *first_line;
-
-      size_t
-        ni_width,
-        ni_height,
-        ni_num_colors,
-        ni_depth,
-        ni_transparent;
-
-      first_line=im1_lines[0];
-      if (strlen(first_line) >= 5)
+      else if (strncmp(tooltypes[tt_idx],"IM2=",4) == 0)
       {
-        unsigned char
-          *ni_palette,
-          *ni_pixels;
-
-        ni_transparent=((unsigned char) first_line[0] == 0x42) ? 1 : 0;
-        if ((unsigned char) first_line[1] >= 0x21 &&
-            (unsigned char) first_line[2] >= 0x21)
+        if (im2_count >= im2_alloc)
         {
-          ni_width=(size_t) ((unsigned char) first_line[1]-0x21);
-          ni_height=(size_t) ((unsigned char) first_line[2]-0x21);
-          ni_num_colors=(size_t)
-            (((unsigned char) first_line[3]-0x21) << 6) +
-            (size_t) ((unsigned char) first_line[4]-0x21);
-          if ((ni_width > 0) && (ni_height > 0) && (ni_num_colors > 0) &&
-              (ni_width <= MaxAmigaIconDimension) &&
-              (ni_height <= MaxAmigaIconDimension) &&
-              (ni_num_colors <= 256))
-          {
-            size_t
-              bit_count,
-              bit_pos,
-              pal_idx,
-              pix_count,
-              line_idx;
-
-            /*
-              Compute bit depth.
-            */
-            ni_depth=1;
-            while ((1UL << ni_depth) < ni_num_colors)
-              ni_depth++;
-            /*
-              Decode all IM1= lines into one continuous bitstream.
-              The first line contributes from position 5 onwards (after the
-              header), subsequent lines contribute in full. Palette and
-              pixel data are extracted sequentially from this single buffer.
-            */
-            {
-              size_t
-                total_src_len,
-                all_bits_alloc,
-                all_bits_bytes;
-
-              unsigned char
-                *all_bits;
-
-              total_src_len=strlen(first_line+5);
-              for (line_idx=1; line_idx < im1_count; line_idx++)
-              {
-                total_src_len+=strlen(im1_lines[line_idx]);
-                if (total_src_len > GetBlobSize(image))
-                {
-                  total_src_len=GetBlobSize(image);
-                  break;
-                }
-              }
-              all_bits_alloc=(total_src_len+1)*7;
-              all_bits_bytes=(all_bits_alloc+7)/8+1;
-              all_bits=(unsigned char *) AcquireQuantumMemory(all_bits_bytes,
-                sizeof(*all_bits));
-              if (all_bits == (unsigned char *) NULL)
-                goto newicon_cleanup;
-              (void) memset(all_bits,0,all_bits_bytes*sizeof(*all_bits));
-              bit_count=DecodeNewIconLine(first_line+5,strlen(first_line+5),
-                all_bits,all_bits_bytes,0);
-              for (line_idx=1; line_idx < im1_count; line_idx++)
-                bit_count=DecodeNewIconLine(im1_lines[line_idx],
-                  strlen(im1_lines[line_idx]),all_bits,all_bits_bytes,
-                  bit_count);
-              /*
-                Extract palette (num_colors * 24 bits).
-              */
-              ni_palette=(unsigned char *) AcquireQuantumMemory(
-                ni_num_colors*3+3,sizeof(*ni_palette));
-              if (ni_palette == (unsigned char *) NULL)
-              {
-                all_bits=(unsigned char *) RelinquishMagickMemory(all_bits);
-                goto newicon_cleanup;
-              }
-              (void) memset(ni_palette,0,(ni_num_colors*3+3)*
-                sizeof(*ni_palette));
-              bit_pos=0;
-              for (pal_idx=0; pal_idx < ni_num_colors; pal_idx++)
-              {
-                ni_palette[pal_idx*3]=(unsigned char) BitsToUInt(all_bits,
-                  bit_count,&bit_pos,8);
-                ni_palette[pal_idx*3+1]=(unsigned char) BitsToUInt(all_bits,
-                  bit_count,&bit_pos,8);
-                ni_palette[pal_idx*3+2]=(unsigned char) BitsToUInt(all_bits,
-                  bit_count,&bit_pos,8);
-              }
-              /*
-                Extract pixels (ni_depth bits each) from remaining bits.
-              */
-              ni_pixels=(unsigned char *) AcquireQuantumMemory(
-                ni_width*ni_height+1,sizeof(*ni_pixels));
-              if (ni_pixels == (unsigned char *) NULL)
-              {
-                ni_palette=(unsigned char *) RelinquishMagickMemory(ni_palette);
-                all_bits=(unsigned char *) RelinquishMagickMemory(all_bits);
-                goto newicon_cleanup;
-              }
-              (void) memset(ni_pixels,0,(ni_width*ni_height+1)*
-                sizeof(*ni_pixels));
-              pix_count=0;
-              while ((bit_pos+ni_depth <= bit_count) &&
-                     (pix_count < ni_width*ni_height))
-              {
-                ni_pixels[pix_count++]=(unsigned char) BitsToUInt(all_bits,
-                  bit_count,&bit_pos,ni_depth);
-              }
-              all_bits=(unsigned char *) RelinquishMagickMemory(all_bits);
-            }
-            /*
-              Render NewIcon to image.
-            */
-            if (AppendAmigaImage(&image,ni_width,ni_height,scene,image_info,
-                exception) == MagickFalse)
-            {
-              ni_pixels=(unsigned char *) RelinquishMagickMemory(ni_pixels);
-              ni_palette=(unsigned char *) RelinquishMagickMemory(ni_palette);
-              goto newicon_cleanup;
-            }
-            RenderPalettedAmigaImage(image,ni_width,ni_height,
-              ni_pixels,pix_count,ni_palette,ni_num_colors,
-              ni_transparent ? MagickTrue : MagickFalse,0,exception);
-            ni_pixels=(unsigned char *) RelinquishMagickMemory(ni_pixels);
-            ni_palette=(unsigned char *) RelinquishMagickMemory(ni_palette);
-            scene++;
-          }
+          im2_alloc=im2_alloc == 0 ? 16 : im2_alloc*2;
+          im2_lines=(char **) ResizeQuantumMemory(im2_lines,im2_alloc,
+            sizeof(*im2_lines));
+          if (im2_lines == (char **) NULL)
+            break;
         }
+        im2_lines[im2_count++]=tooltypes[tt_idx]+4;
       }
     }
+    /*
+      Decode NewIcon from IM1= and IM2= lines.
+    */
+    (void) DecodeAndRenderNewIcon(&image,&scene,im1_lines,im1_count,
+      image_info,exception);
+    (void) DecodeAndRenderNewIcon(&image,&scene,im2_lines,im2_count,
+      image_info,exception);
 newicon_cleanup:
     if (im1_lines != (char **) NULL)
       im1_lines=(char **) RelinquishMagickMemory(im1_lines);
+    if (im2_lines != (char **) NULL)
+      im2_lines=(char **) RelinquishMagickMemory(im2_lines);
     if (tooltypes != (char **) NULL)
     {
       for (tt_idx=0; tt_idx < num_entries; tt_idx++)
