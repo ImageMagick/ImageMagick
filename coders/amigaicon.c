@@ -58,7 +58,9 @@
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/module.h"
+#if defined(MAGICKCORE_ZLIB_DELEGATE)
 #include <zlib.h>
+#endif
 
 /*
   Define declarations.
@@ -1171,6 +1173,7 @@ newicon_cleanup:
                       */
                     }
                   }
+#if defined(MAGICKCORE_ZLIB_DELEGATE)
                   else if (chunk_id == 0x41524742)  /* ARGB */
                   {
                     if ((chunk_size > 10) && (icon_width > 0) &&
@@ -1241,11 +1244,9 @@ newicon_cleanup:
                         argb_raw=(unsigned char *)
                           RelinquishMagickMemory(argb_raw);
                       }
-                      /*
-                        Skip the selected ARGB (second one).
-                      */
                     }
                   }
+#endif
                 }
                 break;  /* only process first FORM ICON */
               }
