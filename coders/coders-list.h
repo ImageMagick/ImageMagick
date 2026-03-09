@@ -17,6 +17,7 @@
 #include "coders/coders-private.h"
 
 AddMagickCoder(AAI)
+AddMagickCoder(AMIGAICON)
 AddMagickCoder(ART)
 AddMagickCoder(ASHLAR)
 AddMagickCoder(AVS)
