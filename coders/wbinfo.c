@@ -3,16 +3,16 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     W   W  BBBB   IIIII  N   N  FFFFF   OOO                                %
-%     W   W  B   B    I    NN  N  F      O   O                               %
-%     W W W  BBBB     I    N N N  FFF    O   O                               %
-%     WW WW  B   B    I    N  NN  F      O   O                               %
-%     W   W  BBBB   IIIII  N   N  F       OOO                                %
+%     W   W  BBBB   IIIII  N   N  FFFFF   OOO                                 %
+%     W   W  B   B    I    NN  N  F      O   O                                %
+%     W W W  BBBB     I    N N N  FFF    O   O                                %
+%     WW WW  B   B    I    N  NN  F      O   O                                %
+%     W   W  BBBB   IIIII  N   N  F       OOO                                 %
 %                                                                             %
 %                                                                             %
 %                   Read Amiga Workbench Icon Image Format                    %
 %                                                                             %
-%                              Software Design                                %
+%                            Software Design                                  %
 %                            Gareth Davidson                                  %
 %                              March 2026                                     %
 %                                                                             %
@@ -655,7 +655,7 @@ static MagickBooleanType DecodeAndRenderNewIcon(Image **image, size_t *scene,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   I s A M I G A I C O N                                                     %
+%   I s W B I N F O                                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -685,7 +685,7 @@ static MagickBooleanType IsWBINFO(const unsigned char *magick,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d A M I G A I C O N I m a g e                                       %
+%   R e a d W B I N F O I m a g e                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1332,7 +1332,7 @@ newicon_cleanup:
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e g i s t e r A M I G A I C O N I m a g e                               %
+%   R e g i s t e r W B I N F O I m a g e                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1367,7 +1367,7 @@ ModuleExport size_t RegisterWBINFOImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r A M I G A I C O N I m a g e                           %
+%   U n r e g i s t e r W B I N F O I m a g e                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
