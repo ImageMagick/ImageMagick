@@ -3,11 +3,11 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%        AAA   M   M  IIIII   GGGG   AAA   IIIII   CCCC   OOO   N   N        %
-%       A   A  MM MM    I    G      A   A    I    C      O   O  NN  N        %
-%       AAAAA  M M M    I    G  GG  AAAAA    I    C      O   O  N N N        %
-%       A   A  M   M    I    G   G  A   A    I    C      O   O  N  NN        %
-%       A   A  M   M  IIIII   GGG   A   A  IIIII   CCCC   OOO   N   N        %
+%     W   W  BBBB   IIIII  N   N  FFFFF   OOO                                %
+%     W   W  B   B    I    NN  N  F      O   O                               %
+%     W W W  BBBB     I    N N N  FFF    O   O                               %
+%     WW WW  B   B    I    N  NN  F      O   O                               %
+%     W   W  BBBB   IIIII  N   N  F       OOO                                %
 %                                                                             %
 %                                                                             %
 %                   Read Amiga Workbench Icon Image Format                    %
@@ -655,19 +655,49 @@ static MagickBooleanType DecodeAndRenderNewIcon(Image **image, size_t *scene,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I s A M I G A I C O N                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  IsWBINFO() returns MagickTrue if the image format type, identified by
+%  the magick string, is an Amiga Workbench icon file.
+%
+%  The format of the IsWBINFO method is:
+%
+%      MagickBooleanType IsWBINFO(const unsigned char *magick,
+%        const size_t length)
+%
+*/
+static MagickBooleanType IsWBINFO(const unsigned char *magick,
+  const size_t length)
+{
+  if (length < 2)
+    return(MagickFalse);
+  if ((magick[0] == 0xE3) && (magick[1] == 0x10))
+    return(MagickTrue);
+  return(MagickFalse);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e a d A M I G A I C O N I m a g e                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadAMIGAICONImage() reads an Amiga Workbench .info icon file and returns
+%  ReadWBINFOImage() reads an Amiga Workbench .info icon file and returns
 %  it as one or more images.  Each icon generation (Classic, NewIcon,
 %  GlowIcon, ARGB) becomes a separate image in the returned list.
 %
-%  The format of the ReadAMIGAICONImage method is:
+%  The format of the ReadWBINFOImage method is:
 %
-%      Image *ReadAMIGAICONImage(const ImageInfo *image_info,
+%      Image *ReadWBINFOImage(const ImageInfo *image_info,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -677,7 +707,7 @@ static MagickBooleanType DecodeAndRenderNewIcon(Image **image, size_t *scene,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static Image *ReadAMIGAICONImage(const ImageInfo *image_info,
+static Image *ReadWBINFOImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   Image
@@ -804,7 +834,7 @@ static Image *ReadAMIGAICONImage(const ImageInfo *image_info,
       count_field;
 
     size_t
-      num_entries,
+      num_entries = 0,
       tt_idx,
       im1_count,
       im1_alloc,
@@ -812,9 +842,9 @@ static Image *ReadAMIGAICONImage(const ImageInfo *image_info,
       im2_alloc;
 
     char
-      **tooltypes,
-      **im1_lines,
-      **im2_lines;
+      **tooltypes = (char **) NULL,
+      **im1_lines = (char **) NULL,
+      **im2_lines = (char **) NULL;
 
     if (EOFBlob(image) != MagickFalse)
       goto newicon_cleanup;
@@ -1274,23 +1304,26 @@ newicon_cleanup:
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  RegisterAMIGAICONImage() adds attributes for the Amiga Icon image format to
+%  RegisterWBINFOImage() adds attributes for the Amiga Workbench Icon format to
 %  the list of supported formats.
 %
-%  The format of the RegisterAMIGAICONImage method is:
+%  The format of the RegisterWBINFOImage method is:
 %
-%      size_t RegisterAMIGAICONImage(void)
+%      size_t RegisterWBINFOImage(void)
 %
 */
-ModuleExport size_t RegisterAMIGAICONImage(void)
+ModuleExport size_t RegisterWBINFOImage(void)
 {
   MagickInfo
     *entry;
 
-  entry=AcquireMagickInfo("AMIGAICON","AMIGAICON",
+  entry=AcquireMagickInfo("WBINFO","WBINFO",
     "Amiga Workbench Icon");
-  entry->decoder=(DecodeImageHandler *) ReadAMIGAICONImage;
+  entry->decoder=(DecodeImageHandler *) ReadWBINFOImage;
+  entry->magick=(IsImageFormatHandler *) IsWBINFO;
+  entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderDecoderSeekableStreamFlag;
+  entry->mime_type=ConstantString("image/x-amiga-icon");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
@@ -1306,15 +1339,15 @@ ModuleExport size_t RegisterAMIGAICONImage(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  UnregisterAMIGAICONImage() removes format registrations made by the
-%  AMIGAICON module from the list of supported formats.
+%  UnregisterWBINFOImage() removes format registrations made by the
+%  WBINFO module from the list of supported formats.
 %
-%  The format of the UnregisterAMIGAICONImage method is:
+%  The format of the UnregisterWBINFOImage method is:
 %
-%      UnregisterAMIGAICONImage(void)
+%      UnregisterWBINFOImage(void)
 %
 */
-ModuleExport void UnregisterAMIGAICONImage(void)
+ModuleExport void UnregisterWBINFOImage(void)
 {
-  (void) UnregisterMagickInfo("AMIGAICON");
+  (void) UnregisterMagickInfo("WBINFO");
 }

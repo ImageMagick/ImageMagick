@@ -16,16 +16,16 @@
 
 #include "coders/coders-private.h"
 
-#define MagickAMIGAICONHeaders \
-  MagickCoderHeader("AMIGAICON", 0, "\xe3\x10")
+#define MagickWBINFOHeaders \
+  MagickCoderHeader("WBINFO", 0, "\xe3\x10")
 
-#define MagickAMIGAICONAliases
+#define MagickWBINFOAliases
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
-MagickCoderExports(AMIGAICON)
+MagickCoderExports(WBINFO)
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

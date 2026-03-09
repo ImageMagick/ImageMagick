@@ -17,7 +17,6 @@
 #include "coders/coders-private.h"
 
 AddMagickCoder(AAI)
-AddMagickCoder(AMIGAICON)
 AddMagickCoder(ART)
 AddMagickCoder(ASHLAR)
 AddMagickCoder(AVS)
@@ -180,6 +179,7 @@ AddMagickCoder(VID)
 AddMagickCoder(VIDEO)
 AddMagickCoder(VIFF)
 AddMagickCoder(VIPS)
+AddMagickCoder(WBINFO)
 AddMagickCoder(WBMP)
 #if defined(MAGICKCORE_WEBP_DELEGATE)
   AddMagickCoder(WEBP)
