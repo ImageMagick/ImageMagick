@@ -555,7 +555,7 @@ static MagickBooleanType DecodeAndRenderNewIcon(Image **image, size_t *scene,
       (ni_num_colors > 256))
     return(MagickFalse);
   ni_depth=1;
-  while ((1UL << ni_depth) < ni_num_colors)
+  while (((size_t) 1 << ni_depth) < ni_num_colors)
     ni_depth++;
   /*
     Find max expanded bit count to size the reusable decode buffer.
