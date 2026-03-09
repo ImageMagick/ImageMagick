@@ -273,6 +273,54 @@ static MagickBooleanType AppendAmigaImage(Image **image, size_t width,
 }
 
 /*
+  Render a paletted image (NewIcon or GlowIcon) to DirectClass RGBA.
+*/
+static void RenderPalettedAmigaImage(Image *image, size_t width, size_t height,
+  const unsigned char *pixels, size_t pixel_count,
+  const unsigned char *palette, size_t pal_entries,
+  MagickBooleanType has_transparent, unsigned char transparent_idx,
+  ExceptionInfo *exception)
+{
+  ssize_t
+    y;
+
+  for (y=0; y < (ssize_t) height; y++)
+  {
+    Quantum
+      *q;
+
+    ssize_t
+      x;
+
+    q=QueueAuthenticPixels(image,0,y,width,1,exception);
+    if (q == (Quantum *) NULL)
+      break;
+    for (x=0; x < (ssize_t) width; x++)
+    {
+      size_t
+        pi;
+
+      unsigned char
+        idx;
+
+      pi=(size_t) y*width+(size_t) x;
+      idx=pi < pixel_count ? pixels[pi] : 0;
+      if (has_transparent && (idx == transparent_idx))
+        SetAmigaPixelRGBA(image,q,0,0,0,0);
+      else if ((palette != (const unsigned char *) NULL) &&
+               ((size_t) idx < pal_entries))
+        SetAmigaPixelRGBA(image,q,palette[idx*3],palette[idx*3+1],
+          palette[idx*3+2],255);
+      else
+        SetAmigaPixelRGBA(image,q,0,0,0,255);
+      q+=(ptrdiff_t) GetPixelChannels(image);
+    }
+    if (SyncAuthenticPixels(image,exception) == MagickFalse)
+      break;
+  }
+}
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -816,44 +864,9 @@ static Image *ReadAMIGAICONImage(const ImageInfo *image_info,
               ni_palette=(unsigned char *) RelinquishMagickMemory(ni_palette);
               goto newicon_cleanup;
             }
-            {
-              ssize_t
-                y;
-
-              for (y=0; y < (ssize_t) ni_height; y++)
-              {
-                Quantum
-                  *q;
-
-                ssize_t
-                  x;
-
-                q=QueueAuthenticPixels(image,0,y,ni_width,1,exception);
-                if (q == (Quantum *) NULL)
-                  break;
-                for (x=0; x < (ssize_t) ni_width; x++)
-                {
-                  size_t
-                    pi;
-
-                  unsigned char
-                    idx;
-
-                  pi=(size_t) y*ni_width+(size_t) x;
-                  idx=pi < pix_count ? ni_pixels[pi] : 0;
-                  if (ni_transparent && (idx == 0))
-                    SetAmigaPixelRGBA(image,q,0,0,0,0);
-                  else if ((size_t) idx < ni_num_colors)
-                    SetAmigaPixelRGBA(image,q,ni_palette[idx*3],
-                      ni_palette[idx*3+1],ni_palette[idx*3+2],255);
-                  else
-                    SetAmigaPixelRGBA(image,q,0,0,0,255);
-                  q+=(ptrdiff_t) GetPixelChannels(image);
-                }
-                if (SyncAuthenticPixels(image,exception) == MagickFalse)
-                  break;
-              }
-            }
+            RenderPalettedAmigaImage(image,ni_width,ni_height,
+              ni_pixels,pix_count,ni_palette,ni_num_colors,
+              ni_transparent ? MagickTrue : MagickFalse,0,exception);
             ni_pixels=(unsigned char *) RelinquishMagickMemory(ni_pixels);
             ni_palette=(unsigned char *) RelinquishMagickMemory(ni_palette);
             scene++;
@@ -1121,48 +1134,10 @@ newicon_cleanup:
                           RelinquishMagickMemory(rest_data);
                         return(DestroyImageList(image));
                       }
-                      {
-                        ssize_t
-                          y;
-
-                        for (y=0; y < (ssize_t) icon_height; y++)
-                        {
-                          Quantum
-                            *q;
-
-                          ssize_t
-                            x;
-
-                          q=QueueAuthenticPixels(image,0,y,icon_width,1,
-                            exception);
-                          if (q == (Quantum *) NULL)
-                            break;
-                          for (x=0; x < (ssize_t) icon_width; x++)
-                          {
-                            size_t
-                              pi;
-
-                            unsigned char
-                              idx;
-
-                            pi=(size_t) y*icon_width+(size_t) x;
-                            idx=pi < pixel_count ? pixel_data[pi] : 0;
-                            if (has_transparent &&
-                                (idx == transparent_color))
-                              SetAmigaPixelRGBA(image,q,0,0,0,0);
-                            else if (pal_data != (unsigned char *) NULL &&
-                                     (size_t) idx*3+2 < pal_count)
-                              SetAmigaPixelRGBA(image,q,pal_data[idx*3],
-                                pal_data[idx*3+1],pal_data[idx*3+2],255);
-                            else
-                              SetAmigaPixelRGBA(image,q,0,0,0,255);
-                            q+=(ptrdiff_t) GetPixelChannels(image);
-                          }
-                          if (SyncAuthenticPixels(image,exception) ==
-                              MagickFalse)
-                            break;
-                        }
-                      }
+                      RenderPalettedAmigaImage(image,icon_width,icon_height,
+                        pixel_data,pixel_count,pal_data,pal_count/3,
+                        has_transparent ? MagickTrue : MagickFalse,
+                        transparent_color,exception);
                       pixel_data=(unsigned char *)
                         RelinquishMagickMemory(pixel_data);
                       if (pal_data != (unsigned char *) NULL)
