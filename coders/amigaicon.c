@@ -741,7 +741,14 @@ static Image *ReadAMIGAICONImage(const ImageInfo *image_info,
 
               total_src_len=strlen(first_line+5);
               for (line_idx=1; line_idx < im1_count; line_idx++)
+              {
                 total_src_len+=strlen(im1_lines[line_idx]);
+                if (total_src_len > GetBlobSize(image))
+                {
+                  total_src_len=GetBlobSize(image);
+                  break;
+                }
+              }
               all_bits_alloc=(total_src_len+1)*7;
               all_bits_bytes=(all_bits_alloc+7)/8+1;
               all_bits=(unsigned char *) AcquireQuantumMemory(all_bits_bytes,
@@ -953,9 +960,10 @@ newicon_cleanup:
                   ((size_t) rest_data[search_pos+5] << 16) |
                   ((size_t) rest_data[search_pos+6] << 8) |
                   (size_t) rest_data[search_pos+7];
-                form_end=search_pos+8+form_size;
-                if (form_end > (size_t) bytes_read)
+                if (form_size > (size_t) bytes_read-search_pos-8)
                   form_end=(size_t) bytes_read;
+                else
+                  form_end=search_pos+8+form_size;
                 chunk_pos=search_pos+12;  /* past FORM+size+ICON */
                 icon_width=0;
                 icon_height=0;
@@ -980,11 +988,12 @@ newicon_cleanup:
                     ((size_t) rest_data[chunk_pos+6] << 8) |
                     (size_t) rest_data[chunk_pos+7];
                   chunk_data=chunk_pos+8;
+                  if ((chunk_size == 0) ||
+                      (chunk_size > form_end-chunk_data))
+                    break;
                   chunk_pos=chunk_data+chunk_size;
                   if (chunk_size & 1)
                     chunk_pos++;  /* IFF padding */
-                  if (chunk_data+chunk_size > form_end)
-                    break;
 
                   if (chunk_id == 0x46414345)  /* FACE */
                   {
@@ -1043,7 +1052,8 @@ newicon_cleanup:
                       num_pal_colors=(size_t) num_colors_m1+1;
                       if ((imag_depth == 0) || (imag_depth > 8))
                         break;
-                      if (chunk_data+10+image_size > form_end)
+                      if ((form_end < chunk_data+10) ||
+                          (image_size > form_end-chunk_data-10))
                         break;
                       /*
                         Decode image pixels.
@@ -1075,7 +1085,7 @@ newicon_cleanup:
                       pal_count=0;
                       if (has_palette)
                       {
-                        if (chunk_data+10+image_size+palette_size <= form_end)
+                        if (palette_size <= form_end-chunk_data-10-image_size)
                         {
                           if (palette_format == 1)
                           {
