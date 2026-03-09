@@ -114,6 +114,8 @@ MAGICK_CODER_CPPFLAGS = \
 MAGICKCORE_CODER_SRCS = \
 	coders/aai.c \
 	coders/aai.h \
+	coders/amigaicon.c \
+	coders/amigaicon.h \
 	coders/art.c \
 	coders/art.h \
 	coders/ashlar.c \
@@ -404,6 +406,7 @@ MAGICKCORE_CODER_SRCS = \
 
 CODERS_NOINST_HDRS = \
 	coders/aai.h \
+	coders/amigaicon.h \
 	coders/art.h \
 	coders/ashlar.h \
 	coders/avs.h \
@@ -555,6 +558,7 @@ CODERS_NOINST_HDRS = \
 if WITH_MODULES
 coders_LTLIBRARIES = \
 	coders/aai.la \
+	coders/amigaicon.la \
 	coders/art.la \
 	coders/ashlar.la \
 	coders/avs.la \
@@ -702,6 +706,12 @@ coders_aai_la_SOURCES      = coders/aai.c
 coders_aai_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
 coders_aai_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_aai_la_LIBADD       = $(MAGICKCORE_LIBS)
+
+# AMIGAICON coder module
+coders_amigaicon_la_SOURCES      = coders/amigaicon.c
+coders_amigaicon_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
+coders_amigaicon_la_LDFLAGS      = $(MODULECOMMONFLAGS)
+coders_amigaicon_la_LIBADD       = $(MAGICKCORE_LIBS)
 
 # ART coder module
 coders_art_la_SOURCES      = coders/art.c
