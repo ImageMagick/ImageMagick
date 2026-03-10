@@ -212,7 +212,7 @@ static inline unsigned char CastDoubleToUChar(const double x)
       errno=ERANGE;
       return(MAGICK_UCHAR_MAX);
     }
-  return((unsigned short) value);
+  return((unsigned char) value);
 }
 
 static inline unsigned int CastDoubleToUInt(const double x)
