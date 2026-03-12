@@ -3400,7 +3400,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
               regA = (fxFltType) 0.0;
               break;
             }
-          regA = (fxFltType) ((size_t)(regA+0.5) << (size_t)(regB+0.5));
+          regA = (fxFltType) (CastDoubleToSizeT((double) regA+0.5) << CastDoubleToSizeT((double) regB+0.5));
           break;
         case oRshift:
           if ((size_t) (regB+0.5) >= (8*sizeof(size_t)))
@@ -3410,7 +3410,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
               regA = (fxFltType) 0.0;
               break;
             }
-          regA = (fxFltType) ((size_t)(regA+0.5) >> (size_t)(regB+0.5));
+          regA = (fxFltType) (CastDoubleToSizeT((double) regA+0.5) >> CastDoubleToSizeT((double) regB+0.5));
           break;
         case oEq:
           regA = fabs((double) (regA-regB)) < MagickEpsilon ? 1.0 : 0.0;
@@ -3440,10 +3440,10 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           regA = (regA==0) ? 1.0 : 0.0;
           break;
         case oBitAnd:
-          regA = (fxFltType) ((size_t)(regA+0.5) & (size_t)(regB+0.5));
+          regA = (fxFltType) (CastDoubleToSizeT((double) regA+0.5) & CastDoubleToSizeT((double) regB+0.5));
           break;
         case oBitOr:
-          regA = (fxFltType) ((size_t)(regA+0.5) | (size_t)(regB+0.5));
+          regA = (fxFltType) (CastDoubleToSizeT((double) regA+0.5) | CastDoubleToSizeT((double) regB+0.5));
           break;
         case oBitNot:
           {
@@ -3451,7 +3451,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
               new_value;
 
             /* Old fx doesn't add 0.5. */
-            new_value=~(size_t)(regA+0.5);
+            new_value=~CastDoubleToSizeT((double) regA+0.5);
             regA=(fxFltType) new_value;
             break;
           }

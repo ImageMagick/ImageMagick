@@ -100,9 +100,9 @@ static inline size_t fact(size_t n)
   return(f);
 }
 #elif 1 /* glibc floating point alternatives */
-#define fact(n) ((size_t)tgamma((double)n+1))
+#define fact(n) (CastDoubleToSizeT(tgamma((double)n+1.0))
 #else
-#define fact(n) ((size_t)lgamma((double)n+1))
+#define fact(n) (CastDoubleToSizeTlgamma((double)n+1.0))
 #endif
 
 
@@ -277,8 +277,8 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
          args.rho = 1.0;               /* then  width = 1 */
       if ( args.sigma < 1.0 )          /* if height too small */
         args.sigma = args.rho;         /* then  height = width */
-      kernel->width = (size_t)args.rho;
-      kernel->height = (size_t)args.sigma;
+      kernel->width = CastDoubleToSizeT(args.rho);
+      kernel->height = CastDoubleToSizeT(args.sigma);
 
       /* Offset Handling and Checks */
       if ( args.xi  < 0.0 || args.psi < 0.0 )
@@ -306,7 +306,7 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
           (void) GetNextToken(p,&p,MagickPathExtent,token);
       }
       /* set the size of the kernel - old sized square */
-      kernel->width = kernel->height= (size_t) sqrt((double) i+1.0);
+      kernel->width = kernel->height= CastDoubleToSizeT(sqrt((double) i+1.0));
       kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
       p=(const char *) kernel_string;
       while ((isspace((int) ((unsigned char) *p)) != 0) || (*p == '\''))
@@ -1059,7 +1059,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           A, B, R;
 
         if ( args->rho >= 1.0 )
-          kernel->width = (size_t)args->rho*2+1;
+          kernel->width = CastDoubleToSizeT(args->rho*2.0+1.0);
         else if ( (type != DoGKernel) || (sigma >= sigma2) )
           kernel->width = GetOptimalKernelWidth2D(args->rho,sigma);
         else
@@ -1151,7 +1151,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           alpha, beta;
 
         if ( args->rho >= 1.0 )
-          kernel->width = (size_t)args->rho*2+1;
+          kernel->width = CastDoubleToSizeT(args->rho*2.0+1.0);
         else
           kernel->width = GetOptimalKernelWidth1D(args->rho,sigma);
         kernel->height = 1;
@@ -1241,7 +1241,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if ( args->rho < 1.0 )
           kernel->width = (GetOptimalKernelWidth1D(args->rho,sigma)-1)/2+1;
         else
-          kernel->width = (size_t)args->rho;
+          kernel->width = CastDoubleToSizeT(args->rho);
         kernel->x = kernel->y = 0;
         kernel->height = 1;
         kernel->negative_range = kernel->positive_range = 0.0;
@@ -1310,7 +1310,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (args->rho < 1.0)
           kernel->width = kernel->height = 3;  /* default radius = 1 */
         else
-          kernel->width = kernel->height = ((size_t)args->rho)*2+1;
+          kernel->width = kernel->height = CastDoubleToSizeT(args->rho*2.0+1.0);
         kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
 
         order_f = fact(kernel->width-1);
@@ -1547,7 +1547,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (args->rho < 1.0)
           kernel->width = kernel->height = 3;  /* default radius = 1 */
         else
-          kernel->width = kernel->height = ((size_t)args->rho)*2+1;
+          kernel->width = kernel->height = CastDoubleToSizeT(args->rho*2.0+1.0);
         kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
 
         kernel->values=(MagickRealType *) MagickAssumeAligned(
@@ -1575,7 +1575,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (args->rho < 1.0)
               kernel->width = kernel->height = 3;  /* default radius = 1 */
             else
-              kernel->width = kernel->height = (size_t) (2*args->rho+1);
+              kernel->width = kernel->height = CastDoubleToSizeT(args->rho*2.0+1.0);
             kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
             scale = args->sigma;
           }
@@ -1583,8 +1583,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             /* NOTE: user defaults set in "AcquireKernelInfo()" */
             if ( args->rho < 1.0 || args->sigma < 1.0 )
               return(DestroyKernelInfo(kernel));    /* invalid args given */
-            kernel->width = (size_t)args->rho;
-            kernel->height = (size_t)args->sigma;
+            kernel->width = CastDoubleToSizeT(args->rho);
+            kernel->height = CastDoubleToSizeT(args->sigma);
             if ( args->xi  < 0.0 || args->xi  > (double)kernel->width ||
                  args->psi < 0.0 || args->psi > (double)kernel->height )
               return(DestroyKernelInfo(kernel));    /* invalid args given */
@@ -1611,7 +1611,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           if (args->rho < 1.0)
             kernel->width = kernel->height = 5;  /* default radius = 2 */
           else
-            kernel->width = kernel->height = ((size_t)args->rho)*2+1;
+            kernel->width = kernel->height = CastDoubleToSizeT(args->rho*2.0+1.0);
           kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
 
           kernel->values=(MagickRealType *) MagickAssumeAligned(
@@ -1638,7 +1638,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           if (args->rho < 0.4)           /* default radius approx 4.3 */
             kernel->width = kernel->height = 9L, limit = 18L;
           else
-            kernel->width = kernel->height = (size_t)fabs(args->rho)*2+1;
+            kernel->width = kernel->height = CastDoubleToSizeT(fabs(args->rho)*2.0+1.0);
           kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
 
           kernel->values=(MagickRealType *) MagickAssumeAligned(
@@ -1661,7 +1661,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           if (args->rho < 1.0)
             kernel->width = kernel->height = 5;  /* default radius 2 */
           else
-            kernel->width = kernel->height = ((size_t)args->rho)*2+1;
+            kernel->width = kernel->height = CastDoubleToSizeT(args->rho*2.0+1.0);
           kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
 
           kernel->values=(MagickRealType *) MagickAssumeAligned(
@@ -1683,7 +1683,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           if (args->rho < 1.0)
             kernel->width = kernel->height = 5;  /* default radius 2 */
           else
-            kernel->width = kernel->height = ((size_t)args->rho)*2+1;
+            kernel->width = kernel->height = CastDoubleToSizeT(args->rho*2.0+1.0);
           kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
 
           kernel->values=(MagickRealType *) MagickAssumeAligned(
@@ -1713,13 +1713,13 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 
           if (args->rho < args->sigma)
             {
-              kernel->width = ((size_t)args->sigma)*2+1;
+              kernel->width = CastDoubleToSizeT(args->sigma*2.0+1.0);
               limit1 = (ssize_t)(args->rho*args->rho);
               limit2 = (ssize_t)(args->sigma*args->sigma);
             }
           else
             {
-              kernel->width = ((size_t)args->rho)*2+1;
+              kernel->width = CastDoubleToSizeT(args->rho*2.0+1.0);
               limit1 = (ssize_t)(args->sigma*args->sigma);
               limit2 = (ssize_t)(args->rho*args->rho);
             }
@@ -2100,7 +2100,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           if (args->rho < 1.0)
             kernel->width = kernel->height = 3;  /* default radius = 1 */
           else
-            kernel->width = kernel->height = ((size_t)args->rho)*2+1;
+            kernel->width = kernel->height = CastDoubleToSizeT(args->rho*2.0+1.0);
           kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
 
           kernel->values=(MagickRealType *) MagickAssumeAligned(
@@ -2121,7 +2121,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           if (args->rho < 1.0)
             kernel->width = kernel->height = 3;  /* default radius = 1 */
           else
-            kernel->width = kernel->height = ((size_t)args->rho)*2+1;
+            kernel->width = kernel->height = CastDoubleToSizeT(args->rho*2.0+1.0);
           kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
 
           kernel->values=(MagickRealType *) MagickAssumeAligned(
@@ -2142,7 +2142,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (args->rho < 2.0)
           kernel->width = kernel->height = 5;  /* default/minimum radius = 2 */
         else
-          kernel->width = kernel->height = ((size_t)args->rho)*2+1;
+          kernel->width = kernel->height = CastDoubleToSizeT(args->rho*2.0+1.0);
         kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
 
         kernel->values=(MagickRealType *) MagickAssumeAligned(
@@ -2168,7 +2168,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         if (args->rho < 1.0)
           kernel->width = kernel->height = 3;  /* default radius = 1 */
         else
-          kernel->width = kernel->height = ((size_t)args->rho)*2+1;
+          kernel->width = kernel->height = CastDoubleToSizeT(args->rho*2.0+1.0);
         kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
 
         kernel->values=(MagickRealType *) MagickAssumeAligned(
