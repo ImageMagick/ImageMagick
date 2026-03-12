@@ -234,10 +234,13 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #endif
 
 #if defined(S_IRUSR) && defined(S_IWUSR)
+# define P_MODE (S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH)
 # define S_MODE (S_IRUSR | S_IWUSR)
 #elif defined (MAGICKCORE_WINDOWS_SUPPORT)
+# define P_MODE (_S_IREAD | _S_IWRITE | _S_IRGRP | _S_IWGRP | _S_IROTH | _S_IWOTH)
 # define S_MODE (_S_IREAD | _S_IWRITE)
 #else
+# define P_MODE  0666
 # define S_MODE  0600
 #endif
 

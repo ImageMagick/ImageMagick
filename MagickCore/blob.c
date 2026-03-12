@@ -385,7 +385,7 @@ MagickExport MagickBooleanType BlobToFile(char *filename,const void *blob,
   if (*filename == '\0')
     file=AcquireUniqueFileResource(filename);
   else
-    file=open_utf8(filename,O_RDWR | O_CREAT | O_EXCL | O_BINARY,S_MODE);
+    file=open_utf8(filename,O_RDWR | O_CREAT | O_EXCL | O_BINARY,P_MODE);
   if (file == -1)
     {
       ThrowFileException(exception,BlobError,"UnableToWriteBlob",filename);
@@ -2411,7 +2411,7 @@ MagickExport MagickBooleanType ImageToFile(Image *image,char *filename,
     if (LocaleCompare(filename,"-") == 0)
       file=fileno(stdout);
     else
-      file=open_utf8(filename,O_RDWR | O_CREAT | O_EXCL | O_BINARY,S_MODE);
+      file=open_utf8(filename,O_RDWR | O_CREAT | O_EXCL | O_BINARY,P_MODE);
   if (file == -1)
     {
       ThrowFileException(exception,BlobError,"UnableToWriteBlob",filename);
@@ -3685,7 +3685,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
               file;
 
             blob_info->file_info.file=(FILE *) NULL;
-            file=open_utf8(filename,flags,S_MODE);
+            file=open_utf8(filename,flags,P_MODE);
             if (file >= 0)
               blob_info->file_info.file=fdopen(file,type);
             if (blob_info->file_info.file != (FILE *) NULL)
