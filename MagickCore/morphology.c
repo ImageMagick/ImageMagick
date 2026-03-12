@@ -1633,7 +1633,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       case DiskKernel:
         {
           ssize_t
-            limit = (ssize_t)(args->rho*args->rho);
+            limit = CastDoubleToSsizeT(args->rho*args->rho);
 
           if (args->rho < 0.4)           /* default radius approx 4.3 */
             kernel->width = kernel->height = 9L, limit = 18L;
@@ -1714,14 +1714,14 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           if (args->rho < args->sigma)
             {
               kernel->width = CastDoubleToSizeT(args->sigma*2.0+1.0);
-              limit1 = (ssize_t)(args->rho*args->rho);
-              limit2 = (ssize_t)(args->sigma*args->sigma);
+              limit1 = CastDoubleToSsizeT(args->rho*args->rho);
+              limit2 = CastDoubleToSsizeT(args->sigma*args->sigma);
             }
           else
             {
               kernel->width = CastDoubleToSizeT(args->rho*2.0+1.0);
-              limit1 = (ssize_t)(args->sigma*args->sigma);
-              limit2 = (ssize_t)(args->rho*args->rho);
+              limit1 = CastDoubleToSsizeT(args->sigma*args->sigma);
+              limit2 = CastDoubleToSsizeT(args->rho*args->rho);
             }
           if ( limit2 <= 0 )
             kernel->width = 7L, limit1 = 7L, limit2 = 11L;
