@@ -1433,7 +1433,11 @@ static void MagickSignalHandler(int signal_number)
 #endif
 #if defined(SIGINT)
   if (signal_number == SIGINT)
-    _exit(signal_number);
+    {
+      signal(SIGINT,SIG_DFL);
+      raise(SIGINT);
+      _exit(signal_number);
+    }
 #endif
 #if defined(MAGICKCORE_HAVE_RAISE)
   if (signal_handlers[signal_number] != MagickSignalHandler)
