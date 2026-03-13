@@ -811,8 +811,6 @@ MagickExport MagickSizeType GetMagickResourceLimit(const ResourceType type)
     default: ;
   }
   resource=0;
-  if (type >= NumberOfResourceTypes)
-    return(resource);
   if (resource_semaphore[type] == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&resource_semaphore[type]);
   LockSemaphoreInfo(resource_semaphore[type]);
