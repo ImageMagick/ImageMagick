@@ -704,16 +704,12 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
 %
 %    o image: the image.
 %
-%    o color_matrix:  the color matrix.
+%    o color_matrix:  the color matrix.  It is the callers responsibility to
+%      ensure the matrix has at least width * height values.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
-/* FUTURE: modify to make use of a MagickMatrix Multiply function
-   That should be provided in "matrix.c"
-   (ASIDE: actually distorts should do this too but currently doesn't)
-*/
-
 MagickExport Image *ColorMatrixImage(const Image *image,
   const KernelInfo *color_matrix,ExceptionInfo *exception)
 {
