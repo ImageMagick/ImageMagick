@@ -67,6 +67,7 @@
 */
 #define AmigaIconMagic  0xE310
 #define MaxAmigaIconDimension  1024
+#define MaxNewIconBitCount  ((size_t) MaxAmigaIconDimension*MaxAmigaIconDimension*16)
 
 /*
   Amiga Workbench system palettes.
@@ -135,6 +136,8 @@ static size_t NewIconLineBitCount(const char *src, size_t src_len)
       bit_count+=7;
     else
       bit_count+=(size_t) (byte-0xD0)*7;
+    if (bit_count > MaxNewIconBitCount)
+      return(bit_count);
   }
   return(bit_count);
 }
@@ -571,6 +574,8 @@ static MagickBooleanType DecodeAndRenderNewIcon(Image **image, size_t *scene,
       line_bits_alloc=ll;
   }
   line_bits_alloc+=7;
+  if (line_bits_alloc > MaxNewIconBitCount)
+    return(MagickFalse);
   line_bits_bytes=(line_bits_alloc+7)/8+1;
   line_bits=(unsigned char *) AcquireQuantumMemory(line_bits_bytes,
     sizeof(*line_bits));
@@ -1028,9 +1033,8 @@ newicon_cleanup:
                   ((size_t) rest_data[search_pos+6] << 8) |
                   (size_t) rest_data[search_pos+7];
                 if (form_size > (size_t) bytes_read-search_pos-8)
-                  form_end=(size_t) bytes_read;
-                else
-                  form_end=search_pos+8+form_size;
+                  continue;  /* truncated FORM, skip */
+                form_end=search_pos+8+form_size;
                 chunk_pos=search_pos+12;  /* past FORM+size+ICON */
                 icon_width=0;
                 icon_height=0;
@@ -1125,8 +1129,8 @@ newicon_cleanup:
                       num_pal_colors=(size_t) num_colors_m1+1;
                       if ((imag_depth == 0) || (imag_depth > 8))
                         break;
-                      if ((form_end < chunk_data+10) ||
-                          (image_size > form_end-chunk_data-10))
+                      if ((chunk_size < 10) ||
+                          (image_size > chunk_size-10))
                         break;
                       /*
                         Decode image pixels.
@@ -1158,7 +1162,7 @@ newicon_cleanup:
                       pal_count=0;
                       if (has_palette)
                       {
-                        if (palette_size <= form_end-chunk_data-10-image_size)
+                        if (palette_size <= chunk_size-10-image_size)
                         {
                           if (palette_format == 1)
                           {
