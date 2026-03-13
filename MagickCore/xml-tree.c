@@ -1276,7 +1276,7 @@ static char *ConvertUTF16ToUTF8(const char *content,size_t *length)
     }
   }
   *length=(size_t) j;
-  utf8=(char *) ResizeQuantumMemory(utf8,*length,sizeof(*utf8));
+  utf8=(char *) ResizeQuantumMemory(utf8,(*length+1),sizeof(*utf8));
   if (utf8 != (char *) NULL)
     utf8[*length]='\0';
   return(utf8);
