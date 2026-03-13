@@ -236,7 +236,7 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     {
       bi=MagickTrue;
       limit=resource_info.disk_limit;
-      if (((MagickSizeType) resource_info.disk+(MagickSizeType) request) > (MagickSizeType) resource_info.disk)
+      if (resource_info.disk <= MagickOffsetMax-request)
         {
           resource_info.disk+=request;
           if ((limit == MagickResourceInfinity) ||
@@ -251,7 +251,7 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     case FileResource:
     {
       limit=resource_info.file_limit;
-      if (((MagickSizeType) resource_info.file+(MagickSizeType) request) > (MagickSizeType) resource_info.file)
+      if (resource_info.file <= MagickOffsetMax-request)
         {
           resource_info.file+=request;
           if ((limit == MagickResourceInfinity) ||
@@ -282,7 +282,7 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     {
       bi=MagickTrue;
       limit=resource_info.map_limit;
-      if (((MagickSizeType) resource_info.map+(MagickSizeType) request) > (MagickSizeType) resource_info.map)
+      if (resource_info.map <= MagickOffsetMax-request)
         {
           resource_info.map+=request;
           if ((limit == MagickResourceInfinity) ||
@@ -298,7 +298,7 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     {
       bi=MagickTrue;
       limit=resource_info.memory_limit;
-      if (((MagickSizeType) resource_info.memory+(MagickSizeType) request) > (MagickSizeType) resource_info.memory)
+      if (resource_info.memory <= MagickOffsetMax-request)
         {
           resource_info.memory+=request;
           if ((limit == MagickResourceInfinity) ||
@@ -329,7 +329,7 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     case TimeResource:
     {
       limit=resource_info.time_limit;
-      if (((MagickSizeType) resource_info.time+(MagickSizeType) request) > (MagickSizeType) resource_info.time)
+      if (resource_info.time <= MagickOffsetMax-request)
         {
           resource_info.time+=request;
           if ((limit == MagickResourceInfinity) ||
@@ -811,8 +811,6 @@ MagickExport MagickSizeType GetMagickResourceLimit(const ResourceType type)
     default: ;
   }
   resource=0;
-  if (type >= NumberOfResourceTypes)
-    return(resource);
   if (resource_semaphore[type] == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&resource_semaphore[type]);
   LockSemaphoreInfo(resource_semaphore[type]);
