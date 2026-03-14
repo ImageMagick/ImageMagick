@@ -88,14 +88,17 @@ AC_DEFINE_UNQUOTED([MAGICK_TARGET_OS],[$MAGICK_TARGET_OS],[Target Host OS])
 
 case "$host_os" in
   mingw* | msys*)
-    QUOTE="&quot;"
+    CMD_QUOTE="&apos;"
+    SHELL_QUOTE="&quot;"
     ;;
   *)
-    QUOTE="&apos;"
+    CMD_QUOTE="&quot;"
+    SHELL_QUOTE="&apos;"
     ;;
 esac
 
-AC_SUBST([QUOTE])
+AC_SUBST([CMD_QUOTE])
+AC_SUBST([SHELL_QUOTE])
 
 # Substitute versioning
 AC_SUBST([MAGICK_MAJOR_VERSION],[magick_major_version])
