@@ -3393,7 +3393,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           regA = -regA;
           break;
         case oLshift:
-          if ((size_t) (regB+0.5) >= (8*sizeof(size_t)))
+          if (CastDoubleToSizeT(regB+0.5) >= (8*sizeof(size_t)))
             {
               (void) ThrowMagickException ( pfx->exception, GetMagickModule(),
                 OptionError, "undefined shift", "%g", (double) regB);
@@ -3403,7 +3403,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           regA = (fxFltType) (CastDoubleToSizeT((double) regA+0.5) << CastDoubleToSizeT((double) regB+0.5));
           break;
         case oRshift:
-          if ((size_t) (regB+0.5) >= (8*sizeof(size_t)))
+          if (CastDoubleToSizeT(regB+0.5) >= (8*sizeof(size_t)))
             {
               (void) ThrowMagickException ( pfx->exception, GetMagickModule(),
                 OptionError, "undefined shift", "%g", (double) regB);
@@ -4161,6 +4161,7 @@ MagickPrivate MagickBooleanType FxEvaluateChannelExpression (
   assert (pfx->fxrts != NULL);
 
   pfx->fxrts[id].thisPixel = NULL;
+
 
   if (!ExecuteRPN (pfx, &pfx->fxrts[id], &ret, channel, x, y)) {
     (void) ThrowMagickException (
