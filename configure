@@ -1102,7 +1102,6 @@ MAGICK_MICRO_VERSION
 MAGICK_MINOR_VERSION
 MAGICK_MAJOR_VERSION
 SHELL_QUOTE
-CMD_QUOTE
 MAGICK_TARGET_OS
 MAGICK_TARGET_VENDOR
 MAGICK_TARGET_CPU
@@ -5369,11 +5368,9 @@ printf "%s\n" "#define MAGICK_TARGET_OS $MAGICK_TARGET_OS" >>confdefs.h
 
 case "$host_os" in
   mingw* | msys*)
-    CMD_QUOTE="&apos;"
     SHELL_QUOTE="&quot;"
     ;;
   *)
-    CMD_QUOTE="&quot;"
     SHELL_QUOTE="&apos;"
     ;;
 esac
