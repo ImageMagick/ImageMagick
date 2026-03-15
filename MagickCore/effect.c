@@ -954,7 +954,7 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
       blur_image=DestroyImage(blur_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
-  for (w=(-MaxIntensity); w < MaxIntensity; w++)
+  for (w=(-MaxIntensity); w <= MaxIntensity; w++)
     intensity_gaussian[w+MaxIntensity]=BlurGaussian((double) w,intensity_sigma);
   spatial_gaussian=weights[number_threads];
   {
