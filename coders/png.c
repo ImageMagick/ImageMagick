@@ -6328,6 +6328,11 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
         else
           image->delay=0;
 
+        if (mng_info->framing_mode == 3)
+          image->dispose=BackgroundDispose;
+        else
+          image->dispose=NoneDispose;
+
         image->page.width=mng_info->mng_width;
         image->page.height=mng_info->mng_height;
         image->page.x=mng_info->x_off[object_id];
@@ -13583,7 +13588,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
 
    mng_info->write_mng=write_mng;
 
-   if ((int) image->dispose >= 3)
+   if ((int) image->dispose >= BackgroundDispose)
      mng_info->framing_mode=3;
 
    if (mng_info->need_fram != MagickFalse && mng_info->adjoin != MagickFalse &&
