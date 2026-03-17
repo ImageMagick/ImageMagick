@@ -626,6 +626,9 @@ static Image *ReadJXLImage(const ImageInfo *image_info,
       }
       case JXL_DEC_FRAME:
       {
+        JxlFrameHeader
+          frame_header;
+
         if (image_count++ != 0)
           {
             JXLAddProfilesToImage(image,&exif_profile,&xmp_profile,exception);
@@ -638,6 +641,9 @@ static Image *ReadJXLImage(const ImageInfo *image_info,
             image=SyncNextImageInList(image);
             JXLInitImage(image,&basic_info);
           }
+        (void) memset(&frame_header,0,sizeof(frame_header));
+        if (JxlDecoderGetFrameHeader(jxl_info,&frame_header) == JXL_DEC_SUCCESS)
+          image->delay=(size_t) frame_header.duration;
         break;
       }
       case JXL_DEC_NEED_IMAGE_OUT_BUFFER:
@@ -1070,7 +1076,6 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       basic_info.animation.tps_numerator=(uint32_t) image->ticks_per_second;
       basic_info.animation.tps_denominator=1;
       JxlEncoderInitFrameHeader(&frame_header);
-      frame_header.duration=1;
     }
   jxl_status=JxlEncoderSetBasicInfo(jxl_info,&basic_info);
   if (jxl_status != JXL_ENC_SUCCESS)
@@ -1177,6 +1182,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
 
     if (basic_info.have_animation == JXL_TRUE)
       {
+        frame_header.duration=(uint32_t) image->delay;
         jxl_status=JxlEncoderSetFrameHeader(frame_settings,&frame_header);
         if (jxl_status != JXL_ENC_SUCCESS)
           break;
