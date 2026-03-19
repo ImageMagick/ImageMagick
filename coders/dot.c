@@ -136,11 +136,23 @@ static Image *ReadDOTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) AcquireUniqueFilename(read_info->filename);
   (void) FormatLocaleString(command,MagickPathExtent,"-Tsvg -o%s %s",
     read_info->filename,image_info->filename);
+  {
+    FILE
+      *file;
+
+    file=GetBlobFileHandle(image);
+    if (file == (FILE *) NULL)
+      {
+        (void) RelinquishUniqueFileResource(read_info->filename);
+        read_info=DestroyImageInfo(read_info);
+        return(DestroyImageList(image));
+      }
 #if !defined(WITH_CGRAPH)
-  graph=agread(GetBlobFileHandle(image));
+    graph=agread(file);
 #else
-  graph=agread(GetBlobFileHandle(image),(Agdisc_t *) NULL);
+    graph=agread(file,(Agdisc_t *) NULL);
 #endif
+  }
   if (graph == (graph_t *) NULL)
     {
       (void) RelinquishUniqueFileResource(read_info->filename);
