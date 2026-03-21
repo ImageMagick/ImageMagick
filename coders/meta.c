@@ -1333,12 +1333,17 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
             }
           AttachBlob(iptc->blob,GetStringInfoDatum(profile),
             GetStringInfoLength(profile));
+          profile->datum=(unsigned char *) NULL;
+          profile->length=0;
+          profile=DestroyStringInfo(profile);
           result=jpeg_embed(image,buff,iptc);
           blob=(unsigned char *) DetachBlob(iptc->blob);
           blob=(unsigned char *) RelinquishMagickMemory(blob);
           iptc=DestroyImage(iptc);
           if (result == 0)
             {
+              blob=(unsigned char *) DetachBlob(buff->blob);
+              blob=(unsigned char *) RelinquishMagickMemory(blob);
               buff=DestroyImage(buff);
               ThrowReaderException(CoderError,"JPEGEmbeddingFailed");
             }
