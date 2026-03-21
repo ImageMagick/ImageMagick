@@ -6704,14 +6704,21 @@ static DisplayCommand XImageWindowCommand(Display *display,
 
   if ((key_symbol >= XK_0) && (key_symbol <= XK_9))
     {
+      size_t
+        length;
+
       if (((last_symbol < XK_0) || (last_symbol > XK_9)))
         {
           *delta='\0';
           resource_info->quantum=1;
         }
       last_symbol=key_symbol;
-      delta[strlen(delta)+1]='\0';
-      delta[strlen(delta)]=Digits[key_symbol-XK_0];
+      length=strlen(delta);
+      if (length < MagickPathExtent)
+        {
+          delta[length]=Digits[key_symbol-XK_0];
+          delta[length+1]='\0';
+        }
       resource_info->quantum=StringToLong(delta);
       return(NullCommand);
     }
