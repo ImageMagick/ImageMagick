@@ -305,6 +305,11 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   Get the keyword value.
                 */
                 c=ReadBlobByte(image);
+                if (c == (int) '{')
+                  {
+                    *p++=c;
+                    c=ReadBlobByte(image);
+                  }
                 while ((c != (int) '{') && (c != (int) '}') && (c != EOF))
                 {
                   if ((size_t) (p-options+1) >= length)
