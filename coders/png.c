@@ -5589,7 +5589,7 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
                     change_clipping=(*p++);
                     p++; /* change_sync */
 
-                    if (change_delay && ((p-chunk) < (ssize_t) (length-4)))
+                    if (change_delay && ((p-chunk)+4 <= (ssize_t) length))
                       {
                         frame_delay=(size_t) image->ticks_per_second*
                           (size_t) mng_get_long(p);
@@ -5610,7 +5610,7 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
                             "    Framing_delay=%.20g",(double) frame_delay);
                       }
 
-                    if (change_timeout && ((p-chunk) < (ssize_t) (length-4)))
+                    if (change_timeout && ((p-chunk)+4 <= (ssize_t) length))
                       {
                         frame_timeout=(size_t) image->ticks_per_second*
                           (size_t) mng_get_long(p);
