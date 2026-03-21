@@ -723,8 +723,8 @@ SVGDecodeDelegate
 RSVGDecodeDelegate
 RMDelegate
 PSDelegate
-PreviewDelegate
 PCLDelegate
+OpenDelegate
 MVDelegate
 MrSIDDecodeDelegate
 MKDIRDelegate
@@ -5389,7 +5389,7 @@ MAGICK_PATCHLEVEL_VERSION=18
 
 MAGICK_VERSION=7.1.2-18
 
-MAGICK_GIT_REVISION=5c4cca722:20260321
+MAGICK_GIT_REVISION=093f1b790:20260321
 
 
 # Substitute library versioning
@@ -37392,8 +37392,8 @@ LaunchDelegateDefault='gimp'
 MKDIRDelegateDefault='mkdir'
 MrSIDDecodeDelegateDefault='mrsidgeodecode'
 MVDelegateDefault='mv'
+OpenDelegateDefault='open'
 PCLDelegateDefault='pcl6'
-PreviewDelegateDefault='open'
 if test "$native_win32_build" = 'yes'; then
     PSDelegateDefault='gswin32c'
 elif test "$gslib_framework" = 'yes'; then
@@ -38740,6 +38740,53 @@ printf "%s\n" "no" >&6; }
 fi
 
 
+# Extract the first word of ""$OpenDelegateDefault"", so it can be a program name with args.
+set dummy "$OpenDelegateDefault"; ac_word=$2
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+printf %s "checking for $ac_word... " >&6; }
+if test ${ac_cv_path_OpenDelegate+y}
+then :
+  printf %s "(cached) " >&6
+else case e in #(
+  e) case $OpenDelegate in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_OpenDelegate="$OpenDelegate" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  case $as_dir in #(((
+    '') as_dir=./ ;;
+    */) ;;
+    *) as_dir=$as_dir/ ;;
+  esac
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir$ac_word$ac_exec_ext"; then
+    ac_cv_path_OpenDelegate="$as_dir$ac_word$ac_exec_ext"
+    printf "%s\n" "$as_me:${as_lineno-$LINENO}: found $as_dir$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_path_OpenDelegate" && ac_cv_path_OpenDelegate=""$OpenDelegateDefault""
+  ;;
+esac ;;
+esac
+fi
+OpenDelegate=$ac_cv_path_OpenDelegate
+if test -n "$OpenDelegate"; then
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $OpenDelegate" >&5
+printf "%s\n" "$OpenDelegate" >&6; }
+else
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+fi
+
+
 # Extract the first word of ""$PCLDelegateDefault"", so it can be a program name with args.
 set dummy "$PCLDelegateDefault"; ac_word=$2
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
@@ -38781,53 +38828,6 @@ PCLDelegate=$ac_cv_path_PCLDelegate
 if test -n "$PCLDelegate"; then
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $PCLDelegate" >&5
 printf "%s\n" "$PCLDelegate" >&6; }
-else
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; }
-fi
-
-
-# Extract the first word of ""$PreviewDelegateDefault"", so it can be a program name with args.
-set dummy "$PreviewDelegateDefault"; ac_word=$2
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-printf %s "checking for $ac_word... " >&6; }
-if test ${ac_cv_path_PreviewDelegate+y}
-then :
-  printf %s "(cached) " >&6
-else case e in #(
-  e) case $PreviewDelegate in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_PreviewDelegate="$PreviewDelegate" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  case $as_dir in #(((
-    '') as_dir=./ ;;
-    */) ;;
-    *) as_dir=$as_dir/ ;;
-  esac
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir$ac_word$ac_exec_ext"; then
-    ac_cv_path_PreviewDelegate="$as_dir$ac_word$ac_exec_ext"
-    printf "%s\n" "$as_me:${as_lineno-$LINENO}: found $as_dir$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  test -z "$ac_cv_path_PreviewDelegate" && ac_cv_path_PreviewDelegate=""$PreviewDelegateDefault""
-  ;;
-esac ;;
-esac
-fi
-PreviewDelegate=$ac_cv_path_PreviewDelegate
-if test -n "$PreviewDelegate"; then
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $PreviewDelegate" >&5
-printf "%s\n" "$PreviewDelegate" >&6; }
 else
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
@@ -39714,8 +39714,8 @@ if test "$with_frozenpaths" != 'yes'; then
   LaunchDelegate="$LaunchDelegateDefault"
   MogrifyDelegate="$MogrifyDelegateDefault"
   MrSIDDecodeDelegate="$MrSIDDecodeDelegateDefault"
+  OpenDelegate="$OpenDelegateDefault"
   PCLDelegate="$PCLDelegateDefault"
-  PreviewDelegate="$PreviewDelegateDefault"
   PSDelegate="$PSDelegateDefault"
   RSVGDecodeDelegate="$RSVGDecodeDelegateDefault"
   SVGDecodeDelegate="$SVGDecodeDelegateDefault"
