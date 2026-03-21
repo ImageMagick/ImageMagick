@@ -71,8 +71,6 @@
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/property.h"
 #include "MagickCore/quantum.h"
-#include "MagickCore/random_.h"
-#include "MagickCore/random-private.h"
 #include "MagickCore/resample.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/string_.h"
@@ -1461,9 +1459,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   MagickStatusType
     flags;
 
-  RandomInfo
-    *random_info;
-
   ssize_t
     y;
 
@@ -2196,7 +2191,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   status=MagickTrue;
   progress=0;
   midpoint=((MagickRealType) QuantumRange+1.0)/2;
-  random_info=AcquireRandomInfo();
   source_view=AcquireVirtualCacheView(source_image,exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -2929,10 +2923,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case DissolveCompositeOp:
           {
-            if (GetPseudoRandomValue(random_info) < (source_dissolve*Sa))
-              pixel=Sc;
-            else
-              pixel=Dc;
+            pixel=gamma*(source_dissolve*Sa*Sc-source_dissolve*Sa*
+              canvas_dissolve*Da*Dc+canvas_dissolve*Da*Dc);
             break;
           }
           case DivideDstCompositeOp:
@@ -3585,7 +3577,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   }
   source_view=DestroyCacheView(source_view);
   image_view=DestroyCacheView(image_view);
-  random_info=DestroyRandomInfo(random_info);
   if (canvas_image != (Image * ) NULL)
     canvas_image=DestroyImage(canvas_image);
   else
