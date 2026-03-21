@@ -407,7 +407,7 @@ jobs:
           subscription-id: ${{secrets.AZURE_SUBSCRIPTION_ID}}
 
       - name: Create msixbundle with Advanced Installer
-        uses: caphyon/advinst-github-action@f7e45a75aba48b695fafc344f61adf634d41fe4e #v2.0
+        uses: caphyon/advinst-github-action@51a7d8a83da86da51e94e4a41d859c4a0a6b8263 #v2.0.1
         with:
           advinst-license: ${{secrets.ADVINST_LICENSE_KEY}}
           aip-path: Configure\Installer\Msix\ImageMagick.${{matrix.quantum}}${{matrix.hdri_flag}}.aip
