@@ -1739,7 +1739,8 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
               format_specifier[MagickPathExtent];
 
             size_t
-              length = cursor-specifier_start;
+              length = cursor-specifier_start,
+              pattern_length;
 
             ssize_t
               count;
@@ -1748,10 +1749,13 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
               "%%%.*s%c",(int) length,specifier_start,*cursor);
             count=FormatLocaleString(pattern,sizeof(pattern),format_specifier,
               value);
-            if ((count <= 0) || ((p-filename+count) >= MagickPathExtent))
+            pattern_length=strlen(pattern);
+            if ((count <= 0) || ((size_t) count != pattern_length))
+              return(0);
+            if ((p-filename+pattern_length) >= MagickPathExtent)
               return(0);
             (void) CopyMagickString(p,pattern,MagickPathExtent-(p-filename));
-            p+=strlen(pattern);
+            p+=pattern_length;
             cursor++;
             continue;
           }
