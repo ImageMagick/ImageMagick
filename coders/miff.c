@@ -612,7 +612,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 c=ReadBlobByte(image);
                 if (c == (int) '{')
                   {
-                    *p++=c;
+                    *p++=(char) c;
                     c=ReadBlobByte(image);
                   }
                 while ((c != (int) '{') && (c != (int) '}') && (c != EOF))

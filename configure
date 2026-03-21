@@ -723,6 +723,7 @@ SVGDecodeDelegate
 RSVGDecodeDelegate
 RMDelegate
 PSDelegate
+PreviewDelegate
 PCLDelegate
 MVDelegate
 MrSIDDecodeDelegate
@@ -5388,7 +5389,7 @@ MAGICK_PATCHLEVEL_VERSION=18
 
 MAGICK_VERSION=7.1.2-18
 
-MAGICK_GIT_REVISION=3f2f62940:20260315
+MAGICK_GIT_REVISION=5c4cca722:20260321
 
 
 # Substitute library versioning
@@ -5422,7 +5423,7 @@ PACKAGE_LIB_VERSION=0x712
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,2,18
 
-PACKAGE_RELEASE_DATE=2026-03-15
+PACKAGE_RELEASE_DATE=2026-03-21
 
 
 # Ensure that make can run correctly
@@ -37392,6 +37393,7 @@ MKDIRDelegateDefault='mkdir'
 MrSIDDecodeDelegateDefault='mrsidgeodecode'
 MVDelegateDefault='mv'
 PCLDelegateDefault='pcl6'
+PreviewDelegateDefault='open'
 if test "$native_win32_build" = 'yes'; then
     PSDelegateDefault='gswin32c'
 elif test "$gslib_framework" = 'yes'; then
@@ -38785,6 +38787,53 @@ printf "%s\n" "no" >&6; }
 fi
 
 
+# Extract the first word of ""$PreviewDelegateDefault"", so it can be a program name with args.
+set dummy "$PreviewDelegateDefault"; ac_word=$2
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+printf %s "checking for $ac_word... " >&6; }
+if test ${ac_cv_path_PreviewDelegate+y}
+then :
+  printf %s "(cached) " >&6
+else case e in #(
+  e) case $PreviewDelegate in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_PreviewDelegate="$PreviewDelegate" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  case $as_dir in #(((
+    '') as_dir=./ ;;
+    */) ;;
+    *) as_dir=$as_dir/ ;;
+  esac
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir$ac_word$ac_exec_ext"; then
+    ac_cv_path_PreviewDelegate="$as_dir$ac_word$ac_exec_ext"
+    printf "%s\n" "$as_me:${as_lineno-$LINENO}: found $as_dir$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_path_PreviewDelegate" && ac_cv_path_PreviewDelegate=""$PreviewDelegateDefault""
+  ;;
+esac ;;
+esac
+fi
+PreviewDelegate=$ac_cv_path_PreviewDelegate
+if test -n "$PreviewDelegate"; then
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $PreviewDelegate" >&5
+printf "%s\n" "$PreviewDelegate" >&6; }
+else
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+fi
+
+
 for ac_prog in gsx gsc "$PSDelegateDefault"
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
@@ -39666,6 +39715,7 @@ if test "$with_frozenpaths" != 'yes'; then
   MogrifyDelegate="$MogrifyDelegateDefault"
   MrSIDDecodeDelegate="$MrSIDDecodeDelegateDefault"
   PCLDelegate="$PCLDelegateDefault"
+  PreviewDelegate="$PreviewDelegateDefault"
   PSDelegate="$PSDelegateDefault"
   RSVGDecodeDelegate="$RSVGDecodeDelegateDefault"
   SVGDecodeDelegate="$SVGDecodeDelegateDefault"
@@ -39682,6 +39732,7 @@ if test "$with_frozenpaths" != 'yes'; then
 fi
 
 # Delegate substitutions
+
 
 
 

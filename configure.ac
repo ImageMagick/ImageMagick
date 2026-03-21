@@ -3324,6 +3324,7 @@ MKDIRDelegateDefault='mkdir'
 MrSIDDecodeDelegateDefault='mrsidgeodecode'
 MVDelegateDefault='mv'
 PCLDelegateDefault='pcl6'
+PreviewDelegateDefault='open'
 if test "$native_win32_build" = 'yes'; then
     PSDelegateDefault='gswin32c'
 elif test "$gslib_framework" = 'yes'; then
@@ -3373,6 +3374,7 @@ AC_PATH_PROG([MKDIRDelegate],["$MKDIRDelegateDefault"],["$MKDIRDelegateDefault"]
 AC_PATH_PROG([MrSIDDecodeDelegate],["$MrSIDDecodeDelegateDefault"],["$MrSIDDecodeDelegateDefault"])
 AC_PATH_PROG([MVDelegate],["$MVDelegateDefault"],["$MVDelegateDefault"])
 AC_PATH_PROG([PCLDelegate],["$PCLDelegateDefault"],["$PCLDelegateDefault"])
+AC_PATH_PROG([PreviewDelegate],["$PreviewDelegateDefault"],["$PreviewDelegateDefault"])
 AC_PATH_PROGS([PSDelegate],[gsx gsc "$PSDelegateDefault"],["$PSDelegateDefault"])
 AC_PATH_PROG([RMDelegate],["$RMDelegateDefault"],["$RMDelegateDefault"])
 AC_PATH_PROG([RSVGDecodeDelegate],["$RSVGDecodeDelegateDefault"],["$RSVGDecodeDelegateDefault"])
@@ -3670,6 +3672,7 @@ if test "$with_frozenpaths" != 'yes'; then
   MogrifyDelegate="$MogrifyDelegateDefault"
   MrSIDDecodeDelegate="$MrSIDDecodeDelegateDefault"
   PCLDelegate="$PCLDelegateDefault"
+  PreviewDelegate="$PreviewDelegateDefault"
   PSDelegate="$PSDelegateDefault"
   RSVGDecodeDelegate="$RSVGDecodeDelegateDefault"
   SVGDecodeDelegate="$SVGDecodeDelegateDefault"
@@ -3710,6 +3713,7 @@ AC_SUBST([VIDEOEncodeDelegate])
 AC_SUBST([MogrifyDelegate])
 AC_SUBST([MrSIDDecodeDelegate])
 AC_SUBST([PCLDelegate])
+AC_SUBST([PreviewDelegate])
 AC_SUBST([PSDelegate])
 AC_SUBST([ShowImageDelegate])
 AC_SUBST([TextEncodeDelegate])

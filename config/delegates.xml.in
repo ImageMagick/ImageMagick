@@ -83,6 +83,7 @@
   <delegate decode="jpg" encode="lep" mode="encode" command="@SHELL_QUOTE@@LEPDelegate@@SHELL_QUOTE@ @SHELL_QUOTE@%i@SHELL_QUOTE@ @SHELL_QUOTE@%o@SHELL_QUOTE@"/>
   <delegate decode="jxr" command="@MVDelegate@ @SHELL_QUOTE@%i@SHELL_QUOTE@ @SHELL_QUOTE@%i.jxr@SHELL_QUOTE@; @SHELL_QUOTE@@JXRDecodeDelegate@@SHELL_QUOTE@ -i @SHELL_QUOTE@%i.jxr@SHELL_QUOTE@ -o @SHELL_QUOTE@%o.tiff@SHELL_QUOTE@; @MVDelegate@ @SHELL_QUOTE@%i.jxr@SHELL_QUOTE@ @SHELL_QUOTE@%i@SHELL_QUOTE@; @MVDelegate@ @SHELL_QUOTE@%o.tiff@SHELL_QUOTE@ @SHELL_QUOTE@%o@SHELL_QUOTE@"/>
   <delegate decode="lep" mode="decode" command="@SHELL_QUOTE@@LEPDelegate@@SHELL_QUOTE@ @SHELL_QUOTE@%i@SHELL_QUOTE@ @SHELL_QUOTE@%o@SHELL_QUOTE@"/>
+  <delegate decode="png" encode="preview" spawn="True" command="@SHELL_QUOTE@@PreviewDelegate@@SHELL_QUOTE@ -a Preview @SHELL_QUOTE@%i@SHELL_QUOTE@"/>
   <delegate decode="miff" encode="show" spawn="True" command="@SHELL_QUOTE@@DisplayDelegate@@SHELL_QUOTE@ display -immutable -delay 0 -title @SHELL_QUOTE@%M@SHELL_QUOTE@ @SHELL_QUOTE@%i@SHELL_QUOTE@"/>
   <delegate decode="miff" encode="win" stealth="True" spawn="True" command="@SHELL_QUOTE@@DisplayDelegate@@SHELL_QUOTE@ display -immutable -delay 0 -title @SHELL_QUOTE@%M@SHELL_QUOTE@ @SHELL_QUOTE@%i@SHELL_QUOTE@"/>
   <delegate decode="odg" command="@SHELL_QUOTE@@DOCDecodeDelegate@@SHELL_QUOTE@ --convert-to pdf --outdir `dirname @SHELL_QUOTE@%i@SHELL_QUOTE@` @SHELL_QUOTE@%i@SHELL_QUOTE@ 2&gt; @SHELL_QUOTE@%u@SHELL_QUOTE@; @MVDelegate@ @SHELL_QUOTE@%i.pdf@SHELL_QUOTE@ @SHELL_QUOTE@%o@SHELL_QUOTE@"/>
