@@ -649,7 +649,10 @@ static Image *ASHLARImage(ImageInfo *image_info,Image *image,
     status=CompositeImage(ashlar_image,tile_image,image->compose,MagickTrue,
       tiles[i].x+geometry.x,tiles[i].y+geometry.y,exception);
     if (status == MagickFalse)
-      continue;
+      {
+        tile_image=DestroyImage(tile_image);
+        continue;
+      }
     if (value != (const char *) NULL)
       {
         char
