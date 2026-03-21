@@ -6694,7 +6694,7 @@ static DisplayCommand XImageWindowCommand(Display *display,
   KeySym key_symbol,Image **image,ExceptionInfo *exception)
 {
   static char
-    delta[MagickPathExtent] = "";
+    delta[MagickPathExtent+1] = "";
 
   static const char
     Digits[] = "01234567890";
