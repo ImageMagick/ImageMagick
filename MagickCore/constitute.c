@@ -46,6 +46,7 @@
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/cache.h"
+#include "MagickCore/cache-private.h"
 #include "MagickCore/client.h"
 #include "MagickCore/coder-private.h"
 #include "MagickCore/colorspace-private.h"
@@ -1282,7 +1283,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
   DisassociateImageStream(image);
   if (image->ping != MagickFalse)
     {
-      status=SetImageExtent(image,image->columns,image->rows,exception);
+      status=SyncImagePixelCache(image,exception);
       if (status == MagickFalse)
         return(status);
     }
