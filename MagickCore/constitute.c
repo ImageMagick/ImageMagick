@@ -1280,6 +1280,12 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
     }
   SyncImageProfiles(image);
   DisassociateImageStream(image);
+  if (image->ping != MagickFalse)
+    {
+      status=SetImageExtent(image,image->columns,image->rows,exception);
+      if (status == MagickFalse)
+        return(status);
+    }
   option=GetImageOption(image_info,"delegate:bimodal");
   if ((IsStringTrue(option) != MagickFalse) &&
       (write_info->page == (char *) NULL) &&
