@@ -210,12 +210,12 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 # include <stat.h>
 #endif
 
-#if defined(MAGICKCORE_POSIX_SUPPORT) || defined(__MINGW32__)
-# define P_MODE (S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH)
-# define S_MODE (S_IRUSR | S_IWUSR)
-#elif defined (MAGICKWAND_WINDOWS_SUPPORT)
+#if defined(MAGICKWAND_WINDOWS_SUPPORT) || defined(__MINGW32__)
 # define P_MODE (_S_IREAD | _S_IWRITE)
 # define S_MODE (_S_IREAD | _S_IWRITE)
+#elif defined(MAGICKCORE_POSIX_SUPPORT)
+# define P_MODE (S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH)
+# define S_MODE (S_IRUSR | S_IWUSR)
 #else
 # define P_MODE  0666
 # define S_MODE  0600
