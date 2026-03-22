@@ -446,8 +446,8 @@ static void JPEGWarningHandler(j_common_ptr jpeg_info,int level)
       }
 }
 
-static MagickBooleanType ReadProfilePayload(j_decompress_ptr jpeg_info,const int index,
-  const size_t length)
+static MagickBooleanType ReadProfilePayload(j_decompress_ptr jpeg_info,
+  const int index,const size_t length)
 {
   ExceptionInfo
     *exception;
@@ -2529,6 +2529,8 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
   {
     case CMYKColorspace:
     {
+      if (image->ping != MagickFalse)
+        (void) SetImageStorageClass(image,DirectClass,exception);
       jpeg_info->input_components=4;
       jpeg_info->in_color_space=JCS_CMYK;
       break;
@@ -3063,7 +3065,8 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
         */
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          JPEGSetSample(jpeg_info,ClampToQuantum(GetPixelLuma(image,p)),range,q);
+          JPEGSetSample(jpeg_info,ClampToQuantum(GetPixelLuma(image,p)),range,
+            q);
           q+=(ptrdiff_t) bytes_per_pixel;
           p+=(ptrdiff_t) GetPixelChannels(image);
         }
@@ -3136,8 +3139,9 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
           &jpeg_pixels,1);
       }
     if (number_scanlines != 1)
-      (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
-        "AnErrorHasOccurredWritingToFile","`%s'",image->filename);
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        CorruptImageError,"AnErrorHasOccurredWritingToFile","`%s'",
+        image->filename);
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
       image->rows);
     if (status == MagickFalse)

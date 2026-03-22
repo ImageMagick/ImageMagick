@@ -46,7 +46,6 @@
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/cache.h"
-#include "MagickCore/cache-private.h"
 #include "MagickCore/client.h"
 #include "MagickCore/coder-private.h"
 #include "MagickCore/colorspace-private.h"
@@ -1281,12 +1280,6 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
     }
   SyncImageProfiles(image);
   DisassociateImageStream(image);
-  if (image->ping != MagickFalse)
-    {
-      status=SyncImagePixelCache(image,exception);
-      if (status == MagickFalse)
-        return(status);
-    }
   option=GetImageOption(image_info,"delegate:bimodal");
   if ((IsStringTrue(option) != MagickFalse) &&
       (write_info->page == (char *) NULL) &&
