@@ -1919,8 +1919,8 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
         "ParseError","UTF16 to UTF8 failed");
       return((XMLTreeInfo *) NULL);
     }
-  terminal=utf8[length-1];
-  utf8[length-1]='\0';
+  terminal=utf8[MagickMax(length-1,0)];
+  utf8[MagickMax(length-1,0)]='\0';
   p=utf8;
   while ((*p != '\0') && (*p != '<'))
     p++;
