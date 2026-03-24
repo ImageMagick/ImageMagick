@@ -3462,7 +3462,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
                   break;
                 }
                 if ((q == (char *) NULL) || (*q == '\0') ||
-                    (p == (char *) NULL) || ((q-4) < p))
+                    (p == (char *) NULL) || ((q-4) < p) ||
+                    ((q-p+4+1) > MagickPathExtent))
                   {
                     status=MagickFalse;
                     break;
@@ -3577,7 +3578,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
                     continue;
                   break;
                 }
-                if ((q == (char *) NULL) || (p == (char *) NULL) || ((q-4) < p))
+                if ((q == (char *) NULL) || (p == (char *) NULL) || ((q-4) < p) ||
+                    ((q-p+4+1) > MagickPathExtent))
                   {
                     status=MagickFalse;
                     break;
