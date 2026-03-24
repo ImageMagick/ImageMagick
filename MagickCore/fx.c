@@ -2687,6 +2687,13 @@ static MagickBooleanType TranslateExpression (
   ternary.addr_query = NULL_ADDRESS;
   ternary.addr_colon = NULL_ADDRESS;
 
+  if (pfx->teDepth >= MagickMaxRecursionDepth) {
+    (void) ThrowMagickException(pfx->exception, GetMagickModule(), OptionError,
+        "Expression too deeply nested", "(depth %i exceeds limit %i)",
+        pfx->teDepth, MagickMaxRecursionDepth);
+    return MagickFalse;
+  }
+
   pfx->teDepth++;
 
   *chLimit = '\0';
