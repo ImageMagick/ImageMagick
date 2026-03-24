@@ -48,6 +48,7 @@
 #include "MagickCore/exception-private.h"
 #include "MagickCore/image.h"
 #include "MagickCore/image-private.h"
+#include "MagickCore/layer.h"
 #include "MagickCore/list.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
@@ -644,6 +645,9 @@ static Image *ReadJXLImage(const ImageInfo *image_info,
         (void) memset(&frame_header,0,sizeof(frame_header));
         if (JxlDecoderGetFrameHeader(jxl_info,&frame_header) == JXL_DEC_SUCCESS)
           image->delay=(size_t) frame_header.duration;
+        if ((basic_info.have_animation == JXL_TRUE) &&
+            (basic_info.alpha_bits != 0))
+          image->dispose=BackgroundDispose;
         break;
       }
       case JXL_DEC_NEED_IMAGE_OUT_BUFFER:
