@@ -578,7 +578,8 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
     scene;
 
   ssize_t
-    i;
+    i,
+    length_of_delay_loop;
 
   unsigned char
     *blob;
@@ -620,7 +621,11 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
     length=0;
     scene=p->scene;
     delay=100.0*p->delay/MagickMax(1.0*p->ticks_per_second,1.0);
-    for (i=0; i < (ssize_t) MagickMax((1.0*delay+1.0)/3.0,1.0); i++)
+    if (LocaleNCompare(image_info->magick,"APNG",MagickPathExtent) == 0)
+      length_of_delay_loop=1;
+    else
+      length_of_delay_loop=(ssize_t) MagickMax((1.0*delay+1.0)/3.0,1.0);
+    for (i=0; i < length_of_delay_loop; i++)
     {
       p->scene=count;
       count++;
@@ -735,7 +740,11 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
   for (p=clone_images; p != (Image *) NULL; p=GetNextImageInList(p))
   {
     delay=100.0*p->delay/MagickMax(1.0*p->ticks_per_second,1.0);
-    for (i=0; i < (ssize_t) MagickMax((1.0*delay+1.0)/3.0,1.0); i++)
+    if (LocaleNCompare(image_info->magick,"APNG",MagickPathExtent) == 0)
+      length_of_delay_loop=1;
+    else
+      length_of_delay_loop=(ssize_t) MagickMax((1.0*delay+1.0)/3.0,1.0);
+    for (i=0; i < length_of_delay_loop; i++)
     {
       (void) FormatLocaleString(p->filename,MagickPathExtent,"%s%.20g.%s",
         basename,(double) count++,intermediate_format);
