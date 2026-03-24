@@ -831,8 +831,8 @@ ModuleExport void UnregisterFTXTImage(void)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,Image *image,
-  ExceptionInfo *exception)
+static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,
+  Image *image,ExceptionInfo *exception)
 {
   char
     buffer[MaxTextExtent],
@@ -1038,7 +1038,8 @@ static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,Image *image
               buffer[1]='\0';
               (void) WriteBlobString(image,buffer);
             }
-          pFmt++;
+          if (*pFmt)
+            pFmt++;
         }
         p+=(ptrdiff_t) GetPixelChannels(image);
       }
