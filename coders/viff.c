@@ -1098,7 +1098,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
     /*
       Convert MIFF to VIFF raster pixels.
     */
-    if (packets != (MagickSizeType) ((size_t) packets)
+    if (packets != (MagickSizeType) ((size_t) packets))
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     pixel_info=AcquireVirtualMemory((size_t) packets,sizeof(*pixels));
     if (pixel_info == (MemoryInfo *) NULL)
