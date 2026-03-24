@@ -3590,6 +3590,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
               (void) SetImageDepth(image,1,exception);
           }
         image->depth=1;
+        image->number_meta_channels=0;
         break;
       }
       case JPEGCompression:
