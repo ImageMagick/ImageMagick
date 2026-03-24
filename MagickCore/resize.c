@@ -3929,8 +3929,6 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
     sample_offset;
 
   ssize_t
-    j,
-    *x_offset,
     y;
 
   /*
@@ -3975,19 +3973,6 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
       }
   }
   /*
-    Allocate scan line buffer and column offset buffers.
-  */
-  x_offset=(ssize_t *) AcquireQuantumMemory((size_t) sample_image->columns,
-    sizeof(*x_offset));
-  if (x_offset == (ssize_t *) NULL)
-    {
-      sample_image=DestroyImage(sample_image);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-    }
-  for (j=0; j < (ssize_t) sample_image->columns; j++)
-    x_offset[j]=(ssize_t) ((((double) j+sample_offset.x)*image->columns)/
-      sample_image->columns);
-  /*
     Sample each row.
   */
   status=MagickTrue;
@@ -4000,25 +3985,17 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
 #endif
   for (y=0; y < (ssize_t) sample_image->rows; y++)
   {
-    const Quantum
-      *magick_restrict p;
-
     Quantum
       *magick_restrict q;
 
     ssize_t
-      x,
-      y_offset;
+      x;
 
     if (status == MagickFalse)
       continue;
-    y_offset=(ssize_t) ((((double) y+sample_offset.y)*image->rows)/
-      sample_image->rows);
-    p=GetCacheViewVirtualPixels(image_view,0,y_offset,image->columns,1,
-      exception);
     q=QueueCacheViewAuthenticPixels(sample_view,0,y,sample_image->columns,1,
       exception);
-    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
+    if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;
@@ -4028,13 +4005,28 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
     */
     for (x=0; x < (ssize_t) sample_image->columns; x++)
     {
+      const Quantum
+        *magick_restrict p;
+
       ssize_t
-        i;
+        i,
+        x_offset,
+        y_offset;
 
       if (GetPixelWriteMask(sample_image,q) <= (QuantumRange/2))
         {
           q+=(ptrdiff_t) GetPixelChannels(sample_image);
           continue;
+        }
+      x_offset=(ssize_t) ((((double) x+sample_offset.x)*image->columns)/
+        sample_image->columns);
+      y_offset=(ssize_t) ((((double) y+sample_offset.y)*image->rows)/
+        sample_image->rows);
+      p=GetCacheViewVirtualPixels(image_view,x_offset,y_offset,1,1,exception);
+      if (p == (const Quantum *) NULL)
+        {
+          status=MagickFalse;
+          break;
         }
       for (i=0; i < (ssize_t) GetPixelChannels(sample_image); i++)
       {
@@ -4051,8 +4043,7 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
         if ((traits == UndefinedPixelTrait) ||
             (image_traits == UndefinedPixelTrait))
           continue;
-        SetPixelChannel(sample_image,channel,p[x_offset[x]*(ssize_t)
-          GetPixelChannels(image)+i],q);
+        SetPixelChannel(sample_image,channel,p[i],q);
       }
       q+=(ptrdiff_t) GetPixelChannels(sample_image);
     }
@@ -4070,7 +4061,6 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
   }
   image_view=DestroyCacheView(image_view);
   sample_view=DestroyCacheView(sample_view);
-  x_offset=(ssize_t *) RelinquishMagickMemory(x_offset);
   sample_image->type=image->type;
   if (status == MagickFalse)
     sample_image=DestroyImage(sample_image);
