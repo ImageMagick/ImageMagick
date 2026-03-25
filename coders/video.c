@@ -106,14 +106,7 @@ static MagickBooleanType
 %
 */
 
-static MagickBooleanType IsPNG(const unsigned char *magick,const size_t length)
-{
-  if (length < 8)
-    return(MagickFalse);
-  if (memcmp(magick,"\211PNG\r\n\032\n",8) == 0)
-    return(MagickTrue);
-  return(MagickFalse);
-}
+
 
 static MagickBooleanType IsVIDEO(const unsigned char *magick,
   const size_t length)
@@ -242,10 +235,7 @@ static Image *ReadVIDEOImage(const ImageInfo *image_info,
             " -pix_fmt \"%s\""," -pix_fmt '%s'",option);
           (void) ConcatenateMagickString(options,command,MagickPathExtent);
         }
-      else
-        if (LocaleNCompare(image_info->magick,"APNG",MagickPathExtent) == 0)
-          (void) ConcatenateMagickString(options," -pix_fmt rgba",
-            MagickPathExtent);
+
       intermediate_format=GetIntermediateFormat(image_info);
       (void) FormatLocaleString(command,MagickPathExtent,
         " -vcodec %s",intermediate_format);
@@ -324,14 +314,7 @@ ModuleExport size_t RegisterVIDEOImage(void)
   entry->flags^=CoderBlobSupportFlag;
   entry->flags|=CoderDecoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
-  entry=AcquireMagickInfo("VIDEO","APNG","Animated Portable Network Graphics");
-  entry->decoder=(DecodeImageHandler *) ReadVIDEOImage;
-  entry->encoder=(EncodeImageHandler *) WriteVIDEOImage;
-  entry->magick=(IsImageFormatHandler *) IsPNG;
-  entry->mime_type=ConstantString("image/apng");
-  entry->flags^=CoderBlobSupportFlag;
-  entry->flags|=CoderDecoderSeekableStreamFlag;
-  (void) RegisterMagickInfo(entry);
+
   entry=AcquireMagickInfo("VIDEO","AVI","Microsoft Audio/Visual Interleaved");
   entry->decoder=(DecodeImageHandler *) ReadVIDEOImage;
   entry->mime_type=ConstantString("image/avif-sequence");
@@ -441,7 +424,7 @@ ModuleExport void UnregisterVIDEOImage(void)
   (void) UnregisterMagickInfo("MPEG");
   (void) UnregisterMagickInfo("MKV");
   (void) UnregisterMagickInfo("AVI");
-  (void) UnregisterMagickInfo("APNG");
+
   (void) UnregisterMagickInfo("3G2");
   (void) UnregisterMagickInfo("3GP");
 }
@@ -621,10 +604,7 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
     length=0;
     scene=p->scene;
     delay=100.0*p->delay/MagickMax(1.0*p->ticks_per_second,1.0);
-    if (LocaleNCompare(image_info->magick,"APNG",MagickPathExtent) == 0)
-      length_of_delay_loop=1;
-    else
-      length_of_delay_loop=(ssize_t) MagickMax((1.0*delay+1.0)/3.0,1.0);
+    length_of_delay_loop=(ssize_t) MagickMax((1.0*delay+1.0)/3.0,1.0);
     for (i=0; i < length_of_delay_loop; i++)
     {
       p->scene=count;
@@ -711,21 +691,7 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
             " -pix_fmt \"%s\""," -pix_fmt '%s'",option);
           (void) ConcatenateMagickString(options,command,MagickPathExtent);
         }
-      if (LocaleNCompare(image_info->magick,"APNG",MagickPathExtent) == 0)
-        {
-          double
-            time_per_frame;
 
-          time_per_frame=1.0*clone_images->delay/MagickMax(1.0*
-            clone_images->ticks_per_second,1.0);
-          if (time_per_frame > 0.0)
-            {
-              (void) FormatLocaleString(command,MagickPathExtent,
-                " -filter:v \"setpts=(25*%.20g)*PTS\" -r 1/%.20g",
-                time_per_frame,time_per_frame);
-              (void) ConcatenateMagickString(options,command,MagickPathExtent);
-            }
-        }
       AcquireUniqueFilename(write_info->unique);
       (void) FormatLocaleString(command,MagickPathExtent,
         GetDelegateCommands(delegate_info),basename,intermediate_format,
@@ -755,10 +721,7 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
   for (p=clone_images; p != (Image *) NULL; p=GetNextImageInList(p))
   {
     delay=100.0*p->delay/MagickMax(1.0*p->ticks_per_second,1.0);
-    if (LocaleNCompare(image_info->magick,"APNG",MagickPathExtent) == 0)
-      length_of_delay_loop=1;
-    else
-      length_of_delay_loop=(ssize_t) MagickMax((1.0*delay+1.0)/3.0,1.0);
+    length_of_delay_loop=(ssize_t) MagickMax((1.0*delay+1.0)/3.0,1.0);
     for (i=0; i < length_of_delay_loop; i++)
     {
       (void) FormatLocaleString(p->filename,MagickPathExtent,"%s%.20g.%s",

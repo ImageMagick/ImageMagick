@@ -16,29 +16,15 @@
 
 #include "coders/coders-private.h"
 
-#define MagickVIDEOHeaders \
-  MagickCoderHeader("VIDEO", 0, "\000\000\001\263")
+#define MagickAPNGHeaders
 
-#define MagickVIDEOAliases \
-  MagickCoderAlias("VIDEO", "3GP") \
-  MagickCoderAlias("VIDEO", "3G2") \
-  MagickCoderAlias("VIDEO", "AVI") \
-  MagickCoderAlias("VIDEO", "FLV") \
-  MagickCoderAlias("VIDEO", "MKV") \
-  MagickCoderAlias("VIDEO", "MOV") \
-  MagickCoderAlias("VIDEO", "MPEG") \
-  MagickCoderAlias("VIDEO", "MPG") \
-  MagickCoderAlias("VIDEO", "MP4") \
-  MagickCoderAlias("VIDEO", "M2V") \
-  MagickCoderAlias("VIDEO", "M4V") \
-  MagickCoderAlias("VIDEO", "WEBM") \
-  MagickCoderAlias("VIDEO", "WMV")
+#define MagickAPNGAliases
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
-MagickCoderExports(VIDEO)
+MagickCoderExports(APNG)
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
