@@ -1904,8 +1904,31 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
   if ((encode_avif != MagickFalse) && (image_info->adjoin != MagickFalse) &&
       (GetNextImageInList(image) != (Image *) NULL))
     {
+      Image
+        *coalesce_image,
+        *next;
+
       (void) CloseBlob(image);
       heif_context_free(heif_context);
+
+      coalesce_image=(Image *) NULL;
+      next=GetNextImageInList(image);
+      while(next != (Image *) NULL)
+      {
+        if ((next->rows != image->rows) || (next->columns != image->columns) ||
+            (next->page.x != image->page.x) || (next->page.y != image->page.y))
+          {
+            coalesce_image=CoalesceImages(image,exception);
+            break;
+          }
+        next=GetNextImageInList(next);
+      }
+      if (coalesce_image != (Image *) NULL)
+        {
+          status=WriteHEICSequenceImage(image_info,coalesce_image,exception);
+          (void) DestroyImageList(coalesce_image);
+          return(status);
+        }
       return(WriteHEICSequenceImage(image_info,image,exception));
     }
 #endif
