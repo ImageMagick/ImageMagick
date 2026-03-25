@@ -1585,8 +1585,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
               return(DestroyKernelInfo(kernel));    /* invalid args given */
             kernel->width = CastDoubleToSizeT(args->rho);
             kernel->height = CastDoubleToSizeT(args->sigma);
-            if ( args->xi  < 0.0 || args->xi  > (double)kernel->width ||
-                 args->psi < 0.0 || args->psi > (double)kernel->height )
+            if ((args->xi < 0.0) || (args->xi  >= (double) kernel->width) ||
+                (args->psi < 0.0) || (args->psi >= (double) kernel->height))
               return(DestroyKernelInfo(kernel));    /* invalid args given */
             kernel->x = (ssize_t) args->xi;
             kernel->y = (ssize_t) args->psi;
