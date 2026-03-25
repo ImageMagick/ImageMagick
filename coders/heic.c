@@ -121,7 +121,7 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
-#if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,20,0)
+#if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,19,0)
 static inline void HEICSetUint32SecurityLimit(const ImageInfo *image_info,
   const char *name,uint32_t *value)
 {
@@ -981,7 +981,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   heif_context=heif_context_alloc();
   if (heif_context == (struct heif_context *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-#if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,20,0)
+#if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,19,0)
   HEICSecurityLimits(image_info,heif_context);
 #endif
   error=heif_context_read_from_file(heif_context,image->filename,
