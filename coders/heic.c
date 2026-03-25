@@ -653,7 +653,7 @@ static MagickBooleanType ReadHEICSequenceFrames(const ImageInfo *image_info,
 
   int
     bits_per_pixel,
-    has_alpha,
+    has_alpha = 0,
     shift,
     stride = 0;
 
@@ -698,10 +698,12 @@ static MagickBooleanType ReadHEICSequenceFrames(const ImageInfo *image_info,
   /*
     Detect alpha from the track and set up chroma format.
   */
+#if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,21,0)
   has_alpha=heif_track_has_alpha_channel(track);
   image->alpha_trait=UndefinedPixelTrait;
   if (has_alpha != 0)
     image->alpha_trait=BlendPixelTrait;
+#endif
   image->depth=8;
   if (image->alpha_trait != UndefinedPixelTrait)
     {
@@ -1712,8 +1714,10 @@ static MagickBooleanType WriteHEICSequenceImage(const ImageInfo *image_info,
       ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
     }
   seq_options=heif_sequence_encoding_options_alloc();
+#if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,21,0)
   if (seq_options != (struct heif_sequence_encoding_options *) NULL)
     seq_options->save_alpha_channel=1;
+#endif
   track_options=heif_track_options_alloc();
   if (track_options != (struct heif_track_options *) NULL)
     heif_track_options_set_timescale(track_options,timescale);
@@ -1830,6 +1834,7 @@ static MagickBooleanType WriteHEICSequenceImage(const ImageInfo *image_info,
   /*
     Finalize the sequence and write to output.
   */
+#if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,21,0)
   if (status != MagickFalse)
     {
       struct heif_writer
@@ -1846,6 +1851,7 @@ static MagickBooleanType WriteHEICSequenceImage(const ImageInfo *image_info,
           status=IsHEIFSuccess(image,&error,exception);
         }
     }
+#endif
   if (seq_options != (struct heif_sequence_encoding_options *) NULL)
     heif_sequence_encoding_options_release(seq_options);
   if (track != (heif_track *) NULL)
