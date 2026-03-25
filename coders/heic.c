@@ -1778,7 +1778,8 @@ static MagickBooleanType WriteHEICSequenceImage(const ImageInfo *image_info,
     */
     error=heif_image_create((int) image->columns,(int) image->rows,colorspace,
       chroma,&heif_image);
-    if (IsHEIFSuccess(image,&error,exception) == MagickFalse)
+    status=IsHEIFSuccess(image,&error,exception);
+    if (status == MagickFalse)
       break;
     profile=GetImageProfile(image,"icc");
     if (profile != (StringInfo *) NULL)
@@ -1814,11 +1815,9 @@ static MagickBooleanType WriteHEICSequenceImage(const ImageInfo *image_info,
       seq_options);
     heif_image_release(heif_image);
     heif_image=(struct heif_image *) NULL;
-    if (IsHEIFSuccess(image,&error,exception) == MagickFalse)
-      {
-        status=MagickFalse;
-        break;
-      }
+    status=IsHEIFSuccess(image,&error,exception);
+    if (status == MagickFalse)
+      break;
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
@@ -1979,8 +1978,6 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     */
     error=heif_image_create((int) image->columns,(int) image->rows,colorspace,
       chroma,&heif_image);
-    if (IsHEIFSuccess(image,&error,exception) == MagickFalse)
-      break;
     status=IsHEIFSuccess(image,&error,exception);
     if (status == MagickFalse)
       break;
@@ -2092,8 +2089,6 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     error=heif_context_encode_image(heif_context,heif_image,heif_encoder,
       options,(struct heif_image_handle **) NULL);
     heif_encoding_options_free(options);
-    if (IsHEIFSuccess(image,&error,exception) == MagickFalse)
-      break;
     status=IsHEIFSuccess(image,&error,exception);
     if (status == MagickFalse)
       break;
