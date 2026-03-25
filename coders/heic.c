@@ -725,6 +725,11 @@ static MagickBooleanType ReadHEICSequenceFrames(const ImageInfo *image_info,
     uint32_t
       duration;
 
+    if (AcquireMagickResource(ListLengthResource,scene+1) == MagickFalse)
+      {
+        status=MagickFalse;
+        break;
+      }
     heif_image=(struct heif_image *) NULL;
     error=heif_track_decode_next_image(track,&heif_image,heif_colorspace_RGB,
       chroma,decode_options);
@@ -1646,6 +1651,9 @@ static MagickBooleanType WriteHEICSequenceImage(const ImageInfo *image_info,
   struct heif_sequence_encoding_options
     *seq_options = (struct heif_sequence_encoding_options *) NULL;
 
+  struct heif_track_options
+    *track_options;
+
   uint32_t
     timescale;
 
@@ -1689,30 +1697,32 @@ static MagickBooleanType WriteHEICSequenceImage(const ImageInfo *image_info,
   /*
     Determine track timescale from the first frame.
   */
-  timescale=(uint32_t) image->ticks_per_second;
-  if (timescale == 0)
+  if (image->ticks_per_second <= 0)
     timescale=100;
+  else
+    timescale=(uint32_t) image->ticks_per_second;
   heif_context_set_sequence_timescale(heif_context,timescale);
   /*
     Create the visual sequence track.
   */
-  {
-    struct heif_track_options
-      *track_options;
-
-    seq_options=heif_sequence_encoding_options_alloc();
-    if (seq_options != (struct heif_sequence_encoding_options *) NULL)
-      seq_options->save_alpha_channel=1;
-    track_options=heif_track_options_alloc();
-    if (track_options != (struct heif_track_options *) NULL)
-      heif_track_options_set_timescale(track_options,timescale);
-    error=heif_context_add_visual_sequence_track(heif_context,
-      (uint16_t) image->columns,(uint16_t) image->rows,
-      heif_track_type_image_sequence,track_options,
-      seq_options,&track);
-    if (track_options != (struct heif_track_options *) NULL)
-      heif_track_options_release(track_options);
-  }
+  if ((image->columns > 65535) || (image->rows > 65535))
+    {
+      heif_encoder_release(heif_encoder);
+      heif_context_free(heif_context);
+      ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
+    }
+  seq_options=heif_sequence_encoding_options_alloc();
+  if (seq_options != (struct heif_sequence_encoding_options *) NULL)
+    seq_options->save_alpha_channel=1;
+  track_options=heif_track_options_alloc();
+  if (track_options != (struct heif_track_options *) NULL)
+    heif_track_options_set_timescale(track_options,timescale);
+  error=heif_context_add_visual_sequence_track(heif_context,
+    (uint16_t) image->columns,(uint16_t) image->rows,
+    heif_track_type_image_sequence,track_options,
+    seq_options,&track);
+  if (track_options != (struct heif_track_options *) NULL)
+    heif_track_options_release(track_options);
   if (IsHEIFSuccess(image,&error,exception) == MagickFalse)
     {
       if (seq_options != (struct heif_sequence_encoding_options *) NULL)
@@ -1793,7 +1803,10 @@ static MagickBooleanType WriteHEICSequenceImage(const ImageInfo *image_info,
     /*
       Set frame duration and encode into the track.
     */
-    duration=(uint32_t) image->delay;
+    if (image->delay > (size_t) UINT32_MAX)
+      duration=UINT32_MAX;
+    else
+      duration=(uint32_t) image->delay;
     if (duration == 0)
       duration=timescale/10;
     heif_image_set_duration(heif_image,duration);
@@ -1889,7 +1902,6 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     MagickFalse;
 #endif
 #if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,19,0)
-#if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,7,0)
   if ((encode_avif != MagickFalse) && (image_info->adjoin != MagickFalse) &&
       (GetNextImageInList(image) != (Image *) NULL))
     {
@@ -1897,7 +1909,6 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
       heif_context_free(heif_context);
       return(WriteHEICSequenceImage(image_info,image,exception));
     }
-#endif
 #endif
   do
   {
