@@ -711,6 +711,21 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
             " -pix_fmt \"%s\""," -pix_fmt '%s'",option);
           (void) ConcatenateMagickString(options,command,MagickPathExtent);
         }
+      if (LocaleNCompare(image_info->magick,"APNG",MagickPathExtent) == 0)
+        {
+          double
+            time_per_frame;
+
+          time_per_frame=1.0*clone_images->delay/MagickMax(1.0*
+            clone_images->ticks_per_second,1.0);
+          if (time_per_frame > 0.0)
+            {
+              (void) FormatLocaleString(command,MagickPathExtent,
+                " -filter:v \"setpts=(25*%.20g)*PTS\" -r 1/%.20g",
+                time_per_frame,time_per_frame);
+              (void) ConcatenateMagickString(options,command,MagickPathExtent);
+            }
+        }
       AcquireUniqueFilename(write_info->unique);
       (void) FormatLocaleString(command,MagickPathExtent,
         GetDelegateCommands(delegate_info),basename,intermediate_format,
