@@ -2529,8 +2529,6 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
   {
     case CMYKColorspace:
     {
-      if (image->ping != MagickFalse)
-        (void) SetImageStorageClass(image,DirectClass,exception);
       jpeg_info->input_components=4;
       jpeg_info->in_color_space=JCS_CMYK;
       break;

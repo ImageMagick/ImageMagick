@@ -1290,7 +1290,7 @@ MagickPrivate cl_mem GetAuthenticOpenCLBuffer(const Image *image,
   cache_info=(CacheInfo *) image->cache;
   if ((cache_info->type == UndefinedCache) || (cache_info->reference_count > 1))
     {
-      SyncImagePixelCache((Image *) image,exception);
+      (void) SyncImagePixelCache((Image *) image,exception);
       cache_info=(CacheInfo *) image->cache;
     }
   if ((cache_info->type != MemoryCache) || (cache_info->mapped != MagickFalse))
