@@ -34,9 +34,7 @@ extern MagickExport void
 
 extern ModuleExport size_t
   RegisterAAIImage(void),
-#if defined(MAGICKCORE_ZLIB_DELEGATE)
   RegisterAPNGImage(void),
-#endif
   RegisterARTImage(void),
   RegisterASHLARImage(void),
   RegisterAVSImage(void),
@@ -179,9 +177,7 @@ extern ModuleExport size_t
 
 extern ModuleExport void
   UnregisterAAIImage(void),
-#if defined(MAGICKCORE_ZLIB_DELEGATE)
   UnregisterAPNGImage(void),
-#endif
   UnregisterARTImage(void),
   UnregisterASHLARImage(void),
   UnregisterAVSImage(void),
