@@ -56,11 +56,14 @@
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/string_.h"
-#include <zlib.h>
+#if defined(MAGICKCORE_ZLIB_DELEGATE)
+#include "zlib.h"
+#endif
 
 /*
   Forward declarations.
 */
+#if defined(MAGICKCORE_ZLIB_DELEGATE)
 static MagickBooleanType
   WriteAPNGImage(const ImageInfo *,Image *,ExceptionInfo *);
 
@@ -924,6 +927,7 @@ static Image *ReadAPNGImage(const ImageInfo *image_info,
   data=(unsigned char *) RelinquishMagickMemory(data);
   return(GetFirstImageInList(images));
 }
+#endif /* MAGICKCORE_ZLIB_DELEGATE */
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -950,8 +954,10 @@ ModuleExport size_t RegisterAPNGImage(void)
     *entry;
 
   entry=AcquireMagickInfo("PNG","APNG","Animated Portable Network Graphics");
+#if defined(MAGICKCORE_ZLIB_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadAPNGImage;
   entry->encoder=(EncodeImageHandler *) WriteAPNGImage;
+#endif
   entry->mime_type=ConstantString("image/apng");
   entry->flags^=CoderBlobSupportFlag;
   entry->flags|=CoderDecoderSeekableStreamFlag;
@@ -983,6 +989,7 @@ ModuleExport void UnregisterAPNGImage(void)
   (void) UnregisterMagickInfo("APNG");
 }
 
+#if defined(MAGICKCORE_ZLIB_DELEGATE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1489,3 +1496,4 @@ static MagickBooleanType WriteAPNGImage(const ImageInfo *image_info,
   CleanupFramePixels(frame_pixels,frame_count);
   return(MagickTrue);
 }
+#endif /* MAGICKCORE_ZLIB_DELEGATE */
