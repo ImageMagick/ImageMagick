@@ -17,7 +17,9 @@
 #include "coders/coders-private.h"
 
 AddMagickCoder(AAI)
-AddMagickCoder(APNG)
+#if defined(MAGICKCORE_ZLIB_DELEGATE)
+  AddMagickCoder(APNG)
+#endif
 AddMagickCoder(ART)
 AddMagickCoder(ASHLAR)
 AddMagickCoder(AVS)

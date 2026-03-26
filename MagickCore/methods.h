@@ -878,7 +878,9 @@ extern "C" {
 #define ReferenceImage  PrependMagickMethod(ReferenceImage)
 #define ReferencePixelCache  PrependMagickMethod(ReferencePixelCache)
 #define RegisterAAIImage  PrependMagickMethod(RegisterAAIImage)
+#if defined(MAGICKCORE_ZLIB_DELEGATE)
 #define RegisterAPNGImage  PrependMagickMethod(RegisterAPNGImage)
+#endif
 #define RegisterARTImage  PrependMagickMethod(RegisterARTImage)
 #define RegisterASHLARImage  PrependMagickMethod(RegisterASHLARImage)
 #define RegisterAVSImage  PrependMagickMethod(RegisterAVSImage)
@@ -1264,7 +1266,9 @@ extern "C" {
 #define UnlockSemaphoreInfo  PrependMagickMethod(UnlockSemaphoreInfo)
 #define UnmapBlob  PrependMagickMethod(UnmapBlob)
 #define UnregisterAAIImage  PrependMagickMethod(UnregisterAAIImage)
+#if defined(MAGICKCORE_ZLIB_DELEGATE)
 #define UnregisterAPNGImage  PrependMagickMethod(UnregisterAPNGImage)
+#endif
 #define UnregisterARTImage  PrependMagickMethod(UnregisterARTImage)
 #define UnregisterASHLARImage  PrependMagickMethod(UnregisterASHLARImage)
 #define UnregisterAVSImage  PrependMagickMethod(UnregisterAVSImage)
