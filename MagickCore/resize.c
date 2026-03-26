@@ -2933,8 +2933,8 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   if (option == (char *) NULL)
     option="scale2x";
   scaling_method=Scale2X;
-  magnification=1;
-  width=1;
+  magnification=2;
+  width=3;
   switch (*option)
   {
     case 'e':
