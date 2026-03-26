@@ -1088,7 +1088,7 @@ static unsigned char *FilterAPNGRows(const unsigned char *rgba,int w,int h,
       for (x=0; x < stride; x++)
       {
         int
-          a,b_val,c_val,val;
+          a,b_val,c_val,val=0;
 
         a=(x >= 4) ? (int) row[x-4] : 0;
         b_val=prev ? (int) prev[x] : 0;
