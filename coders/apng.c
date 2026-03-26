@@ -13,8 +13,8 @@
 %              Read/Write Animated Portable Network Graphics                  %
 %                                                                             %
 %                              Software Design                                %
-%                              ezgif.com, 2026                                %
-%                                                                             %
+%                                    Madars                                   %
+%                                     2026                                    %
 %                                                                             %
 %  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
@@ -44,30 +44,18 @@
 #include "MagickCore/cache.h"
 #include "MagickCore/channel.h"
 #include "MagickCore/colorspace.h"
-#include "MagickCore/colorspace-private.h"
-#include "MagickCore/constitute.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
-#include "MagickCore/geometry.h"
 #include "MagickCore/image.h"
 #include "MagickCore/image-private.h"
-#include "MagickCore/layer.h"
 #include "MagickCore/list.h"
 #include "MagickCore/log.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/module.h"
-#include "MagickCore/monitor.h"
-#include "MagickCore/monitor-private.h"
-#include "MagickCore/option.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/quantum-private.h"
-#include "MagickCore/resource_.h"
-#include "MagickCore/static.h"
 #include "MagickCore/string_.h"
-#include "MagickCore/string-private.h"
-#include "MagickCore/transform.h"
-#include "MagickCore/utility.h"
 #include <zlib.h>
 
 /*
@@ -373,11 +361,6 @@ static inline void BlendOver(unsigned char *dst,const unsigned char *src)
   if (sa == 0)
     return;
   ra=sa*255+da*(255-sa);
-  if (ra == 0)
-    {
-      (void) memset(dst,0,4);
-      return;
-    }
   dst[0]=(unsigned char) ((src[0]*sa*255+dst[0]*da*(255-sa))/ra);
   dst[1]=(unsigned char) ((src[1]*sa*255+dst[1]*da*(255-sa))/ra);
   dst[2]=(unsigned char) ((src[2]*sa*255+dst[2]*da*(255-sa))/ra);
@@ -457,6 +440,7 @@ static Image *ReadAPNGImage(const ImageInfo *image_info,
     filesize,
     frame_count,
     frames_alloc,
+    num_plays,
     pal_size,
     trns_size;
 
@@ -527,6 +511,7 @@ static Image *ReadAPNGImage(const ImageInfo *image_info,
   found_actl=MagickFalse;
   first_fctl_before_idat=MagickFalse;
   seen_idat=MagickFalse;
+  num_plays=0;
   palette=(unsigned char *) NULL;
   pal_size=0;
   trns=(unsigned char *) NULL;
@@ -565,8 +550,11 @@ static Image *ReadAPNGImage(const ImageInfo *image_info,
           bit_depth=cd[8];
           color_type=cd[9];
         }
-      else if (memcmp(&data[pos+4],"acTL",4) == 0)
-        found_actl=MagickTrue;
+      else if ((memcmp(&data[pos+4],"acTL",4) == 0) && (clen >= 8))
+        {
+          found_actl=MagickTrue;
+          num_plays=(size_t) ReadAPNGInt(cd+4);
+        }
       else if (memcmp(&data[pos+4],"PLTE",4) == 0)
         {
           palette=(unsigned char *) cd;
@@ -666,12 +654,23 @@ static Image *ReadAPNGImage(const ImageInfo *image_info,
   */
   if ((found_actl == MagickFalse) || (frame_count == 0))
     {
+      Image
+        *png_image;
+
+      ImageInfo
+        *read_info;
+
+      /*
+        No acTL chunk found: this is a static PNG.  Fall back to the
+        regular PNG decoder so that files renamed to .apng still work.
+      */
       DestroyAPNGFrameInfo(frames,frame_count);
+      read_info=CloneImageInfo(image_info);
+      (void) CopyMagickString(read_info->magick,"PNG",MagickPathExtent);
+      png_image=BlobToImage(read_info,data,filesize,exception);
+      read_info=DestroyImageInfo(read_info);
       data=(unsigned char *) RelinquishMagickMemory(data);
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        CoderError,"Not an animated PNG (no acTL chunk)","`%s'",
-        image_info->filename);
-      return((Image *) NULL);
+      return(png_image);
     }
   if (bit_depth != 8)
     {
@@ -695,7 +694,7 @@ static Image *ReadAPNGImage(const ImageInfo *image_info,
   /*
     Per APNG spec: first frame dispose_op PREVIOUS -> treat as BACKGROUND.
   */
-  if ((frame_count > 0) && (frames[0].dispose_op == 2))
+  if (frames[0].dispose_op == 2)
     frames[0].dispose_op=1;
   /*
     Compose frames onto canvas.
@@ -889,6 +888,8 @@ static Image *ReadAPNGImage(const ImageInfo *image_info,
     frame_image->delay=(size_t) (delay_seconds*100.0+0.5);
     frame_image->scene=fi;
     frame_image->dispose=BackgroundDispose;
+    if (fi == 0)
+      frame_image->iterations=num_plays;
     (void) CopyMagickString(frame_image->filename,image_info->filename,
       MagickPathExtent);
     (void) CopyMagickString(frame_image->magick,"APNG",MagickPathExtent);
@@ -1093,7 +1094,6 @@ static unsigned char *FilterAPNGRows(const unsigned char *rgba,int w,int h,
           case 3: val=((int) row[x]-((a+b_val) >> 1)) & 0xff; break;
           case 4: val=((int) row[x]-(int) PaethPredictor(a,b_val,
             c_val)) & 0xff; break;
-          default: val=(int) row[x]; break;
         }
         sum+=(val < 128) ? val : 256-val;
       }
