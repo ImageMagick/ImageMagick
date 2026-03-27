@@ -1279,7 +1279,8 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
             image->endian=(*(char *) &lsb_first) == 1 ? LSBEndian : MSBEndian;
          }
     }
-  (void) SyncImagePixelCache(image,exception);
+  if (SyncImagePixelCache(image,exception) == MagickFalse)
+   return(MagickFalse);
   SyncImageProfiles(image);
   DisassociateImageStream(image);
   option=GetImageOption(image_info,"delegate:bimodal");
