@@ -1361,6 +1361,7 @@ static const OptionInfo
   CompressOptions[] =
   {
     { "Undefined", UndefinedCompression, UndefinedOptionFlag, MagickTrue },
+    { "All", FullCompression, UndefinedOptionFlag, MagickFalse },
     { "B44A", B44ACompression, UndefinedOptionFlag, MagickFalse },
     { "B44", B44Compression, UndefinedOptionFlag, MagickFalse },
     { "BZip", BZipCompression, UndefinedOptionFlag, MagickFalse },
