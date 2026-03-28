@@ -2839,7 +2839,7 @@ static signed short ReadDCMSignedShort(DCMStreamInfo *stream_info,Image *image)
 
 static MagickBooleanType ReadDCMPixels(Image *image,DCMInfo *info,
   DCMStreamInfo *stream_info,MagickBooleanType first_segment,
-  ExceptionInfo *exception)
+  EndianType endian,ExceptionInfo *exception)
 {
   int
     byte,
@@ -2947,9 +2947,12 @@ static MagickBooleanType ReadDCMPixels(Image *image,DCMInfo *info,
           index=(int) ConstrainColormapIndex(image,(ssize_t) index,exception);
           if (first_segment != MagickFalse)
             SetPixelIndex(image,(Quantum) index,q);
-          else
+          else if (endian == LSBEndian)
             SetPixelIndex(image,(Quantum) (((size_t) index) |
               (((size_t) GetPixelIndex(image,q)) << 8)),q);
+          else
+            SetPixelIndex(image,(Quantum) ((((size_t) index) << 8) |
+              (size_t) GetPixelIndex(image,q)),q);
           pixel.red=(unsigned int) image->colormap[index].red;
           pixel.green=(unsigned int) image->colormap[index].green;
           pixel.blue=(unsigned int) image->colormap[index].blue;
@@ -2987,7 +2990,7 @@ static MagickBooleanType ReadDCMPixels(Image *image,DCMInfo *info,
           SetPixelGreen(image,(Quantum) pixel.green,q);
           SetPixelBlue(image,(Quantum) pixel.blue,q);
         }
-      else
+      else if (endian == LSBEndian)
         {
           SetPixelRed(image,(Quantum) (((size_t) pixel.red) |
             (((size_t) GetPixelRed(image,q)) << 8)),q);
@@ -2995,6 +2998,15 @@ static MagickBooleanType ReadDCMPixels(Image *image,DCMInfo *info,
             (((size_t) GetPixelGreen(image,q)) << 8)),q);
           SetPixelBlue(image,(Quantum) (((size_t) pixel.blue) |
             (((size_t) GetPixelBlue(image,q)) << 8)),q);
+        }
+      else
+        {
+          SetPixelRed(image,(Quantum) ((((size_t) pixel.red) << 8) |
+            (size_t) GetPixelRed(image,q)),q);
+          SetPixelGreen(image,(Quantum) ((((size_t) pixel.green) << 8) |
+            (size_t) GetPixelGreen(image,q)),q);
+          SetPixelBlue(image,(Quantum) ((((size_t) pixel.blue) << 8) |
+            (size_t) GetPixelBlue(image,q)),q);
         }
       q+=(ptrdiff_t) GetPixelChannels(image);
     }
@@ -4261,6 +4273,9 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           const char
             *option;
 
+          EndianType
+            endian;
+
           /*
             Convert DCM Medical image to pixel packets.
           */
@@ -4287,18 +4302,22 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               info.rescale=MagickTrue;
             }
           option=GetImageOption(image_info,"dcm:rescale");
-          if (option != (char *) NULL)
-            info.rescale=IsStringTrue(option);
+          info.rescale=IsStringTrue(option);
           if ((info.window_center != 0) && (info.window_width == 0))
             info.window_width=info.window_center;
-          status=ReadDCMPixels(image,&info,stream_info,MagickTrue,exception);
+          endian=LSBEndian;
+          option=GetImageOption(image_info,"dcm:fix-byte-order");
+          if (IsStringTrue(option) != MagickFalse)
+            endian=MSBEndian;
+          status=ReadDCMPixels(image,&info,stream_info,MagickTrue,endian,
+            exception);
           if ((status != MagickFalse) && (stream_info->segment_count > 1))
             {
               if (stream_info->offset_count > 0)
                 (void) SeekBlob(image,(MagickOffsetType)
                   stream_info->offsets[0]+stream_info->segments[1],SEEK_SET);
               (void) ReadDCMPixels(image,&info,stream_info,MagickFalse,
-                exception);
+                endian,exception);
             }
         }
       if (IdentifyImageCoderGray(image,exception) != MagickFalse)
