@@ -2592,7 +2592,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               }
               case CopyAlphaCompositeOp:
               {
-                pixel=Si;
+                if (source_image->alpha_trait == UndefinedPixelTrait)
+                  pixel=Si;
+                else
+                  pixel=(double) QuantumRange*Sa;
                 break;
               }
               case BlurCompositeOp:
