@@ -1280,7 +1280,10 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
          }
     }
   if (SyncImagePixelCache(image,exception) == MagickFalse)
-   return(MagickFalse);
+    {
+      write_info=DestroyImageInfo(write_info);
+      return(MagickFalse);
+    }
   SyncImageProfiles(image);
   DisassociateImageStream(image);
   option=GetImageOption(image_info,"delegate:bimodal");
