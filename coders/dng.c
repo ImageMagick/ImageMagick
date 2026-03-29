@@ -332,7 +332,7 @@ static void SetLibRawParams(const ImageInfo *image_info,Image *image,
 }
 
 static void LibRawDataError(void *data,const char *magick_unused(file),
-#if LIBRAW_COMPILE_CHECK_VERSION(0,22)
+#if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,22)
   const INT64 offset)
 #else
   const int offset)
