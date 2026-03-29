@@ -1913,14 +1913,16 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
   root=(XMLTreeRoot *) NewXMLTreeTag((char *) NULL);
   length=strlen(xml);
   utf8=ConvertUTF16ToUTF8(xml,&length);
-  if (utf8 == (char *) NULL)
+  if ((utf8 == (char *) NULL) || (length == 0))
     {
+      if (utf8 != (char *) NULL)
+        utf8=DestroyString(utf8);
       (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
         "ParseError","UTF16 to UTF8 failed");
       return((XMLTreeInfo *) NULL);
     }
-  terminal=utf8[MagickMax(length-1,0)];
-  utf8[MagickMax(length-1,0)]='\0';
+  terminal=utf8[length-1];
+  utf8[length-1]='\0';
   p=utf8;
   while ((*p != '\0') && (*p != '<'))
     p++;
