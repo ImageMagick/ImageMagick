@@ -716,8 +716,8 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
           double
             time_per_frame;
 
-          time_per_frame=1.0*clone_images->delay/MagickMax(1.0*
-            clone_images->ticks_per_second,1.0);
+          time_per_frame=(double) clone_images->delay /
+            MagickMax((double) clone_images->ticks_per_second,1.0);
           if (time_per_frame > 0.0)
             {
               (void) FormatLocaleString(command,MagickPathExtent,
