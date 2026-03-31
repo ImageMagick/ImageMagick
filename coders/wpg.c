@@ -1114,7 +1114,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   if ((Header.FileId != 0x435057FF) || (Header.FileType != 0x16))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  if (Header.EncryptKey!=0)
+  if (Header.EncryptKey != 0)
     ThrowReaderException(CoderError,"EncryptedWPGImageFileNotSupported");
 
   image->colors=0;
