@@ -2818,16 +2818,16 @@ static Image *ReadOnePNGImage(MngReadInfo *mng_info,
 
         bkgd_scale = 1;
 
-        if (ping_file_depth == 1)
+        if (ping_bit_depth == 1)
            bkgd_scale = 255;
 
-        else if (ping_file_depth == 2)
+        else if (ping_bit_depth == 2)
            bkgd_scale = 85;
 
-        else if (ping_file_depth == 4)
+        else if (ping_bit_depth == 4)
            bkgd_scale = 17;
 
-        if (ping_file_depth <= 8)
+        if (ping_bit_depth <= 8)
            bkgd_scale *= 257;
 
         ping_background->red *= (png_uint_16) bkgd_scale;
