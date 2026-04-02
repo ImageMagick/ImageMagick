@@ -953,14 +953,21 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
     // if monochrome check fails but we are still under 16 colors, 
     // bits per pixel stays at 1
 
+    // also manually set to palette type ( setimagemonochrome sets to bilevel type )
+
     if ((image->storage_class == PseudoClass) &&
-        (SetImageMonochrome(image,exception) != MagickFalse ||
-         image->colors <= 16))
+        (SetImageMonochrome(image,exception) != MagickFalse))
       pcx_info.bits_per_pixel=1;
+    else if ((image->storage_class == PseudoClass) &&
+             (image->colors <= 16))
+      {
+        pcx_info.bits_per_pixel=1;
+        image->type=PaletteType;
+      }
     else
       if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
-        (void) TransformImageColorspace(image,sRGBColorspace,exception);
-    
+        (void) TransformImageColorspace(image,sRGBColorspace,exception);    
+
     pcx_info.left=0;
     pcx_info.top=0;
     pcx_info.right=(unsigned short) (image->columns-1);
