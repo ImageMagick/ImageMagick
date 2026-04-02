@@ -39,6 +39,7 @@
 /*
   Include declarations.
 */
+#include "MagickCore/magick-type.h"
 #include "MagickCore/studio.h"
 #include "MagickCore/attribute.h"
 #include "MagickCore/blob.h"
@@ -940,13 +941,26 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
     pcx_info.identifier=0x0a;
     pcx_info.version=5;
     pcx_info.encoding=image_info->compression == NoCompression ? 0 : 1;
-    pcx_info.bits_per_pixel=8;
+
+    // default to 8 bits per pixel
+
+    pcx_info.bits_per_pixel=8; 
+
+    // check if is monochrome by looking at pixels 
+    // adjust internal representation's metadata say this is 2-color if this passes
+    // then set pcx metadata to 1 bit per pixel ( correspondent to monochrome )
+
+    // if monochrome check fails but we are still under 16 colors, 
+    // bits per pixel stays at 1
+
     if ((image->storage_class == PseudoClass) &&
-        (SetImageMonochrome(image,exception) != MagickFalse))
+        (SetImageMonochrome(image,exception) != MagickFalse ||
+         image->colors <= 16))
       pcx_info.bits_per_pixel=1;
     else
       if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
         (void) TransformImageColorspace(image,sRGBColorspace,exception);
+    
     pcx_info.left=0;
     pcx_info.top=0;
     pcx_info.right=(unsigned short) (image->columns-1);
@@ -969,13 +983,25 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
       }
     }
     pcx_info.reserved=0;
+
+    // default to 1 plane ( indexed 8 bit per px )
+
     pcx_info.planes=1;
-    if ((image->storage_class == DirectClass) || (image->colors > 256))
+
+    // set to 4 planes if pseudo class and 16 color ( OUR CASE!!! )
+
+    if ((image->storage_class == PseudoClass) && (image->colors <= 16))
+      pcx_info.planes = 4;
+
+    // set to 3 or 4 planes if direct class and > 256 color ( rgb and rgba )
+
+    else if ((image->storage_class == DirectClass) || (image->colors > 256))
       {
         pcx_info.planes=3;
         if (image->alpha_trait != UndefinedPixelTrait)
           pcx_info.planes++;
       }
+
     length=(((size_t) image->columns*pcx_info.bits_per_pixel+7)/8);
     if ((image->columns > 65535UL) || (image->rows > 65535UL) ||
         (length > 65535UL))
