@@ -942,6 +942,10 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
     pcx_info.version=5;
     pcx_info.encoding=image_info->compression == NoCompression ? 0 : 1;
 
+// =======================================================================================
+    
+    // Set bits per pixel supporting 1 bit 4 plane
+
     // default to 8 bits per pixel
 
     pcx_info.bits_per_pixel=8; 
@@ -968,6 +972,8 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
       if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
         (void) TransformImageColorspace(image,sRGBColorspace,exception);    
 
+// =======================================================================================
+
     pcx_info.left=0;
     pcx_info.top=0;
     pcx_info.right=(unsigned short) (image->columns-1);
@@ -991,13 +997,19 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
     }
     pcx_info.reserved=0;
 
+// =======================================================================================
+
+    // Set plane count supporting 1 bit 4 plane 
+
     // default to 1 plane ( indexed 8 bit per px )
 
     pcx_info.planes=1;
 
-    // set to 4 planes if pseudo class and 16 color ( OUR CASE!!! )
+    // set to 4 planes if pseudo class and 16 color but not monochrome 
 
-    if ((image->storage_class == PseudoClass) && (image->colors <= 16))
+    if (image->storage_class == PseudoClass && 
+        image->colors <= 16 &&
+        image->type != BilevelType)
       pcx_info.planes = 4;
 
     // set to 3 or 4 planes if direct class and > 256 color ( rgb and rgba )
@@ -1008,6 +1020,8 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
         if (image->alpha_trait != UndefinedPixelTrait)
           pcx_info.planes++;
       }
+
+// =======================================================================================
 
     length=(((size_t) image->columns*pcx_info.bits_per_pixel+7)/8);
     if ((image->columns > 65535UL) || (image->rows > 65535UL) ||
@@ -1160,6 +1174,117 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
                   break;
               }
           }
+
+// =======================================================================================
+
+        // Convert PseudoClass image to a PCX 16-color image (4 planes,
+        // 1 bit per pixel per plane).
+
+        // NOTE:
+        // q              <--- write pointer into pixels buffer
+        // bytes_per_line <--- bytes per plane for a row of pixels 
+
+        else if (pcx_info.planes == 4)
+          {
+            Quantum const* r; // pointer into PIXEL ROW
+
+            unsigned char
+              packed_bits,  // amount of bits we've packed in this byte; max 8
+              byte;         // byte we've packed thus far
+
+            // go over all rows in the image
+
+            for (y = 0; y < (ssize_t)image->rows; y++)
+            {
+              // get current row
+              
+              p = GetVirtualPixels(image, 0, y, image->columns, 1, exception);
+              if (p == (const Quantum *) NULL)
+                break;
+
+              // pack all 4 planes for this row
+
+              for (i = 0; i < (ssize_t)pcx_info.planes; i++)
+              {
+                r = p;
+
+                packed_bits = 0; // 1 byte encodes 1 plane for 8 pixels 
+                byte = 0;
+
+                // move write pointer to current plane 
+
+                q = pixels + (i * (ssize_t)pcx_info.bytes_per_line);
+
+                // go over every pixel
+        
+                for (x = 0; x < (ssize_t)image->columns; x++)
+                {
+                  byte <<= 1; // shift to make room for next bit to pack 
+
+                  // extract the ith bit from the 4 bit index of this px ( lsb to msb )
+                  // pack it into byte
+                  
+                  if (((ssize_t)GetPixelIndex(image, r) & (1UL << i)) != 0){
+                    byte |= 0x01;
+                  }
+
+                  packed_bits++;
+
+                  // write to pixels buffer 8 bits ( pixels ) at a time
+                  // WARNING: is hardcoding byte size fine?
+                  
+                  if (packed_bits == 8){ 
+                      // write to pixels buffer
+                      
+                      *q = byte;
+
+                      // move write pointer to next byte
+                      q++; 
+
+                      // clean our kitchen
+                      packed_bits = 0;
+                      byte = 0;
+                  }
+
+                  // move to the next pixel  
+                  r += (ptrdiff_t)GetPixelChannels(image);
+                }
+
+                // if width is not multiple of 8, last byte will be incomplete
+                // justify its contents towards the msb and pad the lower bits with 0s
+                
+                // the bit count in the data rows will always be multiple of 8, 
+                // but if the width itself is not, the pcx decoder will know this 
+                // from the metadata and stop reading at actual width
+
+                if (packed_bits != 0)
+                {
+                  *q = byte << (8-packed_bits);
+                  q++;
+                }
+              }
+
+              // write the contents of the pixel buffer to the blob
+  
+              if (PCXWritePixels(&pcx_info, pixels, image) == MagickFalse)
+                break;
+
+              // if there is no previous image in sequence ( e.g. gif ),
+              // report how many rows into processing this image we are
+              
+              if (image->previous == (Image *)NULL)
+              {
+                status = SetImageProgress(image, 
+                    SaveImageTag, (MagickOffsetType) y, image->rows);
+
+                if (status == MagickFalse)
+                    break;
+              }
+            }
+          }
+
+// =======================================================================================
+
         else
           {
             unsigned char
