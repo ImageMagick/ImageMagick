@@ -3554,7 +3554,7 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
   while ((number_levels > 0) &&
          (((size_t) 1 << (number_levels-1)) >= MagickMin(image->columns,image->rows)))
     number_levels--;
-#if defined(MAGICKCORE_OPENCL_SUPPORT)
+#if defined(MAGICKCORE_OPENCL_SUPPORT) || defined(MAGICKCORE_METAL_SUPPORT)
   if (number_levels >= 5)
     {
        noise_image=AccelerateWaveletDenoiseImage(image,threshold,exception);

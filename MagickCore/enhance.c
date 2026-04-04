@@ -1427,7 +1427,7 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-#if defined(MAGICKCORE_OPENCL_SUPPORT)
+#if defined(MAGICKCORE_OPENCL_SUPPORT) || defined(MAGICKCORE_METAL_SUPPORT)
   if (AccelerateContrastImage(image,sharpen,exception) != MagickFalse)
     return(MagickTrue);
 #endif
@@ -2081,7 +2081,7 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-#if defined(MAGICKCORE_OPENCL_SUPPORT)
+#if defined(MAGICKCORE_OPENCL_SUPPORT) || defined(MAGICKCORE_METAL_SUPPORT)
   if (AccelerateEqualizeImage(image,exception) != MagickFalse)
     return(MagickTrue);
 #endif
@@ -2511,7 +2511,7 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
       if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
         return(MagickFalse);
     }
-#if defined(MAGICKCORE_OPENCL_SUPPORT)
+#if defined(MAGICKCORE_OPENCL_SUPPORT) || defined(MAGICKCORE_METAL_SUPPORT)
   if (AccelerateGrayscaleImage(image,method,exception) != MagickFalse)
     {
       image->intensity=method;
@@ -3799,7 +3799,7 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
   /*
     Modulate image.
   */
-#if defined(MAGICKCORE_OPENCL_SUPPORT)
+#if defined(MAGICKCORE_OPENCL_SUPPORT) || defined(MAGICKCORE_METAL_SUPPORT)
   if (AccelerateModulateImage(image,percent_brightness,percent_hue,
         percent_saturation,colorspace,exception) != MagickFalse)
     return(MagickTrue);

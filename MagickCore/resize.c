@@ -3818,7 +3818,7 @@ MagickExport Image *ResizeImage(const Image *image,const size_t columns,
           ((x_factor*y_factor) > 1.0))
         filter_type=MitchellFilter;
   resize_filter=AcquireResizeFilter(image,filter_type,MagickFalse,exception);
-#if defined(MAGICKCORE_OPENCL_SUPPORT)
+#if defined(MAGICKCORE_OPENCL_SUPPORT) || defined(MAGICKCORE_METAL_SUPPORT)
   resize_image=AccelerateResizeImage(image,columns,rows,resize_filter,
     exception);
   if (resize_image != (Image *) NULL)

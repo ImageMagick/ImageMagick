@@ -1089,7 +1089,7 @@ MagickExport MagickBooleanType FunctionImage(Image *image,
   assert(exception->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-#if defined(MAGICKCORE_OPENCL_SUPPORT)
+#if defined(MAGICKCORE_OPENCL_SUPPORT) || defined(MAGICKCORE_METAL_SUPPORT)
   if (AccelerateFunctionImage(image,function,number_parameters,parameters,
         exception) != MagickFalse)
     return(MagickTrue);
