@@ -86,3 +86,33 @@ Want more performance from ImageMagick? Try these options:
 * push large images to a solid-state drive, see [large image support](https://imagemagick.org/script/architecture.php#tera-pixel).
 
 If these options are prohibitive, you can reduce the quality of the image results. The default build is Q16 HDRI. If you disable [HDRI](https://imagemagick.org/script/high-dynamic-range.php), you use half the memory and instead of predominantly floating point operations, you use the typically more efficient integer operations. The tradeoff is reduced precision and you cannot process out of range pixel values (e.g. negative). If you build the Q8 non-HDRI version of ImageMagick, you again reduce the memory requirements in half-- and once again there is a tradeoff, even less precision and no out of range pixel values. For a Q8 non-HDRI build of ImageMagick, use these configure script options: **--with-quantum-depth=8 --disable-hdri**.
+
+## Metal Acceleration Support (macOS)
+
+This version of ImageMagick includes experimental support for GPU acceleration using Apple Metal.
+
+### Prerequisites
+*   macOS 10.13 or later (for Metal support).
+*   Xcode Command Line Tools installed.
+
+### Building with Metal Support
+To build ImageMagick with Metal support enabled, configure with the `--enable-metal` flag:
+
+```bash
+./configure --enable-metal
+make
+```
+
+### Usage
+Metal acceleration is enabled by default when built with `--enable-metal`. To verify that Metal is being used, you can enable debug logging:
+
+```bash
+MAGICK_DEBUG=Accelerate ./utilities/magick input.png -contrast output.png
+```
+
+Look for "Selected Metal device" in the output logs.
+
+### Current Status
+*   **Kernels**: Currently, only the `Contrast` operation is ported to Metal.
+*   **Performance**: Buffer-based data transfer is implemented (shared memory).
+*   **Limitations**: Support is experimental. Use `--disable-opencl` if encountering conflicts, although they should coexist.

@@ -280,6 +280,7 @@ AC_USE_SYSTEM_EXTENSIONS
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 AC_PROG_CC
 AC_PROG_CXX
+AC_PROG_OBJC
 AC_PROG_CPP
 LT_PATH_LD
 AC_SUBST([LD])
@@ -478,7 +479,7 @@ AC_SUBST([THREAD_LIBS])
 # Enable support for OpenMP
 if test "$have_threads" != 'yes'; then
   ac_cv_prog_c_openmp=unsupported
-fi  
+fi
 AC_OPENMP([C])
 CFLAGS="$OPENMP_CFLAGS $CFLAGS"
 MAGICK_PCFLAGS="$MAGICK_PCFLAGS $OPENMP_CFLAGS"
@@ -496,6 +497,44 @@ if test "X$no_cl" != 'Xyes'; then
   CPPFLAGS="$CL_CPPFLAGS $CPPFLAGS"
   MAGICK_FEATURES="OpenCL $MAGICK_FEATURES"
 fi
+
+# Enable support for Metal
+AC_ARG_ENABLE([metal],
+    [AS_HELP_STRING([--disable-metal],
+                    [disable Metal support])],
+    [enable_metal=$enableval],
+    [enable_metal='yes'])
+
+have_metal='no'
+if test "$enable_metal" = 'yes'; then
+    case "${host_os}" in
+        darwin* )
+            AC_LANG_PUSH([Objective C])
+            AC_MSG_CHECKING([for Metal framework])
+            # Check if we can link against Metal and Foundation
+            saved_LIBS="$LIBS"
+            LIBS="$LIBS -framework Metal -framework Foundation"
+            AC_LINK_IFELSE([AC_LANG_PROGRAM([#include <Metal/Metal.h>], [id<MTLDevice> device = MTLCreateSystemDefaultDevice();])],
+            [
+                have_metal='yes'
+                AC_MSG_RESULT([yes])
+                AC_DEFINE([METAL_SUPPORT],[1],[Define if you have Metal framework.])
+                MAGICK_FEATURES="Metal $MAGICK_FEATURES"
+                MAGICK_METAL_LIBS="-framework Metal -framework Foundation"
+            ],
+            [
+                AC_MSG_RESULT([no])
+                LIBS="$saved_LIBS" # Restore LIBS if check failed
+            ])
+            AC_LANG_POP([Objective C])
+            ;;
+        * )
+            # Metal is only supported on macOS/Darwin
+            ;;
+    esac
+fi
+AC_SUBST([MAGICK_METAL_LIBS])
+AM_CONDITIONAL([MAGICKCORE_METAL_SUPPORT],[test "$have_metal" = 'yes'])
 
 ########
 #
@@ -3514,7 +3553,7 @@ else
       break 1
     fi
   done
-fi 
+fi
 if test "${urw_base35_font_dir}x" != 'x'; then
   type_include_files="${type_include_files} "'<include file="type-urw-base35.xml" />'
   AC_MSG_RESULT([$urw_base35_font_dir])
@@ -3535,7 +3574,7 @@ else
       break 1
     fi
   done
-fi 
+fi
 if test "${urw_base35_type1_font_dir}x" != 'x'; then
   type_include_files="${type_include_files} "'<include file="type-urw-base35-type1.xml" />'
   AC_MSG_RESULT([$urw_base35_type1_font_dir])

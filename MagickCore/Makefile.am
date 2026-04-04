@@ -42,10 +42,10 @@ MAGICKCORE_LIBS = MagickCore/libMagickCore-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SU
 
 if WITH_MODULES
 MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES = $(MAGICKCORE_BASE_SRCS) $(MAGICKCORE_PLATFORM_SRCS)
-MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LIBADD = $(MAGICK_DEP_LIBS)
+MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LIBADD = $(MAGICK_DEP_LIBS) $(MAGICK_METAL_LIBS)
 else
 MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES = $(MAGICKCORE_BASE_SRCS) $(MAGICKCORE_PLATFORM_SRCS) $(MAGICKCORE_CODER_SRCS) $(MAGICKCORE_FILTER_SRCS)
-MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LIBADD = $(MAGICK_DEP_LIBS)
+MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LIBADD = $(MAGICK_DEP_LIBS) $(MAGICK_METAL_LIBS)
 endif # WITH_MODULES
 
 if WIN32_NATIVE_BUILD
@@ -208,12 +208,13 @@ MAGICKCORE_BASE_SRCS = \
   MagickCore/morphology.h \
   MagickCore/morphology-private.h \
   MagickCore/mutex.h \
-  MagickCore/nt-base.h \
   MagickCore/nt-base-private.h \
   MagickCore/nt-feature.h \
   MagickCore/opencl.c \
   MagickCore/opencl.h \
   MagickCore/opencl-private.h \
+  MagickCore/metal.m \
+  MagickCore/accelerate-metal.c \
   MagickCore/option.c \
   MagickCore/option.h \
   MagickCore/option-private.h \
@@ -470,6 +471,8 @@ MAGICKCORE_NOINST_HDRS = \
   MagickCore/nt-base.h \
   MagickCore/nt-feature.h \
   MagickCore/opencl-private.h \
+  MagickCore/metal-private.h \
+  MagickCore/accelerate-kernels-metal.h \
   MagickCore/option-private.h \
   MagickCore/pixel-private.h \
   MagickCore/policy-private.h \
