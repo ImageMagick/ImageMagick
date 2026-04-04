@@ -516,6 +516,8 @@ jobs:
 
     permissions:
       contents: write
+      id-token: write
+      attestations: write
 
     steps:
       - name: Clone ImageMagick
@@ -529,11 +531,31 @@ jobs:
           path: artifacts
           merge-multiple: true
 
+      - name: Generate SLSA provenance
+        id: attest
+        uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26 #v4.1.0
+        with:
+          subject-path: |
+            ${{github.workspace}}/artifacts/*.7z
+            ${{github.workspace}}/artifacts/*.exe
+            ${{github.workspace}}/artifacts/*.msixbundle
+            ${{github.workspace}}/artifacts/*.AppImage
+
+      - name: Save provenance as multiple.intoto.jsonl
+        run: |
+          cp "${{steps.attest.outputs.bundle-path}}" "${{github.workspace}}/multiple.intoto.jsonl"
+
       - name: Publish release
         env:
           GH_TOKEN: ${{github.token}}
           VERSION: ${{needs.version.outputs.version}}
-        run: gh release create $VERSION --title "$VERSION" ${{github.workspace}}/artifacts/*.7z ${{github.workspace}}/artifacts/*.exe ${{github.workspace}}/artifacts/*.msixbundle ${{github.workspace}}/artifacts/*.AppImage
+        run: |
+          gh release create $VERSION --title "$VERSION" \
+            ${{github.workspace}}/artifacts/*.7z \
+            ${{github.workspace}}/artifacts/*.exe \
+            ${{github.workspace}}/artifacts/*.msixbundle \
+            ${{github.workspace}}/artifacts/*.AppImage \
+            ${{github.workspace}}/multiple.intoto.jsonl
 
   release_msix:
     name: Publish Msix ${{matrix.quantum}}${{matrix.hdri_flag}}
