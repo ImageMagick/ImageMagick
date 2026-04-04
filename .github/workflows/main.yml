@@ -131,6 +131,37 @@ jobs:
         run: |
           sudo make install
 
+  build_macos_metal:
+    name: Build MacOS arm64 (Metal)
+    runs-on: macos-14
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Install dependencies
+        run: |
+          set -e
+          export HOMEBREW_NO_AUTO_UPDATE=1
+          brew install automake libtool
+
+      - name: Configure ImageMagick
+        run: |
+          export CFLAGS="-Wall -Wextra -Werror -Wdeclaration-after-statement -Wno-deprecated-declarations -Wno-incompatible-library-redeclaration -Wno-incompatible-pointer-types-discards-qualifiers -Wno-missing-declarations -Wno-unused-function -Wno-unused-parameter"
+          autoreconf -fiv
+          ./configure --with-quantum-depth=16 --enable-hdri=no --without-perl --enable-metal
+
+      - name: Build ImageMagick
+        run: |
+          make
+
+      - name: Test ImageMagick
+        run: |
+          make check || exit_code=$?
+          if [ "$exit_code" != "0" ] ; then cat ./test-suite.log ; fi
+          exit $exit_code
+
   build_windows:
     name: Build Windows ${{matrix.architecture}}
     runs-on: windows-2022
