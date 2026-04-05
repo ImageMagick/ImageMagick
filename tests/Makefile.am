@@ -57,6 +57,7 @@ TESTS_TESTS = \
   tests/wandtest.tap
 
 TESTS_EXTRA_DIST = \
+  tests/cli-pcx-4bit.tap \
   tests/common.shi \
   tests/rose.pnm \
   tests/input_svg_gradient_transform.svg \
