@@ -48,6 +48,7 @@
 #include "MagickCore/artifact.h"
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
+#include "MagickCore/channel.h"
 #include "MagickCore/client.h"
 #include "MagickCore/colorspace-private.h"
 #include "MagickCore/property.h"
@@ -1735,6 +1736,35 @@ static MagickBooleanType WriteHEICSequenceImage(const ImageInfo *image_info,
       heif_context_free(heif_context);
       return(MagickFalse);
     }
+  {
+    Image
+      *next;
+
+    MagickBooleanType
+      has_alpha;
+
+    size_t
+      depth;
+
+    depth=image->depth;
+    has_alpha=MagickFalse;
+    for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
+    {
+      if ((next->alpha_trait & BlendPixelTrait) != 0)
+        has_alpha=MagickTrue;
+      if (next->depth > depth)
+        depth=next->depth;
+    }
+    for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
+    {
+      next->depth=depth;
+      if (has_alpha != MagickFalse)
+        {
+          if ((next->alpha_trait & BlendPixelTrait) == 0)
+            (void) SetImageAlphaChannel(next,TransparentAlphaChannel,exception);
+        }
+    }
+  }
   scene=0;
   status=MagickTrue;
   do
@@ -1918,11 +1948,13 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
       heif_context_free(heif_context);
 
       coalesce_image=(Image *) NULL;
-      next=GetNextImageInList(image);
+      next=image;
       while(next != (Image *) NULL)
       {
         if ((next->rows != image->rows) || (next->columns != image->columns) ||
-            (next->page.x != image->page.x) || (next->page.y != image->page.y))
+            (next->page.x != image->page.x) || (next->page.y != image->page.y) ||
+            (next->dispose != UndefinedDispose) ||
+            ((next->alpha_trait & BlendPixelTrait) != 0))
           {
             coalesce_image=CoalesceImages(image,exception);
             break;
