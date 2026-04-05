@@ -39,7 +39,6 @@
 /*
   Include declarations.
 */
-#include "MagickCore/magick-type.h"
 #include "MagickCore/studio.h"
 #include "MagickCore/attribute.h"
 #include "MagickCore/blob.h"
