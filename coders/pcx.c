@@ -1150,10 +1150,6 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
               byte,
               packed_bits;
 
-            /*
-              Convert PseudoClass image to a PCX 16-color image (4 planes,
-              1 bit per pixel per plane).
-            */
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               p=GetVirtualPixels(image,0,y,image->columns,1,exception);
