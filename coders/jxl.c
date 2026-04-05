@@ -1016,7 +1016,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       (GetNextImageInList(image) != (Image *) NULL))
     {
       Image
-        *next;
+        *frame;
 
       MagickBooleanType
         has_alpha;
@@ -1026,23 +1026,23 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
 
       depth=image->depth;
       has_alpha=MagickFalse;
-      for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
+      for (frame=image; frame != (Image *) NULL; frame=GetNextImageInList(frame))
       {
-        if ((next->alpha_trait & BlendPixelTrait) != 0)
+        if ((frame->alpha_trait & BlendPixelTrait) != 0)
           has_alpha=MagickTrue;
-        if (next->depth > depth)
-          depth=next->depth;
+        if (frame->depth > depth)
+          depth=frame->depth;
       }
-      for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
+      for (frame=image; frame != (Image *) NULL; frame=GetNextImageInList(frame))
       {
-        next->depth=depth;
+        frame->depth=depth;
         if (has_alpha != MagickFalse)
           {
-            if ((next->alpha_trait & BlendPixelTrait) == 0)
-              (void) SetImageAlphaChannel(next,TransparentAlphaChannel,exception);
+            if ((frame->alpha_trait & BlendPixelTrait) == 0)
+              (void) SetImageAlphaChannel(frame,TransparentAlphaChannel,exception);
           }
-        if (next->colorspace != image->colorspace)
-          (void) TransformImageColorspace(next,image->colorspace,exception);
+        if (frame->colorspace != image->colorspace)
+          (void) TransformImageColorspace(frame,image->colorspace,exception);
       }
     }
   /*
