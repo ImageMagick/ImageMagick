@@ -48,6 +48,7 @@
 #include "MagickCore/artifact.h"
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
+#include "MagickCore/channel.h"
 #include "MagickCore/client.h"
 #include "MagickCore/colorspace-private.h"
 #include "MagickCore/property.h"
@@ -1735,6 +1736,35 @@ static MagickBooleanType WriteHEICSequenceImage(const ImageInfo *image_info,
       heif_context_free(heif_context);
       return(MagickFalse);
     }
+  {
+    Image
+      *frame;
+
+    MagickBooleanType
+      has_alpha;
+
+    size_t
+      depth;
+
+    depth=image->depth;
+    has_alpha=MagickFalse;
+    for (frame=image; frame != (Image *) NULL; frame=GetNextImageInList(frame))
+    {
+      if ((frame->alpha_trait & BlendPixelTrait) != 0)
+        has_alpha=MagickTrue;
+      if (frame->depth > depth)
+        depth=frame->depth;
+    }
+    for (frame=image; frame != (Image *) NULL; frame=GetNextImageInList(frame))
+    {
+      frame->depth=depth;
+      if (has_alpha != MagickFalse)
+        {
+          if ((frame->alpha_trait & BlendPixelTrait) == 0)
+            (void) SetImageAlphaChannel(frame,TransparentAlphaChannel,exception);
+        }
+    }
+  }
   scene=0;
   status=MagickTrue;
   do
@@ -1912,22 +1942,24 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     {
       Image
         *coalesce_image,
-        *next;
+        *frame;
 
       (void) CloseBlob(image);
       heif_context_free(heif_context);
 
       coalesce_image=(Image *) NULL;
-      next=GetNextImageInList(image);
-      while(next != (Image *) NULL)
+      frame=image;
+      while (frame != (Image *) NULL)
       {
-        if ((next->rows != image->rows) || (next->columns != image->columns) ||
-            (next->page.x != image->page.x) || (next->page.y != image->page.y))
+        if ((frame->rows != image->rows) || (frame->columns != image->columns) ||
+            (frame->page.x != image->page.x) || (frame->page.y != image->page.y) ||
+            (frame->dispose != UndefinedDispose) ||
+            ((frame->alpha_trait & BlendPixelTrait) != 0))
           {
             coalesce_image=CoalesceImages(image,exception);
             break;
           }
-        next=GetNextImageInList(next);
+        frame=GetNextImageInList(frame);
       }
       if (coalesce_image != (Image *) NULL)
         {
