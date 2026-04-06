@@ -3676,7 +3676,7 @@ static MagickBooleanType WritePSDLayersInternal(Image *image,
 
   Image
     *base_image,
-    *next_image;
+    *frame;
 
   MagickBooleanType
     status;
@@ -3705,10 +3705,10 @@ static MagickBooleanType WritePSDLayersInternal(Image *image,
   size_offset=TellBlob(image);
   (void) SetPSDSize(psd_info,image,0);
   layer_count=0;
-  for (next_image=base_image; next_image != NULL; )
+  for (frame=base_image; frame != NULL; )
   {
     layer_count++;
-    next_image=GetNextImageInList(next_image);
+    frame=GetNextImageInList(frame);
   }
   if (image->alpha_trait != UndefinedPixelTrait)
     size+=(size_t) WriteBlobShort(image,-(unsigned short) layer_count);
@@ -3719,7 +3719,7 @@ static MagickBooleanType WritePSDLayersInternal(Image *image,
   if (layer_size_offsets == (MagickOffsetType *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   layer_index=0;
-  for (next_image=base_image; next_image != NULL; )
+  for (frame=base_image; frame != NULL; )
   {
     Image
       *mask;
@@ -3732,26 +3732,26 @@ static MagickBooleanType WritePSDLayersInternal(Image *image,
       total_channels;
 
     mask=(Image *) NULL;
-    property=GetImageArtifact(next_image,"psd:opacity-mask");
+    property=GetImageArtifact(frame,"psd:opacity-mask");
     default_color=0;
     if (property != (const char *) NULL)
       {
         mask=(Image *) GetImageRegistry(ImageRegistryType,property,exception);
         default_color=(unsigned char) (strlen(property) == 9 ? 255 : 0);
       }
-    size+=(size_t) WriteBlobSignedLong(image,(signed int) next_image->page.y);
-    size+=(size_t) WriteBlobSignedLong(image,(signed int) next_image->page.x);
+    size+=(size_t) WriteBlobSignedLong(image,(signed int) frame->page.y);
+    size+=(size_t) WriteBlobSignedLong(image,(signed int) frame->page.x);
     size+=(size_t) WriteBlobSignedLong(image,(signed int) ((ssize_t)
-      next_image->page.y+(ssize_t) next_image->rows));
+      frame->page.y+(ssize_t) frame->rows));
     size+=(size_t) WriteBlobSignedLong(image,(signed int) ((ssize_t)
-      next_image->page.x+(ssize_t) next_image->columns));
+      frame->page.x+(ssize_t) frame->columns));
     channels=1;
-    if ((next_image->storage_class != PseudoClass) &&
-        (IsImageGray(next_image) == MagickFalse))
-      channels=(unsigned short) (next_image->colorspace == CMYKColorspace ? 4 :
+    if ((frame->storage_class != PseudoClass) &&
+        (IsImageGray(frame) == MagickFalse))
+      channels=(unsigned short) (frame->colorspace == CMYKColorspace ? 4 :
         3);
     total_channels=channels;
-    if (next_image->alpha_trait != UndefinedPixelTrait)
+    if (frame->alpha_trait != UndefinedPixelTrait)
       total_channels++;
     if (mask != (Image *) NULL)
       total_channels++;
@@ -3759,15 +3759,15 @@ static MagickBooleanType WritePSDLayersInternal(Image *image,
     layer_size_offsets[layer_index++]=TellBlob(image);
     for (i=0; i < (ssize_t) channels; i++)
       size+=(size_t) WriteChannelSize(psd_info,image,(signed short) i);
-    if (next_image->alpha_trait != UndefinedPixelTrait)
+    if (frame->alpha_trait != UndefinedPixelTrait)
       size+=(size_t) WriteChannelSize(psd_info,image,-1);
     if (mask != (Image *) NULL)
       size+=(size_t) WriteChannelSize(psd_info,image,-2);
     size+=(size_t) WriteBlobString(image,image->endian == LSBEndian ? "MIB8" :
       "8BIM");
     size+=(size_t) WriteBlobString(image,
-      CompositeOperatorToPSDBlendMode(next_image));
-    property=GetImageArtifact(next_image,"psd:layer.opacity");
+      CompositeOperatorToPSDBlendMode(frame));
+    property=GetImageArtifact(frame,"psd:layer.opacity");
     if (property != (const char *) NULL)
       {
         Quantum
@@ -3775,16 +3775,16 @@ static MagickBooleanType WritePSDLayersInternal(Image *image,
 
         opacity=(Quantum) StringToInteger(property);
         size+=(size_t) WriteBlobByte(image,ScaleQuantumToChar(opacity));
-        (void) ApplyPSDLayerOpacity(next_image,opacity,MagickTrue,exception);
+        (void) ApplyPSDLayerOpacity(frame,opacity,MagickTrue,exception);
       }
     else
       size+=(size_t) WriteBlobByte(image,255);
     size+=(size_t) WriteBlobByte(image,0);
-    size+=(size_t) WriteBlobByte(image,(unsigned char) (next_image->compose ==
+    size+=(size_t) WriteBlobByte(image,(unsigned char) (frame->compose ==
       NoCompositeOp ? 0 : 1)); /* bit 1 = visible; */
     size+=(size_t) WriteBlobByte(image,0);
-    info=GetAdditionalInformation(image_info,next_image,exception);
-    property=(const char *) GetImageProperty(next_image,"label",exception);
+    info=GetAdditionalInformation(image_info,frame,exception);
+    property=(const char *) GetImageProperty(frame,"label",exception);
     if (property == (const char *) NULL)
       {
         (void) FormatLocaleString(layer_name,MagickPathExtent,"L%.20g",
@@ -3805,7 +3805,7 @@ static MagickBooleanType WritePSDLayersInternal(Image *image,
     else
       {
         if (mask->compose != NoCompositeOp)
-          (void) ApplyPSDOpacityMask(next_image,mask,ScaleCharToQuantum(
+          (void) ApplyPSDOpacityMask(frame,mask,ScaleCharToQuantum(
             default_color),MagickTrue,exception);
         mask->page.y+=image->page.y;
         mask->page.x+=image->page.x;
@@ -3826,16 +3826,16 @@ static MagickBooleanType WritePSDLayersInternal(Image *image,
     if (info != (const StringInfo *) NULL)
       size+=(size_t) WriteBlob(image,GetStringInfoLength(info),
         GetStringInfoDatum(info));
-    next_image=GetNextImageInList(next_image);
+    frame=GetNextImageInList(frame);
   }
   /*
     Now the image data!
   */
-  next_image=base_image;
+  frame=base_image;
   layer_index=0;
-  while (next_image != NULL)
+  while (frame != NULL)
   {
-    length=WritePSDChannels(psd_info,image_info,image,next_image,
+    length=WritePSDChannels(psd_info,image_info,image,frame,
       layer_size_offsets[layer_index++],MagickTrue,exception);
     if (length == 0)
       {
@@ -3843,7 +3843,7 @@ static MagickBooleanType WritePSDLayersInternal(Image *image,
         break;
       }
     size+=length;
-    next_image=GetNextImageInList(next_image);
+    frame=GetNextImageInList(frame);
   }
   /*
     Write the total size
@@ -3860,13 +3860,13 @@ static MagickBooleanType WritePSDLayersInternal(Image *image,
   /*
     Remove the opacity mask from the registry
   */
-  next_image=base_image;
-  while (next_image != (Image *) NULL)
+  frame=base_image;
+  while (frame != (Image *) NULL)
   {
-    property=GetImageArtifact(next_image,"psd:opacity-mask");
+    property=GetImageArtifact(frame,"psd:opacity-mask");
     if (property != (const char *) NULL)
       (void) DeleteImageRegistry(property);
-    next_image=GetNextImageInList(next_image);
+    frame=GetNextImageInList(frame);
   }
   return(status);
 }
