@@ -933,13 +933,13 @@ static inline float JXLGetDistance(float quality)
 }
 
 static inline MagickBooleanType JXLSameFrameType(const Image *image,
-  const Image *next)
+  const Image *frame)
 {
-  if (image->depth != next->depth)
+  if (image->depth != frame->depth)
     return(MagickFalse);
-  if (image->alpha_trait != next->alpha_trait)
+  if (image->alpha_trait != frame->alpha_trait)
     return(MagickFalse);
-  if (image->colorspace != next->colorspace)
+  if (image->colorspace != frame->colorspace)
     return(MagickFalse);
   return(MagickTrue);
 }
