@@ -1039,7 +1039,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
         if (has_alpha != MagickFalse)
           {
             if ((frame->alpha_trait & BlendPixelTrait) == 0)
-              (void) SetImageAlphaChannel(frame,TransparentAlphaChannel,exception);
+              (void) SetImageAlphaChannel(frame,OpaqueAlphaChannel,exception);
           }
         if (frame->colorspace != image->colorspace)
           (void) TransformImageColorspace(frame,image->colorspace,exception);
