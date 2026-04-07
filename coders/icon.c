@@ -65,6 +65,7 @@
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
 #include "MagickCore/module.h"
 
 /*
@@ -985,6 +986,19 @@ static Image *AutoResizeImage(const Image *image,const char *option,
   return(images);
 }
 
+static inline MagickBooleanType ShouldCompressAsPng(const Image* image,
+  const size_t png_size)
+{
+  if ((png_size != 0) && (image->columns >= png_size) &&
+      (image->rows >= png_size))
+    return(MagickTrue);
+  if ((image->columns > 256L) && (image->rows > 256L) &&
+      ((image->compression == UndefinedCompression) ||
+       (image->compression == ZipCompression)))
+    return(MagickTrue);
+  return(MagickFalse);
+}
+
 static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
@@ -1019,6 +1033,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
   size_t
     bytes_per_line,
     number_scenes,
+    png_size,
     scanline_pad;
 
   ssize_t
@@ -1091,6 +1106,10 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
   directory=AcquireIconDirectory(number_scenes);
   if (directory == (IconDirectory *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+  png_size=0;
+  option=GetImageOption(image_info,"icon:png-compression-size");
+  if (option != (const char*)NULL)
+    png_size=(size_t) StringToDouble(option,(char**) NULL);
   do
   {
     size_t
@@ -1100,9 +1119,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
       bits_per_pixel,
       planes;
 
-    if ((frame->columns > 256L) && (frame->rows > 256L) &&
-        ((frame->compression == UndefinedCompression) ||
-        (frame->compression == ZipCompression)))
+    if (ShouldCompressAsPng(frame,png_size) != MagickFalse)
       {
         Image
           *write_image;
