@@ -912,8 +912,8 @@ ModuleExport void UnregisterICONImage(void)
 %  version 4.
 %
 %  It encodes any subimage as a compressed PNG image ("BI_PNG)", only when its
-%  dimensions are 256x256 and image->compression is undefined or is defined as
-%  ZipCompression.
+%  dimensions are larger than 256x256 and image->compression is undefined or
+%  is defined as ZipCompression.
 %
 %  The format of the WriteICONImage method is:
 %
