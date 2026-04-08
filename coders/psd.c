@@ -3059,9 +3059,10 @@ static size_t WriteCompressionStart(const PSDInfo *psd_info,Image *image,
 
 static size_t WritePSDChannel(const PSDInfo *psd_info,
   const ImageInfo *image_info,Image *image,Image *layer,
-  const QuantumType quantum_type, unsigned char *compact_pixels,
-  MagickOffsetType size_offset,const MagickBooleanType separate,
-  const CompressionType compression,ExceptionInfo *exception)
+  const QuantumType quantum_type,const ssize_t meta_channel,
+  unsigned char *compact_pixels,MagickOffsetType size_offset,
+  const MagickBooleanType separate,const CompressionType compression,
+  ExceptionInfo *exception)
 {
   const Quantum
     *p;
@@ -3112,6 +3113,8 @@ static size_t WritePSDChannel(const PSDInfo *psd_info,
   quantum_info=AcquireQuantumInfo(image_info,layer);
   if (quantum_info == (QuantumInfo *) NULL)
     return(0);
+  if (quantum_type == MultispectralQuantum)
+    (void) SetQuantumMetaChannel(layer,quantum_info,meta_channel);
   pixels=(unsigned char *) GetQuantumPixels(quantum_info);
 #ifdef MAGICKCORE_ZLIB_DELEGATE
   if (compression == ZipCompression)
@@ -3253,7 +3256,10 @@ static size_t WritePSDChannels(const PSDInfo *psd_info,
             channels=(size_t) (layer->colorspace == CMYKColorspace ? 4 :
               3);
           if (layer->alpha_trait != UndefinedPixelTrait)
-            channels++;
+            {
+              channels++;
+              channels+=layer->number_meta_channels;
+            }
         }
       rows_offset=TellBlob(image)+2;
       total_length+=WriteCompressionStart(psd_info,image,layer,compression,
@@ -3265,7 +3271,7 @@ static size_t WritePSDChannels(const PSDInfo *psd_info,
       (IsImageGray(layer) == MagickFalse))
     {
       length=WritePSDChannel(psd_info,image_info,image,layer,
-        IndexQuantum,compact_pixels,rows_offset,separate,compression,
+        IndexQuantum,-1,compact_pixels,rows_offset,separate,compression,
         exception);
       if (separate != MagickFalse)
         size_offset+=WritePSDSize(psd_info,image,length,size_offset)+2;
@@ -3278,7 +3284,7 @@ static size_t WritePSDChannels(const PSDInfo *psd_info,
       if (IsImageGray(layer) != MagickFalse)
         {
           length=WritePSDChannel(psd_info,image_info,image,layer,
-            GrayQuantum,compact_pixels,rows_offset,separate,compression,
+            GrayQuantum,-1,compact_pixels,rows_offset,separate,compression,
             exception);
           if (separate != MagickFalse)
             size_offset+=WritePSDSize(psd_info,image,length,size_offset)+2;
@@ -3292,7 +3298,7 @@ static size_t WritePSDChannels(const PSDInfo *psd_info,
             (void) NegateCMYK(layer,exception);
 
           length=WritePSDChannel(psd_info,image_info,image,layer,
-            RedQuantum,compact_pixels,rows_offset,separate,compression,
+            RedQuantum,-1,compact_pixels,rows_offset,separate,compression,
             exception);
           if (separate != MagickFalse)
             size_offset+=WritePSDSize(psd_info,image,length,size_offset)+2;
@@ -3301,7 +3307,7 @@ static size_t WritePSDChannels(const PSDInfo *psd_info,
           total_length+=length;
 
           length=WritePSDChannel(psd_info,image_info,image,layer,
-            GreenQuantum,compact_pixels,rows_offset,separate,compression,
+            GreenQuantum,-1,compact_pixels,rows_offset,separate,compression,
             exception);
           if (separate != MagickFalse)
             size_offset+=WritePSDSize(psd_info,image,length,size_offset)+2;
@@ -3310,7 +3316,7 @@ static size_t WritePSDChannels(const PSDInfo *psd_info,
           total_length+=length;
 
           length=WritePSDChannel(psd_info,image_info,image,layer,
-            BlueQuantum,compact_pixels,rows_offset,separate,compression,
+            BlueQuantum,-1,compact_pixels,rows_offset,separate,compression,
             exception);
           if (separate != MagickFalse)
             size_offset+=WritePSDSize(psd_info,image,length,size_offset)+2;
@@ -3321,8 +3327,8 @@ static size_t WritePSDChannels(const PSDInfo *psd_info,
           if (layer->colorspace == CMYKColorspace)
             {
               length=WritePSDChannel(psd_info,image_info,image,layer,
-                BlackQuantum,compact_pixels,rows_offset,separate,compression,
-                exception);
+                BlackQuantum,-1,compact_pixels,rows_offset,separate,
+                compression,exception);
               if (separate != MagickFalse)
                 size_offset+=WritePSDSize(psd_info,image,length,size_offset)+2;
               else
@@ -3332,14 +3338,29 @@ static size_t WritePSDChannels(const PSDInfo *psd_info,
         }
       if (layer->alpha_trait != UndefinedPixelTrait)
         {
+          ssize_t
+            i;
+
           length=WritePSDChannel(psd_info,image_info,image,layer,
-            AlphaQuantum,compact_pixels,rows_offset,separate,compression,
+            AlphaQuantum,-1,compact_pixels,rows_offset,separate,compression,
             exception);
           if (separate != MagickFalse)
             size_offset+=WritePSDSize(psd_info,image,length,size_offset)+2;
           else
             rows_offset+=(MagickOffsetType) offset_length;
           total_length+=length;
+
+          for (i=0; i < (ssize_t) layer->number_meta_channels; i++)
+          {
+            length=WritePSDChannel(psd_info,image_info,image,layer,
+              MultispectralQuantum,i,compact_pixels,rows_offset,separate,
+              compression,exception);
+            if (separate != MagickFalse)
+              size_offset+=WritePSDSize(psd_info,image,length,size_offset)+2;
+            else
+              rows_offset+=(MagickOffsetType) offset_length;
+            total_length+=length;
+          }
         }
     }
   compact_pixels=(unsigned char *) RelinquishMagickMemory(compact_pixels);
@@ -3364,8 +3385,8 @@ static size_t WritePSDChannels(const PSDInfo *psd_info,
                     return(0);
                 }
               length=WritePSDChannel(psd_info,image_info,image,mask,
-                RedQuantum,compact_pixels,rows_offset,MagickTrue,compression,
-                exception);
+                RedQuantum,-1,compact_pixels,rows_offset,MagickTrue,
+                compression,exception);
               (void) WritePSDSize(psd_info,image,length,size_offset);
               total_length+=length;
               compact_pixels=(unsigned char *) RelinquishMagickMemory(
@@ -3752,7 +3773,10 @@ static MagickBooleanType WritePSDLayersInternal(Image *image,
         3);
     total_channels=channels;
     if (frame->alpha_trait != UndefinedPixelTrait)
-      total_channels++;
+      {
+        total_channels++;
+        total_channels+=(unsigned short) frame->number_meta_channels;
+      }
     if (mask != (Image *) NULL)
       total_channels++;
     size+=(size_t) WriteBlobShort(image,total_channels);
@@ -3760,7 +3784,12 @@ static MagickBooleanType WritePSDLayersInternal(Image *image,
     for (i=0; i < (ssize_t) channels; i++)
       size+=(size_t) WriteChannelSize(psd_info,image,(signed short) i);
     if (frame->alpha_trait != UndefinedPixelTrait)
-      size+=(size_t) WriteChannelSize(psd_info,image,-1);
+      {
+        size+=(size_t) WriteChannelSize(psd_info,image,-1);
+        for (i=0; i < (ssize_t) frame->number_meta_channels; i++)
+          size+=(size_t) WriteChannelSize(psd_info,image,
+            (signed short) (channels+1+i));
+      }
     if (mask != (Image *) NULL)
       size+=(size_t) WriteChannelSize(psd_info,image,-2);
     size+=(size_t) WriteBlobString(image,image->endian == LSBEndian ? "MIB8" :
@@ -3930,21 +3959,23 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
     (void) WriteBlobByte(image, 0);  /* 6 bytes of reserved */
   if ((GetImageProfile(image,"icc") == (StringInfo *) NULL) &&
       (SetImageGray(image,exception) != MagickFalse))
-    num_channels=(image->alpha_trait != UndefinedPixelTrait ? 2UL : 1UL);
+    num_channels=1;
   else
     if ((image_info->type != TrueColorType) &&
         (image_info->type != TrueColorAlphaType) &&
         (image->storage_class == PseudoClass))
-      num_channels=(image->alpha_trait != UndefinedPixelTrait ? 2UL : 1UL);
+      num_channels=1;
     else
       {
         if (image->storage_class == PseudoClass)
           (void) SetImageStorageClass(image,DirectClass,exception);
-        if (image->colorspace != CMYKColorspace)
-          num_channels=(image->alpha_trait != UndefinedPixelTrait ? 4UL : 3UL);
-        else
-          num_channels=(image->alpha_trait != UndefinedPixelTrait ? 5UL : 4UL);
+        num_channels=image->colorspace == CMYKColorspace ? 4 : 3;
       }
+  if (image->alpha_trait != UndefinedPixelTrait)
+    {
+      num_channels++;
+      num_channels+=image->number_meta_channels;
+    }
   (void) WriteBlobMSBShort(image,(unsigned short) num_channels);
   (void) WriteBlobMSBLong(image,(unsigned int) image->rows);
   (void) WriteBlobMSBLong(image,(unsigned int) image->columns);
