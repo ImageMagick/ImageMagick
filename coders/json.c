@@ -1541,15 +1541,16 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
       image_info=AcquireImageInfo();
       (void) CloneString(&image_info->size,"64x64");
       (void) FormatLocaleFile(file,"    \"montageDirectory\": [");
-      p=image->directory;
-      while (*p != '\0')
+      for (p=image->directory; *p != '\0'; p++)
       {
         q=p;
-        while ((*q != '\xff') && (*q != '\0'))
+        while ((*q != '\xff') && (*q != '\0') &&
+               ((size_t) (q-p) < sizeof(image_info->filename)))
           q++;
         (void) CopyMagickString(image_info->filename,p,(size_t) (q-p+1));
-        p=q+1;
-        JSONFormatLocaleFile(file,"{\n       \"name\": %s",image_info->filename);
+        p=q;
+        JSONFormatLocaleFile(file,"{\n       \"name\": %s",
+          image_info->filename);
         handler=SetWarningHandler((WarningHandler) NULL);
         tile=ReadImage(image_info,exception);
         (void) SetWarningHandler(handler);
@@ -1559,7 +1560,8 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
             continue;
           }
         (void) FormatLocaleFile(file,",\n       \"info\": \"%.20gx%.20g %s\"",
-          (double) tile->magick_columns,(double) tile->magick_rows,tile->magick);
+          (double) tile->magick_columns,(double) tile->magick_rows,
+          tile->magick);
         (void) SignatureImage(tile,exception);
         ResetImagePropertyIterator(tile);
         property=GetNextImageProperty(tile);
