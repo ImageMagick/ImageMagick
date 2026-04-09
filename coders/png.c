@@ -13676,6 +13676,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
     if (status == MagickFalse)
       {
         (void) CloseBlob(image);
+        mng_info=(MngWriteInfo *) RelinquishMagickMemory(mng_info);
         return(MagickFalse);
       }
     (void) CatchImageException(image);
