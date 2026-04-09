@@ -1262,7 +1262,7 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
         PixelTrait traits = GetPixelChannelTraits(image,channel);
-        PixelTrait flip_traits=GetPixelChannelTraits(flip_image,channel);
+        PixelTrait flip_traits = GetPixelChannelTraits(flip_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (flip_traits == UndefinedPixelTrait))
           continue;
