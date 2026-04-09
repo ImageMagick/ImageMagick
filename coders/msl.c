@@ -272,7 +272,7 @@ static ssize_t MSLPushImage(MSLInfo *msl_info,Image *image)
       (msl_info->attributes[n] == (Image *) NULL))
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed")
   if (msl_info->number_groups != 0)
-    msl_info->group_info[msl_info->number_groups].numImages++;
+    msl_info->group_info[msl_info->number_groups-1].numImages++;
   return(n);
 }
 
