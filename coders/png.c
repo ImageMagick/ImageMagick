@@ -697,6 +697,7 @@ typedef struct _MngWriteInfo
     have_global_plte,
     have_global_srgb,
     is_palette,
+    need_defi,
     need_fram,
     preserve_colormap,
     preserve_iCCP,
@@ -11333,9 +11334,10 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
   if (mng_info->need_fram != MagickFalse &&
       (int) image->dispose == BackgroundDispose)
     {
-      if (mng_info->page.x || mng_info->page.y ||
+      if (mng_info->need_defi == MagickFalse &&
+          (mng_info->page.x || mng_info->page.y ||
           (ping_width != mng_info->page.width) ||
-          (ping_height != mng_info->page.height))
+          (ping_height != mng_info->page.height)))
         {
           unsigned char
             chunk[32];
@@ -12888,7 +12890,6 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
   volatile int
     need_local_plte,
     all_images_are_gray,
-    need_defi,
     use_global_plte;
 
   unsigned char
@@ -13002,7 +13003,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
   use_global_plte=MagickFalse;
   all_images_are_gray=MagickFalse;
   need_local_plte=MagickTrue;
-  need_defi=MagickFalse;
+  mng_info->need_defi=MagickFalse;
   need_matte=MagickFalse;
   mng_info->framing_mode=1;
   mng_info->old_framing_mode=1;
@@ -13060,7 +13061,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
           }
 
         if (next_image->page.x || next_image->page.y)
-          need_defi=MagickTrue;
+          mng_info->need_defi=MagickTrue;
 
         if (next_image->alpha_trait != UndefinedPixelTrait)
           need_matte=MagickTrue;
@@ -13191,7 +13192,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
          if (final_delay > 125)
            mng_info->need_fram=MagickTrue;
 
-         if (need_defi && final_delay > 2 && (final_delay != 4) &&
+         if (mng_info->need_defi && final_delay > 2 && (final_delay != 4) &&
             (final_delay != 5) && (final_delay != 10) && (final_delay != 20) &&
             (final_delay != 25) && (final_delay != 50) &&
             (final_delay != (size_t) image->ticks_per_second))
@@ -13222,7 +13223,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
        {
          if (need_matte)
            {
-             if (need_defi || mng_info->need_fram != MagickFalse || use_global_plte)
+             if (mng_info->need_defi || mng_info->need_fram != MagickFalse || use_global_plte)
                PNGLong(chunk+28,27L);    /* simplicity=LC+JNG */
 
              else
@@ -13231,7 +13232,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
 
          else
            {
-             if (need_defi || mng_info->need_fram != MagickFalse || use_global_plte)
+             if (mng_info->need_defi || mng_info->need_fram != MagickFalse || use_global_plte)
                PNGLong(chunk+28,19L);  /* simplicity=LC+JNG, no transparency */
 
              else
@@ -13243,7 +13244,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
        {
          if (need_matte)
            {
-             if (need_defi || mng_info->need_fram != MagickFalse || use_global_plte)
+             if (mng_info->need_defi || mng_info->need_fram != MagickFalse || use_global_plte)
                PNGLong(chunk+28,11L);    /* simplicity=LC */
 
              else
@@ -13252,7 +13253,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
 
          else
            {
-             if (need_defi || mng_info->need_fram != MagickFalse || use_global_plte)
+             if (mng_info->need_defi || mng_info->need_fram != MagickFalse || use_global_plte)
                PNGLong(chunk+28,3L);    /* simplicity=LC, no transparency */
 
              else
@@ -13549,7 +13550,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
         else
           mng_info->have_global_plte=MagickFalse;
       }
-    if (need_defi)
+    if (mng_info->need_defi)
       {
         ssize_t
           previous_x,
