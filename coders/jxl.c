@@ -986,7 +986,8 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     memory_manager_info;
 
   size_t
-    channels_size;
+    channels_size,
+    sample_size;
 
   unsigned char
     *pixels;
@@ -1185,15 +1186,19 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
   /*
     Write image as a JXL stream.
   */
-  channels_size=(((image->alpha_trait & BlendPixelTrait) != 0) ? 4 : 3)*
-    ((pixel_format.data_type == JXL_TYPE_FLOAT) ? sizeof(float) :
-     (pixel_format.data_type == JXL_TYPE_UINT16) ? sizeof(short) :
-     sizeof(char));
+  sample_size=sizeof(char);
+  if ((pixel_format.data_type == JXL_TYPE_FLOAT) ||
+      (pixel_format.data_type == JXL_TYPE_FLOAT16))
+    sample_size=sizeof(float);
+  else
+    if (pixel_format.data_type == JXL_TYPE_UINT16)
+      sample_size=sizeof(short);
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    channels_size=(((image->alpha_trait & BlendPixelTrait) != 0) ? 2 : 1)*
-      ((pixel_format.data_type == JXL_TYPE_FLOAT) ? sizeof(float) :
-       (pixel_format.data_type == JXL_TYPE_UINT16) ? sizeof(short) :
-       sizeof(char));
+    channels_size=(((image->alpha_trait & BlendPixelTrait) != 0) ? 2U : 1U)*
+      sample_size;
+  else
+    channels_size=(((image->alpha_trait & BlendPixelTrait) != 0) ? 4U : 3U)*
+      sample_size;
   do
   {
     Image
