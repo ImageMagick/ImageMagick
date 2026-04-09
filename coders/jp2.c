@@ -1103,10 +1103,12 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
 
       flags=ParseGeometry(image_info->sampling_factor,&geometry_info);
       if ((flags & RhoValue) != 0)
-        parameters->subsampling_dx=(int) geometry_info.rho;
+        parameters->subsampling_dx=(int) MagickMax(
+          geometry_info.rho,1.0);
       parameters->subsampling_dy=parameters->subsampling_dx;
       if ((flags & SigmaValue) != 0)
-        parameters->subsampling_dy=(int) geometry_info.sigma;
+        parameters->subsampling_dy=(int) MagickMax(
+          geometry_info.sigma,1.0);
     }   
   property=GetImageProperty(image,"comment",exception);
   if (property != (const char *) NULL)
