@@ -344,7 +344,10 @@ static MagickBooleanType WriteVIDImage(const ImageInfo *image_info,Image *image,
     Create the visual image directory.
   */
   for (p=image; p != (Image *) NULL; p=GetNextImageInList(p))
+  {
+    (void) CopyMagickString(p->filename,p->magick_filename,MagickPathExtent);
     (void) SetImageProperty(p,"label",DefaultTileLabel,exception);
+  }
   montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
   montage_image=MontageImageList(image_info,montage_info,image,exception);
   montage_info=DestroyMontageInfo(montage_info);
