@@ -986,7 +986,6 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     memory_manager_info;
 
   size_t
-    bytes_per_row,
     channels_size;
 
   unsigned char
@@ -1200,14 +1199,16 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     Image
       *next;
 
-    if (HeapOverflowSanityCheck(image->columns,channels_size) != MagickFalse)
+    size_t
+      bytes_per_row;
+
+    if (HeapOverflowSanityCheckGetSize(image->columns,channels_size,&bytes_per_row) != MagickFalse)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
           "MemoryAllocationFailed","`%s'",image->filename);
         status=MagickFalse;
         break;
       }
-    bytes_per_row=image->columns*channels_size;
     pixel_info=AcquireVirtualMemory(bytes_per_row,image->rows*sizeof(*pixels));
     if (pixel_info == (MemoryInfo *) NULL)
       {
