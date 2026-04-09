@@ -35,6 +35,11 @@ extern MagickPrivate void
 extern MagickExport void
   AsynchronousResourceComponentTerminus(void);
 
+#ifdef FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION
+extern MagickExport void
+  ResetMagickResourceCounters(void);
+#endif
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
