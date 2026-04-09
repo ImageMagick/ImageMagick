@@ -965,14 +965,18 @@ static TIFFMethodType GetJPEGMethod(Image* image,TIFF *tiff,uint16 photometric,
     length;
 
   /*
-    Only support 8 bit for now.
+    Non-CMYK JPEG TIFFs can be decoded with the strip method when 8-bit,
+    fall back to the generic method for other bit depths.
   */
-  if ((photometric != PHOTOMETRIC_SEPARATED) || (bits_per_sample != 8) ||
-      (samples_per_pixel != 4))
-    return(ReadGenericMethod);
-  /*
-    Search for Adobe APP14 JPEG marker.
-  */
+  if (photometric != PHOTOMETRIC_SEPARATED)
+    {
+      if (bits_per_sample != 8)
+        return(ReadGenericMethod);
+      return(ReadStripMethod);
+    }
+  /* Only 8-bit and 4-sample are supported for the APP14 marker probe */
+  if ((bits_per_sample != 8) || (samples_per_pixel != 4))
+    return(ReadStripMethod);
   if (!TIFFGetField(tiff,TIFFTAG_STRIPOFFSETS,&value) || (value == NULL))
     return(ReadStripMethod);
   position=TellBlob(image);
