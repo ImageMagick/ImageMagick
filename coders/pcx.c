@@ -940,7 +940,6 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
     pcx_info.identifier=0x0a;
     pcx_info.version=5;
     pcx_info.encoding=image_info->compression == NoCompression ? 0 : 1;
-
     pcx_info.bits_per_pixel=8;
     if ((image->storage_class == PseudoClass) &&
         (SetImageMonochrome(image,exception) != MagickFalse))
@@ -954,7 +953,6 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
     else
       if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
         (void) TransformImageColorspace(image,sRGBColorspace,exception);
-
     pcx_info.left=0;
     pcx_info.top=0;
     pcx_info.right=(unsigned short) (image->columns-1);
@@ -988,7 +986,6 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
         if (image->alpha_trait != UndefinedPixelTrait)
           pcx_info.planes++;
       }
-
     length=(((size_t) image->columns*pcx_info.bits_per_pixel+7)/8);
     if ((image->columns > 65535UL) || (image->rows > 65535UL) ||
         (length > 65535UL))
