@@ -6195,7 +6195,6 @@ tests_wandtest_LDFLAGS = $(LDFLAGS)
 tests_wandtest_LDADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
 TESTS_XFAIL_TESTS = 
 TESTS_TESTS = \
-  tests/cli-pcx-4bit.tap \
   tests/cli-colorspace.tap \
   tests/cli-pipe.tap \
   tests/cli-svg.tap \
