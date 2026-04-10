@@ -1137,7 +1137,6 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
                   break;
               }
           }
-
         else if (pcx_info.planes == 4)
           {
             const Quantum
@@ -1186,7 +1185,6 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
                 }
             }
           }
-
         else
           {
             unsigned char
