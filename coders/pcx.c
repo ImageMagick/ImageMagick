@@ -1139,8 +1139,8 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
               *r;
 
             unsigned char
-              byte,
-              packed_bits;
+              bit,
+              byte;
 
             for (y=0; y < (ssize_t) image->rows; y++)
             {
@@ -1150,25 +1150,25 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
               for (i=0; i < (ssize_t) pcx_info.planes; i++)
               {
                 r=p;
-                packed_bits=0;
                 byte=0;
+                bit=0;
                 q=pixels+(i*(ssize_t) pcx_info.bytes_per_line);
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
-                  byte<<=1;
+                  bit<<=1;
                   if (((ssize_t) GetPixelIndex(image,r) & (1UL << i)) != 0)
-                    byte|=0x01;
-                  packed_bits++;
-                  if (packed_bits == 8)
+                    bit|=0x01;
+                  byte++;
+                  if (byte == 8)
                     {
-                      *q++=byte;
-                      packed_bits=0;
+                      *q++=bit;
                       byte=0;
+                      bit=0;
                     }
                   r+=(ptrdiff_t) GetPixelChannels(image);
                 }
-                if (packed_bits != 0)
-                  *q++=byte << (8-packed_bits);
+                if (byte != 0)
+                  *q++=bit << (8-byte);
               }
               if (PCXWritePixels(&pcx_info,pixels,image) == MagickFalse)
                 break;
