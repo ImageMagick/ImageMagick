@@ -944,8 +944,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
     if ((image->storage_class == PseudoClass) &&
         (SetImageMonochrome(image,exception) != MagickFalse || image->colors <= 16))
           pcx_info.bits_per_pixel=1;
-    else
-      if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
+    else if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
         (void) TransformImageColorspace(image,sRGBColorspace,exception);
     pcx_info.left=0;
     pcx_info.top=0;
