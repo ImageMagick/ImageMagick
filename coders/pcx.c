@@ -1156,7 +1156,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
                   bit<<=1;
-                  if (((ssize_t) GetPixelIndex(image,r) & (1UL << i)) != 0)
+                  if (((ssize_t) GetPixelIndex(image,r) & ((ssize_t) 1 << i)) != 0)
                     bit|=0x01;
                   byte++;
                   if (byte == 8)
