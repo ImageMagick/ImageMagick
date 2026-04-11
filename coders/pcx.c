@@ -941,9 +941,11 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
     pcx_info.version=5;
     pcx_info.encoding=image_info->compression == NoCompression ? 0 : 1;
     pcx_info.bits_per_pixel=8;
-    if ((image->storage_class == PseudoClass) &&
-        (SetImageMonochrome(image,exception) != MagickFalse))
-      pcx_info.bits_per_pixel=1;
+    if (image->storage_class == PseudoClass)
+      {
+        if (SetImageMonochrome(image,exception) != MagickFalse || image->colors <= 16)
+          pcx_info.bits_per_pixel=1;
+      }
     else
       if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
         (void) TransformImageColorspace(image,sRGBColorspace,exception);
@@ -970,7 +972,11 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
     }
     pcx_info.reserved=0;
     pcx_info.planes=1;
-    if ((image->storage_class == DirectClass) || (image->colors > 256))
+    if ((image->storage_class == PseudoClass) &&
+        (image->colors <= 16) &&
+        (image->type != BilevelType))
+      pcx_info.planes=4;
+    else if ((image->storage_class == DirectClass) || (image->colors > 256))
       {
         pcx_info.planes=3;
         if (image->alpha_trait != UndefinedPixelTrait)
@@ -1126,6 +1132,54 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
                 if (status == MagickFalse)
                   break;
               }
+          }
+        else if (pcx_info.planes == 4)
+          {
+            const Quantum
+              *r;
+
+            unsigned char
+              bit,
+              byte;
+
+            for (y=0; y < (ssize_t) image->rows; y++)
+            {
+              p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+              if (p == (const Quantum *) NULL)
+                break;
+              for (i=0; i < (ssize_t) pcx_info.planes; i++)
+              {
+                r=p;
+                byte=0;
+                bit=0;
+                q=pixels+(i*(ssize_t) pcx_info.bytes_per_line);
+                for (x=0; x < (ssize_t) image->columns; x++)
+                {
+                  bit<<=1;
+                  if (((ssize_t) GetPixelIndex(image,r) & ((ssize_t) 1 << i)) != 0)
+                    bit|=0x01;
+                  byte++;
+                  if (byte == 8)
+                    {
+                      *q++=bit;
+                      byte=0;
+                      bit=0;
+                    }
+                  r+=(ptrdiff_t) GetPixelChannels(image);
+                }
+                if (byte != 0)
+                  *q++=bit << (8-byte);
+              }
+              if (PCXWritePixels(&pcx_info,pixels,image) == MagickFalse)
+                break;
+              if (image->previous == (Image *) NULL)
+                {
+                  status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                    image->rows);
+                  if (status == MagickFalse)
+                    break;
+                }
+            }
           }
         else
           {
