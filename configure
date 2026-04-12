@@ -5389,7 +5389,7 @@ MAGICK_PATCHLEVEL_VERSION=19
 
 MAGICK_VERSION=7.1.2-19
 
-MAGICK_GIT_REVISION=d4e4b2b35:20260322
+MAGICK_GIT_REVISION=cc503c04c:20260412
 
 
 # Substitute library versioning
@@ -5423,7 +5423,7 @@ PACKAGE_LIB_VERSION=0x712
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,2,19
 
-PACKAGE_RELEASE_DATE=2026-03-22
+PACKAGE_RELEASE_DATE=2026-04-12
 
 
 # Ensure that make can run correctly
@@ -39601,7 +39601,19 @@ if test "$enable_64bit_channel_masks" = 'yes'; then
     if test "$enable_force_cpp" = 'yes'; then
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports -x c++ option" >&5
 printf %s "checking whether the compiler supports -x c++ option... " >&6; }
+        old_CC="$CC"
         old_CFLAGS="$CFLAGS"
+        cpp_CC=''
+        for option in $CC; do
+          case "$option" in
+            -std=c*|-std=gnu*)
+              ;;
+            *)
+              cpp_CC="$cpp_CC $option"
+              ;;
+          esac
+        done
+        CC="$cpp_CC"
         CFLAGS="$CFLAGS -x c++"
         cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
@@ -39635,6 +39647,7 @@ esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
         if test "$magick_channel_mask_depth" != '64'; then
+          CC="$old_CC"
           CFLAGS="$old_CFLAGS"
         fi
     else
