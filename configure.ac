@@ -3598,7 +3598,19 @@ magick_channel_mask_depth='32';
 if test "$enable_64bit_channel_masks" = 'yes'; then
     if test "$enable_force_cpp" = 'yes'; then
         AC_MSG_CHECKING([whether the compiler supports -x c++ option])
+        old_CC="$CC"
         old_CFLAGS="$CFLAGS"
+        cpp_CC=''
+        for option in $CC; do
+          case "$option" in
+            -std=c*|-std=gnu*)
+              ;;
+            *)
+              cpp_CC="$cpp_CC $option"
+              ;;
+          esac
+        done
+        CC="$cpp_CC"
         CFLAGS="$CFLAGS -x c++"
         AC_COMPILE_IFELSE([
           AC_LANG_PROGRAM([
@@ -3613,6 +3625,7 @@ if test "$enable_64bit_channel_masks" = 'yes'; then
           AC_MSG_RESULT([no])
         ])
         if test "$magick_channel_mask_depth" != '64'; then
+          CC="$old_CC"
           CFLAGS="$old_CFLAGS"
         fi
     else
