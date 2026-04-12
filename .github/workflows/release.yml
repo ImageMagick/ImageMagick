@@ -421,10 +421,12 @@ jobs:
           path: Configure\Installer\Msix\Artifacts\ImageMagick.${{matrix.quantum}}${{matrix.hdri_flag}}.msixbundle
 
   linux_app_image:
-    name: Linux AppImage
+    name: Linux AppImage ${{matrix.compiler}}
     container:
       image: ubuntu:22.04
     runs-on: ubuntu-24.04
+    needs:
+      - version
 
     strategy:
       matrix:
@@ -475,6 +477,8 @@ jobs:
           make install DESTDIR=$(readlink -f /appdir)
 
       - name: Create ImageMagick AppImage
+        env:
+          VERSION: ${{needs.version.outputs.version}}-${{matrix.compiler}}
         run: |
           set -e
           mkdir -p /appdir/usr/share/applications/
@@ -484,7 +488,6 @@ jobs:
           unset QTDIR
           unset QT_PLUGIN_PATH
           unset LD_LIBRARY_PATH
-          export VERSION=$(git rev-parse --short HEAD)-${{matrix.compiler}}
           /app-image/linuxdeployqt-continuous-x86_64.AppImage --appimage-extract-and-run /appdir/usr/share/applications/imagemagick.desktop -bundle-non-qt-libs
           rm /appdir/AppRun
           cp ./app-image/AppRun /appdir
