@@ -935,7 +935,7 @@ static tsize_t TIFFWriteBlob(thandle_t image,tdata_t data,tsize_t size)
   return(count);
 }
 
-static TIFFMethodType GetJPEGMethod(Image* image,TIFF *tiff,uint16 photometric,
+static TIFFMethodType GetJPEGMethod(Image* image,TIFF *tiff,
   uint16 bits_per_sample,uint16 samples_per_pixel)
 {
 #define BUFFER_SIZE 2048
@@ -964,16 +964,6 @@ static TIFFMethodType GetJPEGMethod(Image* image,TIFF *tiff,uint16 photometric,
   unsigned short
     length;
 
-  /*
-    Non-CMYK JPEG TIFFs can be decoded with the strip method when 8-bit,
-    fall back to the generic method for other bit depths.
-  */
-  if (photometric != PHOTOMETRIC_SEPARATED)
-    {
-      if (bits_per_sample != 8)
-        return(ReadGenericMethod);
-      return(ReadStripMethod);
-    }
   /* Only 8-bit and 4-sample are supported for the APP14 marker probe */
   if ((bits_per_sample != 8) || (samples_per_pixel != 4))
     return(ReadStripMethod);
@@ -1751,8 +1741,12 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         (compress_tag == COMPRESSION_CCITTFAX3))
       method=ReadGenericMethod;
     if (image->compression == JPEGCompression)
-      method=GetJPEGMethod(image,tiff,photometric,bits_per_sample,
-        samples_per_pixel);
+      {
+        if (photometric == PHOTOMETRIC_SEPARATED)
+          method=GetJPEGMethod(image,tiff,photometric,bits_per_sample);
+        else if (method != ReadStripMethod)
+          method=ReadGenericMethod;
+      }
 #if defined(WORDS_BIGENDIAN)
     (void) SetQuantumEndian(image,quantum_info,MSBEndian);
 #else
