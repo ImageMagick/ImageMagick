@@ -191,6 +191,31 @@ static inline StorageType JXLDataTypeToStorageType(Image *image,
   }
 }
 
+static inline JxlOrientation OrientationToJXLOrientation(
+  const OrientationType orientation)
+{
+  switch (orientation)
+  {
+    default:
+    case TopLeftOrientation:
+      return(JXL_ORIENT_IDENTITY);
+    case TopRightOrientation:
+      return(JXL_ORIENT_FLIP_HORIZONTAL);
+    case BottomRightOrientation:
+      return(JXL_ORIENT_ROTATE_180);
+    case BottomLeftOrientation:
+      return(JXL_ORIENT_FLIP_VERTICAL);
+    case LeftTopOrientation:
+      return(JXL_ORIENT_TRANSPOSE);
+    case RightTopOrientation:
+      return(JXL_ORIENT_ROTATE_90_CW);
+    case RightBottomOrientation:
+      return(JXL_ORIENT_ANTI_TRANSPOSE);
+    case LeftBottomOrientation:
+      return(JXL_ORIENT_ROTATE_90_CCW);
+  }
+}
+
 static inline OrientationType JXLOrientationToOrientation(
   const JxlOrientation orientation)
 {
@@ -1111,6 +1136,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       basic_info.animation.tps_denominator=1;
       JxlEncoderInitFrameHeader(&frame_header);
     }
+  basic_info.orientation=OrientationToJXLOrientation(image->orientation);
   jxl_status=JxlEncoderSetBasicInfo(jxl_info,&basic_info);
   if (jxl_status != JXL_ENC_SUCCESS)
     {
