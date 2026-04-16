@@ -4104,8 +4104,8 @@ ac_cxx_conftest_cxx11_main='
 }
 {
   // Unicode literals
-  char const *utf8 = u8"UTF-8 string \u2500";
-  char16_t const *utf16 = u"UTF-8 string \u2500";
+  auto const *utf8 = u8"UTF-8 string \u2500";
+  char16_t const *utf16 = u"UTF-16 string \u2500";
   char32_t const *utf32 = U"UTF-32 string \u2500";
 }
 '
@@ -5389,7 +5389,7 @@ MAGICK_PATCHLEVEL_VERSION=20
 
 MAGICK_VERSION=7.1.2-20
 
-MAGICK_GIT_REVISION=9fbd2b794:20260412
+MAGICK_GIT_REVISION=e529068b3:20260415
 
 
 # Substitute library versioning
@@ -5423,7 +5423,7 @@ PACKAGE_LIB_VERSION=0x712
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,2,20
 
-PACKAGE_RELEASE_DATE=2026-04-12
+PACKAGE_RELEASE_DATE=2026-04-15
 
 
 # Ensure that make can run correctly
