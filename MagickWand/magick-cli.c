@@ -238,7 +238,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
       }
     else
       {
-        SetOpenMPNested(1);
+        SetOpenMPMaxActiveLevels(1);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
         # pragma omp parallel for shared(status)
 #endif
