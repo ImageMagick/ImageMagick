@@ -183,7 +183,11 @@ static inline void SetOpenMPMaximumThreads(const int magick_unused(threads))
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
 static inline void SetOpenMPMaxActiveLevels(const int value)
 {
+#if defined(_MSC_VER)
+  omp_set_nested(value);
+#else
   omp_set_max_active_levels(value ? 2 : 1);
+#endif
 #else
 static inline void SetOpenMPMaxActiveLevels(const int magick_unused(value))
 {
