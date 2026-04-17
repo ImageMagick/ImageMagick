@@ -8053,7 +8053,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
     *volatile pixel_info;
 
   QuantumInfo
-    *quantum_info;
+    *volatile quantum_info;
 
   PNGErrorInfo
     error_info;
