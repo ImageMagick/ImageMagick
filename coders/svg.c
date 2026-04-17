@@ -3028,6 +3028,11 @@ static void SVGWarning(void *context,const char *format,...)
   va_start(operands,format);
   parser=(xmlParserCtxtPtr) context;
   svg_info=(SVGInfo *) parser->_private;
+  if (svg_info == (SVGInfo *) NULL)
+    {
+      va_end(operands);
+      return;
+    }
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  SAX.warning: ");
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),format,operands);
 #if !defined(MAGICKCORE_HAVE_VSNPRINTF)
@@ -3064,6 +3069,11 @@ static void SVGError(void *context,const char *format,...)
   va_start(operands,format);
   parser=(xmlParserCtxtPtr) context;
   svg_info=(SVGInfo *) parser->_private;
+  if (svg_info == (SVGInfo *) NULL)
+    {
+      va_end(operands);
+      return;
+    }
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  SAX.error: ");
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),format,operands);
 #if !defined(MAGICKCORE_HAVE_VSNPRINTF)
@@ -3178,7 +3188,9 @@ static Image *RenderMSVGImage(const ImageInfo *image_info,Image *image,
         message,(int) n,image->filename);
       if (parser != (xmlParserCtxtPtr) NULL)
         {
-          const char *option;
+          const char 
+            *option;
+
           parser->_private=(SVGInfo *) svg_info;
           option = GetImageOption(image_info,"svg:parse-huge");
           if (option == (char *) NULL)
