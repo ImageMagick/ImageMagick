@@ -190,6 +190,7 @@ extern MagickPrivate MagickBooleanType
   NTReportEvent(const char *,const MagickBooleanType);
 
 extern MagickExport MagickBooleanType
+  NTIsLinkWide(const char *),
   NTLongPathsEnabled(void);
 
 extern MagickPrivate struct dirent

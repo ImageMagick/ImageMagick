@@ -82,76 +82,10 @@ static inline FILE *fopen_utf8(const char *path,const char *mode)
 #endif
 }
 
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(FSCTL_GET_REPARSE_POINT)
-#define FSCTL_GET_REPARSE_POINT  CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 42, METHOD_BUFFERED, FILE_ANY_ACCESS)
-#endif
-
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(REPARSE_DATA_BUFFER)
-typedef struct _REPARSE_DATA_BUFFER {
-  ULONG  ReparseTag;
-  USHORT ReparseDataLength;
-  USHORT Reserved;
-  union {
-    struct {
-      USHORT SubstituteNameOffset;
-      USHORT SubstituteNameLength;
-      USHORT PrintNameOffset;
-      USHORT PrintNameLength;
-      ULONG  Flags;
-      WCHAR  PathBuffer[1];
-    } SymbolicLinkReparseBuffer;
-    struct {
-      USHORT SubstituteNameOffset;
-      USHORT SubstituteNameLength;
-      USHORT PrintNameOffset;
-      USHORT PrintNameLength;
-      WCHAR  PathBuffer[1];
-    } MountPointReparseBuffer;
-    struct {
-      UCHAR  DataBuffer[1];
-    } GenericReparseBuffer;
-  };
-} REPARSE_DATA_BUFFER;
-#endif
-
 static inline MagickBooleanType is_link_utf8(const char *path)
 {
-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
-  int count = MultiByteToWideChar(CP_UTF8,0,path,-1,NULL,0);
-  if (count <= 0)
-    return(MagickFalse);
-  wchar_t *wide = (wchar_t *) malloc(count*sizeof(wchar_t));
-  if (wide == NULL)
-    return(MagickFalse);
-  MultiByteToWideChar(CP_UTF8,0,path,-1,wide,count);
-  DWORD attributes = GetFileAttributesW(wide);
-  if (attributes == INVALID_FILE_ATTRIBUTES)
-    {
-      free(wide);
-      return(MagickFalse);
-    }
-  if ((attributes & FILE_ATTRIBUTE_REPARSE_POINT) == 0)
-    {
-      free(wide);
-      return(MagickFalse);
-    }
-  HANDLE file_handle = CreateFileW(wide,0,FILE_SHARE_READ | FILE_SHARE_WRITE |
-   FILE_SHARE_DELETE,NULL,OPEN_EXISTING,FILE_FLAG_OPEN_REPARSE_POINT |
-   FILE_FLAG_BACKUP_SEMANTICS,NULL);
-  free(wide);
-  if (file_handle == INVALID_HANDLE_VALUE)
-    return(MagickFalse);
-  BYTE buffer[MAXIMUM_REPARSE_DATA_BUFFER_SIZE];
-  DWORD bytes;
-  BOOL ok = DeviceIoControl(file_handle,FSCTL_GET_REPARSE_POINT,NULL,0,buffer,
-    sizeof(buffer),&bytes,NULL);
-  CloseHandle(file_handle);
-  if (ok == 0)
-    return(MagickFalse);
-  REPARSE_DATA_BUFFER *reparse_buffer = (REPARSE_DATA_BUFFER *) buffer;
-  return(reparse_buffer->ReparseTag == IO_REPARSE_TAG_SYMLINK ? MagickTrue :
-    MagickFalse);
-#elif defined(MAGICKCORE_POSIX_SUPPORT)
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
+#if defined(MAGICKCORE_POSIX_SUPPORT)
   struct stat
     status;
 
@@ -160,6 +94,9 @@ static inline MagickBooleanType is_link_utf8(const char *path)
   return(S_ISLNK(status.st_mode) ? MagickTrue : MagickFalse);
 #else
   return(MagickFalse);
+#endif
+#else
+ return(NTIsLinkWide(path));
 #endif
 }
 
