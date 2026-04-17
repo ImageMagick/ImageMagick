@@ -82,6 +82,55 @@ static inline FILE *fopen_utf8(const char *path,const char *mode)
 #endif
 }
 
+static inline MagickBooleanType is_link_utf8(const char *path)
+{
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
+  int count = MultiByteToWideChar(CP_UTF8,0,path,-1,NULL,0);
+  if (count <= 0)
+    return(MagickFalse);
+  wchar_t *wide = (wchar_t *) malloc(count*sizeof(wchar_t));
+  if (wide == NULL)
+    return(MagickFalse);
+  MultiByteToWideChar(CP_UTF8,0,path,-1,wide,count);
+  DWORD attributes = GetFileAttributesW(wide);
+  if (attributes == INVALID_FILE_ATTRIBUTES)
+    {
+      free(wide);
+      return(MagickFalse);
+    }
+  if ((attributes & FILE_ATTRIBUTE_REPARSE_POINT) == 0)
+    {
+      free(wide);
+      return(MagickFalse);
+    }
+  HANDLE handle = CreateFileW(wide,0,FILE_SHARE_READ | FILE_SHARE_WRITE |
+   FILE_SHARE_DELETE,NULL,OPEN_EXISTING,FILE_FLAG_OPEN_REPARSE_POINT |
+   FILE_FLAG_BACKUP_SEMANTICS,NULL);
+  free(wide);
+  if (handle == INVALID_HANDLE_VALUE)
+    return(MagickFalse);
+  BYTE buffer[MAXIMUM_REPARSE_DATA_BUFFER_SIZE];
+  DWORD bytes;
+  BOOL ok = DeviceIoControl(handle,FSCTL_GET_REPARSE_POINT,NULL,0,buffer,
+    sizeof(buffer),&bytes,NULL);
+  CloseHandle(h);
+  if (ok == 0)
+    return(MagickFalse);
+  REPARSE_DATA_BUFFER *reparse_buffer = (REPARSE_DATA_BUFFER *) buffer;
+  return(reparse_buffer->ReparseTag == IO_REPARSE_TAG_SYMLINK ? MagickTrue :
+    MagickFalse);
+#elif defined(MAGICKCORE_POSIX_SUPPORT)
+  struct stat
+    status;
+
+  if (lstat(path,&status) == -1)
+    return(MagickFalse);
+  return(S_ISLNK(status.st_mode) ? MagickTrue : MagickFalse);
+#else
+  return(MagickFalse);
+#endif
+}
+
 static inline int open_utf8(const char *path,int flags,mode_t mode)
 {
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
