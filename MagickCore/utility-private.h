@@ -82,6 +82,10 @@ static inline FILE *fopen_utf8(const char *path,const char *mode)
 #endif
 }
 
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(FSCTL_GET_REPARSE_POINT)
+#define FSCTL_GET_REPARSE_POINT  CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 42, METHOD_BUFFERED, FILE_ANY_ACCESS)
+#endif
+
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(REPARSE_DATA_BUFFER)
 typedef struct _REPARSE_DATA_BUFFER {
   ULONG  ReparseTag;
