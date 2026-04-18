@@ -91,7 +91,7 @@ static inline MagickBooleanType is_symlink_utf8(const char *path)
 
   if (lstat(path,&status) == -1)
     return(MagickFalse);
-  return(S_ISLNK(status.st_mode) ? MagickTrue : MagickFalse);
+  return(S_ISLNK(status.st_mode) != 0 ? MagickTrue : MagickFalse);
 #else
   return(MagickFalse);
 #endif
