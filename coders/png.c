@@ -8028,12 +8028,8 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
     matte,
 
     ping_exclude_iCCP,
-    ping_exclude_zCCP;
+    ping_exclude_zCCP,
 
-  volatile MagickBooleanType
-    ping_have_blob;
-
-  MagickBooleanType
     ping_have_cheap_transparency,
     ping_have_color,
     ping_have_non_bw,
@@ -8051,6 +8047,9 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
     tried_332,
     tried_333,
     tried_444;
+
+  volatile MagickBooleanType
+    ping_have_blob;
 
   MemoryInfo
     *volatile pixel_info;
@@ -9433,10 +9432,12 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
       if (quantum_info != (QuantumInfo *) NULL)
         quantum_info=DestroyQuantumInfo(quantum_info);
 
-      if (ping_have_blob != MagickFalse)
-          (void) CloseBlob(image);
       image_info=DestroyImageInfo(image_info);
       image=DestroyImage(image);
+
+      if (ping_have_blob != MagickFalse)
+        (void) CloseBlob(IMimage);
+
       return(MagickFalse);
     }
 
@@ -11386,11 +11387,11 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
 
   pixel_info=RelinquishVirtualMemory(pixel_info);
 
-  if (ping_have_blob != MagickFalse)
-     (void) CloseBlob(image);
-
   image_info=DestroyImageInfo(image_info);
   image=DestroyImage(image);
+
+  if (ping_have_blob != MagickFalse)
+    (void) CloseBlob(IMimage);
 
   /* Store bit depth actually written */
   s[0]=(char) ping_bit_depth;
