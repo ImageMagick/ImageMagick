@@ -211,7 +211,7 @@ jobs:
           path: Configure\Installer\Inno\Artifacts
 
   windows_source:
-    name: Windows source
+    name: Create Windows source archive
     runs-on: windows-2022
     needs:
       - changelog
@@ -236,7 +236,7 @@ jobs:
           name: ChangeLog
           path: ImageMagick
 
-      - name: Create source archive
+      - name: Create Windows source archive
         shell: cmd
         env:
           VERSION: ${{needs.version.outputs.version}}
@@ -577,11 +577,12 @@ jobs:
     runs-on: ubuntu-24.04
     needs:
       - version
+      - source
+      - linux_app_image
       - windows_installer
       - windows_portable
       - windows_source
       - windows_msix
-      - linux_app_image
 
     permissions:
       contents: write
