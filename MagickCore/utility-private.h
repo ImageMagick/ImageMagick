@@ -82,7 +82,7 @@ static inline FILE *fopen_utf8(const char *path,const char *mode)
 #endif
 }
 
-static inline MagickBooleanType is_link_utf8(const char *path)
+static inline MagickBooleanType is_symlink_utf8(const char *path)
 {
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
 #if defined(MAGICKCORE_POSIX_SUPPORT)
@@ -96,7 +96,7 @@ static inline MagickBooleanType is_link_utf8(const char *path)
   return(MagickFalse);
 #endif
 #else
- return(NTIsLinkWide(path));
+ return(NTIsSymlinkWide(path));
 #endif
 }
 

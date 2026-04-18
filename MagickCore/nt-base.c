@@ -1623,19 +1623,19 @@ MagickPrivate void NTGhostscriptUnLoadDLL(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  NTIsLinkWide() returns a boolean value indicating whether the specified path
+%  NTIsSymlinkWide() returns a boolean value indicating whether the specified path
 %  is a a link.
 %
-%  The format of the NTIsLinkWide method is:
+%  The format of the NTIsSymlinkWide method is:
 %
-%      MagickBooleanType NTIsLinkWide(const char *path)
+%      MagickBooleanType NTIsSymlinkWide(const char *path)
 %
 %  A description of each parameter follows:
 %
 %    o path: the file path.
 %
 */
-MagickExport MagickBooleanType NTIsLinkWide(const char *path)
+MagickExport MagickBooleanType NTIsSymlinkWide(const char *path)
 {
   DWORD
     attributes;
