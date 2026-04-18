@@ -638,8 +638,8 @@ static MagickBooleanType IsPolicyCacheInstantiated(ExceptionInfo *exception)
 %
 */
 
-static inline MagickBooleanType ParseNamespace(
-  const char *restrict qualified_pattern,char **name,char **pattern)
+static inline MagickBooleanType ParseNamespace(const char *qualified_pattern,
+  char **name,char **pattern)
 {
   const char
     *p,
