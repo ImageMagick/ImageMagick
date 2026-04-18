@@ -433,7 +433,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
           {
             png=(unsigned char *) RelinquishMagickMemory(png);
             ThrowICONReaderException(CorruptImageError,
-                "InsufficientImageDataInFile");
+              "InsufficientImageDataInFile");
           }
         read_info=CloneImageInfo(image_info);
         (void) CopyMagickString(read_info->magick,"PNG",MagickPathExtent);
@@ -441,7 +441,10 @@ static Image *ReadICONImage(const ImageInfo *image_info,
         read_info=DestroyImageInfo(read_info);
         png=(unsigned char *) RelinquishMagickMemory(png);
         if (icon_image == (Image *) NULL)
-          return(DestroyImageList(image));
+          {
+            directory=RelinquishIconDirectory(directory);
+            return(DestroyImageList(image));
+          }
         DestroyBlob(icon_image);
         icon_image->blob=ReferenceBlob(image->blob);
         ReplaceImageInList(&image,icon_image);
@@ -510,11 +513,13 @@ static Image *ReadICONImage(const ImageInfo *image_info,
             ThrowICONReaderException(CorruptImageError,
               "InsufficientImageDataInFile");
           if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
-            ThrowICONReaderException(ResourceLimitError,"MemoryAllocationFailed");
+            ThrowICONReaderException(ResourceLimitError,
+              "MemoryAllocationFailed");
           icon_colormap=(unsigned char *) AcquireQuantumMemory((size_t)
             image->colors,4UL*sizeof(*icon_colormap));
           if (icon_colormap == (unsigned char *) NULL)
-            ThrowICONReaderException(ResourceLimitError,"MemoryAllocationFailed");
+            ThrowICONReaderException(ResourceLimitError,
+              "MemoryAllocationFailed");
           count=ReadBlob(image,(size_t) (4*image->colors),icon_colormap);
           if (count != (ssize_t) (4*image->colors))
             {
@@ -542,7 +547,10 @@ static Image *ReadICONImage(const ImageInfo *image_info,
             break;
         status=SetImageExtent(image,image->columns,image->rows,exception);
         if (status == MagickFalse)
-          return(DestroyImageList(image));
+          {
+            directory=RelinquishIconDirectory(directory);
+            return(DestroyImageList(image));
+          }
         bytes_per_line=(((image->columns*bits_per_pixel)+31U) & ~31U) >> 3;
         (void) bytes_per_line;
         scanline_pad=((((image->columns*bits_per_pixel)+31U) & ~31U)-
