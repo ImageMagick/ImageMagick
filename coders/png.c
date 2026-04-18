@@ -8028,9 +8028,12 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
     matte,
 
     ping_exclude_iCCP,
-    ping_exclude_zCCP,
+    ping_exclude_zCCP;
 
-    ping_have_blob,
+  volatile MagickBooleanType
+    ping_have_blob;
+
+  MagickBooleanType
     ping_have_cheap_transparency,
     ping_have_color,
     ping_have_non_bw,
