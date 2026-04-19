@@ -413,7 +413,7 @@ MagickExport const PolicyInfo **GetPolicyInfoList(const char *pattern,
     const PolicyInfo
       *policy;
 
-    policy=(const PolicyInfo *)p->value;
+    policy=(const PolicyInfo *) p->value;
     if ((policy->stealth == MagickFalse) &&
         (GlobExpression(policy->name,pattern,MagickFalse) != MagickFalse))
       policies[i++]=policy;
@@ -684,17 +684,22 @@ MagickExport MagickBooleanType IsRightsAuthorized(const PolicyDomain domain,
     *real_pattern = (char *) NULL;
 
   const PolicyInfo
-    *policy_info;
+    **policies = (const PolicyInfo **) NULL;
 
   ExceptionInfo
     *exception;
 
   MagickBooleanType
-    authorized = MagickTrue,
-    match;
+    matched_any = MagickFalse;
 
-  ElementInfo
-    *p;
+  PolicyRights
+    effective_rights = AllPolicyRights;  /* rights authorized unless denied */
+
+  size_t
+    count = 0;
+
+  ssize_t
+    i;
 
   if ((GetLogEventMask() & PolicyEvent) != 0)
     (void) LogMagickEvent(PolicyEvent,GetMagickModule(),
@@ -702,54 +707,63 @@ MagickExport MagickBooleanType IsRightsAuthorized(const PolicyDomain domain,
       CommandOptionToMnemonic(MagickPolicyDomainOptions,domain),
       CommandOptionToMnemonic(MagickPolicyRightsOptions,rights),
       qualified_pattern);
+  /*
+    Load policies.
+  */
   exception=AcquireExceptionInfo();
-  policy_info=GetPolicyInfo("*",exception);
+  policies=GetPolicyInfoList("*",&count,exception);
   exception=DestroyExceptionInfo(exception);
-  if (policy_info == (PolicyInfo *) NULL)
+  if (policies == (const PolicyInfo **) NULL)
     return(MagickTrue);
   if (ParseNamespace(qualified_pattern,&name,&pattern) == MagickFalse)
     return(MagickFalse);
-  LockSemaphoreInfo(policy_semaphore);
-  p=GetHeadElementInLinkedList(policy_cache);
-  while (p != (ElementInfo *) NULL)
+  /*
+    Evaluate policies in order; last match wins.
+  */
+  for (i=0; i < (ssize_t) count; i++)
   {
     const PolicyInfo
-      *policy;
+      *policy = policies[i];
 
-    policy=(const PolicyInfo *) p->value;
-    if ((policy->domain == domain) &&
-        ((name == (char *) NULL) || (LocaleCompare(name,policy->name) == 0)))
-      {
-        if ((policy->domain == PathPolicyDomain) &&
-            (real_pattern == (const char *) NULL))
-          real_pattern=realpath_utf8(pattern);
-        if (real_pattern != (char*) NULL)
-          match=GlobExpression(real_pattern,policy->pattern,MagickFalse);
-        else
-          match=GlobExpression(pattern,policy->pattern,MagickFalse);
-        if (match != MagickFalse)
-          {
-            if ((rights & ReadPolicyRights) != 0)
-              authorized=(policy->rights & ReadPolicyRights) != 0 ?
-                MagickTrue : MagickFalse;
-            if ((rights & WritePolicyRights) != 0)
-              authorized=(policy->rights & WritePolicyRights) != 0 ?
-                MagickTrue : MagickFalse;
-            if ((rights & ExecutePolicyRights) != 0)
-              authorized=(policy->rights & ExecutePolicyRights) != 0 ?
-                MagickTrue : MagickFalse;
-          }
-      }
-    p=p->next;
+    MagickBooleanType
+      match;
+
+    if (policy->domain != domain)
+      continue;
+    if ((name != (char *) NULL) && (LocaleCompare(name,policy->name) != 0))
+      continue;
+    if ((policy->domain == PathPolicyDomain) &&
+        (real_pattern == (const char *) NULL))
+      real_pattern=realpath_utf8(pattern);
+    match=GlobExpression(real_pattern != (char*) NULL ? real_pattern : pattern,
+      policy->pattern,MagickFalse);
+    if (match == MagickFalse)
+      continue;
+    matched_any=MagickTrue;
+    effective_rights=policy->rights;
   }
-  UnlockSemaphoreInfo(policy_semaphore);
+  policies=(const PolicyInfo **) RelinquishMagickMemory((void *) policies);
   if (pattern != (char *) NULL)
     pattern=DestroyString(pattern);
   if (name != (char *) NULL)
     name=DestroyString(name);
   if (real_pattern != (char *) NULL)
     real_pattern=DestroyString(real_pattern);
-  return(authorized);
+  /*
+    Is rights authorized?
+  */
+  if (matched_any == MagickFalse)
+    return MagickTrue;
+  if ((rights & ReadPolicyRights) &&
+      !(effective_rights & ReadPolicyRights))
+   return(MagickFalse);
+  if ((rights & WritePolicyRights) &&
+      !(effective_rights & WritePolicyRights))
+   return(MagickFalse);
+  if ((rights & ExecutePolicyRights) &&
+      !(effective_rights & ExecutePolicyRights))
+    return(MagickFalse);
+  return(MagickTrue);
 }
 
 /*
