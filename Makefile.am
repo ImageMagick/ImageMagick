@@ -100,7 +100,6 @@ TOP_EXTRA_DIST = \
   NOTICE \
   Install-mac.txt \
   Install-unix.txt \
-  Install-vms.txt \
   Install-windows.txt \
   magick.sh.in \
   Magickshr.opt \
