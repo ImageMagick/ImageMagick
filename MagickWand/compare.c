@@ -1327,7 +1327,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             case PixelDifferenceCountErrorMetric:
             {
               (void) FormatLocaleFile(stderr,"%.*g (%.*g)",GetMagickPrecision(),
-                ceil(scale*distortion),GetMagickPrecision(),distortion);
+                (scale*distortion),GetMagickPrecision(),distortion);
               break;
             }
             case MeanErrorPerPixelErrorMetric:
