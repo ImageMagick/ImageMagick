@@ -1015,7 +1015,7 @@
     <policy>
       <error>
         <message name="NotAuthorized">
-          attempt to perform an operation not allowed by the security policy
+          attempt to perform an operation not authorized by the security policy
         </message>
       </error>
     </policy>
