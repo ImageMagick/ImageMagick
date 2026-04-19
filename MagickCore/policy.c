@@ -753,7 +753,7 @@ MagickExport MagickBooleanType IsRightsAuthorized(const PolicyDomain domain,
     Is rights authorized?
   */
   if (matched_any == MagickFalse)
-    return MagickTrue;
+    return(MagickTrue);
   if ((rights & ReadPolicyRights) &&
       !(effective_rights & ReadPolicyRights))
    return(MagickFalse);
