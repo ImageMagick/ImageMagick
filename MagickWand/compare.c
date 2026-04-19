@@ -1455,7 +1455,6 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             case PeakSignalToNoiseRatioErrorMetric:
             case PerceptualHashErrorMetric:
             case PhaseCorrelationErrorMetric:
-            case PixelDifferenceCountErrorMetric:
             case StructuralSimilarityErrorMetric:
             case StructuralDissimilarityErrorMetric:
             {
@@ -1517,6 +1516,65 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
                 GetMagickPrecision(),channel_distortion[MaxPixelChannels],
                 GetMagickPrecision(),channel_distortion[MaxPixelChannels],
                 GetMagickPrecision(),image->error.normalized_maximum_error);
+              break;
+            }
+            case PixelDifferenceCountErrorMetric:
+            {
+              switch (image->colorspace)
+              {
+                case RGBColorspace:
+                default:
+                {
+                  (void) FormatLocaleFile(stderr,"    red: %.*g\n",
+                    GetMagickPrecision(),
+                    scale*channel_distortion[RedPixelChannel]);
+                  (void) FormatLocaleFile(stderr,"    green: %.*g\n",
+                    GetMagickPrecision(),
+                    scale*channel_distortion[GreenPixelChannel]);
+                  (void) FormatLocaleFile(stderr,"    blue: %.*g\n",
+                    GetMagickPrecision(),
+                    scale*channel_distortion[BluePixelChannel]);
+                  if (image->alpha_trait != UndefinedPixelTrait)
+                    (void) FormatLocaleFile(stderr,"    alpha: %.*g\n",
+                      GetMagickPrecision(),
+                      scale*channel_distortion[AlphaPixelChannel]);
+                  break;
+                }
+                case CMYKColorspace:
+                {
+                  (void) FormatLocaleFile(stderr,"    cyan: %.*g\n",
+                    GetMagickPrecision(),channel_distortion[CyanPixelChannel]);
+                  (void) FormatLocaleFile(stderr,"    magenta: %.*g\n",
+                    GetMagickPrecision(),
+                    scale*channel_distortion[MagentaPixelChannel]);
+                  (void) FormatLocaleFile(stderr,"    yellow: %.*g\n",
+                    GetMagickPrecision(),
+                    scale*channel_distortion[YellowPixelChannel]);
+                  (void) FormatLocaleFile(stderr,"    black: %.*g\n",
+                    GetMagickPrecision(),
+                    scale*channel_distortion[BlackPixelChannel]);
+                  if (image->alpha_trait != UndefinedPixelTrait)
+                    (void) FormatLocaleFile(stderr,"    alpha: %.*g\n",
+                      GetMagickPrecision(),
+                      scale*channel_distortion[AlphaPixelChannel]);
+                  break;
+                }
+                case LinearGRAYColorspace:
+                case GRAYColorspace:
+                {
+                  (void) FormatLocaleFile(stderr,"    gray: %.*g\n",
+                    GetMagickPrecision(),
+                    scale*channel_distortion[GrayPixelChannel]);
+                  if (image->alpha_trait != UndefinedPixelTrait)
+                    (void) FormatLocaleFile(stderr,"    alpha: %.*g\n",
+                      GetMagickPrecision(),
+                      scale*channel_distortion[AlphaPixelChannel]);
+                  break;
+                }
+              }
+              (void) FormatLocaleFile(stderr,"    all: %.*g\n",
+                GetMagickPrecision(),
+                scale*channel_distortion[MaxPixelChannels]);
               break;
             }
             case UndefinedErrorMetric:
