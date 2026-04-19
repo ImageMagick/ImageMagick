@@ -1243,6 +1243,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
   switch (metric)
   {
     case AbsoluteErrorMetric:
+    case PixelDifferenceCountErrorMetric:
     {
       size_t
         columns,
@@ -1323,6 +1324,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
           switch (metric)
           {
             case AbsoluteErrorMetric:
+            case PixelDifferenceCountErrorMetric:
             {
               (void) FormatLocaleFile(stderr,"%.*g (%.*g)",GetMagickPrecision(),
                 ceil(scale*distortion),GetMagickPrecision(),distortion);
@@ -1453,6 +1455,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             case PeakSignalToNoiseRatioErrorMetric:
             case PerceptualHashErrorMetric:
             case PhaseCorrelationErrorMetric:
+            case PixelDifferenceCountErrorMetric:
             case StructuralSimilarityErrorMetric:
             case StructuralDissimilarityErrorMetric:
             {

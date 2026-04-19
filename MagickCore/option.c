@@ -1853,6 +1853,7 @@ static const OptionInfo
     { "MSE", MeanSquaredErrorMetric, UndefinedOptionFlag, MagickFalse },
     { "NCC", NormalizedCrossCorrelationErrorMetric, UndefinedOptionFlag, MagickFalse },
     { "PAE", PeakAbsoluteErrorMetric, UndefinedOptionFlag, MagickFalse },
+    { "PDC", PixelDifferenceCountErrorMetric, UndefinedOptionFlag, MagickFalse },
     { "PHASE", PhaseCorrelationErrorMetric, UndefinedOptionFlag, MagickFalse },
     { "PHASH", PerceptualHashErrorMetric, UndefinedOptionFlag, MagickFalse },
     { "PSNR", PeakSignalToNoiseRatioErrorMetric, UndefinedOptionFlag, MagickFalse },

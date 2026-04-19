@@ -40,7 +40,8 @@ typedef enum
   StructuralSimilarityErrorMetric,
   StructuralDissimilarityErrorMetric,
   PhaseCorrelationErrorMetric,
-  DotProductCorrelationErrorMetric
+  DotProductCorrelationErrorMetric,
+  PixelDifferenceCountErrorMetric
 } MetricType;
 
 extern MagickExport double
