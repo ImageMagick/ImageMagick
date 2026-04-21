@@ -612,8 +612,11 @@ jobs:
             ${{github.workspace}}/artifacts/*.AppImage
 
       - name: Save provenance as multiple.intoto.jsonl
+        env:
+          BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
+          VERSION: ${{needs.version.outputs.version}}
         run: |
-          cp "${{steps.attest.outputs.bundle-path}}" "${{github.workspace}}/multiple.intoto.jsonl"
+          cp "$BUNDLE_PATH" "${{github.workspace}}/artifacts/ImageMagick-$VERSION.intoto.jsonl"
 
       - name: Publish release
         env:
@@ -625,7 +628,7 @@ jobs:
             ${{github.workspace}}/artifacts/*.exe \
             ${{github.workspace}}/artifacts/*.msixbundle \
             ${{github.workspace}}/artifacts/*.AppImage \
-            ${{github.workspace}}/multiple.intoto.jsonl
+            ${{github.workspace}}/artifacts/*.intoto.jsonl
 
   prepare_msix:
     name: Prepare Msix
