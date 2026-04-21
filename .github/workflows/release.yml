@@ -627,11 +627,22 @@ jobs:
             ${{github.workspace}}/artifacts/*.AppImage \
             ${{github.workspace}}/multiple.intoto.jsonl
 
+  prepare_msix:
+    name: Prepare Msix
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Sync forked winget-pkgs repository
+        env:
+          GH_TOKEN: ${{secrets.WINGET_TOKEN}}
+        run: gh repo sync dlemstra/winget-pkgs --source microsoft/winget-pkgs
+
   release_msix:
     name: Publish Msix ${{matrix.quantum}}${{matrix.hdri_flag}}
     needs:
       - version
       - release
+      - prepare_msix
     runs-on: windows-2025
 
     strategy:
