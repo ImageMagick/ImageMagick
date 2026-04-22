@@ -69,6 +69,7 @@
 #include "MagickCore/profile-private.h"
 #include "MagickCore/property.h"
 #include "MagickCore/quantum.h"
+#include "MagickCore/registry.h"
 #include "MagickCore/resize.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/semaphore.h"
@@ -1177,6 +1178,67 @@ MagickExport Image *ReadInlineImage(const ImageInfo *image_info,
   return(image);
 }
 
+static MagickBooleanType ValidateCompressionStrict(
+  const ImageInfo *image_info,
+  const Image *image,
+  ExceptionInfo *exception)
+{
+  // WONTFIX this does not work
+  // this would be nice to avoid patching all coders
+
+  const char *strict = GetImageRegistry(StringRegistryType, "strict", exception);
+  // if (GetStrictMode() == MagickFalse)
+  if (LocaleCompare(strict, "true") != 0)
+    return MagickTrue;
+
+  printf("ValidateCompressionStrict: strict is true -> checking\n");
+
+  if (image_info->compression == UndefinedCompression) {
+    printf("ValidateCompressionStrict: compression is undefined\n");
+    return MagickTrue;
+  }
+
+  /*
+    Ask the coder indirectly by checking if the requested compression
+    differs from what would actually be used.
+  */
+  CompressionType requested = image_info->compression;
+
+  /*
+    Clone info so we can probe without mutating caller state
+  */
+  ImageInfo *probe_info = CloneImageInfo(image_info);
+  if (probe_info == (ImageInfo *) NULL)
+    return MagickFalse;
+
+  /*
+    Let IM normalize/resolve compression for the format
+  */
+  (void) SetImageInfo(probe_info, 0, exception);
+
+  CompressionType resolved = probe_info->compression;
+
+  DestroyImageInfo(probe_info);
+
+  printf("ValidateCompressionStrict: resolved: %s\n", CommandOptionToMnemonic(MagickCompressOptions, resolved));
+  printf("ValidateCompressionStrict: requested: %s\n", CommandOptionToMnemonic(MagickCompressOptions, requested));
+
+  if (resolved != requested)
+  {
+    ThrowMagickException(exception,
+      GetMagickModule(),
+      OptionError,
+      "CompressionNotSupported",
+      "`%s` compression not supported for `%s`",
+      CommandOptionToMnemonic(MagickCompressOptions, requested),
+      image_info->magick);
+
+    return MagickFalse;
+  }
+
+  return MagickTrue;
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1348,6 +1410,9 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
         LockSemaphoreInfo(magick_info->semaphore);
       status=IsCoderAuthorized(magick_info->magick_module,write_info->magick,
         WritePolicyRights,exception);
+      status = ValidateCompressionStrict(image_info, image, exception);
+      if (status == MagickFalse)
+        return(status);
       if (status != MagickFalse)
         status=encoder(write_info,image,exception);
       if (GetMagickEncoderThreadSupport(magick_info) == MagickFalse)

@@ -468,6 +468,8 @@ static const OptionInfo
     { "  solarize", 0, UndefinedOptionFlag, MagickFalse },
     { "  splice", 0, UndefinedOptionFlag, MagickFalse },
     { "  spread", 0, UndefinedOptionFlag, MagickFalse },
+    // TODO is this needed?
+    // { "  strict", 0, UndefinedOptionFlag, MagickFalse },
     { "  strip", 0, UndefinedOptionFlag, MagickFalse },
     { "  swirl", 0, UndefinedOptionFlag, MagickFalse },
     { "  threshold", 0, UndefinedOptionFlag, MagickFalse },

@@ -357,6 +357,7 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   image=AcquireImage(image_info,exception);
+  printf("tiff line 360: OpenBlob\n");
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
     {
@@ -1244,6 +1245,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   image=AcquireImage(image_info,exception);
+  printf("tiff line 1248: OpenBlob\n");
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
     {
@@ -2681,6 +2683,7 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
   assert(exception->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  printf("tiff line 2686: OpenBlob\n");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
@@ -3527,6 +3530,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
   assert(exception->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  printf("tiff line 3533: OpenBlob\n");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
@@ -3574,6 +3578,42 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         (image_info->type != image->type))
       (void) SetImageType(image,image_info->type,exception);
     compression=image_info->compression;
+
+    // debug
+    printf("tiff: compression: %s\n", CommandOptionToMnemonic(MagickCompressOptions, compression));
+    printf("tiff: image->compression: %s\n", CommandOptionToMnemonic(MagickCompressOptions, image->compression));
+    printf("tiff: preserve_compression: %d\n", preserve_compression);
+
+    #if defined(COMPRESSION_JBIG)
+    printf("tiff: COMPRESSION_JBIG is defined\n");
+    #else
+    printf("tiff: COMPRESSION_JBIG is not defined\n");
+    #endif
+
+    #if defined(COMPRESSION_JBIG2)
+    printf("tiff: COMPRESSION_JBIG2 is defined\n");
+    #else
+    printf("tiff: COMPRESSION_JBIG2 is not defined\n");
+    #endif
+
+    #if defined(COMPRESSION_LERC)
+    printf("tiff: COMPRESSION_LERC is defined\n");
+    #else
+    printf("tiff: COMPRESSION_LERC is not defined\n");
+    #endif
+
+    #if defined(COMPRESSION_LZMA)
+    printf("tiff: COMPRESSION_LZMA is defined\n");
+    #else
+    printf("tiff: COMPRESSION_LZMA is not defined\n");
+    #endif
+
+    #if defined(COMPRESSION_ZSTD)
+    printf("tiff: COMPRESSION_ZSTD is defined\n");
+    #else
+    printf("tiff: COMPRESSION_ZSTD is not defined\n");
+    #endif
+
     if (preserve_compression != MagickFalse)
       compression=image->compression;
     switch (compression)
@@ -3636,8 +3676,16 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
 
     MagickBooleanType is_strict = MagickFalse;
     const char *strict_val = GetImageRegistry(StringRegistryType, "strict", exception);
+    if (strict_val == NULL) {
+      printf("tiff: strict_val is NULL\n");
+    }
     if (strict_val != NULL && LocaleCompare(strict_val, "true") == 0) {
       is_strict = MagickTrue;
+      // is_strict = 1;
+      printf("tiff: strict = true\n");
+    }
+    else {
+      printf("tiff: strict = false\n");
     }
 
     switch (compression)
@@ -3659,6 +3707,14 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         break;
       }
 #endif
+// TODO implement JBIG2 compression
+// #if defined(COMPRESSION_JBIG2)
+//       case JBIG2Compression:
+//       {
+//         compress_tag=COMPRESSION_JBIG2;
+//         break;
+//       }
+// #endif
       case JPEGCompression:
       {
         compress_tag=COMPRESSION_JPEG;
