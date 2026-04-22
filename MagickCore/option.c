@@ -1156,6 +1156,7 @@ static const OptionInfo
     { "-stereo", 1L, NonMagickOptionFlag, MagickFalse },
     { "+stretch", 1L, DeprecateOptionFlag, MagickTrue },
     { "-stretch", 1L, SimpleOperatorFlag, MagickFalse },
+    { "-strict", 0L, SpecialOptionFlag, MagickFalse },
     { "+strip", 0L, DeprecateOptionFlag, MagickTrue },
     { "-strip", 0L, SimpleOperatorFlag, MagickFalse },
     { "+stroke", 0L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },

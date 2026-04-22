@@ -78,6 +78,7 @@
 #include "MagickCore/quantum.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/profile-private.h"
+#include "MagickCore/registry.h"
 #include "MagickCore/resize.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/semaphore.h"
@@ -3632,6 +3633,13 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
     (void) TIFFSetField(tiff,TIFFTAG_IMAGELENGTH,(uint32) image->rows);
     (void) TIFFSetField(tiff,TIFFTAG_IMAGEWIDTH,(uint32) image->columns);
+
+    MagickBooleanType is_strict = MagickFalse;
+    const char *strict_val = GetImageRegistry(StringRegistryType, "strict", exception);
+    if (strict_val != NULL && LocaleCompare(strict_val, "true") == 0) {
+      is_strict = MagickTrue;
+    }
+
     switch (compression)
     {
       case FaxCompression:
@@ -3699,12 +3707,32 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         break;
       }
     }
-    if ((compress_tag != COMPRESSION_NONE) &&
-        (TIFFIsCODECConfigured(compress_tag) == 0))
+    if (((compress_tag != COMPRESSION_NONE) &&
+        (TIFFIsCODECConfigured(compress_tag) == 0)) || (
+          is_strict &&
+          // some compression was requested
+          compression != UndefinedCompression &&
+          compression != NoCompression &&
+          // but no compression is set
+          compress_tag == COMPRESSION_NONE
+        ))
       {
+        // FIXME if is_strict==1:
+        // no output file should be written
+        // not even an empty file
+        // TODO defer OpenBlob in line 3533
         (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
           "CompressionNotSupported","`%s'",CommandOptionToMnemonic(
           MagickCompressOptions,(ssize_t) compression));
+        if (is_strict) {
+          TIFFClose(tiff);
+          (void) CloseBlob(image);
+          // no: magick: MagickCore/blob.c:1780: GetBlobError: Assertion `image->signature == MagickCoreSignature' failed.
+          // image=DestroyImage(image);
+          // remove the empty output file
+          (void) RelinquishUniqueFileResource(image_info->filename);
+          return(MagickFalse);
+        }
         compress_tag=COMPRESSION_NONE;
         compression=NoCompression;
       }

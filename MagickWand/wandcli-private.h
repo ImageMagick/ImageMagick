@@ -71,6 +71,7 @@ typedef enum
   ProcessScriptOption         = 0x0200,  /* allow '-script' use */
   ProcessReadOption           = 0x0400,  /* allow '-read' use */
   ProcessWarnDeprecated       = 0x0800,  /* warn about deprecated options */
+  ProcessStrictOption         = 0x1000,  /* allow '-strict' use */
 
   /* Option Processing Flags */
   ProcessOneOptionOnly        = 0x4000,  /* Process one option only */

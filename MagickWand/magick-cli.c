@@ -694,6 +694,15 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand,int argc,char **argv,
       if ( (option_type & GenesisOptionFlag) != 0 )
         break; /* next option */
 
+      /* Handle special option -strict */
+      if ( (option_type & SpecialOptionFlag) != 0 ) {
+        if ( (cli_wand->process_flags & ProcessStrictOption) == 0
+             && LocaleCompare(option,"-strict") == 0 ) {
+          // -define registry:strict=true
+          SetImageRegistry(StringRegistryType, "strict", "true", cli_wand->wand.exception);
+        }
+        break; /* next option */
+      }
       /* Handle any special options for CLI (-script handled above) */
       if ( (option_type & SpecialOptionFlag) != 0 ) {
         if ( (cli_wand->process_flags & ProcessExitOption) != 0
@@ -812,6 +821,7 @@ static MagickBooleanType MagickCommandUsage(void)
       "  -help                print program options\n"
       "  -list type           print a list of supported option arguments\n"
       "  -log format          format of debugging information\n"
+      "  -strict              fail if an option is not available\n"
       "  -usage               print program usage\n"
       "  -version             print version information",
     operators[] =
