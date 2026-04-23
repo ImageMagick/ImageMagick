@@ -453,7 +453,8 @@ static void GetIPTCProperty(const Image *image,const char *key,
     i;
 
   size_t
-    length;
+    length,
+    offset;
 
   profile=GetImageProfile(image,"iptc");
   if (profile == (StringInfo *) NULL)
@@ -470,12 +471,13 @@ static void GetIPTCProperty(const Image *image,const char *key,
     if ((ssize_t) GetStringInfoDatum(profile)[i] != 0x1c)
       continue;
     /* IPTC record header is 5 bytes: marker, dataset, record, 2-byte length. */
-    if ((i+5) > (ssize_t) GetStringInfoLength(profile))
+    offset=(size_t) i+5;
+    if (offset > GetStringInfoLength(profile))
       break;
     length=(size_t) (GetStringInfoDatum(profile)[i+3] << 8);
     length|=GetStringInfoDatum(profile)[i+4];
     /* Record claims `length` bytes of data following the header. */
-    if (((size_t) (i+5)+length) > GetStringInfoLength(profile))
+    if (length > (GetStringInfoLength(profile)-offset))
       break;
     if (((long) GetStringInfoDatum(profile)[i+1] == dataset) &&
         ((long) GetStringInfoDatum(profile)[i+2] == record))
