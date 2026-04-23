@@ -1565,6 +1565,9 @@ static void GetEXIFProperty(const Image *image,const char *property,
               if ((tag_value == GPS_LATITUDE) || (tag_value == GPS_LONGITUDE) ||
                   (tag_value == GPS_TIMESTAMP))
                 {
+                  /* GPS fractions are three URATIONAL values (deg, min, sec). */
+                  if ((p < exif) || (p > (exif+length-3*tag_bytes[EXIF_FMT_URATIONAL])))
+                    break;
                   components=1;
                   EXIFGPSFractions("%.20g/%.20g,%.20g/%.20g,%.20g/%.20g",
                     (double) ReadPropertyUnsignedLong(endian,p),
