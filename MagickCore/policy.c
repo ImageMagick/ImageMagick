@@ -716,7 +716,10 @@ MagickExport MagickBooleanType IsRightsAuthorized(const PolicyDomain domain,
   if (policies == (const PolicyInfo **) NULL)
     return(MagickTrue);
   if (ParseNamespace(qualified_pattern,&name,&pattern) == MagickFalse)
-    return(MagickFalse);
+    {
+      policies=(const PolicyInfo **) RelinquishMagickMemory((void *) policies);
+      return(MagickFalse);
+    }
   /*
     Evaluate policies in order; last match wins.
   */
