@@ -864,7 +864,10 @@ static char **SVGKeyValuePairs(SVGInfo *svg_info,const int key_sentinel,
       {
         (void) ThrowMagickException(svg_info->exception,GetMagickModule(),
           ResourceLimitError,"MemoryAllocationFailed","`%s'",text);
-        break;
+        for (j=0; j < i; j++)
+          tokens[j]=DestroyString(tokens[j]);
+        tokens=(char **) RelinquishMagickMemory(tokens);
+        return((char **) NULL);
       }
     (void) CopyMagickString(tokens[i],p,(size_t) (q-p+1));
     SVGStripString(MagickTrue,tokens[i]);
@@ -3670,8 +3673,9 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
       blob_length,
       encode_length;
 
-    ssize_t
-      i;
+  ssize_t
+    i,
+    j;
 
     unsigned char
       *blob;

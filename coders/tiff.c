@@ -2768,6 +2768,7 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
       status=MagickFalse;
   }
   buffer=(unsigned char *) RelinquishMagickMemory(buffer);
+  buffer=(unsigned char *) NULL;
   TIFFClose(tiff);
   huffman_image=DestroyImage(huffman_image);
   (void) fclose(file);

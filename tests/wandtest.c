@@ -5232,7 +5232,7 @@ int main(int argc,char **argv)
         if (path[strlen(path)-1] != '/')
           (void) ConcatenateMagickString(path,"/",MagickPathExtent);
       }
-    (void) strcat(path,"sequence.miff");
+    (void) ConcatenateMagickString(path,"sequence.miff",MagickPathExtent);
     status=MagickReadImage(magick_wand,path);
   }
   if (status == MagickFalse)

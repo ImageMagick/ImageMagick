@@ -1439,6 +1439,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
 { \
   if (xref != (MagickOffsetType *) NULL) \
     xref=(MagickOffsetType *) RelinquishMagickMemory(xref); \
+  xref=(MagickOffsetType *) NULL; \
   ThrowWriterException((exception),(message)); \
 }
 
