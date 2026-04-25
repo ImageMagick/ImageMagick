@@ -3579,8 +3579,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
                     continue;
                   break;
                 }
-                if ((q == (char *) NULL) || (p == (char *) NULL) || ((q-4) < p) ||
-                    ((q-p+4+1) > MagickPathExtent))
+                if ((q == (char *) NULL) || (p == (char *) NULL) ||
+                    ((q-4) < p) || ((size_t) (q-p+4+1) > extent))
                   {
                     status=MagickFalse;
                     break;
