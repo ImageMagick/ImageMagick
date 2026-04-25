@@ -826,7 +826,8 @@ static char **SVGKeyValuePairs(SVGInfo *svg_info,const int key_sentinel,
     extent;
 
   ssize_t
-    i;
+    i,
+    j;
 
   *number_tokens=0;
   if (text == (const char *) NULL)
@@ -876,8 +877,14 @@ static char **SVGKeyValuePairs(SVGInfo *svg_info,const int key_sentinel,
   }
   tokens[i]=(char *) AcquireMagickMemory((size_t) (q-p+2));
   if (tokens[i] == (char *) NULL)
-    (void) ThrowMagickException(svg_info->exception,GetMagickModule(),
-      ResourceLimitError,"MemoryAllocationFailed","`%s'",text);
+    {
+      (void) ThrowMagickException(svg_info->exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",text);
+      for (j=0; j < i; j++)
+        tokens[j]=DestroyString(tokens[j]);
+      tokens=(char **) RelinquishMagickMemory(tokens);
+      return((char **) NULL);
+    }
   else
     {
       (void) CopyMagickString(tokens[i],p,(size_t) (q-p+1));
@@ -3673,12 +3680,11 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
       blob_length,
       encode_length;
 
-  ssize_t
-    i,
-    j;
+ssize_t
+    i;
 
-    unsigned char
-      *blob;
+  unsigned char
+    *blob;
 
     delegate_info=GetDelegateInfo((char *) NULL,"TRACE",exception);
     if (delegate_info != (DelegateInfo *) NULL)
