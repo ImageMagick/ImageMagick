@@ -1,12 +1,13 @@
 on:
   workflow_dispatch:
-  schedule:
-  - cron: 0 6 * * *
   push:
     branches:
     - main
-    paths:
-    - .github/workflows/codeql-analysis.yml
+    tags:
+    - '!*'
+  pull_request:
+    branches:
+    - main
 
 permissions: {}
 
