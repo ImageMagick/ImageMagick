@@ -2301,7 +2301,8 @@ static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
   extent=(double) mvg_info->offset+pad+(PrimitiveExtentPad+1)*(double) quantum;
   if (extent <= (double) *mvg_info->extent)
     return(MagickTrue);
-  if ((extent >= (double) GetMaxMemoryRequest()) || (IsNaN(extent) != 0))
+  if ((((extent+1)*(double) quantum) >= (double) GetMaxMemoryRequest()) ||
+      (IsNaN(extent) != 0))
     return(MagickFalse);
   if (mvg_info->offset > 0)
     {
