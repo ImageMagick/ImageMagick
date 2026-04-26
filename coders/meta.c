@@ -1759,7 +1759,7 @@ iptc_find:
         info_length++;
         tag_length|=(unsigned int) c;
       }
-    if (tag_length > (length+1))
+    if (tag_length > length)
       break;
     p+=(ptrdiff_t) tag_length;
     length-=tag_length;
