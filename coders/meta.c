@@ -1663,7 +1663,11 @@ static size_t GetIPTCStream(unsigned char **info,size_t length)
         return(tag_length);
       }
     if ((tag_length & 0x01) != 0)
-      tag_length++;
+      {
+        tag_length++;
+        if (tag_length > extent)
+          break;
+      }
     p+=(ptrdiff_t) tag_length;
     extent-=tag_length;
   }
