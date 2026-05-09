@@ -6019,7 +6019,7 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
         (double) OpaqueAlpha)-(q->alpha_trait != UndefinedPixelTrait ?
         q->alpha : (double) OpaqueAlpha);
       distance=pixel*pixel;
-      if (MagickSafeSignificantError(distance*distance,fuzz) != MagickFalse)
+      if (MagickSafeSignificantError(distance,fuzz) != MagickFalse)
         return(MagickFalse);
       /*
         Generate a alpha scaling factor to generate a 4D cone on colorspace.
@@ -6039,7 +6039,7 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
     {
       pixel=p->black-q->black;
       distance+=pixel*pixel*scale;
-      if (MagickSafeSignificantError(distance*distance,fuzz) != MagickFalse)
+      if (MagickSafeSignificantError(distance,fuzz) != MagickFalse)
         return(MagickFalse);
       scale*=QuantumScale*((double) QuantumRange-(double) p->black);
       scale*=QuantumScale*((double) QuantumRange-(double) q->black);
