@@ -1209,6 +1209,10 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         Keep top objects.
       */
       top_ids=(ssize_t) StringToLong(artifact);
+      if (top_ids < 0)
+        top_ids=0;
+      if (top_ids >= (ssize_t) component_image->colors)
+        top_ids=(ssize_t) component_image->colors-1;
       top_objects=(CCObjectInfo *) AcquireQuantumMemory(component_image->colors,
         sizeof(*top_objects));
       if (top_objects == (CCObjectInfo *) NULL)
