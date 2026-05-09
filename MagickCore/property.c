@@ -2185,7 +2185,7 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
     " width=\"%.20g\" height=\"%.20g\">\n"
     "<g>\n"
     "<path fill-rule=\"evenodd\" style=\"fill:#000000;stroke:#000000;"
-    "stroke-width:0;stroke-antialiasing:false\" d=\"\n"),(double) columns,
+    "stroke-width:0;shape-rendering:crispEdges\" d=\"\n"),(double) columns,
     (double) rows);
   (void) ConcatenateString(&path,message);
   (void) memset(point,0,sizeof(point));

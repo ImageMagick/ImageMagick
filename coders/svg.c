@@ -1123,6 +1123,12 @@ static void SVGProcessStyleElement(SVGInfo *svg_info,const xmlChar *name,
       case 'S':
       case 's':
       {
+        if (LocaleCompare(keyword,"shape-rendering") == 0)
+          {
+            (void) FormatLocaleFile(svg_info->file,"stroke-antialias %d\n",
+              LocaleCompare(value,"crispEdges") == 0);
+            break;
+          }
         if (LocaleCompare(keyword,"stop-color") == 0)
           {
             (void) CloneString(&svg_info->stop_color,value);
@@ -1140,12 +1146,6 @@ static void SVGProcessStyleElement(SVGInfo *svg_info,const xmlChar *name,
             else
               (void) FormatLocaleFile(svg_info->file,
                 "stroke \"%s\"\n",value);
-            break;
-          }
-        if (LocaleCompare(keyword,"stroke-antialiasing") == 0)
-          {
-            (void) FormatLocaleFile(svg_info->file,"stroke-antialias %d\n",
-              LocaleCompare(value,"true") == 0);
             break;
           }
         if (LocaleCompare(keyword,"stroke-dasharray") == 0)
@@ -2162,6 +2162,12 @@ static void SVGStartElement(void *context,const xmlChar *name,
         case 'S':
         case 's':
         {
+          if (LocaleCompare(keyword,"shape-rendering") == 0)
+            {
+              (void) FormatLocaleFile(svg_info->file,"stroke-antialias %d\n",
+                LocaleCompare(value,"crispEdges") == 0);
+              break;
+            }
           if (LocaleCompare(keyword,"stop-color") == 0)
             {
               (void) CloneString(&svg_info->stop_color,value);
@@ -2176,12 +2182,6 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   break;
                 }
               (void) FormatLocaleFile(svg_info->file,"stroke \"%s\"\n",value);
-              break;
-            }
-          if (LocaleCompare(keyword,"stroke-antialiasing") == 0)
-            {
-              (void) FormatLocaleFile(svg_info->file,"stroke-antialias %d\n",
-                LocaleCompare(value,"true") == 0);
               break;
             }
           if (LocaleCompare(keyword,"stroke-dasharray") == 0)
