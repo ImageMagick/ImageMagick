@@ -841,7 +841,8 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image,
     sun_info.maptype=RMT_NONE;
     sun_info.maplength=0;
     number_pixels=(MagickSizeType) image->columns*image->rows;
-    if ((4*number_pixels) != (size_t) (4*number_pixels))
+    if ((HeapOverflowSanityCheck(image->columns,image->rows) != MagickFalse) ||
+        (number_pixels > (MAGICK_SSIZE_MAX/4)))
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     if (image->storage_class == DirectClass)
       {
