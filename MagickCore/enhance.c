@@ -1279,7 +1279,8 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
         image->colormap[i].red=luma+color_correction.saturation*cdl_map[
           ScaleQuantumToMap(ClampToQuantum(image->colormap[i].red))].red-luma;
         image->colormap[i].green=luma+color_correction.saturation*cdl_map[
-          ScaleQuantumToMap(ClampToQuantum(image->colormap[i].green))].green-luma;
+          ScaleQuantumToMap(ClampToQuantum(image->colormap[i].green))].green-
+          luma;
         image->colormap[i].blue=luma+color_correction.saturation*cdl_map[
           ScaleQuantumToMap(ClampToQuantum(image->colormap[i].blue))].blue-luma;
       }
@@ -4553,7 +4554,8 @@ MagickExport MagickBooleanType WhiteBalanceImage(Image *image,
         #pragma omp atomic
 #endif
         progress++;
-        proceed=SetImageProgress(image,WhiteBalanceImageTag,progress,image->rows);
+        proceed=SetImageProgress(image,WhiteBalanceImageTag,progress,
+          image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }

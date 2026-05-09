@@ -1041,8 +1041,9 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
 
           r=p-(ssize_t) (GetPixelChannels(image)*MagickMax(width,1)*
             (size_t) (mid.y-v)+GetPixelChannels(image)*(size_t) (mid.x-u));
-          intensity=ScaleQuantumToChar((const Quantum) GetPixelIntensity(image,r))-
-            (double) ScaleQuantumToChar((const Quantum) GetPixelIntensity(image,p));
+          intensity=ScaleQuantumToChar((const Quantum)
+            GetPixelIntensity(image,r))-(double)
+            ScaleQuantumToChar((const Quantum) GetPixelIntensity(image,p));
           if ((intensity >= -MaxIntensity) && (intensity <= MaxIntensity))
             weights[id][n]=intensity_gaussian[(ssize_t) intensity+MaxIntensity]*
               spatial_gaussian[n];
@@ -1084,8 +1085,9 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
             {
               for (u=0; u < (ssize_t) MagickMax(width,1); u++)
               {
-                 r=p-(ssize_t) (GetPixelChannels(image)*MagickMax(width,1)*(size_t)
-                  (mid.y-v)+GetPixelChannels(image)*(size_t) (mid.x-u));
+                 r=p-(ssize_t) (GetPixelChannels(image)*MagickMax(width,1)*
+                  (size_t) (mid.y-v)+GetPixelChannels(image)*(size_t)
+                  (mid.x-u));
                 pixel+=weights[id][n]*(double) r[i];
                 gamma+=weights[id][n];
                 n++;
@@ -1106,8 +1108,8 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
               alpha,
               beta;
 
-            r=p-(ssize_t) (GetPixelChannels(image)*MagickMax(width,1)*(size_t) (mid.y-v)+
-              GetPixelChannels(image)*(size_t) (mid.x-u));
+            r=p-(ssize_t) (GetPixelChannels(image)*MagickMax(width,1)*(size_t)
+              (mid.y-v)+GetPixelChannels(image)*(size_t) (mid.x-u));
             alpha=(double) (QuantumScale*(double) GetPixelAlpha(image,p));
             beta=(double) (QuantumScale*(double) GetPixelAlpha(image,r));
             pixel+=weights[id][n]*(double) r[i];

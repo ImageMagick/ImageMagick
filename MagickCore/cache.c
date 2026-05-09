@@ -5512,7 +5512,7 @@ MagickPrivate MagickBooleanType SyncAuthenticPixelCacheNexus(Image *image,
   assert(cache_info->signature == MagickCoreSignature);
   if (cache_info->type == UndefinedCache)
     return(MagickFalse);
-  if (image->mask_trait != UpdatePixelTrait)
+  if ((image->mask_trait & UpdatePixelTrait) != 0)
     {
       if (((image->channels & WriteMaskChannel) != 0) &&
           (ClipPixelCacheNexus(image,nexus_info,exception) == MagickFalse))
