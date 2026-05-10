@@ -3320,7 +3320,6 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
   if (SyncImagePixelCache(image,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
-  image->mask_trait=UpdatePixelTrait;
   mask_view=AcquireVirtualCacheView(mask,exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -3379,7 +3378,7 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
   }
-  image->mask_trait=UndefinedPixelTrait;
+  image->mask_trait=UpdatePixelTrait;
   mask_view=DestroyCacheView(mask_view);
   image_view=DestroyCacheView(image_view);
   return(status);
@@ -3480,7 +3479,6 @@ MagickExport MagickBooleanType SetImageRegionMask(Image *image,
   if (SyncImagePixelCache(image,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
-  image->mask_trait=UpdatePixelTrait;
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
@@ -3534,7 +3532,7 @@ MagickExport MagickBooleanType SetImageRegionMask(Image *image,
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
   }
-  image->mask_trait=UndefinedPixelTrait;
+  image->mask_trait=UpdatePixelTrait;
   image_view=DestroyCacheView(image_view);
   return(status);
 }
