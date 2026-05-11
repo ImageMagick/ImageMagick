@@ -1744,7 +1744,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       {
         if (photometric == PHOTOMETRIC_SEPARATED)
           method=GetJPEGMethod(image,tiff,photometric,bits_per_sample);
-        else if (method != ReadStripMethod)
+        else if ((method != ReadStripMethod) ||
+                 (compress_tag == COMPRESSION_OJPEG) ||
+                 (photometric == PHOTOMETRIC_YCBCR))
           method=ReadGenericMethod;
       }
 #if defined(WORDS_BIGENDIAN)
