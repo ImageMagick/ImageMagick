@@ -5053,6 +5053,7 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
     final_image_delay,
     frame_delay,
     insert_layers,
+    number_loops=0,
     mng_iterations=1,
     simplicity=0,
     subframe_height=0,
@@ -5854,8 +5855,9 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
 
                 else
                   {
-                    if ((MagickSizeType) loop_iters > GetMagickResourceLimit(ListLengthResource))
-                      loop_iters=(ssize_t) GetMagickResourceLimit(ListLengthResource);
+                    if ((MagickSizeType) number_loops+loop_iters > GetMagickResourceLimit(ListLengthResource))
+                      ThrowReaderException(ResourceLimitError,
+                        "ListLengthExceedsLimit");
                     if (loop_iters >= 2147483647L)
                       loop_iters=2147483647L;
                     if (image_info->number_scenes != 0)
@@ -5863,6 +5865,7 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
                         loop_iters=(ssize_t) image_info->number_scenes;
                     mng_info->loop_jump[loop_level]=TellBlob(image);
                     mng_info->loop_count[loop_level]=loop_iters;
+                    number_loops+=loop_iters;
                   }
 
                 mng_info->loop_iteration[loop_level]=0;
