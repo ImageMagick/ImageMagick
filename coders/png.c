@@ -464,6 +464,8 @@ static SemaphoreInfo
   waste more memory.
 */
 #define MNG_MAX_OBJECTS 256
+#define MNG_MAX_LOOP_NESTING 256
+#define MNG_MAX_LOOP_OPS 1000000
 
 /*
   Maximum valid size_t in PNG/MNG chunks is (2^31)-1
@@ -578,7 +580,7 @@ typedef struct _MngReadInfo
     have_global_srgb;
 
   MagickOffsetType
-    loop_jump[256];
+    loop_jump[MNG_MAX_LOOP_NESTING];
 
   MngBox
     clip,
@@ -613,8 +615,8 @@ typedef struct _MngReadInfo
 
   ssize_t
     image_found,
-    loop_count[256],
-    loop_iteration[256],
+    loop_count[MNG_MAX_LOOP_NESTING],
+    loop_iteration[MNG_MAX_LOOP_NESTING],
     scenes_found,
     x_off[MNG_MAX_OBJECTS],
     y_off[MNG_MAX_OBJECTS];
@@ -623,7 +625,7 @@ typedef struct _MngReadInfo
     /* These flags could be combined into one byte */
     exists[MNG_MAX_OBJECTS],
     frozen[MNG_MAX_OBJECTS],
-    loop_active[256],
+    loop_active[MNG_MAX_LOOP_NESTING],
     invisible[MNG_MAX_OBJECTS],
     viewable[MNG_MAX_OBJECTS];
 
@@ -5053,7 +5055,7 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
     final_image_delay,
     frame_delay,
     insert_layers,
-    number_loops=0,
+    number_loop_ops=0,
     mng_iterations=1,
     simplicity=0,
     subframe_height=0,
@@ -5837,6 +5839,8 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
         if (memcmp(type,mng_LOOP,4) == 0)
           {
             ssize_t loop_iters=1;
+            if (number_loop_ops++ > MNG_MAX_LOOP_OPS)
+              ThrowReaderException(ResourceLimitError,"too many LOOP/ENDL ops");
             if (length > 4)
               {
                 loop_level=chunk[0];
@@ -5855,9 +5859,6 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
 
                 else
                   {
-                    if ((MagickSizeType) number_loops+loop_iters > GetMagickResourceLimit(ListLengthResource))
-                      ThrowReaderException(ResourceLimitError,
-                        "ListLengthExceedsLimit");
                     if (loop_iters >= 2147483647L)
                       loop_iters=2147483647L;
                     if (image_info->number_scenes != 0)
@@ -5865,7 +5866,6 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
                         loop_iters=(ssize_t) image_info->number_scenes;
                     mng_info->loop_jump[loop_level]=TellBlob(image);
                     mng_info->loop_count[loop_level]=loop_iters;
-                    number_loops+=loop_iters;
                   }
 
                 mng_info->loop_iteration[loop_level]=0;
@@ -5876,6 +5876,8 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
 
         if (memcmp(type,mng_ENDL,4) == 0)
           {
+            if (number_loop_ops++ > MNG_MAX_LOOP_OPS)
+              ThrowReaderException(ResourceLimitError,"too many LOOP/ENDL ops");
             if (length > 0)
               {
                 loop_level=chunk[0];
@@ -5907,9 +5909,8 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
 
                         if (mng_info->loop_count[loop_level] > 0)
                           {
-                            offset=
-                              SeekBlob(image,mng_info->loop_jump[loop_level],
-                              SEEK_SET);
+                            offset=SeekBlob(image,
+                              mng_info->loop_jump[loop_level],SEEK_SET);
 
                             if (offset < 0)
                               {
