@@ -527,6 +527,12 @@ static Image *ReadJXLImage(const ImageInfo *image_info,
           }
         JXLInitImage(image,&basic_info);
         jxl_status=JXL_DEC_BASIC_INFO;
+        status=SetImageExtent(image,image->columns,image->rows,exception);
+        if (status == MagickFalse)
+          {
+            jxl_status=JXL_DEC_ERROR;
+            break;
+          }
         break;
       }
       case JXL_DEC_COLOR_ENCODING:
@@ -667,6 +673,12 @@ static Image *ReadJXLImage(const ImageInfo *image_info,
               break;
             image=SyncNextImageInList(image);
             JXLInitImage(image,&basic_info);
+            status=SetImageExtent(image,image->columns,image->rows,exception);
+            if (status == MagickFalse)
+              {
+                jxl_status=JXL_DEC_ERROR;
+                break;
+              }
           }
         (void) memset(&frame_header,0,sizeof(frame_header));
         if (JxlDecoderGetFrameHeader(jxl_info,&frame_header) == JXL_DEC_SUCCESS)
