@@ -431,7 +431,8 @@ static double *GenerateCoefficients(const Image *image,
                    "Invalid order, should be integer 1 to 5, or 1.5");
         return((double *) NULL);
       }
-      if ( number_arguments < 1+i*cp_size ) {
+      if ((number_arguments < (1+i*cp_size)) ||
+          (((number_arguments-1) % cp_size) != 0)) {
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
                "InvalidArgument", "%s : 'require at least %.20g CPs'",
                "Polynomial", (double) i);
