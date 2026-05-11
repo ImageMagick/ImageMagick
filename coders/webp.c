@@ -61,6 +61,7 @@
 #include "MagickCore/profile-private.h"
 #include "MagickCore/property.h"
 #include "MagickCore/quantum-private.h"
+#include "MagickCore/resource_.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
@@ -488,6 +489,14 @@ static int ReadAnimatedWEBPImage(const ImageInfo *image_info,Image *image,
           (void) SetImageProperty(image,"webp:mux-blend",
             "AtopBackgroundAlphaBlend",exception);
         image_count++;
+        if (AcquireMagickResource(ListLengthResource,image_count) == MagickFalse)
+          {
+            (void) ThrowMagickException(exception,GetMagickModule(),
+              ResourceLimitError,"ListLengthExceedsLimit","`%s'",
+              image_info->filename);
+            webp_status=VP8_STATUS_SUSPENDED;
+            break;
+          }
       } while (WebPDemuxNextFrame(&iter));
       WebPDemuxReleaseIterator(&iter);
     }
