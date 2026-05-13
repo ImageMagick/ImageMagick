@@ -696,11 +696,11 @@ static MagickBooleanType ReadHEICSequenceFrames(const ImageInfo *image_info,
   if (timescale == 0)
     timescale=1;
   decode_options=heif_decoding_options_alloc();
+#if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,21,0)
   decode_options->ignore_sequence_editlist=1;
   /*
     Detect alpha from the track and set up chroma format.
   */
-#if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,21,0)
   has_alpha=heif_track_has_alpha_channel(track);
   image->alpha_trait=UndefinedPixelTrait;
   if (has_alpha != 0)
