@@ -29,7 +29,11 @@ int main(int argc,char **argv)
   MagickCoreGenesis(*argv,MagickTrue);
   exception=AcquireExceptionInfo();
   image_info=CloneImageInfo((ImageInfo *) NULL);
-  (void) strcpy(image_info->filename,argv[1]);
+  if (*argv[1] == '|') {
+    (void) fprintf(stderr,"%s: pipe pseudo-protocol not permitted: `%s'.\n",*argv,argv[1]);
+    exit(1);
+  }
+  (void) CopyMagickString(image_info->filename,argv[1],MaxTextExtent);
   images=ReadImage(image_info,exception);
   if (exception->severity != UndefinedException)
     CatchException(exception);
@@ -50,7 +54,7 @@ int main(int argc,char **argv)
   /*
     Write the image thumbnail.
   */
-  (void) strcpy(thumbnails->filename,argv[2]);
+  (void) CopyMagickString(thumbnails->filename,argv[2],MaxTextExtent);
   WriteImage(image_info,thumbnails);
   /*
     Destroy the image thumbnail and exit.
