@@ -1506,6 +1506,11 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     ThrowMIFFException(CorruptImageError,
                       "UnableToReadImageData");
                   }
+                if (length == 0)
+                  {
+                    (void) BZ2_bzDecompressEnd(&bzip_info);
+                    ThrowMIFFException(CorruptImageError,"UnexpectedEndOfFile");
+                  }
               }
             code=BZ2_bzDecompress(&bzip_info);
             if ((code != BZ_OK) && (code != BZ_STREAM_END))
@@ -1544,6 +1549,11 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     lzma_end(&lzma_info);
                     ThrowMIFFException(CorruptImageError,
                       "UnableToReadImageData");
+                  }
+                if (length == 0)
+                  {
+                    lzma_end(&lzma_info);
+                    ThrowMIFFException(CorruptImageError,"UnexpectedEndOfFile");
                   }
               }
             code=(int) lzma_code(&lzma_info,LZMA_RUN);
@@ -1586,6 +1596,11 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     (void) inflateEnd(&zip_info);
                     ThrowMIFFException(CorruptImageError,
                       "UnableToReadImageData");
+                  }
+                if (length == 0)
+                  {
+                    (void) inflateEnd(&zip_info);
+                    ThrowMIFFException(CorruptImageError,"UnexpectedEndOfFile");
                   }
               }
             code=inflate(&zip_info,Z_SYNC_FLUSH);
