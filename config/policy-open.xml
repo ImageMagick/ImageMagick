@@ -45,7 +45,7 @@
 
   Suppose we do not want users to process MPEG video images, use this policy:
 
-    <policy domain="delegate" rights="none" pattern="video:decode" />
+    <policy domain="module" rights="none" pattern="video" />
 
   Here we do not want users reading images from HTTP:
 
