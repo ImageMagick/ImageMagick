@@ -726,6 +726,7 @@ static MagickBooleanType WriteDistributeCacheMetacontent(
     count;
 
   MagickSizeType
+    extent,
     length;
 
   Quantum
