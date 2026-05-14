@@ -838,15 +838,14 @@ static MagickBooleanType WriteDistributeCachePixels(SplayTreeInfo *registry,
     return(MagickFalse);
   return(SyncAuthenticPixels(image,exception));
 }
-
-static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket)
+static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket_arg)
 {
   char
     *shared_secret;
 
   ExceptionInfo
     *exception;
-
+  
   MagickBooleanType
     status = MagickFalse;
 
@@ -858,7 +857,8 @@ static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket)
     session_key;
 
   SOCKET_TYPE
-    client_socket;
+    client_socket,
+    *client_socket_ptr = (SOCKET_TYPE *) socket_arg;
 
   SplayTreeInfo
     *registry;
@@ -872,7 +872,9 @@ static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket)
   /*
     Generate session key.
   */
-  shared_secret=GetPolicyValue("cache:shared-secret");
+  client_socket=(*client_socket_ptr);
+  client_socket_ptr=(SOCKET_TYPE *) RelinquishMagickMemory(client_socket_ptr);
+  shared_secret = GetPolicyValue("cache:shared-secret");
   if (shared_secret == (char *) NULL)
     ThrowFatalException(CacheFatalError,"shared secret required");
   nonce=StringToStringInfo(shared_secret);
@@ -885,7 +887,6 @@ static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket)
   */
   registry=NewSplayTree((int (*)(const void *,const void *)) NULL,
     (void *(*)(void *)) NULL,RelinquishImageRegistry);
-  client_socket=(*(SOCKET_TYPE *) socket);
   count=dpc_send(client_socket,sizeof(session_key),&session_key);
   for (status=MagickFalse; ; )
   {
@@ -936,9 +937,7 @@ static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket)
       default:
         break;
     }
-    if (status == MagickFalse)
-      break;
-    if (command == 'd')
+    if ((status == MagickFalse) || (command == 'd'))
       break;
   }
   count=dpc_send(client_socket,sizeof(status),&status);
@@ -962,7 +961,7 @@ MagickExport void DistributePixelCacheServer(const int port,
     attributes;
 
   pthread_t
-    threads;
+    thread_id;
 #elif defined(_MSC_VER)
   DWORD
     threadID;
@@ -970,11 +969,11 @@ MagickExport void DistributePixelCacheServer(const int port,
   Not implemented!
 #endif
 
-  struct addrinfo
-    *p;
-
   SOCKET_TYPE
     server_socket;
+
+  struct addrinfo
+    *p;
 
   struct addrinfo
     hint,
@@ -992,24 +991,23 @@ MagickExport void DistributePixelCacheServer(const int port,
 #if defined(MAGICKCORE_HAVE_WINSOCK2)
   InitializeWinsock2(MagickFalse);
 #endif
-  (void) memset(&hint,0,sizeof(hint));
+  memset(&hint,0,sizeof(hint));
   hint.ai_family=AF_INET;
   hint.ai_socktype=SOCK_STREAM;
   hint.ai_flags=AI_PASSIVE;
-  (void) FormatLocaleString(service,MagickPathExtent,"%d",port);
-  status=getaddrinfo((const char *) NULL,service,&hint,&result);
+  FormatLocaleString(service,MagickPathExtent,"%d",port);
+  status=getaddrinfo(NULL,service,&hint,&result);
   if (status != 0)
-    ThrowFatalException(CacheFatalError,"UnableToListen");
+    ThrowFatalException(CacheFatalError, "UnableToListen");
   server_socket=(SOCKET_TYPE) 0;
-  for (p=result; p != (struct addrinfo *) NULL; p=p->ai_next)
+  for (p=result; p != NULL; p=p->ai_next)
   {
     int
-      one;
+      one = 1;
 
     server_socket=socket(p->ai_family,p->ai_socktype,p->ai_protocol);
     if (server_socket == -1)
       continue;
-    one=1;
     status=setsockopt(server_socket,SOL_SOCKET,SO_REUSEADDR,(char *) &one,
       (socklen_t) sizeof(one));
     if (status == -1)
@@ -1033,27 +1031,43 @@ MagickExport void DistributePixelCacheServer(const int port,
     ThrowFatalException(CacheFatalError,"UnableToListen");
 #if defined(MAGICKCORE_THREAD_SUPPORT)
   pthread_attr_init(&attributes);
+  pthread_attr_setdetachstate(&attributes,PTHREAD_CREATE_DETACHED);
 #endif
   for ( ; ; )
   {
     SOCKET_TYPE
-      client_socket;
+     *client_socket_ptr;
 
     socklen_t
-      length;
+      length = (socklen_t) sizeof(address);
 
-    length=(socklen_t) sizeof(address);
-    client_socket=accept(server_socket,(struct sockaddr *) &address,&length);
-    if (client_socket == -1)
-      ThrowFatalException(CacheFatalError,"UnableToEstablishConnection");
+    client_socket_ptr=(SOCKET_TYPE *) AcquireMagickMemory(sizeof(SOCKET_TYPE));
+    if (client_socket_ptr == NULL)
+      continue;  /* skip connection */
+    *client_socket_ptr=accept(server_socket,(struct sockaddr *) &address,
+      &length);
+    if (*client_socket_ptr == -1)
+      {
+        client_socket_ptr=(SOCKET_TYPE *) RelinquishMagickMemory(
+          client_socket_ptr);
+        continue;
+      }
 #if defined(MAGICKCORE_THREAD_SUPPORT)
-    status=pthread_create(&threads,&attributes,DistributePixelCacheClient,
-      (void *) &client_socket);
-    if (status == -1)
-      ThrowFatalException(CacheFatalError,"UnableToCreateClientThread");
+    status=pthread_create(&thread_id, &attributes,DistributePixelCacheClient,
+      (void *) client_socket_ptr);
+    if (status != 0)
+      {
+        CLOSE_SOCKET(*client_socket_ptr);
+        RelinquishMagickMemory(client_socket_ptr);
+        ThrowFatalException(CacheFatalError,"UnableToCreateClientThread");
+      }
 #elif defined(_MSC_VER)
-    if (CreateThread(0,0,DistributePixelCacheClient,(void*) &client_socket,0,&threadID) == (HANDLE) NULL)
-      ThrowFatalException(CacheFatalError,"UnableToCreateClientThread");
+    if (CreateThread(0,0,DistributePixelCacheClient,(void*) client_socket_ptr,0,&threadID) == (HANDLE) NULL)
+      {
+        CLOSE_SOCKET(*client_socket_ptr);
+        RelinquishMagickMemory(client_socket_ptr);
+        ThrowFatalException(CacheFatalError,"UnableToCreateClientThread");
+      }
 #else
     Not implemented!
 #endif
