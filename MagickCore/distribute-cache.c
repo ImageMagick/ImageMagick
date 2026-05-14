@@ -726,7 +726,6 @@ static MagickBooleanType WriteDistributeCacheMetacontent(
     count;
 
   MagickSizeType
-    extent,
     length;
 
   Quantum
@@ -763,9 +762,6 @@ static MagickBooleanType WriteDistributeCacheMetacontent(
   p+=(ptrdiff_t) sizeof(region.y);
   (void) memcpy(&length,p,sizeof(length));
   p+=(ptrdiff_t) sizeof(length);
-  extent=((MagickSizeType) region.width*region.height*sizeof(Quantum));
-  if (length > extent)
-    return(MagickFalse);
   q=GetAuthenticPixels(image,region.x,region.y,region.width,region.height,
     exception);
   if (q == (Quantum *) NULL)
@@ -790,7 +786,6 @@ static MagickBooleanType WriteDistributeCachePixels(SplayTreeInfo *registry,
     count;
 
   MagickSizeType
-    extent,
     length;
 
   Quantum
@@ -824,10 +819,6 @@ static MagickBooleanType WriteDistributeCachePixels(SplayTreeInfo *registry,
   (void) memcpy(&region.y,p,sizeof(region.y));
   p+=(ptrdiff_t) sizeof(region.y);
   (void) memcpy(&length,p,sizeof(length));
-  extent=((MagickSizeType) region.width*region.height*image->number_channels*
-    sizeof(Quantum));
-  if (length > extent)
-    return(MagickFalse);
   p+=(ptrdiff_t) sizeof(length);
   q=GetAuthenticPixels(image,region.x,region.y,region.width,region.height,
     exception);
