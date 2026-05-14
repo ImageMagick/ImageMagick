@@ -301,6 +301,9 @@ static int ReadSingleWEBPImage(const ImageInfo *image_info,Image *image,
     image->quality=100;
   if (image_info->ping != MagickFalse)
     return(webp_status);
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(-1);
   webp_status=(int) WebPDecode(stream,length,configure);
   if (webp_status != VP8_STATUS_OK)
     return(webp_status);
@@ -316,7 +319,7 @@ static int ReadSingleWEBPImage(const ImageInfo *image_info,Image *image,
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
       {
-        webp_status=VP8_STATUS_USER_ABORT;
+        webp_status=-1;
         break;
       }
     for (x=0; x < (ssize_t) image->columns; x++)
@@ -603,6 +606,14 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
   if (webp_status != VP8_STATUS_OK)
     switch (webp_status)
     {
+      case -1:
+      {
+        stream=(unsigned char*) RelinquishMagickMemory(stream);
+        if (webp_image != (WebPDecBuffer *) NULL)
+          WebPFreeDecBuffer(webp_image);
+        (void) CloseBlob(image);
+        return(DestroyImageList(image));
+      }
       case VP8_STATUS_OUT_OF_MEMORY:
       {
         ThrowWEBPException(ResourceLimitError,"MemoryAllocationFailed");
