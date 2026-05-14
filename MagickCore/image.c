@@ -753,7 +753,6 @@ MagickExport MagickBooleanType ClipImagePath(Image *image,const char *pathname,
   (void) FormatLocaleString(clip_mask->magick_filename,MagickPathExtent,
     "8BIM:1999,2998:%s\nPS",pathname);
   (void) SetImageMask(image,WritePixelMask,clip_mask,exception);
-  image->mask_trait=UpdatePixelTrait;
   clip_mask=DestroyImage(clip_mask);
   return(MagickTrue);
 }
@@ -3274,6 +3273,7 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(image->signature == MagickCoreSignature);
+  image->mask_trait=UndefinedPixelTrait;
   if (mask == (const Image *) NULL)
     {
       switch (type)
@@ -3433,6 +3433,7 @@ MagickExport MagickBooleanType SetImageRegionMask(Image *image,
   assert(image->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
+  image->mask_trait=UndefinedPixelTrait;
   if (region == (const RectangleInfo *) NULL)
     {
       switch (type)
