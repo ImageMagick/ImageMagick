@@ -786,13 +786,8 @@ static MagickBooleanType ReadHEICSequenceFrames(const ImageInfo *image_info,
         image->alpha_trait=BlendPixelTrait;
         image->dispose=BackgroundDispose;
       }
-    if (image_info->ping != MagickFalse)
-      {
-        heif_image_release(heif_image);
-        scene++;
-        continue;
-      }
-    if (HEICSkipImage(image_info,image) != MagickFalse)
+    if ((image_info->ping != MagickFalse) || 
+        (HEICSkipImage(image_info,image) != MagickFalse))
       {
         heif_image_release(heif_image);
         scene++;
