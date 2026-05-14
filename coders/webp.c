@@ -61,7 +61,6 @@
 #include "MagickCore/profile-private.h"
 #include "MagickCore/property.h"
 #include "MagickCore/quantum-private.h"
-#include "MagickCore/resource_.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
