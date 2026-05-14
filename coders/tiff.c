@@ -1226,6 +1226,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     rows_per_strip,
     width;
 
+  uint64
+    dng_version;
+
   unsigned char
     *pixels;
 
@@ -1265,6 +1268,19 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       TIFFClose(tiff);
       image=DestroyImageList(image);
       return((Image *) NULL);
+    }
+  if (TIFFGetField(tiff,TIFFTAG_DNGVERSION,&dng_version) == 1)
+    {
+      ImageInfo
+        *read_info;
+
+      TIFFClose(tiff);
+      image=DestroyImageList(image);
+      read_info=CloneImageInfo(image_info);
+      (void) CopyMagickString(read_info->magick,"DNG",MagickPathExtent);
+      image=ReadImage(read_info,exception);
+      read_info=DestroyImageInfo(read_info);
+      return(image);
     }
   if (image_info->number_scenes != 0)
     {
