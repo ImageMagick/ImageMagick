@@ -2370,6 +2370,30 @@ static MagickBooleanType ReadBC7(const ImageInfo *image_info,Image *image,
     return(SkipMipmaps(image,dds_info,16,exception));
 }
 
+static inline void GetMaskShiftAndMaxval(const size_t mask, size_t *shift,
+  size_t *max_val)
+{
+  *shift=0;
+  *max_val=0;
+  if (mask == 0)
+    return;
+  while (((mask >> *shift) & 1) == 0)
+    (*shift)++;
+  *max_val=mask >> *shift;
+}
+
+static inline unsigned char ExtractChannelFromMask(unsigned short color,
+  size_t mask, size_t shift, size_t max_val)
+{
+  size_t
+    value;
+
+  if (max_val == 0)
+    return(0);
+  value=(((size_t) color & mask) >> shift) * 255U + max_val / 2U;
+  return((unsigned char) (value / max_val));
+}
+
 static MagickBooleanType ReadUncompressedRGBPixels(Image *image,
   const DDSInfo *dds_info,ExceptionInfo *exception)
 {
@@ -2379,12 +2403,37 @@ static MagickBooleanType ReadUncompressedRGBPixels(Image *image,
   Quantum
     *q;
 
+  size_t
+    b_mask,
+    b_max,
+    b_shift,
+    g_mask,
+    g_max,
+    g_shift,
+    r_mask,
+    r_max,
+    r_shift;
+
   ssize_t
     x,
     y;
 
   unsigned short
     color;
+
+  r_mask=dds_info->pixelformat.r_bitmask;
+  g_mask=dds_info->pixelformat.g_bitmask;
+  b_mask=dds_info->pixelformat.b_bitmask;
+  if ((r_mask == 0) && (g_mask == 0) && (b_mask == 0))
+    {
+      r_mask=0xf800;
+      g_mask=0x07e0;
+      b_mask=0x001f;
+    }
+
+  GetMaskShiftAndMaxval(r_mask,&r_shift,&r_max);
+  GetMaskShiftAndMaxval(g_mask,&g_shift,&g_max);
+  GetMaskShiftAndMaxval(b_mask,&b_shift,&b_max);
 
   is_rgb=IsBitMask(dds_info->pixelformat,0x000000ff,0x0000ff00,0x00ff0000,0x0000000) ? MagickTrue : MagickFalse;
   for (y = 0; y < (ssize_t) image->rows; y++)
@@ -2403,12 +2452,12 @@ static MagickBooleanType ReadUncompressedRGBPixels(Image *image,
                (dds_info->extFormat == DXGI_FORMAT_B5G6R5_UNORM))
         {
            color=ReadBlobShort(image);
-           SetPixelRed(image,ScaleCharToQuantum((unsigned char)
-             (((color >> 11)/31.0)*255)),q);
-           SetPixelGreen(image,ScaleCharToQuantum((unsigned char)
-             ((((unsigned short)(color << 5) >> 10)/63.0)*255)),q);
-           SetPixelBlue(image,ScaleCharToQuantum((unsigned char)
-             ((((unsigned short)(color << 11) >> 11)/31.0)*255)),q);
+           SetPixelRed(image,ScaleCharToQuantum(ExtractChannelFromMask(
+             color,r_mask,r_shift,r_max)),q);
+           SetPixelGreen(image,ScaleCharToQuantum(ExtractChannelFromMask(
+             color,g_mask,g_shift,g_max)),q);
+           SetPixelBlue(image,ScaleCharToQuantum(ExtractChannelFromMask(
+             color,b_mask,b_shift,b_max)),q);
         }
       else
         {
@@ -2569,39 +2618,61 @@ static MagickBooleanType ReadUncompressedRGBAPixels(Image *image,
   const DDSInfo *dds_info,ExceptionInfo *exception)
 {
   MagickBooleanType
+    is_grayscale,
     is_rgba;
 
   Quantum
     *q;
 
+  size_t
+    a_mask,
+    a_max,
+    a_shift,
+    b_mask,
+    b_max,
+    b_shift,
+    g_mask,
+    g_max,
+    g_shift,
+    r_mask,
+    r_max,
+    r_shift;
+
   ssize_t
-    alphaBits,
     x,
     y;
 
   unsigned short
     color;
 
-  alphaBits=0;
-  if (dds_info->pixelformat.rgb_bitcount == 16)
+  a_mask=dds_info->pixelformat.alpha_bitmask;
+  b_mask=dds_info->pixelformat.b_bitmask;
+  g_mask=dds_info->pixelformat.g_bitmask;
+  r_mask=dds_info->pixelformat.r_bitmask;
+
+  is_grayscale=MagickFalse;
+  if ((dds_info->pixelformat.rgb_bitcount == 16) ||
+      (dds_info->extFormat == DXGI_FORMAT_B5G5R5A1_UNORM))
     {
-      if (IsBitMask(dds_info->pixelformat,0x7c00,0x03e0,0x001f,0x8000))
-        alphaBits=1;
-      else if ((IsBitMask(dds_info->pixelformat,0x00ff,0x00ff,0x00ff,0xff00)) ||
-               (IsBitMask(dds_info->pixelformat,0x00ff,0x0000,0x0000,0xff00)))
+      if ((r_mask == 0) && (g_mask == 0) && (b_mask == 0) && (a_mask == 0))
         {
-          alphaBits=2;
+          r_mask=0x7c00;
+          g_mask=0x03e0;
+          b_mask=0x001f;
+          a_mask=0x8000;
+        }
+      if ((r_mask == g_mask && g_mask == b_mask) || 
+          (g_mask == 0 && b_mask == 0))
+        {
+          is_grayscale=MagickTrue;
           (void) SetImageType(image,GrayscaleAlphaType,exception);
         }
-      else if (IsBitMask(dds_info->pixelformat,0x0f00,0x00f0,0x000f,0xf000))
-        alphaBits=4;
-      else
-        ThrowBinaryException(CorruptImageError,"ImageTypeNotSupported",
-          image->filename);
     }
 
-  if (dds_info->extFormat == DXGI_FORMAT_B5G5R5A1_UNORM)
-    alphaBits=1;
+  GetMaskShiftAndMaxval(a_mask,&a_shift,&a_max);
+  GetMaskShiftAndMaxval(r_mask,&r_shift,&r_max);
+  GetMaskShiftAndMaxval(g_mask,&g_shift,&g_max);
+  GetMaskShiftAndMaxval(b_mask,&b_shift,&b_max);
 
   is_rgba=IsBitMask(dds_info->pixelformat,0x000000ff,0x0000ff00,0x00ff0000,0xff00000) ? MagickTrue : MagickFalse;
   for (y = 0; y < (ssize_t) image->rows; y++)
@@ -2613,37 +2684,23 @@ static MagickBooleanType ReadUncompressedRGBAPixels(Image *image,
 
     for (x = 0; x < (ssize_t) image->columns; x++)
     {
-      if (dds_info->pixelformat.rgb_bitcount == 16 ||
-          dds_info->extFormat == DXGI_FORMAT_B5G5R5A1_UNORM)
+      if ((dds_info->pixelformat.rgb_bitcount == 16) ||
+          (dds_info->extFormat == DXGI_FORMAT_B5G5R5A1_UNORM))
         {
            color=ReadBlobShort(image);
-           if (alphaBits == 1)
+           SetPixelAlpha(image,ScaleCharToQuantum(ExtractChannelFromMask(
+             color,a_mask,a_shift,a_max)),q);
+           if (is_grayscale != MagickFalse)
+             SetPixelGray(image,ScaleCharToQuantum((unsigned char) color),q);
+           else
              {
-               SetPixelAlpha(image,(color & (1 << 15)) ? QuantumRange : 0,q);
-               SetPixelRed(image,ScaleCharToQuantum((unsigned char)
-                 ((((unsigned short)(color << 1) >> 11)/31.0)*255)),q);
-               SetPixelGreen(image,ScaleCharToQuantum((unsigned char)
-                 ((((unsigned short)(color << 6) >> 11)/31.0)*255)),q);
-               SetPixelBlue(image,ScaleCharToQuantum((unsigned char)
-                 ((((unsigned short)(color << 11) >> 11)/31.0)*255)),q);
+               SetPixelRed(image,ScaleCharToQuantum(ExtractChannelFromMask(
+                 color,r_mask,r_shift,r_max)),q);
+               SetPixelGreen(image,ScaleCharToQuantum(ExtractChannelFromMask(
+                 color,g_mask,g_shift,g_max)),q);
+               SetPixelBlue(image,ScaleCharToQuantum(ExtractChannelFromMask(
+                 color,b_mask,b_shift,b_max)),q);
              }
-          else if (alphaBits == 2)
-            {
-               SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)
-                 (color >> 8)),q);
-               SetPixelGray(image,ScaleCharToQuantum((unsigned char)color),q);
-            }
-          else
-            {
-               SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)
-                 (((color >> 12)/15.0)*255)),q);
-               SetPixelRed(image,ScaleCharToQuantum((unsigned char)
-                 ((((unsigned short)(color << 4) >> 12)/15.0)*255)),q);
-               SetPixelGreen(image,ScaleCharToQuantum((unsigned char)
-                 ((((unsigned short)(color << 8) >> 12)/15.0)*255)),q);
-               SetPixelBlue(image,ScaleCharToQuantum((unsigned char)
-                 ((((unsigned short)(color << 12) >> 12)/15.0)*255)),q);
-            }
         }
       else if (dds_info->extFormat == DXGI_FORMAT_R10G10B10A2_UNORM)
         {
