@@ -838,6 +838,7 @@ static MagickBooleanType WriteDistributeCachePixels(SplayTreeInfo *registry,
     return(MagickFalse);
   return(SyncAuthenticPixels(image,exception));
 }
+
 static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket_arg)
 {
   char
