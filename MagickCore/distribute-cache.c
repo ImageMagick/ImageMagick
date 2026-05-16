@@ -714,6 +714,23 @@ static MagickBooleanType OpenDistributeCache(SplayTreeInfo *registry,
   return(status);
 }
 
+static inline MagickBooleanType ValidateDistributedPixelCache(
+  const RectangleInfo *region,const size_t per_pixel,
+  const MagickSizeType length)
+{
+  size_t
+    extent = 0,
+    pixels = 0;
+
+  if (HeapOverflowSanityCheckGetSize(region->width,region->height,&pixels) != MagickFalse)
+    return(MagickFalse);
+  if (HeapOverflowSanityCheckGetSize(pixels,per_pixel,&extent) != MagickFalse)
+    return(MagickFalse);
+  if (length > (MagickSizeType) extent)
+    return(MagickFalse);
+  return(MagickTrue);
+}
+
 static MagickBooleanType ReadDistributeCacheMetacontent(SplayTreeInfo *registry,
   SOCKET_TYPE file,const uint64_t session_key,ExceptionInfo *exception)
 {
@@ -737,6 +754,9 @@ static MagickBooleanType ReadDistributeCacheMetacontent(SplayTreeInfo *registry,
 
   RectangleInfo
     region;
+
+  size_t
+    per_pixel;
 
   unsigned char
     message[MagickPathExtent],
@@ -764,6 +784,9 @@ static MagickBooleanType ReadDistributeCacheMetacontent(SplayTreeInfo *registry,
   q+=(ptrdiff_t) sizeof(region.y);
   (void) memcpy(&length,q,sizeof(length));
   q+=(ptrdiff_t) sizeof(length);
+  per_pixel=image->number_meta_channels*sizeof(Quantum);
+  if (ValidateDistributedPixelCache(&region,per_pixel,length) == MagickFalse)
+    return(MagickFalse);
   p=GetVirtualPixels(image,region.x,region.y,region.width,region.height,
     exception);
   if (p == (const Quantum *) NULL)
@@ -796,6 +819,9 @@ static MagickBooleanType ReadDistributeCachePixels(SplayTreeInfo *registry,
   RectangleInfo
     region;
 
+  size_t
+    per_pixel;
+
   unsigned char
     message[MagickPathExtent],
     *q;
@@ -821,6 +847,9 @@ static MagickBooleanType ReadDistributeCachePixels(SplayTreeInfo *registry,
   (void) memcpy(&region.y,q,sizeof(region.y));
   q+=(ptrdiff_t) sizeof(region.y);
   (void) memcpy(&length,q,sizeof(length));
+  per_pixel=image->number_channels*sizeof(Quantum);
+  if (ValidateDistributedPixelCache(&region,per_pixel,length) == MagickFalse)
+    return(MagickFalse);
   q+=(ptrdiff_t) sizeof(length);
   p=GetVirtualPixels(image,region.x,region.y,region.width,region.height,
     exception);
@@ -835,23 +864,6 @@ static MagickBooleanType ReadDistributeCachePixels(SplayTreeInfo *registry,
 static void *RelinquishImageRegistry(void *image)
 {
   return((void *) DestroyImageList((Image *) image));
-}
-
-static inline MagickBooleanType ValidateDistributedPixelCache(
-  const RectangleInfo *region,const size_t per_pixel,
-  const MagickSizeType length)
-{
-  size_t
-    extent = 0,
-    pixels = 0;
-
-  if (HeapOverflowSanityCheckGetSize(region->width,region->height,&pixels) != MagickFalse)
-    return(MagickFalse);
-  if (HeapOverflowSanityCheckGetSize(pixels,per_pixel,&extent) != MagickFalse)
-    return(MagickFalse);
-  if (length > (MagickSizeType) extent)
-    return(MagickFalse);
-  return(MagickTrue);
 }
 
 static MagickBooleanType WriteDistributeCacheMetacontent(
