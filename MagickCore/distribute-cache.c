@@ -217,7 +217,7 @@ static int ConnectPixelCacheServer(const char *magick_unused(hostname),
 #else
 static inline uint64_t ROTL(uint64_t x,int b)
 {
-  return (x << b) | (x >> (64-b));
+  return((x << b) | (x >> (64-b)));
 }
 
 static inline uint64_t U8TO64_LE(const uint8_t *p)
@@ -356,7 +356,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
   */
   *session_key=0;
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
-  NTInitializeWinsock(MagickTrue);
+  InitializeWinsock2(MagickTrue);
 #endif
   (void) memset(&hints,0,sizeof(hints));
   hints.ai_family=AF_INET;
@@ -424,7 +424,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
         "DistributedPixelCache","'%s': authentication failed",hostname);
       return(-1);
     }
-  return(client_socket);
+  return((int) client_socket);
 #else
   (void) ThrowMagickException(exception,GetMagickModule(),MissingDelegateError,
     "DelegateLibrarySupportNotBuiltIn","distributed pixel cache");
