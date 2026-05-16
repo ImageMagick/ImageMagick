@@ -55,6 +55,7 @@
 #include "MagickCore/cache.h"
 #include "MagickCore/cache-private.h"
 #include "MagickCore/distribute-cache.h"
+#include "MagickCore/distribute-cache-private.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/geometry.h"
@@ -74,8 +75,8 @@
 #include "MagickCore/utility-private.h"
 #include "MagickCore/version.h"
 #include "MagickCore/version-private.h"
-#undef MAGICKCORE_HAVE_DISTRIBUTE_CACHE
 #define SOCKET_TYPE int
+#undef MAGICKCORE_HAVE_DISTRIBUTE_CACHE
 #if defined(MAGICKCORE_DPC_SUPPORT)
 #if defined(MAGICKCORE_HAVE_SOCKET) && defined(MAGICKCORE_THREAD_SUPPORT)
 #include <netinet/in.h>
@@ -85,20 +86,15 @@
 #define CLOSE_SOCKET(socket) (void) close_utf8(socket)
 #define HANDLER_RETURN_TYPE void *
 #define HANDLER_RETURN_VALUE (void *) NULL
-#define SOCKET_TYPE int
 #define LENGTH_TYPE size_t
 #define MAGICKCORE_HAVE_DISTRIBUTE_CACHE 1
-#include "MagickCore/distribute-cache-private.h"
 #elif defined(_MSC_VER)
 #define CLOSE_SOCKET(socket) (void) closesocket(socket)
 #define HANDLER_RETURN_TYPE DWORD WINAPI
 #define HANDLER_RETURN_VALUE 0
-#undef SOCKET_TYPE
-#define SOCKET_TYPE SOCKET
 #define LENGTH_TYPE int
 #define MAGICKCORE_HAVE_DISTRIBUTE_CACHE 1
 #define MAGICKCORE_HAVE_WINSOCK2 1
-#include "MagickCore/distribute-cache-private.h"
 #endif
 #endif
 
