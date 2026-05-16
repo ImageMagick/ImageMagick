@@ -30,7 +30,7 @@ typedef struct _DistributeCacheInfo
   int
     file;
 
-  size_t
+  uint64_t
     session_key;
 
   char
