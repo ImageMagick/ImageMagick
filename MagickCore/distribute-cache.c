@@ -86,6 +86,7 @@
 #define CLOSE_SOCKET(socket) (void) close_utf8(socket)
 #define HANDLER_RETURN_TYPE void *
 #define HANDLER_RETURN_VALUE (void *) NULL
+#define SOCKET_TYPE int
 #define LENGTH_TYPE size_t
 #define MAGICKCORE_HAVE_DISTRIBUTE_CACHE 1
 #elif defined(_MSC_VER)
@@ -367,7 +368,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
         "DistributedPixelCache","'%s': %s",hostname,gai_strerror(status));
       return(-1);
     }
-  client_socket=socket(result->ai_family,result->ai_socktype,
+  client_socket=(SOCKET_TYPE) socket(result->ai_family,result->ai_socktype,
     result->ai_protocol);
   if (client_socket == -1)
     {
@@ -1207,7 +1208,8 @@ MagickExport void DistributePixelCacheServer(const int port,
     int
       one = 1;
 
-    server_socket=socket(p->ai_family,p->ai_socktype,p->ai_protocol);
+    server_socket=(SOCKET_TYPE) socket(p->ai_family,p->ai_socktype,
+      p->ai_protocol);
     if (server_socket == -1)
       continue;
     status=setsockopt(server_socket,SOL_SOCKET,SO_REUSEADDR,(char *) &one,
@@ -1259,8 +1261,8 @@ MagickExport void DistributePixelCacheServer(const int port,
     client_socket_ptr=(SOCKET_TYPE *) AcquireMagickMemory(sizeof(SOCKET_TYPE));
     if (client_socket_ptr == NULL)
       continue;  /* skip connection */
-    *client_socket_ptr=accept(server_socket,(struct sockaddr *) &address,
-      &length);
+    *client_socket_ptr=(SOCKET_TYPE) accept(server_socket,(struct sockaddr *)
+      &address,&length);
     if (*client_socket_ptr == -1)
       {
         client_socket_ptr=(SOCKET_TYPE *) RelinquishMagickMemory(
