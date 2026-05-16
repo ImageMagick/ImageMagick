@@ -355,7 +355,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
     Connect to distributed pixel cache server and get session key.
   */
   *session_key=0;
-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
+#if defined(MAGICKCORE_HAVE_WINSOCK2)
   InitializeWinsock2(MagickTrue);
 #endif
   (void) memset(&hints,0,sizeof(hints));
