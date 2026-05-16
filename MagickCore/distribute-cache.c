@@ -776,7 +776,7 @@ static MagickBooleanType ReadDistributeCacheMetacontent(SplayTreeInfo *registry,
 }
 
 static MagickBooleanType ReadDistributeCachePixels(SplayTreeInfo *registry,
-  SOCKET_TYPE file,const size_t session_key,ExceptionInfo *exception)
+  SOCKET_TYPE file,const uint64_t session_key,ExceptionInfo *exception)
 {
   const Quantum
     *p;
