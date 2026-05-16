@@ -204,7 +204,7 @@ static void InitializeWinsock2(MagickBooleanType use_lock)
 
 #if !defined(MAGICKCORE_HAVE_DISTRIBUTE_CACHE)
 static int ConnectPixelCacheServer(const char *magick_unused(hostname),
-  const int magick_unused(port),size_t *magick_unused(session_key),
+  const int magick_unused(port),uint64_t *magick_unused(session_key),
   ExceptionInfo *exception)
 {
   magick_unreferenced(hostname);
