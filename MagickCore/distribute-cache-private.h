@@ -25,17 +25,9 @@
 extern "C" {
 #endif
 
-#define SOCKET_TYPE int
-#if defined(MAGICKCORE_HAVE_SOCKET) && defined(MAGICKCORE_THREAD_SUPPORT)
-#define SOCKET_TYPE int
-#else
-#undef SOCKET_TYPE
-#define SOCKET_TYPE SOCKET
-#endif
-
 typedef struct _DistributeCacheInfo
 {
-  SOCKET_TYPE
+  int
     file;
 
   uint64_t
