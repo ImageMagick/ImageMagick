@@ -27,7 +27,7 @@ extern "C" {
 
 typedef struct _DistributeCacheInfo
 {
-  int
+  SOCKET_TYPE
     file;
 
   uint64_t
