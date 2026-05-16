@@ -21,7 +21,7 @@
 
 #include "utils.cc"
 
-static const char *kProfileNames[] = {
+static const char *profileNames[] = {
   "exif", "xmp", "iptc", "icc", "8bim", "app1", "app13"
 };
 
@@ -30,14 +30,15 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data,size_t Size)
   if (IsInvalidSize(Size,2))
     return(0);
 
-  const unsigned int sel=Data[0] % (sizeof(kProfileNames) /
-    sizeof(kProfileNames[0]));
+  const unsigned int profileIndex=Data[0];
+  if (profileIndex >= sizeof(profileNames) / sizeof(*profileNames))
+    return(0);
   const Magick::Blob blob(Data + 1, Size - 1);
 
   try
   {
     Magick::Image image("16x16","white");
-    image.profile(kProfileNames[sel],blob);
+    image.profile(profileNames[profileIndex],blob);
   }
 #if defined(BUILD_MAIN)
   catch (Magick::Exception &e)
