@@ -145,12 +145,7 @@ typedef unsigned __int64 MagickSizeType;
 #define MagickOffsetMax  _I64_MAX
 #endif
 
-#if defined(MAGICKCORE_HAVE_UINTPTR_T) || defined(uintptr_t)
 typedef uintptr_t MagickAddressType;
-#else
-/* Hope for the best, I guess. */
-typedef size_t MagickAddressType;
-#endif
 
 typedef MagickSizeType QuantumAny;
 
