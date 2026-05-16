@@ -887,7 +887,6 @@ static MagickBooleanType WriteDistributeCacheMetacontent(
   /*
     Write distributed pixel cache metacontent.
   */
-  key=session_key;
   image=(Image *) GetValueFromSplayTree(registry,(const void *) key);
   if (image == (Image *) NULL)
     return(MagickFalse);
