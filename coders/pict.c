@@ -1268,6 +1268,9 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                   if (ReadBlobByte(image) == EOF)
                     break;
               }
+            if (((MagickSizeType) tile_image->rows*tile_image->columns/8) > GetBlobSize(image))
+              ThrowPICTException(CorruptImageError,
+                "InsufficientImageDataInFile");
             if ((code != 0x9a) && (code != 0x9b) &&
                 (bytes_per_line & 0x8000) == 0)
               pixels=DecodeImage(image,tile_image,(size_t) bytes_per_line,1,
