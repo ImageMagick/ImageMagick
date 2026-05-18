@@ -2028,7 +2028,11 @@ static MagickBooleanType FloydSteinbergImageDepth(Image *image,
         channel=GetPixelChannelChannel(image,i);
         traits=GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
-          continue;
+          {
+            u++;
+            v++;
+            continue;
+          }
         pixel=(double) q[i]+distortion[u];
         q[i]=ScaleAnyToQuantum(ScaleQuantumToAny(ClampPixel((MagickRealType)
           pixel),range),range);
