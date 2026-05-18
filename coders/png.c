@@ -5840,7 +5840,10 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
           {
             ssize_t loop_iters=1;
             if (number_loop_ops++ > MNG_MAX_LOOP_OPS)
-              ThrowReaderException(ResourceLimitError,"too many LOOP/ENDL ops");
+              {
+                chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+                ThrowReaderException(ResourceLimitError,"too many LOOP/ENDL ops");
+              }
             if (length > 4)
               {
                 loop_level=chunk[0];
@@ -5877,7 +5880,10 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
         if (memcmp(type,mng_ENDL,4) == 0)
           {
             if (number_loop_ops++ > MNG_MAX_LOOP_OPS)
-              ThrowReaderException(ResourceLimitError,"too many LOOP/ENDL ops");
+              {
+                chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+                ThrowReaderException(ResourceLimitError,"too many LOOP/ENDL ops");
+              }
             if (length > 0)
               {
                 loop_level=chunk[0];
