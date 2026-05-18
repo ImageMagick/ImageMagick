@@ -122,7 +122,7 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
-#if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,19,0)
+#if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,18,0)
 static inline void HEICSetUint32SecurityLimit(const ImageInfo *image_info,
   const char *name,uint32_t *value)
 {
