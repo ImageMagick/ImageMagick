@@ -632,6 +632,7 @@ jobs:
 
   prepare_msix:
     name: Prepare Msix
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-24.04
 
     steps:
