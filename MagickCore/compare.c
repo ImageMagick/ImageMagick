@@ -4766,8 +4766,8 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
         "GeometryDoesNotContainImage","`%s'",image->filename);
       return((Image *) NULL);
     }
-  similarity_image=CloneImage(image,image->columns,image->rows,MagickTrue,
-    exception);
+  similarity_image=CloneImage(image,image->columns-reconstruct->columns+1,
+    image->rows-reconstruct->rows+1,MagickTrue,exception);
   if (similarity_image == (Image *) NULL)
     return((Image *) NULL);
   similarity_image->depth=32;
