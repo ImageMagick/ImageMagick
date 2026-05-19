@@ -3603,7 +3603,6 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
                 length=(size_t) blob_info->properties.st_size;
                 if ((magick_info != (const MagickInfo *) NULL) &&
                     (GetMagickBlobSupport(magick_info) != MagickFalse) &&
-                    (length > MagickMaxBufferExtent) &&
                     (AcquireMagickResource(MapResource,length) != MagickFalse))
                   {
                     void
