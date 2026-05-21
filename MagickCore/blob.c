@@ -3673,6 +3673,13 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
                 (void) SetStreamBuffering(image_info,blob_info);
               }
           }
+  if (IsPathAuthorized(rights,filename) == MagickFalse)
+    {
+      errno=EPERM;
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        PolicyError,"NotAuthorized","`%s'",filename);
+      return(MagickFalse);
+    }
   blob_info->status=0;
   blob_info->error_number=0;
   if (blob_info->type != UndefinedStream)
