@@ -694,7 +694,8 @@ MagickExport MagickBooleanType IsRightsAuthorized(const PolicyDomain domain,
     *exception;
 
   MagickBooleanType
-    matched_any = MagickFalse;
+    matched_any = MagickFalse,
+    paths_provisioned = MagickFalse;
 
   PolicyRights
     effective_rights = AllPolicyRights;  /* rights authorized unless denied */
@@ -724,28 +725,6 @@ MagickExport MagickBooleanType IsRightsAuthorized(const PolicyDomain domain,
       policies=(const PolicyInfo **) RelinquishMagickMemory((void *) policies);
       return(MagickFalse);
     }
-  if (domain == PathPolicyDomain)
-    {
-      /*
-        Generate directory, basename, and canonical path.
-      */
-      GetPathComponent(pattern,HeadPath,directory);
-      GetPathComponent(pattern,TailPath,filename);
-      canonical_directory=realpath_utf8(directory);
-      if ((canonical_directory != (char *) NULL) && (*filename != '\0'))
-        {
-          size_t
-            length;
-
-          length=strlen(canonical_directory)+strlen(filename)+2;
-          canonical_candidate=(char *) AcquireQuantumMemory(length,
-            sizeof(*canonical_candidate));
-          if (canonical_candidate != (char *) NULL)
-            (void) FormatLocaleString(canonical_candidate,length,"%s%s%s",
-              canonical_directory,DirectorySeparator,filename);
-      }
-      canonical_path=realpath_utf8(pattern);
-    }
   /*
     Evaluate policies in order; last match wins.
   */
@@ -764,6 +743,29 @@ MagickExport MagickBooleanType IsRightsAuthorized(const PolicyDomain domain,
     match=GlobExpression(pattern,policy->pattern,MagickFalse);
     if (policy->domain == PathPolicyDomain)
       {
+        if (paths_provisioned == MagickFalse)
+          {
+            /*
+              Generate directory, basename, and canonical path.
+            */
+            paths_provisioned=MagickTrue;
+            GetPathComponent(pattern,HeadPath,directory);
+            GetPathComponent(pattern,TailPath,filename);
+            canonical_directory=realpath_utf8(directory);
+            if ((canonical_directory != (char *) NULL) && (*filename != '\0'))
+              {
+                size_t
+                  length;
+
+                length=strlen(canonical_directory)+strlen(filename)+2;
+                canonical_candidate=(char *) AcquireQuantumMemory(length,
+                  sizeof(*canonical_candidate));
+                if (canonical_candidate != (char *) NULL)
+                  (void) FormatLocaleString(canonical_candidate,length,"%s%s%s",
+                    canonical_directory,DirectorySeparator,filename);
+            }
+            canonical_path=realpath_utf8(pattern);
+          }
         /*
           Match against directory, basename, and canonical path.
         */
