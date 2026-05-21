@@ -679,6 +679,11 @@ MagickExport MagickBooleanType IsRightsAuthorized(const PolicyDomain domain,
   const PolicyRights rights,const char *qualified_pattern)
 {
   char
+    *canonical_directory = (char *) NULL,
+    *canonical_path = (char *) NULL,
+    *canonical_candidate = (char *) NULL,
+    directory[MagickPathExtent],
+    filename[MagickPathExtent],
     *name = (char *) NULL,
     *pattern = (char *) NULL;
 
@@ -719,6 +724,28 @@ MagickExport MagickBooleanType IsRightsAuthorized(const PolicyDomain domain,
       policies=(const PolicyInfo **) RelinquishMagickMemory((void *) policies);
       return(MagickFalse);
     }
+  if (domain == PathPolicyDomain)
+    {
+      /*
+        Generate directory, basename, and canonical path.
+      */
+      GetPathComponent(pattern,HeadPath,directory);
+      GetPathComponent(pattern,TailPath,filename);
+      canonical_directory=realpath_utf8(directory);
+      if ((canonical_directory != (char *) NULL) && (*filename != '\0'))
+        {
+          size_t
+            length;
+
+          length=strlen(canonical_directory)+strlen(filename)+2;
+          canonical_candidate=(char *) AcquireQuantumMemory(length,
+            sizeof(*canonical_candidate));
+          if (canonical_candidate != (char *) NULL)
+            (void) FormatLocaleString(canonical_candidate,length,"%s%s%s",
+              canonical_directory,DirectorySeparator,filename);
+      }
+      canonical_path=realpath_utf8(pattern);
+    }
   /*
     Evaluate policies in order; last match wins.
   */
@@ -734,66 +761,18 @@ MagickExport MagickBooleanType IsRightsAuthorized(const PolicyDomain domain,
       continue;
     if ((name != (char *) NULL) && (LocaleCompare(name,policy->name) != 0))
       continue;
-    if (policy->domain != PathPolicyDomain)
-      match=GlobExpression(pattern,policy->pattern,MagickFalse);
-    else
+    match=GlobExpression(pattern,policy->pattern,MagickFalse);
+    if (policy->domain == PathPolicyDomain)
       {
-        char
-          *canonical_directory = (char *) NULL,
-          *canonical_path = (char *) NULL,
-          *canonical_candidate = (char *) NULL,
-          directory[MagickPathExtent],
-          filename[MagickPathExtent];
-
         /*
-          Split into directory + basename.
+          Match against directory, basename, and canonical path.
         */
-        GetPathComponent(pattern,HeadPath,directory);
-        GetPathComponent(pattern,TailPath,filename);
-        /*
-          Canonicalize directory (must exist for writes).
-        */
-        canonical_directory=realpath_utf8(directory);
-        if (canonical_directory != (char *) NULL)
-          {
-            /*
-              Match against canonical directory (existing behavior).
-            */
-            match=GlobExpression(canonical_directory,policy->pattern,
-              MagickFalse);
-            /*
-              Construct canonical full-path candidate.
-            */
-            if ((match == MagickFalse) && (*filename != '\0'))
-              {
-                size_t
-                  length;
-
-                length=strlen(canonical_directory)+strlen(filename)+2;
-                canonical_candidate=(char *) AcquireQuantumMemory(length,
-                  sizeof(*canonical_candidate));
-                if (canonical_candidate != (char *) NULL)
-                  {
-                    (void) FormatLocaleString(canonical_candidate,length,
-                      "%s/%s",canonical_directory,filename);
-                    match=GlobExpression(canonical_candidate,policy->pattern,
-                      MagickFalse);
-                    canonical_candidate=DestroyString(canonical_candidate);
-                  }
-            }
-          canonical_directory=DestroyString(canonical_directory);
-        }
-        /*
-          Match against canonical full path (when it exists).
-        */
-        canonical_path=realpath_utf8(pattern);
-        if (canonical_path != (char *) NULL)
-          {
-            if (match == MagickFalse)
-              match=GlobExpression(canonical_path,policy->pattern,
-                MagickFalse);
-            canonical_path=DestroyString(canonical_path);
-          }
+        if ((canonical_directory != (char *) NULL) && (match == MagickFalse))
+          match=GlobExpression(canonical_directory,policy->pattern,MagickFalse);
+        if ((canonical_candidate != (char *) NULL) && (match == MagickFalse))
+          match=GlobExpression(canonical_candidate,policy->pattern,MagickFalse);
+        if ((canonical_path != (char *) NULL) && (match == MagickFalse))
+          match=GlobExpression(canonical_path,policy->pattern,MagickFalse);
       }
     if (match == MagickFalse)
       continue;
@@ -805,16 +784,20 @@ MagickExport MagickBooleanType IsRightsAuthorized(const PolicyDomain domain,
     pattern=DestroyString(pattern);
   if (name != (char *) NULL)
     name=DestroyString(name);
+  if (canonical_directory != (char *) NULL)
+    canonical_directory=DestroyString(canonical_directory);
+  if (canonical_candidate != (char *) NULL)
+    canonical_candidate=DestroyString(canonical_candidate);
+  if (canonical_path != (char *) NULL)
+    canonical_path=DestroyString(canonical_path);
   /*
     Is rights authorized?
   */
   if (matched_any == MagickFalse)
     return(MagickTrue);
-  if ((rights & ReadPolicyRights) &&
-      !(effective_rights & ReadPolicyRights))
+  if ((rights & ReadPolicyRights) && !(effective_rights & ReadPolicyRights))
    return(MagickFalse);
-  if ((rights & WritePolicyRights) &&
-      !(effective_rights & WritePolicyRights))
+  if ((rights & WritePolicyRights) && !(effective_rights & WritePolicyRights))
    return(MagickFalse);
   if ((rights & ExecutePolicyRights) &&
       !(effective_rights & ExecutePolicyRights))
