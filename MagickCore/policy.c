@@ -763,7 +763,7 @@ MagickExport MagickBooleanType IsRightsAuthorized(const PolicyDomain domain,
                 if (canonical_candidate != (char *) NULL)
                   (void) FormatLocaleString(canonical_candidate,length,"%s%s%s",
                     canonical_directory,DirectorySeparator,filename);
-            }
+              }
             canonical_path=realpath_utf8(pattern);
           }
         /*
