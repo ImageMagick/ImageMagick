@@ -739,28 +739,60 @@ MagickExport MagickBooleanType IsRightsAuthorized(const PolicyDomain domain,
     else
       {
         char
-          *canonical_directory,
-          directory[MagickPathExtent];
+          *canonical_directory = (char *) NULL,
+          *canonical_path = (char *) NULL,
+          *canonical_candidate = (char *) NULL,
+          directory[MagickPathExtent],
+          filename[MagickPathExtent];
 
+        /*
+          Split into directory + basename.
+        */
         GetPathComponent(pattern,HeadPath,directory);
+        GetPathComponent(pattern,TailPath,filename);
+        /*
+          Canonicalize directory (must exist for writes).
+        */
         canonical_directory=realpath_utf8(directory);
         if (canonical_directory != (char *) NULL)
           {
+            /*
+              Match against canonical directory (existing behavior).
+            */
             match=GlobExpression(canonical_directory,policy->pattern,
               MagickFalse);
-            canonical_directory=DestroyString(canonical_directory);
-          }
-        if (match == MagickFalse)
-          {
-            char
-              *canonical_path;
-
-            canonical_path=realpath_utf8(pattern);
-            if (canonical_path != (char *) NULL)
+            /*
+              Construct canonical full-path candidate.
+            */
+            if ((match == MagickFalse) && (*filename != '\0'))
               {
-                match=GlobExpression(canonical_path,policy->pattern,MagickFalse);
-                canonical_path=DestroyString(canonical_path);
-              }
+                size_t
+                  length;
+
+                length=strlen(canonical_directory)+strlen(filename)+2;
+                canonical_candidate=(char *) AcquireQuantumMemory(length,
+                  sizeof(*canonical_candidate));
+                if (canonical_candidate != (char *) NULL)
+                  {
+                    (void) FormatLocaleString(canonical_candidate,length,
+                      "%s/%s",canonical_directory,filename);
+                    match=GlobExpression(canonical_candidate,policy->pattern,
+                      MagickFalse);
+                    canonical_candidate=DestroyString(canonical_candidate);
+                  }
+            }
+          canonical_directory=DestroyString(canonical_directory);
+        }
+        /*
+          Match against canonical full path (when it exists).
+        */
+        canonical_path=realpath_utf8(pattern);
+        if (canonical_path != (char *) NULL)
+          {
+            if (match == MagickFalse)
+              match=GlobExpression(canonical_path,policy->pattern,
+                MagickFalse);
+            canonical_path=DestroyString(canonical_path);
           }
       }
     if (match == MagickFalse)
