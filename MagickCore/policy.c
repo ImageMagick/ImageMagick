@@ -680,8 +680,7 @@ MagickExport MagickBooleanType IsRightsAuthorized(const PolicyDomain domain,
 {
   char
     *name = (char *) NULL,
-    *pattern = (char *) NULL,
-    *real_pattern = (char *) NULL;
+    *pattern = (char *) NULL;
 
   const PolicyInfo
     **policies = (const PolicyInfo **) NULL;
@@ -729,17 +728,36 @@ MagickExport MagickBooleanType IsRightsAuthorized(const PolicyDomain domain,
       *policy = policies[i];
 
     MagickBooleanType
-      match;
+      match = MagickFalse;
 
     if (policy->domain != domain)
       continue;
     if ((name != (char *) NULL) && (LocaleCompare(name,policy->name) != 0))
       continue;
-    if ((policy->domain == PathPolicyDomain) &&
-        (real_pattern == (const char *) NULL))
-      real_pattern=realpath_utf8(pattern);
-    match=GlobExpression(real_pattern != (char*) NULL ? real_pattern : pattern,
-      policy->pattern,MagickFalse);
+    if (policy->domain != PathPolicyDomain)
+      match=GlobExpression(pattern,policy->pattern,MagickFalse);
+    else
+      {
+        char
+          *canonical_directory,
+          *canonical_path,
+          directory[MagickPathExtent];
+
+        GetPathComponent(pattern,HeadPath,directory);
+        canonical_directory=realpath_utf8(directory);
+        if (canonical_directory != (char *) NULL)
+          {
+            match=GlobExpression(canonical_directory,policy->pattern,
+              MagickFalse);
+            canonical_directory=DestroyString(canonical_directory);
+          }
+        canonical_path=realpath_utf8(pattern);
+        if ((canonical_path != (char *) NULL) && (match == MagickFalse))
+          {
+            match=GlobExpression(canonical_path,policy->pattern,MagickFalse);
+            canonical_path=DestroyString(canonical_path);
+          }
+      }
     if (match == MagickFalse)
       continue;
     matched_any=MagickTrue;
@@ -750,8 +768,6 @@ MagickExport MagickBooleanType IsRightsAuthorized(const PolicyDomain domain,
     pattern=DestroyString(pattern);
   if (name != (char *) NULL)
     name=DestroyString(name);
-  if (real_pattern != (char *) NULL)
-    real_pattern=DestroyString(real_pattern);
   /*
     Is rights authorized?
   */
