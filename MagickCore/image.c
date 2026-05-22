@@ -1664,7 +1664,7 @@ static inline MagickBooleanType IsValidFormatSpecifier(const char *start,
     specifier = end[-1];
 
   size_t
-    length = end-start;
+    length = (size_t) (end-start);
 
   /*
     Is this a valid format specifier?
@@ -1742,7 +1742,7 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
               format_specifier[MagickPathExtent];
 
             size_t
-              length = cursor-specifier_start,
+              length = (size_t) (cursor-specifier_start),
               pattern_length;
 
             ssize_t
@@ -1757,7 +1757,8 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
               return(0);
             if ((p-filename+pattern_length) >= MagickPathExtent)
               return(0);
-            (void) CopyMagickString(p,pattern,MagickPathExtent-(p-filename));
+            (void) CopyMagickString(p,pattern,(size_t) (MagickPathExtent-
+              (p-filename)));
             p+=pattern_length;
             cursor++;
             continue;
@@ -1803,7 +1804,8 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
         option_length=strlen(option);
         if ((p-filename+option_length) >= MagickPathExtent)
           return(0);
-        (void) CopyMagickString(p,option,MagickPathExtent-(p-filename));
+        (void) CopyMagickString(p,option,(size_t) (MagickPathExtent-
+          (p-filename)));
         p+=option_length;
         cursor=end+1;
         continue;

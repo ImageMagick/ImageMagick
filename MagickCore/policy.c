@@ -598,7 +598,7 @@ static MagickBooleanType IsPolicyCacheInstantiated(ExceptionInfo *exception)
 {
   if (policy_cache == (LinkedListInfo *) NULL)
     {
-      GetMaxMemoryRequest();  /* avoid OMP deadlock */
+      (void) GetMaxMemoryRequest();  /* avoid OMP deadlock */
       if (policy_semaphore == (SemaphoreInfo *) NULL)
         ActivateSemaphoreInfo(&policy_semaphore);
       LockSemaphoreInfo(policy_semaphore);
@@ -626,7 +626,7 @@ static MagickBooleanType IsPolicyCacheInstantiated(ExceptionInfo *exception)
 %  The format of the IsRightsAuthorized method is:
 %
 %      MagickBooleanType IsRightsAuthorized(const PolicyDomain domain,
-%        const PolicyRights rights,const char *qualified_pattern)
+%        const PolicyRights rights,const char *pattern)
 %
 %  A description of each parameter follows:
 %
@@ -634,58 +634,20 @@ static MagickBooleanType IsPolicyCacheInstantiated(ExceptionInfo *exception)
 %
 %    o rights: the policy rights.
 %
-%    o qualified_pattern: the pattern.
+%    o pattern: the pattern.
 %
 */
 
-static inline MagickBooleanType ParseNamespace(const char *qualified_pattern,
-  char **name,char **pattern)
-{
-  const char
-    *p,
-    *separator;
-
-  size_t
-    length;
-
-  if ((qualified_pattern == (const char *) NULL) || (name == (char **) NULL) ||
-      (pattern == (char **) NULL))
-    return(MagickFalse);
-  *name=(char *) NULL;
-  *pattern=(char *) NULL;
-  separator=strstr(qualified_pattern,"::");
-  if (separator == (const char *) NULL)
-    {
-      *pattern=AcquireString(qualified_pattern);
-      return(*pattern != (char *) NULL ? MagickTrue : MagickFalse);
-    }
-  length=(size_t) (separator-qualified_pattern);
-  *name=(char *) AcquireQuantumMemory(length+1,sizeof(char));
-  if (*name == (char *) NULL)
-    return(MagickFalse);
-  (void) CopyMagickString(*name,qualified_pattern,length+1);
-  p=separator+2;
-  *pattern=AcquireString(p);
-  if (*pattern == (char *) NULL)
-    {
-      *name=DestroyString(*name);
-      *name=(char *) NULL;
-      return(MagickFalse);
-    }
-  return(MagickTrue);
-}
-
-MagickExport MagickBooleanType IsRightsAuthorized(const PolicyDomain domain,
-  const PolicyRights rights,const char *qualified_pattern)
+MagickPrivate MagickBooleanType IsRightsAuthorizedByName(
+  const PolicyDomain domain,const char *name,const PolicyRights rights,
+  const char *pattern)
 {
   char
     *canonical_directory = (char *) NULL,
     *canonical_path = (char *) NULL,
     *canonical_candidate = (char *) NULL,
     directory[MagickPathExtent],
-    filename[MagickPathExtent],
-    *name = (char *) NULL,
-    *pattern = (char *) NULL;
+    filename[MagickPathExtent];
 
   const PolicyInfo
     **policies = (const PolicyInfo **) NULL;
@@ -710,8 +672,7 @@ MagickExport MagickBooleanType IsRightsAuthorized(const PolicyDomain domain,
     (void) LogMagickEvent(PolicyEvent,GetMagickModule(),
       "Domain: %s; rights=%s; pattern=\"%s\" ...",
       CommandOptionToMnemonic(MagickPolicyDomainOptions,domain),
-      CommandOptionToMnemonic(MagickPolicyRightsOptions,rights),
-      qualified_pattern);
+      CommandOptionToMnemonic(MagickPolicyRightsOptions,rights),pattern);
   /*
     Load policies.
   */
@@ -720,11 +681,6 @@ MagickExport MagickBooleanType IsRightsAuthorized(const PolicyDomain domain,
   exception=DestroyExceptionInfo(exception);
   if (policies == (const PolicyInfo **) NULL)
     return(MagickTrue);
-  if (ParseNamespace(qualified_pattern,&name,&pattern) == MagickFalse)
-    {
-      policies=(const PolicyInfo **) RelinquishMagickMemory((void *) policies);
-      return(MagickFalse);
-    }
   /*
     Evaluate policies in order; last match wins.
   */
@@ -782,10 +738,6 @@ MagickExport MagickBooleanType IsRightsAuthorized(const PolicyDomain domain,
     effective_rights=policy->rights;
   }
   policies=(const PolicyInfo **) RelinquishMagickMemory((void *) policies);
-  if (pattern != (char *) NULL)
-    pattern=DestroyString(pattern);
-  if (name != (char *) NULL)
-    name=DestroyString(name);
   if (canonical_directory != (char *) NULL)
     canonical_directory=DestroyString(canonical_directory);
   if (canonical_candidate != (char *) NULL)
@@ -797,14 +749,22 @@ MagickExport MagickBooleanType IsRightsAuthorized(const PolicyDomain domain,
   */
   if (matched_any == MagickFalse)
     return(MagickTrue);
-  if ((rights & ReadPolicyRights) && !(effective_rights & ReadPolicyRights))
+  if (((rights & ReadPolicyRights) != 0) &&
+      ((effective_rights & ReadPolicyRights) == 0))
    return(MagickFalse);
-  if ((rights & WritePolicyRights) && !(effective_rights & WritePolicyRights))
+  if (((rights & WritePolicyRights) != 0) &&
+      ((effective_rights & WritePolicyRights) == 0))
    return(MagickFalse);
-  if ((rights & ExecutePolicyRights) &&
-      !(effective_rights & ExecutePolicyRights))
+  if (((rights & ExecutePolicyRights) != 0) &&
+      ((effective_rights & ExecutePolicyRights) == 0))
     return(MagickFalse);
   return(MagickTrue);
+}
+
+MagickExport MagickBooleanType IsRightsAuthorized(const PolicyDomain domain,
+  const PolicyRights rights,const char *pattern)
+{
+  return(IsRightsAuthorizedByName(domain,(const char *) NULL,rights,pattern));
 }
 
 /*

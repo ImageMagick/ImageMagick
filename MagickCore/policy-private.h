@@ -34,6 +34,8 @@ static const char
 #endif
 
 extern MagickPrivate MagickBooleanType
+  IsRightsAuthorizedByName(const PolicyDomain,const char *,const PolicyRights,
+    const char *),
   PolicyComponentGenesis(void);
 
 extern MagickPrivate void

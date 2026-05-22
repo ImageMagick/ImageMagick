@@ -84,7 +84,7 @@
 */
 #define IsPathAuthorized(rights,filename) \
   ((IsRightsAuthorized(PathPolicyDomain,rights,filename) != MagickFalse) && \
-   ((IsRightsAuthorized(SystemPolicyDomain,rights,"symlink::follow") != MagickFalse) || \
+   ((IsRightsAuthorizedByName(SystemPolicyDomain,"symlink",rights,"follow") != MagickFalse) || \
     (is_symlink_utf8(filename) == MagickFalse)))
 #define MagickMaxBlobExtent  (8*8192)
 #if !defined(MAP_ANONYMOUS) && defined(MAP_ANON)

@@ -139,7 +139,7 @@ static inline unsigned char *ConvertMacRomanToUTF8(
   {
     c=(*p);
     if (c > 128)
-      c=macroman_unicode[c-128];
+      c=(int) macroman_unicode[c-128];
     if ((c & 0x80) == 0)
       *q++=(unsigned char) c;
     else

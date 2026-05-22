@@ -175,12 +175,12 @@ static inline ssize_t CastDoubleToSsizeT(const double x)
   if (value < ((double) MAGICK_SSIZE_MIN))
     {
       errno=ERANGE;
-      return(MAGICK_SSIZE_MIN);
+      return((ssize_t) MAGICK_SSIZE_MIN);
     }
   if (value >= ((double) MAGICK_SSIZE_MAX))
     {
       errno=ERANGE;
-      return(MAGICK_SSIZE_MAX);
+      return((ssize_t) MAGICK_SSIZE_MAX);
     }
   return((ssize_t) value);
 }
