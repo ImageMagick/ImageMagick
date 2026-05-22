@@ -265,7 +265,7 @@ const Magick::Color& Magick::Color::operator=(const std::string &color_)
       delete _pixel;
       _pixel = (PixelInfo *)NULL;
     }
-  ThrowPPException(false);
+  ThrowPPException(true);
 
   return(*this);
 }

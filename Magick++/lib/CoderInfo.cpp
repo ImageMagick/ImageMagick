@@ -59,7 +59,7 @@ Magick::CoderInfo::CoderInfo(const std::string &name_)
 
   GetPPException;
   magickInfo=GetMagickInfo(name_.c_str(),exceptionInfo);
-  ThrowPPException(false);
+  ThrowPPException(true);
   if (magickInfo == 0)
     throwExceptionExplicit(MagickCore::OptionError,"Coder not found",
       name_.c_str());
