@@ -148,7 +148,17 @@ Magick::Color::Color(const char *color_)
   initPixel();
 
   // Use operator = implementation
-  *this=color_;
+  try
+  {
+    *this=color_;
+  }
+  catch (...)
+  {
+    if (_pixelOwn)
+      delete _pixel;
+    _pixel=(PixelInfo *)NULL;
+    throw;
+  }
 }
 
 Magick::Color::Color(const Magick::Color &color_)
@@ -178,7 +188,17 @@ Magick::Color::Color(const std::string &color_)
   initPixel();
 
   // Use operator = implementation
-  *this=color_;
+  try
+  {
+    *this=color_;
+  }
+  catch (...)
+  {
+    if (_pixelOwn)
+      delete _pixel;
+    _pixel=(PixelInfo *)NULL;
+    throw;
+  }
 }
 
 Magick::Color::~Color(void)
