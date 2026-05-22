@@ -59,7 +59,7 @@ public:
 
     data=reinterpret_cast<const uint8_t *>(_data);
     LLVMFuzzerTestOneInput(data,_size);
-    delete _data;
+    delete[] _data;
   }
 
 
