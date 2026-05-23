@@ -7988,7 +7988,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
   const ImageInfo *IMimage_info,Image *IMimage,ExceptionInfo *exception)
 {
   Image
-    *image;
+    *volatile image;
 
   ImageInfo
     *image_info;
@@ -9443,6 +9443,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
         quantum_info=DestroyQuantumInfo(quantum_info);
 
       image_info=DestroyImageInfo(image_info);
+      (void) CloseBlob(image);
       image=DestroyImage(image);
 
       if (ping_have_blob != MagickFalse)
