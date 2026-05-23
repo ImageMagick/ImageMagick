@@ -2709,8 +2709,8 @@ MagickExport MagickBooleanType SetImageExtent(Image *image,const size_t columns,
 {
   if ((columns == 0) || (rows == 0))
     ThrowBinaryException(ImageError,"NegativeOrZeroImageSize",image->filename);
-  if ((columns > (size_t) MAGICK_SSIZE_MIN) ||
-      (rows > (size_t) MAGICK_SSIZE_MIN))
+  if ((columns > (size_t) MAGICK_SSIZE_MAX) ||
+      (rows > (size_t) MAGICK_SSIZE_MAX))
     ThrowBinaryException(ImageError,"ImageSizeLimitExceeded",image->filename);
   image->columns=columns;
   image->rows=rows;
