@@ -145,8 +145,6 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AcquireImage(image_info,exception);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionError,"MustSpecifyImageSize");
-  if (HeapOverflowSanityCheckGetSize(image->columns,4*image->depth/8,&extent) != MagickFalse)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
