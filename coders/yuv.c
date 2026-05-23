@@ -125,7 +125,6 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     y;
 
   size_t
-    extent,
     length,
     quantum;
 
