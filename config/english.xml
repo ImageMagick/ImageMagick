@@ -524,6 +524,9 @@
         <message name="LeftAndRightImageSizesDiffer">
           left and right image sizes differ
         </message>
+        <message name="ImageSizeLimitExceeded">
+          Image dimension exceeds maximum supported size
+        </message>
         <message name="NegativeOrZeroImageSize">
           negative or zero image size
         </message>
