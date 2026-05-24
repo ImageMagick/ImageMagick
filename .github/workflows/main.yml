@@ -133,7 +133,7 @@ jobs:
 
   build_windows:
     name: Build Windows ${{matrix.architecture}}
-    runs-on: windows-2022
+    runs-on: windows-2025-vs2026
 
     strategy:
       fail-fast: false
@@ -161,17 +161,17 @@ jobs:
         shell: cmd
         working-directory: Configure
         run: |
-          Configure.Release.x64.exe /noWizard /VS2022 /${{matrix.architecture}} /static
+          Configure.Release.x64.exe /noWizard /VS2026 /${{matrix.architecture}} /static
 
       - name: Build ImageMagick
         shell: cmd
         run: |
-          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
+          call "C:\Program Files\Microsoft Visual Studio\18\Enterprise\Common7\Tools\VsDevCmd.bat"
           msbuild IM7.Static.${{matrix.architecture}}.sln /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.architecture}}
 
   build_msys2:
     name: Build MSYS2
-    runs-on: windows-2022
+    runs-on: windows-2025
 
     steps:
       - name: Prepare git

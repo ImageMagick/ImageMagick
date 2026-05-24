@@ -87,7 +87,7 @@ jobs:
 
   windows_installer:
     name: Windows ${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.architecture}} (${{matrix.buildType}})
-    runs-on: windows-2022
+    runs-on: windows-2025-vs2026
     needs:
       - changelog
       - version
@@ -161,12 +161,12 @@ jobs:
         shell: cmd
         working-directory: Configure
         run: |
-          Configure.Release.x64.exe /noWizard /VS2022 /installedSupport /deprecated /${{matrix.hdri}} /${{matrix.quantum}} /${{matrix.architecture}} /${{matrix.buildType}}
+          Configure.Release.x64.exe /noWizard /VS2026 /installedSupport /deprecated /${{matrix.hdri}} /${{matrix.quantum}} /${{matrix.architecture}} /${{matrix.buildType}}
 
       - name: Build ImageMagick
         shell: cmd
         run: |
-          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
+          call "C:\Program Files\Microsoft Visual Studio\18\Enterprise\Common7\Tools\VsDevCmd.bat"
           msbuild /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.architecture}}
 
       - name: Build PerlMagick
@@ -174,7 +174,7 @@ jobs:
         shell: cmd
         run: |
           set PATH=
-          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
+          call "C:\Program Files\Microsoft Visual Studio\18\Enterprise\Common7\Tools\VsDevCmd.bat"
           cd ImageMagick\PerlMagick
           set PATH=%PATH%;C:\Strawberry${{matrix.bit}}\c\bin;C:\Strawberry${{matrix.bit}}\perl\site\bin;C:\Strawberry${{matrix.bit}}\perl\bin;C:\WINDOWS\System32\WindowsPowerShell\v1.0
           perl "Makefile.PL" "MAKE=nmake" "CC=g++"
@@ -193,7 +193,7 @@ jobs:
       - name: Create installer
         shell: cmd
         run: |
-          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
+          call "C:\Program Files\Microsoft Visual Studio\18\Enterprise\Common7\Tools\VsDevCmd.bat"
           "C:\Program Files (x86)\Inno Setup 6\iscc.exe" Configure\Installer\Inno\ImageMagick.iss
 
       - name: Sign installer
@@ -212,7 +212,7 @@ jobs:
 
   windows_source:
     name: Create Windows source archive
-    runs-on: windows-2022
+    runs-on: windows-2025
     needs:
       - changelog
       - version
@@ -254,7 +254,7 @@ jobs:
 
   windows_portable:
     name: Windows portable ${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.architecture}}
-    runs-on: windows-2022
+    runs-on: windows-2025-vs2026
     needs:
       - changelog
       - version
@@ -303,12 +303,12 @@ jobs:
         shell: cmd
         working-directory: Configure
         run: |
-          Configure.Release.x64.exe /noWizard /VS2022 /${{matrix.hdri}} /${{matrix.quantum}} /${{matrix.architecture}} /static /linkRuntime
+          Configure.Release.x64.exe /noWizard /VS2026 /${{matrix.hdri}} /${{matrix.quantum}} /${{matrix.architecture}} /static /linkRuntime
 
       - name: Build ImageMagick
         shell: cmd
         run: |
-          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
+          call "C:\Program Files\Microsoft Visual Studio\18\Enterprise\Common7\Tools\VsDevCmd.bat"
           msbuild /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.architecture}}
 
       - name: Sign executables and libraries
