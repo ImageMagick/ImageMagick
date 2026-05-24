@@ -4376,10 +4376,10 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   RelinquishDCMMemory(&info,&map,stream_info,stack,data);
   if (image == (Image *) NULL)
     return(image);
-  if ((image->rows == 0) || (image->columns == 0))
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader")
   if (CloseBlob(image) == MagickFalse)
     status=MagickFalse;
+  if ((image->rows == 0) || (image->columns == 0))
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader")
   if (status == MagickFalse)
     return(DestroyImageList(image));
   return(GetFirstImageInList(image));
