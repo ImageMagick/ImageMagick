@@ -3356,9 +3356,9 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
       MagickRealType
         intensity;
 
-      intensity=QuantumRange;
+      intensity=(MagickRealType) QuantumRange;
       if ((x < (ssize_t) mask->columns) && (y < (ssize_t) mask->rows))
-        intensity=QuantumRange-GetPixelIntensity(mask,p);
+        intensity=(MagickRealType) QuantumRange-GetPixelIntensity(mask,p);
       switch (type)
       {
         case ReadPixelMask:
