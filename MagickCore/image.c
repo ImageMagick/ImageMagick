@@ -3356,9 +3356,9 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
       MagickRealType
         intensity;
 
-      intensity=0.0;
+      intensity=QuantumRange;
       if ((x < (ssize_t) mask->columns) && (y < (ssize_t) mask->rows))
-        intensity=GetPixelIntensity(mask,p);
+        intensity=QuantumRange-GetPixelIntensity(mask,p);
       switch (type)
       {
         case ReadPixelMask:
@@ -3383,9 +3383,9 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
   }
-  image->mask_trait=UpdatePixelTrait;
   mask_view=DestroyCacheView(mask_view);
   image_view=DestroyCacheView(image_view);
+  image->mask_trait=UpdatePixelTrait;
   return(status);
 }
 
