@@ -8,7 +8,16 @@ updates:
       interval: "daily"
 
   - package-ecosystem: "docker"
-    directory: "/"
+    directories:
+      - "/**"
+    cooldown:
+      default-days: 7
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "pip"
+    directories:
+      - "/**"
     cooldown:
       default-days: 7
     schedule:
