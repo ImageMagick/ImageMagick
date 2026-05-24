@@ -1450,6 +1450,8 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             if ((status != MagickFalse) &&
                 (cmsGetDeviceClass(source_info.profile) != cmsSigLinkClass))
               status=SetImageProfilePrivate(image,profile,exception);
+            else
+              profile=DestroyStringInfo(profile);
             if (target_info.profile != (cmsHPROFILE) NULL)
               (void) cmsCloseProfile(target_info.profile);
           }
