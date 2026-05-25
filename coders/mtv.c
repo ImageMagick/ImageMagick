@@ -159,7 +159,11 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->depth=8;
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
-        break;
+        {
+          if ((image->columns == 0) || (image->rows == 0))
+            ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+          break;
+        }
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
       return(DestroyImageList(image));
