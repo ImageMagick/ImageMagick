@@ -167,6 +167,8 @@ static Image *ReadRGFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->colormap[1].blue=(Quantum) 0;
   if (image_info->ping != MagickFalse)
     {
+      if ((image->columns == 0) || (image->rows == 0))
+        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
       (void) CloseBlob(image);
       return(GetFirstImageInList(image));
     }
