@@ -762,6 +762,8 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,
         if (status==MagickFalse)
           break;
       }
+    if ((image->columns == 0) || (image->rows == 0))
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
