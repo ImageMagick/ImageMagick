@@ -457,6 +457,8 @@ static Image *ReadICONImage(const ImageInfo *image_info,
 
         if (bits_per_pixel > 32)
           ThrowICONReaderException(CorruptImageError,"ImproperImageHeader");
+        if ((width < 0) || (height < 0))
+          ThrowICONReaderException(CorruptImageError,"ImproperImageHeader");
         (void) ReadBlobLSBLong(image); /* compression */
         (void) ReadBlobLSBLong(image); /* image_size */
         (void) ReadBlobLSBLong(image); /* x_pixels */
