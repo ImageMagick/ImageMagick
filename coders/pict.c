@@ -1020,6 +1020,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               break;
             image->columns=(size_t) (frame.right-frame.left);
             image->rows=(size_t) (frame.bottom-frame.top);
+            if ((image->columns == 0) || (image->rows == 0))
+              ThrowPICTException(CorruptImageError,"ImproperImageHeader");
             if (image_info->ping != MagickFalse)
               break;
             status=SetImageExtent(image,image->columns,image->rows,exception);
