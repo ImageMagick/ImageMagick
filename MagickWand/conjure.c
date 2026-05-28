@@ -258,6 +258,8 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
               ThrowConjureInvalidArgumentException(option,argv[i]);
             break;
           }
+        if (LocaleCompare("strict",option+1) == 0)
+          break;
         if (LocaleCompare("verbose",option+1) == 0)
           {
             image_info->verbose=(*option == '-') ? MagickTrue : MagickFalse;

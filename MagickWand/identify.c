@@ -864,6 +864,8 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
               ThrowIdentifyInvalidArgumentException(option,argv[i]);
             break;
           }
+        if (LocaleCompare("strict",option+1) == 0)
+          break;
         if (LocaleCompare("strip",option+1) == 0)
           break;
         if (LocaleCompare("support",option+1) == 0)

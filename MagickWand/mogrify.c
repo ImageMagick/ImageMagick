@@ -3656,6 +3656,7 @@ static MagickBooleanType MogrifyUsage(void)
       "  -seed value          seed a new sequence of pseudo-random numbers\n"
       "  -size geometry       width and height of image\n"
       "  -stretch type        render text with this font stretch\n"
+      "  -strict              treat coder warnings as errors\n"
       "  -stroke color        graphic primitive stroke color\n"
       "  -strokewidth value   graphic primitive stroke width\n"
       "  -style type          render text with this font style\n"
@@ -6222,6 +6223,8 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
                 argv[i]);
             break;
           }
+        if (LocaleCompare("strict",option+1) == 0)
+          break;
         if (LocaleCompare("strip",option+1) == 0)
           break;
         if (LocaleCompare("stroke",option+1) == 0)
@@ -7528,6 +7531,11 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
                 break;
               }
             (void) CloneString(&image_info->size,argv[i+1]);
+            break;
+          }
+        if (LocaleCompare("strict",option+1) == 0)
+          {
+            (void) SetWarningsAsErrors(*option == '-' ? MagickTrue : MagickFalse);
             break;
           }
         if (LocaleCompare("stroke",option+1) == 0)

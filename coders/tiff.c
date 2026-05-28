@@ -3717,14 +3717,24 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         break;
       }
     }
-    if ((compress_tag != COMPRESSION_NONE) &&
-        (TIFFIsCODECConfigured(compress_tag) == 0))
+    if (((compress_tag != COMPRESSION_NONE) &&
+         (TIFFIsCODECConfigured(compress_tag) == 0)) ||
+        ((compress_tag == COMPRESSION_NONE) &&
+         (compression != UndefinedCompression) &&
+         (compression != NoCompression)))
       {
-        (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
+        (void) ThrowMagickException(exception,GetMagickModule(),CoderWarning,
           "CompressionNotSupported","`%s'",CommandOptionToMnemonic(
           MagickCompressOptions,(ssize_t) compression));
         compress_tag=COMPRESSION_NONE;
         compression=NoCompression;
+        if (exception->severity >= ErrorException)
+          {
+            TIFFClose(tiff);
+            quantum_info=DestroyQuantumInfo(quantum_info);
+            (void) CloseBlob(image);
+            return(MagickFalse);
+          }
       }
     if (image->colorspace == CMYKColorspace)
       {
@@ -3793,11 +3803,22 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     if ((compress_tag == COMPRESSION_CCITTFAX3) ||
         (compress_tag == COMPRESSION_CCITTFAX4))
       {
-         if ((photometric != PHOTOMETRIC_MINISWHITE) &&
-             (photometric != PHOTOMETRIC_MINISBLACK))
+        if ((photometric != PHOTOMETRIC_MINISWHITE) &&
+            (photometric != PHOTOMETRIC_MINISBLACK))
           {
+            (void) ThrowMagickException(exception,GetMagickModule(),
+              CoderWarning,"CompressionNotSupported","`%s'",
+              CommandOptionToMnemonic(MagickCompressOptions,
+              (ssize_t) compression));
             compress_tag=COMPRESSION_NONE;
             endian=FILLORDER_MSB2LSB;
+            if (exception->severity >= ErrorException)
+              {
+                TIFFClose(tiff);
+                quantum_info=DestroyQuantumInfo(quantum_info);
+                (void) CloseBlob(image);
+                return(MagickFalse);
+              }
           }
       }
     option=GetImageOption(image_info,"tiff:fill-order");

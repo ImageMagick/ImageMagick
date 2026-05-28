@@ -1575,6 +1575,8 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
               &montage_info->stroke,exception);
             break;
           }
+        if (LocaleCompare("strict",option+1) == 0)
+          break;
         if (LocaleCompare("strip",option+1) == 0)
           break;
         if (LocaleCompare("strokewidth",option+1) == 0)

@@ -1053,6 +1053,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
               ThrowCompareInvalidArgumentException(option,argv[i]);
             break;
           }
+        if (LocaleCompare("strict",option+1) == 0)
+          break;
         if (LocaleCompare("subimage-search",option+1) == 0)
           {
             if (*option == '+')
