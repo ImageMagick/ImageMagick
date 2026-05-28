@@ -222,7 +222,11 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
-        break;
+        {
+          if ((image->columns == 0) || (image->rows == 0))
+            ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+          break;
+        }
     /*
       Read image data.
     */
