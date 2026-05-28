@@ -202,6 +202,11 @@ static Image *ReadUHDRImage(const ImageInfo *image_info,
 
   if (image_info->ping != MagickFalse)
   {
+    if ((image->columns == 0) || (image->rows == 0))
+    {
+      uhdr_release_decoder(handle);
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    }
     uhdr_release_decoder(handle);
     status = CloseBlob(image);
     if (status == MagickFalse)
