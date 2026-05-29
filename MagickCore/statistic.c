@@ -328,7 +328,7 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,const Quantum pixel,
     }
     case LogEvaluateOperator:
     {
-      if ((QuantumScale*(double) pixel) >= MagickHuLogEpsilon)
+      if ((QuantumScale*(double) pixel) >= MagickEpsilonHuLog)
         result=(double) QuantumRange*log(QuantumScale*value*
           (double) pixel+1.0)/log((double) (value+1.0));
       break;
