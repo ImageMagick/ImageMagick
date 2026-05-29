@@ -137,6 +137,8 @@ static Image *ReadSTRIMGImage(const ImageInfo *image_info,
   if (image_info->ping != MagickFalse)
     {
       string=DestroyString(string);
+      if (image->columns == 0)
+        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
       (void) CloseBlob(image);
       return(GetFirstImageInList(image));
     }
