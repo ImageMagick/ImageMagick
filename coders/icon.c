@@ -223,7 +223,7 @@ static Image *Read1XImage(Image *image,ExceptionInfo *exception)
     ssize_t
       y;
 
-    for (y=0; y < (ssize_t) image->columns; y++)
+    for (y=0; y < (ssize_t) image->rows; y++)
     {
       Quantum
         *q;
