@@ -5635,7 +5635,8 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
         affine;
 
       char
-        composite_geometry[MagickPathExtent];
+        composite_geometry[MagickPathExtent],
+        magic[MagickPathExtent] = {'\0'};
 
       Image
         *composite_image,
@@ -5673,11 +5674,8 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               clone_info->size=DestroyString(clone_info->size);
             if (clone_info->extract != (char *) NULL)
               clone_info->extract=DestroyString(clone_info->extract);
-            if ((LocaleCompare(clone_info->magick,"ftp") != 0) &&
-                (LocaleCompare(clone_info->magick,"http") != 0) &&
-                (LocaleCompare(clone_info->magick,"https") != 0) &&
-                (LocaleCompare(clone_info->magick,"mvg") != 0) &&
-                (LocaleCompare(clone_info->magick,"vid") != 0))
+            GetPathComponent(clone_info->filename,MagickPath,magic);
+            if (*magic == '\0')
               composite_images=ReadImage(clone_info,exception);
             else
               (void) ThrowMagickException(exception,GetMagickModule(),
