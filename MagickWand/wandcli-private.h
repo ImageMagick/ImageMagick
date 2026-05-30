@@ -49,7 +49,13 @@ extern "C" {
   { CLIWandException(severity,tag,option); return; }
 
 #define CLIWandExceptArgBreak(severity,tag,option,arg) \
-  { CLIWandExceptionArg(severity,tag,option,arg); break; }
+  {  \
+    if (errno != 0)  \
+      CLIWandExceptionArg(severity,tag,option,GetExceptionMessage(errno));  \
+    else  \
+      CLIWandExceptionArg(severity,tag,option,arg);  \
+    break; \
+  }
 
 #define CLIWandExceptArgReturn(severity,tag,option,arg) \
   { CLIWandExceptionArg(severity,tag,option,arg); return; }
