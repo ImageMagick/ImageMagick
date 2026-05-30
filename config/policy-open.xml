@@ -107,7 +107,7 @@
        cache memory. Images that exceed the area limit are cached to disk. -->
   <!-- <policy domain="resource" name="area" value="16KP"/> -->
   <!-- Set maximum amount of disk space in bytes permitted for use by the pixel
-       cache. When this limit is exceeded, the pixel cache is not be created
+       cache. When this limit is exceeded, the pixel cache is not created
        and an exception is thrown. -->
   <!-- <policy domain="resource" name="disk" value="1GiB"/> -->
   <!-- Set the maximum length of an image sequence.  When this limit is
