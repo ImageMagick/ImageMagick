@@ -328,7 +328,7 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,const Quantum pixel,
     }
     case LogEvaluateOperator:
     {
-      if ((QuantumScale*(double) pixel) >= MagickLogEpsilon)
+      if ((QuantumScale*(double) pixel) >= MagickEpsilon)
         result=(double) QuantumRange*log(QuantumScale*value*
           (double) pixel+1.0)/log((double) (value+1.0));
       break;
@@ -1794,7 +1794,7 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
     for (channel=0; channel <= MaxPixelChannels; channel++)
       for (j=0; j < MaximumNumberOfImageMoments; j++)
         perceptual_hash[channel].phash[i][j]=
-          (-MagickSafeLog10(moments[channel].invariant[j]));
+          (-MagickSafeLog10(fabs(moments[channel].invariant[j])));
     moments=(ChannelMoments *) RelinquishMagickMemory(moments);
   }
   colorspaces=DestroyString(colorspaces);
