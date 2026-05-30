@@ -1079,7 +1079,7 @@ WandExport MagickWand *NewMagickWand(void)
   wand=(MagickWand *) AcquireMagickMemory(sizeof(*wand));
   if (wand == (MagickWand *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
-      GetExceptionMessage(errno));
+      (char *) NULL);
   (void) memset(wand,0,sizeof(*wand));
   wand->id=AcquireWandId();
   (void) FormatLocaleString(wand->name,MagickPathExtent,"%s-%.20g",MagickWandId,

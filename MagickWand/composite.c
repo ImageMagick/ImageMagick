@@ -422,8 +422,10 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
 }
 #define ThrowCompositeException(asperity,tag,option) \
 { \
-  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag,"`%s'", \
-     option == (char *) NULL ? GetExceptionMessage(errno) : option); \
+  char *message = GetExceptionMessage(errno);     \
+  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag, \
+    "`%s'",option == (char *) NULL ? message : option); \
+  message=DestroyString(message); \
   DestroyComposite(); \
   return(MagickFalse); \
 }
@@ -514,7 +516,7 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
   status=ExpandFilenames(&argc,&argv);
   if (status == MagickFalse)
     ThrowCompositeException(ResourceLimitError,"MemoryAllocationFailed",
-      GetExceptionMessage(errno));
+      (char *) NULL);
   for (i=1; i < ((ssize_t) argc-1); i++)
   {
     option=argv[i];
@@ -1688,7 +1690,7 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
       text=InterpretImageProperties(image_info,images,format,exception);
       if (text == (char *) NULL)
         ThrowCompositeException(ResourceLimitError,"MemoryAllocationFailed",
-          GetExceptionMessage(errno));
+          (char *) NULL);
       (void) ConcatenateString(&(*metadata),text);
       text=DestroyString(text);
     }

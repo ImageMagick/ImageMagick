@@ -160,8 +160,10 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
 }
 #define ThrowStreamException(asperity,tag,option) \
 { \
-  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag,"`%s'", \
-    option); \
+  char *message = GetExceptionMessage(errno);     \
+  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag, \
+    "`%s'",option == (char *) NULL ? message : option); \
+  message=DestroyString(message); \
   DestroyStream(); \
   return(MagickFalse); \
 }
@@ -250,7 +252,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
   status=ExpandFilenames(&argc,&argv);
   if (status == MagickFalse)
     ThrowStreamException(ResourceLimitError,"MemoryAllocationFailed",
-      GetExceptionMessage(errno));
+      (char *) NULL);
   status=OpenStream(image_info,stream_info,argv[argc-1],exception);
   if (status == MagickFalse)
     {

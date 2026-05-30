@@ -218,8 +218,10 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
 }
 #define ThrowImportException(asperity,tag,option) \
 { \
-  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag,"`%s'", \
-     option); \
+  char *message = GetExceptionMessage(errno);     \
+  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag, \
+    "`%s'",option == (char *) NULL ? message : option); \
+  message=DestroyString(message); \
   DestroyImport(); \
   return(MagickFalse); \
 }
@@ -314,7 +316,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
   status=ExpandFilenames(&argc,&argv);
   if (status == MagickFalse)
     ThrowImportException(ResourceLimitError,"MemoryAllocationFailed",
-      GetExceptionMessage(errno));
+      (char *) NULL);
   for (i=1; i < (ssize_t) argc; i++)
   {
     /*

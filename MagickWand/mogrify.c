@@ -3728,8 +3728,10 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
 }
 #define ThrowMogrifyException(asperity,tag,option) \
 { \
-  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag,"`%s'", \
-    option); \
+  char *message = GetExceptionMessage(errno);     \
+  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag, \
+    "`%s'",option == (char *) NULL ? message : option); \
+  message=DestroyString(message); \
   DestroyMogrify(); \
   return(MagickFalse); \
 }
@@ -3814,7 +3816,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
   status=ExpandFilenames(&argc,&argv);
   if (status == MagickFalse)
     ThrowMogrifyException(ResourceLimitError,"MemoryAllocationFailed",
-      GetExceptionMessage(errno));
+      (char *) NULL);
   for (i=1; i < (ssize_t) argc; i++)
   {
     option=argv[i];

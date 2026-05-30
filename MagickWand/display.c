@@ -264,8 +264,10 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
 }
 #define ThrowDisplayException(asperity,tag,option) \
 { \
-  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag,"`%s'", \
-    option); \
+  char *message = GetExceptionMessage(errno);     \
+  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag, \
+    "`%s'",option == (char *) NULL ? message : option); \
+  message=DestroyString(message); \
   DestroyDisplay(); \
   return(MagickFalse); \
 }
@@ -367,12 +369,12 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
   status=ExpandFilenames(&argc,&argv);
   if (status == MagickFalse)
     ThrowDisplayException(ResourceLimitError,"MemoryAllocationFailed",
-      GetExceptionMessage(errno));
+      (char *) NULL);
   image_marker=(size_t *) AcquireQuantumMemory((size_t) argc+1UL,
     sizeof(*image_marker));
   if (image_marker == (size_t *) NULL)
     ThrowDisplayException(ResourceLimitError,"MemoryAllocationFailed",
-      GetExceptionMessage(errno));
+      (char *) NULL);
   for (i=0; i <= (ssize_t) argc; i++)
     image_marker[i]=(size_t) argc;
   /*
@@ -503,7 +505,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
         image_list=CloneImageList(image,exception);
         if (image_list == (Image *) NULL)
           ThrowDisplayException(ResourceLimitError,"MemoryAllocationFailed",
-            GetExceptionMessage(errno));
+            (char *) NULL);
         display_image=image_list;
         do
         {

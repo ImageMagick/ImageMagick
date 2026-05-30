@@ -1254,7 +1254,7 @@ static MagickBooleanType ConcatenateImages(int argc,char **argv,
 
   if (ExpandFilenames(&argc,&argv) == MagickFalse)
     ThrowFileException(exception,ResourceLimitError,"MemoryAllocationFailed",
-      GetExceptionMessage(errno));
+      argv[argc-1]);
   output=fopen_utf8(argv[argc-1],"wb");
   if (output == (FILE *) NULL)
     {
@@ -1439,9 +1439,12 @@ Magick_Command_Exit:
       text=InterpretImageProperties(image_info,cli_wand->wand.images,format,
         exception);
       if (text == (char *) NULL)
-        (void) ThrowMagickException(exception,GetMagickModule(),
-          ResourceLimitError,"MemoryAllocationFailed","`%s'",
-          GetExceptionMessage(errno));
+        {
+          char *message = GetExceptionMessage(errno);
+          (void) ThrowMagickException(exception,GetMagickModule(),
+            ResourceLimitError,"MemoryAllocationFailed","`%s'",message);
+          message=DestroyString(message);
+        }
       else
         {
           (void) ConcatenateString(&(*metadata),text);

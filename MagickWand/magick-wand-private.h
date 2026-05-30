@@ -34,12 +34,11 @@ extern "C" {
 }
 #define ThrowWandFatalException(severity,tag,context) \
 { \
-  ExceptionInfo \
-    *fatal_exception; \
- \
-  fatal_exception=AcquireExceptionInfo(); \
+  ExceptionInfo *fatal_exception = AcquireExceptionInfo(); \
+  char *message = GetExceptionMessage(errno); \
   (void) ThrowMagickException(fatal_exception,GetMagickModule(),severity,tag, \
-    "`%s'",context); \
+    "`%s'",context == (char *) NULL ? message : context); \
+  message=DestroyString(message); \
   CatchException(fatal_exception); \
   (void) DestroyExceptionInfo(fatal_exception); \
   MagickWandTerminus(); \
