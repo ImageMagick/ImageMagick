@@ -493,8 +493,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if (quantum_type == UndefinedQuantum)
       quantum_type=RGBQuantum;
-    if ((image->columns == 0) || (image->rows == 0))
-      ThrowPNMException(CorruptImageError,"NegativeOrZeroImageSize");
     if ((max_value == 0) || (max_value > 4294967295UL))
       ThrowPNMException(CorruptImageError,"ImproperImageHeader");
     for (depth=1; GetQuantumRange(depth) < max_value; depth++) ;

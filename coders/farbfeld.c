@@ -184,8 +184,6 @@ static Image *ReadFARBFELDImage(const ImageInfo *image_info,
   image->alpha_trait=BlendPixelTrait;
   if (image_info->ping != MagickFalse)
     {
-      if ((image->columns == 0) || (image->rows == 0))
-        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
       (void) CloseBlob(image);
       return(GetFirstImageInList(image));
     }

@@ -153,8 +153,6 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->columns=(size_t) ReadBlobMSBShort(image);
       image->rows=(size_t) ReadBlobMSBShort(image);
     }
-  if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   depth=(unsigned char) ReadBlobByte(image);
   if (depth != 1)
     ThrowReaderException(CoderError,"OnlyLevelZerofilesSupported");

@@ -190,8 +190,6 @@ static Image *ReadPGXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->endian=MSBEndian;
   image->columns=(size_t) width;
   image->rows=(size_t) height;
-  if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if (image_info->ping != MagickFalse)
     {
       (void) CloseBlob(image);
