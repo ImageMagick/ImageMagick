@@ -1686,8 +1686,8 @@ static MagickBooleanType GetDynamicThrottlePolicy(void)
           dynamic_throttle=IsStringTrue(value);
           value=DestroyString(value);
         }
-    check_policy=MagickFalse;
-  }
+      check_policy=MagickFalse;
+    }
   return(dynamic_throttle);
 }
 

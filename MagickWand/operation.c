@@ -4776,7 +4776,7 @@ static MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
         swap=CloneImage(p,0,0,MagickTrue,_exception);
         if (swap == (Image *) NULL)
           CLIWandExceptArgBreak(ResourceLimitError,"MemoryAllocationFailed",
-            option,GetExceptionMessage(errno));
+            option,(char *) NULL);
         ReplaceImageInList(&p,CloneImage(q,0,0,MagickTrue,_exception));
         ReplaceImageInList(&q,swap);
         _images=GetFirstImageInList(q);
@@ -4947,7 +4947,7 @@ static void CLINoImageOperator(MagickCLI *cli_wand,
       */
       if (ExpandFilenames(&argc,&argv) == MagickFalse)
         CLIWandExceptArgBreak(ResourceLimitError,"MemoryAllocationFailed",
-            option,GetExceptionMessage(errno));
+          option,(char *) NULL);
 
       /* loop over expanded filename list, and read then all in */
       for (i=0; i < (ssize_t) argc; i++) {

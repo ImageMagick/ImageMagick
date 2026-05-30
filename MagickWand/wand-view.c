@@ -764,7 +764,7 @@ WandExport WandView *NewWandView(MagickWand *wand)
   wand_view->exception=exception;
   if (wand_view->pixel_wands == (PixelWand ***) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
-      GetExceptionMessage(errno));
+      (char *) NULL);
   wand_view->debug=IsEventLogging();
   wand_view->signature=MagickWandSignature;
   return(wand_view);
@@ -825,7 +825,7 @@ WandExport WandView *NewWandViewExtent(MagickWand *wand,const ssize_t x,
   wand_view->pixel_wands=AcquirePixelsTLS(wand_view->extent.width);
   if (wand_view->pixel_wands == (PixelWand ***) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
-      GetExceptionMessage(errno));
+      (char *) NULL);
   wand_view->debug=IsEventLogging();
   wand_view->signature=MagickWandSignature;
   return(wand_view);

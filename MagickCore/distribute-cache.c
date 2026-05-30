@@ -330,6 +330,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
 {
 #if defined(MAGICKCORE_HAVE_DISTRIBUTE_CACHE)
   char
+    *message,
     service[MagickPathExtent],
     *shared_secret;
 
@@ -373,8 +374,10 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
   if (client_socket == -1)
     {
       freeaddrinfo(result);
+      message=GetExceptionMessage(errno);
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
-        "DistributedPixelCache","'%s': %s",hostname,GetExceptionMessage(errno));
+        "DistributedPixelCache","'%s': %s",hostname,message);
+      message=DestroyString(message);
       return(-1);
     }
   status=connect(client_socket,result->ai_addr,(socklen_t) result->ai_addrlen);
@@ -382,8 +385,10 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
   if (status == -1)
     {
       CLOSE_SOCKET(client_socket);
+      message=GetExceptionMessage(errno);
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
-        "DistributedPixelCache","'%s': %s",hostname,GetExceptionMessage(errno));
+        "DistributedPixelCache","'%s': %s",hostname,message);
+      message=DestroyString(message);
       return(-1);
     }
   /*
@@ -393,8 +398,10 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
   if (count != (ssize_t) sizeof(nonce))
     {
       CLOSE_SOCKET(client_socket);
+      message=GetExceptionMessage(errno);
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
-        "DistributedPixelCache","'%s': %s",hostname,GetExceptionMessage(errno));
+        "DistributedPixelCache","'%s': %s",hostname,message);
+      message=DestroyString(message);
       return(-1);
     }
   /*

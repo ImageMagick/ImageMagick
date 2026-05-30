@@ -128,8 +128,10 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
 }
 #define ThrowConjureException(asperity,tag,option) \
 { \
-  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag,"`%s'", \
-     option); \
+  char *message = GetExceptionMessage(errno);     \
+  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag, \
+    "`%s'",option == (char *) NULL ? message : option); \
+  message=DestroyString(message); \
   DestroyConjure(); \
   return(MagickFalse); \
 }
@@ -184,7 +186,7 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
   status=ExpandFilenames(&argc,&argv);
   if (status == MagickFalse)
     ThrowConjureException(ResourceLimitError,"MemoryAllocationFailed",
-      GetExceptionMessage(errno));
+      (char *) NULL);
   for (i=1; i < (ssize_t) argc; i++)
   {
     option=argv[i];

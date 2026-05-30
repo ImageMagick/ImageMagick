@@ -727,8 +727,6 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->rows=cin.image.channel[0].lines_per_image;
   if (image_info->ping != MagickFalse)
     {
-      if ((image->columns == 0) || (image->rows == 0))
-        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
       (void) CloseBlob(image);
       return(image);
     }
