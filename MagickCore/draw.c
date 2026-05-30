@@ -2320,6 +2320,7 @@ static inline MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
       (void) memset(primitive_info,0,extent*sizeof(*primitive_info));
       *mvg_info->primitive_info=primitive_info;
       *mvg_info->extent=extent;
+      *mvg_info->offset=0;
       ThrowMagickException(mvg_info->exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'","");
       return(MagickFalse);
