@@ -467,7 +467,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
             "InsufficientImageDataInFile");
         (void) ReadBlobLSBLong(image); /* colors_important */
         image->alpha_trait=BlendPixelTrait;
-        image->columns=(size_t) GetICONSize( directory->icons[i]->width,
+        image->columns=(size_t) GetICONSize(directory->icons[i]->width,
           (size_t) width);
         image->rows=(size_t) GetICONSize(directory->icons[i]->height,
           (size_t) height);
