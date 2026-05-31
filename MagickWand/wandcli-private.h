@@ -31,6 +31,7 @@ extern "C" {
     char *message = GetExceptionMessage(errno); \
     (void) CLIThrowException(cli_wand,GetMagickModule(),severity,tag, \
       "'%s' '%s'",option, arg == (char *) NULL ? message : arg); \
+    message=DestroyString(message); \
   }
 
 #define CLIWandWarnReplaced(message) \
