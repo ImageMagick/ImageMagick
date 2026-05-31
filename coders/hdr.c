@@ -340,6 +340,9 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
                   if (MagickSscanf(value,"%d +X %d",&height,&width) == 2)
                     {
+                      if ((width <= 0) || (height <= 0))
+                        ThrowReaderException(CorruptImageError,
+                          "ImproperImageHeader");
                       image->columns=(size_t) width;
                       image->rows=(size_t) height;
                     }
