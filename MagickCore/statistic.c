@@ -1792,32 +1792,9 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
     if (moments == (ChannelMoments *) NULL)
       break;
     for (channel=0; channel <= MaxPixelChannels; channel++)
-    {
-      double
-        mn =DBL_MAX,
-        mx = -DBL_MAX;
-
       for (j=0; j < MaximumNumberOfImageMoments; j++)
-      {
-        double x = moments[channel].invariant[j];
-        double alpha = (x > 0.0 ? 1.0 : (x < 0.0 ? -1.0 : 0.0))*
-          log10(fabs(x)+MagickEpsilon);
-
-        if (alpha < mn)
-          mn=alpha;
-        if (alpha > mx)
-          mx=alpha;
-      }
-      for (j=0; j < MaximumNumberOfImageMoments; j++)
-      {
-        double x = moments[channel].invariant[j];
-        double alpha = (x > 0.0 ? 1.0 : (x < 0.0 ? -1.0 : 0.0))*
-          log10(fabs(x)+MagickEpsilon);
-        double scaled = 255.0*(alpha-mn)*MagickSafeReciprocal(mx-mn);
-        perceptual_hash[channel].phash[i][j]=MagickMin(MagickMax(scaled,0.0),
-          255.0);
-      }
-    }
+        perceptual_hash[channel].phash[i][j]=(-MagickSafeLog10(fabs(
+          moments[channel].invariant[j])));
     moments=(ChannelMoments *) RelinquishMagickMemory(moments);
   }
   colorspaces=DestroyString(colorspaces);
