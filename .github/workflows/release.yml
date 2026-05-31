@@ -623,7 +623,9 @@ jobs:
           GH_TOKEN: ${{github.token}}
           VERSION: ${{needs.version.outputs.version}}
         run: |
-          gh release create $VERSION --title "$VERSION" \
+          gh release create "$VERSION" \
+            --title "$VERSION" \
+            --notes "$VERSION" \
             ${{github.workspace}}/artifacts/*.7z \
             ${{github.workspace}}/artifacts/*.exe \
             ${{github.workspace}}/artifacts/*.msixbundle \
