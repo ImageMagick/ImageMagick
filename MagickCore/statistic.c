@@ -1761,10 +1761,6 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
     ChannelMoments
       *moments;
 
-    double
-      mn = DBL_MAX,
-      mx = -DBL_MAX;
-
     Image
       *hash_image;
 
@@ -1796,6 +1792,11 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
     if (moments == (ChannelMoments *) NULL)
       break;
     for (channel=0; channel <= MaxPixelChannels; channel++)
+    {
+      double
+        mn =DBL_MAX,
+        mx = -DBL_MAX;
+
       for (j=0; j < MaximumNumberOfImageMoments; j++)
       {
         double x = moments[channel].invariant[j];
@@ -1807,7 +1808,6 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
         if (alpha > mx)
           mx=alpha;
       }
-    for (channel=0; channel <= MaxPixelChannels; channel++)
       for (j=0; j < MaximumNumberOfImageMoments; j++)
       {
         double x = moments[channel].invariant[j];
@@ -1817,6 +1817,7 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
         perceptual_hash[channel].phash[i][j]=MagickMin(MagickMax(scaled,0.0),
           255.0);
       }
+    }
     moments=(ChannelMoments *) RelinquishMagickMemory(moments);
   }
   colorspaces=DestroyString(colorspaces);
