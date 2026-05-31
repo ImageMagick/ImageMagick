@@ -492,10 +492,10 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
         &image->columns,&image->rows);
       if ((image->columns != 0) || (image->rows != 0))
         {
-          image->resolution.x=dimension_info.width > 0 ?
-            DefaultSVGDensity*image->columns/dimension_info.width : 0.0;
-          image->resolution.y=dimension_info.height > 0 ?
-            DefaultSVGDensity*image->rows/dimension_info.height : 0.0;
+          image->resolution.x=DefaultSVGDensity*image->columns/
+            dimension_info.width;
+          image->resolution.y=DefaultSVGDensity*image->rows/
+            dimension_info.height;
           if (fabs(image->resolution.x) < MagickEpsilon)
             image->resolution.x=image->resolution.y;
           else
