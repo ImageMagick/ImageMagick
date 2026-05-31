@@ -1367,17 +1367,17 @@ static double *GenerateCoefficients(const Image *image,
          Coefficients 4,5 Center of Distortion of dest (determined later)
       */
       if (number_arguments < 1) {
-        coeff = (double *) RelinquishMagickMemory(coeff);
+        coeff=(double *) RelinquishMagickMemory(coeff);
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
             "InvalidArgument", "%s : 'Needs at least 1 argument'",
-            CommandOptionToMnemonic(MagickDistortOptions, *method) );
+            CommandOptionToMnemonic(MagickDistortOptions,*method));
         return((double *) NULL);
       }
       if ( arguments[0] < MagickEpsilon || arguments[0] > 160.0 ) {
         coeff=(double *) RelinquishMagickMemory(coeff);
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
             "InvalidArgument", "%s : Invalid FOV Angle",
-            CommandOptionToMnemonic(MagickDistortOptions, *method) );
+            CommandOptionToMnemonic(MagickDistortOptions,*method));
         return((double *) NULL);
       }
       coeff[0] = DegreesToRadians(arguments[0]);
