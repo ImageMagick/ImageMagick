@@ -3278,7 +3278,6 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(image->signature == MagickCoreSignature);
-  image->mask_trait=UndefinedPixelTrait;
   if (mask == (const Image *) NULL)
     {
       switch (type)
@@ -3304,6 +3303,7 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
       }
       return(SyncImagePixelCache(image,exception));
     }
+  image->mask_trait=UpdatePixelTrait;
   switch (type)
   {
     case ReadPixelMask:
@@ -3385,7 +3385,7 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
   }
   mask_view=DestroyCacheView(mask_view);
   image_view=DestroyCacheView(image_view);
-  image->mask_trait=UpdatePixelTrait;
+  image->mask_trait=UndefinedPixelTrait;
   return(status);
 }
 
