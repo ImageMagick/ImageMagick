@@ -723,6 +723,8 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
     }
   image->depth=cin.image.channel[0].bits_per_pixel;
+  if ((image->depth == 0) || (image->depth > 32))
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   image->columns=cin.image.channel[0].pixels_per_line;
   image->rows=cin.image.channel[0].lines_per_image;
   if (image_info->ping != MagickFalse)
