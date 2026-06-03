@@ -73,8 +73,8 @@ typedef struct _ChannelMoments
 typedef struct _ChannelPerceptualHash
 {
   double
-    srgb_hu_phash[MaximumNumberOfImageMoments+1],
-    hclp_hu_phash[MaximumNumberOfImageMoments+1];
+    srgb_hu_phash[MaximumNumberOfPerceptualHashes+2],
+    hclp_hu_phash[MaximumNumberOfPerceptualHashes+2];
 
   size_t
     number_colorspaces;
@@ -83,7 +83,7 @@ typedef struct _ChannelPerceptualHash
     colorspace[MaximumNumberOfPerceptualColorspaces+1];
 
   double
-    phash[MaximumNumberOfPerceptualColorspaces+1][MaximumNumberOfImageMoments+1];
+    phash[MaximumNumberOfPerceptualColorspaces+1][MaximumNumberOfPerceptualHashes+2];
 
   size_t
     number_channels;

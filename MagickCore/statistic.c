@@ -1792,7 +1792,7 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
     if (moments == (ChannelMoments *) NULL)
       break;
     for (channel=0; channel <= MaxPixelChannels; channel++)
-      for (j=0; j < MaximumNumberOfImageMoments; j++)
+      for (j=0; j < MaximumNumberOfPerceptualHashes; j++)
         perceptual_hash[channel].phash[i][j]=(-MagickSafeLog10(fabs(
           moments[channel].invariant[j])));
     moments=(ChannelMoments *) RelinquishMagickMemory(moments);

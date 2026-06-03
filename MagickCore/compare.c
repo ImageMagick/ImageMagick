@@ -1909,8 +1909,6 @@ static MagickBooleanType GetPSNRSimilarity(const Image *image,
 static MagickBooleanType GetPHASHSimilarity(const Image *image,
   const Image *reconstruct_image,double *similarity,ExceptionInfo *exception)
 {
-#define PHASHNormalizationFactor  389.373723242
-
   ChannelPerceptualHash
     *channel_phash,
     *reconstruct_phash;
@@ -1919,7 +1917,7 @@ static MagickBooleanType GetPHASHSimilarity(const Image *image,
     *artifact;
 
   ssize_t
-    k;
+    i;
 
   /*
     Compute the perceptual hash similarity.
@@ -1934,64 +1932,60 @@ static MagickBooleanType GetPHASHSimilarity(const Image *image,
         channel_phash);
       return(MagickFalse);
     }
-  for (k=0; k < MaxPixelChannels; k++)
+  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
     double
-      difference;
+      difference = 0.0;
 
     ssize_t
-      i;
+      j;
 
-    PixelChannel channel = GetPixelChannelChannel(image,k);
+    PixelChannel channel = GetPixelChannelChannel(image,i);
     PixelTrait traits = GetPixelChannelTraits(image,channel);
     PixelTrait reconstruct_traits = GetPixelChannelTraits(reconstruct_image,
       channel);
     if (((traits & UpdatePixelTrait) == 0) ||
         ((reconstruct_traits & UpdatePixelTrait) == 0))
       continue;
-    difference=0.0;
-    for (i=0; i < MaximumNumberOfImageMoments; i++)
+    for (j=0; j < (ssize_t) channel_phash[0].number_colorspaces; j++)
     {
       double
         alpha,
         beta;
 
       ssize_t
-        j;
+        k;
 
-      for (j=0; j < (ssize_t) channel_phash[0].number_colorspaces; j++)
+      for (k=0; k < MaximumNumberOfPerceptualHashes; k++)
       {
         double
           error;
 
-        alpha=channel_phash[k].phash[j][i];
-        beta=reconstruct_phash[k].phash[j][i];
+        alpha=channel_phash[i].phash[j][k];
+        beta=reconstruct_phash[i].phash[j][k];
         error=beta-alpha;
         if (IsNaN(error) != 0)
           error=0.0;
-        difference+=error*error/PHASHNormalizationFactor;
+        difference+=error*error;
       }
     }
-    similarity[k]+=difference;
+    similarity[i]+=difference;
     similarity[CompositePixelChannel]+=difference;
   }
   similarity[CompositePixelChannel]/=(double) GetImageChannels(image);
   artifact=GetImageArtifact(image,"phash:normalize");
   if (IsStringTrue(artifact) != MagickFalse)
     {
-      ssize_t
-        j;
-
-      for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        PixelChannel channel = GetPixelChannelChannel(image,j);
+        PixelChannel channel = GetPixelChannelChannel(image,i);
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         PixelTrait reconstruct_traits = GetPixelChannelTraits(reconstruct_image,
           channel);
         if (((traits & UpdatePixelTrait) == 0) ||
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
-        similarity[j]=sqrt(similarity[j]/channel_phash[0].number_colorspaces);
+        similarity[i]=sqrt(similarity[i]/channel_phash[0].number_colorspaces);
       }
       similarity[CompositePixelChannel]=sqrt(similarity[CompositePixelChannel]/
         channel_phash[0].number_colorspaces);
