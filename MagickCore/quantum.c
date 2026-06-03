@@ -669,10 +669,6 @@ MagickExport void SetQuantumAlphaType(QuantumInfo *quantum_info,
 MagickExport MagickBooleanType SetQuantumDepth(const Image *image,
   QuantumInfo *quantum_info,const size_t depth)
 {
-  size_t
-    extent,
-    quantum;
-
   /*
     Allocate the quantum pixel buffer.
   */
@@ -696,22 +692,7 @@ MagickExport MagickBooleanType SetQuantumDepth(const Image *image,
           else
             quantum_info->depth=16;
     }
-  /*
-    Speculative allocation since we don't yet know the quantum type.
-  */
-  quantum=(GetPixelChannels(image)+quantum_info->pad+3)*
-    ((quantum_info->depth+7)/8)*sizeof(double);
-  extent=MagickMax(image->columns,image->rows)*quantum;
-  if ((MagickMax(image->columns,image->rows) != 0) &&
-      (quantum != (extent/MagickMax(image->columns,image->rows))))
-    return(MagickFalse);
-  if (quantum_info->pixels != (MemoryInfo **) NULL)
-    {
-      if (extent <= quantum_info->extent)
-        return(MagickTrue);
-      DestroyQuantumPixels(quantum_info);
-    }
-  return(AcquireQuantumPixels(quantum_info,extent));
+  return(SetQuantumExtent(image,quantum_info));
 }
 
 /*
@@ -751,7 +732,60 @@ MagickExport MagickBooleanType SetQuantumEndian(const Image *image,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   quantum_info->endian=endian;
-  return(SetQuantumDepth(image,quantum_info,quantum_info->depth));
+  return(SetQuantumExtent(image,quantum_info));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t Q u a n t u m E x t e n t                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetQuantumExtent() sets the quantum pixel buffer extent.
+%
+%  The format of the SetQuantumExtent method is:
+%
+%      size_t SetQuantumExtent(Image *image,QuantumInfo *quantum_info)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o quantum_info: the quantum info.
+%
+*/
+MagickPrivate size_t SetQuantumExtent(const Image *image,
+  QuantumInfo *quantum_info)
+{
+  size_t
+    extent,
+    quantum;
+
+  /*
+    Speculative allocation since we don't yet know the quantum type.
+  */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  assert(quantum_info != (QuantumInfo *) NULL);
+  assert(quantum_info->signature == MagickCoreSignature);
+  quantum=(GetPixelChannels(image)+quantum_info->pad+3)*
+    ((quantum_info->depth+7)/8)*sizeof(double);
+  extent=MagickMax(image->columns,image->rows)*quantum;
+  if ((MagickMax(image->columns,image->rows) != 0) &&
+      (quantum != (extent/MagickMax(image->columns,image->rows))))
+    return(MagickFalse);
+  if (quantum_info->pixels != (MemoryInfo **) NULL)
+    {
+      if (extent <= quantum_info->extent)
+        return(MagickTrue);
+      DestroyQuantumPixels(quantum_info);
+    }
+  return(AcquireQuantumPixels(quantum_info,extent));
 }
 
 /*
@@ -791,7 +825,7 @@ MagickExport MagickBooleanType SetQuantumFormat(const Image *image,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   quantum_info->format=format;
-  return(SetQuantumDepth(image,quantum_info,quantum_info->depth));
+  return(SetQuantumExtent(image,quantum_info));
 }
 
 /*
@@ -975,7 +1009,7 @@ MagickExport MagickBooleanType SetQuantumPad(const Image *image,
   if (pad >= (MAGICK_SSIZE_MAX/GetImageChannels(image)))
     return(MagickFalse);
   quantum_info->pad=pad;
-  return(SetQuantumDepth(image,quantum_info,quantum_info->depth));
+  return(SetQuantumExtent(image,quantum_info));
 }
 
 /*
