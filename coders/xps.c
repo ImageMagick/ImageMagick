@@ -228,9 +228,9 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->page != (char *) NULL)
     (void) ParseAbsoluteGeometry(image_info->page,&page);
   resolution=image->resolution;
-  page.width=(size_t) ((ssize_t) ceil((double) (page.width*resolution.x/
+  page.width=CastDoubleToSizeT(((double) (page.width*resolution.x/
     delta.x)-0.5));
-  page.height=(size_t) ((ssize_t) ceil((double) (page.height*resolution.y/
+  page.height=CastDoubleToSizeT(((double) (page.height*resolution.y/
     delta.y)-0.5));
   fitPage=MagickFalse;
   option=GetImageOption(image_info,"xps:fit-page");
@@ -250,9 +250,9 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image=DestroyImage(image);
           return((Image *) NULL);
         }
-      page.width=(size_t) ((ssize_t) ceil((double) (page.width*
+      page.width=CastDoubleToSizeT(((double) (page.width*
         image->resolution.x/delta.x)-0.5));
-      page.height=(size_t) ((ssize_t) ceil((double) (page.height*
+      page.height=CastDoubleToSizeT(((double) (page.height*
         image->resolution.y/delta.y) -0.5));
       page_geometry=DestroyString(page_geometry);
       fitPage=MagickTrue;
