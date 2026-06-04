@@ -92,7 +92,7 @@ struct _QuantumInfo
     meta_channel;
 };
 
-extern MagickExport size_t
+extern MagickExport MagickBooleanType
   SetQuantumExtent(const Image *,QuantumInfo *);
 
 extern MagickPrivate void
