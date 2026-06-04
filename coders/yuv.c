@@ -109,26 +109,22 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
-  ssize_t
-    x;
-
   Quantum
     *q;
-
-  unsigned char
-    *p;
-
-  ssize_t
-    count,
-    horizontal_factor,
-    vertical_factor,
-    y;
 
   size_t
     length,
     quantum;
 
+  ssize_t
+    count,
+    horizontal_factor,
+    vertical_factor,
+    x,
+    y;
+
   unsigned char
+    *p,
     *scanline;
 
   /*
@@ -172,9 +168,9 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((interlace == UndefinedInterlace) ||
       ((interlace == NoInterlace) && (vertical_factor == 2)))
     {
-      interlace=NoInterlace;    /* CCIR 4:2:2 */
+      interlace=NoInterlace;  /* CCIR 4:2:2 */
       if (vertical_factor == 2)
-        interlace=PlaneInterlace; /* CCIR 4:1:1 */
+        interlace=PlaneInterlace;  /* CCIR 4:1:1 */
     }
   if (interlace != PartitionInterlace)
     {
@@ -198,17 +194,17 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     scanline=(unsigned char *) AcquireQuantumMemory((size_t) (2UL*
       image->columns+2UL),(size_t) quantum*sizeof(*scanline));
   else
-    scanline=(unsigned char *) AcquireQuantumMemory(image->columns,
-      (size_t) quantum*sizeof(*scanline));
+    scanline=(unsigned char *) AcquireQuantumMemory(image->columns,(size_t)
+      quantum*sizeof(*scanline));
   if (scanline == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   status=MagickTrue;
   do
   {
-    chroma_image=CloneImage(image,(size_t) ((ssize_t) image->columns+
-      (ssize_t) horizontal_factor-1)/(size_t) horizontal_factor,(size_t)
-      (image->rows+(size_t) vertical_factor-1)/
-      (size_t) vertical_factor,MagickTrue,exception);
+    chroma_image=CloneImage(image,(size_t) ((ssize_t) image->columns+(ssize_t)
+      horizontal_factor-1)/(size_t) horizontal_factor,(size_t) (image->rows+
+      (size_t) vertical_factor-1)/(size_t) vertical_factor,MagickTrue,
+      exception);
     if (chroma_image == (Image *) NULL)
       {
         scanline=(unsigned char *) RelinquishMagickMemory(scanline); 
@@ -461,8 +457,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
       chroma_pixels=GetVirtualPixels(resize_image,0,y,resize_image->columns,1,
         exception);
-      if ((q == (Quantum *) NULL) ||
-          (chroma_pixels == (const Quantum *) NULL))
+      if ((q == (Quantum *) NULL) || (chroma_pixels == (const Quantum *) NULL))
         break;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
@@ -615,6 +610,10 @@ ModuleExport void UnregisterYUVImage(void)
 static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
+  const Quantum
+    *p,
+    *s;
+
   Image
     *chroma_image,
     *yuv_image;
@@ -628,13 +627,6 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
   MagickOffsetType
     scene;
 
-  const Quantum
-    *p,
-    *s;
-
-  ssize_t
-    x;
-
   size_t
     height,
     number_scenes,
@@ -644,6 +636,7 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
   ssize_t
     horizontal_factor,
     vertical_factor,
+    x,
     y;
 
   assert(image_info != (const ImageInfo *) NULL);
@@ -677,9 +670,9 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
   if ((interlace == UndefinedInterlace) ||
       ((interlace == NoInterlace) && (vertical_factor == 2)))
     {
-      interlace=NoInterlace;    /* CCIR 4:2:2 */
+      interlace=NoInterlace;  /* CCIR 4:2:2 */
       if (vertical_factor == 2)
-        interlace=PlaneInterlace; /* CCIR 4:1:1 */
+        interlace=PlaneInterlace;  /* CCIR 4:1:1 */
     }
   if (interlace != PartitionInterlace)
     {
