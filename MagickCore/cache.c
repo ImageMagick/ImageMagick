@@ -451,25 +451,39 @@ static MagickBooleanType ClipPixelCacheNexus(Image *image,
     for (x=0; x < (ssize_t) nexus_info->region.width; x++)
     {
       double
-        mask_alpha;
+        mask;
 
       ssize_t
         i;
 
-      mask_alpha=QuantumScale*(double) GetPixelWriteMask(image,p);
-      if (fabs(mask_alpha) >= MagickEpsilon)
+      mask=(double) GetPixelWriteMask(image,p);
+      if (fabs(mask) >= MagickEpsilon)
         {
+          double
+            mask_alpha,
+            dst_alpha;
+
+          Quantum
+            src_alpha;
+
+          src_alpha=GetPixelAlpha(image,p);
+          mask_alpha=QuantumScale*mask*(double) src_alpha;
+          dst_alpha=(double) GetPixelAlpha(image,q);
           for (i=0; i < (ssize_t) image->number_channels; i++)
           {
+            PixelTrait
+              traits;
+
             PixelChannel channel = GetPixelChannelChannel(image,i);
-            PixelTrait traits = GetPixelChannelTraits(image,channel);
+            if (channel == AlphaPixelChannel)
+              continue;
+            traits=GetPixelChannelTraits(image,channel);
             if ((traits & UpdatePixelTrait) == 0)
               continue;
-            q[i]=ClampToQuantum(MagickOver_((double) p[i],mask_alpha*(double)
-              GetPixelAlpha(image,p),(double) q[i],(double)
-              GetPixelAlpha(image,q)));
+            q[i]=ClampToQuantum(MagickOver_((double) p[i],mask_alpha,
+              (double) q[i],dst_alpha));
           }
-          SetPixelAlpha(image,GetPixelAlpha(image,p),q);
+          SetPixelAlpha(image,src_alpha,q);
         }
       p+=(ptrdiff_t) GetPixelChannels(image);
       q+=(ptrdiff_t) GetPixelChannels(image);
