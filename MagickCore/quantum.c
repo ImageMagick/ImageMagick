@@ -750,7 +750,8 @@ MagickExport MagickBooleanType SetQuantumEndian(const Image *image,
 %
 %  The format of the SetQuantumExtent method is:
 %
-%      size_t SetQuantumExtent(Image *image,QuantumInfo *quantum_info)
+%      MagickBooleanType SetQuantumExtent(Image *image,
+%        QuantumInfo *quantum_info)
 %
 %  A description of each parameter follows:
 %
@@ -759,7 +760,7 @@ MagickExport MagickBooleanType SetQuantumEndian(const Image *image,
 %    o quantum_info: the quantum info.
 %
 */
-MagickExport size_t SetQuantumExtent(const Image *image,
+MagickExport MagickBooleanType SetQuantumExtent(const Image *image,
   QuantumInfo *quantum_info)
 {
   size_t
