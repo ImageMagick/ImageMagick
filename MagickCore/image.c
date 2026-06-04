@@ -2388,6 +2388,9 @@ MagickExport MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
   MagickBooleanType
     status;
 
+  PixelTrait
+    original_mask;
+
   ssize_t
     y;
 
@@ -2396,6 +2399,9 @@ MagickExport MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   image->alpha_trait=BlendPixelTrait;
+  /* Disable mask to make sure that all pixels are changed */
+  original_mask=image->mask_trait;
+  image->mask_trait=UndefinedPixelTrait;
   status=MagickTrue;
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -2428,6 +2434,7 @@ MagickExport MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
       status=MagickFalse;
   }
   image_view=DestroyCacheView(image_view);
+  image->mask_trait=original_mask;
   return(status);
 }
 
