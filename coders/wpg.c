@@ -854,7 +854,7 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   if(exception->severity != UndefinedException) goto FINISH_UNL;
   (void) CopyMagickString(clone_info->magick,GetMagicName(magic_info),
     MagickPathExtent);
-  if ((LocaleCompare(clone_info->magick,"PFB") != 0) ||
+  if ((LocaleCompare(clone_info->magick,"PFB") != 0) &&
       (LocaleCompare(clone_info->magick,"8BIMTEXT") != 0))
     {
       ThrowException(exception,CorruptImageError,
