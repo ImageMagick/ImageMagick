@@ -3250,8 +3250,11 @@ static MagickBooleanType TIFFWritePhotoshopLayers(Image* image,
     return(MagickTrue);
   clone_info=CloneImageInfo(image_info);
   if (clone_info == (ImageInfo *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      image->filename);
+    {
+      base_image=DestroyImage(base_image);
+      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+        image->filename);
+    }
   profile.offset=0;
   profile.quantum=MagickMinBlobExtent;
   layers=AcquireProfileStringInfo("tiff:37724",profile.quantum,
