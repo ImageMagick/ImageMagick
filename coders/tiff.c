@@ -2714,6 +2714,7 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
     file=fdopen(unique_file,"wb");
   if ((unique_file == -1) || (file == (FILE *) NULL))
     {
+      huffman_image=DestroyImage(huffman_image);
       ThrowFileException(exception,FileOpenError,"UnableToCreateTemporaryFile",
         filename);
       return(MagickFalse);
