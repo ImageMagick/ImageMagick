@@ -1719,7 +1719,8 @@ static MagickBooleanType CheckPSDChannels(const Image *image,
     PixelChannel
       channel;
 
-    if (layer_info->channel_info[i].size >= blob_size)
+    if ((layer_info->channel_info[i].size < 2) ||
+        (layer_info->channel_info[i].size >= blob_size))
       return(MagickFalse);
     if (layer_info->channel_info[i].supported == MagickFalse)
       continue;
