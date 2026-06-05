@@ -1794,6 +1794,7 @@ static Image *RenderHoughLines(const ImageInfo *image_info,const size_t columns,
     return(DestroyImageList(image));
   if (SetImageBackgroundColor(image,exception) == MagickFalse)
     {
+      draw_info=DestroyDrawInfo(draw_info);
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
