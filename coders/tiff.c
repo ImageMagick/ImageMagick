@@ -3651,7 +3651,10 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_REDUCEDIMAGE);
     if ((image->columns != (uint32) image->columns) ||
         (image->rows != (uint32) image->rows))
-      ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
+      {
+        quantum_info=DestroyQuantumInfo(quantum_info);
+        ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
+      }
     (void) TIFFSetField(tiff,TIFFTAG_IMAGELENGTH,(uint32) image->rows);
     (void) TIFFSetField(tiff,TIFFTAG_IMAGEWIDTH,(uint32) image->columns);
     switch (compression)
@@ -3754,8 +3757,11 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
               (void) SetImageStorageClass(image,DirectClass,exception);
               status=SetQuantumDepth(image,quantum_info,8);
               if (status == MagickFalse)
-                ThrowWriterException(ResourceLimitError,
-                  "MemoryAllocationFailed");
+                {
+                  quantum_info=DestroyQuantumInfo(quantum_info);
+                  ThrowWriterException(ResourceLimitError,
+                    "MemoryAllocationFailed");
+                }
             }
           else
             photometric=PHOTOMETRIC_RGB;
@@ -3788,8 +3794,11 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
                     depth<<=1;
                   status=SetQuantumDepth(image,quantum_info,depth);
                   if (status == MagickFalse)
-                    ThrowWriterException(ResourceLimitError,
-                      "MemoryAllocationFailed");
+                    {
+                      quantum_info=DestroyQuantumInfo(quantum_info);
+                      ThrowWriterException(ResourceLimitError,
+                        "MemoryAllocationFailed");
+                    }
                 }
           }
       }
@@ -4133,7 +4142,10 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       Write image scanlines.
     */
     if (GetTIFFInfo(image_info,tiff,&tiff_info) == MagickFalse)
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+      {
+        quantum_info=DestroyQuantumInfo(quantum_info);
+        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+      }
     if (compress_tag == COMPRESSION_CCITTFAX4)
       (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,(uint32) image->rows);
     (void) SetQuantumEndian(image,quantum_info,LSBEndian);
@@ -4248,6 +4260,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
               green=(uint16 *) RelinquishMagickMemory(green);
             if (blue != (uint16 *) NULL)
               blue=(uint16 *) RelinquishMagickMemory(blue);
+            quantum_info=DestroyQuantumInfo(quantum_info);
             ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
           }
         /*
