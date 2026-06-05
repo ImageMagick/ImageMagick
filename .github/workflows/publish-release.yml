@@ -1,0 +1,66 @@
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+name: Publish release
+jobs:
+  publish:
+    name: Publish release
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Install autoconf
+        run: |
+          curl -fsSL -o autoconf_2.72.deb https://archive.ubuntu.com/ubuntu/pool/main/a/autoconf/autoconf_2.72-3.1ubuntu1_all.deb
+          sudo dpkg -i autoconf_2.72.deb
+
+      - name: Create GitHub app token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 #v3.2.0
+        id: app-token
+        with:
+          client-id: ${{vars.APP_CLIENT_ID}}
+          private-key: ${{secrets.APP_PRIVATE_KEY}}
+          permission-contents: write
+
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #v6.0.2
+        with:
+          fetch-depth: 0
+          token: ${{steps.app-token.outputs.token}}
+
+      - name: Configure git
+        run: |
+          git config --global user.name '${{steps.app-token.outputs.app-slug}}[bot]'
+          git config --global user.email '${{vars.APP_USER_ID}}+${{steps.app-token.outputs.app-slug}}[bot]@users.noreply.github.com'
+
+      - name: Create release commit
+        run: |
+          is_beta=$(grep -oP "magick_is_beta\], \[\K[yn]" m4/version.m4)
+          if [[ "$is_beta" != "y" ]]; then
+            echo "Error: magick_is_beta is '$is_beta', expected 'y'. Aborting."
+            exit 1
+          fi
+
+          sed -i 's/m4_define(\[magick_is_beta\], \[y\])/m4_define([magick_is_beta], [n])/' m4/version.m4
+          autoconf
+
+          version=$(grep -oP "PACKAGE_VERSION='\K[0-9\.-]+" configure)
+          echo "Releasing version: $version"
+
+          git add configure m4/version.m4
+          git commit -m "release"
+          git tag -a "$version" -m "release"
+          git push --follow-tags
+
+      - name: Create beta release commit
+        run: |
+          patchlevel=$(grep -oP "magick_patchlevel_version\], \[\K[0-9]+" m4/version.m4)
+          new_patchlevel=$((patchlevel + 1))
+          sed -i "s/m4_define(\[magick_patchlevel_version\], \[$patchlevel\])/m4_define([magick_patchlevel_version], [$new_patchlevel])/" m4/version.m4
+          sed -i 's/m4_define(\[magick_is_beta\], \[n\])/m4_define([magick_is_beta], [y])/' m4/version.m4
+          autoconf
+
+          git add configure m4/version.m4
+          git commit -m "beta release"
+          git push
