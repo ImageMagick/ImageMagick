@@ -205,6 +205,10 @@ static inline Quantum GetPixelIndex(const Image *magick_restrict image,
 {
   if (image->channel_map[IndexPixelChannel].traits == UndefinedPixelTrait)
     return((Quantum) 0);
+#if defined(MAGICKCORE_HDRI_SUPPORT)
+  if (pixel[image->channel_map[IndexPixelChannel].offset] < 0)
+    return((Quantum) 0);
+#endif
   return(pixel[image->channel_map[IndexPixelChannel].offset]);
 }
 
