@@ -244,19 +244,18 @@ static Image *ReadUHDRImage(const ImageInfo *image_info,
       /*
         Set metadata as properties.
       */
-      SetUHDRProperty("GainMapMaxR","%g",gainmap_info->max_content_boost[0]);
-      SetUHDRProperty("GainMapMaxG","%g",gainmap_info->max_content_boost[1]);
-      SetUHDRProperty("GainMapMaxB","%g",gainmap_info->max_content_boost[2]);
-      SetUHDRProperty("GainMapMinR","%g",gainmap_info->min_content_boost[0]);
-      SetUHDRProperty("GainMapMinG","%g",gainmap_info->min_content_boost[1]);
-      SetUHDRProperty("GainMapMinB","%g",gainmap_info->min_content_boost[2]);
-      SetUHDRProperty("GainMapGammaR","%g",gainmap_info->gamma[0]);
-      SetUHDRProperty("GainMapGammaG","%g",gainmap_info->gamma[1]);
-      SetUHDRProperty("GainMapGammaB","%g",gainmap_info->gamma[2]);
-      SetUHDRProperty("HDRCapacityMin","%g",gainmap_info->hdr_capacity_min);
-      SetUHDRProperty("HDRCapacityMax","%g",gainmap_info->hdr_capacity_max);
+      SetUHDRProperty("GainMapMax.r","%g",gainmap_info->max_content_boost[0]);
+      SetUHDRProperty("GainMapMax.g","%g",gainmap_info->max_content_boost[1]);
+      SetUHDRProperty("GainMapMax.b","%g",gainmap_info->max_content_boost[2]);
+      SetUHDRProperty("GainMapMin.r","%g",gainmap_info->min_content_boost[0]);
+      SetUHDRProperty("GainMapMin.g","%g",gainmap_info->min_content_boost[1]);
+      SetUHDRProperty("GainMapMin.b","%g",gainmap_info->min_content_boost[2]);
+      SetUHDRProperty("GainMapGamma.r","%g",gainmap_info->gamma[0]);
+      SetUHDRProperty("GainMapGamma.g","%g",gainmap_info->gamma[1]);
+      SetUHDRProperty("GainMapGamma.b","%g",gainmap_info->gamma[2]);
+      SetUHDRProperty("HDRCapacity.min","%g",gainmap_info->hdr_capacity_min);
+      SetUHDRProperty("HDRCapacity.max","%g",gainmap_info->hdr_capacity_max);
       SetUHDRProperty("UseBaseColorGrade","%d",gainmap_info->use_base_cg);
-      SetUHDRProperty("GainMapPreserved","%s","true");
     }
   }
 
@@ -426,7 +425,7 @@ ModuleExport size_t RegisterUHDRImage(void)
     *entry;
 
   *version='\0';
-  entry=AcquireMagickInfo("UHDR","UHDR","Ultra HDR Image Format");
+  entry=AcquireMagickInfo("UHDr","UHDR","Ultra HDR Image Format");
 #if defined(MAGICKCORE_UHDR_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadUHDRImage;
   entry->encoder=(EncodeImageHandler *) WriteUHDRImage;
@@ -459,7 +458,7 @@ ModuleExport size_t RegisterUHDRImage(void)
 */
 ModuleExport void UnregisterUHDRImage(void)
 {
-  (void) UnregisterMagickInfo("UHDR");
+  (void) UnregisterMagickInfo("UHDr");
 }
 
 #if defined(MAGICKCORE_UHDR_DELEGATE)
@@ -665,27 +664,18 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
       /*
         Gainmap metadata descriptor.
       */
-      GetUHDRProptery("GainMapMaxR",max_content_boost[0]);
-      GetUHDRProptery("GainMapMaxG",max_content_boost[1]);
-      GetUHDRProptery("GainMapMaxB",max_content_boost[2]);
-
-      GetUHDRProptery("GainMapMinR",min_content_boost[0]);
-      GetUHDRProptery("GainMapMinG",min_content_boost[1]);
-      GetUHDRProptery("GainMapMinB",min_content_boost[2]);
-
-      GetUHDRProptery("GainMapGammaR", gamma[0]);
-      GetUHDRProptery("GainMapGammaG", gamma[1]);
-      GetUHDRProptery("GainMapGammaB", gamma[2]);
-
-      GetUHDRProptery("HDRCapacityMin", hdr_capacity_min);
-      GetUHDRProptery("HDRCapacityMax", hdr_capacity_max);
-
-      {
-        const char *v = GetImageProperty(image,"uhdr:GCamera.UseBaseColorGrade",exception);
-        if (v != (const char *) NULL)
-          gainmap_info.use_base_cg=atoi(v);
-      }
-
+      GetUHDRProptery("GainMapMax.r",max_content_boost[0]);
+      GetUHDRProptery("GainMapMax.g",max_content_boost[1]);
+      GetUHDRProptery("GainMapMax.b",max_content_boost[2]);
+      GetUHDRProptery("GainMapMin.r",min_content_boost[0]);
+      GetUHDRProptery("GainMapMin.g",min_content_boost[1]);
+      GetUHDRProptery("GainMapMin.b",min_content_boost[2]);
+      GetUHDRProptery("GainMapGamma.r",gamma[0]);
+      GetUHDRProptery("GainMapGamma.g",gamma[1]);
+      GetUHDRProptery("GainMapGamma.b",gamma[2]);
+      GetUHDRProptery("HDRCapacity.min",hdr_capacity_min);
+      GetUHDRProptery("HDRCapacity.max",hdr_capacity_max);
+      GetUHDRProptery("UseBaseColorGrade",use_base_cg);
       /*
         Set gainmap.
       */
