@@ -1651,7 +1651,7 @@ static void GetEXIFProperty(const Image *image,const char *property,
                   (void) FormatLocaleString(key,MagickPathExtent,"%s",
                     description);
                   if (level == 2)
-                    (void) SubstituteString(&key,"exif:","exif:thumbnail:");
+                    (void) SubstituteString(&key,"exif:","exif:Thumbnail.");
                   break;
                 }
                 case 2:
@@ -1670,7 +1670,7 @@ static void GetEXIFProperty(const Image *image,const char *property,
                 default:
                 {
                   if (level == 2)
-                    (void) SubstituteString(&key,"exif:","exif:thumbnail:");
+                    (void) SubstituteString(&key,"exif:","exif:Thumbnail.");
                 }
               }
               if ((image->properties == (void *) NULL) ||
