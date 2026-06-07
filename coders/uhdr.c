@@ -140,9 +140,16 @@ static uhdr_color_transfer_t map_ct_to_uhdr_ct(const char *input_ct)
 static Image *ReadUHDRImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-#define SetUHDRProperty(name, fmt, value) \
-  (void) FormatLocaleString(buffer, sizeof(buffer), fmt, value); \
-  (void) SetImageProperty(image, "uhdr:GCamera." name, buffer, exception)
+#define SetHDRGMProperty(name,value) \
+  (void) FormatLocaleString(buffer,sizeof(buffer),"%f",(value)); \
+  (void) SetImageProperty(image,"hdrgm:" name,buffer,exception)
+#define SetHDRGMPropertyInt(name,value) \
+  (void) FormatLocaleString(buffer,sizeof(buffer),"%d",(value)); \
+  (void) SetImageProperty(image,"hdrgm:" name,buffer,exception)
+#define SetHDRGMProperty3(name,value,value1,value2) \
+  (void) FormatLocaleString(buffer,sizeof(buffer),"%f,%f,%f", \
+     (value),(value1),(value2)); \
+  (void) SetImageProperty(image,"hdrgm:" name,buffer,exception)
   
   Image
     *image;
@@ -237,25 +244,28 @@ static Image *ReadUHDRImage(const ImageInfo *image_info,
       /*
         Set gainmap as a binary profile.
       */
-      StringInfo *gainmap_profile = BlobToProfileStringInfo("uhdr:gainmap",
+      StringInfo *gainmap_profile = BlobToProfileStringInfo("hdrgm",
         gainmap_image->data,gainmap_image->data_sz,exception);
       (void) SetImageProfilePrivate(image,gainmap_profile,exception);
   
       /*
         Set metadata as properties.
       */
-      SetUHDRProperty("GainMapMax.r","%g",gainmap_info->max_content_boost[0]);
-      SetUHDRProperty("GainMapMax.g","%g",gainmap_info->max_content_boost[1]);
-      SetUHDRProperty("GainMapMax.b","%g",gainmap_info->max_content_boost[2]);
-      SetUHDRProperty("GainMapMin.r","%g",gainmap_info->min_content_boost[0]);
-      SetUHDRProperty("GainMapMin.g","%g",gainmap_info->min_content_boost[1]);
-      SetUHDRProperty("GainMapMin.b","%g",gainmap_info->min_content_boost[2]);
-      SetUHDRProperty("GainMapGamma.r","%g",gainmap_info->gamma[0]);
-      SetUHDRProperty("GainMapGamma.g","%g",gainmap_info->gamma[1]);
-      SetUHDRProperty("GainMapGamma.b","%g",gainmap_info->gamma[2]);
-      SetUHDRProperty("HDRCapacity.min","%g",gainmap_info->hdr_capacity_min);
-      SetUHDRProperty("HDRCapacity.max","%g",gainmap_info->hdr_capacity_max);
-      SetUHDRProperty("UseBaseColorGrade","%d",gainmap_info->use_base_cg);
+      SetHDRGMProperty3("GainMapMax",
+        gainmap_info->max_content_boost[0],gainmap_info->max_content_boost[1],
+        gainmap_info->max_content_boost[2]);
+      SetHDRGMProperty3("GainMapMin",
+        gainmap_info->min_content_boost[0],gainmap_info->min_content_boost[1],
+        gainmap_info->min_content_boost[2]);
+      SetHDRGMProperty3("Gamma",gainmap_info->gamma[0],
+        gainmap_info->gamma[1],gainmap_info->gamma[2]);
+      SetHDRGMProperty3("OffsetSDR",gainmap_info->offset_sdr[0],
+        gainmap_info->offset_sdr[1],gainmap_info->offset_sdr[2]);
+      SetHDRGMProperty3("OffsetHDR",gainmap_info->offset_hdr[0],
+        gainmap_info->offset_hdr[1],gainmap_info->offset_hdr[2]);
+      SetHDRGMProperty("HDRCapacityMin",gainmap_info->hdr_capacity_min);
+      SetHDRGMProperty("HDRCapacityMax",gainmap_info->hdr_capacity_max);
+      SetHDRGMPropertyInt("UseBaseColorGrade",gainmap_info->use_base_cg);
     }
   }
 
@@ -612,10 +622,24 @@ static void fillRawImageDescriptor(uhdr_raw_image_t *imgDescriptor, const ImageI
 static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
   Image *images,ExceptionInfo *exception)
 {
-#define GetUHDRProptery(name,field) \
+#define GetHDRGMProperty(name,field) \
   do { \
-    const char *v = GetImageProperty(image,"uhdr:GCamera." name,exception); \
-    if (v != (const char *) NULL) gainmap_info.field=(float) atof(v); \
+    const char *v = GetImageProperty(image,"hdrgm:" name,exception); \
+    if (v != (const char *) NULL) \
+      gainmap_info.field=(float) atof(v); \
+  } while (0)
+#define GetHDRGMPropertyInt(name,field) \
+  do { \
+    const char *v = GetImageProperty(image,"hdrgm:" name,exception); \
+    if (v != (const char *) NULL) \
+      gainmap_info.field=atoi(v); \
+  } while (0)
+#define GetHDRGMProperty3(name,field0,field1,field2) \
+  do { \
+    const char *v = GetImageProperty(image,"hdrgm:" name,exception); \
+    if (v != (const char *) NULL) \
+      (void) sscanf(v,"%f,%f,%f",&gainmap_info.field0,&gainmap_info.field1, \
+        &gainmap_info.field2); \
   } while (0)
 
   Image
@@ -625,8 +649,8 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
     status = MagickTrue;
 
   uhdr_raw_image_t
-    hdrImgDescriptor = {0},
-    sdrImgDescriptor = {0};
+    hdrImgDescriptor = { 0 },
+    sdrImgDescriptor = { 0 };
 
   uhdr_mem_block_t
     sdr_profile, hdr_profile;
@@ -641,7 +665,7 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
   if (status == MagickFalse)
     return (status);
 
-  const StringInfo *gainmap_profile = GetImageProfile(image,"uhdr:gainmap");
+  const StringInfo *gainmap_profile = GetImageProfile(image,"hdrgm");
 
   if (gainmap_profile != (const StringInfo *) NULL)
     {
@@ -664,18 +688,16 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
       /*
         Gainmap metadata descriptor.
       */
-      GetUHDRProptery("GainMapMax.r",max_content_boost[0]);
-      GetUHDRProptery("GainMapMax.g",max_content_boost[1]);
-      GetUHDRProptery("GainMapMax.b",max_content_boost[2]);
-      GetUHDRProptery("GainMapMin.r",min_content_boost[0]);
-      GetUHDRProptery("GainMapMin.g",min_content_boost[1]);
-      GetUHDRProptery("GainMapMin.b",min_content_boost[2]);
-      GetUHDRProptery("GainMapGamma.r",gamma[0]);
-      GetUHDRProptery("GainMapGamma.g",gamma[1]);
-      GetUHDRProptery("GainMapGamma.b",gamma[2]);
-      GetUHDRProptery("HDRCapacity.min",hdr_capacity_min);
-      GetUHDRProptery("HDRCapacity.max",hdr_capacity_max);
-      GetUHDRProptery("UseBaseColorGrade",use_base_cg);
+      GetHDRGMProperty3("GainMapMax",max_content_boost[0],max_content_boost[1],
+        max_content_boost[2]);
+      GetHDRGMProperty3("GainMapMax",min_content_boost[0],min_content_boost[1],
+        min_content_boost[2]);
+      GetHDRGMProperty3("Gamma",gamma[0],gamma[1],gamma[2]);
+      GetHDRGMProperty3("OffsetSDR",offset_sdr[0],offset_sdr[1],offset_sdr[2]);
+      GetHDRGMProperty3("OffsetHDR",offset_hdr[0],offset_hdr[1],offset_hdr[2]);
+      GetHDRGMProperty("HDRCapacityMin",hdr_capacity_min);
+      GetHDRGMProperty("HDRCapacityMax",hdr_capacity_max);
+      GetHDRGMPropertyInt("UseBaseColorGrade",use_base_cg);
       /*
         Set gainmap.
       */
@@ -693,7 +715,7 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
     *option = GetImageOption(image_info,"uhdr:hdr-color-transfer");
 
   uhdr_color_transfer_t
-    hdr_ct = (option != (const char *) NULL) ? map_ct_to_uhdr_ct(option) : UHDR_CT_UNSPECIFIED;
+    hdr_ct = (option != (const char *) NULL) ? map_ct_to_uhdr_ct(option) : UHDR_CT_SRGB;
 
   if (hdr_ct == UHDR_CT_UNSPECIFIED)
     {
