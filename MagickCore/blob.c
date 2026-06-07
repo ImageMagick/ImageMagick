@@ -3337,6 +3337,9 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
     {
       blob_info->type=CustomStream;
       blob_info->custom_stream=image_info->custom_stream;
+      if (blob_info->custom_stream->seeker != (CustomStreamSeeker) NULL)
+        blob_info->custom_stream->seeker(0,SEEK_SET,
+          blob_info->custom_stream->data);
       return(MagickTrue);
     }
   (void) DetachBlob(blob_info);
