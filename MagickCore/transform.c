@@ -742,6 +742,18 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
   crop_view=DestroyCacheView(crop_view);
   image_view=DestroyCacheView(image_view);
   crop_image->type=image->type;
+  if (status != MagickFalse)
+    {
+      char
+        transform[MagickPathExtent];
+
+      (void) FormatLocaleString(transform,MagickPathExtent,
+        "crop %.20gx%.20g %.20gx%.20g%+.20g%+.20g",
+        (double) image->columns,(double) image->rows,(double) page.width,
+        (double) page.height,(double) page.x,(double) page.y);
+      AppendImageProfileProperty(crop_image,"hdrgm","hdrgm:Transform",
+        transform,exception);
+    }
   if (status == MagickFalse)
     crop_image=DestroyImage(crop_image);
   return(crop_image);
@@ -1293,6 +1305,16 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
   if (page.height != 0)
     page.y=((ssize_t) page.height-(ssize_t) flip_image->rows-page.y);
   flip_image->page=page;
+  if (status != MagickFalse)
+    {
+      char
+        transform[MagickPathExtent];
+
+      (void) FormatLocaleString(transform,MagickPathExtent,
+        "flip %.20gx%.20g",(double) image->columns,(double) image->rows);
+      AppendImageProfileProperty(flip_image,"hdrgm","hdrgm:Transform",
+        transform,exception);
+    }
   if (status == MagickFalse)
     flip_image=DestroyImage(flip_image);
   return(flip_image);
@@ -1429,6 +1451,16 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
   if (page.width != 0)
     page.x=((ssize_t) page.width-(ssize_t) flop_image->columns-page.x);
   flop_image->page=page;
+  if (status != MagickFalse)
+    {
+      char
+        transform[MagickPathExtent];
+
+      (void) FormatLocaleString(transform,MagickPathExtent,
+        "flop %.20gx%.20g",(double) image->columns,(double) image->rows);
+      AppendImageProfileProperty(flop_image,"hdrgm","hdrgm:Transform",
+        transform,exception);
+    }
   if (status == MagickFalse)
     flop_image=DestroyImage(flop_image);
   return(flop_image);
@@ -2231,6 +2263,17 @@ MagickExport Image *TransposeImage(const Image *image,ExceptionInfo *exception)
   Swap(page.width,page.height);
   Swap(page.x,page.y);
   transpose_image->page=page;
+  if (status != MagickFalse)
+    {
+      char
+        transform[MagickPathExtent];
+
+      (void) FormatLocaleString(transform,MagickPathExtent,
+        "transpose %.20gx%.20g",(double) image->columns,
+        (double) image->rows);
+      AppendImageProfileProperty(transpose_image,"hdrgm","hdrgm:Transform",
+        transform,exception);
+    }
   if (status == MagickFalse)
     transpose_image=DestroyImage(transpose_image);
   return(transpose_image);
@@ -2377,6 +2420,17 @@ MagickExport Image *TransverseImage(const Image *image,ExceptionInfo *exception)
   if (page.height != 0)
     page.y=(ssize_t) page.height-(ssize_t) transverse_image->rows-page.y;
   transverse_image->page=page;
+  if (status != MagickFalse)
+    {
+      char
+        transform[MagickPathExtent];
+
+      (void) FormatLocaleString(transform,MagickPathExtent,
+        "transverse %.20gx%.20g",(double) image->columns,
+        (double) image->rows);
+      AppendImageProfileProperty(transverse_image,"hdrgm","hdrgm:Transform",
+        transform,exception);
+    }
   if (status == MagickFalse)
     transverse_image=DestroyImage(transverse_image);
   return(transverse_image);
