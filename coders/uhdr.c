@@ -43,6 +43,8 @@
 #include "MagickCore/module.h"
 #include "MagickCore/option.h"
 #include "MagickCore/profile-private.h"
+#include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
 #if defined(MAGICKCORE_UHDR_DELEGATE)
 #include "ultrahdr_api.h"
 #include "uhdr.h"
@@ -138,6 +140,10 @@ static uhdr_color_transfer_t map_ct_to_uhdr_ct(const char *input_ct)
 static Image *ReadUHDRImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
+#define SetUHDRProperty(name, fmt, value) \
+  (void) FormatLocaleString(buffer, sizeof(buffer), fmt, value); \
+  (void) SetImageProperty(image, "uhdr:GCamera." name, buffer, exception)
+  
   Image
     *image;
 
@@ -164,10 +170,10 @@ static Image *ReadUHDRImage(const ImageInfo *image_info,
 
   const char *option = GetImageOption(image_info, "uhdr:output-color-transfer");
   uhdr_color_transfer_t decoded_img_ct =
-      (option != (const char *)NULL) ? map_ct_to_uhdr_ct(option) : UHDR_CT_UNSPECIFIED;
+      (option != (const char *)NULL) ? map_ct_to_uhdr_ct(option) : UHDR_CT_SRGB;
 
   uhdr_img_fmt_t
-    decoded_img_fmt;
+    decoded_img_fmt = UHDR_CT_SRGB;
 
   if (decoded_img_ct == UHDR_CT_LINEAR)
     decoded_img_fmt = UHDR_IMG_FMT_64bppRGBAHalfFloat;
@@ -201,26 +207,65 @@ static Image *ReadUHDRImage(const ImageInfo *image_info,
   image->rows = uhdr_dec_get_image_height(handle);
 
   if (image_info->ping != MagickFalse)
-  {
-    uhdr_release_decoder(handle);
-    status = CloseBlob(image);
-    if (status == MagickFalse)
-      return (DestroyImageList(image));
-    return (GetFirstImageInList(image));
-  }
+    {
+      uhdr_release_decoder(handle);
+      (void) CloseBlob(image);
+      return(GetFirstImageInList(image));
+    }
 
   CHECK_IF_ERR(uhdr_decode(handle))
 
   uhdr_raw_image_t
     *dst = uhdr_get_decoded_image(handle);
 
-  status = SetImageExtent(image, image->columns, image->rows, exception);
-  if (status == MagickFalse)
+  /*
+    Preserve compressed gain‑map + metadata for transcoding.
+  */
   {
-    uhdr_release_decoder(handle);
-    CloseBlob(image);
-    return (DestroyImageList(image));
+    uhdr_mem_block_t
+      *gainmap_image = uhdr_dec_get_gainmap_image(handle);
+  
+    uhdr_gainmap_metadata_t
+      *gainmap_info = uhdr_dec_get_gainmap_metadata(handle);
+  
+    if ((gainmap_image != (uhdr_mem_block_t *) NULL) &&
+        (gainmap_info != (uhdr_gainmap_metadata_t *) NULL))
+    {
+      char
+        buffer[MagickPathExtent];
+
+      /*
+        Set gainmap as a binary profile.
+      */
+      StringInfo *gainmap_profile = BlobToProfileStringInfo("uhdr:gainmap",
+        gainmap_image->data,gainmap_image->data_sz,exception);
+      (void) SetImageProfilePrivate(image,gainmap_profile,exception);
+  
+      /*
+        Set metadata as properties.
+      */
+      SetUHDRProperty("GainMapMax.r","%g",gainmap_info->max_content_boost[0]);
+      SetUHDRProperty("GainMapMax.g","%g",gainmap_info->max_content_boost[1]);
+      SetUHDRProperty("GainMapMax.b","%g",gainmap_info->max_content_boost[2]);
+      SetUHDRProperty("GainMapMin.r","%g",gainmap_info->min_content_boost[0]);
+      SetUHDRProperty("GainMapMin.g","%g",gainmap_info->min_content_boost[1]);
+      SetUHDRProperty("GainMapMin.b","%g",gainmap_info->min_content_boost[2]);
+      SetUHDRProperty("GainMapGamma.r","%g",gainmap_info->gamma[0]);
+      SetUHDRProperty("GainMapGamma.g","%g",gainmap_info->gamma[1]);
+      SetUHDRProperty("GainMapGamma.b","%g",gainmap_info->gamma[2]);
+      SetUHDRProperty("HDRCapacity.min","%g",gainmap_info->hdr_capacity_min);
+      SetUHDRProperty("HDRCapacity.max","%g",gainmap_info->hdr_capacity_max);
+      SetUHDRProperty("UseBaseColorGrade","%d",gainmap_info->use_base_cg);
+    }
   }
+
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    {
+      uhdr_release_decoder(handle);
+      CloseBlob(image);
+      return(DestroyImageList(image));
+    }
 
 #undef CHECK_IF_ERR
 
@@ -380,7 +425,7 @@ ModuleExport size_t RegisterUHDRImage(void)
     *entry;
 
   *version='\0';
-  entry=AcquireMagickInfo("UHDR","UHDR","Ultra HDR Image Format");
+  entry=AcquireMagickInfo("UHDr","UHDR","Ultra HDR Image Format");
 #if defined(MAGICKCORE_UHDR_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadUHDRImage;
   entry->encoder=(EncodeImageHandler *) WriteUHDRImage;
@@ -413,7 +458,7 @@ ModuleExport size_t RegisterUHDRImage(void)
 */
 ModuleExport void UnregisterUHDRImage(void)
 {
-  (void) UnregisterMagickInfo("UHDR");
+  (void) UnregisterMagickInfo("UHDr");
 }
 
 #if defined(MAGICKCORE_UHDR_DELEGATE)
@@ -511,7 +556,7 @@ static uhdr_mem_block_t GetExifProfile(Image *image, ExceptionInfo *exception)
     *profile;
 
   uhdr_mem_block_t
-    uhdr_profile = {};
+    uhdr_profile = { 0 };
 
   ResetImageProfileIterator(image);
   for (name = GetNextImageProfile(image); name != (const char *)NULL;)
@@ -567,6 +612,12 @@ static void fillRawImageDescriptor(uhdr_raw_image_t *imgDescriptor, const ImageI
 static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
   Image *images,ExceptionInfo *exception)
 {
+#define GetUHDRProptery(name,field) \
+  do { \
+    const char *v = GetImageProperty(image,"uhdr:GCamera." name,exception); \
+    if (v != (const char *) NULL) gainmap_info.field=(float) atof(v); \
+  } while (0)
+
   Image
     *image = images;
 
@@ -586,22 +637,70 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
   assert(image->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent, GetMagickModule(), "%s", image->filename);
-  status = OpenBlob(image_info, image, WriteBinaryBlobMode, exception);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return (status);
 
+  const StringInfo *gainmap_profile = GetImageProfile(image,"uhdr:gainmap");
+
+  if (gainmap_profile != (const StringInfo *) NULL)
+    {
+      /*
+        Preserve gainmap+metadata (for transcoding). If these exist, we do not
+        regenerate the gainmap.  Instead, we pass them directly to the encoder.
+      */
+      uhdr_compressed_image_t gainmap_image = { 0 };
+      uhdr_gainmap_metadata_t gainmap_info = { 0 };
+
+      /*
+        Compressed image descriptor.
+      */
+      gainmap_image.data=(void *) GetStringInfoDatum(gainmap_profile);
+      gainmap_image.data_sz=GetStringInfoLength(gainmap_profile);
+      gainmap_image.capacity=gainmap_image.data_sz;
+      gainmap_image.cg=UHDR_CG_UNSPECIFIED;
+      gainmap_image.ct=UHDR_CT_UNSPECIFIED;
+      gainmap_image.range=UHDR_CR_UNSPECIFIED;
+      /*
+        Gainmap metadata descriptor.
+      */
+      GetUHDRProptery("GainMapMax.r",max_content_boost[0]);
+      GetUHDRProptery("GainMapMax.g",max_content_boost[1]);
+      GetUHDRProptery("GainMapMax.b",max_content_boost[2]);
+      GetUHDRProptery("GainMapMin.r",min_content_boost[0]);
+      GetUHDRProptery("GainMapMin.g",min_content_boost[1]);
+      GetUHDRProptery("GainMapMin.b",min_content_boost[2]);
+      GetUHDRProptery("GainMapGamma.r",gamma[0]);
+      GetUHDRProptery("GainMapGamma.g",gamma[1]);
+      GetUHDRProptery("GainMapGamma.b",gamma[2]);
+      GetUHDRProptery("HDRCapacity.min",hdr_capacity_min);
+      GetUHDRProptery("HDRCapacity.max",hdr_capacity_max);
+      GetUHDRProptery("UseBaseColorGrade",use_base_cg);
+      /*
+        Set gainmap.
+      */
+      uhdr_codec_private_t *encoder = uhdr_create_encoder();
+      if (encoder == NULL)
+        {
+          ThrowMagickException(exception,GetMagickModule(),CoderError,
+            "FailedToCreateEncoder","`%s'",image->filename);
+          return(MagickFalse);
+        }
+      uhdr_enc_set_gainmap_image(encoder,&gainmap_image,&gainmap_info);
+    }
+
   const char
-    *option = GetImageOption(image_info, "uhdr:hdr-color-transfer");
+    *option = GetImageOption(image_info,"uhdr:hdr-color-transfer");
 
   uhdr_color_transfer_t
-    hdr_ct = (option != (const char *)NULL) ? map_ct_to_uhdr_ct(option) : UHDR_CT_UNSPECIFIED;
+    hdr_ct = (option != (const char *) NULL) ? map_ct_to_uhdr_ct(option) : UHDR_CT_UNSPECIFIED;
 
   if (hdr_ct == UHDR_CT_UNSPECIFIED)
-  {
-    (void)ThrowMagickException(exception, GetMagickModule(), ConfigureWarning,
-                               "invalid hdr color transfer received, ", "%s", "exiting ... ");
-    return (MagickFalse);
-  }
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),ConfigureWarning,
+        "invalid hdr color transfer received, ","%s","exiting ... ");
+      return(MagickFalse);
+    }
 
   /*
     HDR intent:
@@ -614,7 +713,7 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
   int
     hdrIntentMinDepth = hdr_ct == UHDR_CT_LINEAR ? 16 : 10;
 
-  for (int i = 0; i < GetImageListLength(image); i++)
+  for (int i = 0; i < (ssize_t) GetImageListLength(image); i++)
   {
     /* Classify image as hdr/sdr intent basing on depth */
     int
@@ -637,17 +736,17 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
           "WidthOrHeightExceedsLimit","%s",image->filename);
         goto next_image;
       }
-    bpp = image->depth >= hdrIntentMinDepth ? 2 : 1;
+    bpp = (int) image->depth >= hdrIntentMinDepth ? 2 : 1;
     if (IssRGBCompatibleColorspace(image->colorspace) && !IsGrayColorspace(image->colorspace))
     {
-      if (image->depth >= hdrIntentMinDepth && hdr_ct == UHDR_CT_LINEAR)
+      if ((int) image->depth >= hdrIntentMinDepth && hdr_ct == UHDR_CT_LINEAR)
         bpp = 8; /* rgbahalf float */
       else
         bpp = 4; /* rgba1010102 or rgba8888 */
     }
     else if (IsYCbCrCompatibleColorspace(image->colorspace))
     {
-      if (image->depth >= hdrIntentMinDepth && hdr_ct == UHDR_CT_LINEAR)
+      if ((int) image->depth >= hdrIntentMinDepth && hdr_ct == UHDR_CT_LINEAR)
       {
         (void) ThrowMagickException(exception, GetMagickModule(), ConfigureWarning,
           "linear color transfer inputs MUST be compatible with RGB Colorspace, ", "%s",
@@ -687,14 +786,14 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
         picSize/=2;
       }
 
-    if ((image->depth < hdrIntentMinDepth) && (image->depth != 8))
+    if (((int) image->depth < hdrIntentMinDepth) && (image->depth != 8))
     {
       (void) ThrowMagickException(exception, GetMagickModule(), ConfigureWarning,
         "Received image with unexpected bit depth","%s","ignoring ...");
       goto next_image;
     }
 
-    if ((image->depth >= hdrIntentMinDepth) &&
+    if (((int) image->depth >= hdrIntentMinDepth) &&
         (hdrImgDescriptor.planes[UHDR_PLANE_Y] != NULL))
     {
       (void) ThrowMagickException(exception, GetMagickModule(), ConfigureWarning,
@@ -718,7 +817,7 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
       break;
     }
 
-    if (image->depth >= hdrIntentMinDepth)
+    if ((int) image->depth >= hdrIntentMinDepth)
     {
       if (IsYCbCrCompatibleColorspace(image->colorspace))
       {
@@ -806,7 +905,7 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
 
       for (x = 0; x < (ssize_t) image->columns; x++)
       {
-        if (image->depth >= hdrIntentMinDepth)
+        if ((int) image->depth >= hdrIntentMinDepth)
         {
           if (hdrImgDescriptor.fmt == UHDR_IMG_FMT_24bppYCbCrP010)
           {
@@ -892,7 +991,7 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
     }
 
 next_image:
-    if (i != GetImageListLength(image) - 1)
+    if (i != (ssize_t) GetImageListLength(image) - 1)
     {
       if (GetNextImageInList(image) == (Image *) NULL)
       {
@@ -990,7 +1089,8 @@ next_image:
       option = GetImageOption(image_info, "uhdr:target-display-peak-brightness");
       float targetDispPeakBrightness = option != (const char *)NULL ? atof(option) : -1.0f;
 
-      if (targetDispPeakBrightness != -1.0f)
+      if (targetDispPeakBrightness > 0.0f)
+
         CHECK_IF_ERR(uhdr_enc_set_target_display_peak_brightness(handle, targetDispPeakBrightness))
     }
 

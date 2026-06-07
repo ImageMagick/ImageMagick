@@ -2460,7 +2460,28 @@ static SplayTreeInfo *GetMVGMacros(const char *primitive)
   return(macros);
 }
 
-static inline MagickBooleanType IsPoint(const char *point)
+static inline MagickBooleanType IsValidListChar(int c)
+{
+  if ((c >= '0') && (c <= '9'))
+    return(MagickTrue);
+  switch (c)
+  {
+    case '.':
+    case '+':
+    case '-':
+    case ',':
+    case ' ':
+    case '\t':
+    case '\r':
+    case '\n':
+      break;
+    default:
+      return(MagickFalse);
+  }
+  return(MagickTrue);
+}
+
+static inline MagickBooleanType IsValidPoint(const char *point)
 {
   char
     *p;
@@ -2673,30 +2694,40 @@ static MagickBooleanType RenderMVGContent(Image *image,
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
             (void) GetNextToken(q,&q,extent,token);
+            if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+              ThrowPointExpectedException(token,exception);
             if (*token == ',')
               (void) GetNextToken(q,&q,extent,token);
             affine.ry=GetDrawValue(token,&next_token);
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
             (void) GetNextToken(q,&q,extent,token);
+            if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+              ThrowPointExpectedException(token,exception);
             if (*token == ',')
               (void) GetNextToken(q,&q,extent,token);
             affine.rx=GetDrawValue(token,&next_token);
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
             (void) GetNextToken(q,&q,extent,token);
+            if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+              ThrowPointExpectedException(token,exception);
             if (*token == ',')
               (void) GetNextToken(q,&q,extent,token);
             affine.sy=GetDrawValue(token,&next_token);
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
             (void) GetNextToken(q,&q,extent,token);
+            if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+              ThrowPointExpectedException(token,exception);
             if (*token == ',')
               (void) GetNextToken(q,&q,extent,token);
             affine.tx=GetDrawValue(token,&next_token);
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
             (void) GetNextToken(q,&q,extent,token);
+            if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+              ThrowPointExpectedException(token,exception);
             if (*token == ',')
               (void) GetNextToken(q,&q,extent,token);
             affine.ty=GetDrawValue(token,&next_token);
@@ -3182,7 +3213,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
         if (LocaleCompare("letter-spacing",keyword) == 0)
           {
             (void) GetNextToken(q,&q,extent,token);
-            if (IsPoint(token) == MagickFalse)
+            if (IsValidPoint(token) == MagickFalse)
               break;
             clone_info=CloneDrawInfo((ImageInfo *) NULL,graphic_context[n]);
             clone_info->text=AcquireString(" ");
@@ -3266,7 +3297,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
             if (graphic_context[n]->fill.alpha != (double) TransparentAlpha)
               {
                 graphic_context[n]->fill.alpha=graphic_context[n]->fill_alpha;
-                graphic_context[n]->stroke.alpha=graphic_context[n]->stroke_alpha;
+                graphic_context[n]->stroke.alpha=
+                  graphic_context[n]->stroke_alpha;
               }
             else
               {
@@ -3427,18 +3459,24 @@ static MagickBooleanType RenderMVGContent(Image *image,
                 if (token == next_token)
                   ThrowPointExpectedException(token,exception);
                 (void) GetNextToken(q,&q,extent,token);
+                if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+                  ThrowPointExpectedException(token,exception);
                 if (*token == ',')
                   (void) GetNextToken(q,&q,extent,token);
                 segment.y1=GetDrawValue(token,&next_token);
                 if (token == next_token)
                   ThrowPointExpectedException(token,exception);
                 (void) GetNextToken(q,&q,extent,token);
+                if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+                  ThrowPointExpectedException(token,exception);
                 if (*token == ',')
                   (void) GetNextToken(q,&q,extent,token);
                 segment.x2=GetDrawValue(token,&next_token);
                 if (token == next_token)
                   ThrowPointExpectedException(token,exception);
                 (void) GetNextToken(q,&q,extent,token);
+                if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+                  ThrowPointExpectedException(token,exception);
                 if (*token == ',')
                   (void) GetNextToken(q,&q,extent,token);
                 segment.y2=GetDrawValue(token,&next_token);
@@ -3447,6 +3485,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
                 if (LocaleCompare(type,"radial") == 0)
                   {
                     (void) GetNextToken(q,&q,extent,token);
+                    if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+                      ThrowPointExpectedException(token,exception);
                     if (*token == ',')
                       (void) GetNextToken(q,&q,extent,token);
                   }
@@ -3547,6 +3587,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
                 if (token == next_token)
                   ThrowPointExpectedException(token,exception);
                 (void) GetNextToken(q,&q,extent,token);
+                if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+                  ThrowPointExpectedException(token,exception);
                 if (*token == ',')
                   (void) GetNextToken(q,&q,extent,token);
                 region.y=CastDoubleToSsizeT(ceil(GetDrawValue(token,
@@ -3554,6 +3596,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
                 if (token == next_token)
                   ThrowPointExpectedException(token,exception);
                 (void) GetNextToken(q,&q,extent,token);
+                if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+                  ThrowPointExpectedException(token,exception);
                 if (*token == ',')
                   (void) GetNextToken(q,&q,extent,token);
                 region.width=CastDoubleToSizeT(floor(GetDrawValue(token,
@@ -3561,6 +3605,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
                 if (token == next_token)
                   ThrowPointExpectedException(token,exception);
                 (void) GetNextToken(q,&q,extent,token);
+                if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+                  ThrowPointExpectedException(token,exception);
                 if (*token == ',')
                   (void) GetNextToken(q,&q,extent,token);
                 region.height=CastDoubleToSizeT(GetDrawValue(token,
@@ -3647,6 +3693,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
             (void) GetNextToken(q,&q,extent,token);
+            if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+              ThrowPointExpectedException(token,exception);
             if (*token == ',')
               (void) GetNextToken(q,&q,extent,token);
             affine.sy=GetDrawValue(token,&next_token);
@@ -3745,16 +3793,18 @@ static MagickBooleanType RenderMVGContent(Image *image,
             if (graphic_context[n]->dash_pattern != (double *) NULL)
               graphic_context[n]->dash_pattern=(double *)
                 RelinquishMagickMemory(graphic_context[n]->dash_pattern);
-            if (IsPoint(q) != MagickFalse)
+            if (IsValidPoint(q) != MagickFalse)
               {
                 const char
                   *r;
 
                 r=q;
                 (void) GetNextToken(r,&r,extent,token);
+                if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+                  ThrowPointExpectedException(token,exception);
                 if (*token == ',')
                   (void) GetNextToken(r,&r,extent,token);
-                for (x=0; IsPoint(token) != MagickFalse; x++)
+                for (x=0; IsValidPoint(token) != MagickFalse; x++)
                 {
                   (void) GetNextToken(r,&r,extent,token);
                   if (*token == ',')
@@ -3776,6 +3826,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
                 for (j=0; j < x; j++)
                 {
                   (void) GetNextToken(q,&q,extent,token);
+                  if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+                    ThrowPointExpectedException(token,exception);
                   if (*token == ',')
                     (void) GetNextToken(q,&q,extent,token);
                   graphic_context[n]->dash_pattern[j]=GetDrawValue(token,
@@ -3939,6 +3991,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
             (void) GetNextToken(q,&q,extent,token);
+            if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+              ThrowPointExpectedException(token,exception);
             if (*token == ',')
               (void) GetNextToken(q,&q,extent,token);
             affine.ty=GetDrawValue(token,&next_token);
@@ -3986,6 +4040,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
             (void) GetNextToken(q,&q,extent,token);
+            if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+              ThrowPointExpectedException(token,exception);
             if (*token == ',')
               (void) GetNextToken(q,&q,extent,token);
             graphic_context[n]->viewbox.y=CastDoubleToSsizeT(
@@ -3993,6 +4049,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
             (void) GetNextToken(q,&q,extent,token);
+            if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+              ThrowPointExpectedException(token,exception);
             if (*token == ',')
               (void) GetNextToken(q,&q,extent,token);
             graphic_context[n]->viewbox.width=CastDoubleToSizeT(floor(
@@ -4000,6 +4058,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
             (void) GetNextToken(q,&q,extent,token);
+            if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+              ThrowPointExpectedException(token,exception);
             if (*token == ',')
               (void) GetNextToken(q,&q,extent,token);
             graphic_context[n]->viewbox.height=CastDoubleToSizeT(floor(
@@ -4091,13 +4151,15 @@ static MagickBooleanType RenderMVGContent(Image *image,
       /*
         Define points.
       */
-      if (IsPoint(q) == MagickFalse)
+      if (IsValidPoint(q) == MagickFalse)
         break;
       (void) GetNextToken(q,&q,extent,token);
       point.x=GetDrawValue(token,&next_token);
       if (token == next_token)
         ThrowPointExpectedException(token,exception);
       (void) GetNextToken(q,&q,extent,token);
+      if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+        ThrowPointExpectedException(token,exception);
       if (*token == ',')
         (void) GetNextToken(q,&q,extent,token);
       point.y=GetDrawValue(token,&next_token);
@@ -6707,40 +6769,56 @@ static ssize_t TracePath(MVGInfo *mvg_info,const char *path,
         do
         {
           (void) GetNextToken(p,&p,MagickPathExtent,token);
+          if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+            ThrowPointExpectedException(token,exception);
           if (*token == ',')
             (void) GetNextToken(p,&p,MagickPathExtent,token);
           arc.x=GetDrawValue(token,&next_token);
           if (token == next_token)
             ThrowPointExpectedException(token,exception);
           (void) GetNextToken(p,&p,MagickPathExtent,token);
+          if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+            ThrowPointExpectedException(token,exception);
           if (*token == ',')
             (void) GetNextToken(p,&p,MagickPathExtent,token);
           arc.y=GetDrawValue(token,&next_token);
           if (token == next_token)
             ThrowPointExpectedException(token,exception);
           (void) GetNextToken(p,&p,MagickPathExtent,token);
+          if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+            ThrowPointExpectedException(token,exception);
           if (*token == ',')
             (void) GetNextToken(p,&p,MagickPathExtent,token);
           angle=GetDrawValue(token,&next_token);
           if (token == next_token)
             ThrowPointExpectedException(token,exception);
           (void) GetNextToken(p,&p,MagickPathExtent,token);
+          if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+            ThrowPointExpectedException(token,exception);
           if (*token == ',')
             (void) GetNextToken(p,&p,MagickPathExtent,token);
           large_arc=StringToLong(token) != 0 ? MagickTrue : MagickFalse;
           (void) GetNextToken(p,&p,MagickPathExtent,token);
+          if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+            ThrowPointExpectedException(token,exception);
           if (*token == ',')
             (void) GetNextToken(p,&p,MagickPathExtent,token);
           sweep=StringToLong(token) != 0 ? MagickTrue : MagickFalse;
+          if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+            ThrowPointExpectedException(token,exception);
           if (*token == ',')
             (void) GetNextToken(p,&p,MagickPathExtent,token);
           (void) GetNextToken(p,&p,MagickPathExtent,token);
+          if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+            ThrowPointExpectedException(token,exception);
           if (*token == ',')
             (void) GetNextToken(p,&p,MagickPathExtent,token);
           x=GetDrawValue(token,&next_token);
           if (token == next_token)
             ThrowPointExpectedException(token,exception);
           (void) GetNextToken(p,&p,MagickPathExtent,token);
+          if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+            ThrowPointExpectedException(token,exception);
           if (*token == ',')
             (void) GetNextToken(p,&p,MagickPathExtent,token);
           y=GetDrawValue(token,&next_token);
@@ -6758,7 +6836,7 @@ static ssize_t TracePath(MVGInfo *mvg_info,const char *path,
             p++;
           if (*p == ',')
             p++;
-        } while (IsPoint(p) != MagickFalse);
+        } while (IsValidPoint(p) != MagickFalse);
         break;
       }
       case 'c':
@@ -6773,12 +6851,16 @@ static ssize_t TracePath(MVGInfo *mvg_info,const char *path,
           for (i=1; i < 4; i++)
           {
             (void) GetNextToken(p,&p,MagickPathExtent,token);
+            if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+              ThrowPointExpectedException(token,exception);
             if (*token == ',')
               (void) GetNextToken(p,&p,MagickPathExtent,token);
             x=GetDrawValue(token,&next_token);
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
             (void) GetNextToken(p,&p,MagickPathExtent,token);
+            if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+              ThrowPointExpectedException(token,exception);
             if (*token == ',')
               (void) GetNextToken(p,&p,MagickPathExtent,token);
             y=GetDrawValue(token,&next_token);
@@ -6800,7 +6882,7 @@ static ssize_t TracePath(MVGInfo *mvg_info,const char *path,
             p++;
           if (*p == ',')
             p++;
-        } while (IsPoint(p) != MagickFalse);
+        } while (IsValidPoint(p) != MagickFalse);
         break;
       }
       case 'H':
@@ -6809,6 +6891,8 @@ static ssize_t TracePath(MVGInfo *mvg_info,const char *path,
         do
         {
           (void) GetNextToken(p,&p,MagickPathExtent,token);
+          if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+            ThrowPointExpectedException(token,exception);
           if (*token == ',')
             (void) GetNextToken(p,&p,MagickPathExtent,token);
           x=GetDrawValue(token,&next_token);
@@ -6826,7 +6910,7 @@ static ssize_t TracePath(MVGInfo *mvg_info,const char *path,
             p++;
           if (*p == ',')
             p++;
-        } while (IsPoint(p) != MagickFalse);
+        } while (IsValidPoint(p) != MagickFalse);
         break;
       }
       case 'l':
@@ -6838,12 +6922,16 @@ static ssize_t TracePath(MVGInfo *mvg_info,const char *path,
         do
         {
           (void) GetNextToken(p,&p,MagickPathExtent,token);
+          if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+            ThrowPointExpectedException(token,exception);
           if (*token == ',')
             (void) GetNextToken(p,&p,MagickPathExtent,token);
           x=GetDrawValue(token,&next_token);
           if (token == next_token)
             ThrowPointExpectedException(token,exception);
           (void) GetNextToken(p,&p,MagickPathExtent,token);
+          if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+            ThrowPointExpectedException(token,exception);
           if (*token == ',')
             (void) GetNextToken(p,&p,MagickPathExtent,token);
           y=GetDrawValue(token,&next_token);
@@ -6862,7 +6950,7 @@ static ssize_t TracePath(MVGInfo *mvg_info,const char *path,
             p++;
           if (*p == ',')
             p++;
-        } while (IsPoint(p) != MagickFalse);
+        } while (IsValidPoint(p) != MagickFalse);
         break;
       }
       case 'M':
@@ -6883,12 +6971,16 @@ static ssize_t TracePath(MVGInfo *mvg_info,const char *path,
         do
         {
           (void) GetNextToken(p,&p,MagickPathExtent,token);
+          if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+            ThrowPointExpectedException(token,exception);
           if (*token == ',')
             (void) GetNextToken(p,&p,MagickPathExtent,token);
           x=GetDrawValue(token,&next_token);
           if (token == next_token)
             ThrowPointExpectedException(token,exception);
           (void) GetNextToken(p,&p,MagickPathExtent,token);
+          if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+            ThrowPointExpectedException(token,exception);
           if (*token == ',')
             (void) GetNextToken(p,&p,MagickPathExtent,token);
           y=GetDrawValue(token,&next_token);
@@ -6910,7 +7002,7 @@ static ssize_t TracePath(MVGInfo *mvg_info,const char *path,
             p++;
           if (*p == ',')
             p++;
-        } while (IsPoint(p) != MagickFalse);
+        } while (IsValidPoint(p) != MagickFalse);
         break;
       }
       case 'q':
@@ -6925,12 +7017,16 @@ static ssize_t TracePath(MVGInfo *mvg_info,const char *path,
           for (i=1; i < 3; i++)
           {
             (void) GetNextToken(p,&p,MagickPathExtent,token);
+            if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+              ThrowPointExpectedException(token,exception);
             if (*token == ',')
               (void) GetNextToken(p,&p,MagickPathExtent,token);
             x=GetDrawValue(token,&next_token);
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
             (void) GetNextToken(p,&p,MagickPathExtent,token);
+            if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+              ThrowPointExpectedException(token,exception);
             if (*token == ',')
               (void) GetNextToken(p,&p,MagickPathExtent,token);
             y=GetDrawValue(token,&next_token);
@@ -6954,7 +7050,7 @@ static ssize_t TracePath(MVGInfo *mvg_info,const char *path,
             p++;
           if (*p == ',')
             p++;
-        } while (IsPoint(p) != MagickFalse);
+        } while (IsValidPoint(p) != MagickFalse);
         break;
       }
       case 's':
@@ -6971,12 +7067,16 @@ static ssize_t TracePath(MVGInfo *mvg_info,const char *path,
           for (i=2; i < 4; i++)
           {
             (void) GetNextToken(p,&p,MagickPathExtent,token);
+            if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+              ThrowPointExpectedException(token,exception);
             if (*token == ',')
               (void) GetNextToken(p,&p,MagickPathExtent,token);
             x=GetDrawValue(token,&next_token);
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
             (void) GetNextToken(p,&p,MagickPathExtent,token);
+            if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+              ThrowPointExpectedException(token,exception);
             if (*token == ',')
               (void) GetNextToken(p,&p,MagickPathExtent,token);
             y=GetDrawValue(token,&next_token);
@@ -7006,7 +7106,7 @@ static ssize_t TracePath(MVGInfo *mvg_info,const char *path,
             p++;
           if (*p == ',')
             p++;
-        } while (IsPoint(p) != MagickFalse);
+        } while (IsValidPoint(p) != MagickFalse);
         break;
       }
       case 't':
@@ -7023,12 +7123,16 @@ static ssize_t TracePath(MVGInfo *mvg_info,const char *path,
           for (i=2; i < 3; i++)
           {
             (void) GetNextToken(p,&p,MagickPathExtent,token);
+            if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+              ThrowPointExpectedException(token,exception);
             if (*token == ',')
               (void) GetNextToken(p,&p,MagickPathExtent,token);
             x=GetDrawValue(token,&next_token);
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
             (void) GetNextToken(p,&p,MagickPathExtent,token);
+            if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+              ThrowPointExpectedException(token,exception);
             if (*token == ',')
               (void) GetNextToken(p,&p,MagickPathExtent,token);
             y=GetDrawValue(token,&next_token);
@@ -7058,7 +7162,7 @@ static ssize_t TracePath(MVGInfo *mvg_info,const char *path,
             p++;
           if (*p == ',')
             p++;
-        } while (IsPoint(p) != MagickFalse);
+        } while (IsValidPoint(p) != MagickFalse);
         break;
       }
       case 'v':
@@ -7070,6 +7174,8 @@ static ssize_t TracePath(MVGInfo *mvg_info,const char *path,
         do
         {
           (void) GetNextToken(p,&p,MagickPathExtent,token);
+          if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
+            ThrowPointExpectedException(token,exception);
           if (*token == ',')
             (void) GetNextToken(p,&p,MagickPathExtent,token);
           y=GetDrawValue(token,&next_token);
@@ -7087,7 +7193,7 @@ static ssize_t TracePath(MVGInfo *mvg_info,const char *path,
             p++;
           if (*p == ',')
             p++;
-        } while (IsPoint(p) != MagickFalse);
+        } while (IsValidPoint(p) != MagickFalse);
         break;
       }
       case 'z':

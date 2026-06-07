@@ -488,9 +488,9 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) ParseAbsoluteGeometry(PSPageGeometry,&page);
   if (image_info->page != (char *) NULL)
     (void) ParseAbsoluteGeometry(image_info->page,&page);
-  page.width=(size_t) ((ssize_t) ceil((double) (page.width*
+  page.width=CastDoubleToSizeT(((double) (page.width*
     image->resolution.x/delta.x)-0.5));
-  page.height=(size_t) ((ssize_t) ceil((double) (page.height*
+  page.height=CastDoubleToSizeT(((double) (page.height*
     image->resolution.y/delta.y)-0.5));
   /*
     Determine page geometry from the PDF media box.
@@ -531,9 +531,9 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image=DestroyImage(image);
           return((Image *) NULL);
         }
-      page.width=(size_t) ((ssize_t) ceil((double) (page.width*
+      page.width=CastDoubleToSizeT(((double) (page.width*
         image->resolution.x/delta.x)-0.5));
-      page.height=(size_t) ((ssize_t) ceil((double) (page.height*
+      page.height=CastDoubleToSizeT(((double) (page.height*
         image->resolution.y/delta.y)-0.5));
       fitPage=MagickTrue;
     }

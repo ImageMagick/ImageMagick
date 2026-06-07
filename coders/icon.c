@@ -1013,7 +1013,8 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
 #define ThrowICONWriterException(exception,message) \
 { \
   directory=RelinquishIconDirectory(directory); \
-  images=DestroyImageList(images); \
+  if (images != (Image *) NULL) \
+    images=DestroyImageList(images); \
   ThrowWriterException(exception,message) \
 }
 
@@ -1113,7 +1114,11 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
   frame=(images != (Image *) NULL) ? images : image;
   directory=AcquireIconDirectory(number_scenes);
   if (directory == (IconDirectory *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    {
+      if (images != (Image *) NULL) 
+        images=DestroyImageList(images);
+      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   png_size=0;
   option=GetImageOption(image_info,"icon:png-compression-size");
   if (option != (const char*)NULL)

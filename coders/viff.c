@@ -1148,7 +1148,10 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
           viff_colormap=(unsigned char *) AcquireQuantumMemory(image->colors,
             3*sizeof(*viff_colormap));
           if (viff_colormap == (unsigned char *) NULL)
-            ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+            {
+              pixel_info=RelinquishVirtualMemory(pixel_info);
+              ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+            }
           q=viff_colormap;
           for (i=0; i < (ssize_t) image->colors; i++)
             *q++=ScaleQuantumToChar(ClampToQuantum(image->colormap[i].red));

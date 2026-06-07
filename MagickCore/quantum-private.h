@@ -92,6 +92,9 @@ struct _QuantumInfo
     meta_channel;
 };
 
+extern MagickExport MagickBooleanType
+  SetQuantumExtent(const Image *,QuantumInfo *);
+
 extern MagickPrivate void
   ResetQuantumState(QuantumInfo *);
 

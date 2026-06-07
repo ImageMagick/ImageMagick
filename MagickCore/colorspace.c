@@ -2452,10 +2452,12 @@ static MagickBooleanType TransformsRGBImage(Image *image,
         logmap[i]=QuantumRange;
       if (image->storage_class == PseudoClass)
         {
-          if (SyncImage(image,exception) == MagickFalse)
-            return(MagickFalse);
-          if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
-            return(MagickFalse);
+          if ((SyncImage(image,exception) == MagickFalse) ||
+              (SetImageStorageClass(image,DirectClass,exception) == MagickFalse))
+            {
+              logmap=(Quantum *) RelinquishMagickMemory(logmap);
+              return(MagickFalse);
+            }
         }
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)

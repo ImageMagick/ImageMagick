@@ -740,7 +740,7 @@ static MagickBooleanType WriteSF3Image(const ImageInfo *image_info,Image *image,
   do
   {
     const Quantum *magick_restrict p;
-    if (SetQuantumDepth(image,quantum_info,quantum_info->depth) == MagickFalse)
+    if (SetQuantumExtent(image,quantum_info) == MagickFalse)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),
           ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);

@@ -1565,6 +1565,8 @@ static void GetEXIFProperty(const Image *image,const char *property,
               if ((tag_value == GPS_LATITUDE) || (tag_value == GPS_LONGITUDE) ||
                   (tag_value == GPS_TIMESTAMP))
                 {
+                  if (number_bytes < 24)
+                    break;  /* reads three rationals */
                   components=1;
                   EXIFGPSFractions("%.20g/%.20g,%.20g/%.20g,%.20g/%.20g",
                     (double) ReadPropertyUnsignedLong(endian,p),
@@ -1649,7 +1651,7 @@ static void GetEXIFProperty(const Image *image,const char *property,
                   (void) FormatLocaleString(key,MagickPathExtent,"%s",
                     description);
                   if (level == 2)
-                    (void) SubstituteString(&key,"exif:","exif:thumbnail:");
+                    (void) SubstituteString(&key,"exif:","exif:Thumbnail.");
                   break;
                 }
                 case 2:
@@ -1668,7 +1670,7 @@ static void GetEXIFProperty(const Image *image,const char *property,
                 default:
                 {
                   if (level == 2)
-                    (void) SubstituteString(&key,"exif:","exif:thumbnail:");
+                    (void) SubstituteString(&key,"exif:","exif:Thumbnail.");
                 }
               }
               if ((image->properties == (void *) NULL) ||

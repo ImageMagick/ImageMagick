@@ -185,14 +185,14 @@ static MagickBooleanType WriteTHUMBNAILImage(const ImageInfo *image_info,
   profile=GetImageProfile(image,"exif");
   if (profile == (const StringInfo *) NULL)
     ThrowWriterException(CoderError,"ImageDoesNotHaveAThumbnail");
-  property=GetImageProperty(image,"exif:thumbnail:JPEGInterchangeFormat",
+  property=GetImageProperty(image,"exif:Thumbnail.JPEGInterchangeFormat",
     exception);
   if (property == (const char *) NULL)
     ThrowWriterException(CoderError,"ImageDoesNotHaveAThumbnail");
   offset=(ssize_t) StringToLong(property);
   if (offset < 0)
     ThrowWriterException(CoderError,"ImageDoesNotHaveAThumbnail");
-  property=GetImageProperty(image,"exif:thumbnail:JPEGInterchangeFormatLength",
+  property=GetImageProperty(image,"exif:Thumbnail.JPEGInterchangeFormatLength",
     exception);
   if (property == (const char *) NULL)
     ThrowWriterException(CoderError,"ImageDoesNotHaveAThumbnail");
