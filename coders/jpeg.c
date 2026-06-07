@@ -87,6 +87,10 @@
 #include "MagickCore/xml-tree.h"
 #include "MagickCore/xml-tree-private.h"
 #include "coders/coders-private.h"
+#if defined(MAGICKCORE_UHDR_DELEGATE)
+#include "ultrahdr_api.h"
+#include "uhdr.h"
+#endif
 #include <setjmp.h>
 #if defined(MAGICKCORE_JPEG_DELEGATE)
 #define JPEG_INTERNAL_OPTIONS
@@ -226,6 +230,84 @@ static MagickBooleanType IsJPEG(const unsigned char *magick,const size_t length)
     return(MagickTrue);
   return(MagickFalse);
 }
+
+#if defined(MAGICKCORE_JPEG_DELEGATE) && defined(MAGICKCORE_UHDR_DELEGATE)
+static void SetUltraHDRCoderFilename(ImageInfo *uhdr_info,
+  const char *filename)
+{
+  if (LocaleNCompare(filename,"UHDR:",5) == 0)
+    (void) CopyMagickString(uhdr_info->filename,filename,MagickPathExtent);
+  else
+    (void) FormatLocaleString(uhdr_info->filename,MagickPathExtent,
+      "UHDR:%s",filename);
+  (void) CopyMagickString(uhdr_info->magick,"UHDR",MagickPathExtent);
+}
+
+static MagickBooleanType IsUltraHDRJPEGImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
+{
+  const unsigned char
+    *data;
+
+  Image
+    *image;
+
+  MagickBooleanType
+    status;
+
+  size_t
+    length;
+
+  image=AcquireImage(image_info,exception);
+  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
+  if (status == MagickFalse)
+    {
+      image=DestroyImage(image);
+      return(MagickFalse);
+    }
+  data=GetBlobStreamData(image);
+  length=GetBlobSize(image);
+  status=MagickFalse;
+  if ((data != (const unsigned char *) NULL) && (length <= (size_t) INT_MAX) &&
+      (is_uhdr_image((void *) data,(int) length) != 0))
+    status=MagickTrue;
+  (void) CloseBlob(image);
+  image=DestroyImage(image);
+  return(status);
+}
+
+static Image *ReadUltraHDRJPEGImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
+{
+  Image
+    *images;
+
+  ImageInfo
+    *uhdr_info;
+
+  uhdr_info=CloneImageInfo(image_info);
+  SetUltraHDRCoderFilename(uhdr_info,image_info->filename);
+  images=ReadImage(uhdr_info,exception);
+  uhdr_info=DestroyImageInfo(uhdr_info);
+  return(images);
+}
+
+static MagickBooleanType WriteUltraHDRJPEGImage(const ImageInfo *image_info,
+  Image *image,ExceptionInfo *exception)
+{
+  ImageInfo
+    *uhdr_info;
+
+  MagickBooleanType
+    status;
+
+  uhdr_info=CloneImageInfo(image_info);
+  SetUltraHDRCoderFilename(uhdr_info,image_info->filename);
+  status=WriteImage(uhdr_info,image,exception);
+  uhdr_info=DestroyImageInfo(uhdr_info);
+  return(status);
+}
+#endif
 
 #if defined(MAGICKCORE_JPEG_DELEGATE)
 /*
@@ -1724,6 +1806,10 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
+#if defined(MAGICKCORE_UHDR_DELEGATE)
+  if (IsUltraHDRJPEGImage(image_info,exception) != MagickFalse)
+    return(ReadUltraHDRJPEGImage(image_info,exception));
+#endif
   offset=0;
   images=ReadOneJPEGImage(image_info,&jpeg_info,&offset,exception);
   if ((images != (Image *) NULL) &&
@@ -3171,6 +3257,10 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   struct jpeg_compress_struct
     jpeg_info;
 
+#if defined(MAGICKCORE_UHDR_DELEGATE)
+  if (GetImageProfile(image,"hdrgm") != (const StringInfo *) NULL)
+    return(WriteUltraHDRJPEGImage(image_info,image,exception));
+#endif
   return(WriteJPEGImage_(image_info,image,&jpeg_info,exception));
 }
 #endif
