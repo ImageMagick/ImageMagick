@@ -1274,11 +1274,28 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       ImageInfo
         *read_info;
 
+      MagickBooleanType
+        has_unique_file = MagickFalse;
+
       TIFFClose(tiff);
-      image=DestroyImageList(image);
       read_info=CloneImageInfo(image_info);
+      if (*read_info->filename == '\0')
+      {
+        status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
+        if (status == MagickFalse)
+          {
+            image=DestroyImageList(image);
+            return((Image *) NULL);
+          }
+        (void) ImageToFile(image,read_info->filename,exception);
+        (void) CloseBlob((Image *) image);
+        has_unique_file=MagickTrue;
+      }
+      image=DestroyImageList(image);
       (void) CopyMagickString(read_info->magick,"DNG",MagickPathExtent);
       image=ReadImage(read_info,exception);
+      if (has_unique_file != MagickFalse)
+        (void) RelinquishUniqueFileResource(read_info->filename);
       read_info=DestroyImageInfo(read_info);
       return(image);
     }
