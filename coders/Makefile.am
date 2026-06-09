@@ -707,7 +707,7 @@ coders_aai_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
 coders_aai_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_aai_la_LIBADD       = $(MAGICKCORE_LIBS)
 
-# AMIGAICON coder module
+# WBINFO coder module
 coders_wbinfo_la_SOURCES      = coders/wbinfo.c
 coders_wbinfo_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
 coders_wbinfo_la_LDFLAGS      = $(MODULECOMMONFLAGS)
