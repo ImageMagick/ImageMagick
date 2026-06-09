@@ -1271,33 +1271,23 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     }
   if (TIFFGetField(tiff,TIFFTAG_DNGVERSION,&dng_version) == 1)
     {
-      ImageInfo
-        *read_info;
+      Image
+        *dng_image;
 
-      MagickBooleanType
-        has_unique_file = MagickFalse;
-
-      TIFFClose(tiff);
-      read_info=CloneImageInfo(image_info);
-      if (*read_info->filename == '\0')
-      {
-        status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
-        if (status == MagickFalse)
-          {
-            image=DestroyImageList(image);
-            return((Image *) NULL);
-          }
-        (void) ImageToFile(image,read_info->filename,exception);
-        (void) CloseBlob((Image *) image);
-        has_unique_file=MagickTrue;
-      }
-      image=DestroyImageList(image);
+      /*
+        Redirect to DNG image reader.
+      */
+      ImageInfo *read_info = CloneImageInfo(image_info);
+      read_info->blob=CloneBlobInfo(image->blob);
       (void) CopyMagickString(read_info->magick,"DNG",MagickPathExtent);
-      image=ReadImage(read_info,exception);
-      if (has_unique_file != MagickFalse)
-        (void) RelinquishUniqueFileResource(read_info->filename);
+      dng_image=ReadImage(read_info,exception);
       read_info=DestroyImageInfo(read_info);
-      return(image);
+      if (dng_image != (Image *) NULL)
+        {
+          TIFFClose(tiff);
+          image=DestroyImageList(image);
+          return(dng_image);
+        }
     }
   if (image_info->number_scenes != 0)
     {
