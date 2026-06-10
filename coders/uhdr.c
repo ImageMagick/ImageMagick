@@ -440,6 +440,7 @@ ModuleExport size_t RegisterUHDRImage(void)
   entry->decoder=(DecodeImageHandler *) ReadUHDRImage;
   entry->encoder=(EncodeImageHandler *) WriteUHDRImage;
 #endif
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->magick=(IsImageFormatHandler *) IsUHDR;
   if (*version != '\0')
     entry->version=ConstantString(version);
