@@ -464,13 +464,14 @@ static void GetIPTCProperty(const Image *image,const char *key,
   if (count != 2)
     return;
   attribute=(char *) NULL;
-  for (i=0; i < (ssize_t) GetStringInfoLength(profile); i+=(ssize_t) length)
+  for (i=0; i < (ssize_t) GetStringInfoLength(profile)-5; i+=(ssize_t) length)
   {
     length=1;
     if ((ssize_t) GetStringInfoDatum(profile)[i] != 0x1c)
       continue;
     length=(size_t) (GetStringInfoDatum(profile)[i+3] << 8);
     length|=GetStringInfoDatum(profile)[i+4];
+    length=MagickMin(length,GetStringInfoLength(profile)-(size_t) (i+5));
     if (((long) GetStringInfoDatum(profile)[i+1] == dataset) &&
         ((long) GetStringInfoDatum(profile)[i+2] == record))
       {
