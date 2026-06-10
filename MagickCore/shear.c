@@ -70,6 +70,7 @@
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/nt-base-private.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/profile-private.h"
 #include "MagickCore/quantum.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/shear.h"
@@ -85,7 +86,7 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   C r o p T o F i t I m a g e                                               %
+%   C r o p T o F i t I m a g e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1090,6 +1091,17 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
   image_view=DestroyCacheView(image_view);
   rotate_image->type=image->type;
   rotate_image->page=page;
+  if (status != MagickFalse)
+    {
+      char
+        transform[MagickPathExtent];
+
+      (void) FormatLocaleString(transform,MagickPathExtent,
+        "rotate %.20gx%.20g %.20g",(double) image->columns,
+        (double) image->rows,(double) rotations);
+      AppendImageProfileProperty(rotate_image,"hdrgm","hdrgm:Transform",
+        transform,exception);
+    }
   if (status == MagickFalse)
     rotate_image=DestroyImage(rotate_image);
   return(rotate_image);

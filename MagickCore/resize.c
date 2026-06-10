@@ -68,6 +68,7 @@
 #include "MagickCore/nt-base-private.h"
 #include "MagickCore/option.h"
 #include "MagickCore/pixel.h"
+#include "MagickCore/profile-private.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/resample.h"
 #include "MagickCore/resample-private.h"
@@ -3873,6 +3874,17 @@ MagickExport Image *ResizeImage(const Image *image,const size_t columns,
       return((Image *) NULL);
     }
   resize_image->type=image->type;
+  {
+    char
+      transform[MagickPathExtent];
+
+    (void) FormatLocaleString(transform,MagickPathExtent,
+      "resize %.20gx%.20g %.20gx%.20g",(double) image->columns,
+      (double) image->rows,(double) resize_image->columns,
+      (double) resize_image->rows);
+    AppendImageProfileProperty(resize_image,"hdrgm","hdrgm:Transform",
+      transform,exception);
+  }
   return(resize_image);
 }
 

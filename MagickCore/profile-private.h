@@ -33,6 +33,8 @@ extern MagickExport StringInfo
     ExceptionInfo *exception);
 
 extern MagickPrivate void
+  AppendImageProfileProperty(Image *,const char *,const char *,const char *,
+    ExceptionInfo *),
   Update8BIMClipPath(const Image *,const size_t,const size_t,
     const RectangleInfo *),
   SyncImageProfiles(Image *);
