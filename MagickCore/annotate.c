@@ -672,12 +672,9 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
         (IsUTFSpace(code) != MagickFalse) &&
         (IsNonBreakingUTFSpace(code) == MagickFalse))
       {
-        s=p;
         if (width > image->columns)
-          {
-            p=ReplaceSpaceWithNewline(caption,s);
-            s=p;
-          }
+          p=ReplaceSpaceWithNewline(caption,p);
+        s=p;
       }
     for (i=0; i < (ssize_t) GetUTFOctets(p); i++)
       *q++=(*(p+i));
