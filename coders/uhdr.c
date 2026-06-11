@@ -186,6 +186,20 @@ static Image *ReadUHDRImage(const ImageInfo *image_info,
   uhdr_color_transfer_t decoded_img_ct =
       (option != (const char *)NULL) ? map_ct_to_uhdr_ct(option) : UHDR_CT_SRGB;
 
+  const char *profile_skip = GetImageOption(image_info, "profile:skip");
+
+  MagickBooleanType
+    skip_app_profiles = IsOptionMember("APP",profile_skip),
+    skip_exif_profile = IsOptionMember("EXIF",profile_skip),
+    skip_gainmap_profile = IsOptionMember("HDRGM",profile_skip),
+    skip_icc_profile = IsOptionMember("ICC",profile_skip);
+
+  if (skip_app_profiles != MagickFalse)
+    {
+      skip_exif_profile=MagickTrue;
+      skip_gainmap_profile=MagickTrue;
+    }
+
   uhdr_img_fmt_t
     decoded_img_fmt = UHDR_CT_SRGB;
 
@@ -242,7 +256,8 @@ static Image *ReadUHDRImage(const ImageInfo *image_info,
     uhdr_gainmap_metadata_t
       *gainmap_info = uhdr_dec_get_gainmap_metadata(handle);
   
-    if ((gainmap_image != (uhdr_mem_block_t *) NULL) &&
+    if ((skip_gainmap_profile == MagickFalse) &&
+        (gainmap_image != (uhdr_mem_block_t *) NULL) &&
         (gainmap_info != (uhdr_gainmap_metadata_t *) NULL))
     {
       char
@@ -289,7 +304,7 @@ static Image *ReadUHDRImage(const ImageInfo *image_info,
 #undef CHECK_IF_ERR
 
   uhdr_mem_block_t *exif = uhdr_dec_get_exif(handle);
-  if (exif != NULL)
+  if ((skip_exif_profile == MagickFalse) && (exif != NULL))
   {
     StringInfo *exif_data = BlobToProfileStringInfo("exif",exif->data,
       exif->data_sz,exception);
@@ -297,7 +312,8 @@ static Image *ReadUHDRImage(const ImageInfo *image_info,
   }
 
   uhdr_mem_block_t *icc = uhdr_dec_get_icc(handle);
-  if ((icc != NULL) && (icc->data != NULL) && (icc->data_sz != 0))
+  if ((skip_icc_profile == MagickFalse) && (icc != NULL) &&
+      (icc->data != NULL) && (icc->data_sz != 0))
   {
     const unsigned char
       *icc_data_start = (const unsigned char *) icc->data;
@@ -320,10 +336,17 @@ static Image *ReadUHDRImage(const ImageInfo *image_info,
     (void) SetImageProfilePrivate(image,icc_data,exception);
   }
 
-  SetImageColorspace(image, RGBColorspace, exception);
-
   if (decoded_img_ct == UHDR_CT_LINEAR)
-    image->gamma = 1.0;
+    {
+      SetImageColorspace(image,RGBColorspace,exception);
+      image->gamma=1.0;
+    }
+  else if ((decoded_img_ct == UHDR_CT_SRGB) && (dst->cg == UHDR_CG_DISPLAY_P3))
+    SetImageColorspace(image,DisplayP3Colorspace,exception);
+  else if (decoded_img_ct == UHDR_CT_SRGB)
+    SetImageColorspace(image,sRGBColorspace,exception);
+  else
+    SetImageColorspace(image,RGBColorspace,exception);
 
   image->compression = JPEGCompression;
   if (decoded_img_fmt == UHDR_IMG_FMT_32bppRGBA8888)
@@ -1036,6 +1059,7 @@ static StringInfo *TransformGainMapProfile(const ImageInfo *image_info,
   (void) CopyMagickString(gainmap_info->filename,"JPEG:hdrgm.jpg",
     MagickPathExtent);
   (void) CopyMagickString(gainmap_info->magick,"JPEG",MagickPathExtent);
+  (void) SetImageOption(gainmap_info,"jpeg:detect-uhdr","false");
   gainmap_images=BlobToImage(gainmap_info,GetStringInfoDatum(gainmap_profile),
     GetStringInfoLength(gainmap_profile),exception);
   if (gainmap_images == (Image *) NULL)
@@ -1182,6 +1206,9 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
 
   const StringInfo *gainmap_profile = GetImageProfile(image,"hdrgm");
 
+  const size_t
+    image_count = GetImageListLength(image);
+
   if (gainmap_profile != (const StringInfo *) NULL)
     {
       /*
@@ -1260,7 +1287,7 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
   int
     hdrIntentMinDepth = hdr_ct == UHDR_CT_LINEAR ? 16 : 10;
 
-  for (int i = 0; i < (ssize_t) GetImageListLength(image); i++)
+  for (int i = 0; i < (ssize_t) image_count; i++)
   {
     /* Classify image as hdr/sdr intent basing on depth */
     int
@@ -1538,7 +1565,7 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
     }
 
 next_image:
-    if (i != (ssize_t) GetImageListLength(image) - 1)
+    if (i != (ssize_t) image_count - 1)
     {
       if (GetNextImageInList(image) == (Image *) NULL)
       {
@@ -1551,7 +1578,7 @@ next_image:
     }
 
     status = SetImageProgress(image, SaveImageTag, (MagickOffsetType)i,
-      GetImageListLength(image));
+      image_count);
     if (status == MagickFalse)
       break;
   }
