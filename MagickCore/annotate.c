@@ -674,7 +674,10 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
       {
         s=p;
         if (width > image->columns)
-          p=ReplaceSpaceWithNewline(caption,s);
+          {
+            p=ReplaceSpaceWithNewline(caption,s);
+            s=p;
+          }
       }
     for (i=0; i < (ssize_t) GetUTFOctets(p); i++)
       *q++=(*(p+i));
