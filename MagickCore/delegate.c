@@ -1728,20 +1728,10 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
   rights=ExecutePolicyRights;
   if ((decode != (const char *) NULL) &&
       (IsRightsAuthorized(DelegatePolicyDomain,rights,decode) == MagickFalse))
-    {
-      errno=EPERM;
-      (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
-        "NotAuthorized","`%s'",decode);
-      return(MagickFalse);
-    }
+    ThrowPolicyException(decode,MagickFalse);
   if ((encode != (const char *) NULL) &&
       (IsRightsAuthorized(DelegatePolicyDomain,rights,encode) == MagickFalse))
-    {
-      errno=EPERM;
-      (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
-        "NotAuthorized","`%s'",encode);
-      return(MagickFalse);
-    }
+    ThrowPolicyException(encode,MagickFalse);
   temporary=(*image->filename == '\0') ? MagickTrue : MagickFalse;
   if ((temporary != MagickFalse) && (AcquireUniqueFilename(image->filename) ==
       MagickFalse))

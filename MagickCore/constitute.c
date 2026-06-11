@@ -452,19 +452,9 @@ static MagickBooleanType IsCoderAuthorized(const char *module,
   const char *coder,const PolicyRights rights,ExceptionInfo *exception)
 {
   if (IsRightsAuthorized(CoderPolicyDomain,rights,coder) == MagickFalse)
-    {
-      errno=EPERM;
-      (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
-        "NotAuthorized","`%s'",coder);
-      return(MagickFalse);
-    }
+    ThrowPolicyException(coder,MagickFalse);
   if (IsRightsAuthorized(ModulePolicyDomain,rights,module) == MagickFalse)
-    {
-      errno=EPERM;
-      (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
-        "NotAuthorized","`%s'",module);
-      return(MagickFalse);
-    }
+    ThrowPolicyException(module,MagickFalse);
   return(MagickTrue);
 }
 
