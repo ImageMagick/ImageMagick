@@ -1272,19 +1272,30 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   if (TIFFGetField(tiff,TIFFTAG_DNGVERSION,&dng_version) == 1)
     {
       Image
-        *dng_image;
+        *dng_image = (Image *) NULL;
 
       /*
         Redirect to DNG image reader.
       */
       ImageInfo *read_info = CloneImageInfo(image_info);
-      read_info->blob=CloneBlobInfo(image->blob);
       (void) CopyMagickString(read_info->magick,"DNG",MagickPathExtent);
-      dng_image=ReadImage(read_info,exception);
+      TIFFClose(tiff);
+      if (*read_info->filename != '\0')
+        dng_image=ReadImage(read_info,exception);
+      else
+        {
+          status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
+          if (status != MagickFalse)
+            {
+              status=ImageToFile(image,read_info->filename,exception);
+              if (status != MagickFalse)
+                dng_image=ReadImage(read_info,exception);
+              (void) RelinquishUniqueFileResource(read_info->filename);
+            }
+        }
       read_info=DestroyImageInfo(read_info);
       if (dng_image != (Image *) NULL)
         {
-          TIFFClose(tiff);
           image=DestroyImageList(image);
           return(dng_image);
         }
