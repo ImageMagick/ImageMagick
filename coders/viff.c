@@ -618,7 +618,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       }
       if (viff_info.map_scheme == VFF_MS_NONE)
         value=(value-min_value)*scale_factor;
-      *p=(unsigned char) ClampToQuantum(value);
+      *p=CastDoubleToUChar(ClampToQuantum(value));
       p++;
     }
     /*
@@ -1238,7 +1238,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                *q++=(unsigned char) ClampToQuantum(GetPixelLuma(image,p));
+                *q++=CastDoubleToUChar(ClampToQuantum(GetPixelLuma(image,p)));
                 p+=(ptrdiff_t) GetPixelChannels(image);
               }
               if (image->previous == (Image *) NULL)
