@@ -54,6 +54,7 @@
 #include "MagickCore/nt-base-private.h"
 #include "MagickCore/option.h"
 #include "MagickCore/policy.h"
+#include "MagickCore/policy-private.h"
 #include "MagickCore/random_.h"
 #include "MagickCore/registry.h"
 #include "MagickCore/resource_.h"
@@ -183,8 +184,8 @@ MagickExport MagickBooleanType AcquireUniqueSymbolicLink(const char *source,
     /*
       Does policy permit symbolic links?
     */
-    status=IsRightsAuthorized(SystemPolicyDomain,(PolicyRights) 
-      (ReadPolicyRights | WritePolicyRights),"symlink::follow");
+    status=IsRightsAuthorizedByName(SystemPolicyDomain,"symlink",(PolicyRights)
+      (ReadPolicyRights | WritePolicyRights),"follow");
     passes=GetPolicyValue("system:shred");
     if ((passes != (char *) NULL) || (status == MagickFalse))
       passes=DestroyString(passes);
