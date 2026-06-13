@@ -362,7 +362,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
   image->depth=8;
-  if (LocaleCompare(fo*rmat,"byte") == 0)
+  if (LocaleCompare(format,"byte") == 0)
     ;
   else
     if (LocaleCompare(format,"half") == 0)
