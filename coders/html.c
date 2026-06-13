@@ -441,6 +441,7 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
   /*
     Write an image map.
   */
+  (void) WriteBlobString(image,"<map id=\"");
   (void) WriteHtmlEncodedString(image,mapname);
   (void) WriteBlobString(image,"\" name=\"");
   (void) WriteHtmlEncodedString(image,mapname);
