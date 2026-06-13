@@ -2366,7 +2366,8 @@ static int MVGMacroCompare(const void *target,const void *source)
   return(strcmp(p,q));
 }
 
-static SplayTreeInfo *GetMVGMacros(const char *primitive)
+static SplayTreeInfo *GetMVGMacros(const char *primitive,
+  ExceptionInfo *exception)
 {
   char
     *macro,
@@ -2435,7 +2436,14 @@ static SplayTreeInfo *GetMVGMacros(const char *primitive)
                   n--;
                 }
               if (LocaleCompare(token,"push") == 0)
-                n++;
+                {
+                  if (n++ > MagickMaxRecursionDepth)
+                    {
+                      (void) ThrowMagickException(exception,GetMagickModule(),
+                        DrawError,"VectorGraphicsNestedTooDeeply","`%s'",token);
+                      break;
+                    }
+                }
               if ((n == 0) && (end >= start))
                 {
                   size_t
@@ -2657,7 +2665,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
   defsDepth=0;
   symbolDepth=0;
   cursor=0.0;
-  macros=GetMVGMacros(primitive);
+  macros=GetMVGMacros(primitive,exception);
   status=MagickTrue;
   for (q=primitive; *q != '\0'; )
   {
