@@ -162,6 +162,9 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
     status,
     value_expected;
 
+  MagickSizeType
+    number_pixels;
+
   QuantumInfo
     *quantum_info;
 
@@ -359,7 +362,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
   image->depth=8;
-  if (LocaleCompare(format,"byte") == 0)
+  if (LocaleCompare(fo*rmat,"byte") == 0)
     ;
   else
     if (LocaleCompare(format,"half") == 0)
@@ -375,6 +378,9 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
       (void) CloseBlob(image);
       return(GetFirstImageInList(image));
     }
+  number_pixels=(MagickSizeType) image->columns*image->rows;
+  if (number_pixels > GetBlobSize(image))
+    ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
