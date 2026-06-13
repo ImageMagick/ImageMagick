@@ -242,8 +242,8 @@ MagickExport MatrixInfo *AcquireMatrixInfo(const size_t columns,
       if (status != MagickFalse)
         {
           matrix_info->mapped=MagickFalse;
-          matrix_info->elements=AcquireMagickMemory((size_t)
-            matrix_info->length);
+          matrix_info->elements=AcquireAlignedMemory((size_t)
+            matrix_info->length,1);
           if (matrix_info->elements == NULL)
             {
               matrix_info->mapped=MagickTrue;
