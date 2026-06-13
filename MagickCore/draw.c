@@ -2309,8 +2309,6 @@ static inline MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
     return(MagickFalse);
   primitive_info=(PrimitiveInfo *) ResizeQuantumMemory(
     *mvg_info->primitive_info,extent+1,sizeof(PrimitiveInfo));
-  primitive_info[extent].primitive=UndefinedPrimitive;
-  primitive_info[extent].text=(char *) NULL;
   if (primitive_info == (PrimitiveInfo *) NULL)
     {
       /*
@@ -2327,6 +2325,8 @@ static inline MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
         ResourceLimitError,"MemoryAllocationFailed","`%s'","");
       return(MagickFalse);
     }
+  primitive_info[extent].primitive=UndefinedPrimitive;
+  primitive_info[extent].text=(char *) NULL;
   /*
     Commit updated buffer.
   */
