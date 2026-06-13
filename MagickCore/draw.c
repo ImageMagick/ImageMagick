@@ -2308,7 +2308,9 @@ static inline MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
   if (extent > (GetMaxMemoryRequest()/sizeof(PrimitiveInfo)))
     return(MagickFalse);
   primitive_info=(PrimitiveInfo *) ResizeQuantumMemory(
-    *mvg_info->primitive_info,extent,sizeof(PrimitiveInfo));
+    *mvg_info->primitive_info,extent+1,sizeof(PrimitiveInfo));
+  primitive_info[extent].primitive=UndefinedPrimitive;
+  primitive_info[extent].text=(char *) NULL;
   if (primitive_info == (PrimitiveInfo *) NULL)
     {
       /*
@@ -4180,6 +4182,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
       status&=(MagickStatusType) CheckPrimitiveExtent(&mvg_info,(double)
         number_points);
       primitive_info=(*mvg_info.primitive_info);
+      if (status == MagickFalse)
+        break;
     }
     if (status == MagickFalse)
       break;
@@ -4290,6 +4294,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
         status&=(MagickStatusType) CheckPrimitiveExtent(&mvg_info,(double)
           number_points);
         primitive_info=(*mvg_info.primitive_info);
+        if (status == MagickFalse)
+          break;
       }
     status&=(MagickStatusType) CheckPrimitiveExtent(&mvg_info,
       PrimitiveExtentPad);
@@ -4310,6 +4316,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
         status&=(MagickStatusType) TracePoint(primitive_info+j,
           primitive_info[j].point);
         primitive_info=(*mvg_info.primitive_info);
+        if (status == MagickFalse)
+          break;
         i=j+(ssize_t) primitive_info[j].coordinates;
         break;
       }
@@ -4323,6 +4331,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
         status&=(MagickStatusType) TraceLine(primitive_info+j,
           primitive_info[j].point,primitive_info[j+1].point);
         primitive_info=(*mvg_info.primitive_info);
+        if (status == MagickFalse)
+          break;
         i=j+(ssize_t) primitive_info[j].coordinates;
         break;
       }
@@ -4336,6 +4346,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
         status&=(MagickStatusType) TraceRectangle(primitive_info+j,
           primitive_info[j].point,primitive_info[j+1].point);
         primitive_info=(*mvg_info.primitive_info);
+        if (status == MagickFalse)
+          break;
         i=j+(ssize_t) primitive_info[j].coordinates;
         break;
       }
@@ -4366,6 +4378,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
           primitive_info[j].point,primitive_info[j+1].point,
           primitive_info[j+2].point);
         primitive_info=(*mvg_info.primitive_info);
+        if (status == MagickFalse)
+          break;
         i=j+(ssize_t) primitive_info[j].coordinates;
         break;
       }
@@ -4379,6 +4393,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
         status&=(MagickStatusType) TraceArc(&mvg_info,primitive_info[j].point,
           primitive_info[j+1].point,primitive_info[j+2].point);
         primitive_info=(*mvg_info.primitive_info);
+        if (status == MagickFalse)
+          break;
         i=j+(ssize_t) primitive_info[j].coordinates;
         break;
       }
@@ -4399,6 +4415,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
           primitive_info[j].point,primitive_info[j+1].point,
           primitive_info[j+2].point);
         primitive_info=(*mvg_info.primitive_info);
+        if (status == MagickFalse)
+          break;
         i=j+(ssize_t) primitive_info[j].coordinates;
         break;
       }
@@ -4412,6 +4430,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
         status&=(MagickStatusType) TraceCircle(&mvg_info,
           primitive_info[j].point,primitive_info[j+1].point);
         primitive_info=(*mvg_info.primitive_info);
+        if (status == MagickFalse)
+          break;
         i=j+(ssize_t) primitive_info[j].coordinates;
         break;
       }
@@ -4448,6 +4468,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
         status&=(MagickStatusType) TraceBezier(&mvg_info,
           primitive_info[j].coordinates);
         primitive_info=(*mvg_info.primitive_info);
+        if (status == MagickFalse)
+          break;
         i=j+(ssize_t) primitive_info[j].coordinates;
         break;
       }
@@ -4455,6 +4477,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
       {
         coordinates=(double) TracePath(&mvg_info,token,exception);
         primitive_info=(*mvg_info.primitive_info);
+        if (status == MagickFalse)
+          break;
         if (coordinates < 0.0)
           {
             status=MagickFalse;
