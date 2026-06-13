@@ -225,6 +225,9 @@ static Image *ReadSF3Image(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
+  MagickSizeType
+    number_pixels;
+
   Image
     *image;
 
@@ -272,161 +275,160 @@ static Image *ReadSF3Image(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(ResourceLimitError,"ListLengthExceedsLimit");
   channels=(unsigned char) ReadBlobByte(image);
   format=(unsigned char) ReadBlobByte(image);
-  
   for (unsigned int z=0; z<layers; ++z)
+  {
+    QuantumInfo
+      *quantum_info;
+
+    QuantumType
+      quantum_type;
+
+    size_t
+      length = 0;
+
+    ssize_t
+      y;
+
+    unsigned char
+      *pixels;
+
+    image->endian=LSBEndian;
+    image->compression=NoCompression;
+    image->orientation=TopLeftOrientation;
+    image->columns=(size_t) width;
+    image->rows=(size_t) height;
+    image->depth=(size_t)((format & 0xF)*8);
+    if (image_info->ping != MagickFalse)
+      break;
+    if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
+      if (image->scene >= (image_info->scene+image_info->number_scenes-1))
+        break;
+    number_pixels=(MagickSizeType) image->columns*image->rows;
+    if (number_pixels > GetBlobSize(image))
+      ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+    status=SetImageExtent(image,image->columns,image->rows,exception);
+    if (status == MagickFalse)
+      return(DestroyImageList(image));
+    switch(channels)
     {
-      QuantumInfo
-        *quantum_info;
-
-      QuantumType
-        quantum_type;
-
-      size_t
-        length = 0;
-
-      ssize_t
-        y;
-
-      unsigned char
-        *pixels;
-
-      image->endian=LSBEndian;
-      image->compression=NoCompression;
-      image->orientation=TopLeftOrientation;
-      image->columns=(size_t) width;
-      image->rows=(size_t) height;
-      image->depth=(size_t)((format & 0xF)*8);
-      if (image_info->ping != MagickFalse)
+      case SF3_PIXEL_V:
+        (void) SetImageColorspace(image,GRAYColorspace,exception);
+        SetQuantumImageType(image,GrayQuantum);
         break;
-      if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
-        if (image->scene >= (image_info->scene+image_info->number_scenes-1))
-          break;
-      status=SetImageExtent(image,image->columns,image->rows,exception);
-      if (status == MagickFalse)
-        return(DestroyImageList(image));
-      switch(channels)
-        {
-        case SF3_PIXEL_V:
-          (void) SetImageColorspace(image,GRAYColorspace,exception);
-          SetQuantumImageType(image,GrayQuantum);
-          break;
-        case SF3_PIXEL_VA:
-          (void) SetImageColorspace(image,GRAYColorspace,exception);
-          SetQuantumImageType(image,GrayAlphaQuantum);
-          break;
-        case SF3_PIXEL_RGB:
-          (void) SetImageColorspace(image,RGBColorspace,exception);
-          SetQuantumImageType(image,RGBQuantum);
-          break;
-        case SF3_PIXEL_RGBA:
-          (void) SetImageColorspace(image,RGBColorspace,exception);
-          SetQuantumImageType(image,RGBAQuantum);
-          break;
-        case SF3_PIXEL_AV:
-          (void) SetImageColorspace(image,GRAYColorspace,exception);
-          SetQuantumImageType(image,GrayAlphaQuantum);
-          break;
-        case SF3_PIXEL_BGR:
-          (void) SetImageColorspace(image,RGBColorspace,exception);
-          SetQuantumImageType(image,BGRQuantum);
-          break;
-        case SF3_PIXEL_ABGR:
-          (void) SetImageColorspace(image,RGBColorspace,exception);
-          SetQuantumImageType(image,BGRAQuantum);
-          break;
-        case SF3_PIXEL_ARGB:
-          (void) SetImageColorspace(image,RGBColorspace,exception);
-          SetQuantumImageType(image,RGBAQuantum);
-          break;
-        case SF3_PIXEL_BGRA:
-          (void) SetImageColorspace(image,RGBColorspace,exception);
-          SetQuantumImageType(image,BGRAQuantum);
-          break;
-        case SF3_PIXEL_CMYK:
-          (void) SetImageColorspace(image,CMYKColorspace,exception);
-          SetQuantumImageType(image,CMYKQuantum);
-          break;
-        case SF3_PIXEL_KYMC:
-          (void) SetImageColorspace(image,CMYKColorspace,exception);
-          SetQuantumImageType(image,CMYKQuantum);
-          break;
-        default:
-          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-        }
-      quantum_type=GetQuantumType(image,exception);
-      quantum_info=AcquireQuantumInfo(image_info,image);
-      if (quantum_info == (QuantumInfo *) NULL)
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-      switch(format)
-        {
-        case SF3_PIXEL_INT8:
-        case SF3_PIXEL_INT16:
-        case SF3_PIXEL_INT32:
-        case SF3_PIXEL_INT64:
-          status=SetQuantumFormat(image,quantum_info,SignedQuantumFormat);
-          break;
-        case SF3_PIXEL_UINT8:
-        case SF3_PIXEL_UINT16:
-        case SF3_PIXEL_UINT32:
-        case SF3_PIXEL_UINT64:
-          status=SetQuantumFormat(image,quantum_info,UnsignedQuantumFormat);
-          break;
-        case SF3_PIXEL_FLOAT16:
-        case SF3_PIXEL_FLOAT32:
-        case SF3_PIXEL_FLOAT64:
-          status=SetQuantumFormat(image,quantum_info,FloatingPointQuantumFormat);
-          break;
-        default:
-          quantum_info=DestroyQuantumInfo(quantum_info);
-          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-        }
-      if (status == MagickFalse)
-        {
-          quantum_info=DestroyQuantumInfo(quantum_info);
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-        }
-      status=SetImageExtent(image,image->columns,image->rows,exception);
-      if (status == MagickFalse){
+      case SF3_PIXEL_VA:
+        (void) SetImageColorspace(image,GRAYColorspace,exception);
+        SetQuantumImageType(image,GrayAlphaQuantum);
+        break;
+      case SF3_PIXEL_RGB:
+        (void) SetImageColorspace(image,RGBColorspace,exception);
+        SetQuantumImageType(image,RGBQuantum);
+        break;
+      case SF3_PIXEL_RGBA:
+        (void) SetImageColorspace(image,RGBColorspace,exception);
+        SetQuantumImageType(image,RGBAQuantum);
+        break;
+      case SF3_PIXEL_AV:
+        (void) SetImageColorspace(image,GRAYColorspace,exception);
+        SetQuantumImageType(image,GrayAlphaQuantum);
+        break;
+      case SF3_PIXEL_BGR:
+        (void) SetImageColorspace(image,RGBColorspace,exception);
+        SetQuantumImageType(image,BGRQuantum);
+        break;
+      case SF3_PIXEL_ABGR:
+        (void) SetImageColorspace(image,RGBColorspace,exception);
+        SetQuantumImageType(image,BGRAQuantum);
+        break;
+      case SF3_PIXEL_ARGB:
+        (void) SetImageColorspace(image,RGBColorspace,exception);
+        SetQuantumImageType(image,RGBAQuantum);
+        break;
+      case SF3_PIXEL_BGRA:
+        (void) SetImageColorspace(image,RGBColorspace,exception);
+        SetQuantumImageType(image,BGRAQuantum);
+        break;
+      case SF3_PIXEL_CMYK:
+        (void) SetImageColorspace(image,CMYKColorspace,exception);
+        SetQuantumImageType(image,CMYKQuantum);
+        break;
+      case SF3_PIXEL_KYMC:
+        (void) SetImageColorspace(image,CMYKColorspace,exception);
+        SetQuantumImageType(image,CMYKQuantum);
+        break;
+      default:
+        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    }
+    quantum_type=GetQuantumType(image,exception);
+    quantum_info=AcquireQuantumInfo(image_info,image);
+    if (quantum_info == (QuantumInfo *) NULL)
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    switch(format)
+    {
+      case SF3_PIXEL_INT8:
+      case SF3_PIXEL_INT16:
+      case SF3_PIXEL_INT32:
+      case SF3_PIXEL_INT64:
+        status=SetQuantumFormat(image,quantum_info,SignedQuantumFormat);
+        break;
+      case SF3_PIXEL_UINT8:
+      case SF3_PIXEL_UINT16:
+      case SF3_PIXEL_UINT32:
+      case SF3_PIXEL_UINT64:
+        status=SetQuantumFormat(image,quantum_info,UnsignedQuantumFormat);
+        break;
+      case SF3_PIXEL_FLOAT16:
+      case SF3_PIXEL_FLOAT32:
+      case SF3_PIXEL_FLOAT64:
+        status=SetQuantumFormat(image,quantum_info,FloatingPointQuantumFormat);
+        break;
+      default:
         quantum_info=DestroyQuantumInfo(quantum_info);
-        return(DestroyImageList(image));
+        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    }
+    if (status == MagickFalse)
+      {
+        quantum_info=DestroyQuantumInfo(quantum_info);
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       }
-      length=image->columns*(format & 0xF)*(channels & 0xF);
-      pixels=GetQuantumPixels(quantum_info);
-      for (y=0; y < (ssize_t) image->rows; ++y)
-        {
-          count=ReadBlob(image,length,pixels);
-          if (count != (ssize_t) length)
-            break;
-          (void) GetAuthenticPixels(image,0,y,image->columns,1,exception);
-          (void) ImportQuantumPixels(image,(CacheView *) NULL,
-                                    quantum_info,quantum_type,pixels,exception);
-          if (SyncAuthenticPixels(image,exception) == MagickFalse)
-            break;
-        }
-      quantum_info=DestroyQuantumInfo(quantum_info);
-      if (y < (ssize_t) image->rows)
-        {
-          ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
-            image->filename);
-          break;
-        }
-      if (image_info->number_scenes != 0)
-        if (image->scene >= (image_info->scene+image_info->number_scenes-1))
-          break;
-      if ((z+1) == layers)
+    length=image->columns*(format & 0xF)*(channels & 0xF);
+    pixels=GetQuantumPixels(quantum_info);
+    for (y=0; y < (ssize_t) image->rows; ++y)
+    {
+      count=ReadBlob(image,length,pixels);
+      if (count != (ssize_t) length)
         break;
-      AcquireNextImage(image_info,image,exception);
-      if (GetNextImageInList(image) == (Image *) NULL)
-        {
-          status=MagickFalse;
-          break;
-        }
-      image=SyncNextImageInList(image);
-      status=SetImageProgress(image,LoadImagesTag,TellBlob(image),
-                              GetBlobSize(image));
-      if (status == MagickFalse)
+      (void) GetAuthenticPixels(image,0,y,image->columns,1,exception);
+      (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+        quantum_type,pixels,exception);
+      if (SyncAuthenticPixels(image,exception) == MagickFalse)
+        break;
+      if (EOFBlob(image) != MagickFalse)
         break;
     }
+    quantum_info=DestroyQuantumInfo(quantum_info);
+    if (y < (ssize_t) image->rows)
+      {
+        ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+          image->filename);
+        break;
+      }
+    if (image_info->number_scenes != 0)
+      if (image->scene >= (image_info->scene+image_info->number_scenes-1))
+        break;
+    if ((z+1) == layers)
+      break;
+    AcquireNextImage(image_info,image,exception);
+    if (GetNextImageInList(image) == (Image *) NULL)
+      {
+        status=MagickFalse;
+        break;
+      }
+    image=SyncNextImageInList(image);
+    status=SetImageProgress(image,LoadImagesTag,TellBlob(image),
+      GetBlobSize(image));
+    if (status == MagickFalse)
+      break;
+  }
   if (status == MagickFalse)
     return(DestroyImageList(image));
   return(GetFirstImageInList(image));
