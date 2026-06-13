@@ -441,16 +441,18 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
   /*
     Write an image map.
   */
-  (void) FormatLocaleString(buffer,MagickPathExtent,
-    "<map id=\"%s\" name=\"%s\">\n",mapname,mapname);
-  (void) WriteBlobString(image,buffer);
-  (void) FormatLocaleString(buffer,MagickPathExtent,"  <area href=\"%s",url);
-  (void) WriteBlobString(image,buffer);
+  (void) WriteHtmlEncodedString(image,mapname);
+  (void) WriteBlobString(image,"\" name=\"");
+  (void) WriteHtmlEncodedString(image,mapname);
+  (void) WriteBlobString(image,"\">\n");
+  (void) WriteBlobString(image,"  <area href=\"");
+  (void) WriteHtmlEncodedString(image,url);
   if (image->directory == (char *) NULL)
     {
+      (void) WriteHtmlEncodedString(image,image->filename);
       (void) FormatLocaleString(buffer,MagickPathExtent,
-        "%s\" shape=\"rect\" coords=\"0,0,%.20g,%.20g\" alt=\"\" />\n",
-        image->filename,(double) geometry.width-1,(double) geometry.height-1);
+        "\" shape=\"rect\" coords=\"0,0,%.20g,%.20g\" alt=\"\" />\n",
+        (double) geometry.width-1,(double) geometry.height-1);
       (void) WriteBlobString(image,buffer);
     }
   else
