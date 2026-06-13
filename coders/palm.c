@@ -533,6 +533,8 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
             if (status == MagickFalse)
               break;
           }
+        if (EOFBlob(image) != MagickFalse)
+          break;
       }
     if (flags & PALM_HAS_TRANSPARENCY_FLAG)
       {
