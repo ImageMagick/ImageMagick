@@ -1294,11 +1294,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             }
         }
       read_info=DestroyImageInfo(read_info);
-      if (dng_image != (Image *) NULL)
-        {
-          image=DestroyImageList(image);
-          return(dng_image);
-        }
+      image=DestroyImageList(image);
+      return(dng_image);
     }
   if (image_info->number_scenes != 0)
     {
