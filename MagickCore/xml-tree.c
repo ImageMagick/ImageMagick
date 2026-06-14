@@ -1410,6 +1410,9 @@ static char *ParseEntities(char *xml,char **entities,int state)
                     if (p != q)
                       {
                         p=(char *) ResizeQuantumMemory(p,extent+1,sizeof(*p));
+                        if (p == (char *) NULL)
+                          ThrowFatalException(ResourceLimitFatalError,
+                            "MemoryAllocationFailed");
                         p[extent]='\0';
                       }
                     else
