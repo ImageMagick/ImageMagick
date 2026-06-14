@@ -35,10 +35,6 @@ static const char
 </policymap>";
 #endif
 
-extern MagickExport MagickBooleanType
-  IsRightsAuthorizedByName(const PolicyDomain,const char *,const PolicyRights,
-    const char *);
-
 extern MagickPrivate MagickBooleanType
   PolicyComponentGenesis(void);
 
