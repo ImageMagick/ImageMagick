@@ -378,7 +378,8 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
       (void) CloseBlob(image);
       return(GetFirstImageInList(image));
     }
-  number_pixels=(MagickSizeType) image->columns*image->rows;
+  if (HeapOverflowSanityCheckGetSize(image->columns,image->rows,&number_pixels) != MagickFalse)
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   if (number_pixels > GetBlobSize(image))
     ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
   status=SetImageExtent(image,image->columns,image->rows,exception);
