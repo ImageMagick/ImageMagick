@@ -3403,7 +3403,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
       blob_info->exempt=MagickTrue;
       return(SetStreamBuffering(image_info,blob_info));
     }
-  if ((strncmp(filename,"fd:",3) == 0) &&
+  if ((LocaleNCompare(filename,"fd:",3) == 0) &&
       (IsGeometry(filename+3) != MagickFalse))
     {
       char

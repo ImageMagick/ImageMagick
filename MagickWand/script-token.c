@@ -217,7 +217,7 @@ WandExport ScriptTokenInfo *AcquireScriptTokenInfo(const char *filename)
     token_info->stream=stdin;
     token_info->opened=MagickFalse;
   }
-  else if (strncmp(filename,"fd:",3) == 0 ) {
+  else if (LocaleNCompare(filename,"fd:",3) == 0 ) {
     token_info->stream=fdopen(StringToLong(filename+3),"r");
     token_info->opened=MagickFalse;
   }
