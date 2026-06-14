@@ -47,7 +47,7 @@ static inline MagickBooleanType IsPathAuthorized(const PolicyRights rights,
   MagickBooleanType status =
    ((IsRightsAuthorized(PathPolicyDomain,rights,filename) != MagickFalse) &&
    ((IsRightsAuthorizedByName(SystemPolicyDomain,"symlink",rights,"follow") != MagickFalse) ||
-    (is_symlink_utf8(filename) == MagickFalse)));
+    (is_symlink_utf8(filename) == MagickFalse))) ? MagickTrue : MagickFalse;
   return(status);
 }
 
