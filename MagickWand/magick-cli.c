@@ -54,6 +54,7 @@
 #include "MagickWand/operation.h"
 #include "MagickWand/magick-cli.h"
 #include "MagickWand/script-token.h"
+#include "MagickCore/policy-private.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/thread-private.h"
 #include "MagickCore/utility-private.h"
@@ -1255,6 +1256,8 @@ static MagickBooleanType ConcatenateImages(int argc,char **argv,
   if (ExpandFilenames(&argc,&argv) == MagickFalse)
     ThrowFileException(exception,ResourceLimitError,"MemoryAllocationFailed",
       argv[argc-1]);
+  if (IsPathAuthorized(WritePolicyRights,argv[argc-1]) == MagickFalse)
+    ThrowPolicyException(argv[argc-1],MagickFalse);
   output=fopen_utf8(argv[argc-1],"wb");
   if (output == (FILE *) NULL)
     {
@@ -1265,6 +1268,8 @@ static MagickBooleanType ConcatenateImages(int argc,char **argv,
   status=MagickTrue;
   for (i=2; i < ((ssize_t) argc-1); i++)
   {
+    if (IsPathAuthorized(ReadPolicyRights,argv[i]) == MagickFalse)
+      ThrowPolicyException(argv[i],MagickFalse);
     input=fopen_utf8(argv[i],"rb");
     if (input == (FILE *) NULL)
       {
