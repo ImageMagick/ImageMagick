@@ -6463,7 +6463,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
                 CurrentContext->dash_pattern[j]=StringToDouble(token,
                   (char **) NULL);
               }
-              if ((x & 0x01) != 0)
+              if (((x & 0x01) != 0) && (j == x))
                 for ( ; j < (2*x); j++)
                   CurrentContext->dash_pattern[j]=
                     CurrentContext->dash_pattern[j-x];

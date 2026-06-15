@@ -3847,7 +3847,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
                   if (graphic_context[n]->dash_pattern[j] <= 0.0)
                     status=MagickFalse;
                 }
-                if ((x & 0x01) != 0)
+                if (((x & 0x01) != 0) && (j == x))
                   for ( ; j < (2*x); j++)
                     graphic_context[n]->dash_pattern[j]=
                       graphic_context[n]->dash_pattern[j-x];
