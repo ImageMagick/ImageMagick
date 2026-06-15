@@ -1122,11 +1122,7 @@ MagickExport MagickBooleanType ThrowMagickExceptionList(
   (void) CopyMagickString(reason,locale,MagickPathExtent);
   (void) ConcatenateMagickString(reason," ",MagickPathExtent);
   length=strlen(reason);
-#if defined(MAGICKCORE_HAVE_VSNPRINTF)
   n=vsnprintf(reason+length,MagickPathExtent-length,format,operands);
-#else
-  n=vsprintf(reason+length,format,operands);
-#endif
   if (n < 0)
     reason[MagickPathExtent-1]='\0';
   status=LogMagickEvent(ExceptionEvent,module,function,line,"%s",reason);

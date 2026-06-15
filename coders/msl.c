@@ -7308,11 +7308,7 @@ static void MSLWarning(void *context,const char *format,...)
   parser=(xmlParserCtxtPtr) context;
   msl_info=(MSLInfo *) parser->_private;
   (void) msl_info;
-#if !defined(MAGICKCORE_HAVE_VSNPRINTF)
-  (void) vsprintf(reason,format,operands);
-#else
   (void) vsnprintf(reason,MagickPathExtent,format,operands);
-#endif
   message=GetExceptionMessage(errno);
   ThrowMSLException(CoderError,reason,message);
   message=DestroyString(message);
@@ -7346,11 +7342,7 @@ static void MSLError(void *context,const char *format,...)
   parser=(xmlParserCtxtPtr) context;
   msl_info=(MSLInfo *) parser->_private;
   (void) msl_info;
-#if !defined(MAGICKCORE_HAVE_VSNPRINTF)
-  (void) vsprintf(reason,format,operands);
-#else
   (void) vsnprintf(reason,MagickPathExtent,format,operands);
-#endif
   ThrowMSLException(DelegateFatalError,reason,"SAX error");
   va_end(operands);
   xmlStopParser(parser);
