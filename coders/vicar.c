@@ -162,9 +162,6 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
     status,
     value_expected;
 
-  MagickSizeType
-    number_pixels;
-
   QuantumInfo
     *quantum_info;
 
@@ -175,7 +172,8 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
     *q;
 
   size_t
-    length;
+    length,
+    number_pixels;
 
   ssize_t
     count,
@@ -380,7 +378,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
     }
   if (HeapOverflowSanityCheckGetSize(image->columns,image->rows,&number_pixels) != MagickFalse)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-  if (number_pixels > GetBlobSize(image))
+  if (number_pixels > (size_t) GetBlobSize(image))
     ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)

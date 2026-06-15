@@ -643,7 +643,7 @@ static MagickBooleanType IsPolicyCacheInstantiated(ExceptionInfo *exception)
 %
 */
 
-MagickPrivate MagickBooleanType IsRightsAuthorizedByName(
+MagickExport MagickBooleanType IsRightsAuthorizedByName(
   const PolicyDomain domain,const char *name,const PolicyRights rights,
   const char *pattern)
 {

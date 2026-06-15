@@ -175,6 +175,9 @@
 #  include "MagickWand/studio.h"
 #  include "MagickWand/MagickWand.h"
 #  include "MagickWand/script-token.h"
+#  include "MagickCore/exception-private.h"
+#  include "MagickCore/policy.h"
+#  include "MagickCore/policy-private.h"
 #  include "MagickCore/string-private.h"
 #  include "MagickCore/utility-private.h"
 #endif
@@ -207,9 +210,11 @@ WandExport ScriptTokenInfo *AcquireScriptTokenInfo(const char *filename)
   ScriptTokenInfo
     *token_info;
 
+  if (IsPathAuthorized(ReadPolicyRights,filename) == MagickFalse)
+    return((ScriptTokenInfo *) NULL);
   token_info=(ScriptTokenInfo *) AcquireMagickMemory(sizeof(*token_info));
   if (token_info == (ScriptTokenInfo *) NULL)
-    return token_info;
+    return(token_info);
   (void) memset(token_info,0,sizeof(*token_info));
 
   token_info->opened=MagickFalse;
@@ -217,7 +222,7 @@ WandExport ScriptTokenInfo *AcquireScriptTokenInfo(const char *filename)
     token_info->stream=stdin;
     token_info->opened=MagickFalse;
   }
-  else if (strncmp(filename,"fd:",3) == 0 ) {
+  else if (LocaleNCompare(filename,"fd:",3) == 0 ) {
     token_info->stream=fdopen(StringToLong(filename+3),"r");
     token_info->opened=MagickFalse;
   }

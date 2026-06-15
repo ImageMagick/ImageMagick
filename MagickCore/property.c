@@ -438,8 +438,7 @@ static void GetIPTCProperty(const Image *image,const char *key,
   ExceptionInfo *exception)
 {
   char
-    *attribute,
-    *message;
+    *attribute;
 
   const StringInfo
     *profile;
@@ -452,9 +451,6 @@ static void GetIPTCProperty(const Image *image,const char *key,
   ssize_t
     i;
 
-  size_t
-    length;
-
   profile=GetImageProfile(image,"iptc");
   if (profile == (StringInfo *) NULL)
     profile=GetImageProfile(image,"8bim");
@@ -464,29 +460,44 @@ static void GetIPTCProperty(const Image *image,const char *key,
   if (count != 2)
     return;
   attribute=(char *) NULL;
-  for (i=0; i < (ssize_t) GetStringInfoLength(profile); i+=(ssize_t) length)
+  for (i=0; i < (ssize_t) GetStringInfoLength(profile)-5; )
   {
-    length=1;
-    if ((ssize_t) GetStringInfoDatum(profile)[i] != 0x1c)
-      continue;
-    length=(size_t) (GetStringInfoDatum(profile)[i+3] << 8);
-    length|=GetStringInfoDatum(profile)[i+4];
-    if (((long) GetStringInfoDatum(profile)[i+1] == dataset) &&
-        ((long) GetStringInfoDatum(profile)[i+2] == record))
+    const unsigned char *p = GetStringInfoDatum(profile)+i;
+  
+    if (p[0] != 0x1c)  /* Look for IPTC marker */
       {
-        message=(char *) NULL;
+        i++;
+        continue;
+      }
+    /*
+      Dataset and record.
+    */
+    if (((long) p[1] == dataset) && ((long) p[2] == record))
+      {
+        char
+          *message = (char *) NULL;
+
+        size_t declared = ((size_t) p[3] << 8) | (size_t) p[4];
+        size_t remaining = GetStringInfoLength(profile)-(i+5);
+        size_t length = MagickMin(declared,remaining);
         if (~length >= 1)
           message=(char *) AcquireQuantumMemory(length+1UL,sizeof(*message));
         if (message != (char *) NULL)
           {
-            (void) CopyMagickString(message,(char *) GetStringInfoDatum(
-              profile)+i+5,length+1);
+            /*
+              Copy only the clamped length.
+            */
+            (void) memcpy(message,p+5,length);
+            message[length]='\0';
             (void) ConcatenateString(&attribute,message);
             (void) ConcatenateString(&attribute,";");
             message=DestroyString(message);
           }
       }
-    i+=5;
+    /*
+      Advance past this record header + data.
+    */
+    i+=(((size_t) p[3] << 8) | (size_t) p[4])+5;
   }
   if ((attribute == (char *) NULL) || (*attribute == ';'))
     {
