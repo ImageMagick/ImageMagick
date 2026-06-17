@@ -1588,11 +1588,7 @@ MagickExport MagickBooleanType LogMagickEventList(const LogEventType type,
       return(MagickTrue);
     }
   domain=CommandOptionToMnemonic(MagickLogEventOptions,type);
-#if defined(MAGICKCORE_HAVE_VSNPRINTF)
   n=vsnprintf(event,MagickPathExtent,format,operands);
-#else
-  n=vsprintf(event,format,operands);
-#endif
   if (n < 0)
     event[MagickPathExtent-1]='\0';
   text=TranslateEvent(module,function,line,domain,event);

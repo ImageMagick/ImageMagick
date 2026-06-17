@@ -22,6 +22,8 @@
 extern "C" {
 #endif
 
+#include "MagickCore/utility-private.h"
+
 #if MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
 /*
   Zero configuration security policy.  Discussion @
@@ -34,12 +36,20 @@ static const char
 #endif
 
 extern MagickPrivate MagickBooleanType
-  IsRightsAuthorizedByName(const PolicyDomain,const char *,const PolicyRights,
-    const char *),
   PolicyComponentGenesis(void);
 
 extern MagickPrivate void
   PolicyComponentTerminus(void);
+
+static inline MagickBooleanType IsPathAuthorized(const PolicyRights rights,
+  const char *filename)
+{
+  MagickBooleanType status =
+   ((IsRightsAuthorized(PathPolicyDomain,rights,filename) != MagickFalse) &&
+   ((IsRightsAuthorizedByName(SystemPolicyDomain,"symlink",rights,"follow") != MagickFalse) ||
+    (is_symlink_utf8(filename) == MagickFalse))) ? MagickTrue : MagickFalse;
+  return(status);
+}
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

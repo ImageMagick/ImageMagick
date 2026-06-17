@@ -66,6 +66,13 @@ extern "C" {
     "`%s'",image->filename); \
   return((Image *) NULL); \
 }
+#define ThrowPolicyException(tag,status) \
+{ \
+  errno=EPERM; \
+  (void) ThrowMagickException(exception,GetMagickModule(),PolicyError, \
+    "NotAuthorized","`%s'",tag); \
+  return(status); \
+}
 #define ThrowReaderException(severity,tag) \
 { \
   (void) ThrowMagickException(exception,GetMagickModule(),severity,tag, \

@@ -984,12 +984,7 @@ MagickExport char *FileToString(const char *filename,const size_t extent,
 
       status=IsRightsAuthorized(PathPolicyDomain,ReadPolicyRights,filename);
       if (status == MagickFalse)
-        {
-          errno=EPERM;
-          (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
-            "NotAuthorized","`%s'",filename);
-          return((char *) NULL);
-        }
+        ThrowPolicyException(filename,(char *) NULL);
       p=filename+1;
     }
   return((char *) FileToBlob(p,extent,&length,exception));

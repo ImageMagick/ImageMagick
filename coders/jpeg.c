@@ -72,6 +72,7 @@
 #include "MagickCore/option.h"
 #include "MagickCore/option-private.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/policy.h"
 #include "MagickCore/profile.h"
 #include "MagickCore/profile-private.h"
 #include "MagickCore/property.h"
@@ -137,7 +138,11 @@ typedef struct _JPEGClientInfo
     *image;
 
   MagickBooleanType
-    finished;
+    detect_uhdr,
+    finished,
+    skip_icc_profiles,
+    skip_app_profiles,
+    uhdr_metadata;
 
   StringInfo
     *profiles[MaxJPEGProfiles+1];
@@ -182,8 +187,33 @@ typedef struct _QuantizationTable
 /*
   Const declarations.
 */
+#if defined(MAGICKCORE_JPEG_DELEGATE)
+typedef enum
+{
+  JPEGGainmapSignatureAPP1 = 0x01,
+  JPEGGainmapSignatureAPP2 = 0x02
+} JPEGGainmapSignatureContext;
+
+typedef struct _JPEGGainmapSignature
+{
+  const char
+    *signature;
+
+  unsigned int
+    contexts;
+} JPEGGainmapSignature;
+
 static const char
   xmp_namespace[] = "http://ns.adobe.com/xap/1.0/";
+
+static const JPEGGainmapSignature
+  gainmap_signatures[] =
+  {
+    { "http://ns.adobe.com/hdr-gain-map/1.0/", JPEGGainmapSignatureAPP1 },
+    { "http://ns.google.com/photos/1.0/gainmap/", JPEGGainmapSignatureAPP1 },
+    { "urn:iso:std:iso:ts:21496:-1", JPEGGainmapSignatureAPP2 }
+  };
+#endif
 
 /*
   Forward declarations.
@@ -226,6 +256,212 @@ static MagickBooleanType IsJPEG(const unsigned char *magick,const size_t length)
     return(MagickTrue);
   return(MagickFalse);
 }
+
+#if defined(MAGICKCORE_JPEG_DELEGATE)
+static MagickBooleanType IsGainmapSignatureContext(
+  const JPEGGainmapSignature *gainmap_signature,
+  const JPEGGainmapSignatureContext context)
+{
+  if ((gainmap_signature->contexts & (unsigned int) context) == 0)
+    return(MagickFalse);
+  return(MagickTrue);
+}
+
+static MagickBooleanType IsJPEGProfileMatching(const unsigned char *profile,
+  const size_t length,const char *signature)
+{
+  size_t
+    i,
+    signature_length;
+
+  signature_length=strlen(signature);
+  if (length < signature_length)
+    return(MagickFalse);
+  for (i=0; i <= (length-signature_length); i++)
+    if (memcmp(profile+i,signature,signature_length) == 0)
+      return(MagickTrue);
+  return(MagickFalse);
+}
+
+static const char *GetGainmapSignatureWithPrefix(const unsigned char *profile,
+  const size_t length,const JPEGGainmapSignatureContext context)
+{
+  size_t
+    i;
+
+  for (i=0; i < (sizeof(gainmap_signatures)/sizeof(*gainmap_signatures)); i++)
+  {
+    const char
+      *signature;
+
+    size_t
+      signature_length;
+
+    if (IsGainmapSignatureContext(gainmap_signatures+i,context) == MagickFalse)
+      continue;
+    signature=gainmap_signatures[i].signature;
+    signature_length=strlen(signature);
+    if ((length <= signature_length) &&
+        (memcmp(profile,signature,length) == 0))
+      return(signature);
+  }
+  return((const char *) NULL);
+}
+
+static size_t GetMaxGainmapSignatureLength(
+  const JPEGGainmapSignatureContext context)
+{
+  size_t
+    i,
+    max_signature_length = 0;
+
+  for (i=0; i < (sizeof(gainmap_signatures)/sizeof(*gainmap_signatures)); i++)
+  {
+    size_t
+      signature_length;
+
+    if (IsGainmapSignatureContext(gainmap_signatures+i,context) == MagickFalse)
+      continue;
+    signature_length=strlen(gainmap_signatures[i].signature);
+    if (signature_length > max_signature_length)
+      max_signature_length=signature_length;
+  }
+  return(max_signature_length);
+}
+
+static MagickBooleanType IsGainmapSignatureWindowMatching(
+  const unsigned char *window,const size_t length,
+  const JPEGGainmapSignatureContext context)
+{
+  size_t
+    i;
+
+  for (i=0; i < (sizeof(gainmap_signatures)/sizeof(*gainmap_signatures)); i++)
+  {
+    const char
+      *signature;
+
+    size_t
+      signature_length;
+
+    if (IsGainmapSignatureContext(gainmap_signatures+i,context) == MagickFalse)
+      continue;
+    signature=gainmap_signatures[i].signature;
+    signature_length=strlen(signature);
+    if ((length >= signature_length) &&
+        (memcmp(window+length-signature_length,signature,signature_length) ==
+          0))
+      return(MagickTrue);
+  }
+  return(MagickFalse);
+}
+
+static MagickBooleanType IsUltraHDRJPEGProfile(const unsigned char *profile,
+  const size_t length)
+{
+  size_t
+    i;
+
+  for (i=0; i < (sizeof(gainmap_signatures)/sizeof(*gainmap_signatures)); i++)
+    if ((IsGainmapSignatureContext(gainmap_signatures+i,
+        JPEGGainmapSignatureAPP1) != MagickFalse) &&
+        (IsJPEGProfileMatching(profile,length,gainmap_signatures[i].signature) !=
+        MagickFalse))
+      return(MagickTrue);
+  return(MagickFalse);
+}
+
+static MagickBooleanType IsJPEGXMPProfile(const unsigned char *profile,
+  const size_t length)
+{
+  if (length <= strlen(xmp_namespace))
+    return(MagickFalse);
+  if (LocaleNCompare((const char *) profile,xmp_namespace,
+      strlen(xmp_namespace)-1) == 0)
+    return(MagickTrue);
+  return(MagickFalse);
+}
+
+#if defined(MAGICKCORE_UHDR_DELEGATE)
+static void SetUltraHDRCoderFilename(ImageInfo *uhdr_info,
+  const char *filename)
+{
+  if (LocaleNCompare(filename,"UHDR:",5) == 0)
+    (void) CopyMagickString(uhdr_info->filename,filename,MagickPathExtent);
+  else
+    (void) FormatLocaleString(uhdr_info->filename,MagickPathExtent,
+      "UHDR:%s",filename);
+  (void) CopyMagickString(uhdr_info->magick,"UHDR",MagickPathExtent);
+}
+
+static MagickBooleanType IsUltraHDRJPEGAutoRoutingEnabled(
+  const ImageInfo *image_info,const PolicyRights rights)
+{
+  const char
+    *option;
+
+  option=GetImageOption(image_info,"jpeg:detect-uhdr");
+  if (IsStringFalse(option) != MagickFalse)
+    return(MagickFalse);
+  if (IsRightsAuthorized(CoderPolicyDomain,rights,"UHDR") == MagickFalse)
+    return(MagickFalse);
+  if (IsRightsAuthorized(ModulePolicyDomain,rights,"UHDr") == MagickFalse)
+    return(MagickFalse);
+  return(MagickTrue);
+}
+
+static MagickBooleanType IsUltraHDRJPEGReadOptionsCompatible(
+  const ImageInfo *image_info)
+{
+  if (GetImageOption(image_info,"jpeg:size") != (const char *) NULL)
+    return(MagickFalse);
+  if (GetImageOption(image_info,"jpeg:colors") != (const char *) NULL)
+    return(MagickFalse);
+  if (GetImageOption(image_info,"jpeg:block-smoothing") != (const char *) NULL)
+    return(MagickFalse);
+  if (GetImageOption(image_info,"jpeg:dct-method") != (const char *) NULL)
+    return(MagickFalse);
+  if (GetImageOption(image_info,"jpeg:fancy-upsampling") !=
+      (const char *) NULL)
+    return(MagickFalse);
+  return(MagickTrue);
+}
+
+static Image *ReadUltraHDRJPEGImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
+{
+  Image
+    *images;
+
+  ImageInfo
+    *uhdr_info;
+
+  uhdr_info=CloneImageInfo(image_info);
+  SetUltraHDRCoderFilename(uhdr_info,image_info->filename);
+  (void) SetImageOption(uhdr_info,"jpeg:detect-uhdr","false");
+  images=ReadImage(uhdr_info,exception);
+  uhdr_info=DestroyImageInfo(uhdr_info);
+  return(images);
+}
+
+static MagickBooleanType WriteUltraHDRJPEGImage(const ImageInfo *image_info,
+  Image *image,ExceptionInfo *exception)
+{
+  ImageInfo
+    *uhdr_info;
+
+  MagickBooleanType
+    status;
+
+  uhdr_info=CloneImageInfo(image_info);
+  SetUltraHDRCoderFilename(uhdr_info,image_info->filename);
+  (void) SetImageOption(uhdr_info,"jpeg:detect-uhdr","false");
+  status=WriteImage(uhdr_info,image,exception);
+  uhdr_info=DestroyImageInfo(uhdr_info);
+  return(status);
+}
+#endif
+#endif
 
 #if defined(MAGICKCORE_JPEG_DELEGATE)
 /*
@@ -507,6 +743,109 @@ static MagickBooleanType ReadProfilePayload(j_decompress_ptr jpeg_info,
   return(MagickTrue);
 }
 
+static void ThrowJPEGProfileEOFException(j_decompress_ptr jpeg_info)
+{
+  JPEGClientInfo
+    *client_info;
+
+  client_info=(JPEGClientInfo *) jpeg_info->client_data;
+  (void) ThrowMagickException(client_info->exception,GetMagickModule(),
+    CorruptImageError,"InsufficientImageDataInFile","`%s'",
+    client_info->image->filename);
+}
+
+static MagickBooleanType SkipProfilePayload(j_decompress_ptr jpeg_info,
+  const size_t length)
+{
+  if (length == 0)
+    return(MagickTrue);
+  (*jpeg_info->src->skip_input_data)(jpeg_info,(long) length);
+  if (jpeg_info->err->msg_code == JWRN_JPEG_EOF)
+    {
+      ThrowJPEGProfileEOFException(jpeg_info);
+      return(MagickFalse);
+    }
+  return(MagickTrue);
+}
+
+static MagickBooleanType ReadUltraHDRAPP1Profile(j_decompress_ptr jpeg_info,
+  const size_t length)
+{
+  char
+    xmp_signature[MagickPathExtent];
+
+  int
+    c;
+
+  JPEGClientInfo
+    *client_info;
+
+  size_t
+    i,
+    max_signature_length,
+    signature_length,
+    window_length;
+
+  unsigned char
+    window[MagickPathExtent];
+
+  client_info=(JPEGClientInfo *) jpeg_info->client_data;
+  signature_length=strlen(xmp_namespace)-1;
+  if (length <= signature_length)
+    return(SkipProfilePayload(jpeg_info,length));
+  for (i=0; i < signature_length; i++)
+  {
+    c=GetCharacter(jpeg_info);
+    if (c == EOF)
+      {
+        ThrowJPEGProfileEOFException(jpeg_info);
+        return(MagickFalse);
+      }
+    xmp_signature[i]=(char) c;
+  }
+  xmp_signature[i]='\0';
+  if (LocaleNCompare(xmp_signature,xmp_namespace,signature_length) != 0)
+    return(SkipProfilePayload(jpeg_info,length-signature_length));
+  max_signature_length=GetMaxGainmapSignatureLength(JPEGGainmapSignatureAPP1);
+  window_length=0;
+  for (i=signature_length; i < length; i++)
+  {
+    c=GetCharacter(jpeg_info);
+    if (c == EOF)
+      {
+        ThrowJPEGProfileEOFException(jpeg_info);
+        return(MagickFalse);
+      }
+    if (window_length < max_signature_length)
+      window[window_length++]=(unsigned char) c;
+    else
+      {
+        (void) memmove(window,window+1,max_signature_length-1);
+        window[max_signature_length-1]=(unsigned char) c;
+      }
+    if (IsGainmapSignatureWindowMatching(window,window_length,
+        JPEGGainmapSignatureAPP1) != MagickFalse)
+      {
+        client_info->uhdr_metadata=MagickTrue;
+        (void) SetImageArtifact(client_info->image,"jpeg:hdrgm","true");
+        return(SkipProfilePayload(jpeg_info,length-i-1));
+      }
+  }
+  return(MagickTrue);
+}
+
+static MagickBooleanType ReadSkippedAPPProfile(j_decompress_ptr jpeg_info,
+  const int marker,const size_t length)
+{
+  JPEGClientInfo
+    *client_info;
+
+  client_info=(JPEGClientInfo *) jpeg_info->client_data;
+  if ((marker == 1) && (client_info->detect_uhdr != MagickFalse))
+    return(ReadUltraHDRAPP1Profile(jpeg_info,length));
+  return(SkipProfilePayload(jpeg_info,length));
+}
+
 static boolean ReadComment(j_decompress_ptr jpeg_info)
 {
 #define GetProfileLength(jpeg_info,length) \
@@ -600,40 +939,92 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
   for (i=0; i < 12; i++)
     magick[i]=(char) GetCharacter(jpeg_info);
   magick[i]='\0';
+  client_info=(JPEGClientInfo *) jpeg_info->client_data;
   if (LocaleCompare(magick,ICC_PROFILE) != 0)
     {
+      const char
+        *gainmap_signature;
+
+      const size_t
+        prefix_length = 12;
+
       if (LocaleCompare(magick,"MPF") == 0)
         {
+          if (client_info->skip_icc_profiles != MagickFalse)
+            return(SkipProfilePayload(jpeg_info,length-prefix_length) !=
+              MagickFalse ? TRUE : FALSE);
           /*
             Multi-picture support (Future).
           */
-          status=ReadProfilePayload(jpeg_info,ICC_INDEX,length-12);
+          status=ReadProfilePayload(jpeg_info,ICC_INDEX,length-prefix_length);
           if (status == MagickFalse)
             return(FALSE);
-          client_info=(JPEGClientInfo *) jpeg_info->client_data;
           status=SetImageProfile(client_info->image,"MPF",
             client_info->profiles[ICC_INDEX],client_info->exception);
           client_info->profiles[ICC_INDEX]=DestroyStringInfo(
             client_info->profiles[ICC_INDEX]);
           return(TRUE);
         }
+      gainmap_signature=GetGainmapSignatureWithPrefix((const unsigned char *)
+        magick,prefix_length,JPEGGainmapSignatureAPP2);
+      if (gainmap_signature != (const char *) NULL)
+        {
+          if (client_info->detect_uhdr != MagickFalse)
+            {
+              MagickBooleanType
+                signature_match = MagickFalse;
+
+              size_t
+                signature_length;
+
+              signature_length=strlen(gainmap_signature);
+              if (length >= signature_length)
+                {
+                  signature_match=MagickTrue;
+                  for (i=(ssize_t) prefix_length;
+                       i < (ssize_t) signature_length; i++)
+                  {
+                    int
+                      c;
+
+                    c=GetCharacter(jpeg_info);
+                    if (c == EOF)
+                      {
+                        ThrowJPEGProfileEOFException(jpeg_info);
+                        return(FALSE);
+                      }
+                    if (c != (int) ((unsigned char) gainmap_signature[i]))
+                      signature_match=MagickFalse;
+                  }
+                  if (signature_match != MagickFalse)
+                    {
+                      client_info->uhdr_metadata=MagickTrue;
+                      (void) SetImageArtifact(client_info->image,"jpeg:hdrgm",
+                        "true");
+                    }
+                  return(SkipProfilePayload(jpeg_info,length-signature_length)
+                    != MagickFalse ? TRUE : FALSE);
+                }
+            }
+          return(SkipProfilePayload(jpeg_info,length-prefix_length) !=
+            MagickFalse ? TRUE : FALSE);
+        }
       /*
         Not a ICC profile, return.
       */
-      for (i=0; i < (ssize_t) (length-12); i++)
-        if (GetCharacter(jpeg_info) == EOF)
-          break;
-      return(TRUE);
+      return(SkipProfilePayload(jpeg_info,length-prefix_length) != MagickFalse ?
+        TRUE : FALSE);
     }
   (void) GetCharacter(jpeg_info);  /* id */
   (void) GetCharacter(jpeg_info);  /* markers */
   length-=14;
+  image=client_info->image;
+  exception=client_info->exception;
+  if (client_info->skip_icc_profiles != MagickFalse)
+    return(SkipProfilePayload(jpeg_info,length) != MagickFalse ? TRUE : FALSE);
   status=ReadProfilePayload(jpeg_info,ICC_INDEX,length);
   if (status == MagickFalse)
     return(FALSE);
-  client_info=(JPEGClientInfo *) jpeg_info->client_data;
-  image=client_info->image;
-  exception=client_info->exception;
   status=SetImageProfile(image,"icc",client_info->profiles[ICC_INDEX],
     exception);
   return(status == MagickFalse ? FALSE : TRUE);
@@ -755,16 +1146,26 @@ static boolean ReadAPPProfiles(j_decompress_ptr jpeg_info)
   client_info=(JPEGClientInfo *) jpeg_info->client_data;
   image=client_info->image;
   exception=client_info->exception;
+  if (client_info->skip_app_profiles != MagickFalse)
+    return(ReadSkippedAPPProfile(jpeg_info,marker,length) != MagickFalse ?
+      TRUE : FALSE);
   if (client_info->profiles[marker] != (StringInfo *) NULL)
     offset=GetStringInfoLength(client_info->profiles[marker]);
   status=ReadProfilePayload(jpeg_info,marker,length);
   if (status == MagickFalse)
     return(FALSE);
+  p=GetStringInfoDatum(client_info->profiles[marker])+offset;
+  if ((marker == 1) &&
+      (client_info->detect_uhdr != MagickFalse) &&
+      (IsJPEGXMPProfile(p,length) != MagickFalse) &&
+      (IsUltraHDRJPEGProfile(p,length) != MagickFalse))
+    {
+      client_info->uhdr_metadata=MagickTrue;
+      (void) SetImageArtifact(image,"jpeg:hdrgm","true");
+    }
   if (marker != 1)
     return(TRUE);
-  p=GetStringInfoDatum(client_info->profiles[marker])+offset;
-  if ((length > strlen(xmp_namespace)) &&
-      (LocaleNCompare((char *) p,xmp_namespace,strlen(xmp_namespace)-1) == 0))
+  if (IsJPEGXMPProfile(p,length) != MagickFalse)
     {
       size_t
         i;
@@ -1159,6 +1560,13 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
   memory_info=(MemoryInfo *) NULL;
   client_info->exception=exception;
   client_info->image=image;
+  option=GetImageOption(image_info,"profile:skip");
+  client_info->skip_icc_profiles=IsOptionMember("ICC",option) != MagickFalse ?
+    MagickTrue : MagickFalse;
+  client_info->skip_app_profiles=IsOptionMember("APP",option) != MagickFalse ?
+    MagickTrue : MagickFalse;
+  client_info->detect_uhdr=IsStringFalse(GetImageOption(image_info,
+    "jpeg:detect-uhdr")) == MagickFalse ? MagickTrue : MagickFalse;
   if (setjmp(client_info->error_recovery) != 0)
     {
       client_info=JPEGCleanup(jpeg_info,client_info);
@@ -1176,12 +1584,12 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
   jpeg_info->progress=(&jpeg_progress);
   JPEGSourceManager(jpeg_info,image);
   jpeg_set_marker_processor(jpeg_info,JPEG_COM,ReadComment);
-  option=GetImageOption(image_info,"profile:skip");
   for (i=1; i < MaxJPEGProfiles; i++)
   {
     if (i == ICC_INDEX)
       {
-        if (IsOptionMember("ICC",option) == MagickFalse)
+        if ((client_info->skip_icc_profiles == MagickFalse) ||
+            (client_info->detect_uhdr != MagickFalse))
           jpeg_set_marker_processor(jpeg_info,ICC_MARKER,ReadICCProfile);
       }
     else if (i == IPTC_INDEX)
@@ -1194,12 +1602,72 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
         /*
           Ignore APP14 as this will change the colors of the image.
         */
-        if (IsOptionMember("APP",option) == MagickFalse)
+        if ((client_info->skip_app_profiles == MagickFalse) ||
+            ((i == 1) && (client_info->detect_uhdr != MagickFalse)))
           jpeg_set_marker_processor(jpeg_info,(int) (JPEG_APP0+i),
             ReadAPPProfiles);
       }
   }
   (void) jpeg_read_header(jpeg_info,TRUE);
+#if defined(MAGICKCORE_UHDR_DELEGATE)
+  if ((client_info->uhdr_metadata != MagickFalse) && (*offset == 0) &&
+      (GetBlobStreamData(image) != (const unsigned char *) NULL) &&
+      (GetBlobSize(image) != 0) &&
+      (LocaleCompare(image_info->magick,"MPO") != 0) &&
+      (IsUltraHDRJPEGReadOptionsCompatible(image_info) != MagickFalse) &&
+      (IsUltraHDRJPEGAutoRoutingEnabled(image_info,ReadPolicyRights) !=
+        MagickFalse))
+    {
+      const char
+        *sampling_factor;
+
+      ExceptionInfo
+        *uhdr_exception;
+
+      Image
+        *uhdr_image;
+
+      JPEGSetImageQuality(jpeg_info,image);
+      JPEGSetImageSamplingFactor(jpeg_info,image,exception);
+      if (jpeg_info->saw_JFIF_marker != 0)
+        {
+          if (jpeg_info->density_unit == 1)
+            image->units=PixelsPerInchResolution;
+          else if (jpeg_info->density_unit == 2)
+            image->units=PixelsPerCentimeterResolution;
+          if (IsAspectRatio(jpeg_info) == MagickFalse)
+            {
+              if (jpeg_info->X_density != 0)
+                image->resolution.x=(double) jpeg_info->X_density;
+              if (jpeg_info->Y_density != 0)
+                image->resolution.y=(double) jpeg_info->Y_density;
+            }
+        }
+      uhdr_exception=AcquireExceptionInfo();
+      uhdr_image=ReadUltraHDRJPEGImage(image_info,uhdr_exception);
+      if (uhdr_image != (Image *) NULL)
+        {
+          (void) SetImageArtifact(uhdr_image,"jpeg:hdrgm","true");
+          if (image->quality != UndefinedCompressionQuality)
+            uhdr_image->quality=image->quality;
+          uhdr_image->resolution=image->resolution;
+          uhdr_image->units=image->units;
+          sampling_factor=GetImageProperty(image,"jpeg:sampling-factor",
+            exception);
+          if (sampling_factor != (const char *) NULL)
+            (void) SetImageProperty(uhdr_image,"jpeg:sampling-factor",
+              sampling_factor,exception);
+          InheritException(exception,uhdr_exception);
+          uhdr_exception=DestroyExceptionInfo(uhdr_exception);
+          client_info=JPEGCleanup(jpeg_info,client_info);
+          (void) CloseBlob(image);
+          image=DestroyImage(image);
+          return(uhdr_image);
+        }
+      uhdr_exception=DestroyExceptionInfo(uhdr_exception);
+      (void) DeleteImageArtifact(image,"jpeg:hdrgm");
+    }
+#endif
   if (IsYCbCrCompatibleColorspace(image_info->colorspace) != MagickFalse)
     jpeg_info->out_color_space=JCS_YCbCr;
   /*
@@ -3171,6 +3639,13 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   struct jpeg_compress_struct
     jpeg_info;
 
+#if defined(MAGICKCORE_UHDR_DELEGATE)
+  if ((GetImageProfile(image,"hdrgm") != (const StringInfo *) NULL) &&
+      (GetImageOption(image_info,"jpeg:extent") == (const char *) NULL) &&
+      (IsUltraHDRJPEGAutoRoutingEnabled(image_info,WritePolicyRights) !=
+        MagickFalse))
+    return(WriteUltraHDRJPEGImage(image_info,image,exception));
+#endif
   return(WriteJPEGImage_(image_info,image,&jpeg_info,exception));
 }
 #endif

@@ -137,12 +137,7 @@ MagickExport MagickBooleanType InvokeStaticImageFilter(const char *tag,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",(*image)->filename);
   rights=ReadPolicyRights;
   if (IsRightsAuthorized(FilterPolicyDomain,rights,tag) == MagickFalse)
-    {
-      errno=EPERM;
-      (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
-        "NotAuthorized","`%s'",tag);
-      return(MagickFalse);
-    }
+    ThrowPolicyException(tag,MagickFalse);
 #if defined(MAGICKCORE_MODULES_SUPPORT)
   (void) tag;
   (void) argc;
@@ -242,12 +237,7 @@ MagickExport MagickBooleanType RegisterStaticModule(const char *module,
     (void) CopyMagickString(module_name,p->name,MagickPathExtent);
   rights=(PolicyRights) (ReadPolicyRights | WritePolicyRights);
   if (IsRightsAuthorized(ModulePolicyDomain,rights,module_name) == MagickFalse)
-    {
-      errno=EPERM;
-      (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
-        "NotAuthorized","`%s'",module);
-      return(MagickFalse);
-    }
+    ThrowPolicyException(module_name,MagickFalse);
   extent=sizeof(MagickModules)/sizeof(MagickModules[0]);
   for (i=0; i < (ssize_t) extent; i++)
     if (LocaleCompare(MagickModules[i].module,module_name) == 0)

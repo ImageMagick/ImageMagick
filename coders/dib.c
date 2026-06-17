@@ -152,7 +152,6 @@ static MagickBooleanType DecodeImage(Image *image,
   const MagickBooleanType compression,unsigned char *pixels,
   const size_t number_pixels)
 {
-
 #define DibRgbCompression  0
 #define DibRle8Compression  1
 #define DibRle4Compression  2
@@ -306,7 +305,7 @@ static MagickBooleanType DecodeImage(Image *image,
   }
   (void) ReadBlobByte(image);  /* end of line */
   (void) ReadBlobByte(image);
-  return(y < (ssize_t) image->rows ? MagickFalse : MagickTrue);
+  return((size_t) (p-pixels) < number_pixels ? MagickFalse : MagickTrue);
 }
 
 /*
@@ -541,6 +540,9 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   dib_info.y_pixels=ReadBlobLSBLong(image);
   dib_info.number_colors=ReadBlobLSBLong(image);
   dib_info.colors_important=ReadBlobLSBLong(image);
+  if (EOFBlob(image) != MagickFalse)
+    ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+      image->filename);
   if ((dib_info.bits_per_pixel != 1) && (dib_info.bits_per_pixel != 4) &&
       (dib_info.bits_per_pixel != 8) && (dib_info.bits_per_pixel != 16) &&
       (dib_info.bits_per_pixel != 24) && (dib_info.bits_per_pixel != 32))
@@ -625,6 +627,9 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if ((geometry.height != 0) && (geometry.height < image->rows))
           image->rows=geometry.height;
     }
+  if ((image->columns > (8*GetBlobSize(image))) ||
+      (image->rows > (8*GetBlobSize(image))))
+    ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));

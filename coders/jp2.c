@@ -1161,7 +1161,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
   jp2_image->x1=(unsigned int) (2*parameters->image_offset_x0+
     ((ssize_t) image->columns-1)*parameters->subsampling_dx+1);
   jp2_image->y1=(unsigned int) (2*parameters->image_offset_y0+
-    ((ssize_t) image->rows-1)*parameters->subsampling_dx+1);
+    ((ssize_t) image->rows-1)*parameters->subsampling_dy+1);
   if ((image->depth == 12) &&
       ((image->columns == 2048) || (image->rows == 1080) ||
        (image->columns == 4096) || (image->rows == 2160)))

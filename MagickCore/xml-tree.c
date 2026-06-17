@@ -1410,7 +1410,8 @@ static char *ParseEntities(char *xml,char **entities,int state)
                     if (p != q)
                       {
                         p=(char *) ResizeQuantumMemory(p,extent+1,sizeof(*p));
-                        p[extent]='\0';
+                        if (p != (char *) NULL)
+                          p[extent]='\0';
                       }
                     else
                       {

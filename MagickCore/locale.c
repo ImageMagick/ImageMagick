@@ -453,8 +453,7 @@ MagickPrivate ssize_t FormatLocaleStringList(char *magick_restrict string,
       n=(ssize_t) vsnprintf_l(string,length,locale,format,operands);
 #endif
   }
-#elif defined(MAGICKCORE_HAVE_VSNPRINTF)
-#if defined(MAGICKCORE_LOCALE_SUPPORT) && defined(MAGICKCORE_HAVE_USELOCALE)
+#elif defined(MAGICKCORE_LOCALE_SUPPORT) && defined(MAGICKCORE_HAVE_USELOCALE)
   {
     locale_t
       locale,
@@ -472,9 +471,6 @@ MagickPrivate ssize_t FormatLocaleStringList(char *magick_restrict string,
   }
 #else
   n=(ssize_t) vsnprintf(string,length,format,operands);
-#endif
-#else
-  n=(ssize_t) vsprintf(string,format,operands);
 #endif
   if (n < 0)
     string[length-1]='\0';

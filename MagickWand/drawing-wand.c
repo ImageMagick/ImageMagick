@@ -225,11 +225,7 @@ static int MVGPrintf(DrawingWand *wand,const char *format,...)
     if (offset > 0)
       {
         va_start(argp,format);
-#if defined(MAGICKCORE_HAVE_VSNPRINTF)
         count=vsnprintf(wand->mvg+wand->mvg_length,(size_t) offset,format,argp);
-#else
-        count=vsprintf(wand->mvg+wand->mvg_length,format,argp);
-#endif
         va_end(argp);
       }
     if ((count < 0) || (count > (int) offset))
@@ -259,11 +255,7 @@ static int MVGAutoWrapPrintf(DrawingWand *wand,const char *format,...)
     argp;
 
   va_start(argp,format);
-#if defined(MAGICKCORE_HAVE_VSNPRINTF)
   count=vsnprintf(buffer,sizeof(buffer)-1,format,argp);
-#else
-  count=vsprintf(buffer,format,argp);
-#endif
   va_end(argp);
   buffer[sizeof(buffer)-1]='\0';
   if (count < 0)
@@ -6471,7 +6463,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
                 CurrentContext->dash_pattern[j]=StringToDouble(token,
                   (char **) NULL);
               }
-              if ((x & 0x01) != 0)
+              if (((x & 0x01) != 0) && (j == x))
                 for ( ; j < (2*x); j++)
                   CurrentContext->dash_pattern[j]=
                     CurrentContext->dash_pattern[j-x];

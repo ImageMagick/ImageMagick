@@ -559,11 +559,7 @@ static void TIFFErrors(const char *module,const char *format,va_list error)
   ExceptionInfo
     *exception;
 
-#if defined(MAGICKCORE_HAVE_VSNPRINTF)
   (void) vsnprintf(message,MagickPathExtent-2,format,error);
-#else
-  (void) vsprintf(message,format,error);
-#endif
   message[MagickPathExtent-2]='\0';
   (void) ConcatenateMagickString(message,".",MagickPathExtent);
   exception=(ExceptionInfo *) GetMagickThreadValue(tiff_exception);
@@ -912,11 +908,7 @@ static void TIFFWarnings(const char *module,const char *format,va_list warning)
   ExceptionInfo
     *exception;
 
-#if defined(MAGICKCORE_HAVE_VSNPRINTF)
   (void) vsnprintf(message,MagickPathExtent-2,format,warning);
-#else
-  (void) vsprintf(message,format,warning);
-#endif
   message[MagickPathExtent-2]='\0';
   (void) ConcatenateMagickString(message,".",MagickPathExtent);
   exception=(ExceptionInfo *) GetMagickThreadValue(tiff_exception);
@@ -1271,33 +1263,31 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     }
   if (TIFFGetField(tiff,TIFFTAG_DNGVERSION,&dng_version) == 1)
     {
-      ImageInfo
-        *read_info;
+      Image
+        *dng_image = (Image *) NULL;
 
-      MagickBooleanType
-        has_unique_file = MagickFalse;
-
-      TIFFClose(tiff);
-      read_info=CloneImageInfo(image_info);
-      if (*read_info->filename == '\0')
-      {
-        status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
-        if (status == MagickFalse)
-          {
-            image=DestroyImageList(image);
-            return((Image *) NULL);
-          }
-        (void) ImageToFile(image,read_info->filename,exception);
-        (void) CloseBlob((Image *) image);
-        has_unique_file=MagickTrue;
-      }
-      image=DestroyImageList(image);
+      /*
+        Redirect to DNG image reader.
+      */
+      ImageInfo *read_info = CloneImageInfo(image_info);
       (void) CopyMagickString(read_info->magick,"DNG",MagickPathExtent);
-      image=ReadImage(read_info,exception);
-      if (has_unique_file != MagickFalse)
-        (void) RelinquishUniqueFileResource(read_info->filename);
+      TIFFClose(tiff);
+      if (*read_info->filename != '\0')
+        dng_image=ReadImage(read_info,exception);
+      else
+        {
+          status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
+          if (status != MagickFalse)
+            {
+              status=ImageToFile(image,read_info->filename,exception);
+              if (status != MagickFalse)
+                dng_image=ReadImage(read_info,exception);
+              (void) RelinquishUniqueFileResource(read_info->filename);
+            }
+        }
       read_info=DestroyImageInfo(read_info);
-      return(image);
+      image=DestroyImageList(image);
+      return(dng_image);
     }
   if (image_info->number_scenes != 0)
     {

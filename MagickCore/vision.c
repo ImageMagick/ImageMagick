@@ -797,7 +797,8 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     *object;
 
   char
-    *c;
+    *c,
+    *d;
 
   const char
     *artifact,
@@ -1177,7 +1178,11 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       {
         while ((isspace((int) ((unsigned char) *c)) != 0) || (*c == ','))
           c++;
-        first=(ssize_t) strtol(c,&c,10);
+        d=c;
+        first=(ssize_t) strtol(c,&d,10);
+        if (d == c)
+          break;
+        c=d;
         if (first < 0)
           first+=(ssize_t) component_image->colors;
         last=first;
@@ -1277,7 +1282,11 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       */
       while ((isspace((int) ((unsigned char) *c)) != 0) || (*c == ','))
         c++;
-      first=(ssize_t) strtol(c,&c,10);
+      d=c;
+      first=(ssize_t) strtol(c,&d,10);
+      if (d == c)
+        break;
+      c=d;
       if (first < 0)
         first+=(ssize_t) component_image->colors;
       last=first;

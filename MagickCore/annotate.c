@@ -672,9 +672,9 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
         (IsUTFSpace(code) != MagickFalse) &&
         (IsNonBreakingUTFSpace(code) == MagickFalse))
       {
-        s=p;
         if (width > image->columns)
-          p=ReplaceSpaceWithNewline(caption,s);
+          p=ReplaceSpaceWithNewline(caption,p);
+        s=p;
       }
     for (i=0; i < (ssize_t) GetUTFOctets(p); i++)
       *q++=(*(p+i));
@@ -1486,8 +1486,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
 
 #define ThrowFreetypeErrorException(tag,ft_status,value) \
 { \
-  const char \
-    *error_string=FreetypeErrorMessage(ft_status); \
+  const char *error_string = FreetypeErrorMessage(ft_status); \
   if (error_string != (const char *) NULL) \
     (void) ThrowMagickException(exception,GetMagickModule(),TypeError, \
       tag,"`%s (%s)'",value, error_string); \
@@ -1604,14 +1603,20 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   /*
     Initialize Truetype library.
   */
+  if ((draw_info->font != (char *) NULL) && (*draw_info->font == '@') &&
+      (IsRightsAuthorized(PathPolicyDomain,ReadPolicyRights,draw_info->font) == MagickFalse))
+    ThrowPolicyException(draw_info->font,MagickFalse);
   memory=FreetypeAcquireMemoryManager();
   if (memory == (FT_Memory) NULL)
     ThrowBinaryException(ResourceLimitError,"UnableToInitializeFreetypeLibrary",
       image->filename);
   ft_status=FreetypeInit(memory,&library);
   if (ft_status != 0)
-    ThrowFreetypeErrorException("UnableToInitializeFreetypeLibrary",ft_status,
-      image->filename);
+    {
+      ThrowFreetypeErrorException("UnableToInitializeFreetypeLibrary",ft_status,
+        image->filename);
+      return(MagickFalse);
+    }
   /*
     Open font face.
   */
