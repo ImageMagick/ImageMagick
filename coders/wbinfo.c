@@ -346,8 +346,8 @@ static MagickBooleanType AppendAmigaImage(Image **image, size_t width,
 /*
   Render a paletted image (NewIcon or GlowIcon) to DirectClass RGBA.
 */
-static void RenderPalettedAmigaImage(Image *image, size_t width, size_t height,
-  const unsigned char *pixels, size_t pixel_count,
+static MagickBooleanType RenderPalettedAmigaImage(Image *image, size_t width,
+  size_t height, const unsigned char *pixels, size_t pixel_count,
   const unsigned char *palette, size_t pal_entries,
   MagickBooleanType has_transparent, unsigned char transparent_idx,
   ExceptionInfo *exception)
@@ -365,7 +365,7 @@ static void RenderPalettedAmigaImage(Image *image, size_t width, size_t height,
 
     q=QueueAuthenticPixels(image,0,y,width,1,exception);
     if (q == (Quantum *) NULL)
-      break;
+      return(MagickFalse);
     for (x=0; x < (ssize_t) width; x++)
     {
       size_t
@@ -387,8 +387,9 @@ static void RenderPalettedAmigaImage(Image *image, size_t width, size_t height,
       q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
-      break;
+      return(MagickFalse);
   }
+  return(MagickTrue);
 }
 
 /*
@@ -422,6 +423,9 @@ static MagickBooleanType ReadAndRenderClassicImage(Image **image,
 
   const unsigned char
     (*palette)[3];
+
+  MagickBooleanType
+    render_status;
 
   ssize_t
     y;
@@ -495,6 +499,7 @@ static MagickBooleanType ReadAndRenderClassicImage(Image **image,
     planes=(unsigned char **) RelinquishMagickMemory(planes);
     return(MagickFalse);
   }
+  render_status=MagickTrue;
   for (y=0; y < (ssize_t) img_height; y++)
   {
     Quantum
@@ -505,7 +510,10 @@ static MagickBooleanType ReadAndRenderClassicImage(Image **image,
 
     q=QueueAuthenticPixels(*image,0,y,(size_t) img_width,1,exception);
     if (q == (Quantum *) NULL)
+    {
+      render_status=MagickFalse;
       break;
+    }
     for (x=0; x < (ssize_t) img_width; x++)
     {
       size_t
@@ -543,11 +551,20 @@ static MagickBooleanType ReadAndRenderClassicImage(Image **image,
       q+=(ptrdiff_t) GetPixelChannels(*image);
     }
     if (SyncAuthenticPixels(*image,exception) == MagickFalse)
+    {
+      render_status=MagickFalse;
       break;
+    }
   }
   for (p_idx=0; p_idx < (size_t) img_depth; p_idx++)
     planes[p_idx]=(unsigned char *) RelinquishMagickMemory(planes[p_idx]);
   planes=(unsigned char **) RelinquishMagickMemory(planes);
+  if (render_status == MagickFalse)
+  {
+    if (*scene > 0)
+      DeleteImageFromList(image);
+    return(MagickFalse);
+  }
   (*scene)++;
   return(MagickTrue);
 }
@@ -704,9 +721,16 @@ static MagickBooleanType DecodeAndRenderNewIcon(Image **image, size_t *scene,
     ni_palette=(unsigned char *) RelinquishMagickMemory(ni_palette);
     return(MagickFalse);
   }
-  RenderPalettedAmigaImage(*image,ni_width,ni_height,
-    ni_pixels,pix_count,ni_palette,ni_num_colors,
-    ni_transparent ? MagickTrue : MagickFalse,0,exception);
+  if (RenderPalettedAmigaImage(*image,ni_width,ni_height,
+      ni_pixels,pix_count,ni_palette,ni_num_colors,
+      ni_transparent ? MagickTrue : MagickFalse,0,exception) == MagickFalse)
+  {
+    ni_pixels=(unsigned char *) RelinquishMagickMemory(ni_pixels);
+    ni_palette=(unsigned char *) RelinquishMagickMemory(ni_palette);
+    if (*scene > 0)
+      DeleteImageFromList(image);
+    return(MagickFalse);
+  }
   ni_pixels=(unsigned char *) RelinquishMagickMemory(ni_pixels);
   ni_palette=(unsigned char *) RelinquishMagickMemory(ni_palette);
   (*scene)++;
@@ -904,6 +928,7 @@ static Image *ReadWBINFOImage(const ImageInfo *image_info,
   if (has_tooltypes)
   {
     MagickBooleanType
+      newicon_failure,
       tooltypes_corrupt,
       tooltypes_resource_failure;
 
@@ -924,6 +949,7 @@ static Image *ReadWBINFOImage(const ImageInfo *image_info,
       **im1_lines = (char **) NULL,
       **im2_lines = (char **) NULL;
 
+    newicon_failure=MagickFalse;
     tooltypes_corrupt=MagickFalse;
     tooltypes_resource_failure=MagickFalse;
     if (EOFBlob(image) != MagickFalse)
@@ -1041,10 +1067,15 @@ static Image *ReadWBINFOImage(const ImageInfo *image_info,
     if ((tooltypes_corrupt == MagickFalse) &&
         (tooltypes_resource_failure == MagickFalse))
     {
-      (void) DecodeAndRenderNewIcon(&image,&scene,im1_lines,im1_count,
-        image_info,exception);
-      (void) DecodeAndRenderNewIcon(&image,&scene,im2_lines,im2_count,
-        image_info,exception);
+      if ((DecodeAndRenderNewIcon(&image,&scene,im1_lines,im1_count,
+          image_info,exception) == MagickFalse) &&
+          (exception->severity >= ErrorException))
+        newicon_failure=MagickTrue;
+      if ((newicon_failure == MagickFalse) &&
+          (DecodeAndRenderNewIcon(&image,&scene,im2_lines,im2_count,
+          image_info,exception) == MagickFalse) &&
+          (exception->severity >= ErrorException))
+        newicon_failure=MagickTrue;
     }
 newicon_cleanup:
     if (im1_lines != (char **) NULL)
@@ -1062,6 +1093,8 @@ newicon_cleanup:
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     if (tooltypes_corrupt != MagickFalse)
       ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+    if (newicon_failure != MagickFalse)
+      return(DestroyImageList(image));
   }
 
   /*
@@ -1361,10 +1394,24 @@ newicon_cleanup:
                               RelinquishMagickMemory(last_pal_data);
                           return(DestroyImageList(image));
                         }
-                        RenderPalettedAmigaImage(image,icon_width,icon_height,
-                          pixel_data,pixel_count,render_pal,render_pal_entries,
-                          has_transparent ? MagickTrue : MagickFalse,
-                          transparent_color,exception);
+                        if (RenderPalettedAmigaImage(image,icon_width,
+                            icon_height,pixel_data,pixel_count,render_pal,
+                            render_pal_entries,has_transparent ? MagickTrue :
+                            MagickFalse,transparent_color,exception) ==
+                            MagickFalse)
+                        {
+                          pixel_data=(unsigned char *)
+                            RelinquishMagickMemory(pixel_data);
+                          if (pal_data != (unsigned char *) NULL)
+                            pal_data=(unsigned char *)
+                              RelinquishMagickMemory(pal_data);
+                          rest_data=(unsigned char *)
+                            RelinquishMagickMemory(rest_data);
+                          if (last_pal_data != (unsigned char *) NULL)
+                            last_pal_data=(unsigned char *)
+                              RelinquishMagickMemory(last_pal_data);
+                          return(DestroyImageList(image));
+                        }
                       }
                       pixel_data=(unsigned char *)
                         RelinquishMagickMemory(pixel_data);
@@ -1407,45 +1454,73 @@ newicon_cleanup:
                         if (uncompress(argb_raw,&raw_size,compressed,
                             (uLong) comp_size) == Z_OK)
                         {
-                          if (AppendAmigaImage(&image,icon_width,
-                              icon_height,scene,image_info,exception) !=
-                              MagickFalse)
+                          MagickBooleanType
+                            render_status;
+
+                          ssize_t
+                            y;
+
+                          if (AppendAmigaImage(&image,icon_width,icon_height,
+                              scene,image_info,exception) == MagickFalse)
                           {
-                            ssize_t
-                              y;
-
-                            for (y=0; y < (ssize_t) icon_height; y++)
-                            {
-                              Quantum
-                                *q;
-
-                              ssize_t
-                                x;
-
-                              q=QueueAuthenticPixels(image,0,y,icon_width,1,
-                                exception);
-                              if (q == (Quantum *) NULL)
-                                break;
-                              for (x=0; x < (ssize_t) icon_width; x++)
-                              {
-                                size_t
-                                  pi;
-
-                                pi=((size_t) y*icon_width+(size_t) x)*4;
-                                if (pi+3 < (size_t) raw_size)
-                                  SetAmigaPixelRGBA(image,q,argb_raw[pi+1],
-                                    argb_raw[pi+2],argb_raw[pi+3],
-                                    argb_raw[pi]);
-                                else
-                                  SetAmigaPixelRGBA(image,q,0,0,0,0);
-                                q+=(ptrdiff_t) GetPixelChannels(image);
-                              }
-                              if (SyncAuthenticPixels(image,exception) ==
-                                  MagickFalse)
-                                break;
-                            }
-                            scene++;
+                            argb_raw=(unsigned char *)
+                              RelinquishMagickMemory(argb_raw);
+                            rest_data=(unsigned char *)
+                              RelinquishMagickMemory(rest_data);
+                            if (last_pal_data != (unsigned char *) NULL)
+                              last_pal_data=(unsigned char *)
+                                RelinquishMagickMemory(last_pal_data);
+                            return(DestroyImageList(image));
                           }
+                          render_status=MagickTrue;
+                          for (y=0; y < (ssize_t) icon_height; y++)
+                          {
+                            Quantum
+                              *q;
+
+                            ssize_t
+                              x;
+
+                            q=QueueAuthenticPixels(image,0,y,icon_width,1,
+                              exception);
+                            if (q == (Quantum *) NULL)
+                            {
+                              render_status=MagickFalse;
+                              break;
+                            }
+                            for (x=0; x < (ssize_t) icon_width; x++)
+                            {
+                              size_t
+                                pi;
+
+                              pi=((size_t) y*icon_width+(size_t) x)*4;
+                              if (pi+3 < (size_t) raw_size)
+                                SetAmigaPixelRGBA(image,q,argb_raw[pi+1],
+                                  argb_raw[pi+2],argb_raw[pi+3],
+                                  argb_raw[pi]);
+                              else
+                                SetAmigaPixelRGBA(image,q,0,0,0,0);
+                              q+=(ptrdiff_t) GetPixelChannels(image);
+                            }
+                            if (SyncAuthenticPixels(image,exception) ==
+                                MagickFalse)
+                            {
+                              render_status=MagickFalse;
+                              break;
+                            }
+                          }
+                          if (render_status == MagickFalse)
+                          {
+                            argb_raw=(unsigned char *)
+                              RelinquishMagickMemory(argb_raw);
+                            rest_data=(unsigned char *)
+                              RelinquishMagickMemory(rest_data);
+                            if (last_pal_data != (unsigned char *) NULL)
+                              last_pal_data=(unsigned char *)
+                                RelinquishMagickMemory(last_pal_data);
+                            return(DestroyImageList(image));
+                          }
+                          scene++;
                         }
                         argb_raw=(unsigned char *)
                           RelinquishMagickMemory(argb_raw);
@@ -1468,6 +1543,8 @@ newicon_cleanup:
     }
   }
 
+  if (scene == 0)
+    ThrowReaderException(ImageError,"NoImagesWereFound");
   if (CloseBlob(image) == MagickFalse)
     return(DestroyImageList(image));
   return(GetFirstImageInList(image));
