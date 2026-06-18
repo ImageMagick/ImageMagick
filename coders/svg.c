@@ -2698,7 +2698,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
             thread_filename[MagickPathExtent];
 
           Image
-            *image;
+            *image = (Image *) NULL;
 
           ImageInfo
             *image_info = AcquireImageInfo();
@@ -2721,7 +2721,21 @@ static void SVGEndElement(void *context,const xmlChar *name)
             (void *) 1);
           (void) CopyMagickString(image_info->filename,svg_info->url,
             MagickPathExtent);
-          image=ReadImage(image_info,svg_info->exception);
+          if (LocaleNCompare(image_info->filename,"data:",5) == 0)
+            image=ReadInlineImage(image_info,svg_info->url,svg_info->exception);
+          else
+            {
+              char
+                magic[MagickPathExtent] = { '\0' };
+
+               GetPathComponent(image_info->filename,MagickPath,magic);
+               if (*magic == '\0')
+                 image=ReadImage(image_info,svg_info->exception);
+               else
+                 (void) ThrowMagickException(svg_info->exception,
+                   GetMagickModule(),FileOpenError,"UnableToOpenFile","`%s'",
+                   image_info->filename);
+               }
           image_info=DestroyImageInfo(image_info);
           if (image != (Image *) NULL)
             image=DestroyImage(image);
