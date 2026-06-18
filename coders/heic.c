@@ -1872,6 +1872,66 @@ static MagickBooleanType WriteHEICSequenceImage(const ImageInfo *image_info,
       error=heif_track_encode_end_of_sequence(track,heif_encoder);
       if (IsHEIFSuccess(image,&error,exception) == MagickFalse)
         status=MagickFalse;
+      /*
+        Encode the first frame as a primary still image to generate the meta
+        box with pitm (primary item).  Firefox and some other software requires
+        this to decode animated AVIF files.
+      */
+      if (status != MagickFalse)
+        {
+          Image
+            *first_image;
+
+          struct heif_image
+            *still_image;
+
+          first_image=GetFirstImageInList(image);
+          colorspace=heif_colorspace_YCbCr;
+          chroma=lossless != MagickFalse ? heif_chroma_444 : heif_chroma_420;
+          if ((first_image->alpha_trait & BlendPixelTrait) != 0)
+            {
+              colorspace=heif_colorspace_RGB;
+              chroma=heif_chroma_interleaved_RGBA;
+              if (first_image->depth > 8)
+                chroma=heif_chroma_interleaved_RRGGBBAA_LE;
+            }
+          else
+            if (IssRGBCompatibleColorspace(first_image->colorspace) !=
+                MagickFalse)
+              {
+                colorspace=heif_colorspace_RGB;
+                chroma=heif_chroma_interleaved_RGB;
+                if (first_image->depth > 8)
+                  chroma=heif_chroma_interleaved_RRGGBB_LE;
+                if (GetPixelChannels(first_image) == 1)
+                  {
+                    colorspace=heif_colorspace_monochrome;
+                    chroma=heif_chroma_monochrome;
+                  }
+              }
+          still_image=(struct heif_image *) NULL;
+          error=heif_image_create((int) first_image->columns,
+            (int) first_image->rows,colorspace,chroma,&still_image);
+          if (IsHEIFSuccess(image,&error,exception) != MagickFalse)
+            {
+              if (colorspace == heif_colorspace_YCbCr)
+                status=WriteHEICImageYCbCr(first_image,still_image,exception);
+              else
+                if (first_image->depth > 8)
+                  status=WriteHEICImageRRGGBBAA(first_image,still_image,
+                    exception);
+                else
+                  status=WriteHEICImageRGBA(first_image,still_image,exception);
+              if (status != MagickFalse)
+                {
+                  error=heif_context_encode_image(heif_context,still_image,
+                    heif_encoder,(struct heif_encoding_options *) NULL,
+                    (struct heif_image_handle **) NULL);
+                  status=IsHEIFSuccess(image,&error,exception);
+                }
+              heif_image_release(still_image);
+            }
+        }
       if (status != MagickFalse)
         {
           writer.writer_api_version=1;
