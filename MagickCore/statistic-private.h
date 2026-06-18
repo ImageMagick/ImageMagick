@@ -29,13 +29,15 @@ static inline MagickBooleanType MagickSafeSignificantError(const double error,
   return(error > threshold ? MagickTrue : MagickFalse);
 }
 
+#define MagickLogEpsilon  1.0e-30
+
 static inline double MagickSafeLog10(const double x)
 {
   if (x <= 0.0)
-    return(log10(MagickEpsilon));
-  if (x < MagickEpsilon)
-    return(log10(MagickEpsilon));
-  if (fabs(x-1.0) < MagickEpsilon)
+    return(log10(MagickLogEpsilon));
+  if (x < MagickLogEpsilon)
+    return(log10(MagickLogEpsilon));
+  if (fabs(x-1.0) < MagickLogEpsilon)
     return(0.0);
   return(log10(x));
 }
