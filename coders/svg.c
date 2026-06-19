@@ -3209,6 +3209,9 @@ static Image *RenderMSVGImage(const ImageInfo *image_info,Image *image,
           const char 
             *option;
 
+          PolicyRights
+            rights = (PolicyRights) (ReadPolicyRights | WritePolicyRights);
+
           parser->_private=(SVGInfo *) svg_info;
           option = GetImageOption(image_info,"svg:parse-huge");
           if (option == (char *) NULL)
@@ -3219,7 +3222,7 @@ static Image *RenderMSVGImage(const ImageInfo *image_info,Image *image,
           option=GetImageOption(image_info,"svg:substitute-entities");
           if ((option != (char *) NULL) &&
               (IsStringTrue(option) != MagickFalse) &&
-              (IsRightsAuthorizedByName(SystemPolicyDomain,"svg",ReadPolicyRights | WritePolicyRights,"substitute-entities") != MagickFalse))
+              (IsRightsAuthorizedByName(SystemPolicyDomain,"svg",rights,"substitute-entities") != MagickFalse))
             (void) xmlCtxtUseOptions(parser,XML_PARSE_NOENT);
           while ((n=ReadBlob(image,MagickPathExtent-1,message)) != 0)
           {
