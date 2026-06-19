@@ -334,10 +334,6 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       MAGICKCORE_QUANTUM_DEPTH;
     image->alpha_trait=viff_info.number_data_bands == 4 ? BlendPixelTrait :
       UndefinedPixelTrait;
-    status=SetImageExtent(image,image->columns,image->rows,exception);
-    if (status == MagickFalse)
-      return(DestroyImageList(image));
-    (void) SetImageBackgroundColor(image,exception);
     /*
       Verify that we can read this VIFF image.
     */
@@ -369,6 +365,10 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       ThrowReaderException(CoderError,"NumberOfImagesIsNotSupported");
     if (viff_info.map_rows == 0)
       viff_info.map_scheme=VFF_MS_NONE;
+    status=SetImageExtent(image,image->columns,image->rows,exception);
+    if (status == MagickFalse)
+      return(DestroyImageList(image));
+    (void) SetImageBackgroundColor(image,exception);
     switch ((int) viff_info.map_scheme)
     {
       case VFF_MS_NONE:
