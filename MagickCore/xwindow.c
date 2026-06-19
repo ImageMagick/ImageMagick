@@ -5088,7 +5088,7 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
         {
           if (*image_info->filename == '\0')
             (void) CopyMagickString(image->filename,(char *) window_name.value,
-              (size_t) window_name.nitems+1);
+              (size_t) MagickMin(window_name.nitems+1,MagickPathExtent));
           (void) XFree((void *) window_name.value);
         }
     }
