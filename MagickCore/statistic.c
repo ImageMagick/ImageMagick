@@ -1748,6 +1748,8 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
     MaxPixelChannels+1UL,sizeof(*perceptual_hash));
   if (perceptual_hash == (ChannelPerceptualHash *) NULL)
     return((ChannelPerceptualHash *) NULL);
+  (void) memset(perceptual_hash,0,(MaxPixelChannels+1UL)*
+    sizeof(*perceptual_hash));
   artifact=GetImageArtifact(image,"phash:colorspaces");
   if (artifact != (const char *) NULL)
     colorspaces=AcquireString(artifact);
@@ -1786,15 +1788,23 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
     if (status == MagickFalse)
       break;
     moments=GetImageMoments(hash_image,exception);
+    if (moments == (ChannelMoments *) NULL)
+      {
+        hash_image=DestroyImage(hash_image);
+        break;
+      }
     perceptual_hash[0].number_colorspaces++;
     perceptual_hash[0].number_channels+=GetImageChannels(hash_image);
-    hash_image=DestroyImage(hash_image);
-    if (moments == (ChannelMoments *) NULL)
-      break;
     for (channel=0; channel <= MaxPixelChannels; channel++)
       for (j=0; j < MaximumNumberOfPerceptualHashes; j++)
+      {
         perceptual_hash[channel].phash[i][j]=(-MagickSafeLog10(fabs(
           moments[channel].invariant[j])));
+        perceptual_hash[CompositePixelChannel].phash[i][j]+=(
+          -MagickSafeLog10(fabs(moments[channel].invariant[j])))/
+          GetImageChannels(hash_image);;
+      }
+    hash_image=DestroyImage(hash_image);
     moments=(ChannelMoments *) RelinquishMagickMemory(moments);
   }
   colorspaces=DestroyString(colorspaces);
