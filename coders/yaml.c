@@ -48,6 +48,7 @@
 #include "MagickCore/colorspace.h"
 #include "MagickCore/colorspace-private.h"
 #include "MagickCore/constitute.h"
+#include "MagickCore/constitute-private.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/feature.h"
@@ -1521,18 +1522,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
         YAMLFormatLocaleFile(file,"\n       - name: %s",
           image_info->filename);
         handler=SetWarningHandler((WarningHandler) NULL);
-        tile=(Image *) NULL;
-        {
-          char
-            magic[MagickPathExtent] = { '\0' };
-
-           GetPathComponent(image_info->filename,MagickPath,magic);
-           if (*magic == '\0')
-             tile=ReadImage(image_info,exception);
-           else
-             (void) ThrowMagickException(exception,GetMagickModule(),
-               FileOpenError,"UnableToOpenFile","`%s'",image_info->filename);
-        }
+        tile=StrictReadImage(image_info,exception);
         (void) SetWarningHandler(handler);
         if (tile == (Image *) NULL)
           {

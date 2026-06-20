@@ -54,6 +54,7 @@
 #include "MagickCore/color.h"
 #include "MagickCore/configure.h"
 #include "MagickCore/constitute.h"
+#include "MagickCore/constitute-private.h"
 #include "MagickCore/decorate.h"
 #include "MagickCore/delegate.h"
 #include "MagickCore/draw.h"
@@ -1369,18 +1370,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         d=q;
         (void) FormatLocaleFile(file,"    %s",image_info->filename);
         handler=SetWarningHandler((WarningHandler) NULL);
-        tile=(Image *) NULL;
-        {
-          char
-            magic[MagickPathExtent] = { '\0' };
-
-           GetPathComponent(image_info->filename,MagickPath,magic);
-           if (*magic == '\0')
-             tile=ReadImage(image_info,exception);
-           else
-             (void) ThrowMagickException(exception,GetMagickModule(),
-               FileOpenError,"UnableToOpenFile","`%s'",image_info->filename);
-        }
+        tile=StrictReadImage(image_info,exception);
         (void) SetWarningHandler(handler);
         if (tile == (Image *) NULL)
           {

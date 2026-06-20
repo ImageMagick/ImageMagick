@@ -48,6 +48,7 @@
 #include "MagickCore/blob-private.h"
 #include "MagickCore/cache.h"
 #include "MagickCore/constitute.h"
+#include "MagickCore/constitute-private.h"
 #include "MagickCore/composite-private.h"
 #include "MagickCore/delegate.h"
 #include "MagickCore/delegate-private.h"
@@ -2725,18 +2726,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
           if (LocaleNCompare(image_info->filename,"data:",5) == 0)
             image=ReadInlineImage(image_info,svg_info->url,svg_info->exception);
           else
-            {
-              char
-                magic[MagickPathExtent] = { '\0' };
-
-               GetPathComponent(image_info->filename,MagickPath,magic);
-               if (*magic == '\0')
-                 image=ReadImage(image_info,svg_info->exception);
-               else
-                 (void) ThrowMagickException(svg_info->exception,
-                   GetMagickModule(),FileOpenError,"UnableToOpenFile","`%s'",
-                   image_info->filename);
-               }
+            image=StrictReadImage(image_info,svg_info->exception);
           image_info=DestroyImageInfo(image_info);
           if (image != (Image *) NULL)
             image=DestroyImage(image);
