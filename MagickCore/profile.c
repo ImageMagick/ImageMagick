@@ -1844,7 +1844,7 @@ static void GetProfilesFromResourceBlock(Image *image,
         /*
           Resolution.
         */
-        if (count < 10)
+        if (count < 16)
           break;
         p=ReadResourceLong(p,&resolution);
         image->resolution.x=((double) resolution)/65536.0;
