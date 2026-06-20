@@ -844,10 +844,10 @@ static MagickBooleanType sixel_encode_impl(sixel_pixel_t *pixels,size_t width,
   (void) memset(map,0,len*sizeof(sixel_pixel_t));
   if (context->has_8bit_control)
     nwrite=(int) FormatLocaleString((char *) context->buffer,sizeof(context->buffer),
-      "\x90" "0;0;0" "q");
+      "\x90" "0;1;0" "q");
   else
     nwrite=(int) FormatLocaleString((char *) context->buffer,sizeof(context->buffer),
-      "\x1bP" "0;0;0" "q");
+      "\x1bP" "0;1;0" "q");
   if (nwrite <= 0)
     return(MagickFalse);
   sixel_advance(context,nwrite);
