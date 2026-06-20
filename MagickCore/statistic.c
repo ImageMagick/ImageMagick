@@ -1801,7 +1801,7 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
         perceptual_hash[channel].phash[i][j]=(-MagickSafeLog10(fabs(
           moments[channel].invariant[j])));
         perceptual_hash[CompositePixelChannel].phash[i][j]+=(
-          -MagickSafeLog10(fabs(moments[channel].invariant[j])))/
+          -MagickSafeLog10(fabs(moments[CompositePixelChannel].invariant[j])))/
           GetImageChannels(hash_image);;
       }
     hash_image=DestroyImage(hash_image);
