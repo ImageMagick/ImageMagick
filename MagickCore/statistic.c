@@ -44,6 +44,7 @@
 #include "MagickCore/accelerate-private.h"
 #include "MagickCore/animate.h"
 #include "MagickCore/artifact.h"
+#include "MagickCore/attribute.h"
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
 #include "MagickCore/cache.h"
@@ -1782,11 +1783,19 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
     hash_image=BlurImage(image,0.0,1.0,exception);
     if (hash_image == (Image *) NULL)
       break;
-    hash_image->depth=8;
     status=TransformImageColorspace(hash_image,(ColorspaceType) colorspace,
       exception);
     if (status == MagickFalse)
-      break;
+      {
+        hash_image=DestroyImage(hash_image);
+        break;
+      }
+    status=SetImageDepth(hash_image,8,exception);
+    if (status == MagickFalse)
+      {
+        hash_image=DestroyImage(hash_image);
+        break;
+      }
     moments=GetImageMoments(hash_image,exception);
     if (moments == (ChannelMoments *) NULL)
       {
