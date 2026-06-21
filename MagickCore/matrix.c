@@ -380,7 +380,7 @@ MagickExport MatrixInfo *DestroyMatrixInfo(MatrixInfo *matrix_info)
     case MemoryCache:
     {
       if (matrix_info->mapped == MagickFalse)
-        matrix_info->elements=RelinquishMagickMemory(matrix_info->elements);
+        matrix_info->elements=RelinquishAlignedMemory(matrix_info->elements);
       else
         {
           (void) UnmapBlob(matrix_info->elements,(size_t) matrix_info->length);
