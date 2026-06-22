@@ -33,9 +33,6 @@ static inline Image *StrictReadImage(const ImageInfo *image_info,
   char
     magic[MagickPathExtent];
 
-  struct stat
-    file_info;
-
   (void) GetPathComponent(image_info->filename,MagickPath,magic);
   if (*magic != '\0')
     {
