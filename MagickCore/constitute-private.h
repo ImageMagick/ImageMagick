@@ -39,20 +39,14 @@ static inline Image *StrictReadImage(const ImageInfo *image_info,
   (void) GetPathComponent(image_info->filename,MagickPath,magic);
   if (*magic != '\0')
     {
-      (void) ThrowMagickException(exception, GetMagickModule(), OptionError,
+      (void) ThrowMagickException(exception, GetMagickModule(),OptionError,
         "ExplicitCoderNotAllowed","`%s'",image_info->filename);
       return((Image *) NULL);
     }
-  if (stat(image_info->filename,&file_info) != 0)
+  if (IsPathAccessible(image_info->filename) == MagickFalse)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),FileOpenError,
         "UnableToOpenFile","`%s'",image_info->filename);
-      return((Image *) NULL);
-    }
-  if (S_ISREG(file_info.st_mode) == 0)
-    {
-      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-        "NotARegularFile", "`%s'",image_info->filename);
       return((Image *) NULL);
     }
   return(ReadImage(image_info,exception));
