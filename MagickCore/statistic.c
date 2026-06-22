@@ -1790,12 +1790,6 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
         hash_image=DestroyImage(hash_image);
         break;
       }
-    status=SetImageDepth(hash_image,8,exception);
-    if (status == MagickFalse)
-      {
-        hash_image=DestroyImage(hash_image);
-        break;
-      }
     moments=GetImageMoments(hash_image,exception);
     if (moments == (ChannelMoments *) NULL)
       {
