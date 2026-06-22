@@ -13065,7 +13065,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
       image_count=0;
       all_images_are_gray=MagickTrue;
       mng_info->equal_palettes=MagickFalse;
-      need_local_plte=MagickFalse;
+      need_local_plte=MagickTrue;
       for (next_image=image; next_image != (Image *) NULL; )
       {
         if (need_geom)
