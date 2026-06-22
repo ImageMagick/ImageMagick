@@ -6524,12 +6524,6 @@ static MagickBooleanType TraceBezier(MVGInfo *mvg_info,
   }
   primitive_info=(*mvg_info->primitive_info)+mvg_info->offset;
   quantum=MagickMin(quantum/number_coordinates,BezierQuantum);
-  if (quantum > (double) GetMaxMemoryRequest())
-    {
-      (void) ThrowMagickException(mvg_info->exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'","");
-      return(MagickFalse);
-    }
   coefficients=(double *) AcquireQuantumMemory(number_coordinates,
     sizeof(*coefficients));
   points=(PointInfo *) AcquireQuantumMemory(quantum,number_coordinates*
