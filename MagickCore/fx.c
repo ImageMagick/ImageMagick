@@ -875,26 +875,63 @@ static ElementTypeE TypeOfOpr (int op)
   return (ElementTypeE) 0;
 }
 
-static char * SetPtrShortExp (FxInfo * pfx, char * pExp, size_t len)
+static char *SetPtrShortExp(FxInfo *pfx, const char *pExp, size_t len)
 {
-  #define MaxLen 20
+#define MaxLen 20
 
-  size_t slen;
-  char * p;
+    char *dst = pfx->ShortExp;
+    size_t dst_size = MagickPathExtent;   // actual buffer size
+    size_t copy_len;
 
-  *pfx->ShortExp = '\0';
+    if (dst_size == 0)
+        return dst;
 
-  if (pExp && len) {
-    slen = CopyMagickString (pfx->ShortExp, pExp, len);
-    if (slen > MaxLen) {
-      (void) CopyMagickString (pfx->ShortExp+MaxLen, "...", 4);
+    dst[0] = '\0';
+
+    if (pExp && len)
+    {
+        /* Clamp to buffer size - 1 */
+        copy_len = len;
+        if (copy_len > dst_size - 1)
+            copy_len = dst_size - 1;
+
+        memcpy(dst, pExp, copy_len);
+        dst[copy_len] = '\0';
+
+        /* Logical truncation to MaxLen */
+        if (copy_len > MaxLen)
+        {
+            if (MaxLen + 3 < dst_size)
+            {
+                memcpy(dst + MaxLen, "...", 3);
+                dst[MaxLen + 3] = '\0';
+            }
+            else
+            {
+                dst[dst_size - 1] = '\0';
+            }
+        }
+
+        /* Replace newline / carriage return safely */
+        char *p;
+
+        if ((p = strchr(dst, '\n')) != NULL ||
+            (p = strchr(dst, '\r')) != NULL)
+        {
+            size_t offset = (size_t)(p - dst);
+            if (offset + 3 < dst_size)
+            {
+                memcpy(p, "...", 3);
+                dst[offset + 3] = '\0';
+            }
+            else
+            {
+                dst[dst_size - 1] = '\0';
+            }
+        }
     }
-    p = strchr (pfx->ShortExp, '\n');
-    if (p) (void) CopyMagickString (p, "...", 4);
-    p = strchr (pfx->ShortExp, '\r');
-    if (p) (void) CopyMagickString (p, "...", 4);
-  }
-  return pfx->ShortExp;
+
+    return dst;
 }
 
 static char * SetShortExp (FxInfo * pfx)
