@@ -890,6 +890,8 @@ static char *SetPtrShortExp(FxInfo *pfx, const char *pExp, size_t len)
 
     if (pExp && len)
     {
+        char *p;
+
         /* Clamp to buffer size - 1 */
         copy_len = len;
         if (copy_len > dst_size - 1)
@@ -913,7 +915,6 @@ static char *SetPtrShortExp(FxInfo *pfx, const char *pExp, size_t len)
         }
 
         /* Replace newline / carriage return safely */
-        char *p;
 
         if ((p = strchr(dst, '\n')) != NULL ||
             (p = strchr(dst, '\r')) != NULL)
