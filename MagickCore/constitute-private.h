@@ -25,26 +25,9 @@ extern "C" {
 #include "MagickCore/constitute.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/log.h"
+#include "MagickCore/magick.h"
+#include "MagickCore/magick-private.h"
 #include "MagickCore/utility.h"
-
-static inline MagickBooleanType IsAllowedCoder(const char *coder)
-{
-  static const char
-    *allowed_coders[] = {
-     "MPR",
-     "MPRI",
-     NULL
-   };
-
-  const char **p = allowed_coders;
-  while (*p != NULL)
-  {
-    if (LocaleCompare(coder,*p) == 0)
-      return(MagickTrue);
-    p++;
-  }
-  return(MagickFalse);
-}
 
 static inline Image *StrictReadImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
@@ -55,10 +38,11 @@ static inline Image *StrictReadImage(const ImageInfo *image_info,
   (void) GetPathComponent(image_info->filename,MagickPath,magic);
   if (*magic != '\0')
     {
-      LocaleUpper(magic);
-      if (IsAllowedCoder(magic) == MagickFalse)
+      const MagickInfo *magick_info = GetMagickInfo(magic,exception);
+      if ((magick_info == (const MagickInfo *) NULL) || 
+          (GetMagickStrictStream(magick_info) != MagickFalse))
         {
-          (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+          (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
             "ExplicitCoderNotAllowed","`%s'",image_info->filename);
           return((Image *) NULL);
         }

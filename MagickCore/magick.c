@@ -187,7 +187,7 @@ MagickExport MagickInfo *AcquireMagickInfo(const char *magick_module,
   magick_info->description=ConstantString(description);
   magick_info->flags=CoderAdjoinFlag | CoderBlobSupportFlag |
     CoderDecoderThreadSupportFlag | CoderEncoderThreadSupportFlag |
-    CoderUseExtensionFlag;
+    CoderUseExtensionFlag | CoderStrictStreamFlag;
   magick_info->signature=MagickCoreSignature;
   return(magick_info);
 }

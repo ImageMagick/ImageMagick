@@ -22,6 +22,15 @@
 extern "C" {
 #endif
 
+static inline MagickBooleanType GetMagickStrictStream(
+  const MagickInfo *magick_info)
+{
+  assert(magick_info != (MagickInfo *) NULL);
+  assert(magick_info->signature == MagickCoreSignature);
+  return(((magick_info->flags & CoderStrictStreamFlag) == 0) ? MagickFalse :
+    MagickTrue);
+}
+
 extern MagickPrivate MagickBooleanType
   IsMagickConflict(const char *),
   MagickComponentGenesis(void);
