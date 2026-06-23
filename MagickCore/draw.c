@@ -58,6 +58,7 @@
 #include "MagickCore/composite.h"
 #include "MagickCore/composite-private.h"
 #include "MagickCore/constitute.h"
+#include "MagickCore/constitute-private.h"
 #include "MagickCore/draw.h"
 #include "MagickCore/draw-private.h"
 #include "MagickCore/enhance.h"
@@ -5729,8 +5730,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
         affine;
 
       char
-        composite_geometry[MagickPathExtent],
-        magic[MagickPathExtent] = {'\0'};
+        composite_geometry[MagickPathExtent];
 
       Image
         *composite_image,
@@ -5768,12 +5768,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               clone_info->size=DestroyString(clone_info->size);
             if (clone_info->extract != (char *) NULL)
               clone_info->extract=DestroyString(clone_info->extract);
-            GetPathComponent(clone_info->filename,MagickPath,magic);
-            if (*magic == '\0')
-              composite_images=ReadImage(clone_info,exception);
-            else
-              (void) ThrowMagickException(exception,GetMagickModule(),
-                FileOpenError,"UnableToOpenFile","`%s'",clone_info->filename);
+            composite_images=StrictReadImage(clone_info,exception);
           }
       clone_info=DestroyImageInfo(clone_info);
       if (composite_images == (Image *) NULL)
