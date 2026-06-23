@@ -159,15 +159,8 @@ static MagickBooleanType IsMIFF(const unsigned char *magick,const size_t length)
 static void *AcquireCompressionMemory(void *context,const size_t items,
   const size_t size)
 {
-  size_t
-    extent;
-
   (void) context;
-  if (HeapOverflowSanityCheckGetSize(items,size,&extent) != MagickFalse)
-    return((void *) NULL);
-  if (extent > GetMaxMemoryRequest())
-    return((void *) NULL);
-  return(AcquireMagickMemory(extent));
+  return(AcquireQuantumMemory(items,size));
 }
 #endif
 
