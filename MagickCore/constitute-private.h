@@ -39,15 +39,15 @@ static inline Image *StrictReadImage(const ImageInfo *image_info,
   if (*magic != '\0')
     {
       const MagickInfo *magick_info = GetMagickInfo(magic,exception);
-      if ((magick_info == (const MagickInfo *) NULL) || 
-          (GetMagickStrictStream(magick_info) != MagickFalse))
+      if ((magick_info != (const MagickInfo *) NULL) &&
+          (GetMagickExplicitAllowed(magick_info) != MagickFalse))
+        return(ReadImage(image_info,exception));
+      else
         {
           (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
             "ExplicitCoderNotAllowed","`%s'",image_info->filename);
           return((Image *) NULL);
         }
-      else
-        return(ReadImage(image_info,exception));
     }
   if (IsPathAccessible(image_info->filename) == MagickFalse)
     {
