@@ -58,20 +58,19 @@ static inline Image *StrictReadImage(const ImageInfo *image_info,
       LocaleUpper(magic);
       if (IsAllowedCoder(magic) == MagickFalse)
         {
-          (void) ThrowMagickException(exception,GetMagickModule(),
-            OptionError, "ExplicitCoderNotAllowed","`%s'",
-            image_info->filename);
-         return((Image *) NULL);
-       }
+          (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+            "ExplicitCoderNotAllowed","`%s'",image_info->filename);
+          return((Image *) NULL);
+        }
+      else
+        return(ReadImage(image_info,exception));
     }
-  else
-    if (IsPathAccessible(image_info->filename) == MagickFalse)
-      {
-        (void) ThrowMagickException(exception,GetMagickModule(),
-          FileOpenError, "UnableToOpenFile","`%s'",
-          image_info->filename);
-        return((Image *) NULL);
-      }
+  if (IsPathAccessible(image_info->filename) == MagickFalse)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),FileOpenError,
+        "UnableToOpenFile","`%s'",image_info->filename);
+      return((Image *) NULL);
+    }
   return(ReadImage(image_info,exception));
 }
 
