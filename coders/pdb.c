@@ -414,6 +414,9 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (status == MagickFalse)
     return(DestroyImageList(image));
   packets=(bits_per_pixel*image->columns+7)/8;
+  if (((packets+257UL) > GetBlobSize(image)) ||
+      (image->rows > GetBlobSize(image)))
+    ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
   pixels=(unsigned char *) AcquireQuantumMemory(packets+257UL,image->rows*
     sizeof(*pixels));
   if (pixels == (unsigned char *) NULL)
