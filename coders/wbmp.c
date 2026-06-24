@@ -181,6 +181,9 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
       (void) CloseBlob(image);
       return(GetFirstImageInList(image));
     }
+  if ((image->columns > GetBlobSize(image)) ||
+      (image->rows > GetBlobSize(image)))
+    ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
