@@ -1,0 +1,104 @@
+#!/bin/sh
+#
+#  Copyright 1999 ImageMagick Studio LLC, a non-profit organization
+#  dedicated to making software imaging solutions freely available.
+#
+#  You may not use this file except in compliance with the License.  You may
+#  obtain a copy of the License at
+#
+#    https://imagemagick.org/license/
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+. ./common.shi
+. ${srcdir}/tests/common.shi
+
+source=heic_cicp_source.avif
+resized=heic_cicp_resized.avif
+explicit_cicp=heic_cicp_explicit.avif
+explicit_clli=heic_clli_explicit.avif
+no_cicp=heic_cicp_disabled.avif
+no_clli=heic_clli_disabled.avif
+invalid_clli=heic_clli_invalid.avif
+malformed_clli=heic_clli_malformed.avif
+
+cleanup()
+{
+  rm -f "$source" "$resized" "$explicit_cicp" "$explicit_clli" \
+    "$no_cicp" "$no_clli" "$invalid_clli" "$malformed_clli"
+}
+
+check_property()
+{
+  actual=`${IDENTIFY} -quiet -format "$2" "$1" 2>/dev/null`
+  if [ "X$actual" = "X$3" ]; then
+    echo "ok"
+  else
+    echo "not ok"
+    echo "# expected '$3', got '$actual'"
+  fi
+}
+
+cleanup
+if ! ${MAGICK} -size 4x4 gradient:red-blue -depth 10 \
+    -define heic:cicp=12/16/6/1 -define heic:clli=1624,182 \
+    "$source" >/dev/null 2>&1; then
+  echo "1..0 # SKIP AVIF coder unavailable"
+  exit 0
+fi
+
+metadata=`${IDENTIFY} -quiet -format '%[heic:cicp] %[heic:clli]' \
+  "$source" 2>/dev/null`
+if [ "X$metadata" != "X12/16/6/1 1624,182" ]; then
+  echo "1..0 # SKIP HEIC CICP/CLLI unsupported by libheif delegate"
+  cleanup
+  exit 0
+fi
+
+echo "1..8"
+
+check_property "$source" '%[heic:cicp] %[heic:clli]' '12/16/6/1 1624,182'
+
+${MAGICK} "$source" -resize 50% "$resized" >/dev/null 2>&1 &&
+  check_property "$resized" '%[heic:cicp] %[heic:clli]' \
+    '12/16/6/1 1624,182' || echo "not ok"
+
+${MAGICK} "$source" -resize 50% -define heic:cicp=1/13/6/1 \
+  "$explicit_cicp" >/dev/null 2>&1 &&
+  check_property "$explicit_cicp" '%[heic:cicp] %[heic:clli]' \
+    '1/13/6/1 1624,182' || echo "not ok"
+
+${MAGICK} "$source" -resize 50% -define heic:clli='1000, 200' \
+  "$explicit_clli" >/dev/null 2>&1 &&
+  check_property "$explicit_clli" '%[heic:cicp] %[heic:clli]' \
+    '12/16/6/1 1000,200' || echo "not ok"
+
+${MAGICK} "$source" -resize 50% -define heic:preserve-cicp=false \
+  "$no_cicp" >/dev/null 2>&1 &&
+  check_property "$no_cicp" '%[heic:cicp]' '' || echo "not ok"
+
+${MAGICK} "$source" -resize 50% -define heic:preserve-clli=false \
+  "$no_clli" >/dev/null 2>&1 &&
+  check_property "$no_clli" '%[heic:cicp] %[heic:clli]' '12/16/6/1 ' ||
+  echo "not ok"
+
+if ${MAGICK} "$source" -define heic:clli=70000,200 "$invalid_clli" \
+    >/dev/null 2>&1; then
+  echo "not ok"
+else
+  echo "ok"
+fi
+
+if ${MAGICK} "$source" -define heic:clli=1000,200x "$malformed_clli" \
+    >/dev/null 2>&1; then
+  echo "not ok"
+else
+  echo "ok"
+fi
+
+cleanup
+:
