@@ -48,8 +48,8 @@ m4_define([magick_tarname], [ImageMagick])
 # files if you raise these versions.
 #
 # Bump the minor release # whenever there is an SOVersion bump.
-m4_define([magick_library_current], [11])
-m4_define([magick_library_revision], [2])
+m4_define([magick_library_current], [10])
+m4_define([magick_library_revision], [3])
 m4_define([magick_library_age], [0])
  
 m4_define([magickpp_library_current], [5])
