@@ -563,7 +563,8 @@ jobs:
           done
           mv ImageMagick "ImageMagick-$VERSION"
           mkdir artifacts
-          7z a "artifacts/ImageMagick-$VERSION.7z" "ImageMagick-$VERSION"
+          7z a -mx=9 "artifacts/ImageMagick-$VERSION.7z" "ImageMagick-$VERSION"
+          XZ_OPT="-9e" tar -cJf "artifacts/ImageMagick-$VERSION.tar.xz" "ImageMagick-$VERSION"
 
       - name: Upload source archive
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #v7.0.1
@@ -607,9 +608,10 @@ jobs:
         with:
           subject-path: |
             ${{github.workspace}}/artifacts/*.7z
+            ${{github.workspace}}/artifacts/*.AppImage
             ${{github.workspace}}/artifacts/*.exe
             ${{github.workspace}}/artifacts/*.msixbundle
-            ${{github.workspace}}/artifacts/*.AppImage
+            ${{github.workspace}}/artifacts/*.xz
 
       - name: Save provenance as an artifact
         env:
@@ -627,10 +629,11 @@ jobs:
             --title "$VERSION" \
             --notes "$VERSION" \
             ${{github.workspace}}/artifacts/*.7z \
-            ${{github.workspace}}/artifacts/*.exe \
-            ${{github.workspace}}/artifacts/*.msixbundle \
             ${{github.workspace}}/artifacts/*.AppImage \
-            ${{github.workspace}}/artifacts/*.intoto.jsonl
+            ${{github.workspace}}/artifacts/*.exe \
+            ${{github.workspace}}/artifacts/*.intoto.jsonl \
+            ${{github.workspace}}/artifacts/*.msixbundle \
+            ${{github.workspace}}/artifacts/*.xz
 
   prepare_msix:
     name: Prepare Msix
