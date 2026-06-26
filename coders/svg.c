@@ -374,6 +374,9 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
   MagickBooleanType
     apply_density;
 
+  EndianType
+    endian;
+
   MemoryInfo
     *pixel_info;
 
@@ -591,6 +594,9 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
       p=gdk_pixbuf_get_pixels(pixel_buffer);
 #endif
       GetPixelInfo(image,&fill_color);
+#if defined(MAGICKCORE_CAIRO_DELEGATE)
+      endian=GetHostEndian();
+#endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
         q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
@@ -599,15 +605,26 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
         for (x=0; x < (ssize_t) image->columns; x++)
         {
 #if defined(MAGICKCORE_CAIRO_DELEGATE)
-          fill_color.blue=ScaleCharToQuantum(*p++);
-          fill_color.green=ScaleCharToQuantum(*p++);
-          fill_color.red=ScaleCharToQuantum(*p++);
+          if (endian == LSBEndian)
+            {
+              fill_color.blue=ScaleCharToQuantum(*p++);
+              fill_color.green=ScaleCharToQuantum(*p++);
+              fill_color.red=ScaleCharToQuantum(*p++);
+              fill_color.alpha=ScaleCharToQuantum(*p++);
+            }
+          else
+            {
+              fill_color.alpha=ScaleCharToQuantum(*p++);
+              fill_color.red=ScaleCharToQuantum(*p++);
+              fill_color.green=ScaleCharToQuantum(*p++);
+              fill_color.blue=ScaleCharToQuantum(*p++);
+            }
 #else
           fill_color.red=ScaleCharToQuantum(*p++);
           fill_color.green=ScaleCharToQuantum(*p++);
           fill_color.blue=ScaleCharToQuantum(*p++);
-#endif
           fill_color.alpha=ScaleCharToQuantum(*p++);
+#endif
 #if defined(MAGICKCORE_CAIRO_DELEGATE)
           {
             double
