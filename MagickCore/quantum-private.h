@@ -114,6 +114,15 @@ static inline MagickSizeType GetQuantumRange(const size_t depth)
     ((one << (MagickMin(depth,max_depth)-1))-1)));
 }
 
+static inline EndianType GetHostEndian(void)
+{
+  unsigned long
+    lsb_first;
+
+  lsb_first=1;
+  return((*(char *) &lsb_first) == 1 ? LSBEndian : MSBEndian);
+}
+
 static inline float HalfToSinglePrecision(const unsigned short half)
 {
 #define ExponentBias  (127-15)

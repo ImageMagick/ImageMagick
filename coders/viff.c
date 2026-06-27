@@ -242,9 +242,6 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     *p,
     *pixels;
 
-  unsigned long
-    lsb_first;
-
   ViffInfo
     viff_info;
 
@@ -432,8 +429,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
             ThrowReaderException(CorruptImageError,
               "InsufficientImageDataInFile");
           }
-        lsb_first=1;
-        if (*(char *) &lsb_first &&
+        if (GetHostEndian() == LSBEndian &&
             ((viff_info.machine_dependency != VFF_DEP_DECORDER) &&
              (viff_info.machine_dependency != VFF_DEP_NSORDER)))
           switch ((int) viff_info.map_storage_type)
@@ -535,8 +531,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         pixels=(unsigned char *) RelinquishMagickMemory(pixels);
         ThrowReaderException(CorruptImageError,"ImproperImageHeader");
       }
-    lsb_first=1;
-    if (*(char *) &lsb_first &&
+    if (GetHostEndian() == LSBEndian &&
         ((viff_info.machine_dependency != VFF_DEP_DECORDER) &&
          (viff_info.machine_dependency != VFF_DEP_NSORDER)))
       switch ((int) viff_info.data_storage_type)

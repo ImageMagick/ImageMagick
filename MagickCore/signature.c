@@ -120,9 +120,6 @@ MagickPrivate SignatureInfo *AcquireSignatureInfo(void)
   SignatureInfo
     *signature_info;
 
-  unsigned long
-    lsb_first;
-
   signature_info=(SignatureInfo *) AcquireCriticalMemory(
     sizeof(*signature_info));
   (void) memset(signature_info,0,sizeof(*signature_info));
@@ -136,8 +133,7 @@ MagickPrivate SignatureInfo *AcquireSignatureInfo(void)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) memset(signature_info->accumulator,0,SignatureBlocksize*
     sizeof(*signature_info->accumulator));
-  lsb_first=1;
-  signature_info->lsb_first=(int) (*(char *) &lsb_first) == 1 ? MagickTrue :
+  signature_info->lsb_first=GetHostEndian() == LSBEndian ? MagickTrue :
     MagickFalse;
   signature_info->timestamp=GetMagickTime();
   signature_info->signature=MagickCoreSignature;
