@@ -261,8 +261,6 @@ static Image *ReadCALSImage(const ImageInfo *image_info,
   while ((c=ReadBlobByte(image)) != EOF)
     if (fputc(c,file) != c)
       break;
-  if (fflush(file) != 0)
-    ThrowImageException(FileOpenError,"UnableToCreateTemporaryFile");
   if (fseek(file,0,SEEK_SET) != 0)
     ThrowImageException(FileOpenError,"UnableToCreateTemporaryFile");
   (void) CloseBlob(image);
