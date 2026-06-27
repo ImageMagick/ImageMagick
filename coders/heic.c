@@ -1419,7 +1419,6 @@ static MagickBooleanType WriteHEICCICPProfile(Image *image,
   struct heif_error
     error;
 
-  SetGeometryInfo(&cicp);
   nclx_profile=heif_nclx_color_profile_alloc();
   if (nclx_profile == (struct heif_color_profile_nclx *) NULL)
     {
@@ -1427,6 +1426,7 @@ static MagickBooleanType WriteHEICCICPProfile(Image *image,
         ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       return(MagickFalse);
     }
+  SetGeometryInfo(&cicp);
   cicp.rho=(double) nclx_profile->color_primaries;
   cicp.sigma=(double) nclx_profile->transfer_characteristics;
   cicp.xi=(double) nclx_profile->matrix_coefficients;
