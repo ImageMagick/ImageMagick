@@ -86,6 +86,7 @@
 #include "MagickCore/property.h"
 #include "MagickCore/quantize.h"
 #include "MagickCore/random_.h"
+#include "MagickCore/registry.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/segment.h"
 #include "MagickCore/semaphore.h"
@@ -1697,6 +1698,7 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   char
+    *literal,
     *p = filename,
     pattern[MagickPathExtent];
 
@@ -1705,11 +1707,17 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
 
   assert(format != (const char *) NULL);
   assert(filename != (char *) NULL);
-  if (IsStringTrue(GetImageOption(image_info,"filename:literal")) != MagickFalse)
+  literal=(char *) GetImageRegistry(StringRegistryType,"filename:literal",
+    exception);
+  if (IsStringTrue(literal) != MagickFalse)
     {
+      if (literal != (char *) NULL)
+        literal=DestroyString(literal);
       (void) CopyMagickString(filename,format,MagickPathExtent);
       return(strlen(filename));
     }
+  if (literal != (char *) NULL)
+    literal=DestroyString(literal);
   while ((*cursor != '\0') && ((p-filename) < ((ssize_t) MagickPathExtent-1)))
   {
     const char
@@ -2985,13 +2993,17 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
            (delegate_info != (const DelegateInfo *) NULL)) &&
           (IsMagickConflict(magic) == MagickFalse))
         {
+          char *literal = (char *) GetImageRegistry(StringRegistryType,
+            "filename:literal",exception);
           image_info->affirm=MagickTrue;
           (void) CopyMagickString(image_info->magick,magic,MagickPathExtent);
           GetPathComponent(image_info->filename,CanonicalPath,component);
-          if (IsStringTrue(GetImageOption(image_info,"filename:literal")) != MagickFalse)
+          if (IsStringTrue(literal) != MagickFalse)
             GetPathComponent(image_info->filename,SubcanonicalPath,component);
           (void) CopyMagickString(image_info->filename,component,
             MagickPathExtent);
+          if (literal != (char *) NULL)
+            literal=DestroyString(literal);
         }
     }
   sans_exception=DestroyExceptionInfo(sans_exception);
