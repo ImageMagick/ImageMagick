@@ -675,3 +675,49 @@ jobs:
           VERSION: ${{needs.version.outputs.version}}
           SEMANTIC_VERSION: ${{needs.version.outputs.semantic_version}}
         run: wingetcreate update --submit --replace --token ${{secrets.WINGET_TOKEN}} --urls "https://github.com/ImageMagick/ImageMagick/releases/download/$env:VERSION/ImageMagick.${{matrix.quantum}}${{matrix.hdri_flag}}.msixbundle" --version $env:SEMANTIC_VERSION "ImageMagick.${{matrix.quantum}}${{matrix.hdri_flag}}"
+
+  update_website:
+    name: Update website
+    runs-on: ubuntu-24.04
+    needs:
+      - version
+      - release
+
+    steps:
+      - name: Create GitHub app token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 #v3.2.0
+        id: app-token
+        with:
+          client-id: ${{vars.APP_CLIENT_ID}}
+          private-key: ${{secrets.APP_PRIVATE_KEY}}
+          repositories: Website
+          permission-contents: write
+
+      - name: Clone Website
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
+        with:
+          repository: ImageMagick/Website
+          token: ${{steps.app-token.outputs.token}}
+
+      - name: Download ChangeLog.md
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #v8.0.1
+        with:
+          name: ChangeLog
+
+      - name: Move ChangeLog.md
+        run: |
+          mv ChangeLog.md docs/changelog/index.md
+
+      - name: Update website version
+        env:
+          VERSION: ${{needs.version.outputs.version}}
+        run: |
+          ./update-version.sh "$VERSION" "$(date -u +"%Y-%m-%d")"
+
+      - name: Commit and push changes
+        env:
+          VERSION: ${{needs.version.outputs.version}}
+        run: |
+          git add -A
+          git commit -m "Update version to $VERSION"
+          git push
