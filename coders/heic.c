@@ -1475,10 +1475,8 @@ static MagickBooleanType WriteHEICContentLightLevel(Image *image,
     max_content_light_level,
     max_pic_average_light_level;
 
-  errno=0;
   max_content_light_level=strtoul(option,&q,10);
-  if ((errno != 0) || (q == option) ||
-      (max_content_light_level > (unsigned long) UINT16_MAX))
+  if ((q == option) || (max_content_light_level > (unsigned long) UINT16_MAX))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
         "InvalidArgument","`heic:clli=%s' for `%s'",option,image->filename);
@@ -1496,10 +1494,8 @@ static MagickBooleanType WriteHEICContentLightLevel(Image *image,
   while (isspace((int) ((unsigned char) *q)) != 0)
     q++;
   p=q;
-  errno=0;
   max_pic_average_light_level=strtoul(q,&q,10);
-  if ((errno != 0) || (q == p) || (max_pic_average_light_level >
-      (unsigned long) UINT16_MAX))
+  if ((q == p) || (max_pic_average_light_level > (unsigned long) UINT16_MAX))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
         "InvalidArgument","`heic:clli=%s' for `%s'",option,image->filename);
