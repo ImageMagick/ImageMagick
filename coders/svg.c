@@ -374,9 +374,6 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
   MagickBooleanType
     apply_density;
 
-  EndianType
-    endian;
-
   MemoryInfo
     *pixel_info;
 
@@ -535,8 +532,13 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
   if (image_info->ping == MagickFalse)
     {
 #if defined(MAGICKCORE_CAIRO_DELEGATE)
+      EndianType
+        endian;
+
       size_t
         stride;
+
+      endian=GetHostEndian();
 #endif
 
       status=SetImageExtent(image,image->columns,image->rows,exception);
@@ -594,9 +596,6 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
       p=gdk_pixbuf_get_pixels(pixel_buffer);
 #endif
       GetPixelInfo(image,&fill_color);
-#if defined(MAGICKCORE_CAIRO_DELEGATE)
-      endian=GetHostEndian();
-#endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
         q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
