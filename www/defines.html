@@ -977,12 +977,12 @@ use:</p>
 
   <tr>
     <td>heic:chroma=<var>value</var></td>
-    <td>Set the HEIC chroma parameter. Possible values are: "420", "422", "444". Default is "420".</td>
+    <td>Set the HEIC chroma parameter. Possible values are: "420", "422", "444". Default is "420", except output with preserved CICP matrix coefficient 0 uses "444" when this define is omitted because identity matrix CICP cannot be written with chroma subsampling.</td>
   </tr>
 
   <tr>
     <td>heic:cicp=<var>value</var></td>
-    <td>Set the HEIC color primaries, transfer characteristics, matrix coefficients, and full range flag. Use <samp>1/13/6/1</samp> for full range BT.709. If omitted, the source HEIC CICP value is preserved when available unless <samp>heic:preserve-cicp=false</samp> is set. Requires libheif 1.17.0 or later. See ISO/IEC 14496-12:2022 standard for a description of these fields and values.</td>
+    <td>Set the HEIC color primaries, transfer characteristics, matrix coefficients, and full range flag. Use <samp>1/13/6/1</samp> for full range BT.709. If omitted, the source HEIC CICP value is preserved when available unless <samp>heic:preserve-cicp=false</samp> is set. When preserving source matrix coefficient 0 with <samp>heic:chroma=420</samp> or <samp>422</samp>, ImageMagick writes matrix coefficient 6 (BT.601) for the subsampled YCbCr output. Explicit <samp>heic:cicp</samp> values with matrix coefficient 0 require <samp>heic:chroma=444</samp>. Requires libheif 1.17.0 or later. See ISO/IEC 14496-12:2022 standard for a description of these fields and values.</td>
   </tr>
 
   <tr>
