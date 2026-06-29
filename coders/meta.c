@@ -1628,6 +1628,8 @@ static size_t GetIPTCStream(unsigned char **info,size_t length)
 
   p=(*info);
   extent=length;
+  if (extent < 2)
+    return(0);
   if ((*p == 0x1c) && (*(p+1) == 0x02))
     return(length);
   /*
