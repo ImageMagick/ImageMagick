@@ -1155,7 +1155,6 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     i;
 
   size_t
-    image_type,
     length;
 
   ssize_t
@@ -1192,6 +1191,8 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((doc_info.width > 262144) || (doc_info.height > 262144))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   doc_info.image_type=ReadBlobMSBLong(image);
+  if (doc_info.image_type == GIMP_INDEXED)
+    ThrowReaderException(CoderError,"ColormapTypeNotSupported");
   if (doc_info.version >= 4)
     {
       size_t
@@ -1211,7 +1212,6 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   image->columns=doc_info.width;
   image->rows=doc_info.height;
-  image_type=doc_info.image_type;
   doc_info.file_size=(size_t) GetBlobSize(image);
   image->compression=NoCompression;
   image->depth=8;
@@ -1220,11 +1220,9 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     return(DestroyImageList(image));
   if (status != MagickFalse)
     status=ResetImagePixels(image,exception);
-  if (image_type == GIMP_INDEXED)
-    ThrowReaderException(CoderError,"ColormapTypeNotSupported");
-  if (image_type == GIMP_RGB)
+  if (doc_info.image_type == GIMP_RGB)
     SetImageColorspace(image,sRGBColorspace,exception);
-  else if (image_type == GIMP_GRAY)
+  else if (doc_info.image_type == GIMP_GRAY)
     SetImageColorspace(image,GRAYColorspace,exception);
   else
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
@@ -1513,7 +1511,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
              layer_info[j].image =DestroyImage( layer_info[j].image );
 
             /* If we do this, we'll get REAL gray images! */
-            if ( image_type == GIMP_GRAY ) {
+            if ( doc_info.image_type == GIMP_GRAY ) {
               QuantizeInfo  qi;
               GetQuantizeInfo(&qi);
               qi.colorspace = GRAYColorspace;
@@ -1579,7 +1577,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) CloseBlob(image);
   if (GetNextImageInList(image) != (Image *) NULL)
     DestroyImage(RemoveFirstImageFromList(&image));
-  if (image_type == GIMP_GRAY)
+  if (doc_info.image_type == GIMP_GRAY)
     image->type=GrayscaleType;
   return(GetFirstImageInList(image));
 }
