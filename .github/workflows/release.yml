@@ -445,7 +445,7 @@ jobs:
           set -e
           export DEBIAN_FRONTEND=noninteractive
           apt-get update -y
-          apt-get install -y autoconf curl file fuse git kmod squashfs-tools libbz2-dev libdjvulibre-dev libfontconfig-dev libfreetype6-dev libfribidi-dev libharfbuzz-dev libheif-dev liblcms-dev libopenexr-dev libopenjp2-7-dev libturbojpeg0-dev liblqr-dev libraqm-dev libtiff-dev libwebp-dev libx11-dev libxml2-dev liblzma-dev make software-properties-common wget ${{matrix.packages}}
+          apt-get install -y autoconf cmake curl file fuse git kmod squashfs-tools libbz2-dev libde265-dev libdjvulibre-dev libfontconfig-dev libfreetype6-dev libfribidi-dev libharfbuzz-dev liblcms-dev libopenexr-dev libopenjp2-7-dev libturbojpeg0-dev liblqr-dev libraqm-dev libtiff-dev libwebp-dev libx11-dev libxml2-dev liblzma-dev make software-properties-common wget ${{matrix.packages}}
 
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
@@ -464,6 +464,25 @@ jobs:
           wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
           chmod a+x linuxdeployqt-continuous-x86_64.AppImage
           ./linuxdeployqt-continuous-x86_64.AppImage --appimage-extract
+
+      - name: Download libheif
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #v6.0.2
+        with:
+          repository: strukturag/libheif
+          path: libheif
+          ref: v1.21.2
+
+      - name: Build libheif
+        env:
+          CC: ${{matrix.compiler}}
+          CXX: ${{matrix.cxx_compiler}}
+        run: |
+          set -e
+          mkdir libheif/build
+          cd libheif/build
+          cmake --preset=release-noplugins -DCMAKE_INSTALL_PREFIX=/usr ..
+          make
+          make install
 
       - name: Build ImageMagick
         env:
