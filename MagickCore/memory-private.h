@@ -43,6 +43,17 @@ extern "C" {
 #define MagickAssumeAligned(address)  (address)
 #endif
 
+static inline MagickBooleanType HeapOverflowCheckAdd(const size_t size,
+  const size_t increment)
+{
+  if (size > (MAGICK_SIZE_MAX-increment))
+    {
+      errno=ENOMEM;
+      return(MagickTrue);
+    }
+  return(MagickFalse);
+}
+
 static inline size_t OverAllocateMemory(const size_t length)
 {
   size_t

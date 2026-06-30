@@ -107,17 +107,6 @@ static inline MagickBooleanType HeapOverflowSanityCheckGetSize(
   return(MagickFalse);
 }
 
-static inline MagickBooleanType HeapOverflowSanityCheckAddition(
-  const size_t size,const size_t increment)
-{
-  if (size > (MAGICK_SIZE_MAX-increment))
-    {
-      errno=ENOMEM;
-      return(MagickTrue);
-    }
-  return(MagickFalse);
-}
-
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
