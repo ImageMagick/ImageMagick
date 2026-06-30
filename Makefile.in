@@ -529,8 +529,9 @@ am__MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURC
 	MagickCore/xml-tree.c MagickCore/xml-tree.h \
 	MagickCore/xml-tree-private.h MagickCore/xwindow.c \
 	MagickCore/xwindow.h MagickCore/nt-feature.c \
-	MagickCore/nt-base.c coders/aai.c coders/aai.h coders/art.c \
-	coders/art.h coders/ashlar.c coders/ashlar.h coders/avs.c \
+	MagickCore/nt-base.c coders/aai.c coders/aai.h \
+	coders/wbinfo.c coders/wbinfo.h coders/art.c coders/art.h \
+	coders/ashlar.c coders/ashlar.h coders/avs.c \
 	coders/avs.h coders/bayer.c coders/bayer.h coders/bgr.c \
 	coders/bgr.h coders/bmp.c coders/bmp.h coders/braille.c \
 	coders/braille.h coders/bytebuffer-private.h coders/cals.c \
@@ -722,6 +723,7 @@ am__objects_1 = MagickCore/libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFF
 @X11_DELEGATE_TRUE@am__objects_20 = coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-x.lo \
 @X11_DELEGATE_TRUE@	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xwd.lo
 am__objects_21 = coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-aai.lo \
+	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-wbinfo.lo \
 	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-art.lo \
 	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ashlar.lo \
 	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-avs.lo \
@@ -906,6 +908,14 @@ coders_aai_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_aai_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_aai_la_rpath = -rpath $(codersdir)
+coders_wbinfo_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+am_coders_wbinfo_la_OBJECTS = coders/wbinfo_la-wbinfo.lo
+coders_wbinfo_la_OBJECTS = $(am_coders_wbinfo_la_OBJECTS)
+coders_wbinfo_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(AM_CFLAGS) $(CFLAGS) $(coders_wbinfo_la_LDFLAGS) $(LDFLAGS) -o \
+	$@
+@WITH_MODULES_TRUE@am_coders_wbinfo_la_rpath = -rpath $(codersdir)
 coders_art_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
 am_coders_art_la_OBJECTS = coders/art_la-art.lo
 coders_art_la_OBJECTS = $(am_coders_art_la_OBJECTS)
@@ -2342,6 +2352,7 @@ am__depfiles_remade = ./$(DEPDIR)/dummy.Po \
 	MagickWand/$(DEPDIR)/libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-wand.Plo \
 	MagickWand/$(DEPDIR)/libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-wandcli.Plo \
 	coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-aai.Plo \
+	coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-wbinfo.Plo \
 	coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-art.Plo \
 	coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ashlar.Plo \
 	coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-avs.Plo \
@@ -2485,6 +2496,7 @@ am__depfiles_remade = ./$(DEPDIR)/dummy.Po \
 	coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ycbcr.Plo \
 	coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-yuv.Plo \
 	coders/$(DEPDIR)/aai_la-aai.Plo \
+	coders/$(DEPDIR)/wbinfo_la-wbinfo.Plo \
 	coders/$(DEPDIR)/art_la-art.Plo \
 	coders/$(DEPDIR)/ashlar_la-ashlar.Plo \
 	coders/$(DEPDIR)/avs_la-avs.Plo \
@@ -2671,7 +2683,8 @@ SOURCES = $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_
 	$(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES) \
 	$(nodist_MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES) \
 	$(MagickWand_libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES) \
-	$(coders_aai_la_SOURCES) $(coders_art_la_SOURCES) \
+	$(coders_aai_la_SOURCES) $(coders_wbinfo_la_SOURCES) \
+	$(coders_art_la_SOURCES) \
 	$(coders_ashlar_la_SOURCES) $(coders_avs_la_SOURCES) \
 	$(coders_bayer_la_SOURCES) $(coders_bgr_la_SOURCES) \
 	$(coders_bmp_la_SOURCES) $(coders_braille_la_SOURCES) \
@@ -2767,7 +2780,8 @@ SOURCES = $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_
 DIST_SOURCES = $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES) \
 	$(am__MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES_DIST) \
 	$(MagickWand_libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES) \
-	$(coders_aai_la_SOURCES) $(coders_art_la_SOURCES) \
+	$(coders_aai_la_SOURCES) $(coders_wbinfo_la_SOURCES) \
+	$(coders_art_la_SOURCES) \
 	$(coders_ashlar_la_SOURCES) $(coders_avs_la_SOURCES) \
 	$(coders_bayer_la_SOURCES) $(coders_bgr_la_SOURCES) \
 	$(coders_bmp_la_SOURCES) $(coders_braille_la_SOURCES) \
@@ -3818,6 +3832,8 @@ MAGICK_CODER_CPPFLAGS = \
 MAGICKCORE_CODER_SRCS = \
 	coders/aai.c \
 	coders/aai.h \
+	coders/wbinfo.c \
+	coders/wbinfo.h \
 	coders/art.c \
 	coders/art.h \
 	coders/ashlar.c \
@@ -4108,6 +4124,7 @@ MAGICKCORE_CODER_SRCS = \
 
 CODERS_NOINST_HDRS = \
 	coders/aai.h \
+	coders/wbinfo.h \
 	coders/art.h \
 	coders/ashlar.h \
 	coders/avs.h \
@@ -4259,6 +4276,7 @@ CODERS_NOINST_HDRS = \
 @WITH_MODULES_FALSE@coders_LTLIBRARIES = 
 @WITH_MODULES_TRUE@coders_LTLIBRARIES = \
 @WITH_MODULES_TRUE@	coders/aai.la \
+@WITH_MODULES_TRUE@	coders/wbinfo.la \
 @WITH_MODULES_TRUE@	coders/art.la \
 @WITH_MODULES_TRUE@	coders/ashlar.la \
 @WITH_MODULES_TRUE@	coders/avs.la \
@@ -4404,6 +4422,12 @@ coders_aai_la_SOURCES = coders/aai.c
 coders_aai_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_aai_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_aai_la_LIBADD = $(MAGICKCORE_LIBS)
+
+# WBINFO coder module
+coders_wbinfo_la_SOURCES = coders/wbinfo.c
+coders_wbinfo_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
+coders_wbinfo_la_LDFLAGS = $(MODULECOMMONFLAGS)
+coders_wbinfo_la_LIBADD = $(MAGICKCORE_LIBS)
 
 # ART coder module
 coders_art_la_SOURCES = coders/art.c
@@ -6970,6 +6994,8 @@ coders/$(DEPDIR)/$(am__dirstamp):
 	@: >>coders/$(DEPDIR)/$(am__dirstamp)
 coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-aai.lo:  \
 	coders/$(am__dirstamp) coders/$(DEPDIR)/$(am__dirstamp)
+coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-wbinfo.lo:  \
+	coders/$(am__dirstamp) coders/$(DEPDIR)/$(am__dirstamp)
 coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-art.lo:  \
 	coders/$(am__dirstamp) coders/$(DEPDIR)/$(am__dirstamp)
 coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ashlar.lo:  \
@@ -7348,6 +7374,11 @@ coders/aai_la-aai.lo: coders/$(am__dirstamp) \
 
 coders/aai.la: $(coders_aai_la_OBJECTS) $(coders_aai_la_DEPENDENCIES) $(EXTRA_coders_aai_la_DEPENDENCIES) coders/$(am__dirstamp)
 	$(AM_V_CCLD)$(coders_aai_la_LINK) $(am_coders_aai_la_rpath) $(coders_aai_la_OBJECTS) $(coders_aai_la_LIBADD) $(LIBS)
+coders/wbinfo_la-wbinfo.lo: coders/$(am__dirstamp) \
+	coders/$(DEPDIR)/$(am__dirstamp)
+
+coders/wbinfo.la: $(coders_wbinfo_la_OBJECTS) $(coders_wbinfo_la_DEPENDENCIES) $(EXTRA_coders_wbinfo_la_DEPENDENCIES) coders/$(am__dirstamp)
+	$(AM_V_CCLD)$(coders_wbinfo_la_LINK) $(am_coders_wbinfo_la_rpath) $(coders_wbinfo_la_OBJECTS) $(coders_wbinfo_la_LIBADD) $(LIBS)
 coders/art_la-art.lo: coders/$(am__dirstamp) \
 	coders/$(DEPDIR)/$(am__dirstamp)
 
@@ -8471,6 +8502,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@MagickWand/$(DEPDIR)/libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-wand.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@MagickWand/$(DEPDIR)/libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-wandcli.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-aai.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-wbinfo.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-art.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ashlar.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-avs.Plo@am__quote@ # am--include-marker
@@ -8614,6 +8646,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ycbcr.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-yuv.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/aai_la-aai.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/wbinfo_la-wbinfo.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/art_la-art.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/ashlar_la-ashlar.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/avs_la-avs.Plo@am__quote@ # am--include-marker
@@ -9457,6 +9490,13 @@ coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-aa
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='coders/aai.c' object='coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-aai.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-aai.lo `test -f 'coders/aai.c' || echo '$(srcdir)/'`coders/aai.c
+
+coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-wbinfo.lo: coders/wbinfo.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-wbinfo.lo -MD -MP -MF coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-wbinfo.Tpo -c -o coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-wbinfo.lo `test -f 'coders/wbinfo.c' || echo '$(srcdir)/'`coders/wbinfo.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-wbinfo.Tpo coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-wbinfo.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='coders/wbinfo.c' object='coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-wbinfo.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-wbinfo.lo `test -f 'coders/wbinfo.c' || echo '$(srcdir)/'`coders/wbinfo.c
 
 coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-art.lo: coders/art.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-art.lo -MD -MP -MF coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-art.Tpo -c -o coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-art.lo `test -f 'coders/art.c' || echo '$(srcdir)/'`coders/art.c
@@ -10626,6 +10666,13 @@ coders/aai_la-aai.lo: coders/aai.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='coders/aai.c' object='coders/aai_la-aai.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_aai_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/aai_la-aai.lo `test -f 'coders/aai.c' || echo '$(srcdir)/'`coders/aai.c
+
+coders/wbinfo_la-wbinfo.lo: coders/wbinfo.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_wbinfo_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/wbinfo_la-wbinfo.lo -MD -MP -MF coders/$(DEPDIR)/wbinfo_la-wbinfo.Tpo -c -o coders/wbinfo_la-wbinfo.lo `test -f 'coders/wbinfo.c' || echo '$(srcdir)/'`coders/wbinfo.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) coders/$(DEPDIR)/wbinfo_la-wbinfo.Tpo coders/$(DEPDIR)/wbinfo_la-wbinfo.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='coders/wbinfo.c' object='coders/wbinfo_la-wbinfo.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_wbinfo_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/wbinfo_la-wbinfo.lo `test -f 'coders/wbinfo.c' || echo '$(srcdir)/'`coders/wbinfo.c
 
 coders/art_la-art.lo: coders/art.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_art_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/art_la-art.lo -MD -MP -MF coders/$(DEPDIR)/art_la-art.Tpo -c -o coders/art_la-art.lo `test -f 'coders/art.c' || echo '$(srcdir)/'`coders/art.c
@@ -13129,6 +13176,7 @@ distclean: distclean-am
 	-rm -f MagickWand/$(DEPDIR)/libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-wand.Plo
 	-rm -f MagickWand/$(DEPDIR)/libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-wandcli.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-aai.Plo
+	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-wbinfo.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-art.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ashlar.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-avs.Plo
@@ -13272,6 +13320,7 @@ distclean: distclean-am
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ycbcr.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-yuv.Plo
 	-rm -f coders/$(DEPDIR)/aai_la-aai.Plo
+	-rm -f coders/$(DEPDIR)/wbinfo_la-wbinfo.Plo
 	-rm -f coders/$(DEPDIR)/art_la-art.Plo
 	-rm -f coders/$(DEPDIR)/ashlar_la-ashlar.Plo
 	-rm -f coders/$(DEPDIR)/avs_la-avs.Plo
@@ -13635,6 +13684,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f MagickWand/$(DEPDIR)/libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-wand.Plo
 	-rm -f MagickWand/$(DEPDIR)/libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-wandcli.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-aai.Plo
+	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-wbinfo.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-art.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ashlar.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-avs.Plo
@@ -13778,6 +13828,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ycbcr.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-yuv.Plo
 	-rm -f coders/$(DEPDIR)/aai_la-aai.Plo
+	-rm -f coders/$(DEPDIR)/wbinfo_la-wbinfo.Plo
 	-rm -f coders/$(DEPDIR)/art_la-art.Plo
 	-rm -f coders/$(DEPDIR)/ashlar_la-ashlar.Plo
 	-rm -f coders/$(DEPDIR)/avs_la-avs.Plo
