@@ -52,6 +52,7 @@
 #include "MagickCore/list.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/module.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
@@ -246,14 +247,14 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         northeast,
         southwest;
 
+      size_t
+        tile_length;
+
       ssize_t
         count;
 
       unsigned char
         *blob;
-
-      unsigned int
-        tile_length;
 
       northeast.x=180.0*ReadBlobLSBSignedLong(image)/0x7fffffff;
       northeast.y=180.0*ReadBlobLSBSignedLong(image)/0x7fffffff;
@@ -279,15 +280,15 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Read a tile.
       */
+      if (HeapOverflowCheckAdd(tile_length,2) != MagickFalse)
+        {
+          images=DestroyImageList(images);
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        }
       if (((MagickSizeType) tile_length) > GetBlobSize(image))
         {
           images=DestroyImageList(images);
           ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
-        }
-      if (tile_length > (UINT_MAX-2))
-        {
-          images=DestroyImageList(images);
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         }
       blob=(unsigned char *) AcquireQuantumMemory((size_t) tile_length+2,
         sizeof(*blob));
