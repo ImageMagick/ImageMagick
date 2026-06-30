@@ -145,6 +145,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *q;
 
   size_t
+    number_pixels,
     separations,
     separations_mask,
     units;
@@ -230,16 +231,19 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) CloseBlob(image);
       return(GetFirstImageInList(image));
     }
-  status=SetImageExtent(image,image->columns,image->rows,exception);
-  if (status == MagickFalse)
-    return(DestroyImageList(image));
-  extent=(MagickSizeType) image->rows*image->columns*separations;
+  if (HeapOverflowSanityCheckGetSize(image->columns,image->rows,
+      &number_pixels) != MagickFalse)
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  extent=(MagickSizeType) number_pixels*separations;
   if (extent > GetBlobSize(image))
     {
       ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
         image->filename);
       return(DestroyImageList(image));
     }
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   /*
     Convert SCT raster image to pixel packets.
   */

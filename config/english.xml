@@ -506,6 +506,9 @@
         <message name="ColorspaceColorProfileMismatch">
           color profile operates on another colorspace
         </message>
+        <message name="ExplicitCoderNotAllowed">
+          explicit coder not allowed
+        </message>
         <message name="ImageDepthNotSupported">
           image depth not supported
         </message>

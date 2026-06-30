@@ -408,12 +408,15 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) CloseBlob(image);
       return(GetFirstImageInList(image));
     }
+  packets=(bits_per_pixel*image->columns+7)/8;
+  if (((packets+257UL) > GetBlobSize(image)) ||
+      (image->rows > GetBlobSize(image)))
+    ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status != MagickFalse)
     status=ResetImagePixels(image,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
-  packets=(bits_per_pixel*image->columns+7)/8;
   pixels=(unsigned char *) AcquireQuantumMemory(packets+257UL,image->rows*
     sizeof(*pixels));
   if (pixels == (unsigned char *) NULL)

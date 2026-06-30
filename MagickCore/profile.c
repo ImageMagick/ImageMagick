@@ -1355,7 +1355,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                   target_info.type=(cmsUInt32Number) TYPE_XYZ_8;
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
                 else
-                  source_info.type=(cmsUInt32Number) TYPE_XYZ_16;
+                  target_info.type=(cmsUInt32Number) TYPE_XYZ_16;
 #endif
                 break;
               }
@@ -1844,7 +1844,7 @@ static void GetProfilesFromResourceBlock(Image *image,
         /*
           Resolution.
         */
-        if (count < 10)
+        if (count < 16)
           break;
         p=ReadResourceLong(p,&resolution);
         image->resolution.x=((double) resolution)/65536.0;

@@ -1291,9 +1291,13 @@ MagickExport void GetPathComponent(const char *path,PathType type,
       p=component+strlen(component)-1;
       if ((strlen(component) > 2) && (*p == ']'))
         {
+          ExceptionInfo *exception = AcquireExceptionInfo();
+          char *literal = (char *) GetImageRegistry(StringRegistryType,
+            "filename:literal",exception);
           q=strrchr(component,'[');
-          if ((q != (char *) NULL) && ((q == component) || (*(q-1) != ']')) &&
-              (IsPathAccessible(path) == MagickFalse))
+          if ((q != (char *) NULL) &&
+              ((IsStringTrue(literal) == MagickFalse) ||
+               (IsPathAccessible(path) == MagickFalse)))
             {
               /*
                 Look for scene specification (e.g. img0001.pcd[4]).
@@ -1309,6 +1313,9 @@ MagickExport void GetPathComponent(const char *path,PathType type,
                   *q='\0';
                 }
             }
+          if (literal != (char *) NULL)
+            literal=DestroyString(literal);
+          exception=DestroyExceptionInfo(exception);
         }
     }
   magick_length=0;

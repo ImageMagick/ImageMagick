@@ -1074,38 +1074,9 @@ static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
 
   /* read in the layer mask */
   if (layer_mask_offset != 0)
-    {
-      offset=SeekBlob(image, (MagickOffsetType) layer_mask_offset, SEEK_SET);
+    offset=SeekBlob(image, (MagickOffsetType) layer_mask_offset, SEEK_SET);
 
-#if 0  /* BOGUS: support layer masks! */
-      layer_mask = xcf_load_layer_mask (info, gimage);
-      if (layer_mask == 0)
-  goto error;
-
-      /* set the offsets of the layer_mask */
-      GIMP_DRAWABLE (layer_mask)->offset_x = GIMP_DRAWABLE (layer)->offset_x;
-      GIMP_DRAWABLE (layer_mask)->offset_y = GIMP_DRAWABLE (layer)->offset_y;
-
-      gimp_layer_add_mask (layer, layer_mask, MagickFalse);
-
-      layer->mask->apply_mask = apply_mask;
-      layer->mask->edit_mask  = edit_mask;
-      layer->mask->show_mask  = show_mask;
-#endif
-  }
-
-  /* attach the floating selection... */
-#if 0  /* BOGUS: we may need to read this, even if we don't support it! */
-  if (add_floating_sel)
-    {
-      GimpLayer *floating_sel;
-
-      floating_sel = info->floating_sel;
-      floating_sel_attach (floating_sel, GIMP_DRAWABLE (layer));
-    }
-#endif
-
-  return MagickTrue;
+  return(MagickTrue);
 }
 
 /*
@@ -1155,7 +1126,6 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     i;
 
   size_t
-    image_type,
     length;
 
   ssize_t
@@ -1192,6 +1162,8 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((doc_info.width > 262144) || (doc_info.height > 262144))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   doc_info.image_type=ReadBlobMSBLong(image);
+  if (doc_info.image_type == GIMP_INDEXED)
+    ThrowReaderException(CoderError,"ColormapTypeNotSupported");
   if (doc_info.version >= 4)
     {
       size_t
@@ -1211,7 +1183,6 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   image->columns=doc_info.width;
   image->rows=doc_info.height;
-  image_type=doc_info.image_type;
   doc_info.file_size=(size_t) GetBlobSize(image);
   image->compression=NoCompression;
   image->depth=8;
@@ -1220,11 +1191,9 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     return(DestroyImageList(image));
   if (status != MagickFalse)
     status=ResetImagePixels(image,exception);
-  if (image_type == GIMP_INDEXED)
-    ThrowReaderException(CoderError,"ColormapTypeNotSupported");
-  if (image_type == GIMP_RGB)
+  if (doc_info.image_type == GIMP_RGB)
     SetImageColorspace(image,sRGBColorspace,exception);
-  else if (image_type == GIMP_GRAY)
+  else if (doc_info.image_type == GIMP_GRAY)
     SetImageColorspace(image,GRAYColorspace,exception);
   else
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
@@ -1500,86 +1469,24 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       offset=SeekBlob(image, saved_pos, SEEK_SET);
       current_layer++;
     }
-#if 0
-        {
-        /* NOTE: XCF layers are REVERSED from composite order! */
-        signed int  j;
-        for (j=number_layers-1; j>=0; j--) {
-          /* BOGUS: need to consider layer blending modes!! */
+    {
+      /* NOTE: XCF layers are REVERSED from composite order! */
+      ssize_t  j;
 
-          if ( layer_info[j].visible ) { /* only visible ones, please! */
-            CompositeImage(image, OverCompositeOp, layer_info[j].image,
-                     layer_info[j].offset_x, layer_info[j].offset_y );
-             layer_info[j].image =DestroyImage( layer_info[j].image );
-
-            /* If we do this, we'll get REAL gray images! */
-            if ( image_type == GIMP_GRAY ) {
-              QuantizeInfo  qi;
-              GetQuantizeInfo(&qi);
-              qi.colorspace = GRAYColorspace;
-              QuantizeImage( &qi, layer_info[j].image );
-            }
-          }
-        }
-      }
-#else
-      {
-        /* NOTE: XCF layers are REVERSED from composite order! */
-        ssize_t  j;
-
-        /* now reverse the order of the layers as they are put
-           into subimages
-        */
-        for (j=(ssize_t) number_layers-1; j >= 0; j--)
-          AppendImageToList(&image,layer_info[j].image);
-      }
-#endif
+      /* now reverse the order of the layers as they are put
+          into subimages
+      */
+      for (j=(ssize_t) number_layers-1; j >= 0; j--)
+        AppendImageToList(&image,layer_info[j].image);
+    }
 
     layer_info=(XCFLayerInfo *) RelinquishMagickMemory(layer_info);
-
-#if 0  /* BOGUS: do we need the channels?? */
-    while (MagickTrue)
-    {
-      /* read in the offset of the next channel */
-      info->cp += xcf_read_int32 (info->fp, &offset, 1);
-
-      /* if the offset is 0 then we are at the end
-      *  of the channel list.
-      */
-      if (offset == 0)
-        break;
-
-      /* save the current position as it is where the
-      *  next channel offset is stored.
-      */
-      saved_pos = info->cp;
-
-      /* seek to the channel offset */
-      xcf_seek_pos (info, offset);
-
-      /* read in the layer */
-      channel = xcf_load_channel (info, gimage);
-      if (channel == 0)
-        goto error;
-
-      num_successful_elements++;
-
-      /* add the channel to the image if its not the selection */
-      if (channel != gimage->selection_mask)
-        gimp_image_add_channel (gimage, channel, -1);
-
-      /* restore the saved position so we'll be ready to
-      *  read the next offset.
-      */
-      xcf_seek_pos (info, saved_pos);
-    }
-#endif
   }
 
   (void) CloseBlob(image);
   if (GetNextImageInList(image) != (Image *) NULL)
     DestroyImage(RemoveFirstImageFromList(&image));
-  if (image_type == GIMP_GRAY)
+  if (doc_info.image_type == GIMP_GRAY)
     image->type=GrayscaleType;
   return(GetFirstImageInList(image));
 }

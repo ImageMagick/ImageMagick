@@ -284,6 +284,11 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           images=DestroyImageList(images);
           ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
         }
+      if (tile_length > (UINT_MAX-2))
+        {
+          images=DestroyImageList(images);
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        }
       blob=(unsigned char *) AcquireQuantumMemory((size_t) tile_length+2,
         sizeof(*blob));
       if (blob == (unsigned char *) NULL)

@@ -2388,7 +2388,6 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
       if ((image->alpha_trait & BlendPixelTrait) == 0)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       quantize_info=AcquireQuantizeInfo(image_info);
-      quantize_info->colorspace=TransparentColorspace;
       status=QuantizeImage(quantize_info,image,exception);
       quantize_info=DestroyQuantizeInfo(quantize_info);
       break;

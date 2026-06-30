@@ -982,7 +982,12 @@ use:</p>
 
   <tr>
     <td>heic:cicp=<var>value</var></td>
-    <td>Set the HEIC color primaries, transfer characteristics, matrix coefficients, and full range flag. Use <samp>1/13/6/1</samp> for full range BT.709.  See ISO/IEC 14496-12:2022 standard for a description of these fields and values.</td>
+    <td>Set the HEIC color primaries, transfer characteristics, matrix coefficients, and full range flag. Use <samp>1/13/6/1</samp> for full range BT.709. If omitted, the source HEIC CICP value is preserved when available unless <samp>heic:preserve-cicp=false</samp> is set. Requires libheif 1.17.0 or later. See ISO/IEC 14496-12:2022 standard for a description of these fields and values.</td>
+  </tr>
+
+  <tr>
+    <td>heic:clli=<var>value</var></td>
+    <td>Set the HEIC content light level information as <samp>MaxCLL,MaxFALL</samp>. If omitted, the source HEIC content light level is preserved when available unless <samp>heic:preserve-clli=false</samp> is set. Requires libheif 1.20.0 or later.</td>
   </tr>
 
   <tr>
@@ -1031,6 +1036,16 @@ use:</p>
     the pixels accordingly. By default, EXIF orientation is reset to "1" to
     match the actual orientation of pixels in HEIC.
     </td>
+  </tr>
+
+  <tr>
+    <td>heic:preserve-cicp=<var>false</var></td>
+    <td>Do not preserve the source HEIC CICP color information when writing HEIC output. Requires libheif 1.17.0 or later.</td>
+  </tr>
+
+  <tr>
+    <td>heic:preserve-clli=<var>false</var></td>
+    <td>Do not preserve the source HEIC content light level information when writing HEIC output. Requires libheif 1.20.0 or later.</td>
   </tr>
 
   <tr>

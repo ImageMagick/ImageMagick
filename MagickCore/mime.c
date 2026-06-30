@@ -55,6 +55,7 @@
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
+#include "MagickCore/quantum-private.h"
 #include "MagickCore/xml-tree.h"
 #include "MagickCore/xml-tree-private.h"
 
@@ -243,16 +244,12 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
   ssize_t
     value;
 
-  unsigned long
-    lsb_first;
-
   assert(exception != (ExceptionInfo *) NULL);
   if (IsMimeCacheInstantiated(exception) == MagickFalse)
     return((const MimeInfo *) NULL);
   /*
     Search for mime tag.
   */
-  lsb_first=1;
   LockSemaphoreInfo(mime_semaphore);
   p=GetHeadElementInLinkedList(mime_cache);
   if ((magic == (const unsigned char *) NULL) || (length == 0))
@@ -310,7 +307,7 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
         r=magic+q->offset;
         endian=q->endian;
         if (q->endian == UndefinedEndian)
-          endian=(*(char *) &lsb_first) == 1 ? LSBEndian : MSBEndian;
+          endian=GetHostEndian();
         if (endian == LSBEndian)
           {
             value=(ssize_t) (*r++);
@@ -340,7 +337,7 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
         r=magic+q->offset;
         endian=q->endian;
         if (q->endian == UndefinedEndian)
-          endian=(*(char *) &lsb_first) == 1 ? LSBEndian : MSBEndian;
+          endian=GetHostEndian();
         if (endian == LSBEndian)
           {
             value=(ssize_t) (*r++);

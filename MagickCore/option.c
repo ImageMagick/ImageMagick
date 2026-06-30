@@ -2444,6 +2444,13 @@ MagickExport MagickBooleanType DefineImageOption(ImageInfo *image_info,
   if (*p == '=')
     (void) CopyMagickString(value,p+1,MagickPathExtent);
   *p='\0';
+  if (LocaleCompare(key,"filename:literal") == 0)
+    {
+      ExceptionInfo *exception = AcquireExceptionInfo();
+      (void) SetImageRegistry(StringRegistryType,key,value,
+        exception);
+      exception=DestroyExceptionInfo(exception);
+    }
   return(SetImageOption(image_info,key,value));
 }
 

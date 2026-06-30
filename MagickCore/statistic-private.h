@@ -29,15 +29,13 @@ static inline MagickBooleanType MagickSafeSignificantError(const double error,
   return(error > threshold ? MagickTrue : MagickFalse);
 }
 
+#ifndef DBL_TRUE_MIN
+#define DBL_TRUE_MIN 4.9406564584124654e-324
+#endif
+
 static inline double MagickSafeLog10(const double x)
 {
-  if (x <= 0.0)
-    return(log10(MagickEpsilon));
-  if (x < MagickEpsilon)
-    return(log10(MagickEpsilon));
-  if (fabs(x-1.0) < MagickEpsilon)
-    return(0.0);
-  return(log10(x));
+  return(log10(fmax(x,DBL_TRUE_MIN)));
 }
 
 static inline double MagickSafeReciprocal(const double x)

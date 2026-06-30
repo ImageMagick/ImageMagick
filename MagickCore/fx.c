@@ -875,25 +875,29 @@ static ElementTypeE TypeOfOpr (int op)
   return (ElementTypeE) 0;
 }
 
-static char * SetPtrShortExp (FxInfo * pfx, char * pExp, size_t len)
+static char * SetPtrShortExp (FxInfo *pfx, char *pExp, size_t len)
 {
   #define MaxLen 20
 
   size_t slen;
-  char * p;
+  char *p;
 
   *pfx->ShortExp = '\0';
 
   if (pExp && len) {
-    slen = CopyMagickString (pfx->ShortExp, pExp, len);
+    slen = CopyMagickString(pfx->ShortExp, pExp, MagickPathExtent);
+
     if (slen > MaxLen) {
-      (void) CopyMagickString (pfx->ShortExp+MaxLen, "...", 4);
+      (void) CopyMagickString(pfx->ShortExp + MaxLen, "...", 4);
     }
-    p = strchr (pfx->ShortExp, '\n');
-    if (p) (void) CopyMagickString (p, "...", 4);
-    p = strchr (pfx->ShortExp, '\r');
-    if (p) (void) CopyMagickString (p, "...", 4);
+
+    p = strchr(pfx->ShortExp, '\n');
+    if (p) (void) CopyMagickString(p, "...", 4);
+
+    p = strchr(pfx->ShortExp, '\r');
+    if (p) (void) CopyMagickString(p, "...", 4);
   }
+
   return pfx->ShortExp;
 }
 

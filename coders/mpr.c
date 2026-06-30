@@ -140,16 +140,18 @@ ModuleExport size_t RegisterMPRImage(void)
   entry=AcquireMagickInfo("MPR","MPR","Magick Persistent Registry");
   entry->decoder=(DecodeImageHandler *) ReadMPRImage;
   entry->encoder=(EncodeImageHandler *) WriteMPRImage;
-  entry->flags^=CoderAdjoinFlag;
   entry->format_type=ImplicitFormatType;
   entry->flags|=CoderStealthFlag;
+  entry->flags|=CoderExplicitAllowedFlag;
+  entry->flags^=CoderAdjoinFlag;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("MPR","MPRI","Magick Persistent Registry");
   entry->decoder=(DecodeImageHandler *) ReadMPRImage;
   entry->encoder=(EncodeImageHandler *) WriteMPRImage;
-  entry->flags^=CoderAdjoinFlag;
   entry->format_type=ImplicitFormatType;
   entry->flags|=CoderStealthFlag;
+  entry->flags|=CoderExplicitAllowedFlag;
+  entry->flags^=CoderAdjoinFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

@@ -513,6 +513,9 @@
         <message name="ColorspaceColorProfileMismatch">
           Le profil colorimétrique ne peut fonctionner que dans un autre espace colorimétrique
         </message>
+        <message name="ExplicitCoderNotAllowed">
+          explicit coder not allowed
+        </message>
         <message name="ImageColorspaceDiffers">
           différences dans les espaces colorimétriques de l'image
         </message>

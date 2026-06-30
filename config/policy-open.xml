@@ -155,4 +155,6 @@
   <!-- <policy domain="system" name="max-memory-request" value="256MiB"/> -->
   <!-- If the basename of path is a symbolic link, the open fails -->
   <!-- <policy domain="system" name="symlink" rights="none" pattern="follow"/> -->
+  <!-- Blocks all SVG entity‑substitution attempts by denying the svg:substitute-entities define -->
+  <!-- <policy domain="system" name="svg" rights="none" pattern="substitute-entities"/> -->
 </policymap>

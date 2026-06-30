@@ -996,8 +996,8 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
             *q++=((unsigned char) ScaleQuantumToAny(ClampToQuantum(
               image->colormap[i].blue),range)) | ((green & 0x07) << 5);
             *q++=(((image->alpha_trait != UndefinedPixelTrait) && ((double)
-              ClampToQuantum(image->colormap[i].alpha) > midpoint)) ? 0x80 : 0) |
-              ((unsigned char) ScaleQuantumToAny(ClampToQuantum(
+              ClampToQuantum(image->colormap[i].alpha) > midpoint)) ?
+              0x80 : 0) | ((unsigned char) ScaleQuantumToAny(ClampToQuantum(
               image->colormap[i].red),range) << 2) | ((green & 0x18) >> 3);
           }
         else
@@ -1116,7 +1116,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
       }
   }
   /*
-     Optional footer.
+    Optional footer.
   */
   option=GetImageOption(image_info,"tga:write-footer");
   if (IsStringTrue(option) != MagickFalse)

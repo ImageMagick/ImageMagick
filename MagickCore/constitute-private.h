@@ -22,6 +22,42 @@
 extern "C" {
 #endif
 
+#include "MagickCore/constitute.h"
+#include "MagickCore/exception.h"
+#include "MagickCore/log.h"
+#include "MagickCore/magick.h"
+#include "MagickCore/magick-private.h"
+#include "MagickCore/utility.h"
+
+static inline Image *StrictReadImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
+{
+  char
+    magic[MagickPathExtent];
+
+  (void) GetPathComponent(image_info->filename,MagickPath,magic);
+  if (*magic != '\0')
+    {
+      const MagickInfo *magick_info = GetMagickInfo(magic,exception);
+      if ((magick_info != (const MagickInfo *) NULL) &&
+          (GetMagickExplicitAllowed(magick_info) != MagickFalse))
+        return(ReadImage(image_info,exception));
+      else
+        {
+          (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
+            "ExplicitCoderNotAllowed","`%s'",image_info->filename);
+          return((Image *) NULL);
+        }
+    }
+  if (IsPathAccessible(image_info->filename) == MagickFalse)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),FileOpenError,
+        "UnableToOpenFile","`%s'",image_info->filename);
+      return((Image *) NULL);
+    }
+  return(ReadImage(image_info,exception));
+}
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

@@ -242,9 +242,6 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     *p,
     *pixels;
 
-  unsigned long
-    lsb_first;
-
   ViffInfo
     viff_info;
 
@@ -334,10 +331,6 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       MAGICKCORE_QUANTUM_DEPTH;
     image->alpha_trait=viff_info.number_data_bands == 4 ? BlendPixelTrait :
       UndefinedPixelTrait;
-    status=SetImageExtent(image,image->columns,image->rows,exception);
-    if (status == MagickFalse)
-      return(DestroyImageList(image));
-    (void) SetImageBackgroundColor(image,exception);
     /*
       Verify that we can read this VIFF image.
     */
@@ -369,6 +362,10 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       ThrowReaderException(CoderError,"NumberOfImagesIsNotSupported");
     if (viff_info.map_rows == 0)
       viff_info.map_scheme=VFF_MS_NONE;
+    status=SetImageExtent(image,image->columns,image->rows,exception);
+    if (status == MagickFalse)
+      return(DestroyImageList(image));
+    (void) SetImageBackgroundColor(image,exception);
     switch ((int) viff_info.map_scheme)
     {
       case VFF_MS_NONE:
@@ -432,8 +429,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
             ThrowReaderException(CorruptImageError,
               "InsufficientImageDataInFile");
           }
-        lsb_first=1;
-        if (*(char *) &lsb_first &&
+        if (GetHostEndian() == LSBEndian &&
             ((viff_info.machine_dependency != VFF_DEP_DECORDER) &&
              (viff_info.machine_dependency != VFF_DEP_NSORDER)))
           switch ((int) viff_info.map_storage_type)
@@ -535,8 +531,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         pixels=(unsigned char *) RelinquishMagickMemory(pixels);
         ThrowReaderException(CorruptImageError,"ImproperImageHeader");
       }
-    lsb_first=1;
-    if (*(char *) &lsb_first &&
+    if (GetHostEndian() == LSBEndian &&
         ((viff_info.machine_dependency != VFF_DEP_DECORDER) &&
          (viff_info.machine_dependency != VFF_DEP_NSORDER)))
       switch ((int) viff_info.data_storage_type)

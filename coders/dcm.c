@@ -3989,7 +3989,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           file=(FILE *) NULL;
           unique_file=AcquireUniqueFileResource(filename);
           if (unique_file != -1)
-            file=fdopen(unique_file,"wb");
+            file=fdopen(unique_file,"rb+");
           if (file == (FILE *) NULL)
             {
               (void) RelinquishUniqueFileResource(filename);
@@ -4009,15 +4009,18 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (fputc(c,file) != c)
               break;
           }
-          (void) fclose(file);
           if (c == EOF)
             break;
+          if (fseek(file,0,SEEK_SET) != 0)
+            ThrowDCMException(FileOpenError,"UnableToCreateTemporaryFile");
           (void) FormatLocaleString(read_info->filename,MagickPathExtent,
             "jpeg:%s",filename);
           if (image->compression == JPEG2000Compression)
             (void) FormatLocaleString(read_info->filename,MagickPathExtent,
               "j2k:%s",filename);
+          read_info->file=file;
           jpeg_image=ReadImage(read_info,exception);
+          read_info->file=(FILE *) NULL;
           if (jpeg_image != (Image *) NULL)
             {
               ResetImagePropertyIterator(image);

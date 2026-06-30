@@ -48,6 +48,7 @@
 #include "MagickCore/colorspace.h"
 #include "MagickCore/colorspace-private.h"
 #include "MagickCore/constitute.h"
+#include "MagickCore/constitute-private.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/feature.h"
@@ -1521,7 +1522,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
         YAMLFormatLocaleFile(file,"\n       - name: %s",
           image_info->filename);
         handler=SetWarningHandler((WarningHandler) NULL);
-        tile=ReadImage(image_info,exception);
+        tile=StrictReadImage(image_info,exception);
         (void) SetWarningHandler(handler);
         if (tile == (Image *) NULL)
           {
@@ -1648,12 +1649,17 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
       n=0;
       while (registry != (const char *) NULL)
       {
+        char *registry_value = (char *) GetImageRegistry(StringRegistryType,
+          registry,exception);
         if (n++ != 0)
           (void) FormatLocaleFile(file,"\n");
         YAMLFormatLocaleFile(file,"      %s: ",registry);
-        value=(const char *) GetImageRegistry(StringRegistryType,registry,
-          exception);
-        YAMLFormatLocaleFile(file,"%s",value);
+        if (registry_value != (char *) NULL)
+          {
+            YAMLFormatLocaleFile(file,"%s",registry_value);
+            registry_value=DestroyString(registry_value);
+          }
+        YAMLFormatLocaleFile(file,"%s",registry_value);
         registry=GetNextImageRegistry();
       }
       (void) FormatLocaleFile(file,"    \n");

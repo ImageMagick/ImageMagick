@@ -48,6 +48,7 @@
 #include "MagickCore/blob-private.h"
 #include "MagickCore/cache.h"
 #include "MagickCore/constitute.h"
+#include "MagickCore/constitute-private.h"
 #include "MagickCore/composite-private.h"
 #include "MagickCore/delegate.h"
 #include "MagickCore/delegate-private.h"
@@ -69,6 +70,7 @@
 #include "MagickCore/option.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/policy.h"
+#include "MagickCore/policy-private.h"
 #include "MagickCore/property.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/resource_.h"
@@ -530,8 +532,13 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
   if (image_info->ping == MagickFalse)
     {
 #if defined(MAGICKCORE_CAIRO_DELEGATE)
+      EndianType
+        endian;
+
       size_t
         stride;
+
+      endian=GetHostEndian();
 #endif
 
       status=SetImageExtent(image,image->columns,image->rows,exception);
@@ -597,15 +604,26 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
         for (x=0; x < (ssize_t) image->columns; x++)
         {
 #if defined(MAGICKCORE_CAIRO_DELEGATE)
-          fill_color.blue=ScaleCharToQuantum(*p++);
-          fill_color.green=ScaleCharToQuantum(*p++);
-          fill_color.red=ScaleCharToQuantum(*p++);
+          if (endian == LSBEndian)
+            {
+              fill_color.blue=ScaleCharToQuantum(*p++);
+              fill_color.green=ScaleCharToQuantum(*p++);
+              fill_color.red=ScaleCharToQuantum(*p++);
+              fill_color.alpha=ScaleCharToQuantum(*p++);
+            }
+          else
+            {
+              fill_color.alpha=ScaleCharToQuantum(*p++);
+              fill_color.red=ScaleCharToQuantum(*p++);
+              fill_color.green=ScaleCharToQuantum(*p++);
+              fill_color.blue=ScaleCharToQuantum(*p++);
+            }
 #else
           fill_color.red=ScaleCharToQuantum(*p++);
           fill_color.green=ScaleCharToQuantum(*p++);
           fill_color.blue=ScaleCharToQuantum(*p++);
-#endif
           fill_color.alpha=ScaleCharToQuantum(*p++);
+#endif
 #if defined(MAGICKCORE_CAIRO_DELEGATE)
           {
             double
@@ -2698,7 +2716,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
             thread_filename[MagickPathExtent];
 
           Image
-            *image;
+            *image = (Image *) NULL;
 
           ImageInfo
             *image_info = AcquireImageInfo();
@@ -2721,7 +2739,10 @@ static void SVGEndElement(void *context,const xmlChar *name)
             (void *) 1);
           (void) CopyMagickString(image_info->filename,svg_info->url,
             MagickPathExtent);
-          image=ReadImage(image_info,svg_info->exception);
+          if (LocaleNCompare(image_info->filename,"data:",5) == 0)
+            image=ReadInlineImage(image_info,svg_info->url,svg_info->exception);
+          else
+            image=StrictReadImage(image_info,svg_info->exception);
           image_info=DestroyImageInfo(image_info);
           if (image != (Image *) NULL)
             image=DestroyImage(image);
@@ -3194,6 +3215,9 @@ static Image *RenderMSVGImage(const ImageInfo *image_info,Image *image,
           const char 
             *option;
 
+          PolicyRights
+            rights = (PolicyRights) (ReadPolicyRights | WritePolicyRights);
+
           parser->_private=(SVGInfo *) svg_info;
           option = GetImageOption(image_info,"svg:parse-huge");
           if (option == (char *) NULL)
@@ -3203,7 +3227,8 @@ static Image *RenderMSVGImage(const ImageInfo *image_info,Image *image,
             (void) xmlCtxtUseOptions(parser,XML_PARSE_HUGE);
           option=GetImageOption(image_info,"svg:substitute-entities");
           if ((option != (char *) NULL) &&
-              (IsStringTrue(option) != MagickFalse))
+              (IsStringTrue(option) != MagickFalse) &&
+              (IsRightsAuthorizedByName(SystemPolicyDomain,"svg",rights,"substitute-entities") != MagickFalse))
             (void) xmlCtxtUseOptions(parser,XML_PARSE_NOENT);
           while ((n=ReadBlob(image,MagickPathExtent-1,message)) != 0)
           {
