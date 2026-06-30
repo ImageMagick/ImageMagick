@@ -284,7 +284,7 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           images=DestroyImageList(images);
           ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
         }
-      if (tile_length > (UINT_MAX-2))
+      if (HeapOverflowSanityCheckAddition(tile_length,2) != MagickFalse)
         {
           images=DestroyImageList(images);
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
