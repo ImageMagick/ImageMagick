@@ -211,6 +211,9 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if ((MagickSizeType) ept_info.tiff_length > GetBlobSize(image))
     ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+  if ((ept_info.postscript_length > (UINT_MAX-1)) ||
+      (ept_info.tiff_length > (UINT_MAX-1)))
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   (void) ReadBlobLSBShort(image);
   ept_info.postscript=(unsigned char *) AcquireQuantumMemory(
     ept_info.postscript_length+1,sizeof(*ept_info.postscript));
