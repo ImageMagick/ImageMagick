@@ -4354,12 +4354,17 @@ MagickPrivate Quantum *QueueAuthenticPixelCacheNexus(Image *image,
     }
   if (IsValidPixelOffset(y,cache_info->columns) == MagickFalse)
     return((Quantum *) NULL);
-  offset=y*(MagickOffsetType) cache_info->columns+x;
+  offset=y*(MagickOffsetType) cache_info->columns;
+  if (IsOffsetOverflow(offset,(MagickOffsetType) x) == MagickFalse)
+    return((Quantum *) NULL);
+  offset+=x;
   if (offset < 0)
     return((Quantum *) NULL);
   number_pixels=(MagickSizeType) cache_info->columns*cache_info->rows;
-  offset+=((MagickOffsetType) rows-1)*(MagickOffsetType) cache_info->columns+
-    (MagickOffsetType) columns-1;
+  offset+=((MagickOffsetType) rows-1)*(MagickOffsetType) cache_info->columns;
+  if (IsOffsetOverflow(offset,(MagickOffsetType) columns-1) == MagickFalse)
+    return((Quantum *) NULL);
+  offset+=(MagickOffsetType) columns-1;
   if ((MagickSizeType) offset >= number_pixels)
     return((Quantum *) NULL);
   /*
