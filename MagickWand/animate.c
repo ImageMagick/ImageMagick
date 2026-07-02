@@ -1273,6 +1273,8 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
               ThrowAnimateInvalidArgumentException(option,argv[i]);
             break;
           }
+        if (LocaleCompare("strict",option+1) == 0)
+          break;
         if (LocaleCompare("strip",option+1) == 0)
           break;
         if (LocaleCompare("support",option+1) == 0)
