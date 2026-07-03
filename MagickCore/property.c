@@ -3712,11 +3712,8 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
         MagickPathExtent,sizeof(*interpret_text)); \
       if (interpret_text == (char *) NULL) \
         { \
-          if (property_image != image) \
-            property_image=DestroyImage(property_image); \
-          if (property_info != image_info) \
-            property_info=DestroyImageInfo(property_info); \
-          return((char *) NULL); \
+          status=MagickFalse; \
+          goto cleanup; \
         } \
       q=interpret_text+strlen(interpret_text); \
    } \
@@ -3732,11 +3729,8 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
         MagickPathExtent,sizeof(*interpret_text)); \
       if (interpret_text == (char *) NULL) \
         { \
-          if (property_image != image) \
-            property_image=DestroyImage(property_image); \
-          if (property_info != image_info) \
-            property_info=DestroyImageInfo(property_info); \
-          return((char *) NULL); \
+          status=MagickFalse; \
+          goto cleanup; \
         } \
       q=interpret_text+strlen(interpret_text); \
      } \
@@ -3753,11 +3747,8 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
         MagickPathExtent,sizeof(*interpret_text)); \
       if (interpret_text == (char *) NULL) \
         { \
-          if (property_image != image) \
-            property_image=DestroyImage(property_image); \
-          if (property_info != image_info) \
-            property_info=DestroyImageInfo(property_info); \
-          return((char *) NULL); \
+          status=MagickFalse; \
+          goto cleanup; \
         } \
       q=interpret_text+strlen(interpret_text); \
     } \
@@ -3766,20 +3757,21 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
 }
 
   char
-    *interpret_text,
+    *interpret_text = (char *) NULL,
     *q;  /* current position in interpret_text */
 
   const char
     *p;  /* position in embed_text string being expanded */
 
   Image
-    *property_image;
+    *property_image = (Image *) NULL;
 
   ImageInfo
-    *property_info;
+    *property_info = (ImageInfo *) NULL;
 
   MagickBooleanType
-    number;
+    number,
+    status = MagickTrue;
 
   size_t
     extent;  /* allocated length of interpret_text */
@@ -3821,10 +3813,20 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
   else
     {
       property_image=AcquireImage(image_info,exception);
+      if (property_image == (Image *) NULL)
+        {
+          status=MagickFalse;
+          goto cleanup;
+        }
       (void) SetImageExtent(property_image,1,1,exception);
       (void) SetImageBackgroundColor(property_image,exception);
     }
   interpret_text=AcquireString(embed_text); /* new string with extra space */
+  if (interpret_text == (char *) NULL)
+    {
+      status=MagickFalse;
+      goto cleanup;
+    }
   extent=MagickPathExtent;                  /* allocated space in string */
   number=MagickFalse;                       /* is last char a number? */
   for (q=interpret_text; *p!='\0'; number=isdigit((int) ((unsigned char) *p)) ? MagickTrue : MagickFalse,p++)
@@ -3954,10 +3956,8 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
         *string;
 
       ssize_t
-        len;
-
-      ssize_t
-        depth;
+        depth,
+        offset;
 
       /*
         Braced Percent Escape %[...].
@@ -3968,17 +3968,18 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
         {
           (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
             "UnknownImageProperty","\"%%[]\"");
-          break;
+          status=MagickFalse;
+          goto cleanup;
         }
-      for (len=0; len < (MagickPathExtent-1L) && (*p != '\0'); )
+      for (offset=0; offset < (MagickPathExtent-1L) && (*p != '\0'); )
       {
         if ((*p == '\\') && (*(p+1) != '\0'))
           {
             /*
               Skip escaped braces within braced pattern.
             */
-            pattern[len++]=(*p++);
-            pattern[len++]=(*p++);
+            pattern[offset++]=(*p++);
+            pattern[offset++]=(*p++);
             continue;
           }
         if (*p == '[')
@@ -3987,29 +3988,25 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
           depth--;
         if (depth <= 0)
           break;
-        pattern[len++]=(*p++);
+        pattern[offset++]=(*p++);
       }
-      pattern[len]='\0';
+      pattern[offset]='\0';
       if (depth != 0)
         {
           /*
             Check for unmatched final ']' for "%[...]".
           */
-          if (len >= 64)
+          if (offset >= 64)
             {
-              pattern[61] = '.';  /* truncate string for error message */
-              pattern[62] = '.';
-              pattern[63] = '.';
-              pattern[64] = '\0';
+              pattern[61]='.';  /* truncate string for error message */
+              pattern[62]='.';
+              pattern[63]='.';
+              pattern[64]='\0';
             }
           (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
             "UnbalancedBraces","\"%%[%s\"",pattern);
-          interpret_text=DestroyString(interpret_text);
-          if (property_image != image)
-            property_image=DestroyImage(property_image);
-          if (property_info != image_info)
-            property_info=DestroyImageInfo(property_info);
-          return((char *) NULL);
+          status=MagickFalse;
+          goto cleanup;
         }
       /*
         Special Lookup Prefixes %[prefix:...].
@@ -4023,7 +4020,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
             *fx_info;
 
           MagickBooleanType
-            status;
+            fx_status;
 
           /*
             FX - value calculator.
@@ -4031,10 +4028,10 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
           fx_info=AcquireFxInfo(property_image,pattern+3,exception);
           if (fx_info == (FxInfo *) NULL)
             continue;
-          status=FxEvaluateChannelExpression(fx_info,CompositePixelChannel,0,0,
-            &value,exception);
+          fx_status=FxEvaluateChannelExpression(fx_info,CompositePixelChannel,
+            0,0,&value,exception);
           fx_info=DestroyFxInfo(fx_info);
-          if (status != MagickFalse)
+          if (fx_status != MagickFalse)
             {
               char
                 result[MagickPathExtent];
@@ -4054,7 +4051,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
             *fx_info;
 
           MagickStatusType
-            status;
+            fx_status;
 
           PixelInfo
             pixel;
@@ -4066,26 +4063,26 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
           fx_info=AcquireFxInfo(property_image,pattern+4,exception);
           if (fx_info == (FxInfo *) NULL)
             continue;
-          status=FxEvaluateChannelExpression(fx_info,RedPixelChannel,0,0,
+          fx_status=FxEvaluateChannelExpression(fx_info,RedPixelChannel,0,0,
             &value,exception);
           pixel.red=(double) QuantumRange*value;
-          status&=(MagickStatusType) FxEvaluateChannelExpression(fx_info,
+          fx_status&=(MagickStatusType) FxEvaluateChannelExpression(fx_info,
             GreenPixelChannel,0,0,&value,exception);
           pixel.green=(double) QuantumRange*value;
-          status&=(MagickStatusType) FxEvaluateChannelExpression(fx_info,
+          fx_status&=(MagickStatusType) FxEvaluateChannelExpression(fx_info,
             BluePixelChannel,0,0,&value,exception);
           pixel.blue=(double) QuantumRange*value;
           if (property_image->colorspace == CMYKColorspace)
             {
-              status&=(MagickStatusType) FxEvaluateChannelExpression(fx_info,
+              fx_status&=(MagickStatusType) FxEvaluateChannelExpression(fx_info,
                 BlackPixelChannel,0,0,&value,exception);
               pixel.black=(double) QuantumRange*value;
             }
-          status&=(MagickStatusType) FxEvaluateChannelExpression(fx_info,
+          fx_status&=(MagickStatusType) FxEvaluateChannelExpression(fx_info,
             AlphaPixelChannel,0,0,&value,exception);
           pixel.alpha=(double) QuantumRange*value;
           fx_info=DestroyFxInfo(fx_info);
-          if (status != MagickFalse)
+          if (fx_status != MagickFalse)
             {
               char
                 hex[MagickPathExtent];
@@ -4104,7 +4101,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
             *fx_info;
 
           MagickStatusType
-            status;
+            fx_status;
 
           PixelInfo
             pixel;
@@ -4116,26 +4113,26 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
           fx_info=AcquireFxInfo(property_image,pattern+6,exception);
           if (fx_info == (FxInfo *) NULL)
             continue;
-          status=FxEvaluateChannelExpression(fx_info,RedPixelChannel,0,0,
+          fx_status=FxEvaluateChannelExpression(fx_info,RedPixelChannel,0,0,
             &value,exception);
           pixel.red=(double) QuantumRange*value;
-          status&=(MagickStatusType) FxEvaluateChannelExpression(fx_info,
+          fx_status&=(MagickStatusType) FxEvaluateChannelExpression(fx_info,
             GreenPixelChannel,0,0,&value,exception);
           pixel.green=(double) QuantumRange*value;
-          status&=(MagickStatusType) FxEvaluateChannelExpression(fx_info,
+          fx_status&=(MagickStatusType) FxEvaluateChannelExpression(fx_info,
             BluePixelChannel,0,0,&value,exception);
           pixel.blue=(double) QuantumRange*value;
           if (property_image->colorspace == CMYKColorspace)
             {
-              status&=(MagickStatusType) FxEvaluateChannelExpression(fx_info,
+              fx_status&=(MagickStatusType) FxEvaluateChannelExpression(fx_info,
                 BlackPixelChannel,0,0,&value,exception);
               pixel.black=(double) QuantumRange*value;
             }
-          status&=(MagickStatusType) FxEvaluateChannelExpression(fx_info,
+          fx_status&=(MagickStatusType) FxEvaluateChannelExpression(fx_info,
             AlphaPixelChannel,0,0,&value,exception);
           pixel.alpha=(double) QuantumRange*value;
           fx_info=DestroyFxInfo(fx_info);
-          if (status != MagickFalse)
+          if (fx_status != MagickFalse)
             {
               char
                 name[MagickPathExtent];
@@ -4167,13 +4164,12 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
                     string=GetImageOption(property_info,key);
                     if (string != (const char *) NULL)
                       AppendKeyValue2Text(key,string);
-                    /* else - assertion failure? key found but no string value! */
                   }
               continue;
             }
           string=GetImageOption(property_info,pattern+7);
           if (string == (char *) NULL)
-            goto PropertyLookupFailure; /* no artifact of this specific name */
+            goto PropertyLookupFailure;
           AppendString2Text(string);
           continue;
         }
@@ -4186,18 +4182,17 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
             {
               ResetImageArtifactIterator(property_image);
               while ((key=GetNextImageArtifact(property_image)) != (const char *) NULL)
-              if (GlobExpression(key,pattern+9,MagickTrue) != MagickFalse)
-                {
-                  string=GetImageArtifact(property_image,key);
-                  if (string != (const char *) NULL)
-                    AppendKeyValue2Text(key,string);
-                  /* else - assertion failure? key found but no string value! */
-                }
+                if (GlobExpression(key,pattern+9,MagickTrue) != MagickFalse)
+                  {
+                    string=GetImageArtifact(property_image,key);
+                    if (string != (const char *) NULL)
+                      AppendKeyValue2Text(key,string);
+                  }
               continue;
             }
           string=GetImageArtifact(property_image,pattern+9);
           if (string == (char *) NULL)
-            goto PropertyLookupFailure; /* no artifact of this specific name */
+            goto PropertyLookupFailure;
           AppendString2Text(string);
           continue;
         }
@@ -4215,20 +4210,17 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
                     string=GetImageProperty(property_image,key,exception);
                     if (string != (const char *) NULL)
                       AppendKeyValue2Text(key,string);
-                    /* else - assertion failure? */
                   }
               continue;
             }
           string=GetImageProperty(property_image,pattern+9,exception);
           if (string == (char *) NULL)
-            goto PropertyLookupFailure; /* no artifact of this specific name */
+            goto PropertyLookupFailure;
           AppendString2Text(string);
           continue;
         }
       /*
-        Properties without special prefix.  This handles attributes,
-        properties, and profiles such as %[exif:...].  Note the profile
-        properties may also include a glob expansion pattern.
+        Properties without special prefix.
       */
       string=GetImageProperty(property_image,pattern,exception);
       if (string != (const char *) NULL)
@@ -4240,10 +4232,6 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
         }
       if (IsGlob(pattern) != MagickFalse)
         {
-          /*
-            Handle property 'glob' patterns such as:
-            %[*] %[user:array_??] %[filename:e*]>
-          */
           ResetImagePropertyIterator(property_image);
           while ((key=GetNextImageProperty(property_image)) != (const char *) NULL)
             if (GlobExpression(key,pattern,MagickTrue) != MagickFalse)
@@ -4251,14 +4239,11 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
                 string=GetImageProperty(property_image,key,exception);
                 if (string != (const char *) NULL)
                   AppendKeyValue2Text(key,string);
-                /* else - assertion failure? */
               }
           continue;
         }
       /*
-        Look for a known property or image attribute such as
-        %[basename] %[density] %[delay].  Also handles a braced single
-        letter: %[b] %[G] %[g].
+        Known property or attribute.
       */
       string=GetMagickProperty(property_info,property_image,pattern,exception);
       if (string != (const char *) NULL)
@@ -4267,8 +4252,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
           continue;
         }
       /*
-        Look for a per-image artifact. This includes option lookup
-        (FUTURE: interpreted according to image).
+        Per-image artifact.
       */
       string=GetImageArtifact(property_image,pattern);
       if (string != (char *) NULL)
@@ -4277,7 +4261,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
           continue;
         }
       /*
-        No image, so direct 'option' lookup (no delayed percent escapes).
+        Direct option lookup.
       */
       string=GetImageOption(property_info,pattern);
       if (string != (char *) NULL)
@@ -4285,26 +4269,32 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
           AppendString2Text(string);
           continue;
         }
+
 PropertyLookupFailure:
-      /*
-        Failed to find any match anywhere!
-      */
-      if (len >= 64)
+      if (offset >= 64)
         {
-          pattern[61] = '.';  /* truncate string for error message */
-          pattern[62] = '.';
-          pattern[63] = '.';
-          pattern[64] = '\0';
+          pattern[61]='.';  /* truncate string for error message */
+          pattern[62]='.';
+          pattern[63]='.';
+          pattern[64]='\0';
         }
       (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
         "UnknownImageProperty","\"%%[%s]\"",pattern);
     }
   }
   *q='\0';
-  if (property_image != image)
+
+cleanup:
+  if ((property_image != image) && (property_image != (Image *) NULL))
     property_image=DestroyImage(property_image);
-  if (property_info != image_info)
+  if ((property_info != image_info) && (property_info != (ImageInfo *) NULL))
     property_info=DestroyImageInfo(property_info);
+  if (status == MagickFalse)
+    {
+      if (interpret_text != (char *) NULL)
+        interpret_text=DestroyString(interpret_text);
+      return((char *) NULL);
+    }
   return(interpret_text);
 }
 
