@@ -212,6 +212,7 @@ jobs:
 
   windows_source:
     name: Create Windows source archive
+    if: github.event_name != 'pull_request'
     runs-on: windows-2025
     needs:
       - changelog
