@@ -1244,6 +1244,10 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
   switch (metric)
   {
     case AbsoluteErrorMetric:
+    {
+      scale=1.0;
+      break;
+    }
     case PixelDifferenceCountErrorMetric:
     {
       size_t

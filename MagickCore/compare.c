@@ -365,9 +365,6 @@ static MagickBooleanType GetAESimilarity(const Image *image,
         Da,
         Sa;
 
-      size_t
-        count = 0;
-
       ssize_t
         i;
 
@@ -399,12 +396,11 @@ static MagickBooleanType GetAESimilarity(const Image *image,
           error=Sa*p[i]-Da*GetPixelChannel(reconstruct_image,channel,q);
         if (MagickSafeSignificantError(error*error,fuzz) != MagickFalse)
           {
-            channel_similarity[i]++;
-            count++;
+            double ae = fabs(error);
+            channel_similarity[i]+=ae;
+            channel_similarity[CompositePixelChannel]+=ae;
           }
       }
-      if (count != 0)
-        channel_similarity[CompositePixelChannel]++;
       p+=(ptrdiff_t) GetPixelChannels(image);
       q+=(ptrdiff_t) GetPixelChannels(reconstruct_image);
     }
@@ -434,7 +430,7 @@ static MagickBooleanType GetAESimilarity(const Image *image,
   image_view=DestroyCacheView(image_view);
   area=MagickSafeReciprocal((double) columns*rows);
   for (k=0; k < (ssize_t) GetPixelChannels(image); k++)
-    similarity[k]*=area;
+    similarity[k] *= area;
   similarity[CompositePixelChannel]*=area;
   return(status);
 }
@@ -1553,7 +1549,7 @@ static MagickBooleanType GetPDCSimilarity(const Image *image,
   SetImageCompareBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
-#if defined(MMAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(similarity,status) \
     magick_number_threads(image,image,rows,1)
 #endif
