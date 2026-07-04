@@ -25,17 +25,30 @@ no_cicp=heic_cicp_disabled.avif
 no_clli=heic_clli_disabled.avif
 invalid_clli=heic_clli_invalid.avif
 malformed_clli=heic_clli_malformed.avif
+identity_source=heic_identity_cicp_source.avif
+identity_resized=heic_identity_cicp_resized.avif
+identity_explicit_chroma=heic_identity_cicp_chroma.avif
+identity_chroma_420=heic_identity_cicp_420.avif
+identity_chroma_422=heic_identity_cicp_422.avif
+identity_explicit_conflict=heic_identity_cicp_conflict.avif
+identity_no_cicp=heic_identity_cicp_disabled.avif
 
 cleanup()
 {
   rm -f "$source" "$resized" "$explicit_cicp" "$explicit_clli" \
-    "$no_cicp" "$no_clli" "$invalid_clli" "$malformed_clli"
+    "$no_cicp" "$no_clli" "$invalid_clli" "$malformed_clli" \
+    "$identity_source" "$identity_resized" "$identity_explicit_chroma" \
+    "$identity_chroma_420" "$identity_chroma_422" \
+    "$identity_explicit_conflict" "$identity_no_cicp"
 }
 
 check_property()
 {
   actual=`${IDENTIFY} -quiet -format "$2" "$1" 2>/dev/null`
-  if [ "X$actual" = "X$3" ]; then
+  if [ $? -ne 0 ]; then
+    echo "not ok"
+    echo "# identify failed for '$1'"
+  elif [ "X$actual" = "X$3" ]; then
     echo "ok"
   else
     echo "not ok"
@@ -59,7 +72,18 @@ if [ "X$metadata" != "X12/16/6/1 1624,182" ]; then
   exit 0
 fi
 
-echo "1..8"
+identity_cicp_supported=false
+if ${MAGICK} -size 4x4 gradient:red-blue -depth 10 \
+    -define heic:cicp=1/13/0/1 -define heic:chroma=444 \
+    "$identity_source" >/dev/null 2>&1; then
+  identity_metadata=`${IDENTIFY} -quiet -format '%[heic:cicp]' \
+    "$identity_source" 2>/dev/null`
+  if [ "X$identity_metadata" = "X1/13/0/1" ]; then
+    identity_cicp_supported=true
+  fi
+fi
+
+echo "1..14"
 
 check_property "$source" '%[heic:cicp] %[heic:clli]' '12/16/6/1 1624,182'
 
@@ -98,6 +122,47 @@ if ${MAGICK} "$source" -define heic:clli=1000,200x "$malformed_clli" \
   echo "not ok"
 else
   echo "ok"
+fi
+
+if [ "X$identity_cicp_supported" = "Xtrue" ]; then
+  ${MAGICK} "$identity_source" -resize 50% "$identity_resized" \
+      >/dev/null 2>&1 &&
+    check_property "$identity_resized" '%[heic:cicp]' '1/13/0/1' ||
+    echo "not ok"
+
+  ${MAGICK} "$identity_source" -resize 50% -define heic:chroma=444 \
+      "$identity_explicit_chroma" >/dev/null 2>&1 &&
+    check_property "$identity_explicit_chroma" '%[heic:cicp]' '1/13/0/1' ||
+    echo "not ok"
+
+  ${MAGICK} "$identity_source" -resize 50% -define heic:chroma=420 \
+      "$identity_chroma_420" >/dev/null 2>&1 &&
+    check_property "$identity_chroma_420" '%[heic:cicp]' '1/13/6/1' ||
+    echo "not ok"
+
+  ${MAGICK} "$identity_source" -resize 50% -define heic:chroma=422 \
+      "$identity_chroma_422" >/dev/null 2>&1 &&
+    check_property "$identity_chroma_422" '%[heic:cicp]' '1/13/6/1' ||
+    echo "not ok"
+
+  if ${MAGICK} "$identity_source" -resize 50% -define heic:cicp=1/13/0/1 \
+      -define heic:chroma=420 "$identity_explicit_conflict" \
+      >/dev/null 2>&1; then
+    echo "not ok"
+  else
+    echo "ok"
+  fi
+
+  ${MAGICK} "$identity_source" -resize 50% -define heic:preserve-cicp=false \
+      -define heic:chroma=420 "$identity_no_cicp" >/dev/null 2>&1 &&
+    check_property "$identity_no_cicp" '%[heic:cicp]' '' || echo "not ok"
+else
+  echo "ok # SKIP HEIC identity matrix CICP unsupported by libheif delegate"
+  echo "ok # SKIP HEIC identity matrix CICP unsupported by libheif delegate"
+  echo "ok # SKIP HEIC identity matrix CICP unsupported by libheif delegate"
+  echo "ok # SKIP HEIC identity matrix CICP unsupported by libheif delegate"
+  echo "ok # SKIP HEIC identity matrix CICP unsupported by libheif delegate"
+  echo "ok # SKIP HEIC identity matrix CICP unsupported by libheif delegate"
 fi
 
 cleanup
