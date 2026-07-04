@@ -1407,7 +1407,7 @@ static void WriteProfile(struct heif_context *context,Image *image,
 }
 
 #if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,17,0)
-static const char *GetHEICCICPOption(const ImageInfo *image_info,Image *image,
+static const char *GetHEICCicpOption(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
   const char
@@ -1422,7 +1422,7 @@ static const char *GetHEICCICPOption(const ImageInfo *image_info,Image *image,
   return(option);
 }
 
-static MagickBooleanType IsHEICCICPIdentityMatrix(const char *option)
+static MagickBooleanType IsHEICCicpIdentityMatrix(const char *option)
 {
   GeometryInfo
     cicp;
@@ -1439,34 +1439,36 @@ static MagickBooleanType IsHEICCICPIdentityMatrix(const char *option)
   return(MagickFalse);
 }
 
-static MagickBooleanType IsHEICExplicitCICP(const ImageInfo *image_info)
+static MagickBooleanType IsHEICExplicitCicp(const ImageInfo *image_info)
 {
   if (GetImageOption(image_info,"heic:cicp") != (const char *) NULL)
     return(MagickTrue);
   return(MagickFalse);
 }
 
-static MagickBooleanType IsHEICSubsampledChroma(const char *option)
+static MagickBooleanType IsHEICSubsampledChroma(const char *chroma)
 {
-  if (option == (const char *) NULL)
+  if (chroma == (const char *) NULL)
     return(MagickFalse);
-  if ((LocaleCompare(option,"420") == 0) ||
-      (LocaleCompare(option,"422") == 0))
+  if ((LocaleCompare(chroma,"420") == 0) ||
+      (LocaleCompare(chroma,"422") == 0))
     return(MagickTrue);
   return(MagickFalse);
 }
 
-static MagickBooleanType HEICImageHasIdentityCICP(
-  const ImageInfo *image_info,Image *image,MagickBooleanType image_list,
-  ExceptionInfo *exception)
+static MagickBooleanType HasHEICIdentityCicp(const ImageInfo *image_info,
+  Image *image,MagickBooleanType image_list,ExceptionInfo *exception)
 {
   Image
-    *p;
+    *next;
 
-  for (p=image; p != (Image *) NULL; p=GetNextImageInList(p))
+  for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
     {
-      if (IsHEICCICPIdentityMatrix(GetHEICCICPOption(image_info,p,
-          exception)) != MagickFalse)
+      const char
+        *option;
+
+      option=GetHEICCicpOption(image_info,next,exception);
+      if (IsHEICCicpIdentityMatrix(option) != MagickFalse)
         return(MagickTrue);
       if (image_list == MagickFalse)
         break;
@@ -1474,7 +1476,7 @@ static MagickBooleanType HEICImageHasIdentityCICP(
   return(MagickFalse);
 }
 
-static struct heif_color_profile_nclx *CreateHEICCICPProfile(Image *image,
+static struct heif_color_profile_nclx *CreateHEICCicpProfile(Image *image,
   const char *option,MagickBooleanType use_ycbcr_matrix,
   ExceptionInfo *exception)
 {
@@ -1527,30 +1529,30 @@ static struct heif_color_profile_nclx *CreateHEICCICPProfile(Image *image,
   return(nclx_profile);
 }
 
-static MagickBooleanType SetHEICOutputCICPProfile(const ImageInfo *image_info,
+static MagickBooleanType SetHEICOutputCicpProfile(const ImageInfo *image_info,
   Image *image,const char *chroma,MagickBooleanType image_list,
   struct heif_color_profile_nclx **profile,ExceptionInfo *exception)
 {
   Image
-    *p;
+    *next;
 
   *profile=(struct heif_color_profile_nclx *) NULL;
   if ((IsHEICSubsampledChroma(chroma) == MagickFalse) ||
-      (IsHEICExplicitCICP(image_info) != MagickFalse))
+      (IsHEICExplicitCicp(image_info) != MagickFalse))
     return(MagickTrue);
-  for (p=image; p != (Image *) NULL; p=GetNextImageInList(p))
+  for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
     {
       const char
         *option;
 
-      option=GetHEICCICPOption(image_info,p,exception);
-      if (IsHEICCICPIdentityMatrix(option) == MagickFalse)
+      option=GetHEICCicpOption(image_info,next,exception);
+      if (IsHEICCicpIdentityMatrix(option) == MagickFalse)
         {
           if (image_list == MagickFalse)
             break;
           continue;
         }
-      *profile=CreateHEICCICPProfile(p,option,MagickTrue,exception);
+      *profile=CreateHEICCicpProfile(next,option,MagickTrue,exception);
       if (*profile == (struct heif_color_profile_nclx *) NULL)
         return(MagickFalse);
       return(MagickTrue);
@@ -1558,7 +1560,7 @@ static MagickBooleanType SetHEICOutputCICPProfile(const ImageInfo *image_info,
   return(MagickTrue);
 }
 
-static MagickBooleanType WriteHEICCICPProfile(Image *image,
+static MagickBooleanType WriteHEICCicpProfile(Image *image,
   struct heif_image *heif_image,const char *option,ExceptionInfo *exception)
 {
   struct heif_color_profile_nclx
@@ -1567,7 +1569,7 @@ static MagickBooleanType WriteHEICCICPProfile(Image *image,
   struct heif_error
     error;
 
-  nclx_profile=CreateHEICCICPProfile(image,option,MagickFalse,exception);
+  nclx_profile=CreateHEICCicpProfile(image,option,MagickFalse,exception);
   if (nclx_profile == (struct heif_color_profile_nclx *) NULL)
     return(MagickFalse);
   error=heif_image_set_nclx_color_profile(heif_image,nclx_profile);
@@ -1641,16 +1643,16 @@ static MagickBooleanType WriteHEICColorProperties(const ImageInfo *image_info,
     *option;
 
 #if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,17,0)
-  option=GetHEICCICPOption(image_info,image,exception);
+  option=GetHEICCicpOption(image_info,image,exception);
   if (option != (const char *) NULL)
     {
       const char
         *chroma;
 
       chroma=GetImageOption(image_info,"heic:chroma");
-      if ((IsHEICExplicitCICP(image_info) != MagickFalse) &&
+      if ((IsHEICExplicitCicp(image_info) != MagickFalse) &&
           (IsHEICSubsampledChroma(chroma) != MagickFalse) &&
-          (IsHEICCICPIdentityMatrix(option) != MagickFalse))
+          (IsHEICCicpIdentityMatrix(option) != MagickFalse))
         {
           (void) ThrowMagickException(exception,GetMagickModule(),
             OptionError,"InvalidArgument","`heic:chroma=%s' conflicts with "
@@ -1659,7 +1661,7 @@ static MagickBooleanType WriteHEICColorProperties(const ImageInfo *image_info,
             chroma,option,image->filename);
           return(MagickFalse);
         }
-      if (WriteHEICCICPProfile(image,heif_image,option,exception) ==
+      if (WriteHEICCicpProfile(image,heif_image,option,exception) ==
           MagickFalse)
         return(MagickFalse);
     }
@@ -1680,7 +1682,7 @@ static MagickBooleanType WriteHEICColorProperties(const ImageInfo *image_info,
   return(MagickTrue);
 }
 
-static struct heif_error heif_write_func(struct heif_context *context,
+static struct heif_error HEICWriteBlob(struct heif_context *context,
   const void* data,size_t size,void* userdata)
 {
   Image
@@ -2033,7 +2035,7 @@ static MagickBooleanType WriteHEICSequenceImage(const ImageInfo *image_info,
     (void) heif_encoder_set_parameter(heif_encoder,"speed",option);
   option=GetImageOption(image_info,"heic:chroma");
   if ((option == (const char *) NULL) &&
-      (HEICImageHasIdentityCICP(image_info,image,MagickTrue,exception) !=
+      (HasHEICIdentityCicp(image_info,image,MagickTrue,exception) !=
        MagickFalse))
     option="444";
   if (option != (char *) NULL)
@@ -2058,7 +2060,7 @@ static MagickBooleanType WriteHEICSequenceImage(const ImageInfo *image_info,
   seq_options=heif_sequence_encoding_options_alloc();
   if (seq_options != (struct heif_sequence_encoding_options *) NULL)
     {
-      status=SetHEICOutputCICPProfile(image_info,image,option,MagickTrue,
+      status=SetHEICOutputCicpProfile(image_info,image,option,MagickTrue,
         &output_nclx_profile,exception);
       if (status == MagickFalse)
         {
@@ -2331,7 +2333,7 @@ static MagickBooleanType WriteHEICSequenceImage(const ImageInfo *image_info,
       if (status != MagickFalse)
         {
           writer.writer_api_version=1;
-          writer.write=heif_write_func;
+          writer.write=HEICWriteBlob;
           error=heif_context_write(heif_context,&writer,image);
           status=IsHEIFSuccess(image,&error,exception);
         }
@@ -2542,7 +2544,7 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     option=GetImageOption(image_info,"heic:chroma");
 #if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,17,0)
     if ((option == (const char *) NULL) &&
-        (HEICImageHasIdentityCICP(image_info,image,MagickFalse,exception) !=
+        (HasHEICIdentityCicp(image_info,image,MagickFalse,exception) !=
          MagickFalse))
       option="444";
 #endif
@@ -2562,7 +2564,7 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
         break;
       }
 #if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,17,0)
-    status=SetHEICOutputCICPProfile(image_info,image,option,MagickFalse,
+    status=SetHEICOutputCicpProfile(image_info,image,option,MagickFalse,
       &output_nclx_profile,exception);
     if (status == MagickFalse)
       {
@@ -2637,7 +2639,7 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
         writer;
 
       writer.writer_api_version=1;
-      writer.write=heif_write_func;
+      writer.write=HEICWriteBlob;
       error=heif_context_write(heif_context,&writer,image);
       status=IsHEIFSuccess(image,&error,exception);
     }
