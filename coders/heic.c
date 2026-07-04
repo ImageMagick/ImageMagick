@@ -87,7 +87,8 @@
 #include <libheif/heif_sequences.h>
 #endif
 #endif
-
+
+
 #if defined(MAGICKCORE_HEIC_DELEGATE)
 /*
   Forward declarations.
@@ -1034,10 +1035,8 @@ static Image *ReadHEICImage(const ImageInfo *image_info,ExceptionInfo *exception
 #endif
     ThrowReaderException(CoderError,"ImageTypeNotSupported");
   (void) CloseBlob(image);
-#if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,11,0)
   if (heif_has_compatible_brand(magic,sizeof(magic), "avif") == 1)
     (void) CopyMagickString(image->magick,"AVIF",MagickPathExtent);
-#endif
   /*
     Decode HEIF image.
   */
@@ -1250,7 +1249,6 @@ ModuleExport size_t RegisterHEICImage(void)
   entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
-#if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,7,0)
   entry=AcquireMagickInfo("HEIC","AVCI","AVC Image File Format");
 #if defined(MAGICKCORE_HEIC_DELEGATE)
   if (heif_have_decoder_for_format(heif_compression_AVC))
@@ -1266,8 +1264,6 @@ ModuleExport size_t RegisterHEICImage(void)
   entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
-#endif
-#if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,7,0)
   entry=AcquireMagickInfo("HEIC","AVIF","AV1 Image File Format");
 #if defined(MAGICKCORE_HEIC_DELEGATE)
   if (heif_have_decoder_for_format(heif_compression_AV1))
@@ -1283,7 +1279,6 @@ ModuleExport size_t RegisterHEICImage(void)
   entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
-#endif
   return(MagickImageCoderSignature);
 }
 
@@ -1308,9 +1303,7 @@ ModuleExport size_t RegisterHEICImage(void)
 */
 ModuleExport void UnregisterHEICImage(void)
 {
-#if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,7,0)
   (void) UnregisterMagickInfo("AVIF");
-#endif
   (void) UnregisterMagickInfo("HEIC");
   (void) UnregisterMagickInfo("HEIF");
 #if defined(MAGICKCORE_HEIC_DELEGATE)
@@ -2357,9 +2350,7 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
   MagickBooleanType
-#if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,7,0)
     encode_avif,
-#endif
     status;
 
   MagickOffsetType
@@ -2391,10 +2382,8 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     return(status);
   scene=0;
   heif_context=heif_context_alloc();
-#if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,7,0)
   encode_avif=(LocaleCompare(image_info->magick,"AVIF") == 0) ? MagickTrue :
     MagickFalse;
-#endif
 #if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,20,0)
   if ((encode_avif != MagickFalse) && (image_info->adjoin != MagickFalse) &&
       (GetNextImageInList(image) != (Image *) NULL))
@@ -2457,12 +2446,10 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     /*
       Get encoder for the specified format.
     */
-#if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,7,0)
     if (encode_avif != MagickFalse)
       error=heif_context_get_encoder_for_format(heif_context,
         heif_compression_AV1,&heif_encoder);
     else
-#endif
       error=heif_context_get_encoder_for_format(heif_context,
         heif_compression_HEVC,&heif_encoder);
     if (IsHEIFSuccess(image,&error,exception) == MagickFalse)
