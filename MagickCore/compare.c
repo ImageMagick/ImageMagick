@@ -312,7 +312,6 @@ static MagickBooleanType GetAESimilarity(const Image *image,
     *reconstruct_view;
 
   double
-    area,
     fuzz;
 
   MagickBooleanType
@@ -323,7 +322,6 @@ static MagickBooleanType GetAESimilarity(const Image *image,
     rows;
 
   ssize_t
-    k,
     y;
 
   /*
@@ -334,7 +332,7 @@ static MagickBooleanType GetAESimilarity(const Image *image,
   SetImageCompareBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MMAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(similarity,status) \
     magick_number_threads(image,image,rows,1)
 #endif
@@ -428,10 +426,6 @@ static MagickBooleanType GetAESimilarity(const Image *image,
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
-  area=MagickSafeReciprocal((double) columns*rows);
-  for (k=0; k < (ssize_t) GetPixelChannels(image); k++)
-    similarity[k] *= area;
-  similarity[CompositePixelChannel]*=area;
   return(status);
 }
 
