@@ -424,6 +424,7 @@ static MagickBooleanType GetAESimilarity(const Image *image,
         channel_similarity[CompositePixelChannel];
     }
   }
+  similarity[CompositePixelChannel]/=(double) GetImageChannels(image);
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
   return(status);
