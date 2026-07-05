@@ -767,7 +767,8 @@ MagickExport MagickBooleanType IsRightsAuthorizedByName(
           If this match was against a canonical form, accumulate allowed rights.
         */
         canonical_matched_any=MagickTrue;
-        canonical_allowed_accumulator&=policy->rights;
+        canonical_allowed_accumulator=(PolicyRights) ((int)
+          canonical_allowed_accumulator & (int) policy->rights);
       }
   }
   UnlockSemaphoreInfo(policy_semaphore);
@@ -798,8 +799,8 @@ MagickExport MagickBooleanType IsRightsAuthorizedByName(
   */
   if (canonical_matched_any != MagickFalse)
     {
-      PolicyRights canonical_denied_mask = (AllPolicyRights &
-        ~canonical_allowed_accumulator);
+      PolicyRights canonical_denied_mask = (PolicyRights) ((int)
+        AllPolicyRights & (int) ~canonical_allowed_accumulator);
       if ((canonical_denied_mask & rights) != 0)
         status=MagickFalse;
     }
