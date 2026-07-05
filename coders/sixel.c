@@ -303,7 +303,8 @@ static MagickBooleanType sixel_decode(Image *image,unsigned char *p,
   memset(param,0,sizeof(param));
   imsx=2048;
   imsy=2048;
-  if ((imsx > GetBlobSize(image)) || (imsy > GetBlobSize(image)))
+  if (((MagickSizeType) imsx > GetBlobSize(image)) ||
+      ((MagickSizeType) imsy > GetBlobSize(image)))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
         "InsufficientImageDataInFile","`%s'",image->filename);
@@ -416,7 +417,8 @@ static MagickBooleanType sixel_decode(Image *image,unsigned char *p,
           {
             dmsx=imsx > attributed_ph ? imsx : attributed_ph;
             dmsy=imsy > attributed_pv ? imsy : attributed_pv;
-            if ((dmsx > GetBlobSize(image)) || (dmsy > GetBlobSize(image)))
+            if (((MagickSizeType) dmsx > GetBlobSize(image)) ||
+                ((MagickSizeType) dmsy > GetBlobSize(image)))
               {
                 imbuf=(sixel_pixel_t *) RelinquishMagickMemory(imbuf);
                 (void) ThrowMagickException(exception,GetMagickModule(),
@@ -548,7 +550,8 @@ static MagickBooleanType sixel_decode(Image *image,unsigned char *p,
 
             dmsx=nx;
             dmsy=ny;
-            if ((dmsx > GetBlobSize(image)) || (dmsy > GetBlobSize(image)))
+            if (((MagickSizeType) dmsx > GetBlobSize(image)) ||
+                ((MagickSizeType) dmsy > GetBlobSize(image)))
               {
                 imbuf=(sixel_pixel_t *) RelinquishMagickMemory(imbuf);
                 (void) ThrowMagickException(exception,GetMagickModule(),
@@ -658,7 +661,8 @@ static MagickBooleanType sixel_decode(Image *image,unsigned char *p,
     {
       dmsx=max_x;
       dmsy=max_y;
-      if ((dmsx > GetBlobSize(image)) || (dmsy > GetBlobSize(image)))
+      if (((MagickSizeType) dmsx > GetBlobSize(image)) ||
+          ((MagickSizeType) dmsy > GetBlobSize(image)))
         {
           imbuf=(sixel_pixel_t *) RelinquishMagickMemory(imbuf);
           (void) ThrowMagickException(exception,GetMagickModule(),
