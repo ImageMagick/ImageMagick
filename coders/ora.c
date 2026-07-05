@@ -174,7 +174,7 @@ static Image *ReadORAImage(const ImageInfo *image_info,
     MagickPathExtent);
   file=(FILE *) NULL;
   if (unique_file != -1)
-    file=fdopen(unique_file,"wb");
+    file=fdopen(unique_file,"rb+");
   if ((unique_file == -1) || (file == (FILE *) NULL))
     {
       ThrowFileException(exception,FileOpenError,"UnableToCreateTemporaryFile",
@@ -214,19 +214,22 @@ static Image *ReadORAImage(const ImageInfo *image_info,
     else
       offset+=(zip_uint64_t) read_bytes;
   }
-  (void) fclose(file);
+  if (fseek(file,0,SEEK_SET) != 0)
+    status=MagickFalse;
   (void) zip_fclose(merged_image_file);
   (void) zip_discard(zip_archive);
   if (status == MagickFalse)
     {
       ThrowFileException(exception,CoderError,"UnableToReadImageData",
-          read_info->filename);
+        read_info->filename);
       (void) RelinquishUniqueFileResource(read_info->filename);
+      (void) fclose(file);
       read_info=DestroyImageInfo(read_info);
       image_metadata=DestroyImage(image_metadata);
       return((Image *) NULL);
     }
   /* Delegate to ReadImage to read mergedimage.png */
+  read_info->file=file;
   out_image=ReadImage(read_info,exception);
   (void) RelinquishUniqueFileResource(read_info->filename);
   read_info=DestroyImageInfo(read_info);

@@ -41,13 +41,105 @@ extern MagickPrivate MagickBooleanType
 extern MagickPrivate void
   PolicyComponentTerminus(void);
 
+static inline MagickBooleanType IsPathContainsSymlink(const char *path)
+{
+  char
+    partial[MagickPathExtent];
+
+  const char
+    *p;
+
+  ssize_t
+    offset = 0;
+
+  if (path == (const char *) NULL)
+    return(MagickFalse);
+  *partial='\0';
+  p=path;
+  if (*p == *DirectorySeparator)
+    {
+      /*
+        Path starts with a directory separator, include it.
+      */
+      if ((offset+1) >= (ssize_t) sizeof(partial))
+        return(MagickFalse);
+      partial[offset++]=(*p++);
+      partial[offset]='\0';
+    }
+  while (*p != '\0')
+  {
+    char
+      component[MagickPathExtent];
+
+    ssize_t
+      i = 0;
+
+    /*
+      Copy next component into a temporary buffer.
+    */
+    while ((*p != '\0') && (*p != *DirectorySeparator) &&
+           ((i+1) < (ssize_t) sizeof(component)))
+      component[i++]=(*p++);
+    component[i]='\0';
+    if (i == 0)
+      {
+        /*
+          skip repeated separators.
+        */
+        if (*p == *DirectorySeparator)
+          p++;
+        continue;
+      }
+    if ((offset > 0) && (partial[offset-1] != *DirectorySeparator))
+      {
+        /*
+          Append separator if needed.
+        */
+        if ((offset+1) >= (ssize_t) sizeof(partial))
+          return MagickFalse;
+        partial[offset++]=(*DirectorySeparator);
+        partial[offset]='\0';
+      }
+    /*
+      Append component.
+    */
+    if ((offset+i) >= (ssize_t) sizeof(partial))
+      return(MagickFalse);
+    (void) memcpy(partial+offset,component,i);
+    offset+=i;
+    partial[offset]='\0';
+    if (*p != '\0')
+      {
+        /*
+          Check whether this prefix is a symlink.
+        */
+        if (is_symlink_utf8(partial) != MagickFalse)
+          return(MagickTrue);
+      }
+    /*
+      Skip separator.
+    */
+    if (*p == *DirectorySeparator)
+      p++;
+  }
+  return(MagickFalse);
+}
+
 static inline MagickBooleanType IsPathAuthorized(const PolicyRights rights,
   const char *filename)
 {
+  MagickBooleanType symlink_follow_allowed = IsRightsAuthorizedByName(
+    SystemPolicyDomain,"symlink",rights,"follow");
   MagickBooleanType status =
    ((IsRightsAuthorized(PathPolicyDomain,rights,filename) != MagickFalse) &&
-   ((IsRightsAuthorizedByName(SystemPolicyDomain,"symlink",rights,"follow") != MagickFalse) ||
+   ((symlink_follow_allowed != MagickFalse) ||
     (is_symlink_utf8(filename) == MagickFalse))) ? MagickTrue : MagickFalse;
+  if ((status != MagickFalse) && (symlink_follow_allowed == MagickFalse))
+    {
+      if ((is_symlink_utf8(filename) != MagickFalse) ||
+          (IsPathContainsSymlink(filename) != MagickFalse))
+        status=MagickFalse;
+    }
   return(status);
 }
 

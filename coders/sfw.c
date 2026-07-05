@@ -330,7 +330,8 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   extent=fwrite(HuffmanTable,1,sizeof(HuffmanTable)/sizeof(*HuffmanTable),file);
   extent=fwrite(offset+1,1,(size_t) (data-offset),file);
   status=ferror(file) != 0 ? MagickFalse : MagickTrue;
-  (void) fclose(file);
+  if (fseek(file,0,SEEK_SET) != 0)
+    ThrowReaderException(FileOpenError,"UnableToCreateTemporaryFile");
   (void) close_utf8(unique_file);
   buffer=(unsigned char *) RelinquishMagickMemory(buffer);
   if (status == MagickFalse)
@@ -338,6 +339,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
       char
         *message;
 
+      (void) fclose(file);
       (void) remove_utf8(read_info->filename);
       read_info=DestroyImageInfo(read_info);
       message=GetExceptionMessage(errno);
@@ -351,6 +353,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read JPEG image.
   */
   (void) CopyMagickString(read_info->magick,"JPEG",MagickPathExtent);
+  read_info->file=file;
   jpeg_image=ReadImage(read_info,exception);
   (void) RelinquishUniqueFileResource(read_info->filename);
   read_info=DestroyImageInfo(read_info);

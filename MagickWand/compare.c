@@ -1244,10 +1244,6 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
   switch (metric)
   {
     case AbsoluteErrorMetric:
-    {
-      scale=1.0;
-      break;
-    }
     case PixelDifferenceCountErrorMetric:
     {
       size_t
@@ -1330,10 +1326,9 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
           switch (metric)
           {
             case AbsoluteErrorMetric:
-            case PixelDifferenceCountErrorMetric:
             {
-              (void) FormatLocaleFile(stderr,"%.*g (%.*g)",GetMagickPrecision(),
-                (scale*distortion),GetMagickPrecision(),distortion);
+              (void) FormatLocaleFile(stderr,"%.20g (%.20g)",distortion,
+                distortion/scale);
               break;
             }
             case MeanErrorPerPixelErrorMetric:
