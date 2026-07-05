@@ -1466,6 +1466,10 @@ static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               image->rows=Bitmap2Header1.Height;
               if (image_info->ping != MagickFalse)
                 return(image);
+              if ((image->columns > GetBlobSize(image)) ||
+                  (image->rows > GetBlobSize(image)))
+                ThrowReaderException(CorruptImageError,
+                  "InsufficientImageDataInFile");
               status=SetImageExtent(image,image->columns,image->rows,exception);
               if (status != MagickFalse)
                 status=ResetImagePixels(image,exception);

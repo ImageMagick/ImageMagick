@@ -1031,6 +1031,14 @@ static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
   if (outLayer->image == (Image *) NULL)
     return(MagickFalse);
   outLayer->width=outLayer->image->columns;
+  if ((outLayer->image->columns > GetBlobSize(image)) ||
+      (outLayer->image->rows > GetBlobSize(image)))
+    {
+      outLayer->image=DestroyImageList(outLayer->image);
+      (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+        "InsufficientImageDataInFile","`%s'",image->filename);
+      return(MagickFalse);
+    }
   status=SetImageExtent(outLayer->image,outLayer->image->columns,
     outLayer->image->rows,exception);
   if (status != MagickFalse)
@@ -1186,6 +1194,9 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   doc_info.file_size=(size_t) GetBlobSize(image);
   image->compression=NoCompression;
   image->depth=8;
+  if ((image->columns > GetBlobSize(image)) ||
+      (image->rows > GetBlobSize(image)))
+    ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
