@@ -1234,6 +1234,10 @@ static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               bpp=(int) BitmapHeader2.Depth;
 
             UnpackRaster:
+              if ((image->columns > GetBlobSize(image)) ||
+                  (image->rows > GetBlobSize(image)))
+                ThrowReaderException(CorruptImageError,
+                  "InsufficientImageDataInFile");
               status=SetImageExtent(image,image->columns,image->rows,exception);
               if (status == MagickFalse)
                 break;

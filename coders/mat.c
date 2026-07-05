@@ -712,6 +712,9 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
             : image);
         goto skip_reading_current;
       }
+    if ((image->columns > GetBlobSize(image)) ||
+        (image->rows > GetBlobSize(image)))
+      ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
       return(DestroyImageList(image));
@@ -1236,6 +1239,9 @@ RestoreMSCWarning
       image->rows = temp;
       goto done_reading; /* !!!!!! BAD  !!!! */
     }
+    if ((image->columns > GetBlobSize(image)) ||
+        (image->rows > GetBlobSize(image)))
+      ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
       {
