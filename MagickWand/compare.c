@@ -1327,9 +1327,14 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
           {
             case AbsoluteErrorMetric:
             {
-              (void) FormatLocaleFile(stderr,"%.20g (%.20g)",distortion,
-                distortion/scale);
-              break;
+              if (distortion == (long long) distortion)
+                {
+                  (void) FormatLocaleFile(stderr,"%.20g (%.20g)",distortion,
+                    distortion/scale);
+                  break;
+                }
+              (void) FormatLocaleFile(stderr,"%.*g (%.*g)",GetMagickPrecision(),
+                distortion,GetMagickPrecision(),distortion/scale);
             }
             case MeanErrorPerPixelErrorMetric:
             {
