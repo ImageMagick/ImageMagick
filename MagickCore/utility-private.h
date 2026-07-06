@@ -47,49 +47,6 @@ extern MagickPrivate void
   ChopPathComponents(char *,const size_t),
   ExpandFilename(char *);
 
-static inline MagickBooleanType GetPathSignature(int file,char signature[33])
-{
-  char
-    *p = signature;
-
-  ssize_t
-    i;
-
-  static const char
-    hex[] = "0123456789abcdef";
-
-  uint64_t
-     file_identity[2];
-
-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
-  BY_HANDLE_FILE_INFORMATION file_info;
-  HANDLE handle = (HANDLE) _get_osfhandle(file);
-  if (handle == INVALID_HANDLE_VALUE)
-    return(MagickFalse);
-  if (GetFileInformationByHandle(handle,&file_info) == 0)
-    return(MagickFalse);
-  file_identity[0]=(uint64_t) file_info.dwVolumeSerialNumber;
-  file_identity[1]=((uint64_t) file_info.nFileIndexHigh << 32) |
-    (uint64_t) file_info.nFileIndexLow;
-#else
-  struct stat file_attributes;
-  if (fstat(file, &file_attributes) != 0)
-    return(MagickFalse);
-  file_identity[0]=(uint64_t) file_attributes.st_dev;
-  file_identity[1]=(uint64_t) file_attributes.st_ino;
-#endif
-  for (i=0; i < 2; i++)
-  {
-    ssize_t
-      shift;
-
-    for (shift=60; shift >= 0; shift-=4)
-      *p++=hex[(file_identity[i] >> shift) & 0xF];
-  }
-  *p='\0';
-  return(MagickTrue);
-}
-
 static inline int MagickReadDirectory(DIR *directory,struct dirent *entry,
   struct dirent **result)
 {
