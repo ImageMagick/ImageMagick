@@ -1035,8 +1035,10 @@ static Image *ReadHEICImage(const ImageInfo *image_info,ExceptionInfo *exception
 #endif
     ThrowReaderException(CoderError,"ImageTypeNotSupported");
   (void) CloseBlob(image);
+#if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,11,0)
   if (heif_has_compatible_brand(magic,sizeof(magic), "avif") == 1)
     (void) CopyMagickString(image->magick,"AVIF",MagickPathExtent);
+#endif
   /*
     Decode HEIF image.
   */
