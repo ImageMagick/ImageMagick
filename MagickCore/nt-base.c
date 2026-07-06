@@ -2638,6 +2638,17 @@ MagickExport int NTSetFileTimestamp(const char *path, struct stat *attributes)
 %    o attributes: the file attributes.
 %
 */
+
+static inline _ino_t MapFileIndexToIno(uint64_t fileIndex)
+{
+  fileIndex^=fileIndex >> 33;
+  fileIndex*=0xff51afd7ed558ccdULL;
+  fileIndex^=fileIndex >> 33;
+  fileIndex*=0xc4ceb9fe1a85ec53ULL;
+  fileIndex^=fileIndex >> 33;
+  return((_ino_t) fileIndex);
+}
+
 MagickExport int NTStatWide(const char *path,struct stat *attributes)
 {
   int
@@ -2666,8 +2677,9 @@ MagickExport int NTStatWide(const char *path,struct stat *attributes)
                 Map Windows file identity into st_dev/st_ino.
               */
               attributes->st_dev=(dev_t) file_info.dwVolumeSerialNumber;
-              attributes->st_ino=(((uint64_t) file_info.nFileIndexHigh) << 32) |
-                (uint64_t) file_info.nFileIndexLow;
+              attributes->st_ino=MapFileIndexToIno((((uint64_t)
+                file_info.nFileIndexHigh) << 32) | (uint64_t)
+                file_info.nFileIndexLow);
           }
         CloseHandle(handle);
       }
