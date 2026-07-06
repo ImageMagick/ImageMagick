@@ -4699,7 +4699,16 @@ static Image *ReadOneJNGImage(MngReadInfo *mng_info,
   color_image_info->ping=MagickFalse;   /* To do: avoid this */
   CloseBlob(color_image);
   jng_image=ReadImage(color_image_info,exception);
-
+  if (jng_image != (Image *) NULL)
+    {
+      if ((GetBlobProperties(color_image)->st_dev != GetBlobProperties(jng_image)->st_dev) ||
+          (GetBlobProperties(color_image)->st_ino != GetBlobProperties(jng_image)->st_ino))
+        {
+          jng_image=DestroyImageList(jng_image);
+          DestroyJNG(NULL,NULL,NULL,&alpha_image,&alpha_image_info);
+          ThrowReaderException(PolicyError,"NotAuthorized");
+        }
+    }
   (void) RelinquishUniqueFileResource(color_image->filename);
   color_image=DestroyImageList(color_image);
   color_image_info=DestroyImageInfo(color_image_info);
@@ -4796,6 +4805,14 @@ static Image *ReadOneJNGImage(MngReadInfo *mng_info,
 
       if (jng_image != (Image *) NULL)
         {
+          if ((GetBlobProperties(alpha_image)->st_dev != GetBlobProperties(jng_image)->st_dev) ||
+              (GetBlobProperties(alpha_image)->st_ino != GetBlobProperties(jng_image)->st_ino))
+            {
+              DestroyJNG(NULL,&color_image,&color_image_info,&alpha_image,
+                &alpha_image_info);
+              jng_image=DestroyImageList(jng_image);
+              ThrowReaderException(PolicyError,"NotAuthorized");
+            }
           image->alpha_trait=BlendPixelTrait;
           for (y=0; y < (ssize_t) image->rows; y++)
           {
