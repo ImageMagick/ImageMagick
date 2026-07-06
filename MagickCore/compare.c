@@ -394,7 +394,7 @@ static MagickBooleanType GetAESimilarity(const Image *image,
           error=Sa*p[i]-Da*GetPixelChannel(reconstruct_image,channel,q);
         if (MagickSafeSignificantError(error*error,fuzz) != MagickFalse)
           {
-            double ae = fabs(error);
+            double ae = fabs(QuantumScale*error);
             channel_similarity[i]+=ae;
             channel_similarity[CompositePixelChannel]+=ae;
           }
