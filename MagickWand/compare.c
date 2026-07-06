@@ -1335,6 +1335,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
                 }
               (void) FormatLocaleFile(stderr,"%.*g (%.*g)",GetMagickPrecision(),
                 distortion,GetMagickPrecision(),distortion/scale);
+              break;
             }
             case MeanErrorPerPixelErrorMetric:
             {
