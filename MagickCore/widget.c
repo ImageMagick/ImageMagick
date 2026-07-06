@@ -2993,7 +2993,7 @@ MagickPrivate int XCommandWidget(Display *display,XWindows *windows,
             "MemoryAllocationFailed","...");
           return(id);
         }
-      state|=UpdateConfigurationState | RedrawWidgetState;
+      state|=(int) UpdateConfigurationState | (int) RedrawWidgetState;
     }
   /*
     Wait for next event.

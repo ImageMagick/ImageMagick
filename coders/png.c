@@ -5856,11 +5856,12 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
         if (memcmp(type,mng_LOOP,4) == 0)
           {
             ssize_t loop_iters=1;
-            if (number_loop_ops++ > MNG_MAX_LOOP_OPS)
+            if (number_loop_ops > MNG_MAX_LOOP_OPS)
               {
                 chunk=(unsigned char *) RelinquishMagickMemory(chunk);
                 ThrowReaderException(ResourceLimitError,"too many LOOP/ENDL ops");
               }
+            number_loop_ops+=1;
             if (length > 4)
               {
                 loop_level=chunk[0];
@@ -5896,11 +5897,12 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
 
         if (memcmp(type,mng_ENDL,4) == 0)
           {
-            if (number_loop_ops++ > MNG_MAX_LOOP_OPS)
+            if (number_loop_ops > MNG_MAX_LOOP_OPS)
               {
                 chunk=(unsigned char *) RelinquishMagickMemory(chunk);
                 ThrowReaderException(ResourceLimitError,"too many LOOP/ENDL ops");
               }
+            number_loop_ops+=1;
             if (length > 0)
               {
                 loop_level=chunk[0];
@@ -7142,7 +7144,7 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
 
   while (GetPreviousImageInList(image) != (Image *) NULL)
   {
-    image_count++;
+    image_count+=1;
     if (image_count > 10*mng_info->image_found)
       {
         if (logging != MagickFalse)
@@ -13003,7 +13005,8 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
 
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
            "    Scene: %.20g\n,   Image depth: %.20g",
-           (double) scene++, (double) p->depth);
+           (double) scene, (double) p->depth);
+        scene+=1;
 
         if (p->alpha_trait != UndefinedPixelTrait)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -13717,8 +13720,9 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=SetImageProgress(image,SaveImagesTag,(MagickOffsetType) scene++,
+    status=SetImageProgress(image,SaveImagesTag,(MagickOffsetType) scene,
       number_scenes);
+    scene+=1;
 
     if (status == MagickFalse)
       break;
