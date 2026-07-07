@@ -4701,8 +4701,12 @@ static Image *ReadOneJNGImage(MngReadInfo *mng_info,
   jng_image=ReadImage(color_image_info,exception);
   if (jng_image != (Image *) NULL)
     {
-      if ((GetBlobProperties(color_image)->st_dev != GetBlobProperties(jng_image)->st_dev) ||
-          (GetBlobProperties(color_image)->st_ino != GetBlobProperties(jng_image)->st_ino))
+      const struct stat
+        *color_properties = GetBlobProperties(color_image),
+        *jng_properties = GetBlobProperties(jng_image);
+
+      if ((color_properties->st_dev != jng_properties->st_dev) ||
+          (color_properties->st_ino != jng_properties->st_ino))
         {
           jng_image=DestroyImageList(jng_image);
           DestroyJNG(NULL,NULL,NULL,&alpha_image,&alpha_image_info);
@@ -4805,8 +4809,12 @@ static Image *ReadOneJNGImage(MngReadInfo *mng_info,
 
       if (jng_image != (Image *) NULL)
         {
-          if ((GetBlobProperties(alpha_image)->st_dev != GetBlobProperties(jng_image)->st_dev) ||
-              (GetBlobProperties(alpha_image)->st_ino != GetBlobProperties(jng_image)->st_ino))
+          const struct stat
+            *alpha_properties = GetBlobProperties(alpha_image),
+            *jng_properties = GetBlobProperties(jng_image);
+
+          if ((alpha_properties->st_dev != jng_properties->st_dev) ||
+              (alpha_properties->st_ino != jng_properties->st_ino))
             {
               DestroyJNG(NULL,&color_image,&color_image_info,&alpha_image,
                 &alpha_image_info);
