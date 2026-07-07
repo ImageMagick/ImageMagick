@@ -561,6 +561,9 @@ MagickExport int AcquireUniqueFileResource(char *path)
   char
     *p;
 
+  MagickBooleanType
+    status;
+
   ssize_t
     i;
 
@@ -570,6 +573,9 @@ MagickExport int AcquireUniqueFileResource(char *path)
 
   StringInfo
     *key;
+
+  struct stat
+    *attributes;
 
   unsigned char
     *datum;
@@ -641,10 +647,15 @@ MagickExport int AcquireUniqueFileResource(char *path)
   LockSemaphoreInfo(resource_semaphore[FileResource]);
   if (temporary_resources == (SplayTreeInfo *) NULL)
     temporary_resources=NewSplayTree(CompareSplayTreeString,
-      DestroyTemporaryResources,(void *(*)(void *)) NULL);
+      DestroyTemporaryResources,RelinquishMagickMemory);
   UnlockSemaphoreInfo(resource_semaphore[FileResource]);
-  (void) AddValueToSplayTree(temporary_resources,ConstantString(path),
-    (const void *) NULL);
+  attributes=(struct stat *) AcquireCriticalMemory(sizeof(struct stat));
+  status=GetPathAttributes(path,attributes);
+  if (status != MagickFalse)
+    status=AddValueToSplayTree(temporary_resources,ConstantString(path),
+      attributes);
+  if (status == MagickFalse)
+    file=close_utf8(file)-1;
   return(file);
 }
 
@@ -793,7 +804,7 @@ MagickExport MagickSizeType GetMagickResourceLimit(const ResourceType type)
 {
   MagickSizeType
     resource;
-  
+
   switch (type)
   {
     case AreaResource:
@@ -1168,7 +1179,26 @@ MagickExport MagickBooleanType RelinquishUniqueFileResource(const char *path)
     ActivateSemaphoreInfo(&resource_semaphore[FileResource]);
   LockSemaphoreInfo(resource_semaphore[FileResource]);
   if (temporary_resources != (SplayTreeInfo *) NULL)
-    status=DeleteNodeFromSplayTree(temporary_resources,(const void *) path);
+    {
+      const struct stat
+        *temporary_attributes;
+
+      struct stat
+        attributes;
+
+      temporary_attributes=(const struct stat *) GetValueFromSplayTree(
+        temporary_resources,(const void *) path);
+      status=GetPathAttributes(path,&attributes);
+      if ((temporary_attributes != (const struct stat *) NULL) &&
+          (status != MagickFalse))
+        {
+          if ((attributes.st_dev != temporary_attributes->st_dev) ||
+              (attributes.st_ino != temporary_attributes->st_ino))
+            ThrowFatalException(PolicyFatalError,
+              "time-of-check to time-of-use violation");
+        }
+      status=DeleteNodeFromSplayTree(temporary_resources,(const void *) path);
+    }
   UnlockSemaphoreInfo(resource_semaphore[FileResource]);
   (void) CopyMagickString(cache_path,path,MagickPathExtent);
   AppendImageFormat("cache",cache_path);
