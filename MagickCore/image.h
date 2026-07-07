@@ -475,9 +475,6 @@ struct _ImageInfo
 
   PixelInfo
     matte_color;        /* matte (frame) color */
-
-  void
-    *properties;
 };
 
 extern MagickExport ChannelType

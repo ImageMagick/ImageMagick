@@ -1011,8 +1011,6 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
       image_info->profile);
   SetImageInfoFile(clone_info,image_info->file);
   SetImageInfoBlob(clone_info,image_info->blob,image_info->length);
-  (void) memcpy(clone_info->properties,image_info->properties,
-    sizeof(struct stat));
   clone_info->stream=image_info->stream;
   clone_info->custom_stream=image_info->custom_stream;
   (void) CopyMagickString(clone_info->magick,image_info->magick,
@@ -1296,8 +1294,6 @@ MagickExport ImageInfo *DestroyImageInfo(ImageInfo *image_info)
   if (image_info->profile != (StringInfo *) NULL)
     image_info->profile=(void *) DestroyStringInfo((StringInfo *)
       image_info->profile);
-  if (image_info->properties != NULL)
-    image_info->properties=RelinquishMagickMemory(image_info->properties);
   DestroyImageOptions(image_info);
   image_info->signature=(~MagickCoreSignature);
   image_info=(ImageInfo *) RelinquishMagickMemory(image_info);
@@ -1388,8 +1384,6 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   GetPixelInfoRGBA(BorderColorRGBA,&image_info->border_color);
   GetPixelInfoRGBA(MatteColorRGBA,&image_info->matte_color);
   GetPixelInfoRGBA(TransparentColorRGBA,&image_info->transparent_color);
-  image_info->properties=AcquireCriticalMemory(sizeof(struct stat));
-  (void) memset(image_info->properties,0,sizeof(struct stat));
   image_info->debug=(GetLogEventMask() & ImageEvent) != 0 ? MagickTrue :
     MagickFalse;
   image_info->signature=MagickCoreSignature;
@@ -3092,8 +3086,6 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
           (void) CopyMagickString(image_info->filename,component,
             MagickPathExtent);
           image_info->temporary=MagickTrue;
-          (void) memcpy(image_info->properties,GetBlobProperties(image),
-            sizeof(struct stat));
         }
       magick=(unsigned char *) AcquireQuantumMemory(1,magick_size);
       if (magick == (unsigned char *) NULL)

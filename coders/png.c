@@ -4699,20 +4699,6 @@ static Image *ReadOneJNGImage(MngReadInfo *mng_info,
   color_image_info->ping=MagickFalse;   /* To do: avoid this */
   CloseBlob(color_image);
   jng_image=ReadImage(color_image_info,exception);
-  if (jng_image != (Image *) NULL)
-    {
-      const struct stat
-        *color_properties = GetBlobProperties(color_image),
-        *jng_properties = GetBlobProperties(jng_image);
-
-      if ((color_properties->st_dev != jng_properties->st_dev) ||
-          (color_properties->st_ino != jng_properties->st_ino))
-        {
-          jng_image=DestroyImageList(jng_image);
-          DestroyJNG(NULL,NULL,NULL,&alpha_image,&alpha_image_info);
-          ThrowReaderException(PolicyError,"NotAuthorized");
-        }
-    }
   (void) RelinquishUniqueFileResource(color_image->filename);
   color_image=DestroyImageList(color_image);
   color_image_info=DestroyImageInfo(color_image_info);
