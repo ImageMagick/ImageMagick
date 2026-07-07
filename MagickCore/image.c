@@ -1389,6 +1389,7 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   GetPixelInfoRGBA(MatteColorRGBA,&image_info->matte_color);
   GetPixelInfoRGBA(TransparentColorRGBA,&image_info->transparent_color);
   image_info->properties=AcquireCriticalMemory(sizeof(struct stat));
+  (void) memset(image_info->properties,0,sizeof(struct stat));
   image_info->debug=(GetLogEventMask() & ImageEvent) != 0 ? MagickTrue :
     MagickFalse;
   image_info->signature=MagickCoreSignature;
