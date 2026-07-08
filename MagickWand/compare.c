@@ -1325,18 +1325,6 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
         {
           switch (metric)
           {
-            case AbsoluteErrorMetric:
-            {
-              if (distortion == (long long) distortion)
-                {
-                  (void) FormatLocaleFile(stderr,"%.20g (%.20g)",distortion,
-                    distortion/scale);
-                  break;
-                }
-              (void) FormatLocaleFile(stderr,"%.*g (%.*g)",GetMagickPrecision(),
-                distortion,GetMagickPrecision(),distortion/scale);
-              break;
-            }
             case MeanErrorPerPixelErrorMetric:
             {
               if (subimage_search == MagickFalse)
@@ -1456,7 +1444,6 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
                 GetMagickPrecision(),channel_distortion[MaxPixelChannels]);
               break;
             }
-            case AbsoluteErrorMetric:
             case DotProductCorrelationErrorMetric:
             case NormalizedCrossCorrelationErrorMetric:
             case PeakSignalToNoiseRatioErrorMetric:
@@ -1525,6 +1512,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
                 GetMagickPrecision(),image->error.normalized_maximum_error);
               break;
             }
+            case AbsoluteErrorMetric:
             case PixelDifferenceCountErrorMetric:
             {
               switch (image->colorspace)
