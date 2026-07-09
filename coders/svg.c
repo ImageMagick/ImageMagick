@@ -3157,7 +3157,7 @@ static Image *RenderMSVGImage(const ImageInfo *image_info,Image *image,
   file=(FILE *) NULL;
   unique_file=AcquireUniqueFileResource(filename);
   if (unique_file != -1)
-    file=fdopen(unique_file,"w");
+    file=fdopen(unique_file,"rb+");
   if ((unique_file == -1) || (file == (FILE *) NULL))
     {
       (void) CopyMagickString(image->filename,filename,MagickPathExtent);
@@ -3255,7 +3255,8 @@ static Image *RenderMSVGImage(const ImageInfo *image_info,Image *image,
   xmlFreeParserCtxt(parser);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"end SAX");
-  (void) fclose(file);
+  if (fseek(file,0,SEEK_SET) != 0)
+    ThrowReaderException(FileOpenError,"UnableToCreateTemporaryFile");
   (void) CloseBlob(image);
   image->columns=svg_info->width;
   image->rows=svg_info->height;
@@ -3263,10 +3264,13 @@ static Image *RenderMSVGImage(const ImageInfo *image_info,Image *image,
     {
       svg_info=DestroySVGInfo(svg_info);
       (void) RelinquishUniqueFileResource(filename);
+      (void) fclose(file);
       image=DestroyImage(image);
       return((Image *) NULL);
     }
-  if (image_info->ping == MagickFalse)
+  if (image_info->ping != MagickFalse)
+    (void) fclose(file);
+  else
     {
       ImageInfo
         *read_info;
@@ -3278,6 +3282,7 @@ static Image *RenderMSVGImage(const ImageInfo *image_info,Image *image,
       image=(Image *) NULL;
       read_info=CloneImageInfo(image_info);
       SetImageInfoBlob(read_info,(void *) NULL,0);
+      read_info->file=file;
       (void) FormatLocaleString(read_info->filename,MagickPathExtent,"mvg:%s",
         filename);
       image=ReadImage(read_info,exception);

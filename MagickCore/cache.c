@@ -75,6 +75,9 @@
 #include "MagickCore/thread-private.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
+#if defined(MAGICKCORE_HAVE_ERRNO_H)
+#  include <errno.h>
+#endif
 #if defined(MAGICKCORE_HAVE_SYS_LOADAVG_H)
 #  include <sys/loadavg.h>
 #endif
@@ -638,10 +641,15 @@ static MagickBooleanType ClonePixelCacheOnDisk(
 #if defined(MAGICKCORE_HAVE_LINUX_SENDFILE)
       if (cache_info->length < 0x7ffff000)
         {
-          count=sendfile(clone_info->file,cache_info->file,(off_t *) NULL,
-            (size_t) cache_info->length);
+          do
+          {
+            count=sendfile(clone_info->file,cache_info->file,(off_t *) NULL,
+              (size_t) cache_info->length);
+          } while ((count < 0) && (errno == EINTR));
           if (count == (ssize_t) cache_info->length)
             return(MagickTrue);
+          if (count < 0)
+            return(MagickFalse);
           if ((lseek(cache_info->file,0,SEEK_SET) < 0) ||
               (lseek(clone_info->file,0,SEEK_SET) < 0))
             return(MagickFalse);
@@ -653,20 +661,46 @@ static MagickBooleanType ClonePixelCacheOnDisk(
   if (buffer == (unsigned char *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   extent=0;
-  while ((count=read(cache_info->file,buffer,quantum)) > 0)
+  while (extent < cache_info->length)
   {
-    ssize_t
-      number_bytes;
+    size_t
+      length;
 
-    number_bytes=write(clone_info->file,buffer,(size_t) count);
-    if (number_bytes != count)
-      break;
-    extent+=(size_t) number_bytes;
+    length=(size_t) MagickMin((MagickSizeType) quantum,cache_info->length-
+      extent);
+    do
+    {
+      count=read(cache_info->file,buffer,length);
+    } while ((count < 0) && (errno == EINTR));
+    if (count <= 0)
+      {
+        buffer=(unsigned char *) RelinquishMagickMemory(buffer);
+        return(MagickFalse);
+      }
+    {
+      ssize_t
+        number_bytes,
+        offset = 0;
+
+      while (offset < count)
+      {
+        do
+        {
+          number_bytes=write(clone_info->file,buffer+offset,(size_t) (count-
+            offset));
+        } while ((number_bytes < 0) && (errno == EINTR));
+        if (number_bytes <= 0)
+          {
+            buffer=(unsigned char *) RelinquishMagickMemory(buffer);
+            return(MagickFalse);
+          }
+        offset+=number_bytes;
+      }
+      extent+=(MagickSizeType) offset;
+    }
   }
   buffer=(unsigned char *) RelinquishMagickMemory(buffer);
-  if (extent != cache_info->length)
-    return(MagickFalse);
-  return(MagickTrue);
+  return(extent == cache_info->length ? MagickTrue : MagickFalse);
 }
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -4320,12 +4354,17 @@ MagickPrivate Quantum *QueueAuthenticPixelCacheNexus(Image *image,
     }
   if (IsValidPixelOffset(y,cache_info->columns) == MagickFalse)
     return((Quantum *) NULL);
-  offset=y*(MagickOffsetType) cache_info->columns+x;
+  offset=y*(MagickOffsetType) cache_info->columns;
+  if (IsOffsetOverflow(offset,(MagickOffsetType) x) == MagickFalse)
+    return((Quantum *) NULL);
+  offset+=x;
   if (offset < 0)
     return((Quantum *) NULL);
   number_pixels=(MagickSizeType) cache_info->columns*cache_info->rows;
-  offset+=((MagickOffsetType) rows-1)*(MagickOffsetType) cache_info->columns+
-    (MagickOffsetType) columns-1;
+  offset+=((MagickOffsetType) rows-1)*(MagickOffsetType) cache_info->columns;
+  if (IsOffsetOverflow(offset,(MagickOffsetType) columns-1) == MagickFalse)
+    return((Quantum *) NULL);
+  offset+=(MagickOffsetType) columns-1;
   if ((MagickSizeType) offset >= number_pixels)
     return((Quantum *) NULL);
   /*

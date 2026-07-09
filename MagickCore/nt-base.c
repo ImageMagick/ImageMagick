@@ -2638,6 +2638,17 @@ MagickExport int NTSetFileTimestamp(const char *path, struct stat *attributes)
 %    o attributes: the file attributes.
 %
 */
+
+static inline _ino_t MapFileIndexToIno(uint64_t fileIndex)
+{
+  fileIndex^=fileIndex >> 33;
+  fileIndex*=0xff51afd7ed558ccdULL;
+  fileIndex^=fileIndex >> 33;
+  fileIndex*=0xc4ceb9fe1a85ec53ULL;
+  fileIndex^=fileIndex >> 33;
+  return((_ino_t) fileIndex);
+}
+
 MagickExport int NTStatWide(const char *path,struct stat *attributes)
 {
   int
@@ -2650,6 +2661,29 @@ MagickExport int NTStatWide(const char *path,struct stat *attributes)
   if (path_wide == (WCHAR *) NULL)
     return(-1);
   status=wstat(path_wide,attributes);
+  if (status == 0)
+    {
+      HANDLE handle = CreateFileW(path_wide,GENERIC_READ,FILE_SHARE_READ |
+        FILE_SHARE_WRITE | FILE_SHARE_DELETE,NULL,OPEN_EXISTING,
+        FILE_FLAG_BACKUP_SEMANTICS,NULL);
+      if (handle != INVALID_HANDLE_VALUE)
+        {
+          BY_HANDLE_FILE_INFORMATION
+            file_info;
+
+          if (GetFileInformationByHandle(handle,&file_info) != 0)
+            {
+              /*
+                Map Windows file identity into st_dev/st_ino.
+              */
+              attributes->st_dev=(dev_t) file_info.dwVolumeSerialNumber;
+              attributes->st_ino=MapFileIndexToIno((((uint64_t)
+                file_info.nFileIndexHigh) << 32) | (uint64_t)
+                file_info.nFileIndexLow);
+          }
+        CloseHandle(handle);
+      }
+    }
   path_wide=(WCHAR *) RelinquishMagickMemory(path_wide);
   return(status);
 }

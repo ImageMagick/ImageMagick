@@ -661,12 +661,14 @@ MagickExport MagickBooleanType IsRightsAuthorizedByName(
     *exception;
 
   MagickBooleanType
+    canonical_matched_any = MagickFalse,
     matched_any = MagickFalse,
     paths_provisioned = MagickFalse,
     status;
 
   PolicyRights
-    effective_rights = AllPolicyRights;  /* rights authorized unless denied */
+    canonical_allowed_accumulator = AllPolicyRights,
+    effective_rights = AllPolicyRights;
 
   /*
     Load policies.
@@ -689,7 +691,8 @@ MagickExport MagickBooleanType IsRightsAuthorizedByName(
       return(MagickTrue);
     }
   /*
-    Evaluate policies in order; last match wins.
+    Evaluate policies in order; last match wins, however, canonical denies are
+    enforced after evaluation.
   */
   LockSemaphoreInfo(policy_semaphore);
   ResetLinkedListIterator(policy_cache);
@@ -700,7 +703,8 @@ MagickExport MagickBooleanType IsRightsAuthorizedByName(
       *policy = (PolicyInfo *) p->value;
 
     MagickBooleanType
-      match = MagickFalse;
+      match = MagickFalse,
+      matched_canonical = MagickFalse;
 
     if (policy->domain != domain)
       continue;
@@ -741,11 +745,31 @@ MagickExport MagickBooleanType IsRightsAuthorizedByName(
           match=GlobExpression(canonical_candidate,policy->pattern,MagickFalse);
         if ((canonical_path != (char *) NULL) && (match == MagickFalse))
           match=GlobExpression(canonical_path,policy->pattern,MagickFalse);
+        if ((canonical_path != (char *) NULL) &&
+            (GlobExpression(canonical_path,policy->pattern,MagickFalse) != MagickFalse))
+          matched_canonical=MagickTrue;
+        else
+          if ((canonical_candidate != (char *) NULL) &&
+              (GlobExpression(canonical_candidate,policy->pattern,MagickFalse) != MagickFalse))
+            matched_canonical=MagickTrue;
+          else
+           if ((canonical_directory != (char *) NULL) &&
+               (GlobExpression(canonical_directory,policy->pattern,MagickFalse) != MagickFalse))
+             matched_canonical=MagickTrue;
       }
     if (match == MagickFalse)
       continue;
     matched_any=MagickTrue;
     effective_rights=policy->rights;
+    if (matched_canonical != MagickFalse)
+      {
+        /*
+          If this match was against a canonical form, accumulate allowed rights.
+        */
+        canonical_matched_any=MagickTrue;
+        canonical_allowed_accumulator=(PolicyRights) ((int)
+          canonical_allowed_accumulator & (int) policy->rights);
+      }
   }
   UnlockSemaphoreInfo(policy_semaphore);
   if (canonical_directory != (char *) NULL)
@@ -768,6 +792,16 @@ MagickExport MagickBooleanType IsRightsAuthorizedByName(
         status=MagickFalse;
       if (((rights & ExecutePolicyRights) != 0) &&
           ((effective_rights & ExecutePolicyRights) == 0))
+        status=MagickFalse;
+    }
+  /*
+    Enforce sticky canonical denies.
+  */
+  if (canonical_matched_any != MagickFalse)
+    {
+      PolicyRights canonical_denied_mask = (PolicyRights) ((int)
+        AllPolicyRights & (int) ~canonical_allowed_accumulator);
+      if ((canonical_denied_mask & rights) != 0)
         status=MagickFalse;
     }
   if ((GetLogEventMask() & PolicyEvent) != 0)

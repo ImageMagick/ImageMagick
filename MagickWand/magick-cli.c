@@ -1310,7 +1310,6 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,int argc,
     (void) CLILogEvent(cli_wand,CommandEvent,GetMagickModule(),
          "\"%s\"",argv[0]);
 
-
   GetPathComponent(argv[0],TailPath,cli_wand->wand.name);
   (void) SetClientName(cli_wand->wand.name);
   (void) ConcatenateMagickString(cli_wand->wand.name,"-CLI",MagickPathExtent);
@@ -1420,7 +1419,7 @@ Magick_Command_Exit:
     {
       CLIStack
         *node;
-      
+
       /*
         Pop image_info settings from stack.
       */
@@ -1439,7 +1438,7 @@ Magick_Command_Exit:
 
       char
         *text;
-  
+
       format="%w,%h,%m";  /* Get this from image_info Option splaytree */
       text=InterpretImageProperties(image_info,cli_wand->wand.images,format,
         exception);
@@ -1462,6 +1461,16 @@ Magick_Command_Exit:
   if (cli_wand->wand.debug != MagickFalse)
     (void) CLILogEvent(cli_wand,CommandEvent,GetMagickModule(),
          "\"%s\"",argv[0]);
+
+  /* FIX: free ImageInfo cloned inside DrawInfo by AcquireMagickCLI/GetDrawInfo */
+  if (cli_wand->draw_info != (DrawInfo *) NULL &&
+      cli_wand->draw_info->image_info != (ImageInfo *) NULL)
+    cli_wand->draw_info->image_info =
+      DestroyImageInfo(cli_wand->draw_info->image_info);
+
+  /* optional: now free the DrawInfo itself */
+  if (cli_wand->draw_info != (DrawInfo *) NULL)
+    cli_wand->draw_info = DestroyDrawInfo(cli_wand->draw_info);
 
   /* Destroy the special CLI Wand */
   cli_wand->wand.image_info = (ImageInfo *) NULL; /* not these */

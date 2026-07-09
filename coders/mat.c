@@ -519,7 +519,7 @@ ssize_t total_size = 0;
   mat_file=0;
   file = AcquireUniqueFileResource(clone_info->filename);
   if (file != -1)
-    mat_file = fdopen(file,"w");
+    mat_file = fdopen(file,"ab+");
   if(!mat_file)
   {
     RelinquishMagickMemory(cache_block);
@@ -576,12 +576,14 @@ ssize_t total_size = 0;
 DblBreak:
 
   inflateEnd(&zip_info);
-  (void)fclose(mat_file);
+  if (fseek(mat_file,0,SEEK_SET) != 0)
+    (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+      "UnableToCreateTemporaryFile","`%s'",clone_info->filename);
   RelinquishMagickMemory(cache_block);
   RelinquishMagickMemory(decompress_block);
   *Size = (unsigned int) total_size;
 
-  if((clone_info->file=fopen_utf8(clone_info->filename,"rb"))==NULL) goto UnlinkFile;
+  clone_info->file=mat_file;
   if( (image2 = AcquireImage(clone_info,exception))==NULL ) goto EraseFile;
   image2->columns=0;
   image2->rows=0;
@@ -592,7 +594,6 @@ DblBreak:
 EraseFile:
     fclose(clone_info->file);
     clone_info->file = NULL;
-UnlinkFile:
     RelinquishUniqueFileResource(clone_info->filename);
     return NULL;
   }
@@ -712,6 +713,9 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
             : image);
         goto skip_reading_current;
       }
+    if ((image->columns > GetBlobSize(image)) ||
+        (image->rows > GetBlobSize(image)))
+      ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
       return(DestroyImageList(image));
@@ -1236,6 +1240,9 @@ RestoreMSCWarning
       image->rows = temp;
       goto done_reading; /* !!!!!! BAD  !!!! */
     }
+    if ((image->columns > GetBlobSize(image)) ||
+        (image->rows > GetBlobSize(image)))
+      ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
       {

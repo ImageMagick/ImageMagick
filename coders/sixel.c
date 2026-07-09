@@ -303,6 +303,13 @@ static MagickBooleanType sixel_decode(Image *image,unsigned char *p,
   memset(param,0,sizeof(param));
   imsx=2048;
   imsy=2048;
+  if (((MagickSizeType) imsx > GetBlobSize(image)) ||
+      ((MagickSizeType) imsy > GetBlobSize(image)))
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+        "InsufficientImageDataInFile","`%s'",image->filename);
+      return(MagickFalse);
+    }
   if (SetImageExtent(image,(size_t) imsx,(size_t) imsy,exception) == MagickFalse)
     return(MagickFalse);
   imbuf=(sixel_pixel_t *) AcquireQuantumMemory((size_t) imsx,
@@ -410,6 +417,15 @@ static MagickBooleanType sixel_decode(Image *image,unsigned char *p,
           {
             dmsx=imsx > attributed_ph ? imsx : attributed_ph;
             dmsy=imsy > attributed_pv ? imsy : attributed_pv;
+            if (((MagickSizeType) dmsx > GetBlobSize(image)) ||
+                ((MagickSizeType) dmsy > GetBlobSize(image)))
+              {
+                imbuf=(sixel_pixel_t *) RelinquishMagickMemory(imbuf);
+                (void) ThrowMagickException(exception,GetMagickModule(),
+                  CorruptImageError,"InsufficientImageDataInFile","`%s'",
+                  image->filename);
+                return(MagickFalse);
+              }
             if (SetImageExtent(image,(size_t) dmsx,(size_t) dmsy,exception) == MagickFalse)
               {
                 imbuf=(sixel_pixel_t *) RelinquishMagickMemory(imbuf);
@@ -534,6 +550,15 @@ static MagickBooleanType sixel_decode(Image *image,unsigned char *p,
 
             dmsx=nx;
             dmsy=ny;
+            if (((MagickSizeType) dmsx > GetBlobSize(image)) ||
+                ((MagickSizeType) dmsy > GetBlobSize(image)))
+              {
+                imbuf=(sixel_pixel_t *) RelinquishMagickMemory(imbuf);
+                (void) ThrowMagickException(exception,GetMagickModule(),
+                  CorruptImageError,"InsufficientImageDataInFile","`%s'",
+                  image->filename);
+                return(MagickFalse);
+              }
             if (SetImageExtent(image,(size_t) dmsx,(size_t) dmsy,exception) == MagickFalse)
               {
                 imbuf=(sixel_pixel_t *) RelinquishMagickMemory(imbuf);
@@ -636,6 +661,15 @@ static MagickBooleanType sixel_decode(Image *image,unsigned char *p,
     {
       dmsx=max_x;
       dmsy=max_y;
+      if (((MagickSizeType) dmsx > GetBlobSize(image)) ||
+          ((MagickSizeType) dmsy > GetBlobSize(image)))
+        {
+          imbuf=(sixel_pixel_t *) RelinquishMagickMemory(imbuf);
+          (void) ThrowMagickException(exception,GetMagickModule(),
+            CorruptImageError,"InsufficientImageDataInFile","`%s'",
+            image->filename);
+          return(MagickFalse);
+        }
       if (SetImageExtent(image,(size_t) dmsx,(size_t) dmsy,exception) == MagickFalse)
         {
           imbuf=(sixel_pixel_t *) RelinquishMagickMemory(imbuf);
@@ -1155,6 +1189,12 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,
   /*
     Prepare image geometry.
   */
+  if ((width > GetBlobSize(image)) || (height > GetBlobSize(image)))
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+        "InsufficientImageDataInFile","`%s'",image->filename);
+      goto cleanup;
+    }
   if (SetImageExtent(image,width,height,exception) == MagickFalse)
     goto cleanup;
   /*

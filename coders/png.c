@@ -4699,7 +4699,6 @@ static Image *ReadOneJNGImage(MngReadInfo *mng_info,
   color_image_info->ping=MagickFalse;   /* To do: avoid this */
   CloseBlob(color_image);
   jng_image=ReadImage(color_image_info,exception);
-
   (void) RelinquishUniqueFileResource(color_image->filename);
   color_image=DestroyImageList(color_image);
   color_image_info=DestroyImageInfo(color_image_info);
@@ -4796,6 +4795,18 @@ static Image *ReadOneJNGImage(MngReadInfo *mng_info,
 
       if (jng_image != (Image *) NULL)
         {
+          const struct stat
+            *alpha_properties = GetBlobProperties(alpha_image),
+            *jng_properties = GetBlobProperties(jng_image);
+
+          if ((alpha_properties->st_dev != jng_properties->st_dev) ||
+              (alpha_properties->st_ino != jng_properties->st_ino))
+            {
+              DestroyJNG(NULL,&color_image,&color_image_info,&alpha_image,
+                &alpha_image_info);
+              jng_image=DestroyImageList(jng_image);
+              ThrowReaderException(PolicyError,"NotAuthorized");
+            }
           image->alpha_trait=BlendPixelTrait;
           for (y=0; y < (ssize_t) image->rows; y++)
           {
@@ -5839,11 +5850,12 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
         if (memcmp(type,mng_LOOP,4) == 0)
           {
             ssize_t loop_iters=1;
-            if (number_loop_ops++ > MNG_MAX_LOOP_OPS)
+            if (number_loop_ops > MNG_MAX_LOOP_OPS)
               {
                 chunk=(unsigned char *) RelinquishMagickMemory(chunk);
                 ThrowReaderException(ResourceLimitError,"too many LOOP/ENDL ops");
               }
+            number_loop_ops+=1;
             if (length > 4)
               {
                 loop_level=chunk[0];
@@ -5879,11 +5891,12 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
 
         if (memcmp(type,mng_ENDL,4) == 0)
           {
-            if (number_loop_ops++ > MNG_MAX_LOOP_OPS)
+            if (number_loop_ops > MNG_MAX_LOOP_OPS)
               {
                 chunk=(unsigned char *) RelinquishMagickMemory(chunk);
                 ThrowReaderException(ResourceLimitError,"too many LOOP/ENDL ops");
               }
+            number_loop_ops+=1;
             if (length > 0)
               {
                 loop_level=chunk[0];
@@ -7125,7 +7138,7 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
 
   while (GetPreviousImageInList(image) != (Image *) NULL)
   {
-    image_count++;
+    image_count+=1;
     if (image_count > 10*mng_info->image_found)
       {
         if (logging != MagickFalse)
@@ -12986,7 +12999,8 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
 
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
            "    Scene: %.20g\n,   Image depth: %.20g",
-           (double) scene++, (double) p->depth);
+           (double) scene, (double) p->depth);
+        scene+=1;
 
         if (p->alpha_trait != UndefinedPixelTrait)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -13700,8 +13714,9 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=SetImageProgress(image,SaveImagesTag,(MagickOffsetType) scene++,
+    status=SetImageProgress(image,SaveImagesTag,(MagickOffsetType) scene,
       number_scenes);
+    scene+=1;
 
     if (status == MagickFalse)
       break;

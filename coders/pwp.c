@@ -216,7 +216,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     file=(FILE *) NULL;
     if (unique_file != -1)
-      file=fdopen(unique_file,"wb");
+      file=fdopen(unique_file,"rb+");
     if ((unique_file == -1) || (file == (FILE *) NULL))
       {
         (void) RelinquishUniqueFileResource(filename);
@@ -237,13 +237,15 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (fputc(c,file) != c)
         break;
     }
-    (void) fclose(file);
+    if (fseek(file,0,SEEK_SET) != 0)
+      ThrowReaderException(FileOpenError,"UnableToCreateTemporaryFile");
     if (c == EOF)
       {
         (void) RelinquishUniqueFileResource(filename);
         read_info=DestroyImageInfo(read_info);
         ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
       }
+    read_info->file=file;
     next_image=ReadImage(read_info,exception);
     if (next_image == (Image *) NULL)
       break;

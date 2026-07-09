@@ -4847,12 +4847,12 @@ static MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
 %                   Currently arg2 is not used.
 %
 */
-static void CLINoImageOperator(MagickCLI *cli_wand,
-  const char *option,const char *arg1n,const char *arg2n)
+static void CLINoImageOperator(MagickCLI *cli_wand,const char *option,
+  const char *arg1n,const char *arg2n)
 {
   const char    /* percent escaped versions of the args */
-    *arg1,
-    *arg2;
+    *arg1 = arg1n,
+    *arg2 = arg2n;
 
 #define _image_info     (cli_wand->wand.image_info)
 #define _images         (cli_wand->wand.images)
@@ -4871,9 +4871,6 @@ static void CLINoImageOperator(MagickCLI *cli_wand,
       "- NoImage Operator: %s \"%s\" \"%s\"", option,
       arg1n != (char *) NULL ? arg1n : "",
       arg2n != (char *) NULL ? arg2n : "");
-
-  arg1 = arg1n;
-  arg2 = arg2n;
 
   /* Interpret Percent Escapes in Arguments - using first image */
   if ( (((_process_flags & ProcessInterpretProperties) != 0 )
@@ -4917,23 +4914,6 @@ static void CLINoImageOperator(MagickCLI *cli_wand,
     */
     if ( ( LocaleCompare("read",option+1) == 0 ) ||
       ( LocaleCompare("--",option) == 0 ) ) {
-      /* Do Glob filename Expansion for 'arg1' then read all images.
-      *
-      * Expansion handles '@', '~', '*', and '?' meta-characters while ignoring
-      * (but attaching to the filenames in the generated argument list) any
-      * [...] read modifiers that may be present.
-      *
-      * For example: It will expand '*.gif[20x20]' into a list such as
-      * 'abc.gif[20x20]',  'foobar.gif[20x20]',  'xyzzy.gif[20x20]'
-      *
-      * NOTE: In IMv6 this was done globally across all images. This
-      * meant you could include IM options in '@filename' lists, but you
-      * could not include comments.   Doing it only for image read makes
-      * it far more secure.
-      *
-      * Note: arguments do not have percent escapes expanded for security
-      * reasons.
-      */
       int      argc;
       char     **argv;
       ssize_t  i;
@@ -4941,18 +4921,12 @@ static void CLINoImageOperator(MagickCLI *cli_wand,
       argc = 1;
       argv = (char **) &arg1;
 
-      /* Expand 'glob' expressions in the given filename.
-        Expansion handles any 'coder:' prefix, or read modifiers attached
-        to the filename, including them in the resulting expanded list.
-      */
       if (ExpandFilenames(&argc,&argv) == MagickFalse)
         CLIWandExceptArgBreak(ResourceLimitError,"MemoryAllocationFailed",
           option,(char *) NULL);
 
-      /* loop over expanded filename list, and read then all in */
       for (i=0; i < (ssize_t) argc; i++) {
-        Image *
-          new_images;
+        Image *new_images;
         if (_image_info->ping != MagickFalse)
           new_images=PingImages(_image_info,argv[i],_exception);
         else
@@ -4968,17 +4942,10 @@ static void CLINoImageOperator(MagickCLI *cli_wand,
       Note: Writing a empty image list is valid in specific cases
     */
     if (LocaleCompare("write",option+1) == 0) {
-      /* Note: arguments do not have percent escapes expanded */
-      char
-        key[MagickPathExtent];
+      char key[MagickPathExtent];
+      Image *write_images;
+      ImageInfo *write_info;
 
-      Image
-        *write_images;
-
-      ImageInfo
-        *write_info;
-
-      /* Need images, unless a "null:" output coder is used */
       if ( _images == (Image *) NULL ) {
         if ( LocaleCompare(arg1,"null:") == 0 )
           break;
@@ -4999,12 +4966,8 @@ static void CLINoImageOperator(MagickCLI *cli_wand,
       Parenthesis and Brace operations
     */
     if (LocaleCompare("(",option) == 0) {
-      /* stack 'push' images */
-      CLIStack
-        *node;
-
-      size_t
-        size;
+      CLIStack *node;
+      size_t size;
 
       size=0;
       node=cli_wand->image_list_stack;
@@ -5021,7 +4984,6 @@ static void CLINoImageOperator(MagickCLI *cli_wand,
       cli_wand->image_list_stack = node;
       cli_wand->wand.images = NewImageList();
 
-      /* handle respect-parentheses */
       if (IsStringTrue(GetImageOption(cli_wand->wand.image_info,
                     "respect-parentheses")) != MagickFalse)
         option="{"; /* fall-thru so as to push image settings too */
@@ -5030,12 +4992,8 @@ static void CLINoImageOperator(MagickCLI *cli_wand,
       /* fall thru to operation */
     }
     if (LocaleCompare("{",option) == 0) {
-      /* stack 'push' of image_info settings */
-      CLIStack
-        *node;
-
-      size_t
-        size;
+      CLIStack *node;
+      size_t size;
 
       size=0;
       node=cli_wand->image_info_stack;
@@ -5064,9 +5022,7 @@ static void CLINoImageOperator(MagickCLI *cli_wand,
       break;
     }
     if (LocaleCompare(")",option) == 0) {
-      /* pop images from stack */
-      CLIStack
-        *node;
+      CLIStack *node;
 
       node = (CLIStack *)cli_wand->image_list_stack;
       if ( node == (CLIStack *) NULL)
@@ -5077,12 +5033,10 @@ static void CLINoImageOperator(MagickCLI *cli_wand,
       cli_wand->wand.images= (Image *)node->data;
       node = (CLIStack *)RelinquishMagickMemory(node);
 
-      /* handle respect-parentheses - of the previous 'pushed' settings */
       node = cli_wand->image_info_stack;
       if ( node != (CLIStack *) NULL)
         {
-          if (IsStringTrue(GetImageOption(
-                cli_wand->wand.image_info,"respect-parentheses")) != MagickFalse)
+          if (IsStringTrue(GetImageOption(cli_wand->wand.image_info,"respect-parentheses")) != MagickFalse)
             option="}"; /* fall-thru so as to pop image settings too */
           else
             break;
@@ -5092,9 +5046,7 @@ static void CLINoImageOperator(MagickCLI *cli_wand,
       /* fall thru to next if */
     }
     if (LocaleCompare("}",option) == 0) {
-      /* pop image_info settings from stack */
-      CLIStack
-        *node;
+      CLIStack *node;
 
       node = (CLIStack *)cli_wand->image_info_stack;
       if ( node == (CLIStack *) NULL)
@@ -5111,11 +5063,11 @@ static void CLINoImageOperator(MagickCLI *cli_wand,
 
       break;
     }
-      if (LocaleCompare("print",option+1) == 0)
-        {
-          (void) FormatLocaleFile(stdout,"%s",arg1);
-          break;
-        }
+    if (LocaleCompare("print",option+1) == 0)
+      {
+        (void) FormatLocaleFile(stdout,"%s",arg1);
+        break;
+      }
     if (LocaleCompare("set",option+1) == 0)
       {
         /* Settings are applied to each image in memory in turn (if any).
@@ -5124,12 +5076,17 @@ static void CLINoImageOperator(MagickCLI *cli_wand,
            NOTE: Arguments have not been automatically percent expanded
         */
 
-        /* escape the 'key' once only, using first image. */
         StringInfo *profile = (StringInfo *) NULL;
+
+        /* FIX: avoid leaking previously interpreted arg1 from header */
+        if (arg1 != arg1n)
+          arg1 = DestroyString((char *) arg1);
+
+        /* escape the 'key' once only, using first image. */
         arg1=InterpretImageProperties(_image_info,_images,arg1n,_exception);
         if (arg1 == (char *) NULL)
           CLIWandExceptionBreak(OptionWarning,"InterpretPropertyFailure",
-                option);
+            option);
 
         if (LocaleNCompare(arg1,"registry:",9) == 0)
           {
@@ -5139,6 +5096,11 @@ static void CLINoImageOperator(MagickCLI *cli_wand,
                 arg1=DestroyString((char *)arg1);
                 break;
               }
+
+            /* FIX: avoid leaking previously interpreted arg2 from header */
+            if (arg2 != arg2n)
+              arg2 = DestroyString((char *) arg2);
+
             arg2=InterpretImageProperties(_image_info,_images,arg2n,_exception);
             if (arg2 == (char *) NULL) {
               arg1=DestroyString((char *)arg1);
@@ -5165,7 +5127,12 @@ static void CLINoImageOperator(MagickCLI *cli_wand,
             arg2=(char *) NULL;
             if (IfNormalOp)
               {
-                arg2=InterpretImageProperties(_image_info,_images,arg2n,_exception);
+                /* FIX: avoid leaking previously interpreted arg2 from header */
+                if (arg2 != arg2n)
+                  arg2 = DestroyString((char *) arg2);
+
+                arg2=InterpretImageProperties(_image_info,_images,arg2n,
+                  _exception);
                 if (arg2 == (char *) NULL)
                   CLIWandExceptionBreak(OptionWarning,
                        "InterpretPropertyFailure",option);
@@ -5194,7 +5161,12 @@ static void CLINoImageOperator(MagickCLI *cli_wand,
             arg2=(char *) NULL;
             if (IfNormalOp)
               {
-                arg2=InterpretImageProperties(_image_info,_images,arg2n,_exception);
+                /* FIX: avoid leaking previously interpreted arg2 from header */
+                if (arg2 != arg2n)
+                  arg2 = DestroyString((char *) arg2);
+
+                arg2=InterpretImageProperties(_image_info,_images,arg2n,
+                  _exception);
                 if (arg2 == (char *) NULL)
                   CLIWandExceptionBreak(OptionWarning,
                        "InterpretPropertyFailure",option);
@@ -5206,21 +5178,25 @@ static void CLINoImageOperator(MagickCLI *cli_wand,
             else
               (void) SetImageProperty(_images,arg1,arg2,_exception);
             if (profile != (StringInfo *) NULL)
-              (void) SetImageProfile(_images,_image_info->magick,profile,_exception);
+              (void) SetImageProfile(_images,_image_info->magick,profile,
+                _exception);
             arg2=DestroyString((char *)arg2);
           }
         if (profile != (StringInfo *) NULL)
-            profile=DestroyStringInfo(profile);
+          profile=DestroyStringInfo(profile);
         MagickResetIterator(&cli_wand->wand);
         arg1=DestroyString((char *)arg1);
         break;
      }
     if (LocaleCompare("clone",option+1) == 0) {
-        Image
-          *new_images;
+        Image *new_images;
 
-        if (*option == '+')
+        if (*option == '+') {
+          /* FIX: avoid leaking previously interpreted arg1 from header */
+          if (arg1 != arg1n)
+            arg1 = DestroyString((char *)arg1);
           arg1=AcquireString("-1");
+        }
         if (IsSceneGeometry(arg1,MagickFalse) == MagickFalse)
           CLIWandExceptionBreak(OptionError,"InvalidArgument",option);
         new_images=cli_wand->wand.images;     
@@ -5247,8 +5223,7 @@ static void CLINoImageOperator(MagickCLI *cli_wand,
       }
     if (LocaleCompare("list",option+1) == 0)
       {
-        ssize_t
-          list;
+        ssize_t list;
 
       /*
          FUTURE: This 'switch' should really be part of MagickCore

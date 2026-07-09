@@ -89,7 +89,7 @@
   <policy domain="filter" rights="none" pattern="*"/>
   <!-- Don't read/write from/to stdin/stdout. -->
   <policy domain="path" rights="none" pattern="-"/>
-  <policy domain="path" rights="none" pattern="fd:*"/>
+  <policy domain="path" rights="none" pattern="[Ff][Dd]:*"/>
   <!-- Sensitive paths are not permitted. -->
   <policy domain="path" rights="none" pattern="/etc/*"/>
   <!-- Relative paths are not permitted. -->

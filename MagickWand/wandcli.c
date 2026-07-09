@@ -71,7 +71,7 @@
 %
 */
 WandExport MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
-    ExceptionInfo *exception)
+  ExceptionInfo *exception)
 {
   MagickCLI
     *cli_wand;
@@ -80,7 +80,7 @@ WandExport MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
   cli_wand=(MagickCLI *) AcquireCriticalMemory(sizeof(*cli_wand));
   cli_wand->wand.id=AcquireWandId();
   (void) FormatLocaleString(cli_wand->wand.name,MagickPathExtent,
-           "%s-%.20g","MagickWandCLI", (double) cli_wand->wand.id);
+    "%s-%.20g","MagickWandCLI", (double) cli_wand->wand.id);
   cli_wand->wand.images=NewImageList();
   if ( image_info == (ImageInfo *) NULL)
     cli_wand->wand.image_info=AcquireImageInfo();
@@ -92,15 +92,17 @@ WandExport MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
     cli_wand->wand.exception=exception;
   cli_wand->wand.debug=IsEventLogging();
   cli_wand->wand.signature=MagickWandSignature;
-
   /* Initialize CLI Part of MagickCLI */
-  cli_wand->draw_info=CloneDrawInfo(cli_wand->wand.image_info,(DrawInfo *) NULL);
+  cli_wand->draw_info=CloneDrawInfo(cli_wand->wand.image_info,
+    (DrawInfo *) NULL);
+  if (cli_wand->draw_info->image_info != (ImageInfo *) NULL)
+    cli_wand->draw_info->image_info =
+      DestroyImageInfo(cli_wand->draw_info->image_info);
   cli_wand->quantize_info=AcquireQuantizeInfo(cli_wand->wand.image_info);
   cli_wand->process_flags=MagickCommandOptionFlags;  /* assume "magick" CLI */
   cli_wand->command=(const OptionInfo *) NULL;     /* no option at this time */
   cli_wand->image_list_stack=(CLIStack *) NULL;
   cli_wand->image_info_stack=(CLIStack *) NULL;
-
   /* default exception location...
      EG: sprintf(location, filename, line, column);
   */
@@ -109,7 +111,6 @@ WandExport MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
   cli_wand->filename="unknown";       /* script filename, unknown source */
   cli_wand->line=0;                   /* line from script OR CLI argument */
   cli_wand->column=0;                 /* column from script */
-
   cli_wand->signature=MagickWandSignature;
   if (cli_wand->wand.debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);

@@ -55,6 +55,7 @@
 #include "MagickCore/list.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/quantize.h"
@@ -201,12 +202,16 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   ept_info.postscript_offset=(MagickOffsetType) ReadBlobLSBLong(image);
   ept_info.postscript_length=ReadBlobLSBLong(image);
+  if (HeapOverflowCheckAdd(ept_info.postscript_length,1) != MagickFalse)
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   if ((MagickSizeType) ept_info.postscript_length > GetBlobSize(image))
     ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
   (void) ReadBlobLSBLong(image);
   (void) ReadBlobLSBLong(image);
   ept_info.tiff_offset=(MagickOffsetType) ReadBlobLSBLong(image);
   ept_info.tiff_length=ReadBlobLSBLong(image);
+  if (HeapOverflowCheckAdd(ept_info.tiff_length,1) != MagickFalse)
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   if ((ept_info.postscript_length+ept_info.tiff_length) == 0)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if ((MagickSizeType) ept_info.tiff_length > GetBlobSize(image))
