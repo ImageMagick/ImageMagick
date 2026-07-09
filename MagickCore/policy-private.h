@@ -22,6 +22,7 @@
 extern "C" {
 #endif
 
+#include "MagickCore/resource-private.h"
 #include "MagickCore/utility-private.h"
 
 #if MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
@@ -126,20 +127,22 @@ static inline MagickBooleanType IsPathContainsSymlink(const char *path)
 }
 
 static inline MagickBooleanType IsPathAuthorized(const PolicyRights rights,
-  const char *filename)
+  const char *path)
 {
   MagickBooleanType symlink_follow_allowed = IsRightsAuthorizedByName(
     SystemPolicyDomain,"symlink",rights,"follow");
   MagickBooleanType status =
-   ((IsRightsAuthorized(PathPolicyDomain,rights,filename) != MagickFalse) &&
+   ((IsRightsAuthorized(PathPolicyDomain,rights,path) != MagickFalse) &&
    ((symlink_follow_allowed != MagickFalse) ||
-    (is_symlink_utf8(filename) == MagickFalse))) ? MagickTrue : MagickFalse;
+    (is_symlink_utf8(path) == MagickFalse))) ? MagickTrue : MagickFalse;
   if ((status != MagickFalse) && (symlink_follow_allowed == MagickFalse))
     {
-      if ((is_symlink_utf8(filename) != MagickFalse) ||
-          (IsPathContainsSymlink(filename) != MagickFalse))
+      if ((is_symlink_utf8(path) != MagickFalse) ||
+          (IsPathContainsSymlink(path) != MagickFalse))
         status=MagickFalse;
     }
+  if (status != MagickFalse)
+    status=IsFileResourceIdentityValid(path);
   return(status);
 }
 

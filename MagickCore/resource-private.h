@@ -26,6 +26,9 @@ extern "C" {
 # define MagickFormatExtent  64
 #endif
 
+extern MagickExport MagickBooleanType
+  IsFileResourceIdentityValid(const char *);
+
 extern MagickPrivate MagickBooleanType
   ResourceComponentGenesis(void);
 

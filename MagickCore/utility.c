@@ -1522,6 +1522,114 @@ MagickPrivate char **GetPathComponents(const char *path,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t P a t h T e m p l a t e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetPathTemplate() constructs a template for a temporary filename.
+%
+%  The format of the GetPathComponent function is:
+%
+%      MagickBooleanType GetPathComponent(const char *path)
+%
+%  A description of each parameter follows:
+%
+%    o path: Specifies a pointer to a character array populated with the
+%      file path template.
+%
+%
+*/
+MagickExport MagickBooleanType GetPathTemplate(char *path)
+{
+  char
+    *directory,
+    *value;
+
+  ExceptionInfo
+    *exception;
+
+  MagickBooleanType
+    status;
+
+  struct stat
+    attributes;
+
+  (void) FormatLocaleString(path,MagickPathExtent,"magick-"
+    MagickPathTemplate);
+  exception=AcquireExceptionInfo();
+  directory=(char *) GetImageRegistry(StringRegistryType,"temporary-path",
+    exception);
+  exception=DestroyExceptionInfo(exception);
+  if (directory == (char *) NULL)
+    directory=GetEnvironmentValue("MAGICK_TEMPORARY_PATH");
+  if (directory == (char *) NULL)
+    directory=GetEnvironmentValue("MAGICK_TMPDIR");
+  if (directory == (char *) NULL)
+    directory=GetEnvironmentValue("TMPDIR");
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__OS2__) || defined(__CYGWIN__)
+  if (directory == (char *) NULL)
+    directory=GetEnvironmentValue("TMP");
+  if (directory == (char *) NULL)
+    directory=GetEnvironmentValue("TEMP");
+#endif
+#if defined(__VMS)
+  if (directory == (char *) NULL)
+    directory=GetEnvironmentValue("MTMPDIR");
+#endif
+#if defined(P_tmpdir)
+  if (directory == (char *) NULL)
+    directory=ConstantString(P_tmpdir);
+#endif
+  if (directory == (char *) NULL)
+    return(MagickFalse);
+  value=GetPolicyValue("resource:temporary-path");
+  if (value != (char *) NULL)
+    {
+      (void) CloneString(&directory,value);
+      value=DestroyString(value);
+    }
+  if (strlen(directory) > (MagickPathExtent-25))
+    {
+      directory=DestroyString(directory);
+      return(MagickFalse);
+    }
+  status=GetPathAttributes(directory,&attributes);
+  if ((status == MagickFalse) || !S_ISDIR(attributes.st_mode))
+    {
+      directory=DestroyString(directory);
+      return(MagickFalse);
+    }
+  if (directory[strlen(directory)-1] == *DirectorySeparator)
+    (void) FormatLocaleString(path,MagickPathExtent,"%smagick-"
+      MagickPathTemplate,directory);
+  else
+    (void) FormatLocaleString(path,MagickPathExtent,
+      "%s%smagick-" MagickPathTemplate,directory,DirectorySeparator);
+  directory=DestroyString(directory);
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
+  {
+    char
+      *p;
+
+    /*
+      Ghostscript does not like backslashes so we need to replace them. The
+      forward slash also works under Windows.
+    */
+    for (p=(path[1] == *DirectorySeparator ? path+2 : path); *p != '\0'; p++)
+      if (*p == *DirectorySeparator)
+        *p='/';
+  }
+#endif
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %  I s P a t h A c c e s s i b l e                                            %
 %                                                                             %
 %                                                                             %

@@ -32,6 +32,8 @@
 extern "C" {
 #endif
 
+#define MagickPathTemplate "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"  /* min 6 X's */
+
 extern MagickPrivate char
   **GetPathComponents(const char *,size_t *),
   **ListFiles(const char *,const char *,size_t *);

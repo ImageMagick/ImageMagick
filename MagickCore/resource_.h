@@ -45,7 +45,6 @@ extern MagickExport int
 
 extern MagickExport MagickBooleanType
   AcquireMagickResource(const ResourceType,const MagickSizeType),
-  GetPathTemplate(char *),
   ListMagickResourceInfo(FILE *,ExceptionInfo *),
   RelinquishUniqueFileResource(const char *),
   SetMagickResourceLimit(const ResourceType,const MagickSizeType);
