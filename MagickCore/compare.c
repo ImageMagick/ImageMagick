@@ -4101,11 +4101,14 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
   (void) CompositeImage(reconstruct_image,reconstruct,CopyCompositeOp,
     MagickTrue,0,0,exception);
   beta_image=SIMCrossCorrelationImage(image,reconstruct_image,exception);
-  reconstruct_image=DestroyImage(reconstruct_image);
   if (beta_image == (Image *) NULL)
-    ThrowMSESimilarityException();
+    {
+      reconstruct_image=DestroyImage(reconstruct_image);
+      ThrowMSESimilarityException();
+    }
   status=SIMMultiplyImage(beta_image,-2.0/reconstruct->columns/(double)
     reconstruct->rows,(const ChannelStatistics *) NULL,exception);
+  reconstruct_image=DestroyImage(reconstruct_image);
   if (status == MagickFalse)
     ThrowMSESimilarityException();
   /*
