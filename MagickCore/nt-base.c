@@ -2671,19 +2671,32 @@ MagickExport int NTStatWide(const char *path,struct stat *attributes)
           BY_HANDLE_FILE_INFORMATION
             file_info;
 
+          /*
+            POSIX emulation of Windows file attributes.
+          */
           if (GetFileInformationByHandle(handle,&file_info) != 0)
             {
-              /*
-                Map Windows file identity into st_dev/st_ino.
-              */
               attributes->st_dev=(dev_t) file_info.dwVolumeSerialNumber;
               attributes->st_ino=MapFileIndexToIno((((uint64_t)
                 file_info.nFileIndexHigh) << 32) | (uint64_t)
                 file_info.nFileIndexLow);
-          }
-        CloseHandle(handle);
-      }
-    }
+              attributes->st_mode=0;
+              if ((file_info.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0)
+                attributes->st_mode|=S_IFDIR;
+              else
+                if ((file_info.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0)
+                  attributes->st_mode|=S_IFLNK;
+                else
+                  attributes->st_mode|=S_IFREG;
+                if (file_info.dwFileAttributes & FILE_ATTRIBUTE_READONLY)
+                  attributes->st_mode|=S_IRUSR | S_IRGRP | S_IROTH;
+                else
+                  attributes->st_mode|=S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP |
+                    S_IROTH | S_IWOTH;
+            }
+          CloseHandle(handle);
+        }
+  }
   path_wide=(WCHAR *) RelinquishMagickMemory(path_wide);
   return(status);
 }
