@@ -74,34 +74,6 @@
 #define MAP_FAILED      ((void *)(LONG_PTR)-1)
 #endif
 #define MaxWideByteExtent  100
-
-/* File type macros */
-#ifndef S_IFDIR
-  #define S_IFDIR 0040000 /* directory */
-#endif
-#ifndef S_IFREG
-  #define S_IFREG 0100000 /* regular file */
-#endif
-#ifndef S_IFLNK
-  #define S_IFLNK 0120000 /* symbolic link */
-#endif
-
-/* Permission bits */
-#ifndef S_IRUSR
-  #define S_IRUSR 0000400 /* owner has read permission */
-#endif
-#ifndef S_IRGRP
-  #define S_IRGRP 0000040 /* group has read permission */
-#endif
-#ifndef S_IROTH
-  #define S_IROTH 0000004 /* others have read permission */
-#endif
-#ifndef S_IWGRP
-  #define S_IWGRP 0000020 /* group has write permission */
-#endif
-#ifndef S_IWOTH
-  #define S_IWOTH 0000002 /* others have write permission */
-#endif
 
 /*
   Typedef declarations.
@@ -2679,6 +2651,32 @@ static inline _ino_t MapFileIndexToIno(uint64_t fileIndex)
 
 MagickExport int NTStatWide(const char *path,struct stat *attributes)
 {
+#ifndef S_IFDIR
+  #define S_IFDIR 0040000 /* directory */
+#endif
+#ifndef S_IFREG
+  #define S_IFREG 0100000 /* regular file */
+#endif
+#ifndef S_IFLNK
+  #define S_IFLNK 0120000 /* symbolic link */
+#endif
+
+#ifndef S_IRUSR
+  #define S_IRUSR 0000400 /* owner has read permission */
+#endif
+#ifndef S_IRGRP
+  #define S_IRGRP 0000040 /* group has read permission */
+#endif
+#ifndef S_IROTH
+  #define S_IROTH 0000004 /* others have read permission */
+#endif
+#ifndef S_IWGRP
+  #define S_IWGRP 0000020 /* group has write permission */
+#endif
+#ifndef S_IWOTH
+  #define S_IWOTH 0000002 /* others have write permission */
+#endif
+
   int
     status;
 
