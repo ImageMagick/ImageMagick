@@ -2791,12 +2791,12 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           {
             D=(Da > 0.0) ? RoundToUnity(Dca/Da) : 0.0;
             S=(Sa > 0.0) ? RoundToUnity(Sca/Sa) : 0.0;
-            if (S <= 0.0)
+            if (fabs(S) < MagickEpsilon)
               blend=0.0;
             else
-              blend=1.0-(1.0-D)/S;
-            pixel=(double) QuantumRange*gamma*RoundToUnity(Sa*Da*
-              RoundToUnity(blend)+Sa*(1.0-Da)*S+Da*(1.0-Sa)*D);
+              blend=MagickMin(1.0,MagickMax(0.0,1.0-(1.0-D)/S));
+            pixel=(double) QuantumRange*gamma*RoundToUnity(Sa*Da*blend+Sa*
+              (1.0-Da)*S+Da*(1.0-Sa)*D);
             break;
           }
           case ColorDodgeCompositeOp:
@@ -2934,10 +2934,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           {
             S=(Sa > 0.0) ? (Sca/Sa) : 0.0;
             D=(Da > 0.0) ? (Dca/Da) : 0.0;
-            if (S <= 0.0)
+            if (fabs(S) < MagickEpsilon)
               blend=1.0;
             else
-              blend=MagickMin(1.0,D/S);
+              blend=RoundToUnity(D/S);
             pixel=(double) QuantumRange*RoundToUnity(Sca*(1.0-Da)+Dca*(1.0-Sa)+
               Sa*Da*blend);
             break;
@@ -2946,10 +2946,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           {
             S=(Sa > 0.0) ? (Sca/Sa) : 0.0;
             D=(Da > 0.0) ? (Dca/Da) : 0.0;
-            if (D <= 0.0)
+            if (fabs(D) < MagickEpsilon)
               blend=1.0;
             else
-              blend=MagickMin(1.0,S/D);
+              blend=RoundToUnity(S/D);
             pixel=(double) QuantumRange*RoundToUnity(Sca*(1.0-Da)+Dca*(1.0-Sa)+
               Sa*Da*blend);
             break;
