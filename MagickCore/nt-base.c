@@ -2661,6 +2661,9 @@ MagickExport int NTStatWide(const char *path,struct stat *attributes)
   #define S_IFLNK 0120000 /* symbolic link */
 #endif
 
+#ifndef S_IWUSR
+  #define S_IWUSR 0000200 /* owner have write permission */
+#endif
 #ifndef S_IRUSR
   #define S_IRUSR 0000400 /* owner has read permission */
 #endif
