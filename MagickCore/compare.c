@@ -334,7 +334,7 @@ static MagickBooleanType GetAESimilarity(const Image *image,
   SetImageCompareBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
-#if defined(MMAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(similarity,status) \
     magick_number_threads(image,image,rows,1)
 #endif
