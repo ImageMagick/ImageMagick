@@ -30,18 +30,17 @@ extern "C" {
 static inline void SetImageCompareBounds(const Image *image,
   const Image *reconstruct_image,size_t *columns,size_t *rows)
 {
-  const char
-    *artifact;
-
-  *columns=MagickMax(image->columns,reconstruct_image->columns);
-  *rows=MagickMax(image->rows,reconstruct_image->rows);
-  artifact=GetImageArtifact(image,"compare:virtual-pixels");
-  if ((artifact != (const char *) NULL) &&
-      (IsStringTrue(artifact) == MagickFalse))
+  const char *artifact = GetImageArtifact(image,"compare:virtual-pixels");
+  MagickBooleanType vp = (artifact != (const char *) NULL) ?
+    IsStringTrue(artifact) : MagickFalse;
+  if (vp == MagickFalse)
     {
       *columns=MagickMin(image->columns,reconstruct_image->columns);
       *rows=MagickMin(image->rows,reconstruct_image->rows);
+      return;
     }
+  *columns=MagickMax(image->columns,reconstruct_image->columns);
+  *rows=MagickMax(image->rows,reconstruct_image->rows);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
