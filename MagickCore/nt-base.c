@@ -74,7 +74,10 @@
 #define MAP_FAILED      ((void *)(LONG_PTR)-1)
 #endif
 #define MaxWideByteExtent  100
-
+#ifndef S_IFLNK
+#define S_IFLNK 0120000 /* POSIX value for symbolic link */
+#endif
+
 /*
   Typedef declarations.
 */
@@ -2688,11 +2691,11 @@ MagickExport int NTStatWide(const char *path,struct stat *attributes)
                   attributes->st_mode|=S_IFLNK;
                 else
                   attributes->st_mode|=S_IFREG;
-                if (file_info.dwFileAttributes & FILE_ATTRIBUTE_READONLY)
-                  attributes->st_mode|=S_IRUSR | S_IRGRP | S_IROTH;
-                else
-                  attributes->st_mode|=S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP |
-                    S_IROTH | S_IWOTH;
+              if (file_info.dwFileAttributes & FILE_ATTRIBUTE_READONLY)
+                attributes->st_mode|=S_IRUSR | S_IRGRP | S_IROTH;
+              else
+                attributes->st_mode|=S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP |
+                  S_IROTH | S_IWOTH;
             }
           CloseHandle(handle);
         }
