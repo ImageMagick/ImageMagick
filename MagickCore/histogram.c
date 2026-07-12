@@ -853,8 +853,8 @@ MagickExport MagickBooleanType IsHistogramImage(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsPaletteImage() returns MagickTrue if the image is PseudoClass and has 256
-%  unique colors or less.
+%  IsPaletteImage() returns MagickTrue if the image is PseudoClass and has
+%  MaxColormapSize unique colors or less.
 %
 %  The format of the IsPaletteImage method is:
 %
