@@ -992,7 +992,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     *exif_profile = (StringInfo *) NULL,
     *xmp_profile = (StringInfo *) NULL;
 
-  double
+  float
     distance = -1.0;
 
   JxlBasicInfo
