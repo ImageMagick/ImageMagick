@@ -992,7 +992,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     *exif_profile = (StringInfo *) NULL,
     *xmp_profile = (StringInfo *) NULL;
 
-  float
+  double
     distance = -1.0;
 
   JxlBasicInfo
@@ -1196,7 +1196,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       if (distance <= 0.0)
         (void) JxlEncoderSetFrameLossless(frame_settings,1);
       else
-        (void) JxlEncoderSetFrameDistance(frame_settings,distance);
+        (void) JxlEncoderSetFrameDistance(frame_settings,(float) distance);
     }
   option=GetImageOption(image_info,"jxl:effort");
   if (option != (const char *) NULL)
