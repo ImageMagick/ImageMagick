@@ -15,13 +15,13 @@
 %                              December 1998                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2011 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999 ImageMagick Studio LLC, a non-profit organization           %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    https://imagemagick.org/license/                            %
+%    https://imagemagick.org/license/                                         %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -42,7 +42,8 @@
 #include <time.h>
 #include <assert.h>
 #include <math.h>
-#include "magick/MagickCore.h"
+#include "MagickCore/studio.h"
+#include "MagickCore/MagickCore.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -61,8 +62,8 @@
 %
 %  The format of the analyzeImage method is:
 %
-%      size_t analyzeImage(Image *images,const int argc,
-%        char **argv,ExceptionInfo *exception)
+%      size_t analyzeImage(Image *images,const int argc,char **argv,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -77,161 +78,209 @@
 %    o exception: return any errors or warnings in this structure.
 %
 */
-ModuleExport size_t analyzeImage(Image **images,const int argc,
-  const char **argv,ExceptionInfo *exception)
-{
-  char
-    text[MaxTextExtent];
 
+typedef struct _StatisticsInfo
+{
   double
     area,
     brightness,
-    brightness_mean,
-    brightness_standard_deviation,
-    brightness_kurtosis,
-    brightness_skewness,
-    brightness_sum_x,
-    brightness_sum_x2,
-    brightness_sum_x3,
-    brightness_sum_x4,
-    hue,
-    saturation,
-    saturation_mean,
-    saturation_standard_deviation,
-    saturation_kurtosis,
-    saturation_skewness,
-    saturation_sum_x,
-    saturation_sum_x2,
-    saturation_sum_x3,
-    saturation_sum_x4;
+    mean,
+    standard_deviation,
+    sum[5],
+    kurtosis,
+    skewness;
+} StatisticsInfo;
+
+static inline int GetMagickNumberThreads(const Image *source,
+  const Image *destination,const size_t chunk,int multithreaded)
+{
+#define MagickMax(x,y)  (((x) > (y)) ? (x) : (y))
+#define MagickMin(x,y)  (((x) < (y)) ? (x) : (y))
+
+  /*
+    Number of threads bounded by the amount of work and any thread resource
+    limit.  The limit is 2 if the pixel cache type is not memory or
+    memory-mapped.
+  */
+  if (multithreaded == 0)
+    return(1);
+  if (((GetImagePixelCacheType(source) != MemoryCache) &&
+       (GetImagePixelCacheType(source) != MapCache)) ||
+      ((GetImagePixelCacheType(destination) != MemoryCache) &&
+       (GetImagePixelCacheType(destination) != MapCache)))
+    return(MagickMax(MagickMin(GetMagickResourceLimit(ThreadResource),2),1));
+  return(MagickMax(MagickMin((ssize_t) GetMagickResourceLimit(ThreadResource),
+    (ssize_t) (chunk)/64),1));
+}
+
+ModuleExport size_t analyzeImage(Image **images,const int argc,
+  const char **argv,ExceptionInfo *exception)
+{
+#define AnalyzeImageFilterTag  "Filter/Analyze"
+#define magick_number_threads(source,destination,chunk,multithreaded) \
+  num_threads(GetMagickNumberThreads(source,destination,chunk,multithreaded))
+
+  char
+    text[MagickPathExtent];
 
   Image
     *image;
 
+  MagickBooleanType
+    status;
+
+  MagickOffsetType
+    progress;
+
   assert(images != (Image **) NULL);
   assert(*images != (Image *) NULL);
-  assert((*images)->signature == MagickSignature);
+  assert((*images)->signature == MagickCoreSignature);
   (void) argc;
   (void) argv;
   image=(*images);
+  status=MagickTrue;
+  progress=0;
   for ( ; image != (Image *) NULL; image=GetNextImageInList(image))
   {
     CacheView
       *image_view;
 
-    MagickBooleanType
-      status;
+    double
+      area;
 
     ssize_t
       y;
 
-    brightness_sum_x=0.0;
-    brightness_sum_x2=0.0;
-    brightness_sum_x3=0.0;
-    brightness_sum_x4=0.0;
-    brightness_mean=0.0;
-    brightness_standard_deviation=0.0;
-    brightness_kurtosis=0.0;
-    brightness_skewness=0.0;
-    saturation_sum_x=0.0;
-    saturation_sum_x2=0.0;
-    saturation_sum_x3=0.0;
-    saturation_sum_x4=0.0;
-    saturation_mean=0.0;
-    saturation_standard_deviation=0.0;
-    saturation_kurtosis=0.0;
-    saturation_skewness=0.0;
-    area=0.0;
+    StatisticsInfo
+      brightness,
+      saturation;
+
+    if (status == MagickFalse)
+      continue;
+    (void) memset(&brightness,0,sizeof(brightness));
+    (void) memset(&saturation,0,sizeof(saturation));
     status=MagickTrue;
-    image_view=AcquireCacheView(image);
+    image_view=AcquireVirtualCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp parallel for schedule(dynamic,4) shared(status)
+  #pragma omp parallel for schedule(static) \
+    shared(progress,status,brightness,saturation) \
+    magick_number_threads(image,image,image->rows,1)
 #endif
     for (y=0; y < (ssize_t) image->rows; y++)
     {
-      register const PixelPacket
+      const Quantum
         *p;
 
-      register ssize_t
+      ssize_t
+        i,
         x;
+
+      StatisticsInfo
+        local_brightness,
+        local_saturation;
 
       if (status == MagickFalse)
         continue;
       p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-      if (p == (const PixelPacket *) NULL)
+      if (p == (const Quantum *) NULL)
         {
           status=MagickFalse;
           continue;
         }
+      (void) memset(&local_brightness,0,sizeof(local_brightness));
+      (void) memset(&local_saturation,0,sizeof(local_saturation));
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        ConvertRGBToHSB(GetPixelRed(p),GetPixelGreen(p),
-          GetPixelBlue(p),&hue,&saturation,&brightness);
-        brightness*=QuantumRange;
-        brightness_sum_x+=brightness;
-        brightness_sum_x2+=brightness*brightness;
-        brightness_sum_x3+=brightness*brightness*brightness;
-        brightness_sum_x4+=brightness*brightness*brightness*brightness;
-        saturation*=QuantumRange;
-        saturation_sum_x+=saturation;
-        saturation_sum_x2+=saturation*saturation;
-        saturation_sum_x3+=saturation*saturation*saturation;
-        saturation_sum_x4+=saturation*saturation*saturation*saturation;
-        area++;
-        p++;
+        double
+          b,
+          h,
+          s;
+
+        ConvertRGBToHSL(GetPixelRed(image,p),GetPixelGreen(image,p),
+          GetPixelBlue(image,p),&h,&s,&b);
+        b*=QuantumRange;
+        for (i=1; i <= 4; i++)
+          local_brightness.sum[i]+=pow(b,(double) i);
+        s*=QuantumRange;
+        for (i=1; i <= 4; i++)
+          local_saturation.sum[i]+=pow(s,(double) i);
+        p+=GetPixelChannels(image);
+      }
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp critical (analyzeImage)
+#endif
+      for (i=1; i <= 4; i++)
+      {
+        brightness.sum[i]+=local_brightness.sum[i];
+        saturation.sum[i]+=local_saturation.sum[i];
       }
     }
     image_view=DestroyCacheView(image_view);
-    if (area <= 0.0)
-      break;
-    brightness_mean=brightness_sum_x/area;
-    (void) FormatMagickString(text,MaxTextExtent,"%g",brightness_mean);
-    (void) SetImageProperty(image,"filter:brightness:mean",text);
-    brightness_standard_deviation=sqrt(brightness_sum_x2/area-(brightness_sum_x/
-      area*brightness_sum_x/area));
-    (void) FormatMagickString(text,MaxTextExtent,"%g",
-      brightness_standard_deviation);
-    (void) SetImageProperty(image,"filter:brightness:standard-deviation",text);
-    if (brightness_standard_deviation != 0)
-      brightness_kurtosis=(brightness_sum_x4/area-4.0*brightness_mean*
-        brightness_sum_x3/area+6.0*brightness_mean*brightness_mean*
-        brightness_sum_x2/area-3.0*brightness_mean*brightness_mean*
-        brightness_mean*brightness_mean)/(brightness_standard_deviation*
-        brightness_standard_deviation*brightness_standard_deviation*
-        brightness_standard_deviation)-3.0;
-    (void) FormatMagickString(text,MaxTextExtent,"%g",brightness_kurtosis);
-    (void) SetImageProperty(image,"filter:brightness:kurtosis",text);
-    if (brightness_standard_deviation != 0)
-      brightness_skewness=(brightness_sum_x3/area-3.0*brightness_mean*
-        brightness_sum_x2/area+2.0*brightness_mean*brightness_mean*
-        brightness_mean)/(brightness_standard_deviation*
-        brightness_standard_deviation*brightness_standard_deviation);
-    (void) FormatMagickString(text,MaxTextExtent,"%g",brightness_skewness);
-    (void) SetImageProperty(image,"filter:brightness:skewness",text);
-    saturation_mean=saturation_sum_x/area;
-    (void) FormatMagickString(text,MaxTextExtent,"%g",saturation_mean);
-    (void) SetImageProperty(image,"filter:saturation:mean",text);
-    saturation_standard_deviation=sqrt(saturation_sum_x2/area-(saturation_sum_x/
-      area*saturation_sum_x/area));
-    (void) FormatMagickString(text,MaxTextExtent,"%g",
-      saturation_standard_deviation);
-    (void) SetImageProperty(image,"filter:saturation:standard-deviation",text);
-    if (saturation_standard_deviation != 0)
-      saturation_kurtosis=(saturation_sum_x4/area-4.0*saturation_mean*
-        saturation_sum_x3/area+6.0*saturation_mean*saturation_mean*
-        saturation_sum_x2/area-3.0*saturation_mean*saturation_mean*
-        saturation_mean*saturation_mean)/(saturation_standard_deviation*
-        saturation_standard_deviation*saturation_standard_deviation*
-        saturation_standard_deviation)-3.0;
-    (void) FormatMagickString(text,MaxTextExtent,"%g",saturation_kurtosis);
-    (void) SetImageProperty(image,"filter:saturation:kurtosis",text);
-    if (saturation_standard_deviation != 0)
-      saturation_skewness=(saturation_sum_x3/area-3.0*saturation_mean*
-        saturation_sum_x2/area+2.0*saturation_mean*saturation_mean*
-        saturation_mean)/(saturation_standard_deviation*
-        saturation_standard_deviation*saturation_standard_deviation);
-    (void) FormatMagickString(text,MaxTextExtent,"%g",saturation_skewness);
-    (void) SetImageProperty(image,"filter:saturation:skewness",text);
+    area=(double) image->columns*image->rows;
+    brightness.mean=brightness.sum[1]/area;
+    (void) FormatLocaleString(text,MagickPathExtent,"%g",brightness.mean);
+    (void) SetImageProperty(image,"filter:brightness.mean",text,exception);
+    brightness.standard_deviation=sqrt(brightness.sum[2]/area-
+      (brightness.sum[1]/area*brightness.sum[1]/area));
+    (void) FormatLocaleString(text,MagickPathExtent,"%g",
+      brightness.standard_deviation);
+    (void) SetImageProperty(image,"filter:brightness.standard-deviation",text,
+      exception);
+    if (fabs(brightness.standard_deviation) >= MagickEpsilon)
+      brightness.kurtosis=(brightness.sum[4]/area-4.0*brightness.mean*
+        brightness.sum[3]/area+6.0*brightness.mean*brightness.mean*
+        brightness.sum[2]/area-3.0*brightness.mean*brightness.mean*
+        brightness.mean*brightness.mean)/(brightness.standard_deviation*
+        brightness.standard_deviation*brightness.standard_deviation*
+        brightness.standard_deviation)-3.0;
+    (void) FormatLocaleString(text,MagickPathExtent,"%g",brightness.kurtosis);
+    (void) SetImageProperty(image,"filter:brightness.kurtosis",text,exception);
+    if (brightness.standard_deviation != 0)
+      brightness.skewness=(brightness.sum[3]/area-3.0*brightness.mean*
+        brightness.sum[2]/area+2.0*brightness.mean*brightness.mean*
+        brightness.mean)/(brightness.standard_deviation*
+        brightness.standard_deviation*brightness.standard_deviation);
+    (void) FormatLocaleString(text,MagickPathExtent,"%g",brightness.skewness);
+    (void) SetImageProperty(image,"filter:brightness.skewness",text,exception);
+    saturation.mean=saturation.sum[1]/area;
+    (void) FormatLocaleString(text,MagickPathExtent,"%g",saturation.mean);
+    (void) SetImageProperty(image,"filter:saturation.mean",text,exception);
+    saturation.standard_deviation=sqrt(saturation.sum[2]/area-
+      (saturation.sum[1]/area*saturation.sum[1]/area));
+    (void) FormatLocaleString(text,MagickPathExtent,"%g",
+      saturation.standard_deviation);
+    (void) SetImageProperty(image,"filter:saturation.standard-deviation",text,
+      exception);
+    if (fabs(saturation.standard_deviation) >= MagickEpsilon)
+      saturation.kurtosis=(saturation.sum[4]/area-4.0*saturation.mean*
+        saturation.sum[3]/area+6.0*saturation.mean*saturation.mean*
+        saturation.sum[2]/area-3.0*saturation.mean*saturation.mean*
+        saturation.mean*saturation.mean)/(saturation.standard_deviation*
+        saturation.standard_deviation*saturation.standard_deviation*
+        saturation.standard_deviation)-3.0;
+    (void) FormatLocaleString(text,MagickPathExtent,"%g",saturation.kurtosis);
+    (void) SetImageProperty(image,"filter:saturation.kurtosis",text,exception);
+    if (fabs(saturation.standard_deviation) >= MagickEpsilon)
+      saturation.skewness=(saturation.sum[3]/area-3.0*saturation.mean*
+        saturation.sum[2]/area+2.0*saturation.mean*saturation.mean*
+        saturation.mean)/(saturation.standard_deviation*
+        saturation.standard_deviation*saturation.standard_deviation);
+    (void) FormatLocaleString(text,MagickPathExtent,"%g",saturation.skewness);
+    (void) SetImageProperty(image,"filter:saturation.skewness",text,exception);
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp atomic
+#endif
+        progress++;
+        proceed=SetImageProgress(image,AnalyzeImageFilterTag,progress,
+          GetImageListLength(image));
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
   }
   return(MagickImageFilterSignature);
 }
