@@ -992,6 +992,9 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     *exif_profile = (StringInfo *) NULL,
     *xmp_profile = (StringInfo *) NULL;
 
+  double
+    distance = -1.0;
+
   JxlBasicInfo
     basic_info;
 
@@ -1156,6 +1159,21 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       JxlEncoderDestroy(jxl_info);
       ThrowWriterException(CoderError,"UnableToWriteImageData");
     }
+  option=GetImageOption(image_info,"jxl:distance");
+  if (option != (const char *) NULL)
+    distance=StringToDouble(option,(char **) NULL);
+  else
+    {
+      option=GetImageOption(image_info,"jxl:quality");
+      if (option != (const char *) NULL)
+        {
+          double quality = StringToDouble(option,(char **) NULL);
+          if (quality >= 100.0)
+            distance=0.0;
+          else
+            distance=(100.0-quality)/100.0*15.0;
+        }
+    }
   frame_settings=JxlEncoderFrameSettingsCreate(jxl_info,
     (JxlEncoderFrameSettings *) NULL);
   if (frame_settings == (JxlEncoderFrameSettings *) NULL)
@@ -1169,9 +1187,17 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       (void) JxlEncoderSetFrameDistance(frame_settings,0.f);
       (void) JxlEncoderSetFrameLossless(frame_settings,JXL_TRUE);
     }
-  else if (image_info->quality != 0)
-    (void) JxlEncoderSetFrameDistance(frame_settings,
-      JXLGetDistance((float) image_info->quality));
+  else
+    if (image_info->quality != 0)
+      (void) JxlEncoderSetFrameDistance(frame_settings,
+        JXLGetDistance((float) image_info->quality));
+  if (distance >= 0.0)
+    {
+      if (distance <= 0.0)
+        (void) JxlEncoderSetFrameLossless(frame_settings,1);
+      else
+        (void) JxlEncoderSetFrameDistance(frame_settings,(float) distance);
+    }
   option=GetImageOption(image_info,"jxl:effort");
   if (option != (const char *) NULL)
     (void) JxlEncoderFrameSettingsSetOption(frame_settings,

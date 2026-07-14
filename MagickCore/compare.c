@@ -334,7 +334,7 @@ static MagickBooleanType GetAESimilarity(const Image *image,
   SetImageCompareBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
-#if defined(MMAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(similarity,status) \
     magick_number_threads(image,image,rows,1)
 #endif
@@ -4101,11 +4101,14 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
   (void) CompositeImage(reconstruct_image,reconstruct,CopyCompositeOp,
     MagickTrue,0,0,exception);
   beta_image=SIMCrossCorrelationImage(image,reconstruct_image,exception);
-  reconstruct_image=DestroyImage(reconstruct_image);
   if (beta_image == (Image *) NULL)
-    ThrowMSESimilarityException();
+    {
+      reconstruct_image=DestroyImage(reconstruct_image);
+      ThrowMSESimilarityException();
+    }
   status=SIMMultiplyImage(beta_image,-2.0/reconstruct->columns/(double)
     reconstruct->rows,(const ChannelStatistics *) NULL,exception);
+  reconstruct_image=DestroyImage(reconstruct_image);
   if (status == MagickFalse)
     ThrowMSESimilarityException();
   /*
@@ -4684,6 +4687,10 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
   SimilarityInfo
     similarity_info = { 0.0, 0, 0 };
 
+  size_t
+    columns,
+    rows;
+
   ssize_t
     y;
 
@@ -4757,8 +4764,8 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
         "GeometryDoesNotContainImage","`%s'",image->filename);
       return((Image *) NULL);
     }
-  similarity_image=CloneImage(image,image->columns-reconstruct->columns+1,
-    image->rows-reconstruct->rows+1,MagickTrue,exception);
+  SetImageCompareBounds(image,reconstruct,&columns,&rows);
+  similarity_image=CloneImage(image,columns,rows,MagickTrue,exception);
   if (similarity_image == (Image *) NULL)
     return((Image *) NULL);
   similarity_image->depth=32;

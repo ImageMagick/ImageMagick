@@ -740,7 +740,8 @@ MagickExport MagickBooleanType IsFileResourceIdentityValid(const char *path)
       status=GetPathAttributes(path,&attributes);
       if (status != MagickFalse)
         if ((attributes.st_dev != temporary_attributes->st_dev) ||
-            (attributes.st_ino != temporary_attributes->st_ino))
+            (attributes.st_ino != temporary_attributes->st_ino) ||
+            (attributes.st_mode != temporary_attributes->st_mode))
           status=MagickFalse;
     }
   UnlockSemaphoreInfo(resource_semaphore[FileResource]);

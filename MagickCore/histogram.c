@@ -853,8 +853,8 @@ MagickExport MagickBooleanType IsHistogramImage(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsPaletteImage() returns MagickTrue if the image is PseudoClass and has 256
-%  unique colors or less.
+%  IsPaletteImage() returns MagickTrue if the image is PseudoClass and has
+%  MaxColormapSize unique colors or less.
 %
 %  The format of the IsPaletteImage method is:
 %
@@ -873,7 +873,7 @@ MagickExport MagickBooleanType IsPaletteImage(const Image *image)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->storage_class != PseudoClass)
     return(MagickFalse);
-  return((image->colors <= 256) ? MagickTrue : MagickFalse);
+  return((image->colors <= MaxColormapSize) ? MagickTrue : MagickFalse);
 }
 
 /*

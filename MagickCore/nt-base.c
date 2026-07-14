@@ -74,7 +74,7 @@
 #define MAP_FAILED      ((void *)(LONG_PTR)-1)
 #endif
 #define MaxWideByteExtent  100
-
+
 /*
   Typedef declarations.
 */
@@ -2651,6 +2651,35 @@ static inline _ino_t MapFileIndexToIno(uint64_t fileIndex)
 
 MagickExport int NTStatWide(const char *path,struct stat *attributes)
 {
+#ifndef S_IFDIR
+  #define S_IFDIR 0040000 /* directory */
+#endif
+#ifndef S_IFREG
+  #define S_IFREG 0100000 /* regular file */
+#endif
+#ifndef S_IFLNK
+  #define S_IFLNK 0120000 /* symbolic link */
+#endif
+
+#ifndef S_IWUSR
+  #define S_IWUSR 0000200 /* owner have write permission */
+#endif
+#ifndef S_IRUSR
+  #define S_IRUSR 0000400 /* owner has read permission */
+#endif
+#ifndef S_IRGRP
+  #define S_IRGRP 0000040 /* group has read permission */
+#endif
+#ifndef S_IROTH
+  #define S_IROTH 0000004 /* others have read permission */
+#endif
+#ifndef S_IWGRP
+  #define S_IWGRP 0000020 /* group has write permission */
+#endif
+#ifndef S_IWOTH
+  #define S_IWOTH 0000002 /* others have write permission */
+#endif
+
   int
     status;
 
@@ -2671,19 +2700,32 @@ MagickExport int NTStatWide(const char *path,struct stat *attributes)
           BY_HANDLE_FILE_INFORMATION
             file_info;
 
+          /*
+            POSIX emulation of Windows file attributes.
+          */
           if (GetFileInformationByHandle(handle,&file_info) != 0)
             {
-              /*
-                Map Windows file identity into st_dev/st_ino.
-              */
               attributes->st_dev=(dev_t) file_info.dwVolumeSerialNumber;
               attributes->st_ino=MapFileIndexToIno((((uint64_t)
                 file_info.nFileIndexHigh) << 32) | (uint64_t)
                 file_info.nFileIndexLow);
-          }
-        CloseHandle(handle);
-      }
-    }
+              attributes->st_mode=0;
+              if ((file_info.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0)
+                attributes->st_mode|=S_IFDIR;
+              else
+                if ((file_info.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0)
+                  attributes->st_mode|=S_IFLNK;
+                else
+                  attributes->st_mode|=S_IFREG;
+              if (file_info.dwFileAttributes & FILE_ATTRIBUTE_READONLY)
+                attributes->st_mode|=S_IRUSR | S_IRGRP | S_IROTH;
+              else
+                attributes->st_mode|=S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP |
+                  S_IROTH | S_IWOTH;
+            }
+          CloseHandle(handle);
+        }
+  }
   path_wide=(WCHAR *) RelinquishMagickMemory(path_wide);
   return(status);
 }
