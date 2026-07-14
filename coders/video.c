@@ -508,7 +508,12 @@ static MagickBooleanType CopyDelegateFile(const char *source,
   if (IsPathAuthorized(WritePolicyRights,destination) == MagickFalse)
     ThrowPolicyException(destination,MagickFalse);
   if (strcmp(destination,"-") == 0)
-    destination_file=fileno(stdout);
+    {
+      destination_file=fileno(stdout);
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__OS2__)
+      (void) setmode(destination_file,O_BINARY);
+#endif
+    }
   else
     destination_file=open_utf8(destination,O_WRONLY | O_BINARY | O_CREAT |
       O_TRUNC,S_MODE);
@@ -517,7 +522,8 @@ static MagickBooleanType CopyDelegateFile(const char *source,
   source_file=open_utf8(source,O_RDONLY | O_BINARY,0);
   if (source_file == -1)
     {
-      (void) close_utf8(destination_file);
+      if (strcmp(destination,"-") != 0)
+        (void) close_utf8(destination_file);
       return(MagickFalse);
     }
   quantum=(size_t) MagickMaxBufferExtent;
@@ -528,7 +534,8 @@ static MagickBooleanType CopyDelegateFile(const char *source,
   if (buffer == (unsigned char *) NULL)
     {
       (void) close_utf8(source_file);
-      (void) close_utf8(destination_file);
+      if (strcmp(destination,"-") != 0)
+        (void) close_utf8(destination_file);
       return(MagickFalse);
     }
   length=0;
