@@ -6286,7 +6286,7 @@ static void LogPixelChannels(const Image *image)
     }
     if (image->colorspace ==  UndefinedColorspace)
       {
-        (void) FormatLocaleString(channel_name,MagickPathExtent,"%.20g",
+        (void) FormatLocaleString(channel_name,MagickPathExtent,"%.17g",
           (double) channel);
         name=(const char *) channel_name;
       }
@@ -6300,7 +6300,7 @@ static void LogPixelChannels(const Image *image)
     if (*traits == '\0')
       (void) ConcatenateMagickString(traits,"undefined,",MagickPathExtent);
     traits[strlen(traits)-1]='\0';
-    (void) LogMagickEvent(PixelEvent,GetMagickModule(),"  %.20g: %s (%s)",
+    (void) LogMagickEvent(PixelEvent,GetMagickModule(),"  %.17g: %s (%s)",
       (double) i,name,traits);
   }
 }

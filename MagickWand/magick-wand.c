@@ -123,7 +123,7 @@ WandExport MagickWand *CloneMagickWand(const MagickWand *wand)
   clone_wand=(MagickWand *) AcquireCriticalMemory(sizeof(*clone_wand));
   (void) memset(clone_wand,0,sizeof(*clone_wand));
   clone_wand->id=AcquireWandId();
-  (void) FormatLocaleString(clone_wand->name,MagickPathExtent,"%s-%.20g",
+  (void) FormatLocaleString(clone_wand->name,MagickPathExtent,"%s-%.17g",
     MagickWandId,(double) clone_wand->id);
   clone_wand->exception=AcquireExceptionInfo();
   InheritException(clone_wand->exception,wand->exception);
@@ -1082,7 +1082,7 @@ WandExport MagickWand *NewMagickWand(void)
       (char *) NULL);
   (void) memset(wand,0,sizeof(*wand));
   wand->id=AcquireWandId();
-  (void) FormatLocaleString(wand->name,MagickPathExtent,"%s-%.20g",MagickWandId,
+  (void) FormatLocaleString(wand->name,MagickPathExtent,"%s-%.17g",MagickWandId,
     (double) wand->id);
   wand->images=NewImageList();
   wand->image_info=AcquireImageInfo();

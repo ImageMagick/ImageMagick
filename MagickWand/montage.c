@@ -413,7 +413,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
                 image_info->filename,(int) scene,scene_filename,exception);
               if (LocaleCompare(filename,image_info->filename) == 0)
                 (void) FormatLocaleString(scene_filename,MagickPathExtent,
-                  "%s.%.20g",image_info->filename,(double) scene);
+                  "%s.%.17g",image_info->filename,(double) scene);
               images=ReadImages(image_info,scene_filename,exception);
             }
           status&=(MagickStatusType) (images != (Image *) NULL) &&

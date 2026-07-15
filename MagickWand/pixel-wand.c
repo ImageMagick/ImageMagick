@@ -151,7 +151,7 @@ WandExport PixelWand *ClonePixelWand(const PixelWand *wand)
   clone_wand=(PixelWand *) AcquireCriticalMemory(sizeof(*clone_wand));
   (void) memset(clone_wand,0,sizeof(*clone_wand));
   clone_wand->id=AcquireWandId();
-  (void) FormatLocaleString(clone_wand->name,MagickPathExtent,"%s-%.20g",
+  (void) FormatLocaleString(clone_wand->name,MagickPathExtent,"%s-%.17g",
     PixelWandId,(double) clone_wand->id);
   clone_wand->exception=AcquireExceptionInfo();
   InheritException(clone_wand->exception,wand->exception);
@@ -388,7 +388,7 @@ WandExport PixelWand *NewPixelWand(void)
   wand=(PixelWand *) AcquireCriticalMemory(sizeof(*wand));
   (void) memset(wand,0,sizeof(*wand));
   wand->id=AcquireWandId();
-  (void) FormatLocaleString(wand->name,MagickPathExtent,"%s-%.20g",PixelWandId,
+  (void) FormatLocaleString(wand->name,MagickPathExtent,"%s-%.17g",PixelWandId,
     (double) wand->id);
   wand->exception=AcquireExceptionInfo();
   GetPixelInfo((Image *) NULL,&wand->pixel);

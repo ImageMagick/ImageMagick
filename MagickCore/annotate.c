@@ -2312,7 +2312,7 @@ static MagickBooleanType RenderPostscript(Image *image,
   text=DestroyString(text);
   (void) FormatLocaleFile(file,"showpage\n");
   (void) fclose(file);
-  (void) FormatLocaleString(geometry,MagickPathExtent,"%.20gx%.20g+0+0!",
+  (void) FormatLocaleString(geometry,MagickPathExtent,"%.17gx%.17g+0+0!",
     floor(extent.x+0.5),floor(extent.y+0.5));
   annotate_info=AcquireImageInfo();
   (void) FormatLocaleString(annotate_info->filename,MagickPathExtent,"ps:%s",
@@ -2358,7 +2358,7 @@ static MagickBooleanType RenderPostscript(Image *image,
       crop_info.y=CastDoubleToSsizeT(ceil((resolution.y/DefaultResolution)*
         extent.y/8.0-0.5));
       (void) FormatLocaleString(geometry,MagickPathExtent,
-        "%.20gx%.20g%+.20g%+.20g",(double) crop_info.width,(double)
+        "%.17gx%.17g%+.20g%+.20g",(double) crop_info.width,(double)
         crop_info.height,(double) crop_info.x,(double) crop_info.y);
       (void) TransformImage(&annotate_image,geometry,(char *) NULL,exception);
     }

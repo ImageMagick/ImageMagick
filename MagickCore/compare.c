@@ -2078,7 +2078,7 @@ static MagickBooleanType GetSSIMSimularity(const Image *image,
   artifact=GetImageArtifact(image,"compare:ssim-sigma");
   if (artifact != (const char *) NULL)
     sigma=StringToDouble(artifact,(char **) NULL);
-  (void) FormatLocaleString(geometry,MagickPathExtent,"gaussian:%.20gx%.20g",
+  (void) FormatLocaleString(geometry,MagickPathExtent,"gaussian:%.17gx%.17g",
     radius,sigma);
   kernel_info=AcquireKernelInfo(geometry,exception);
   if (kernel_info == (KernelInfo *) NULL)

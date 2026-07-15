@@ -479,19 +479,19 @@ static Image *ReadICONImage(const ImageInfo *image_info,
         if (image->debug != MagickFalse)
           {
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              " scene    = %.20g",(double) i);
+              " scene    = %.17g",(double) i);
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "   size   = %.20g",(double) size);
+              "   size   = %.17g",(double) size);
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "   width  = %.20g",(double) image->columns);
+              "   width  = %.17g",(double) image->columns);
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "   height = %.20g",(double) image->rows);
+              "   height = %.17g",(double) image->rows);
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "   colors = %.20g",(double ) number_colors);
+              "   colors = %.17g",(double ) number_colors);
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "   planes = %.20g",(double) planes);
+              "   planes = %.17g",(double) planes);
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "   bpp    = %.20g",(double) bits_per_pixel);
+              "   bpp    = %.17g",(double) bits_per_pixel);
           }
       if ((number_colors != 0) || (bits_per_pixel <= 16U))
         {

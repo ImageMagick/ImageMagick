@@ -597,7 +597,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
         Crop is not within virtual canvas, return 1 pixel transparent image.
       */
       (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
-        "GeometryDoesNotContainImage","(\"%.20gx%.20g%+.20g%+.20g\") `%s'",
+        "GeometryDoesNotContainImage","(\"%.17gx%.17g%+.20g%+.20g\") `%s'",
         (double) geometry->width,(double) geometry->height,
         (double) geometry->x,(double) geometry->y,image->filename);
       crop_image=CloneImage(image,1,1,MagickTrue,exception);
@@ -748,7 +748,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
         transform[MagickPathExtent];
 
       (void) FormatLocaleString(transform,MagickPathExtent,
-        "crop %.20gx%.20g %.20gx%.20g%+.20g%+.20g",
+        "crop %.17gx%.17g %.17gx%.17g%+.20g%+.20g",
         (double) image->columns,(double) image->rows,(double) page.width,
         (double) page.height,(double) page.x,(double) page.y);
       AppendImageProfileProperty(crop_image,"hdrgm","hdrgm:Transform",
@@ -1311,7 +1311,7 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
         transform[MagickPathExtent];
 
       (void) FormatLocaleString(transform,MagickPathExtent,
-        "flip %.20gx%.20g",(double) image->columns,(double) image->rows);
+        "flip %.17gx%.17g",(double) image->columns,(double) image->rows);
       AppendImageProfileProperty(flip_image,"hdrgm","hdrgm:Transform",
         transform,exception);
     }
@@ -1457,7 +1457,7 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
         transform[MagickPathExtent];
 
       (void) FormatLocaleString(transform,MagickPathExtent,
-        "flop %.20gx%.20g",(double) image->columns,(double) image->rows);
+        "flop %.17gx%.17g",(double) image->columns,(double) image->rows);
       AppendImageProfileProperty(flop_image,"hdrgm","hdrgm:Transform",
         transform,exception);
     }
@@ -2269,7 +2269,7 @@ MagickExport Image *TransposeImage(const Image *image,ExceptionInfo *exception)
         transform[MagickPathExtent];
 
       (void) FormatLocaleString(transform,MagickPathExtent,
-        "transpose %.20gx%.20g",(double) image->columns,
+        "transpose %.17gx%.17g",(double) image->columns,
         (double) image->rows);
       AppendImageProfileProperty(transpose_image,"hdrgm","hdrgm:Transform",
         transform,exception);
@@ -2426,7 +2426,7 @@ MagickExport Image *TransverseImage(const Image *image,ExceptionInfo *exception)
         transform[MagickPathExtent];
 
       (void) FormatLocaleString(transform,MagickPathExtent,
-        "transverse %.20gx%.20g",(double) image->columns,
+        "transverse %.17gx%.17g",(double) image->columns,
         (double) image->rows);
       AppendImageProfileProperty(transverse_image,"hdrgm","hdrgm:Transform",
         transform,exception);

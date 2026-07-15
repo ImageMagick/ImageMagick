@@ -1654,9 +1654,9 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
                 artifact=GetImageArtifact(image,
                   "connected-components:exclude-ids");
                 if (IsStringTrue(artifact) == MagickFalse)
-                  (void) fprintf(stdout,"%.20g: ",(double) object[i].id);
+                  (void) fprintf(stdout,"%.17g: ",(double) object[i].id);
                 (void) fprintf(stdout,
-                  "%.20gx%.20g%+.20g%+.20g %.1f,%.1f %.*g %s",(double)
+                  "%.17gx%.17g%+.20g%+.20g %.1f,%.1f %.*g %s",(double)
                   object[i].bounding_box.width,(double)
                   object[i].bounding_box.height,(double)
                   object[i].bounding_box.x,(double) object[i].bounding_box.y,

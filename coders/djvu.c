@@ -658,7 +658,7 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
                 image->depth =  8UL;    /* i only support that? */
         }
 #if DEBUG
-        printf("now filling %.20g x %.20g\n",(double) image->columns,(double)
+        printf("now filling %.17g x %.17g\n",(double) image->columns,(double)
           image->rows);
 #endif
 
@@ -688,7 +688,7 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
 
 
 #if DEBUG
-        printf("END: finished filling %.20g x %.20g\n",(double) image->columns,
+        printf("END: finished filling %.17g x %.17g\n",(double) image->columns,
           (double) image->rows);
 #endif
 

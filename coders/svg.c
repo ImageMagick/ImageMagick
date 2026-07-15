@@ -312,14 +312,14 @@ static Image *RenderSVGImage(const ImageInfo *image_info,Image *image,
   (void) FormatLocaleString(output_filename,MagickPathExtent,"%s.png",unique);
   (void) RelinquishUniqueFileResource(unique);
   density=AcquireString("");
-  (void) FormatLocaleString(density,MagickPathExtent,"%.20g",
+  (void) FormatLocaleString(density,MagickPathExtent,"%.17g",
     sqrt(image->resolution.x*image->resolution.y));
   (void) FormatLocaleString(background,MagickPathExtent,
-    "rgb(%.20g%%,%.20g%%,%.20g%%)",
+    "rgb(%.17g%%,%.17g%%,%.17g%%)",
     100.0*QuantumScale*image->background_color.red,
     100.0*QuantumScale*image->background_color.green,
     100.0*QuantumScale*image->background_color.blue);
-  (void) FormatLocaleString(opacity,MagickPathExtent,"%.20g",QuantumScale*
+  (void) FormatLocaleString(opacity,MagickPathExtent,"%.17g",QuantumScale*
     image->background_color.alpha);
   (void) FormatLocaleString(command,MagickPathExtent,
     GetDelegateCommands(delegate_info),input_filename,output_filename,density,
@@ -2580,7 +2580,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
           svg_info->height=0;
           if (svg_info->bounds.height >= MagickEpsilon)
             svg_info->height=CastDoubleToSizeT(svg_info->bounds.height+0.5);
-          (void) FormatLocaleFile(svg_info->file,"viewbox 0 0 %.20g %.20g\n",
+          (void) FormatLocaleFile(svg_info->file,"viewbox 0 0 %.17g %.17g\n",
             (double) svg_info->width,(double) svg_info->height);
           sx=MagickSafeReciprocal(svg_info->view_box.width)*svg_info->width;
           sy=MagickSafeReciprocal(svg_info->view_box.height)*svg_info->height;
@@ -2997,7 +2997,7 @@ static void SVGCharacters(void *context,const xmlChar *c,int length)
     Receiving some characters from the parser.
   */
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  SAX.characters(%s,%.20g)",c,(double) length);
+    "  SAX.characters(%s,%.17g)",c,(double) length);
   parser=(xmlParserCtxtPtr) context;
   svg_info=(SVGInfo *) parser->_private;
   text=(char *) AcquireQuantumMemory((size_t) length+1,sizeof(*text));
@@ -3735,8 +3735,8 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
       "<svg version=\"1.1\" id=\"Layer_1\" "
       "xmlns=\"http://www.w3.org/2000/svg\" "
       "xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\" "
-      "width=\"%.20gpx\" height=\"%.20gpx\" viewBox=\"0 0 %.20g %.20g\" "
-      "enable-background=\"new 0 0 %.20g %.20g\" xml:space=\"preserve\">",
+      "width=\"%.17gpx\" height=\"%.17gpx\" viewBox=\"0 0 %.17g %.17g\" "
+      "enable-background=\"new 0 0 %.17g %.17g\" xml:space=\"preserve\">",
       (double) image->columns,(double) image->rows,
       (double) image->columns,(double) image->rows,
       (double) image->columns,(double) image->rows);
@@ -3757,8 +3757,8 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
     base64=Base64Encode(blob,blob_length,&encode_length);
     blob=(unsigned char *) RelinquishMagickMemory(blob);
     (void) FormatLocaleString(message,MagickPathExtent,
-      "  <image id=\"image%.20g\" width=\"%.20g\" height=\"%.20g\" "
-      "x=\"%.20g\" y=\"%.20g\"\n    xlink:href=\"data:image/png;base64,",
+      "  <image id=\"image%.17g\" width=\"%.17g\" height=\"%.17g\" "
+      "x=\"%.17g\" y=\"%.17g\"\n    xlink:href=\"data:image/png;base64,",
       (double) image->scene,(double) image->columns,(double) image->rows,
       (double) image->page.x,(double) image->page.y);
     (void) WriteBlobString(image,message);
@@ -3861,7 +3861,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
   (void) WriteBlobString(image,
     "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n");
   (void) FormatLocaleString(message,MagickPathExtent,
-    "<svg width=\"%.20g\" height=\"%.20g\" xmlns=\"http://www.w3.org/2000/svg\">\n",
+    "<svg width=\"%.17g\" height=\"%.17g\" xmlns=\"http://www.w3.org/2000/svg\">\n",
     (double) image->columns,(double) image->rows);
   (void) WriteBlobString(image,message);
   /*

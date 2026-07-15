@@ -1345,7 +1345,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             }
           }
           if (subimage_search != MagickFalse)
-            (void) FormatLocaleFile(stderr," @ %.20g,%.20g [%.*g]",
+            (void) FormatLocaleFile(stderr," @ %.17g,%.17g [%.*g]",
               (double) offset.x,(double) offset.y,GetMagickPrecision(),
               similarity_metric);
         }
@@ -1359,7 +1359,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
           (void) FormatLocaleFile(stderr,"Image: %s\n",image->filename);
           if ((reconstruct_image->columns != image->columns) ||
               (reconstruct_image->rows != image->rows))
-            (void) FormatLocaleFile(stderr,"Offset: %.20g,%.20g\n",(double)
+            (void) FormatLocaleFile(stderr,"Offset: %.17g,%.17g\n",(double)
               difference_image->page.x,(double) difference_image->page.y);
           (void) FormatLocaleFile(stderr,"  Channel distortion: %s\n",
             CommandOptionToMnemonic(MagickMetricOptions,(ssize_t) metric));
@@ -1579,7 +1579,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             channel_distortion);
           if (subimage_search != MagickFalse)
             {
-              (void) FormatLocaleFile(stderr,"   Offset: %.20g,%.20g\n",
+              (void) FormatLocaleFile(stderr,"   Offset: %.17g,%.17g\n",
                 (double) difference_image->page.x,(double)
                 difference_image->page.y);
               (void) FormatLocaleFile(stderr,"   Similarity metric: %*g\n",

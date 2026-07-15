@@ -775,7 +775,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               }
             }
           (void) FormatLocaleString(text,MagickPathExtent,
-            "%.20gx%.20g%+.20g%+.20g",(double) geometry.width,(double)
+            "%.17gx%.17g%+.20g%+.20g",(double) geometry.width,(double)
             geometry.height,(double) geometry.x,(double) geometry.y);
           CloneString(&draw_info->geometry,text);
           draw_info->affine.sx=affine.sx*current.sx+affine.ry*current.rx;
@@ -1793,7 +1793,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             }
           image=msl_info->image[n];
           (void) FormatLocaleString(composite_geometry,MagickPathExtent,
-            "%.20gx%.20g%+.20g%+.20g",(double) composite_image->columns,
+            "%.17gx%.17g%+.20g%+.20g",(double) composite_image->columns,
             (double) composite_image->rows,(double) geometry.x,(double)
             geometry.y);
           flags=ParseGravityGeometry(image,composite_geometry,&geometry,
@@ -2425,7 +2425,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               }
             }
           (void) FormatLocaleString(text,MagickPathExtent,
-            "%.20gx%.20g%+.20g%+.20g",(double) geometry.width,(double)
+            "%.17gx%.17g%+.20g%+.20g",(double) geometry.width,(double)
             geometry.height,(double) geometry.x,(double) geometry.y);
           CloneString(&draw_info->geometry,text);
           draw_info->affine.sx=affine.sx*current.sx+affine.ry*current.rx;
@@ -3023,7 +3023,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               {
                 if (LocaleCompare(keyword,"height") == 0)
                   {
-                    (void) FormatLocaleString(value,MagickPathExtent,"%.20g",
+                    (void) FormatLocaleString(value,MagickPathExtent,"%.17g",
                       (double) msl_info->image[n]->rows);
                     (void) SetImageProperty(msl_info->attributes[n],key,value,
                       exception);
@@ -3037,7 +3037,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               {
                 if (LocaleCompare(keyword,"width") == 0)
                   {
-                    (void) FormatLocaleString(value,MagickPathExtent,"%.20g",
+                    (void) FormatLocaleString(value,MagickPathExtent,"%.17g",
                       (double) msl_info->image[n]->columns);
                     (void) SetImageProperty(msl_info->attributes[n],key,value,
                       exception);
@@ -4625,7 +4625,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               }
             }
           (void) FormatLocaleString(text,MagickPathExtent,
-            "%.20gx%.20g%+.20g%+.20g",(double) geometry.width,(double)
+            "%.17gx%.17g%+.20g%+.20g",(double) geometry.width,(double)
             geometry.height,(double) geometry.x,(double) geometry.y);
           CloneString(&draw_info->geometry,text);
           draw_info->affine.sx=affine.sx*current.sx+affine.ry*current.rx;
@@ -5898,11 +5898,11 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 if (image_option != (const char *) NULL)
                   flags=ParseAbsoluteGeometry(image_option,&page_geometry);
                 flags=ParseAbsoluteGeometry(value,&page_geometry);
-                (void) FormatLocaleString(page,MagickPathExtent,"%.20gx%.20g",
+                (void) FormatLocaleString(page,MagickPathExtent,"%.17gx%.17g",
                   (double) page_geometry.width,(double) page_geometry.height);
                 if (((flags & XValue) != 0) || ((flags & YValue) != 0))
                   (void) FormatLocaleString(page,MagickPathExtent,
-                    "%.20gx%.20g%+.20g%+.20g",(double) page_geometry.width,
+                    "%.17gx%.17g%+.20g%+.20g",(double) page_geometry.width,
                     (double) page_geometry.height,(double) page_geometry.x,
                     (double) page_geometry.y);
                 (void) SetImageOption(msl_info->image_info[n],keyword,page);

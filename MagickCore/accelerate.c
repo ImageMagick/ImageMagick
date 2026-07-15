@@ -282,7 +282,7 @@ static cl_mem createKernelInfo(MagickCLDevice device,const double radius,
     i;
 
   (void) FormatLocaleString(geometry,MagickPathExtent,
-    "blur:%.20gx%.20g;blur:%.20gx%.20g+90",radius,sigma,radius,sigma);
+    "blur:%.17gx%.17g;blur:%.17gx%.17g+90",radius,sigma,radius,sigma);
   kernel=AcquireKernelInfo(geometry,exception);
   if (kernel == (KernelInfo *) NULL)
   {

@@ -257,10 +257,10 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) ImageToFile(image,draw_info->font,exception);
   ConcatenateString(&draw_info->primitive,"push graphic-context\n");
   (void) FormatLocaleString(buffer,MagickPathExtent,
-    " viewbox 0 0 %.20g %.20g\n",(double) image->columns,(double) image->rows);
+    " viewbox 0 0 %.17g %.17g\n",(double) image->columns,(double) image->rows);
   ConcatenateString(&draw_info->primitive,buffer);
   ConcatenateString(&draw_info->primitive," font-size 18\n");
-  (void) FormatLocaleString(buffer,MagickPathExtent," text 10,%.20g '",
+  (void) FormatLocaleString(buffer,MagickPathExtent," text 10,%.17g '",
     (double) y);
   ConcatenateString(&draw_info->primitive,buffer);
   text=EscapeString(Text,'"');
@@ -274,12 +274,12 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     y+=i+12;
     ConcatenateString(&draw_info->primitive," font-size 18\n");
     (void) FormatLocaleString(buffer,MagickPathExtent,
-      " text 10,%.20g '%.20g'\n",(double) y,(double) i);
+      " text 10,%.17g '%.17g'\n",(double) y,(double) i);
     ConcatenateString(&draw_info->primitive,buffer);
-    (void) FormatLocaleString(buffer,MagickPathExtent," font-size %.20g\n",
+    (void) FormatLocaleString(buffer,MagickPathExtent," font-size %.17g\n",
       (double) i);
     ConcatenateString(&draw_info->primitive,buffer);
-    (void) FormatLocaleString(buffer,MagickPathExtent," text 50,%.20g "
+    (void) FormatLocaleString(buffer,MagickPathExtent," text 50,%.17g "
       "'That which does not destroy me, only makes me stronger.'\n",(double) y);
     ConcatenateString(&draw_info->primitive,buffer);
     if (i >= 24)

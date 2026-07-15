@@ -1112,9 +1112,9 @@ MagickExport ssize_t FormatMagickSize(const MagickSizeType size,
   if (strstr(format,"e+") == (char *) NULL)
     {
       if (suffix == (const char *) NULL)
-        count=FormatLocaleString(format,length,"%.20g%s",extent,units[0]);
+        count=FormatLocaleString(format,length,"%.17g%s",extent,units[0]);
       else
-        count=FormatLocaleString(format,length,"%.20g%s%s",extent,units[0],
+        count=FormatLocaleString(format,length,"%.17g%s%s",extent,units[0],
           suffix);
       return(count);
     }
@@ -1506,7 +1506,7 @@ MagickExport void PrintStringInfo(FILE *file,const char *id,
   for (i=0; i < string_info->length; i++)
     if ((p[i] < 32) && (isspace((int)p[i]) == 0))
       break;
-  (void) FormatLocaleFile(file,"%s(%.20g):\n",id,(double) string_info->length);
+  (void) FormatLocaleFile(file,"%s(%.17g):\n",id,(double) string_info->length);
   if (i == string_info->length)
    {
      for (i = 0; i < string_info->length; i++)

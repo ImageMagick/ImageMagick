@@ -654,7 +654,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
         &sans,&sans);
     y_offset+=(ssize_t) title_offset;
     (void) FormatLocaleString(montage->montage,MagickPathExtent,
-      "%.20gx%.20g%+.20g%+.20g",(double) ((ssize_t) extract_info.width+
+      "%.17gx%.17g%+.20g%+.20g",(double) ((ssize_t) extract_info.width+
       (extract_info.x+(ssize_t) border_width)*2),(double) ((ssize_t)
       extract_info.height+(extract_info.y+(ssize_t) border_width)*2+(double)
       ((metrics.ascent-metrics.descent+4)*number_lines+
@@ -694,7 +694,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
         (void) GetTypeMetrics(image_list[0],draw_clone_info,&tile_metrics,
           exception);
         (void) FormatLocaleString(tile_geometry,MagickPathExtent,
-          "%.20gx%.20g%+.20g%+.20g",(double) montage->columns,(double)
+          "%.17gx%.17g%+.20g%+.20g",(double) montage->columns,(double)
           (tile_metrics.ascent-tile_metrics.descent),0.0,
           (double) extract_info.y+4);
         (void) CloneString(&draw_clone_info->geometry,tile_geometry);
@@ -771,7 +771,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
       if (image->gravity != UndefinedGravity)
         tile_image->gravity=image->gravity;
       (void) FormatLocaleString(tile_geometry,MagickPathExtent,
-        "%.20gx%.20g+0+0",(double) image->columns,(double) image->rows);
+        "%.17gx%.17g+0+0",(double) image->columns,(double) image->rows);
       flags=ParseGravityGeometry(tile_image,tile_geometry,&geometry,exception);
       x=geometry.x+(ssize_t) border_width;
       y=geometry.y+(ssize_t) border_width;
@@ -835,7 +835,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
                 Annotate composite tile with label.
               */
               (void) FormatLocaleString(tile_geometry,MagickPathExtent,
-                "%.20gx%.20g%+.20g%+.20g",(double) ((montage_info->frame ?
+                "%.17gx%.17g%+.20g%+.20g",(double) ((montage_info->frame ?
                 image->columns : width)-2*border_width),(double)
                 (metrics.ascent-metrics.descent+4)*MultilineCensus(value),
                 (double) (x_offset+(ssize_t) border_width),(double)

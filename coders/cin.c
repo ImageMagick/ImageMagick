@@ -590,12 +590,12 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
   cin.origination.x_offset=ReadBlobSignedLong(image);
   offset+=4;
   if ((size_t) cin.origination.x_offset != ~0UL)
-    (void) FormatImageProperty(image,"dpx:origination.x_offset","%.20g",
+    (void) FormatImageProperty(image,"dpx:origination.x_offset","%.17g",
       (double) cin.origination.x_offset);
   cin.origination.y_offset=(ssize_t) ReadBlobLong(image);
   offset+=4;
   if ((size_t) cin.origination.y_offset != ~0UL)
-    (void) FormatImageProperty(image,"dpx:origination.y_offset","%.20g",
+    (void) FormatImageProperty(image,"dpx:origination.y_offset","%.17g",
       (double) cin.origination.y_offset);
   offset+=ReadBlob(image,sizeof(cin.origination.filename),(unsigned char *)
     cin.origination.filename);
@@ -670,7 +670,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
       cin.film.prefix=ReadBlobLong(image);
       offset+=4;
       if (cin.film.prefix != ~0UL)
-        (void) FormatImageProperty(image,"dpx:film.prefix","%.20g",(double)
+        (void) FormatImageProperty(image,"dpx:film.prefix","%.17g",(double)
           cin.film.prefix);
       cin.film.count=ReadBlobLong(image);
       offset+=4;
@@ -681,7 +681,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
       cin.film.frame_position=ReadBlobLong(image);
       offset+=4;
       if (cin.film.frame_position != ~0UL)
-        (void) FormatImageProperty(image,"dpx:film.frame_position","%.20g",
+        (void) FormatImageProperty(image,"dpx:film.frame_position","%.17g",
           (double) cin.film.frame_position);
       cin.film.frame_rate=ReadBlobFloat(image);
       offset+=4;

@@ -1511,7 +1511,7 @@ void Magick::Image::strokeWidth(const double strokeWidth_)
 
   modifyImage();
   options()->strokeWidth(strokeWidth_);
-  FormatLocaleString(value,MagickPathExtent,"%.20g",strokeWidth_);
+  FormatLocaleString(value,MagickPathExtent,"%.17g",strokeWidth_);
   (void) SetImageArtifact(image(),"strokewidth",value);
 }
 

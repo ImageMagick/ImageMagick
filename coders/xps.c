@@ -273,7 +273,7 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->ping != MagickFalse)
     (void) FormatLocaleString(density,MagickPathExtent,"2.0x2.0");
   else
-    (void) FormatLocaleString(options,MagickPathExtent,"-g%.20gx%.20g ",
+    (void) FormatLocaleString(options,MagickPathExtent,"-g%.17gx%.17g ",
       (double) page.width,(double) page.height);
   read_info=CloneImageInfo(image_info);
   *read_info->magick='\0';
@@ -282,8 +282,8 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       char
         pages[MagickPathExtent];
 
-      (void) FormatLocaleString(pages,MagickPathExtent,"-dFirstPage=%.20g "
-        "-dLastPage=%.20g ",(double) read_info->scene+1,(double)
+      (void) FormatLocaleString(pages,MagickPathExtent,"-dFirstPage=%.17g "
+        "-dLastPage=%.17g ",(double) read_info->scene+1,(double)
         (read_info->scene+read_info->number_scenes));
       (void) ConcatenateMagickString(options,pages,MagickPathExtent);
       read_info->number_scenes=0;

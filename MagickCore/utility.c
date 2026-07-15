@@ -1049,12 +1049,12 @@ MagickPrivate MagickBooleanType GetExecutionPath(char *path,const size_t extent)
     ssize_t
       count;
 
-    (void) FormatLocaleString(link_path,MagickPathExtent,"/proc/%.20g/exe",
+    (void) FormatLocaleString(link_path,MagickPathExtent,"/proc/%.17g/exe",
       (double) getpid());
     count=readlink(link_path,execution_path,PATH_MAX);
     if (count == -1)
       {
-        (void) FormatLocaleString(link_path,MagickPathExtent,"/proc/%.20g/file",
+        (void) FormatLocaleString(link_path,MagickPathExtent,"/proc/%.17g/file",
           (double) getpid());
         count=readlink(link_path,execution_path,PATH_MAX);
       }

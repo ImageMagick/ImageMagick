@@ -650,12 +650,12 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
           Image
             *frame;
 
-          (void) FormatLocaleString(p->filename,MagickPathExtent,"%s%.20g.%s",
+          (void) FormatLocaleString(p->filename,MagickPathExtent,"%s%.17g.%s",
             basename,(double) p->scene,intermediate_format);
-          (void) FormatLocaleString(filename,MagickPathExtent,"%s%.20g.%s",
+          (void) FormatLocaleString(filename,MagickPathExtent,"%s%.17g.%s",
             basename,(double) p->scene,intermediate_format);
           (void) FormatLocaleString(previous_image,MagickPathExtent,
-            "%s%.20g.%s",basename,(double) p->scene,intermediate_format);
+            "%s%.17g.%s",basename,(double) p->scene,intermediate_format);
           frame=CloneImage(p,0,0,MagickTrue,exception);
           if (frame == (Image *) NULL)
             break;
@@ -671,7 +671,7 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
         }
         default:
         {
-          (void) FormatLocaleString(filename,MagickPathExtent,"%s%.20g.%s",
+          (void) FormatLocaleString(filename,MagickPathExtent,"%s%.17g.%s",
             basename,(double) p->scene,intermediate_format);
           if (length > 0)
             status=BlobToFile(filename,blob,length,exception);
@@ -682,11 +682,11 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
         {
           if (status != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "%.20g. Wrote %s file for scene %.20g:",(double) i,
+              "%.17g. Wrote %s file for scene %.17g:",(double) i,
               intermediate_format,(double) p->scene);
           else
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "%.20g. Failed to write %s file for scene %.20g:",(double) i,
+              "%.17g. Failed to write %s file for scene %.17g:",(double) i,
               intermediate_format,(double) p->scene);
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"%s",filename);
         }
@@ -736,7 +736,7 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
           if (time_per_frame > 0.0)
             {
               (void) FormatLocaleString(command,MagickPathExtent,
-                " -filter:v \"setpts=(25*%.20g)*PTS\" -r 1/%.20g",
+                " -filter:v \"setpts=(25*%.17g)*PTS\" -r 1/%.17g",
                 time_per_frame,time_per_frame);
               (void) ConcatenateMagickString(options,command,MagickPathExtent);
             }
@@ -776,7 +776,7 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
       length_of_delay_loop=(ssize_t) MagickMax((1.0*delay+1.0)/3.0,1.0);
     for (i=0; i < length_of_delay_loop; i++)
     {
-      (void) FormatLocaleString(p->filename,MagickPathExtent,"%s%.20g.%s",
+      (void) FormatLocaleString(p->filename,MagickPathExtent,"%s%.17g.%s",
         basename,(double) count++,intermediate_format);
       (void) RelinquishUniqueFileResource(p->filename);
     }

@@ -3486,11 +3486,11 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
 
               GetPathComponent(image->filename,RootPath,path);
               if (*extension == '\0')
-                (void) FormatLocaleString(filename,MagickPathExtent,"%s-%.20g",
+                (void) FormatLocaleString(filename,MagickPathExtent,"%s-%.17g",
                   path,(double) image->scene);
               else
                 (void) FormatLocaleString(filename,MagickPathExtent,
-                  "%s-%.20g.%s",path,(double) image->scene,extension);
+                  "%s-%.17g.%s",path,(double) image->scene,extension);
             }
           (void) CopyMagickString(image->filename,filename,MagickPathExtent);
         }
@@ -3530,7 +3530,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
             (void) fflush(blob_info->file_info.file);
 #endif
             (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-               "  read %.20g magic header bytes",(double) count);
+               "  read %.17g magic header bytes",(double) count);
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
             if (((int) magick[0] == 0x1F) && ((int) magick[1] == 0x8B) &&
                 ((int) magick[2] == 0x08))

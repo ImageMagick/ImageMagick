@@ -841,7 +841,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"/* columns rows colors chars-per-pixel */\n");
   (void) FormatLocaleString(buffer,MagickPathExtent,
-    "\"%.20g %.20g %.20g %.20g\",\n",(double) picon->columns,(double)
+    "\"%.17g %.17g %.17g %.17g\",\n",(double) picon->columns,(double)
     picon->rows,(double) colors,(double) characters_per_pixel);
   (void) WriteBlobString(image,buffer);
   GetPixelInfo(image,&pixel);
@@ -1077,7 +1077,7 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"/* columns rows colors chars-per-pixel */\n");
   (void) FormatLocaleString(buffer,MagickPathExtent,
-    "\"%.20g %.20g %.20g %.20g \",\n",(double) image->columns,(double)
+    "\"%.17g %.17g %.17g %.17g \",\n",(double) image->columns,(double)
     image->rows,(double) image->colors,(double) characters_per_pixel);
   (void) WriteBlobString(image,buffer);
   GetPixelInfo(image,&pixel);
