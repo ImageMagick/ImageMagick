@@ -630,7 +630,7 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,
                   if (q == (Quantum *) NULL)
                     break;
                   for (i=0; i< nExpCh; i++)
-                    q[i]=(char) chVals[i];
+                    q[i]=(Quantum) chVals[i];
                   if (SyncAuthenticPixels(image,exception) == MagickFalse)
                     break;
                 }
