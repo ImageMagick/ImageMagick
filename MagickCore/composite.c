@@ -3357,11 +3357,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case PlusCompositeOp:
           {
-            blend=Sa+Da;
-            if (blend > 0.0)
-              pixel=(double) QuantumRange*((Sca+Dca)/blend);
-            else
-              pixel=0.0;
+            pixel=(double) QuantumRange*(Sca+Dca);
             break;
           }
           case ReflectCompositeOp:
