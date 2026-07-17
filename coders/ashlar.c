@@ -760,10 +760,10 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
     clone_images=DestroyImageList(clone_images);
     if (ashlar_image == (Image *) NULL)
       {
-        if (ashlar_images != (Image *) NULL)
-          ashlar_images=DestroyImageList(ashlar_images);
-        break;
-      }
+      if (ashlar_images != (Image *) NULL)
+        ashlar_images=DestroyImageList(ashlar_images);
+          break;
+      }   
     AppendImageToList(&ashlar_images,ashlar_image);
   }
   if (ashlar_images == (Image *) NULL)
