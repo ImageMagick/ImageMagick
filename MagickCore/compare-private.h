@@ -35,12 +35,12 @@ static inline void SetImageCompareBounds(const Image *image,
     IsStringTrue(artifact) : MagickFalse;
   if (vp == MagickFalse)
     {
-      *columns=MagickMin(image->columns,reconstruct_image->columns);
-      *rows=MagickMin(image->rows,reconstruct_image->rows);
+      *columns=MagickMax(image->columns,reconstruct_image->columns);
+      *rows=MagickMax(image->rows,reconstruct_image->rows);
       return;
     }
-  *columns=MagickMax(image->columns,reconstruct_image->columns);
-  *rows=MagickMax(image->rows,reconstruct_image->rows);
+  *columns=MagickMin(image->columns,reconstruct_image->columns);
+  *rows=MagickMin(image->rows,reconstruct_image->rows);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
