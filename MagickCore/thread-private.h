@@ -57,13 +57,14 @@ static inline int GetMagickNumberThreads(const Image *source,
   size_t
     max_threads = (size_t) GetMagickResourceLimit(ThreadResource),
     number_threads = 1UL,
-    rows_per_thread = 64UL*MagickMax(factor,1); /* target workload per thread */
+    rows_per_thread = 64UL*factor; /* target workload per thread */
 
   /*
     Determine number of threads based on rows per thread heuristic.
   */
-  number_threads=(chunk < rows_per_thread) ? 1UL : MagickMin(max_threads,
-    (chunk+rows_per_thread-1)/rows_per_thread);
+  if (rows_per_thread != 0)
+    number_threads=(chunk < rows_per_thread) ? 1UL : MagickMin(max_threads,
+      (chunk+rows_per_thread-1)/rows_per_thread);
   /*
     Limit threads for non-memory or non-map cache sources/destinations.
   */
