@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-#define MagickMaxBufferExtent  524288
+#define MagickMaxBufferExtent  1048576
 #define MagickMinBufferExtent  16384
 
 typedef enum
