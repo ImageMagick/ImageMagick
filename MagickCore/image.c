@@ -2890,9 +2890,9 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
   GetPathComponent(image_info->filename,SubimagePath,component);
   if (*component == '\0')
     {   
-      const char *frames = GetImageOption(image_info,"image:frames");
-      if (frames != (const char *) NULL)
-        (void) CopyMagickString(component,frames,MagickPathExtent);
+      const char *image_frames = GetImageOption(image_info,"image:frames");
+      if (image_frames != (const char *) NULL)
+        (void) CopyMagickString(component,image_frames,MagickPathExtent);
     }     
   if (*component != '\0')
     {
