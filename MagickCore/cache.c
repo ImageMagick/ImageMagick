@@ -668,10 +668,7 @@ static MagickBooleanType ClonePixelCacheOnDisk(
 
     length=(size_t) MagickMin((MagickSizeType) quantum,cache_info->length-
       extent);
-    do
-    {
-      count=read(cache_info->file,buffer,length);
-    } while ((count < 0) && (errno == EINTR));
+    count=MagickRead(cache_info->file,buffer,length);
     if (count <= 0)
       {
         buffer=(unsigned char *) RelinquishMagickMemory(buffer);
@@ -684,11 +681,8 @@ static MagickBooleanType ClonePixelCacheOnDisk(
 
       while (offset < count)
       {
-        do
-        {
-          number_bytes=write(clone_info->file,buffer+offset,(size_t) (count-
-            offset));
-        } while ((number_bytes < 0) && (errno == EINTR));
+        number_bytes=MagickWrite(clone_info->file,buffer+offset,(size_t) (count-
+          offset));
         if (number_bytes <= 0)
           {
             buffer=(unsigned char *) RelinquishMagickMemory(buffer);
@@ -3685,25 +3679,14 @@ static inline MagickOffsetType WritePixelCacheRegion(
   ssize_t
     count = 0;
 
-#if !defined(MAGICKCORE_HAVE_PWRITE)
   if (lseek(cache_info->file,offset,SEEK_SET) < 0)
     return((MagickOffsetType) -1);
-#endif
   for (i=0; i < (MagickOffsetType) length; i+=count)
   {
-#if !defined(MAGICKCORE_HAVE_PWRITE)
-    count=write(cache_info->file,buffer+i,(size_t) MagickMin(length-
+    count=MagickWrite(cache_info->file,buffer+i,(size_t) MagickMin(length-
       (MagickSizeType) i,MagickMaxBufferExtent));
-#else
-    count=pwrite(cache_info->file,buffer+i,(size_t) MagickMin(length-
-      (MagickSizeType) i,MagickMaxBufferExtent),offset+i);
-#endif
     if (count <= 0)
-      {
-        count=0;
-        if (errno != EINTR)
-          break;
-      }
+      break;
   }
   return(i);
 }
@@ -4560,25 +4543,14 @@ static inline MagickOffsetType ReadPixelCacheRegion(
   ssize_t
     count = 0;
 
-#if !defined(MAGICKCORE_HAVE_PREAD)
   if (lseek(cache_info->file,offset,SEEK_SET) < 0)
     return((MagickOffsetType) -1);
-#endif
   for (i=0; i < (MagickOffsetType) length; i+=count)
   {
-#if !defined(MAGICKCORE_HAVE_PREAD)
-    count=read(cache_info->file,buffer+i,(size_t) MagickMin(length-
+    count=MagickRead(cache_info->file,buffer+i,(size_t) MagickMin(length-
       (MagickSizeType) i,(size_t) MagickMaxBufferExtent));
-#else
-    count=pread(cache_info->file,buffer+i,(size_t) MagickMin(length-
-      (MagickSizeType) i,(size_t) MagickMaxBufferExtent),offset+i);
-#endif
     if (count <= 0)
-      {
-        count=0;
-        if (errno != EINTR)
-          break;
-      }
+      break;
   }
   return(i);
 }

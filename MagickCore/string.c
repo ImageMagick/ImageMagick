@@ -625,14 +625,10 @@ MagickExport StringInfo *ConfigureFileToStringInfo(const char *filename)
       (void) lseek(file,0,SEEK_SET);
       for (i=0; i < length; i+=(size_t) count)
       {
-        count=read(file,string+i,(size_t) MagickMin(length-i,(size_t)
+        count=MagickRead(file,string+i,(size_t) MagickMin(length-i,(size_t)
           MagickMaxBufferExtent));
         if (count <= 0)
-          {
-            count=0;
-            if (errno != EINTR)
-              break;
-          }
+          break;
       }
       if (i < length)
         {

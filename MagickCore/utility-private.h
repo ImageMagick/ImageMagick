@@ -49,15 +49,6 @@ extern MagickPrivate void
   ChopPathComponents(char *,const size_t),
   ExpandFilename(char *);
 
-static inline int MagickReadDirectory(DIR *directory,struct dirent *entry,
-  struct dirent **result)
-{
-  (void) entry;
-  errno=0;
-  *result=readdir(directory);
-  return(errno);
-}
-
 static inline int access_utf8(const char *path,int mode)
 {
   if (path == (const char *) NULL)
@@ -101,6 +92,55 @@ static inline MagickBooleanType is_symlink_utf8(const char *path)
  return(NTIsSymlinkWide(path));
 #endif
 }
+
+static inline ssize_t MagickRead(int fd,void *buffer,size_t extent)
+{
+  unsigned char *p = (unsigned char *) buffer;
+  size_t offset = 0;
+  while (offset < extent)
+  {
+    ssize_t count = read(fd,p+offset,extent-offset);
+    if (count < 0)
+      {
+        if (errno == EINTR)
+          continue;
+        return(-1);
+      }
+    if (count == 0)
+      break;
+    offset+=(size_t) count;
+  }
+  return((ssize_t) offset);
+}
+
+static inline int MagickReadDirectory(DIR *directory,struct dirent *entry,
+  struct dirent **result)
+{
+  (void) entry;
+  errno=0;
+  *result=readdir(directory);
+  return(errno);
+}
+
+static inline ssize_t MagickWrite(int fd,const void *buffer,size_t extent)
+{
+  const unsigned char *p = (const unsigned char *) buffer;
+  size_t offset = 0;
+  while (offset < extent)
+  {
+    ssize_t count = write(fd,p+offset,extent-offset);
+    if (count < 0) {
+      if (errno == EINTR)
+        continue;
+      return(-1);
+    }
+    if (count == 0)
+      break;
+    offset+=(size_t) count;
+  }
+  return((ssize_t) offset);
+}
+
 
 static inline int open_utf8(const char *path,int flags,mode_t mode)
 {

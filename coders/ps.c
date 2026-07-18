@@ -745,7 +745,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) CopyMagickString(command,"/setpagedevice {pop} bind 1 index where {"
     "dup wcheck {3 1 roll put} {pop def} ifelse} {def} ifelse\n",
     MagickPathExtent);
-  count=write(file,command,(unsigned int) strlen(command));
+  count=MagickWrite(file,command,(unsigned int) strlen(command));
   if (image_info->page == (char *) NULL)
     {
       char
@@ -753,7 +753,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
       (void) FormatLocaleString(translate_geometry,MagickPathExtent,
         "%g %g translate\n",-info.bounds.x1,-info.bounds.y1);
-      count=write(file,translate_geometry,(unsigned int)
+      count=MagickWrite(file,translate_geometry,(unsigned int)
         strlen(translate_geometry));
     }
   (void) count;

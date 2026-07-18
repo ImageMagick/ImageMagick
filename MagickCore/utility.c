@@ -2078,14 +2078,10 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
     {
       if (i != 0)
         SetRandomKey(random_info,quantum,GetStringInfoDatum(key));
-      count=write(file,GetStringInfoDatum(key),(size_t)
+      count=MagickWrite(file,GetStringInfoDatum(key),(size_t)
         MagickMin((MagickOffsetType) quantum,(MagickOffsetType) length-j));
       if (count <= 0)
-        {
-          count=0;
-          if (errno != EINTR)
-            break;
-        }
+        break;
     }
     if (j < (MagickOffsetType) length)
       break;
