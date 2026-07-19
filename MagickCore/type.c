@@ -988,7 +988,7 @@ MagickExport MagickBooleanType ListTypeInfo(FILE *file,ExceptionInfo *exception)
     (void) FormatLocaleFile(file,"    family: %s\n",family);
     (void) FormatLocaleFile(file,"    style: %s\n",style);
     (void) FormatLocaleFile(file,"    stretch: %s\n",stretch);
-    (void) FormatLocaleFile(file,"    weight: %.20g\n",(double)
+    (void) FormatLocaleFile(file,"    weight: %.17g\n",(double)
       type_info[i]->weight);
     (void) FormatLocaleFile(file,"    metrics: %s\n",metrics);
     (void) FormatLocaleFile(file,"    glyphs: %s\n",glyphs);

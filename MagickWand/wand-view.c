@@ -130,7 +130,7 @@ WandExport WandView *CloneWandView(const WandView *wand_view)
   clone_view=(WandView *) AcquireCriticalMemory(sizeof(*clone_view));
   (void) memset(clone_view,0,sizeof(*clone_view));
   clone_view->id=AcquireWandId();
-  (void) FormatLocaleString(clone_view->name,MagickPathExtent,"%s-%.20g",
+  (void) FormatLocaleString(clone_view->name,MagickPathExtent,"%s-%.17g",
     WandViewId,(double) clone_view->id);
   clone_view->description=ConstantString(wand_view->description);
   clone_view->image=CloneImage(wand_view->image,0,0,MagickTrue,
@@ -751,7 +751,7 @@ WandExport WandView *NewWandView(MagickWand *wand)
   wand_view=(WandView *) AcquireCriticalMemory(sizeof(*wand_view));
   (void) memset(wand_view,0,sizeof(*wand_view));
   wand_view->id=AcquireWandId();
-  (void) FormatLocaleString(wand_view->name,MagickPathExtent,"%s-%.20g",
+  (void) FormatLocaleString(wand_view->name,MagickPathExtent,"%s-%.17g",
     WandViewId,(double) wand_view->id);
   wand_view->description=ConstantString("WandView");
   wand_view->wand=wand;
@@ -811,7 +811,7 @@ WandExport WandView *NewWandViewExtent(MagickWand *wand,const ssize_t x,
   wand_view=(WandView *) AcquireCriticalMemory(sizeof(*wand_view));
   (void) memset(wand_view,0,sizeof(*wand_view));
   wand_view->id=AcquireWandId();
-  (void) FormatLocaleString(wand_view->name,MagickPathExtent,"%s-%.20g",
+  (void) FormatLocaleString(wand_view->name,MagickPathExtent,"%s-%.17g",
     WandViewId,(double) wand_view->id);
   wand_view->description=ConstantString("WandView");
   exception=AcquireExceptionInfo();

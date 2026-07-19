@@ -1404,7 +1404,7 @@ static MagickBooleanType CompileOpenCLKernel(MagickCLDevice device,
     ptr++;
   }
   (void) FormatLocaleString(filename,MagickPathExtent,
-    "%s%s%s_%s_%08x_%.20g.bin",GetOpenCLCacheDirectory(),
+    "%s%s%s_%s_%08x_%.17g.bin",GetOpenCLCacheDirectory(),
     DirectorySeparator,"magick_opencl",deviceName,(unsigned int) signature,
     (double) sizeof(char*)*8);
   loaded=LoadCachedOpenCLKernels(device,filename);

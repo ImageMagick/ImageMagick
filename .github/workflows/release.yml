@@ -246,7 +246,7 @@ jobs:
           move Configure source
           move Dependencies source
           move ImageMagick source
-          7z a ImageMagick-%VERSION%-Windows.7z .\source\*
+          7z a -mx=9 ImageMagick-%VERSION%-Windows.7z .\source\*
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #v7.0.1
         with:
@@ -334,7 +334,7 @@ jobs:
           Copy-Item "Artifacts\NOTICE.txt" "portable"
           Copy-Item "ImageMagick\ChangeLog.md" "portable"
           Copy-Item "ImageMagick\LICENSE" "portable\LICENSE.txt"
-          7z a "ImageMagick-$env:VERSION-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.architecture}}.7z" .\portable\*
+          7z a -mx=9 "ImageMagick-$env:VERSION-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.architecture}}.7z" .\portable\*
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #v7.0.1
         with:

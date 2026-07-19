@@ -48,8 +48,8 @@ extern "C" {
 #endif
 
 static inline int GetMagickNumberThreads(const Image *source,
-  const Image *destination,const size_t chunk,const int factor)
-{
+  const Image *destination,const size_t chunk,const double factor)
+{ 
   const CacheType
     destination_type = (CacheType) GetImagePixelCacheType(destination),
     source_type = (CacheType) GetImagePixelCacheType(source);
@@ -57,14 +57,14 @@ static inline int GetMagickNumberThreads(const Image *source,
   size_t
     max_threads = (size_t) GetMagickResourceLimit(ThreadResource),
     number_threads = 1UL,
-    workload_factor = 64UL << factor;
+    rows_per_thread = CastDoubleToSizeT(64.0*factor);  /* workload */
 
   /*
-    Determine number of threads based on workload.
+    Determine number of threads based on rows per thread heuristic.
   */
-  number_threads=(chunk <= workload_factor) ? 1UL :
-    (chunk >= (workload_factor << 6)) ? max_threads :
-    1UL+(chunk-workload_factor)*(max_threads-1L)/(((workload_factor << 6))-1L);
+  if (rows_per_thread != 0)
+    number_threads=(chunk < rows_per_thread) ? 1UL : MagickMin(max_threads,
+      (chunk+rows_per_thread-1)/rows_per_thread);
   /*
     Limit threads for non-memory or non-map cache sources/destinations.
   */

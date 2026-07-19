@@ -1546,7 +1546,7 @@ static void GetEXIFProperty(const Image *image,const char *property,
             }
             case EXIF_FMT_SBYTE:
             {
-              EXIFMultipleValues("%.20g",(double) (*(signed char *) p));
+              EXIFMultipleValues("%.17g",(double) (*(signed char *) p));
               break;
             }
             case EXIF_FMT_SSHORT:
@@ -1561,13 +1561,13 @@ static void GetEXIFProperty(const Image *image,const char *property,
             }
             case EXIF_FMT_ULONG:
             {
-              EXIFMultipleValues("%.20g",(double)
+              EXIFMultipleValues("%.17g",(double)
                 ReadPropertyUnsignedLong(endian,p));
               break;
             }
             case EXIF_FMT_SLONG:
             {
-              EXIFMultipleValues("%.20g",(double)
+              EXIFMultipleValues("%.17g",(double)
                 ReadPropertySignedLong(endian,p));
               break;
             }
@@ -1579,7 +1579,7 @@ static void GetEXIFProperty(const Image *image,const char *property,
                   if (number_bytes < 24)
                     break;  /* reads three rationals */
                   components=1;
-                  EXIFGPSFractions("%.20g/%.20g,%.20g/%.20g,%.20g/%.20g",
+                  EXIFGPSFractions("%.17g/%.17g,%.17g/%.17g,%.17g/%.17g",
                     (double) ReadPropertyUnsignedLong(endian,p),
                     (double) ReadPropertyUnsignedLong(endian,p+4),
                     (double) ReadPropertyUnsignedLong(endian,p+8),
@@ -1588,27 +1588,27 @@ static void GetEXIFProperty(const Image *image,const char *property,
                     (double) ReadPropertyUnsignedLong(endian,p+20));
                   break;
                 }
-              EXIFMultipleFractions("%.20g/%.20g",(double)
+              EXIFMultipleFractions("%.17g/%.17g",(double)
                 ReadPropertyUnsignedLong(endian,p),(double)
                 ReadPropertyUnsignedLong(endian,p+4));
               break;
             }
             case EXIF_FMT_SRATIONAL:
             {
-              EXIFMultipleFractions("%.20g/%.20g",(double)
+              EXIFMultipleFractions("%.17g/%.17g",(double)
                 ReadPropertySignedLong(endian,p),(double)
                 ReadPropertySignedLong(endian,p+4));
               break;
             }
             case EXIF_FMT_SINGLE:
             {
-              EXIFMultipleValues("%.20g",(double)
+              EXIFMultipleValues("%.17g",(double)
                 ReadPropertySignedLong(endian,p));
               break;
             }
             case EXIF_FMT_DOUBLE:
             {
-              EXIFMultipleValues("%.20g",(double)
+              EXIFMultipleValues("%.17g",(double)
                 ReadPropertySignedLong(endian,p));
               break;
             }
@@ -2195,7 +2195,7 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
   (void) FormatLocaleString(message,MagickPathExtent,(
     "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n"
     "<svg xmlns=\"http://www.w3.org/2000/svg\""
-    " width=\"%.20g\" height=\"%.20g\">\n"
+    " width=\"%.17g\" height=\"%.17g\">\n"
     "<g>\n"
     "<path fill-rule=\"evenodd\" style=\"fill:#000000;stroke:#000000;"
     "stroke-width:0;shape-rendering:crispEdges\" d=\"\n"),(double) columns,
@@ -2571,14 +2571,14 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
     {
       WarnNoImageReturn("\"%%%c\"",letter);
       (void) FormatLocaleString(value,MagickPathExtent,
-        "%.20gx%.20g%+.20g%+.20g",(double) image->page.width,(double)
+        "%.17gx%.17g%+.20g%+.20g",(double) image->page.width,(double)
         image->page.height,(double) image->page.x,(double) image->page.y);
       break;
     }
     case 'h': /* Image height (current) */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
-      (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+      (void) FormatLocaleString(value,MagickPathExtent,"%.17g",(double)
         (image->rows != 0 ? image->rows : image->magick_rows));
       break;
     }
@@ -2594,7 +2594,7 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
         FUTURE: ensure this does not generate the formatted comment!
       */
       WarnNoImageReturn("\"%%%c\"",letter);
-      (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+      (void) FormatLocaleString(value,MagickPathExtent,"%.17g",(double)
         GetNumberColors(image,(FILE *) NULL,exception));
       break;
     }
@@ -2615,7 +2615,7 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
     case 'n': /* Number of images in the list.  */
     {
       if ( image != (Image *) NULL )
-        (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+        (void) FormatLocaleString(value,MagickPathExtent,"%.17g",(double)
           GetImageListLength(image));
       else
         string="0";    /* no images or scenes */
@@ -2630,14 +2630,14 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
     case 'p': /* Image index in current image list */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
-      (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+      (void) FormatLocaleString(value,MagickPathExtent,"%.17g",(double)
         GetImageIndexInList(image));
       break;
     }
     case 'q': /* Quantum depth of image in memory */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
-      (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+      (void) FormatLocaleString(value,MagickPathExtent,"%.17g",(double)
         MAGICKCORE_QUANTUM_DEPTH);
       break;
     }
@@ -2659,16 +2659,16 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
     {
 #if 0  /* this seems non-sensical -- simplifying */
       if (image_info->number_scenes != 0)
-        (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+        (void) FormatLocaleString(value,MagickPathExtent,"%.17g",(double)
           image_info->scene);
       else if (image != (Image *) NULL)
-        (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+        (void) FormatLocaleString(value,MagickPathExtent,"%.17g",(double)
           image->scene);
       else
           string="0";
 #else
       WarnNoImageReturn("\"%%%c\"",letter);
-      (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+      (void) FormatLocaleString(value,MagickPathExtent,"%.17g",(double)
         image->scene);
 #endif
       break;
@@ -2690,14 +2690,14 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
     case 'w': /* Image width (current) */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
-      (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+      (void) FormatLocaleString(value,MagickPathExtent,"%.17g",(double)
         (image->columns != 0 ? image->columns : image->magick_columns));
       break;
     }
     case 'x': /* Image horizontal resolution (with units) */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
-      (void) FormatLocaleString(value,MagickPathExtent,"%.20g",
+      (void) FormatLocaleString(value,MagickPathExtent,"%.17g",
         fabs(image->resolution.x) > MagickEpsilon ? image->resolution.x :
         image->units == PixelsPerCentimeterResolution ? DefaultResolution/2.54 :
         DefaultResolution);
@@ -2706,7 +2706,7 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
     case 'y': /* Image vertical resolution (with units) */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
-      (void) FormatLocaleString(value,MagickPathExtent,"%.20g",
+      (void) FormatLocaleString(value,MagickPathExtent,"%.17g",
         fabs(image->resolution.y) > MagickEpsilon ? image->resolution.y :
         image->units == PixelsPerCentimeterResolution ? DefaultResolution/2.54 :
         DefaultResolution);
@@ -2715,7 +2715,7 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
     case 'z': /* Image depth as read in */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
-      (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+      (void) FormatLocaleString(value,MagickPathExtent,"%.17g",(double)
         image->depth);
       break;
     }
@@ -2729,10 +2729,10 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
     case 'B':  /* image size read in - in bytes */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
-      (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+      (void) FormatLocaleString(value,MagickPathExtent,"%.17g",(double)
         image->extent);
       if (image->extent == 0)
-        (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+        (void) FormatLocaleString(value,MagickPathExtent,"%.17g",(double)
           GetBlobSize(image));
       break;
     }
@@ -2753,14 +2753,14 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
     case 'G': /* Image size as geometry = "%wx%h" */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
-      (void) FormatLocaleString(value,MagickPathExtent,"%.20gx%.20g",(double)
+      (void) FormatLocaleString(value,MagickPathExtent,"%.17gx%.17g",(double)
         image->magick_columns,(double) image->magick_rows);
       break;
     }
     case 'H': /* layer canvas height */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
-      (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+      (void) FormatLocaleString(value,MagickPathExtent,"%.17g",(double)
         image->page.height);
       break;
     }
@@ -2773,7 +2773,7 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
     case 'N': /* Number of images in the list.  */
     {
       if ((image != (Image *) NULL) && (image->next == (Image *) NULL))
-        (void) FormatLocaleString(value,MagickPathExtent,"%.20g\n",(double)
+        (void) FormatLocaleString(value,MagickPathExtent,"%.17g\n",(double)
           GetImageListLength(image));
       else
         string="";
@@ -2789,14 +2789,14 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
     case 'P': /* layer canvas page size = "%Wx%H" */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
-      (void) FormatLocaleString(value,MagickPathExtent,"%.20gx%.20g",(double)
+      (void) FormatLocaleString(value,MagickPathExtent,"%.17gx%.17g",(double)
         image->page.width,(double) image->page.height);
       break;
     }
     case 'Q': /* image compression quality */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
-      (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+      (void) FormatLocaleString(value,MagickPathExtent,"%.17g",(double)
         (image->quality == 0 ? 92 : image->quality));
       break;
     }
@@ -2807,12 +2807,12 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
       if (image_info->number_scenes == 0)
          string="2147483647";
       else if ( image != (Image *) NULL )
-        (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+        (void) FormatLocaleString(value,MagickPathExtent,"%.17g",(double)
                 image_info->scene+image_info->number_scenes);
       else
         string="0";
 #else
-      (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+      (void) FormatLocaleString(value,MagickPathExtent,"%.17g",(double)
         (image_info->number_scenes == 0 ? 2147483647 :
          image_info->number_scenes));
 #endif
@@ -2821,7 +2821,7 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
     case 'T': /* image time delay for animations */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
-      (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+      (void) FormatLocaleString(value,MagickPathExtent,"%.17g",(double)
         image->delay);
       break;
     }
@@ -2835,7 +2835,7 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
     case 'W': /* layer canvas width */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
-      (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+      (void) FormatLocaleString(value,MagickPathExtent,"%.17g",(double)
         image->page.width);
       break;
     }
@@ -2866,7 +2866,7 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
       WarnNoImageReturn("\"%%%c\"",letter);
       page=GetImageBoundingBox(image,exception);
       (void) FormatLocaleString(value,MagickPathExtent,
-        "%.20gx%.20g%+.20g%+.20g",(double) page.width,(double) page.height,
+        "%.17gx%.17g%+.20g%+.20g",(double) page.width,(double) page.height,
         (double) page.x,(double)page.y);
       break;
     }
@@ -2940,7 +2940,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
       if (LocaleCompare("bit-depth",property) == 0)
         {
           WarnNoImageReturn("\"%%[%s]\"",property);
-          (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+          (void) FormatLocaleString(value,MagickPathExtent,"%.17g",(double)
             GetImageDepth(image,exception));
           break;
         }
@@ -2976,7 +2976,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
         {
           WarnNoImageReturn("\"%%[%s]\"",property);
           image->colors=GetNumberColors(image,(FILE *) NULL,exception);
-          (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+          (void) FormatLocaleString(value,MagickPathExtent,"%.17g",(double)
             image->colors);
           break;
         }
@@ -3135,7 +3135,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
       if (LocaleCompare("depth",property) == 0)
         {
           WarnNoImageReturn("\"%%[%s]\"",property);
-          (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+          (void) FormatLocaleString(value,MagickPathExtent,"%.17g",(double)
             image->depth);
           break;
         }
@@ -3188,7 +3188,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
       if (LocaleCompare("height",property) == 0)
         {
           WarnNoImageReturn("\"%%[%s]\"",property);
-          (void) FormatLocaleString(value,MagickPathExtent,"%.20g",
+          (void) FormatLocaleString(value,MagickPathExtent,"%.17g",
             image->magick_rows != 0 ? (double) image->magick_rows : 256.0);
           break;
         }
@@ -3360,7 +3360,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
       if (LocaleCompare("page",property) == 0)
         {
           WarnNoImageReturn("\"%%[%s]\"",property);
-          (void) FormatLocaleString(value,MagickPathExtent,"%.20gx%.20g",
+          (void) FormatLocaleString(value,MagickPathExtent,"%.17gx%.17g",
             (double) image->page.width,(double) image->page.height);
           break;
         }
@@ -3378,7 +3378,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
                 page = { 0, 0, 0, 0 };
 
               (void) ParseAbsoluteGeometry(papersize,&page);
-              (void) FormatLocaleString(value,MagickPathExtent,"%.20gx%.20g",
+              (void) FormatLocaleString(value,MagickPathExtent,"%.17gx%.17g",
                 (double) page.width,(double) page.height);
               papersize=DestroyString(papersize);
             }
@@ -3460,7 +3460,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
       if (LocaleCompare("quality",property) == 0)
         {
           WarnNoImageReturn("\"%%[%s]\"",property);
-          (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+          (void) FormatLocaleString(value,MagickPathExtent,"%.17g",(double)
             image->quality);
           break;
         }
@@ -3490,11 +3490,11 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
         {
           WarnNoImageInfoReturn("\"%%[%s]\"",property);
           if (image_info->number_scenes != 0)
-            (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+            (void) FormatLocaleString(value,MagickPathExtent,"%.17g",(double)
               image_info->scene);
           else {
             WarnNoImageReturn("\"%%[%s]\"",property);
-            (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+            (void) FormatLocaleString(value,MagickPathExtent,"%.17g",(double)
               image->scene);
           }
           break;
@@ -3503,7 +3503,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
         {
           /* FUTURE: equivalent to %n? */
           WarnNoImageReturn("\"%%[%s]\"",property);
-          (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+          (void) FormatLocaleString(value,MagickPathExtent,"%.17g",(double)
             GetImageListLength(image));
           break;
         }
@@ -3582,7 +3582,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
       if (LocaleCompare("width",property) == 0)
         {
           WarnNoImageReturn("\"%%[%s]\"",property);
-          (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
+          (void) FormatLocaleString(value,MagickPathExtent,"%.17g",(double)
             (image->magick_columns != 0 ? image->magick_columns : 256));
           break;
         }

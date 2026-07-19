@@ -1763,7 +1763,7 @@ static MagickBooleanType GetPHASESimilarity(const Image *image,
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(area,similarity,status) \
-    magick_number_threads(image,image,rows,1)
+    magick_number_threads(image,image,rows,0.25)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
   {
@@ -2078,7 +2078,7 @@ static MagickBooleanType GetSSIMSimularity(const Image *image,
   artifact=GetImageArtifact(image,"compare:ssim-sigma");
   if (artifact != (const char *) NULL)
     sigma=StringToDouble(artifact,(char **) NULL);
-  (void) FormatLocaleString(geometry,MagickPathExtent,"gaussian:%.20gx%.20g",
+  (void) FormatLocaleString(geometry,MagickPathExtent,"gaussian:%.17gx%.17g",
     radius,sigma);
   kernel_info=AcquireKernelInfo(geometry,exception);
   if (kernel_info == (KernelInfo *) NULL)

@@ -1134,7 +1134,7 @@ MagickExport MagickBooleanType ThrowMagickExceptionList(
     type="error";
   if (severity >= FatalErrorException)
     type="fatal";
-  (void) FormatLocaleString(message,MagickPathExtent,"%s @ %s/%s/%s/%.20g",
+  (void) FormatLocaleString(message,MagickPathExtent,"%s @ %s/%s/%s/%.17g",
     reason,type,path,function,(double) line);
   (void) ThrowException(exception,severity,message,(char *) NULL);
   return(status);

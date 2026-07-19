@@ -1049,12 +1049,12 @@ MagickPrivate MagickBooleanType GetExecutionPath(char *path,const size_t extent)
     ssize_t
       count;
 
-    (void) FormatLocaleString(link_path,MagickPathExtent,"/proc/%.20g/exe",
+    (void) FormatLocaleString(link_path,MagickPathExtent,"/proc/%.17g/exe",
       (double) getpid());
     count=readlink(link_path,execution_path,PATH_MAX);
     if (count == -1)
       {
-        (void) FormatLocaleString(link_path,MagickPathExtent,"/proc/%.20g/file",
+        (void) FormatLocaleString(link_path,MagickPathExtent,"/proc/%.17g/file",
           (double) getpid());
         count=readlink(link_path,execution_path,PATH_MAX);
       }
@@ -1291,31 +1291,33 @@ MagickExport void GetPathComponent(const char *path,PathType type,
       p=component+strlen(component)-1;
       if ((strlen(component) > 2) && (*p == ']'))
         {
-          ExceptionInfo *exception = AcquireExceptionInfo();
-          char *literal = (char *) GetImageRegistry(StringRegistryType,
-            "filename:literal",exception);
           q=strrchr(component,'[');
-          if ((q != (char *) NULL) &&
-              ((IsStringTrue(literal) == MagickFalse) ||
-               (IsPathAccessible(path) == MagickFalse)))
+          if (q != (char *) NULL)
             {
-              /*
-                Look for scene specification (e.g. img0001.pcd[4]).
-              */
-              *p='\0';
-              if ((IsSceneGeometry(q+1,MagickFalse) == MagickFalse) &&
-                  (IsGeometry(q+1) == MagickFalse))
-                *p=']';
-              else
+              ExceptionInfo *exception = AcquireExceptionInfo();
+              char *literal = (char *) GetImageRegistry(StringRegistryType,
+                "filename:literal",exception);
+              exception=DestroyExceptionInfo(exception);
+              if ((IsStringTrue(literal) == MagickFalse) ||
+                  (IsPathAccessible(path) == MagickFalse))
                 {
-                  subimage_length=(size_t) (p-q);
-                  subimage_offset=(size_t) (q-component+1);
-                  *q='\0';
+                  /*
+                    Look for scene specification (e.g. img0001.pcd[4]).
+                  */
+                  *p='\0';
+                  if ((IsSceneGeometry(q+1,MagickFalse) == MagickFalse) &&
+                      (IsGeometry(q+1) == MagickFalse))
+                    *p=']';
+                  else
+                    {
+                      subimage_length=(size_t) (p-q);
+                      subimage_offset=(size_t) (q-component+1);
+                      *q='\0';
+                    }
                 }
+              if (literal != (char *) NULL)
+                literal=DestroyString(literal);
             }
-          if (literal != (char *) NULL)
-            literal=DestroyString(literal);
-          exception=DestroyExceptionInfo(exception);
         }
     }
   magick_length=0;
@@ -2076,14 +2078,10 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
     {
       if (i != 0)
         SetRandomKey(random_info,quantum,GetStringInfoDatum(key));
-      count=write(file,GetStringInfoDatum(key),(size_t)
+      count=MagickWrite(file,GetStringInfoDatum(key),(size_t)
         MagickMin((MagickOffsetType) quantum,(MagickOffsetType) length-j));
       if (count <= 0)
-        {
-          count=0;
-          if (errno != EINTR)
-            break;
-        }
+        break;
     }
     if (j < (MagickOffsetType) length)
       break;

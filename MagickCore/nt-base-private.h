@@ -51,7 +51,7 @@ extern "C" {
 #  define opendir(directory)  NTOpenDirectory(directory)
 #endif
 #if !defined(read)
-#  define read(fd,buffer,count)  _read(fd,buffer,(unsigned int) count)
+#  define read(fd,buffer,count)  _read(fd,buffer,(unsigned int) (count))
 #endif
 #if !defined(readdir)
 #  define readdir(directory)  NTReadDirectory(directory)
@@ -61,7 +61,7 @@ extern "C" {
 #  define MAGICKCORE_HAVE_SYSCONF 1
 #endif
 #if !defined(write)
-#  define write(fd,buffer,count)  _write(fd,buffer,(unsigned int) count)
+#  define write(fd,buffer,count)  _write(fd,buffer,(unsigned int) (count))
 #endif
 #if !defined(__MINGW32__)
 #  define fdopen  _fdopen

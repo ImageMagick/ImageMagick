@@ -324,7 +324,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   (void) CloneString(&draw_info->geometry,geometry);
   status=AnnotateImage(image,draw_info,exception);
   if (image_info->pointsize == 0.0)
-    (void) FormatImageProperty(image,"label:pointsize","%.20g",
+    (void) FormatImageProperty(image,"label:pointsize","%.17g",
       draw_info->pointsize);
   draw_info=DestroyDrawInfo(draw_info);
   if (status == MagickFalse)

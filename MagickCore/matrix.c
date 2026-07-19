@@ -142,34 +142,21 @@ static inline MagickOffsetType WriteMatrixElements(
   ssize_t
     count;
 
-#if !defined(MAGICKCORE_HAVE_PWRITE)
   LockSemaphoreInfo(matrix_info->semaphore);
   if (lseek(matrix_info->file,offset,SEEK_SET) < 0)
     {
       UnlockSemaphoreInfo(matrix_info->semaphore);
       return((MagickOffsetType) -1);
     }
-#endif
   count=0;
   for (i=0; i < (MagickOffsetType) length; i+=count)
   {
-#if !defined(MAGICKCORE_HAVE_PWRITE)
-    count=write(matrix_info->file,buffer+i,(size_t) MagickMin(length-
+    count=MagickWrite(matrix_info->file,buffer+i,(size_t) MagickMin(length-
       (MagickSizeType) i,(MagickSizeType) MagickMaxBufferExtent));
-#else
-    count=pwrite(matrix_info->file,buffer+i,(size_t) MagickMin(length-
-      (MagickSizeType) i,(MagickSizeType) MagickMaxBufferExtent),offset+i);
-#endif
     if (count <= 0)
-      {
-        count=0;
-        if (errno != EINTR)
-          break;
-      }
+      break;
   }
-#if !defined(MAGICKCORE_HAVE_PWRITE)
   UnlockSemaphoreInfo(matrix_info->semaphore);
-#endif
   return(i);
 }
 
@@ -499,34 +486,21 @@ static inline MagickOffsetType ReadMatrixElements(
   ssize_t
     count;
 
-#if !defined(MAGICKCORE_HAVE_PREAD)
   LockSemaphoreInfo(matrix_info->semaphore);
   if (lseek(matrix_info->file,offset,SEEK_SET) < 0)
     {
       UnlockSemaphoreInfo(matrix_info->semaphore);
       return((MagickOffsetType) -1);
     }
-#endif
   count=0;
   for (i=0; i < (MagickOffsetType) length; i+=count)
   {
-#if !defined(MAGICKCORE_HAVE_PREAD)
-    count=read(matrix_info->file,buffer+i,(size_t) MagickMin(length-i,
+    count=MagickRead(matrix_info->file,buffer+i,(size_t) MagickMin(length-i,
       (MagickSizeType) MagickMaxBufferExtent));
-#else
-    count=pread(matrix_info->file,buffer+i,(size_t) MagickMin(length-
-      (MagickSizeType) i,(MagickSizeType) MagickMaxBufferExtent),offset+i);
-#endif
     if (count <= 0)
-      {
-        count=0;
-        if (errno != EINTR)
-          break;
-      }
+      break;
   }
-#if !defined(MAGICKCORE_HAVE_PREAD)
   UnlockSemaphoreInfo(matrix_info->semaphore);
-#endif
   return(i);
 }
 
@@ -1064,7 +1038,7 @@ MagickExport MagickBooleanType NullMatrix(MatrixInfo *matrix_info)
   {
     for (x=0; x < (ssize_t) matrix_info->length; x++)
     {
-      count=write(matrix_info->file,&value,sizeof(value));
+      count=MagickWrite(matrix_info->file,&value,sizeof(value));
       if (count != (ssize_t) sizeof(value))
         break;
     }

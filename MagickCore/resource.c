@@ -962,11 +962,11 @@ MagickExport MagickBooleanType ListMagickResourceInfo(FILE *file,
   (void) FormatLocaleFile(file,"  Memory: %s\n",memory_limit);
   (void) FormatLocaleFile(file,"  Map: %s\n",map_limit);
   (void) FormatLocaleFile(file,"  Disk: %s\n",disk_limit);
-  (void) FormatLocaleFile(file,"  File: %.20g\n",(double) ((MagickOffsetType)
+  (void) FormatLocaleFile(file,"  File: %.17g\n",(double) ((MagickOffsetType)
     resource_info.file_limit));
-  (void) FormatLocaleFile(file,"  Thread: %.20g\n",(double) ((MagickOffsetType)
+  (void) FormatLocaleFile(file,"  Thread: %.17g\n",(double) ((MagickOffsetType)
     resource_info.thread_limit));
-  (void) FormatLocaleFile(file,"  Throttle: %.20g\n",(double)
+  (void) FormatLocaleFile(file,"  Throttle: %.17g\n",(double)
     ((MagickOffsetType) resource_info.throttle_limit));
   (void) FormatLocaleFile(file,"  Time: %s\n",time_limit);
   (void) fflush(file);

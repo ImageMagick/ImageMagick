@@ -1395,7 +1395,7 @@ static void WriteProfile(struct heif_context *context,Image *image,
       }
     if (image->debug != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "%s profile: %.20g bytes",name,(double) GetStringInfoLength(profile));
+        "%s profile: %.17g bytes",name,(double) GetStringInfoLength(profile));
     name=GetNextImageProfile(image);
   }
   heif_image_handle_release(image_handle);

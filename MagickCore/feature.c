@@ -286,7 +286,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
     Filter out noise.
   */
   (void) FormatLocaleString(geometry,MagickPathExtent,
-    "blur:%.20gx%.20g;blur:%.20gx%.20g+90",radius,sigma,radius,sigma);
+    "blur:%.17gx%.17g;blur:%.17gx%.17g+90",radius,sigma,radius,sigma);
   kernel_info=AcquireKernelInfo(geometry,exception);
   if (kernel_info == (KernelInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
@@ -1968,12 +1968,12 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
       return((Image *) NULL);
     }
   (void) FormatLocaleString(message,MagickPathExtent,
-    "# Hough line transform: %.20gx%.20g%+.20g\n",(double) width,
+    "# Hough line transform: %.17gx%.17g%+.20g\n",(double) width,
     (double) height,(double) threshold);
   if (write(file,message,strlen(message)) != (ssize_t) strlen(message))
     status=MagickFalse;
   (void) FormatLocaleString(message,MagickPathExtent,
-    "viewbox 0 0 %.20g %.20g\n",(double) image->columns,(double) image->rows);
+    "viewbox 0 0 %.17g %.17g\n",(double) image->columns,(double) image->rows);
   if (write(file,message,strlen(message)) != (ssize_t) strlen(message))
     status=MagickFalse;
   (void) FormatLocaleString(message,MagickPathExtent,

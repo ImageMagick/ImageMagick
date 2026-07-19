@@ -787,7 +787,7 @@ MagickExport Image *ColorMatrixImage(const Image *image,
       for (v=0; v < 6; v++)
       {
         *message='\0';
-        (void) FormatLocaleString(format,MagickPathExtent,"%.20g: ",(double) v);
+        (void) FormatLocaleString(format,MagickPathExtent,"%.17g: ",(double) v);
         (void) ConcatenateString(&message,format);
         for (u=0; u < 6; u++)
         {
@@ -1755,7 +1755,7 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
               caption_image->background_color=image->border_color;
               (void) SetImageBackgroundColor(caption_image,exception);
               (void) CloneString(&annotate_info->text,text);
-              (void) FormatLocaleString(geometry,MagickPathExtent,"+0+%.20g",
+              (void) FormatLocaleString(geometry,MagickPathExtent,"+0+%.17g",
                 metrics.ascent);
               if (annotate_info->gravity == UndefinedGravity)
                 (void) CloneString(&annotate_info->geometry,AcquireString(

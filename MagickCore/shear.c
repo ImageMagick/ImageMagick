@@ -627,7 +627,7 @@ MagickExport Image *DeskewImage(const Image *image,const double threshold,
     char
       angle[MagickPathExtent];
 
-    (void) FormatLocaleString(angle,MagickPathExtent,"%.20g",degrees);
+    (void) FormatLocaleString(angle,MagickPathExtent,"%.17g",degrees);
     (void) SetImageArtifact(clone_image,"deskew:angle",angle);
   }
   (void) SetImageVirtualPixelMethod(clone_image,BackgroundVirtualPixelMethod,
@@ -664,7 +664,7 @@ MagickExport Image *DeskewImage(const Image *image,const double threshold,
   median_image=DestroyImage(median_image);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TransformEvent,GetMagickModule(),"  Deskew geometry: "
-      "%.20gx%.20g%+.20g%+.20g",(double) geometry.width,(double)
+      "%.17gx%.17g%+.20g%+.20g",(double) geometry.width,(double)
       geometry.height,(double) geometry.x,(double) geometry.y);
   crop_image=CropImage(deskew_image,&geometry,exception);
   deskew_image=DestroyImage(deskew_image);
@@ -1097,7 +1097,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
         transform[MagickPathExtent];
 
       (void) FormatLocaleString(transform,MagickPathExtent,
-        "rotate %.20gx%.20g %.20g",(double) image->columns,
+        "rotate %.17gx%.17g %.17g",(double) image->columns,
         (double) image->rows,(double) rotations);
       AppendImageProfileProperty(rotate_image,"hdrgm","hdrgm:Transform",
         transform,exception);

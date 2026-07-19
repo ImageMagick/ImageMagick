@@ -2657,27 +2657,14 @@ MagickExport int NTStatWide(const char *path,struct stat *attributes)
 #ifndef S_IFREG
   #define S_IFREG 0100000 /* regular file */
 #endif
-#ifndef S_IFLNK
-  #define S_IFLNK 0120000 /* symbolic link */
-#endif
-
-#ifndef S_IWUSR
-  #define S_IWUSR 0000200 /* owner have write permission */
-#endif
 #ifndef S_IRUSR
   #define S_IRUSR 0000400 /* owner has read permission */
 #endif
-#ifndef S_IRGRP
-  #define S_IRGRP 0000040 /* group has read permission */
+#ifndef S_IWUSR
+  #define S_IWUSR 0000200 /* owner has write permission */
 #endif
-#ifndef S_IROTH
-  #define S_IROTH 0000004 /* others have read permission */
-#endif
-#ifndef S_IWGRP
-  #define S_IWGRP 0000020 /* group has write permission */
-#endif
-#ifndef S_IWOTH
-  #define S_IWOTH 0000002 /* others have write permission */
+#ifndef S_IXUSR
+  #define S_IXUSR 0000100 /* owner has execute/search permission */
 #endif
 
   int
@@ -2692,9 +2679,9 @@ MagickExport int NTStatWide(const char *path,struct stat *attributes)
   status=wstat(path_wide,attributes);
   if (status == 0)
     {
-      HANDLE handle = CreateFileW(path_wide,GENERIC_READ,FILE_SHARE_READ |
-        FILE_SHARE_WRITE | FILE_SHARE_DELETE,NULL,OPEN_EXISTING,
-        FILE_FLAG_BACKUP_SEMANTICS,NULL);
+      HANDLE handle = CreateFileW(path_wide,FILE_READ_ATTRIBUTES,
+        FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,NULL,
+        OPEN_EXISTING,FILE_FLAG_BACKUP_SEMANTICS,NULL);
       if (handle != INVALID_HANDLE_VALUE)
         {
           BY_HANDLE_FILE_INFORMATION
@@ -2711,17 +2698,11 @@ MagickExport int NTStatWide(const char *path,struct stat *attributes)
                 file_info.nFileIndexLow);
               attributes->st_mode=0;
               if ((file_info.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0)
-                attributes->st_mode|=S_IFDIR;
+                attributes->st_mode|=S_IFDIR | S_IRUSR | S_IWUSR | S_IXUSR;
               else
-                if ((file_info.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0)
-                  attributes->st_mode|=S_IFLNK;
-                else
-                  attributes->st_mode|=S_IFREG;
-              if (file_info.dwFileAttributes & FILE_ATTRIBUTE_READONLY)
-                attributes->st_mode|=S_IRUSR | S_IRGRP | S_IROTH;
-              else
-                attributes->st_mode|=S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP |
-                  S_IROTH | S_IWOTH;
+                attributes->st_mode|=S_IFREG | S_IRUSR | S_IWUSR;
+              if ((file_info.dwFileAttributes & FILE_ATTRIBUTE_READONLY) != 0)
+                attributes->st_mode&=~S_IWUSR;
             }
           CloseHandle(handle);
         }

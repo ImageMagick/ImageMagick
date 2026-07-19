@@ -1436,7 +1436,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     image->rows=(size_t) height;
     image->depth=(size_t) bits_per_sample;
     if (image->debug != MagickFalse)
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Image depth: %.20g",
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Image depth: %.17g",
         (double) image->depth);
     image->endian=MSBEndian;
     if (endian == FILLORDER_LSB2MSB)

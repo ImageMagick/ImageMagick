@@ -580,13 +580,9 @@ MagickPrivate char *FileToXML(const char *filename,const size_t extent)
       xml=(char *) AcquireQuantumMemory(quantum,sizeof(*xml));
       for (i=0; xml != (char *) NULL; i+=(size_t) count)
       {
-        count=read(file,xml+i,quantum);
+        count=MagickRead(file,xml+i,quantum);
         if (count <= 0)
-          {
-            count=0;
-            if (errno != EINTR)
-              break;
-          }
+          break;
         if (~((size_t) i) < (quantum+1))
           {
             xml=(char *) RelinquishMagickMemory(xml);
@@ -629,14 +625,10 @@ MagickPrivate char *FileToXML(const char *filename,const size_t extent)
       (void) lseek(file,0,SEEK_SET);
       for (i=0; i < length; i+=(size_t) count)
       {
-        count=read(file,xml+i,(size_t) MagickMin(length-i,(size_t)
+        count=MagickRead(file,xml+i,(size_t) MagickMin(length-i,(size_t)
           MagickMaxBufferExtent));
         if (count <= 0)
-          {
-            count=0;
-            if (errno != EINTR)
-              break;
-          }
+          break;
       }
       if (i < length)
         {

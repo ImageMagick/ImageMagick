@@ -80,7 +80,7 @@ WandExport MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
   cli_wand=(MagickCLI *) AcquireCriticalMemory(sizeof(*cli_wand));
   cli_wand->wand.id=AcquireWandId();
   (void) FormatLocaleString(cli_wand->wand.name,MagickPathExtent,
-    "%s-%.20g","MagickWandCLI", (double) cli_wand->wand.id);
+    "%s-%.17g","MagickWandCLI", (double) cli_wand->wand.id);
   cli_wand->wand.images=NewImageList();
   if ( image_info == (ImageInfo *) NULL)
     cli_wand->wand.image_info=AcquireImageInfo();

@@ -264,4 +264,4 @@ Magick___tests_readWriteImages_SOURCES  = Magick++/tests/readWriteImages.cpp
 Magick___tests_readWriteImages_LDADD    = $(MAGICKPP_LDADD)
 Magick___tests_readWriteImages_CPPFLAGS = $(MAGICKPP_CPPFLAGS)
 
-MAGICKPP_LOCAL_TARGETS = www/Magick++/NEWS.html www/Magick++/ChangeLog.html
+MAGICKPP_LOCAL_TARGETS = www/magick++/index.html

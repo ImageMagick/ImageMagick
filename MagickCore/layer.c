@@ -1041,12 +1041,12 @@ static Image *OptimizeLayerFrames(const Image *image,const LayerMethod method,
   */
 #if DEBUG_OPT_FRAME
   i=0;
-  (void) FormatLocaleFile(stderr,"frame %.20g :-\n",(double) i);
+  (void) FormatLocaleFile(stderr,"frame %.17g :-\n",(double) i);
 #endif
   disposals[0]=NoneDispose;
   bounds[0]=CompareImagesBounds(prev_image,curr,CompareAnyLayer,exception);
 #if DEBUG_OPT_FRAME
-  (void) FormatLocaleFile(stderr, "overlay: %.20gx%.20g%+.20g%+.20g\n\n",
+  (void) FormatLocaleFile(stderr, "overlay: %.17gx%.17g%+.20g%+.20g\n\n",
     (double) bounds[i].width,(double) bounds[i].height,
     (double) bounds[i].x,(double) bounds[i].y );
 #endif
@@ -1064,7 +1064,7 @@ static Image *OptimizeLayerFrames(const Image *image,const LayerMethod method,
   for ( ; curr != (const Image *) NULL; curr=GetNextImageInList(curr))
   {
 #if DEBUG_OPT_FRAME
-    (void) FormatLocaleFile(stderr,"frame %.20g :-\n",(double) i);
+    (void) FormatLocaleFile(stderr,"frame %.17g :-\n",(double) i);
 #endif
     /*
       Assume none disposal is the best
@@ -1073,7 +1073,7 @@ static Image *OptimizeLayerFrames(const Image *image,const LayerMethod method,
     cleared=IsBoundsCleared(curr->previous,curr,&bounds[i],exception);
     disposals[i-1]=NoneDispose;
 #if DEBUG_OPT_FRAME
-    (void) FormatLocaleFile(stderr, "overlay: %.20gx%.20g%+.20g%+.20g%s%s\n",
+    (void) FormatLocaleFile(stderr, "overlay: %.17gx%.17g%+.20g%+.20g%s%s\n",
          (double) bounds[i].width,(double) bounds[i].height,
          (double) bounds[i].x,(double) bounds[i].y,
          bounds[i].x < 0?"  (unchanged)":"",
@@ -1102,7 +1102,7 @@ static Image *OptimizeLayerFrames(const Image *image,const LayerMethod method,
         try_bounds=CompareImagesBounds(prev_image,curr,CompareAnyLayer,exception);
         try_cleared=IsBoundsCleared(prev_image,curr,&try_bounds,exception);
 #if DEBUG_OPT_FRAME
-    (void) FormatLocaleFile(stderr, "test_prev: %.20gx%.20g%+.20g%+.20g%s\n",
+    (void) FormatLocaleFile(stderr, "test_prev: %.17gx%.17g%+.20g%+.20g%s\n",
          (double) try_bounds.width,(double) try_bounds.height,
          (double) try_bounds.x,(double) try_bounds.y,
          try_cleared?"  (pixels were cleared)":"");
@@ -1186,7 +1186,7 @@ static Image *OptimizeLayerFrames(const Image *image,const LayerMethod method,
             */
             try_bounds=CompareImagesBounds(curr->previous,curr,CompareClearLayer,exception);
 #if DEBUG_OPT_FRAME
-            (void) FormatLocaleFile(stderr, "expand_clear: %.20gx%.20g%+.20g%+.20g%s\n",
+            (void) FormatLocaleFile(stderr, "expand_clear: %.17gx%.17g%+.20g%+.20g%s\n",
                 (double) try_bounds.width,(double) try_bounds.height,
                 (double) try_bounds.x,(double) try_bounds.y,
                 try_bounds.x<0?"  (no expand necessary)":"");
@@ -1196,7 +1196,7 @@ static Image *OptimizeLayerFrames(const Image *image,const LayerMethod method,
             else
               {
 #if DEBUG_OPT_FRAME
-                (void) FormatLocaleFile(stderr, "expand_bgnd: %.20gx%.20g%+.20g%+.20g\n",
+                (void) FormatLocaleFile(stderr, "expand_bgnd: %.17gx%.17g%+.20g%+.20g\n",
                     (double) bgnd_bounds.width,(double) bgnd_bounds.height,
                     (double) bgnd_bounds.x,(double) bgnd_bounds.y );
 #endif
@@ -1231,7 +1231,7 @@ static Image *OptimizeLayerFrames(const Image *image,const LayerMethod method,
                       bgnd_bounds.height = try_bounds.height;
                   }
 #if DEBUG_OPT_FRAME
-                (void) FormatLocaleFile(stderr, "        to : %.20gx%.20g%+.20g%+.20g\n",
+                (void) FormatLocaleFile(stderr, "        to : %.17gx%.17g%+.20g%+.20g\n",
                     (double) bgnd_bounds.width,(double) bgnd_bounds.height,
                     (double) bgnd_bounds.x,(double) bgnd_bounds.y );
 #endif
@@ -1246,12 +1246,12 @@ static Image *OptimizeLayerFrames(const Image *image,const LayerMethod method,
  * Only CompareOverlay seemed to return something sensible.
  */
             try_bounds=CompareImagesBounds(bgnd_image,curr,CompareClearLayer,exception);
-            (void) FormatLocaleFile(stderr, "expand_ctst: %.20gx%.20g%+.20g%+.20g\n",
+            (void) FormatLocaleFile(stderr, "expand_ctst: %.17gx%.17g%+.20g%+.20g\n",
                 (double) try_bounds.width,(double) try_bounds.height,
                 (double) try_bounds.x,(double) try_bounds.y );
             try_bounds=CompareImagesBounds(bgnd_image,curr,CompareAnyLayer,exception);
             try_cleared=IsBoundsCleared(bgnd_image,curr,&try_bounds,exception);
-            (void) FormatLocaleFile(stderr, "expand_any : %.20gx%.20g%+.20g%+.20g%s\n",
+            (void) FormatLocaleFile(stderr, "expand_any : %.17gx%.17g%+.20g%+.20g%s\n",
                 (double) try_bounds.width,(double) try_bounds.height,
                 (double) try_bounds.x,(double) try_bounds.y,
                 try_cleared?"   (pixels cleared)":"");
@@ -1259,7 +1259,7 @@ static Image *OptimizeLayerFrames(const Image *image,const LayerMethod method,
             try_bounds=CompareImagesBounds(bgnd_image,curr,CompareOverlayLayer,exception);
 #if DEBUG_OPT_FRAME
             try_cleared=IsBoundsCleared(bgnd_image,curr,&try_bounds,exception);
-            (void) FormatLocaleFile(stderr, "expand_test: %.20gx%.20g%+.20g%+.20g%s\n",
+            (void) FormatLocaleFile(stderr, "expand_test: %.17gx%.17g%+.20g%+.20g%s\n",
                 (double) try_bounds.width,(double) try_bounds.height,
                 (double) try_bounds.x,(double) try_bounds.y,
                 try_cleared?"   (pixels cleared)":"");
@@ -1330,14 +1330,14 @@ static Image *OptimizeLayerFrames(const Image *image,const LayerMethod method,
     assert(prev_image != (Image *) NULL);
     disposals[i]=disposals[i-1];
 #if DEBUG_OPT_FRAME
-    (void) FormatLocaleFile(stderr, "final   %.20g : %s  %.20gx%.20g%+.20g%+.20g\n",
+    (void) FormatLocaleFile(stderr, "final   %.17g : %s  %.17gx%.17g%+.20g%+.20g\n",
          (double) i-1,
          CommandOptionToMnemonic(MagickDisposeOptions,disposals[i-1]),
          (double) bounds[i-1].width,(double) bounds[i-1].height,
          (double) bounds[i-1].x,(double) bounds[i-1].y );
 #endif
 #if DEBUG_OPT_FRAME
-    (void) FormatLocaleFile(stderr, "interim %.20g : %s  %.20gx%.20g%+.20g%+.20g\n",
+    (void) FormatLocaleFile(stderr, "interim %.17g : %s  %.17gx%.17g%+.20g%+.20g\n",
          (double) i,
          CommandOptionToMnemonic(MagickDisposeOptions,disposals[i]),
          (double) bounds[i].width,(double) bounds[i].height,

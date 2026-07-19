@@ -643,7 +643,7 @@ static int UnpackWPG2Raster(Image *image,int bpp,ExceptionInfo *exception)
           if(x!=0)
             {
               (void) FormatLocaleFile(stderr,
-                "\nUnsupported WPG2 unaligned token RST x=%.20g, please report!\n"
+                "\nUnsupported WPG2 unaligned token RST x=%.17g, please report!\n"
                 ,(double) x);
               BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
               return(-3);

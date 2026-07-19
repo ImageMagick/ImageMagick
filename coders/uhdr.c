@@ -151,7 +151,7 @@ static Image *ReadUHDRImage(const ImageInfo *image_info,
   (void) FormatLocaleString(buffer,sizeof(buffer),"%d",(value)); \
   (void) SetImageProperty(image,"hdrgm:" name,buffer,exception)
 #define SetHDRGMPropertySize(name,value) \
-  (void) FormatLocaleString(buffer,sizeof(buffer),"%.20g",(double) (value)); \
+  (void) FormatLocaleString(buffer,sizeof(buffer),"%.17g",(double) (value)); \
   (void) SetImageProperty(image,"hdrgm:" name,buffer,exception)
 #define SetHDRGMProperty3(name,value,value1,value2) \
   (void) FormatLocaleString(buffer,sizeof(buffer),"%f,%f,%f", \
@@ -641,7 +641,7 @@ static uhdr_mem_block_t GetExifProfile(Image *image, ExceptionInfo *exception)
       return uhdr_profile;
     }
     if (image->debug != MagickFalse)
-      (void)LogMagickEvent(CoderEvent, GetMagickModule(), "%s profile: %.20g bytes", name,
+      (void)LogMagickEvent(CoderEvent, GetMagickModule(), "%s profile: %.17g bytes", name,
                            (double)GetStringInfoLength(profile));
     name = GetNextImageProfile(image);
   }

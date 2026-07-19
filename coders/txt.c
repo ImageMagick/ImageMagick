@@ -723,7 +723,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
     if (LocaleCompare(image_info->magick,"SPARSE-COLOR") != 0)
       {
         (void) FormatLocaleString(buffer,MagickPathExtent,
-          "# ImageMagick pixel enumeration: %.20g,%.20g,%.20g,%.20g,%s\n",
+          "# ImageMagick pixel enumeration: %.17g,%.17g,%.17g,%.17g,%s\n",
           (double) image->columns,(double) image->rows,
           (double) image->number_meta_channels,
           (double) GetQuantumRange(image->depth),colorspace);
@@ -758,7 +758,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
             if (GetPixelAlpha(image,p) == (Quantum) OpaqueAlpha)
               {
                 (void) FormatLocaleString(buffer,MagickPathExtent,
-                  "%.20g,%.20g,",(double) x,(double) y);
+                  "%.17g,%.17g,",(double) x,(double) y);
                 GetColorTuple(&pixel,MagickFalse,tuple);
                 (void) ConcatenateMagickString(buffer,tuple,MagickPathExtent);
                 (void) ConcatenateMagickString(buffer," ",MagickPathExtent);
@@ -767,12 +767,12 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
             p+=(ptrdiff_t) GetPixelChannels(image);
             continue;
           }
-        (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g,%.20g: (",
+        (void) FormatLocaleString(buffer,MagickPathExtent,"%.17g,%.17g: (",
           (double) x,(double) y);
         for (i=0; i < (ssize_t) GetImageChannels(image); i++)
         {
           QuantumAny channel = ScaleQuantumToAny(p[i],range);
-          (void) FormatLocaleString(tuple,MagickPathExtent,"%.20g",
+          (void) FormatLocaleString(tuple,MagickPathExtent,"%.17g",
             (double) channel);
           (void) ConcatenateMagickString(buffer,tuple,MagickPathExtent);
           if ((i+1) < (ssize_t) GetImageChannels(image))

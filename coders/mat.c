@@ -1141,7 +1141,7 @@ MATLAB_KO:
     CellType = ReadBlobXXXLong(image2);    /* Additional object type */
     if (logging)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "MATLAB_HDR.CellType: %.20g",(double) CellType);
+        "MATLAB_HDR.CellType: %.17g",(double) CellType);
 
     /* data size */
     if (ReadBlob(image2, 4, (unsigned char *) &size) != 4)

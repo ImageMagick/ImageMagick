@@ -1,0 +1,389 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>ImageMagick | Color Reduction Utilizing Adaptive Spatial Subdivision</title>
+  <meta name="description" content="">
+  <link rel="canonical" href="index.html">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#000000">
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
+  <link rel="shortcut icon" href="../image/wand.png" type="image/png">
+  <link rel="apple-touch-icon" href="../image/wand.png" type="image/png">
+  <link rel="preconnect" href="https://localhost/">
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" as="style" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" crossorigin="anonymous">
+  <!-- Accessibility Enhancement -->
+  <style>
+    html {
+      scroll-padding-top: 70px;
+    }
+
+    a.nav-link:hover,
+    a.dropdown-item:hover {
+      color: #ffc107 !important;
+      text-shadow: 0px 2px 4px rgba(255, 193, 7, 0.8);
+    }
+
+    .btn-outline-warning {
+      color: #cd7f32;
+      border-color: #cd7f32;
+    }
+
+    .navbar-brand {
+      color: #d4af37;
+      transition: color 0.3s ease, text-shadow 0.3s ease;
+    }
+
+    .navbar-brand:hover {
+      color: #e9c03d;
+      text-shadow: 0px 2px 4px rgba(203, 163, 120, 0.6);
+    }
+
+    :root {
+      --bs-code-color: revert;
+    }
+  </style>
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="ImageMagick | Color Reduction Utilizing Adaptive Spatial Subdivision">
+  <meta property="og:description" content="">
+  <meta property="og:image" content="https://imagemagick.org/image/logo.png">
+  <meta property="og:logo" content="https://imagemagick.org/image/logo.png">
+  <meta property="og:url" content="https://imagemagick.org/quantize/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ImageMagick">
+  <meta property="og:locale" content="en_us">
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  $site=strtolower("ImageMagick");
+  <meta name="twitter:site" content="@imagemagick">
+  <meta name="twitter:creator" content="@imagemagick">
+  <meta name="twitter:title" content="ImageMagick | Color Reduction Utilizing Adaptive Spatial Subdivision">
+  <meta name="twitter:description" content="$this->description">
+  <meta name="twitter:image" content="https://imagemagick.org/image/logo.png">
+  <meta name="twitter:image:alt" content="ImageMagick logo and tag line">
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "ImageMagick",
+        "url": "ImageMagick | Color Reduction Utilizing Adaptive Spatial Subdivision",
+        "image": "https://imagemagick.org/image/logo.png",
+        "description": "$this->description",
+        "applicationCategory": "Multimedia",
+        "operatingSystem": "Windows, macOS, Linux, Unix",
+        "softwareVersion": "7.1.2-27",
+        "license": "https://imagemagick.org/license/",
+        "creator": {
+          "@type": "Organization",
+          "name": "ImageMagick Studio LLC",
+          "url": "https://imagemagick.org"
+        },
+			  "keywords": [
+          "".ucfirst($title)."",
+          "image processing software",
+          "image conversion tool",
+          "batch image editing",
+          "open-source image editor",
+          "ImageMagick command-line",
+          "resize images ImageMagick",
+          "crop and rotate images",
+          "ImageMagick tutorial",
+          "ImageMagick automation",
+          "ImageMagick for developers",
+          "ImageMagick CLI",
+          "ImageMagick filters and effects",
+          "ImageMagick scripting",
+          "ImageMagick API integration"
+        ],
+			  "sameAs": [
+          "https://github.com/ImageMagick",
+          "https://x.com/imagemagick"
+        ],
+        "offers": {
+          "@type": "Offer",
+          "price": "0.00",
+          "priceCurrency": "USD"
+        }
+      }
+  </script>
+  <!-- Google Custom Search -->
+  <script async src="https://localhost/cse.js?cx=8720b81722164487b"></script>
+  <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <script>
+    function setTheme(theme) {
+      localStorage.setItem('theme', theme);
+      updateThemeIcon(theme);
+      document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? getSystemTheme() : theme);
+    }
+    function getSystemTheme() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    function updateThemeIcon(theme) {
+      const iconMap = {
+        light: '☀️',
+        dark: '🌙',
+        auto: '🌓'
+      };
+      document.getElementById('currentThemeIcon').textContent = iconMap[theme] || '🌓';
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('theme') || 'auto';
+      setTheme(savedTheme);
+    });
+  </script>
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold" href="../index-2.html" title="ImageMagick">ImageMagick</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#magick-navbars" aria-controls="magick-navbars" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="magick-navbars">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link "" href="../download/index.html">Download</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link "" href="../command-line-tools/index.html">Tools</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link "" href="../command-line-processing/index.html">CLI</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link "" href="../develop/index.html">Develop</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" rel="noopener noreferrer" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item ms-3">
+            <form class="d-flex form-inline" action="https://imagemagick.org/quantize/">
+              <input class="form-control me-2" type="text" name="q" placeholder="Search site..." aria-label="Search">
+              <button class="btn btn-outline-warning" type="submit" name="sa">Search</button>
+            </form>
+          </li>
+          <li class="nav-item dropdown ms-3">
+            <a class="nav-link dropdown-toggle" href="#" id="themeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <span id="currentThemeIcon">🌓</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="themeDropdown">
+              <li><a class="dropdown-item" href="#" onclick="setTheme('light')">☀️ Light</a></li>
+              <li><a class="dropdown-item" href="#" onclick="setTheme('dark')">🌙 Dark</a></li>
+              <li><a class="dropdown-item" href="#" onclick="setTheme('auto')">🌓 Auto</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="col-lg-8 mx-auto text-body-secondary pt-5 pt-lg-5">
+    <header class="d-flex align-items-center pb-3 mb-5 border-bottom">
+      <div class="mt-3 ms-3">
+        <a href="../index-2.html" class="text-decoration-none">
+          <h1 class="fs-2 mb-1 display-5">Color Reduction Utilizing Adaptive Spatial Subdivision</h1>
+        </a>
+        <h2 class="fs-5 text-muted h4">ImageMagick</h2>
+      </div>
+    </header>
+
+    <main role="main" class="container">
+      <div class="row g-5">
+        <div class="col-md-9">
+          <div>
+<p class="text-center"><a href="#describe">Algorithm Description</a> • <a href="#measure">Measuring Color Reduction Error</a></p>
+
+<p class="lead">This document describes how ImageMagick performs color reduction on an image. To fully understand what follows, you should have a knowledge of basic imaging techniques and the tree data structure and terminology.</p>
+
+<h2><a class="anchor" id="describe"></a>Algorithm Description</h2>
+
+<p>For purposes of color allocation, an image is a set of <var>n</var> pixels, where each pixel is a point in RGB space. RGB space is a 3-dimensional vector space, and each pixel, <var>p(i)</var>, is defined by an ordered triple of red, green, and blue coordinates, (<var>r(i)</var>, <var>g(i)</var>, <var>b(i)</var>).</p>
+
+<p>Each primary color component (<var>red</var>, <var>green</var>, or <var>blue</var>) represents an intensity which varies linearly from 0 to a maximum value, <var>Cmax</var>, which corresponds to full saturation of that color. Color allocation is defined over a domain consisting of the cube in RGB space with opposite vertices at (0, 0, 0) and (<var>Cmax</var>, <var>Cmax</var>, <var>Cmax</var>).  ImageMagick requires <var>Cmax</var>= <var>255</var>.</p>
+
+<p>The algorithm maps this domain onto a tree in which each node represents a cube within that domain. In the following discussion, these cubes are defined by the coordinate of two opposite vertices: The vertex nearest the origin in RGB space and the vertex farthest from the origin.</p>
+
+<p>The tree's root node represents the entire domain, (0,0,0) through (<var>Cmax</var>, <var>Cmax</var>, <var>Cmax</var>). Each lower level in the tree is generated by subdividing one node's cube into eight smaller cubes of equal size. This corresponds to bisecting the parent cube with planes passing through the midpoints of each edge.</p>
+
+<p>The basic algorithm operates in three phases:</p>
+
+<ol>
+  <li>Classification</li>
+  <li>Reduction</li>
+  <li>Assignment</li>
+</ol>
+
+<p><b>Classification</b></p>
+
+<p>Classification builds a color description tree for the image. Reduction collapses the tree until the number it represents, at most, is the number of colors desired in the output image. Assignment defines the output image's color map and sets each pixel's color by reclassification in the reduced tree.  <var>Our goal is to minimize the numerical discrepancies between the original colors and quantized colors</var>. To learn more about quantization error, see <a href="#measure">Measuring Color Reduction Error</a>.</p>
+
+<p>Classification begins by initializing a color description tree of sufficient depth to represent each possible input color in a leaf. However, it is impractical to generate a fully-formed color description tree in the classification phase for realistic values of <var>Cmax</var>. If color components in the input image are quantized to <var>k</var>-bit precision, so that <var>Cmax</var> = <var>2^k-1</var>, the tree would need <var>k</var> levels below the root node to allow representing each possible input color in a leaf.  This becomes prohibitive because the tree's total number of nodes:</p>
+
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><code>total nodes = 1+Sum(8^i), i=1,k
+
+For k=8,
+nodes = 1 + (8^1+8^2+....+8^8)
+      = 1 + 8(8^8 - 1)/(8 - 1)
+      = 19,173,961 </code></pre>
+
+<p>Therefore, to avoid building a fully populated tree, ImageMagick:</p>
+
+<ol>
+  <li>initializes data structures for nodes only as they are needed;</li>
+  <li>chooses a maximum depth for the tree as a function of the desired number of colors in the output image (currently the <var>base-two</var> logarithm of <var>Cmax</var>).</li>
+</ol>
+
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><code>For Cmax=255,
+maximum tree depth = log<sub>2</sub>(256)
+                   = 8 </code></pre>
+
+<p>A tree of this depth generally allows the best representation of the source image with the fastest computational speed and the least amount of memory. However, the default depth is inappropriate for some images. Therefore, the caller can request a specific tree depth.</p>
+
+<p>For each pixel in the input image, classification scans downward from the root of the color description tree. At each level of the tree, it identifies the single node which represents a cube in RGB space containing the pixels' color. It updates the following data for each such node:</p>
+
+<dl class="row">
+<dt class="col-md-4">n1</dt>
+	<dd class="col-md-8">number of pixels whose color is contained in the RGB cube which this node represents;</dd>
+<dt class="col-md-4">n2</dt>
+  <dd class="col-md-8">number of pixels whose color is not represented in a node at lower depth in the tree; initially, <var>n2=0</var> for all nodes except leaves of the tree.</dd>
+<dt class="col-md-4">Sr,Sg,Sb</dt>
+  <dd class="col-md-8">sums of the <var>red</var>, <var>green</var>, and <var>blue</var> component values for all pixels not classified at a lower depth. The combination of these sums and <var>n2</var> will ultimately characterize the mean color of a set of pixels represented by this node.</dd>
+<dt class="col-md-4">E</dt>
+  <dd class="col-md-8">the distance squared in RGB space between each pixel contained within a node and the nodes' center. This represents the quantization error for a node.</dd>
+</dl>
+
+<p><b>Reduction</b></p>
+
+<p>Reduction repeatedly prunes the tree until the number of nodes with <var>n2</var> &gt; <var>0</var> is less than or equal to the maximum number of colors allowed in the output image. On any given iteration over the tree, it selects those nodes whose <var>E</var> value is minimal for pruning and merges their color statistics upward. It uses a pruning threshold, <var>Ep</var>, to govern node selection as follows:</p>
+
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><code>Ep = 0
+while number of nodes with (n2 &gt; 0) &gt; required maximum number of colors
+   prune all nodes such that E &lt;= Ep
+   Set Ep  to minimum E in remaining nodes </code></pre>
+
+<p>This has the effect of minimizing any quantization error when merging two nodes together.</p>
+
+<p>When a node to be pruned has offspring, the pruning procedure invokes itself recursively in order to prune the tree from the leaves upward. The values of <var>n2</var>, <var>Sr</var>, <var>Sg</var>, and <var>Sb</var> in a node being pruned are always added to the corresponding data in that node's parent. This retains the pruned node's color characteristics for later averaging.</p>
+
+<p>For each node, <var>n2</var> pixels exist for which that node represents the smallest volume in RGB space containing those pixel's colors. When <var>n2</var> &gt; <var>0</var> the node will uniquely define a color in the output image. At the beginning of reduction, <var>n2</var> = <var>0</var> for all nodes except the leaves of the tree which represent colors present in the input image.</p>
+
+<p>The other pixel count, <var>n1</var>, indicates the total number of colors within the cubic volume which the node represents. This includes <var>n1</var> - <var>n2</var> pixels whose colors should be defined by nodes at a lower level in the tree.</p>
+
+<p><b>Assignment</b></p>
+
+<p>Assignment generates the output image from the pruned tree. The output image consists of two parts:</p>
+<ol>
+  <li>A color map, which is an array of color descriptions (RGB triples) for each color present in the output image.</li>
+
+  <li>A pixel array, which represents each pixel as an index into the color map array.</li>
+</ol>
+
+<p>First, the assignment phase makes one pass over the pruned color description tree to establish the image's color map. For each node with <var>n2</var> &gt; <var>0</var>, it divides <var>Sr</var>, <var>Sg</var>, and <var>Sb</var> by <var>n2</var>. This produces the mean color of all pixels that classify no lower than this node. Each of these colors becomes an entry in the color map.</p>
+
+<p>Finally, the assignment phase reclassifies each pixel in the pruned tree to identify the deepest node containing the pixel's color. The pixel's value in the pixel array becomes the index of this node's mean color in the color map.</p>
+
+<p>Empirical evidence suggests that the distances in color spaces such as YUV, or YIQ correspond to perceptual color differences more closely than do distances in RGB space.  These color spaces may give better results when color reducing an image. Here the algorithm is as described except each pixel is a point in the alternate color space. For convenience, the color components are normalized to the range 0 to a maximum value, <var>Cmax</var>. The color reduction can then proceed as described.</p>
+
+<h2><a class="anchor" id="measure"></a>Measuring Color Reduction Error</h2>
+
+<p>Depending on the image, the color reduction error may be obvious or invisible. Images with high spatial frequencies (such as hair or grass) will show error much less than pictures with large smoothly shaded areas (such as faces). This because the high-frequency contour edges introduced by the color reduction process are masked by the high frequencies in the image.</p>
+
+<p>To measure the difference between the original and color reduced images (the total color reduction error), ImageMagick sums over all pixels in an image the distance squared in RGB space between each original pixel value and its color reduced value. ImageMagick prints several error measurements including the mean error per pixel, the normalized mean error, and the normalized maximum error.</p>
+
+<p>The normalized error measurement can be used to compare images.  In general, the closer the mean error is to zero the more the quantized image resembles the source image. Ideally, the error should be perceptually-based, since the human eye is the final judge of quantization quality.</p>
+
+<p>These errors are measured and printed when the <a href="../command-line-options/index.html#colors">-colors</a> and <a href="../command-line-options/index.html#verbose">-verbose</a> options are specified on the <a href="../magick/index.html">magick</a> command line:</p>
+
+<div>
+<table class="table table-sm table-hover table-striped table-responsive">
+  <tr>
+    <td>mean error per pixel</td>
+    <td>is the mean error for any single pixel in the image.</td>
+  </tr>
+  <tr>
+    <td>normalized mean square error</td>
+    <td>is the normalized mean square quantization error for any single pixel in the image. This distance measure is normalized to a range between 0 and 1. It is independent of the range of red, green, and blue values in the image.</td>
+  </tr>
+  <tr>
+    <td>normalized maximum square error</td>
+    <td>is the largest normalized square quantization error for any single pixel in the image. This distance measure is normalized to a range between of red, green, and blue values in the image.</td>
+  </tr>
+</table></div>
+
+</div>
+
+        </div>
+        <div class="col-md-3">
+          <div class="container text-center my-3">
+            <a href="../image/wizard.png" rel="noopener noreferrer" target="_blank">
+              <img alt="The Tao of the Spiritual Warrior" class="img-fluid img-thumbnail" height="1468" loading="lazy" src="../image/wizard.png" width="1104">
+            </a>
+            <p class="mt-2"><iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border: 0;"></iframe></p>
+          </div>
+          <div class="container text-center my-3">
+            <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745"
+              crossorigin="anonymous"></script>
+            <!-- Banner Ad -->
+            <ins class="adsbygoogle"
+              style="display:block"
+              data-ad-client="ca-pub-3129977114552745"
+              data-ad-slot="1083537442"
+              data-ad-format="auto"
+              data-full-width-responsive="true"></ins>
+            <script>
+              (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+          </div>
+        </div>
+      </div>
+      <a aria-label="About ImageMagick" class="btn btn-outline-warning mt-3" href="../index-2.html">About ImageMagick</a>
+    </main><!-- /.container -->
+    <footer class="text-center pt-5 my-5 text-body-secondary border-top">
+      <div class="container-fluid">
+        <a href="../security-policy/index.html">Security</a> •
+        <a href="../news/index.html">News</a>
+        &nbsp;
+        <a href="#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../image/wand.ico"></a>
+        &nbsp;
+        <a href="../links/index.html">Related</a> •
+        <a href="../sitemap/index.html">Sitemap</a>
+        <br>
+        <a href="../support/index.html">Sponsor</a> •
+        <a href="../cite/index.html">Cite</a> •
+        <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+        <a href="https://github.com/ImageMagick/ImageMagick/discussions">Contact Us</a>
+        <br>
+        <a href="https://github.com/imagemagick/imagemagick" rel="noopener noreferrer" target="_blank" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false">
+            <title>GitHub</title>
+            <path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z" />
+          </svg></a> •
+        <a href="https://twitter.com/imagemagick" rel="noopener noreferrer" target="_blank" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 300 300" width="2%" height="2%" role="img" focusable="false">
+            <title>Twitter</title>
+            <path d="M178.57 127.15 290.27 0h-26.46l-97.03 110.38L89.34 0H0l117.13 166.93L0 300.25h26.46l102.4-116.59 81.8 116.59h89.34M36.01 19.54H76.66l187.13 262.13h-40.66" />
+          </svg></a>
+        <br>
+        <small>Copyright © 1999 ImageMagick Studio LLC</small>
+      </div>
+    </footer>
+    <div style="visibility: hidden;">
+      <div class="gcse-search"></div>
+    </div>
+  </div>
+
+  <!-- Javascript assets -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
+
+
+</html>

@@ -560,7 +560,7 @@ static size_t ValidateColorspaces(size_t *fails,ExceptionInfo *exception)
   for (test=0; test < 26; test++)
   {
     CatchException(exception);
-    (void) FormatLocaleFile(stdout,"  test %.20g: ",(double) test);
+    (void) FormatLocaleFile(stdout,"  test %.17g: ",(double) test);
     switch (test)
     {
       case  0: status=ValidateHSIToRGB(); break;
@@ -601,7 +601,7 @@ static size_t ValidateColorspaces(size_t *fails,ExceptionInfo *exception)
     (void) FormatLocaleFile(stdout,"... pass.\n");
   }
   (void) FormatLocaleFile(stdout,
-    "  summary: %.20g subtests; %.20g passed; %.20g failed.\n",(double) test,
+    "  summary: %.17g subtests; %.17g passed; %.17g failed.\n",(double) test,
     (double) (test-fail),(double) fail);
   *fails+=fail;
   return(test);
@@ -668,7 +668,7 @@ static size_t ValidateCompareCommand(ImageInfo *image_info,
   for (i=0; compare_options[i] != (char *) NULL; i++)
   {
     CatchException(exception);
-    (void) FormatLocaleFile(stdout,"  test %.20g: %s",(double) (test++),
+    (void) FormatLocaleFile(stdout,"  test %.17g: %s",(double) (test++),
       compare_options[i]);
     (void) FormatLocaleString(command,MagickPathExtent,"%s %s %s %s",
       compare_options[i],reference_filename,reference_filename,output_filename);
@@ -699,7 +699,7 @@ static size_t ValidateCompareCommand(ImageInfo *image_info,
     (void) FormatLocaleFile(stdout,"... pass.\n");
   }
   (void) FormatLocaleFile(stdout,
-    "  summary: %.20g subtests; %.20g passed; %.20g failed.\n",(double) test,
+    "  summary: %.17g subtests; %.17g passed; %.17g failed.\n",(double) test,
     (double) (test-fail),(double) fail);
   *fails+=fail;
   return(test);
@@ -766,7 +766,7 @@ static size_t ValidateCompositeCommand(ImageInfo *image_info,
   for (i=0; composite_options[i] != (char *) NULL; i++)
   {
     CatchException(exception);
-    (void) FormatLocaleFile(stdout,"  test %.20g: %s",(double) (test++),
+    (void) FormatLocaleFile(stdout,"  test %.17g: %s",(double) (test++),
       composite_options[i]);
     (void) FormatLocaleString(command,MagickPathExtent,"%s %s %s %s",
       reference_filename,composite_options[i],reference_filename,
@@ -794,7 +794,7 @@ static size_t ValidateCompositeCommand(ImageInfo *image_info,
     (void) FormatLocaleFile(stdout,"... pass.\n");
   }
   (void) FormatLocaleFile(stdout,
-    "  summary: %.20g subtests; %.20g passed; %.20g failed.\n",(double) test,
+    "  summary: %.17g subtests; %.17g passed; %.17g failed.\n",(double) test,
     (double) (test-fail),(double) fail);
   *fails+=fail;
   return(test);
@@ -861,7 +861,7 @@ static size_t ValidateConvertCommand(ImageInfo *image_info,
   for (i=0; convert_options[i] != (char *) NULL; i++)
   {
     CatchException(exception);
-    (void) FormatLocaleFile(stdout,"  test %.20g: %s",(double) test++,
+    (void) FormatLocaleFile(stdout,"  test %.17g: %s",(double) test++,
       convert_options[i]);
     (void) FormatLocaleString(command,MagickPathExtent,"%s %s %s %s",
       reference_filename,convert_options[i],reference_filename,output_filename);
@@ -888,7 +888,7 @@ static size_t ValidateConvertCommand(ImageInfo *image_info,
     (void) FormatLocaleFile(stdout,"... pass.\n");
   }
   (void) FormatLocaleFile(stdout,
-    "  summary: %.20g subtests; %.20g passed; %.20g failed.\n",(double) test,
+    "  summary: %.17g subtests; %.17g passed; %.17g failed.\n",(double) test,
     (double) (test-fail),(double) fail);
   *fails+=fail;
   return(test);
@@ -956,7 +956,7 @@ static size_t ValidateIdentifyCommand(ImageInfo *image_info,
   for (i=0; identify_options[i] != (char *) NULL; i++)
   {
     CatchException(exception);
-    (void) FormatLocaleFile(stdout,"  test %.20g: %s",(double) test++,
+    (void) FormatLocaleFile(stdout,"  test %.17g: %s",(double) test++,
       identify_options[i]);
     (void) FormatLocaleString(command,MagickPathExtent,"%s %s",
       identify_options[i],reference_filename);
@@ -983,7 +983,7 @@ static size_t ValidateIdentifyCommand(ImageInfo *image_info,
     (void) FormatLocaleFile(stdout,"... pass.\n");
   }
   (void) FormatLocaleFile(stdout,
-    "  summary: %.20g subtests; %.20g passed; %.20g failed.\n",(double) test,
+    "  summary: %.17g subtests; %.17g passed; %.17g failed.\n",(double) test,
     (double) (test-fail),(double) fail);
   *fails+=fail;
   return(test);
@@ -1092,7 +1092,7 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
         Generate reference image.
       */
       CatchException(exception);
-      (void) FormatLocaleFile(stdout,"  test %.20g: %s/%s/%s/%.20g-bits",
+      (void) FormatLocaleFile(stdout,"  test %.17g: %s/%s/%s/%.17g-bits",
         (double) (test++),reference_formats[i].magick,CommandOptionToMnemonic(
         MagickCompressOptions,reference_formats[i].compression),
         CommandOptionToMnemonic(MagickTypeOptions,reference_types[j].type),
@@ -1114,7 +1114,7 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
       /*
         Write reference image.
       */
-      (void) FormatLocaleString(size,MagickPathExtent,"%.20gx%.20g",
+      (void) FormatLocaleString(size,MagickPathExtent,"%.17gx%.17g",
         (double) reference_image->columns,(double) reference_image->rows);
       (void) CloneString(&image_info->size,size);
       image_info->depth=reference_types[j].depth;
@@ -1292,7 +1292,7 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
     }
   }
   (void) FormatLocaleFile(stdout,
-    "  summary: %.20g subtests; %.20g passed; %.20g failed.\n",(double) test,
+    "  summary: %.17g subtests; %.17g passed; %.17g failed.\n",(double) test,
     (double) (test-fail),(double) fail);
   *fails+=fail;
   return(test);
@@ -1377,7 +1377,7 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
         Generate reference image.
       */
       CatchException(exception);
-      (void) FormatLocaleFile(stdout,"  test %.20g: %s/%s/%s/%.20g-bits",
+      (void) FormatLocaleFile(stdout,"  test %.17g: %s/%s/%s/%.17g-bits",
         (double) (test++),reference_formats[i].magick,CommandOptionToMnemonic(
         MagickCompressOptions,reference_formats[i].compression),
         CommandOptionToMnemonic(MagickTypeOptions,reference_types[j].type),
@@ -1399,7 +1399,7 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
       /*
         Write reference image.
       */
-      (void) FormatLocaleString(size,MagickPathExtent,"%.20gx%.20g",
+      (void) FormatLocaleString(size,MagickPathExtent,"%.17gx%.17g",
         (double) reference_image->columns,(double) reference_image->rows);
       (void) CloneString(&image_info->size,size);
       image_info->depth=reference_types[j].depth;
@@ -1519,7 +1519,7 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
     }
   }
   (void) FormatLocaleFile(stdout,
-    "  summary: %.20g subtests; %.20g passed; %.20g failed.\n",(double) test,
+    "  summary: %.17g subtests; %.17g passed; %.17g failed.\n",(double) test,
     (double) (test-fail),(double) fail);
   *fails+=fail;
   return(test);
@@ -1600,7 +1600,7 @@ static size_t ValidateImportExportPixels(ImageInfo *image_info,
         Generate reference image.
       */
       CatchException(exception);
-      (void) FormatLocaleFile(stdout,"  test %.20g: %s/%s",(double) (test++),
+      (void) FormatLocaleFile(stdout,"  test %.17g: %s/%s",(double) (test++),
         reference_map[i],CommandOptionToMnemonic(MagickStorageOptions,
         reference_storage[j].type));
       (void) CopyMagickString(image_info->filename,reference_filename,
@@ -1708,7 +1708,7 @@ static size_t ValidateImportExportPixels(ImageInfo *image_info,
     }
   }
   (void) FormatLocaleFile(stdout,
-    "  summary: %.20g subtests; %.20g passed; %.20g failed.\n",(double) test,
+    "  summary: %.17g subtests; %.17g passed; %.17g failed.\n",(double) test,
     (double) (test-fail),(double) fail);
   *fails+=fail;
   return(test);
@@ -1775,7 +1775,7 @@ static size_t ValidateMagickCommand(ImageInfo *image_info,
   for (i=0; convert_options[i] != (char *) NULL; i++)
   {
     CatchException(exception);
-    (void) FormatLocaleFile(stdout,"  test %.20g: %s",(double) test++,
+    (void) FormatLocaleFile(stdout,"  test %.17g: %s",(double) test++,
       convert_options[i]);
     (void) FormatLocaleString(command,MagickPathExtent,"%s %s %s %s",
       reference_filename,convert_options[i],reference_filename,output_filename);
@@ -1802,7 +1802,7 @@ static size_t ValidateMagickCommand(ImageInfo *image_info,
     (void) FormatLocaleFile(stdout,"... pass.\n");
   }
   (void) FormatLocaleFile(stdout,
-    "  summary: %.20g subtests; %.20g passed; %.20g failed.\n",(double) test,
+    "  summary: %.17g subtests; %.17g passed; %.17g failed.\n",(double) test,
     (double) (test-fail),(double) fail);
   *fails+=fail;
   return(test);
@@ -1869,7 +1869,7 @@ static size_t ValidateMontageCommand(ImageInfo *image_info,
   for (i=0; montage_options[i] != (char *) NULL; i++)
   {
     CatchException(exception);
-    (void) FormatLocaleFile(stdout,"  test %.20g: %s",(double) (test++),
+    (void) FormatLocaleFile(stdout,"  test %.17g: %s",(double) (test++),
       montage_options[i]);
     (void) FormatLocaleString(command,MagickPathExtent,"%s %s %s %s",
       reference_filename,montage_options[i],reference_filename,
@@ -1897,7 +1897,7 @@ static size_t ValidateMontageCommand(ImageInfo *image_info,
     (void) FormatLocaleFile(stdout,"... pass.\n");
   }
   (void) FormatLocaleFile(stdout,
-    "  summary: %.20g subtests; %.20g passed; %.20g failed.\n",(double) test,
+    "  summary: %.17g subtests; %.17g passed; %.17g failed.\n",(double) test,
     (double) (test-fail),(double) fail);
   *fails+=fail;
   return(test);
@@ -1964,7 +1964,7 @@ static size_t ValidateStreamCommand(ImageInfo *image_info,
   for (i=0; stream_options[i] != (char *) NULL; i++)
   {
     CatchException(exception);
-    (void) FormatLocaleFile(stdout,"  test %.20g: %s",(double) (test++),
+    (void) FormatLocaleFile(stdout,"  test %.17g: %s",(double) (test++),
       stream_options[i]);
     (void) FormatLocaleString(command,MagickPathExtent,"%s %s %s",
       stream_options[i],reference_filename,output_filename);
@@ -1991,7 +1991,7 @@ static size_t ValidateStreamCommand(ImageInfo *image_info,
     (void) FormatLocaleFile(stdout,"... pass.\n");
   }
   (void) FormatLocaleFile(stdout,
-    "  summary: %.20g subtests; %.20g passed; %.20g failed.\n",(double) test,
+    "  summary: %.17g subtests; %.17g passed; %.17g failed.\n",(double) test,
     (double) (test-fail),(double) fail);
   *fails+=fail;
   return(test);
@@ -2300,7 +2300,7 @@ int main(int argc,char **argv)
             tests+=ValidateStreamCommand(image_info,reference_filename,
               output_filename,&fail,exception);
           (void) FormatLocaleFile(stdout,
-            "validation suite: %.20g tests; %.20g passed; %.20g failed.\n",
+            "validation suite: %.17g tests; %.17g passed; %.17g failed.\n",
             (double) tests,(double) (tests-fail),(double) fail);
         }
       (void) RelinquishUniqueFileResource(output_filename);
@@ -2315,7 +2315,7 @@ int main(int argc,char **argv)
       elapsed_time=GetElapsedTime(timer);
       user_time=GetUserTime(timer);
       (void) FormatLocaleFile(stderr,
-        "Performance: %.20gi %.3fips %0.6fu %ld:%02ld.%03ld\n",(double)
+        "Performance: %.17gi %.3fips %0.6fu %ld:%02ld.%03ld\n",(double)
         iterations,1.0*iterations/elapsed_time,user_time,(long)
         (elapsed_time/60.0),(long) ceil(fmod(elapsed_time,60.0)),
         (long) (1000.0*(elapsed_time-floor(elapsed_time))));

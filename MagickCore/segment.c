@@ -467,7 +467,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
         cluster_threshold);
       (void) FormatLocaleFile(stdout,"\tWeighting Exponent = %g\n",(double)
         weighting_exponent);
-      (void) FormatLocaleFile(stdout,"\tTotal Number of Clusters = %.20g\n\n",
+      (void) FormatLocaleFile(stdout,"\tTotal Number of Clusters = %.17g\n\n",
         (double) number_clusters);
       /*
         Print the total number of points per cluster.
@@ -475,7 +475,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
       (void) FormatLocaleFile(stdout,"\n\nNumber of Vectors Per Cluster\n");
       (void) FormatLocaleFile(stdout,"=============================\n\n");
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
-        (void) FormatLocaleFile(stdout,"Cluster #%.20g = %.20g\n",(double)
+        (void) FormatLocaleFile(stdout,"Cluster #%.17g = %.17g\n",(double)
           cluster->id,(double) cluster->count);
       /*
         Print the cluster extents.
@@ -485,10 +485,10 @@ static MagickBooleanType Classify(Image *image,short **extrema,
       (void) FormatLocaleFile(stdout,"================");
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
       {
-        (void) FormatLocaleFile(stdout,"\n\nCluster #%.20g\n\n",(double)
+        (void) FormatLocaleFile(stdout,"\n\nCluster #%.17g\n\n",(double)
           cluster->id);
         (void) FormatLocaleFile(stdout,
-          "%.20g-%.20g  %.20g-%.20g  %.20g-%.20g\n",(double)
+          "%.17g-%.17g  %.17g-%.17g  %.17g-%.17g\n",(double)
           cluster->red.left,(double) cluster->red.right,(double)
           cluster->green.left,(double) cluster->green.right,(double)
           cluster->blue.left,(double) cluster->blue.right);
@@ -501,7 +501,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
       (void) FormatLocaleFile(stdout,"=====================");
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
       {
-        (void) FormatLocaleFile(stdout,"\n\nCluster #%.20g\n\n",(double)
+        (void) FormatLocaleFile(stdout,"\n\nCluster #%.17g\n\n",(double)
           cluster->id);
         (void) FormatLocaleFile(stdout,"%g  %g  %g\n",(double)
           cluster->red.center,(double) cluster->green.center,(double)

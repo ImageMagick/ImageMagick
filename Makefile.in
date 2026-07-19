@@ -6102,7 +6102,7 @@ Magick___tests_readWriteBlob_CPPFLAGS = $(MAGICKPP_CPPFLAGS)
 Magick___tests_readWriteImages_SOURCES = Magick++/tests/readWriteImages.cpp
 Magick___tests_readWriteImages_LDADD = $(MAGICKPP_LDADD)
 Magick___tests_readWriteImages_CPPFLAGS = $(MAGICKPP_CPPFLAGS)
-MAGICKPP_LOCAL_TARGETS = www/Magick++/NEWS.html www/Magick++/ChangeLog.html
+MAGICKPP_LOCAL_TARGETS = www/magick++/index.html
 
 # Where filter modules get installed
 filtersdir = $(FILTER_PATH)
@@ -6290,7 +6290,7 @@ pkgconfig_DATA = \
 
 
 # Non-Automake subdirectories to distribute
-DISTDIRS = images scripts www PerlMagick
+DISTDIRS = scripts www PerlMagick
 
 #
 # Additional install rules
@@ -6298,7 +6298,6 @@ DISTDIRS = images scripts www PerlMagick
 
 # Install HTML files
 pkgdocdir = $(DOCUMENTATION_PATH)
-DOCDIRS = images images/patterns www www/assets www/api www/source www/Magick++
 @INSTALL_DOC_TRUE@HTML_INSTALL_DATA_TARGETS = install-data-html
 
 # Uninstall HTML files
@@ -14217,7 +14216,7 @@ dist-hook:
 install-data-html:
 	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)
 	$(INSTALL_DATA) $(srcdir)/index.html $(DESTDIR)$(pkgdocdir)
-	@for dir in $(DOCDIRS) ; do \
+	@for dir in $$(find www -type d) ; do \
 	  $(mkinstalldirs) $(DESTDIR)$(pkgdocdir)/$$dir && \
 	  if test -d $(builddir)/$$dir ; then \
 	    docsrcdir=$(builddir)/$$dir; \
@@ -14231,7 +14230,7 @@ install-data-html:
 	done
 uninstall-data-html:
 	rm -f $(DESTDIR)$(pkgdocdir)/index.html
-	for dir in $(DOCDIRS) ; do \
+	for dir in $$(find www -type d) ; do \
 	  rm -f -r $(DESTDIR)$(pkgdocdir)/$$dir ; \
 	done
 

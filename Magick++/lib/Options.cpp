@@ -990,7 +990,7 @@ void Magick::Options::setOption(const char *name,const double value_)
   char
     option[MagickPathExtent];
 
-  (void) FormatLocaleString(option,MagickPathExtent,"%.20g",value_);
+  (void) FormatLocaleString(option,MagickPathExtent,"%.17g",value_);
   (void) SetImageOption(_imageInfo,name,option);
 }
 

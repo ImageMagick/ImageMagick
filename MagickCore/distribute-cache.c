@@ -158,25 +158,24 @@ static inline MagickOffsetType dpc_read(SOCKET_TYPE magick_unused(file),
 static inline MagickOffsetType dpc_read(SOCKET_TYPE file,
   const MagickSizeType length,unsigned char *magick_restrict message)
 {
-  MagickOffsetType
-    i;
-
-  ssize_t
-    count;
-
-  count=0;
-  for (i=0; i < (MagickOffsetType) length; i+=count)
+  MagickOffsetType offset = 0;
+  while (offset < (MagickOffsetType) length)
   {
-    count=recv(file,(char *) message+i,(LENGTH_TYPE) MagickMin(length-
-      (MagickSizeType) i,(MagickSizeType) MagickMaxBufferExtent),0);
-    if (count <= 0)
-      {
-        count=0;
-        if (errno != EINTR)
-          break;
-      }
+    MagickSizeType remaining = length-(MagickSizeType) offset;
+    ssize_t count = recv(file,(char *) message+offset,(LENGTH_TYPE)
+      MagickMin(remaining,(MagickSizeType) MagickMaxBufferExtent),0);
+    if (count > 0)
+      offset+=(MagickOffsetType) count;
+    else
+      if (count == 0)
+        break;
+      else
+        {
+          if (errno != EINTR)
+            continue;
+        }
   }
-  return(i);
+  return(offset);
 }
 #endif
 
