@@ -1698,7 +1698,8 @@ static MagickBooleanType DFTPhaseSpectrum(const Image *image,const ssize_t u,
       ssize_t
         i;
 
-      angle=MagickPI*((u*x/(double) image->rows)+(v*y/(double) image->columns));
+      angle=(-2.0*MagickPI*((u*x/(double) image->rows)+(v*y/(double)
+        image->columns)));
       Sa=QuantumScale*(double) GetPixelAlpha(image,p);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
