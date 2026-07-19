@@ -48,7 +48,7 @@ extern "C" {
 #endif
 
 static inline int GetMagickNumberThreads(const Image *source,
-  const Image *destination,const size_t chunk,const int factor)
+  const Image *destination,const size_t chunk,const double factor)
 { 
   const CacheType
     destination_type = (CacheType) GetImagePixelCacheType(destination),
@@ -57,7 +57,7 @@ static inline int GetMagickNumberThreads(const Image *source,
   size_t
     max_threads = (size_t) GetMagickResourceLimit(ThreadResource),
     number_threads = 1UL,
-    rows_per_thread = 64UL*factor; /* target workload per thread */
+    rows_per_thread = CastDoubleToSizeT(64.0*factor);  /* workload */
 
   /*
     Determine number of threads based on rows per thread heuristic.
