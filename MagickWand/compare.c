@@ -1244,7 +1244,6 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
   switch (metric)
   {
     case AbsoluteErrorMetric:
-    case PixelDifferenceCountErrorMetric:
     {
       size_t
         columns,
@@ -1305,6 +1304,11 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
     case PeakSignalToNoiseRatioErrorMetric:
     {
       scale=MagickSafePSNRRecipicol(10.0);
+      break;
+    }
+    case PixelDifferenceCountErrorMetric:
+    {
+      scale=1.0;
       break;
     }
     default:

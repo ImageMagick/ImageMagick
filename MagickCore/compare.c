@@ -1528,7 +1528,6 @@ static MagickBooleanType GetPDCSimilarity(const Image *image,
     *reconstruct_view;
 
   double
-    area,
     fuzz;
 
   MagickBooleanType
@@ -1539,7 +1538,6 @@ static MagickBooleanType GetPDCSimilarity(const Image *image,
     rows;
 
   ssize_t
-    k,
     y;
 
   /*
@@ -1648,10 +1646,6 @@ static MagickBooleanType GetPDCSimilarity(const Image *image,
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
-  area=MagickSafeReciprocal((double) columns*rows);
-  for (k=0; k < (ssize_t) GetPixelChannels(image); k++)
-    similarity[k]*=area;
-  similarity[CompositePixelChannel]*=area;
   return(status);
 }
 
