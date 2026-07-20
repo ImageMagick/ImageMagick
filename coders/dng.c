@@ -402,7 +402,30 @@ static void ReadLibRawThumbnail(const ImageInfo *image_info,Image *image,
     libraw_dcraw_clear_mem(thumbnail);
 }
 
-static OrientationType LibRawFlipToOrientation(int flip)
+
+static void ReadLibRawProfiles(Image *image,const libraw_data_t *raw_info,
+  ExceptionInfo* exception)
+{
+  StringInfo
+    *profile;
+
+  if (raw_info->color.profile != NULL)
+    {
+      profile=BlobToProfileStringInfo("icc",raw_info->color.profile,
+        raw_info->color.profile_length,exception);
+      (void) SetImageProfilePrivate(image,profile,exception);
+    }
+#if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,18)
+  if (raw_info->idata.xmpdata != NULL)
+    {
+      profile=BlobToProfileStringInfo("xmp",raw_info->idata.xmpdata,
+        raw_info->idata.xmplen,exception);
+      (void) SetImageProfilePrivate(image,profile,exception);
+    }
+#endif
+}
+
+static inline OrientationType LibRawFlipToOrientation(int flip)
 {
   switch(flip)
   {
@@ -465,9 +488,6 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ssize_t
       y;
 
-    StringInfo
-      *profile;
-
     unsigned int
       flags;
 
@@ -518,6 +538,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->page.y=raw_info->sizes.top_margin;
     image->orientation=LibRawFlipToOrientation(raw_info->sizes.flip);
     ReadLibRawThumbnail(image_info,image,raw_info,exception);
+    ReadLibRawProfiles(image,raw_info,exception);
     SetDNGProperties(image,raw_info,exception);
     if (image_info->ping != MagickFalse)
       {
@@ -610,23 +631,6 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
     }
     libraw_dcraw_clear_mem(raw_image);
-    /*
-      Set DNG image metadata.
-    */
-    if (raw_info->color.profile != NULL)
-      {
-        profile=BlobToProfileStringInfo("icc",raw_info->color.profile,
-          raw_info->color.profile_length,exception);
-        (void) SetImageProfilePrivate(image,profile,exception);
-      }
-#if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,18)
-    if (raw_info->idata.xmpdata != NULL)
-      {
-        profile=BlobToProfileStringInfo("xmp",raw_info->idata.xmpdata,
-          raw_info->idata.xmplen,exception);
-        (void) SetImageProfilePrivate(image,profile,exception);
-      }
-#endif
     libraw_close(raw_info);
     return(image);
   }
