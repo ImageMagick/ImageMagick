@@ -402,7 +402,6 @@ static void ReadLibRawThumbnail(const ImageInfo *image_info,Image *image,
     libraw_dcraw_clear_mem(thumbnail);
 }
 
-
 static void ReadLibRawProfiles(Image *image,const libraw_data_t *raw_info,
   ExceptionInfo* exception)
 {
@@ -443,7 +442,6 @@ static inline OrientationType LibRawFlipToOrientation(int flip)
     }
   }
 }
-
 #endif
 
 static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
