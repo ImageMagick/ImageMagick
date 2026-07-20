@@ -172,7 +172,7 @@ static inline MagickOffsetType dpc_read(SOCKET_TYPE file,
       else
         {
           if (errno != EINTR)
-            continue;
+            break;
         }
   }
   return(offset);
@@ -1275,6 +1275,32 @@ MagickExport void DistributePixelCacheServer(const int port,
           client_socket_ptr);
         continue;
       }
+#if defined(MAGICKCORE_HAVE_WINSOCK2)
+    {
+      DWORD
+        timeout = 5000;
+
+      status=setsockopt(*client_socket_ptr,SOL_SOCKET,SO_RCVTIMEO,
+        (const char *) &timeout,sizeof(timeout));
+    }
+#else
+    {
+      struct timeval
+        tv;
+
+      tv.tv_sec=5;
+      tv.tv_usec=0;
+      status=setsockopt(*client_socket_ptr,SOL_SOCKET,SO_RCVTIMEO,&tv,
+        sizeof(tv));
+    }
+#endif
+    if (status == -1)
+      {
+        CLOSE_SOCKET(*client_socket_ptr);
+        client_socket_ptr=(SOCKET_TYPE *) RelinquishMagickMemory(
+          client_socket_ptr);
+        continue;
+      }
 #if defined(MAGICKCORE_THREAD_SUPPORT)
     status=pthread_create(&thread_id,&attributes,DistributePixelCacheClient,
       (void *) client_socket_ptr);
@@ -1282,14 +1308,14 @@ MagickExport void DistributePixelCacheServer(const int port,
       {
         CLOSE_SOCKET(*client_socket_ptr);
         RelinquishMagickMemory(client_socket_ptr);
-        ThrowFatalException(CacheFatalError,"UnableToCreateClientThread");
+        continue;
       }
 #elif defined(_MSC_VER)
     if (CreateThread(0,0,DistributePixelCacheClient,(void*) client_socket_ptr,0,&threadID) == (HANDLE) NULL)
       {
         CLOSE_SOCKET(*client_socket_ptr);
         RelinquishMagickMemory(client_socket_ptr);
-        ThrowFatalException(CacheFatalError,"UnableToCreateClientThread");
+        continue;
       }
 #else
     Not implemented!
