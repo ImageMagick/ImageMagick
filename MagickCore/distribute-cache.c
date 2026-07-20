@@ -103,6 +103,8 @@
   Define declarations.
 */
 #define DPCHostname  "127.0.0.1"
+#define DPCMaxClientWorkers  128
+#define DPCMaxUnauthenticatedClientWorkers  16
 #define DPCPendingConnections  10
 #define DPCPort  6668
 #define DPCSessionKeyLength  16
@@ -115,10 +117,19 @@
 */
 #ifdef MAGICKCORE_HAVE_WINSOCK2
 static SemaphoreInfo
-  *winsock2_semaphore = (SemaphoreInfo *) NULL;
+  *winsock_semaphore = (SemaphoreInfo *) NULL;
 
 static WSADATA
   *wsaData = (WSADATA*) NULL;
+#endif
+
+#if defined(MAGICKCORE_HAVE_DISTRIBUTE_CACHE)
+static SemaphoreInfo
+  *dpc_semaphore = (SemaphoreInfo *) NULL;
+
+static size_t
+  dpc_clients = 0,
+  dpc_unauthenticated_clients = 0;
 #endif
 
 /*
@@ -184,9 +195,9 @@ static void InitializeWinsock2(MagickBooleanType use_lock)
 {
   if (use_lock != MagickFalse)
     {
-      if (winsock2_semaphore == (SemaphoreInfo *) NULL)
-        ActivateSemaphoreInfo(&winsock2_semaphore);
-      LockSemaphoreInfo(winsock2_semaphore);
+      if (winsock_semaphore == (SemaphoreInfo *) NULL)
+        ActivateSemaphoreInfo(&winsock_semaphore);
+      LockSemaphoreInfo(winsock_semaphore);
     }
   if (wsaData == (WSADATA *) NULL)
     {
@@ -195,7 +206,7 @@ static void InitializeWinsock2(MagickBooleanType use_lock)
         ThrowFatalException(CacheFatalError,"WSAStartup failed");
     }
   if (use_lock != MagickFalse)
-    UnlockSemaphoreInfo(winsock2_semaphore);
+    UnlockSemaphoreInfo(winsock_semaphore);
 }
 #endif
 
@@ -239,10 +250,10 @@ static inline uint64_t SIPHash24(const uint8_t key[16],const uint8_t *message,
     k0 = U8TO64_LE(key),
     k1 = U8TO64_LE(key+8),
     m,
-    v0 = 0x736f6d6570736575ULL^k0,
-    v1 = 0x646f72616e646f6dULL^k1,
-    v2 = 0x6c7967656e657261ULL^k0,
-    v3 = 0x7465646279746573ULL^k1;
+    v0 = 0x736f6d6570736575ULL ^ k0,
+    v1 = 0x646f72616e646f6dULL ^ k1,
+    v2 = 0x6c7967656e657261ULL ^ k0,
+    v3 = 0x7465646279746573ULL ^ k1;
 
   for ( ; message != end; message+=8)
   {
@@ -288,7 +299,7 @@ static inline uint64_t SIPHash24(const uint8_t key[16],const uint8_t *message,
   return(v0^v1^v2^v3);
 }
 
-static inline void DeriveSipKeyFromSecret(const char *shared_secret,
+static inline void DeriveSIPKeyFromSecret(const char *shared_secret,
   uint8_t key[16])
 {
   size_t
@@ -298,15 +309,15 @@ static inline void DeriveSipKeyFromSecret(const char *shared_secret,
   uint64_t
     k0 = 0x0706050403020100ULL,
     k1 = 0x0f0e0d0c0b0a0908ULL;
-  
+
   length=strlen(shared_secret);
   for (i=0; i < length; i++)
   {
-    uint8_t 
+    uint8_t
       b = shared_secret[i];
-    
+
     k0^=b;
-    k0*=0x100000001b3ULL;   
+    k0*=0x100000001b3ULL;
     k1^=(uint64_t) b << ((i & 7)*8);
     k1=(k1 << 5) | (k1 >> (64-5));
   }
@@ -320,7 +331,7 @@ static inline uint64_t GenerateSessionKey(const char *shared_secret,
   uint8_t
     key[16];
 
-  DeriveSipKeyFromSecret(shared_secret,key);
+  DeriveSIPKeyFromSecret(shared_secret,key);
   return(SIPHash24(key,nonce,length));
 }
 
@@ -465,7 +476,7 @@ static char *GetHostname(int *port,ExceptionInfo *exception)
   (void) SubstituteString(&hosts,","," ");
   hostlist=StringToArgv(hosts,&argc);
   hosts=DestroyString(hosts);
-  if (hostlist == (char **) NULL)
+  if ((hostlist == (char **) NULL) || ((argc-1) == 0))
     {
       *port=DPCPort;
       return(AcquireString(DPCHostname));
@@ -1014,6 +1025,31 @@ static MagickBooleanType WriteDistributeCachePixels(SplayTreeInfo *registry,
   return(SyncAuthenticPixels(image,exception));
 }
 
+static void LockDPCSemaphore(void)
+{
+  if (dpc_semaphore == (SemaphoreInfo *) NULL)
+    ActivateSemaphoreInfo(&dpc_semaphore);
+  LockSemaphoreInfo(dpc_semaphore);
+}
+
+static void AuthenticateDPCClient(void)
+{
+  LockDPCSemaphore();
+  if (dpc_unauthenticated_clients != 0)
+    dpc_unauthenticated_clients--;
+  UnlockSemaphoreInfo(dpc_semaphore);
+}
+
+static void RelinquishDPCClient(const MagickBooleanType unauthenticated)
+{
+  LockDPCSemaphore();
+  if ((unauthenticated != MagickFalse) && (dpc_unauthenticated_clients != 0))
+    dpc_unauthenticated_clients--;
+  if (dpc_clients != 0)
+    dpc_clients--;
+  UnlockSemaphoreInfo(dpc_semaphore);
+}
+
 static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket_arg)
 {
   char
@@ -1023,6 +1059,7 @@ static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket_arg)
     *exception;
 
   MagickBooleanType
+    authenticated = MagickFalse,
     status = MagickFalse;
 
   MagickOffsetType
@@ -1077,6 +1114,7 @@ static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket_arg)
   if (count != (MagickOffsetType) sizeof(nonce))
     {
       CLOSE_SOCKET(client_socket);
+      RelinquishDPCClient(MagickTrue);
       return(HANDLER_RETURN_VALUE);
     }
   /*
@@ -1086,8 +1124,11 @@ static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket_arg)
   if ((count != (MagickOffsetType) sizeof(key)) || (key != session_key))
     {
       CLOSE_SOCKET(client_socket);
+      RelinquishDPCClient(MagickTrue);
       return(HANDLER_RETURN_VALUE);
     }
+  AuthenticateDPCClient();
+  authenticated=MagickTrue;
   exception=AcquireExceptionInfo();
   registry=NewSplayTree((int (*)(const void *,const void *)) NULL,
     (void *(*)(void *)) NULL,RelinquishImageRegistry);
@@ -1153,7 +1194,79 @@ static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket_arg)
   CLOSE_SOCKET(client_socket);
   exception=DestroyExceptionInfo(exception);
   registry=DestroySplayTree(registry);
+  RelinquishDPCClient(authenticated == MagickFalse ? MagickTrue :
+    MagickFalse);
   return(HANDLER_RETURN_VALUE);
+}
+
+static size_t GetDPCPolicyLimit(const char *name,const size_t default_limit)
+{
+  char
+    policy_name[MagickPathExtent],
+    *policy_value;
+
+  size_t
+    limit;
+
+  limit=default_limit;
+  (void) FormatLocaleString(policy_name,MagickPathExtent,"cache:%s",name);
+  policy_value=GetPolicyValue(policy_name);
+  if (policy_value != (char *) NULL)
+    {
+      char
+        *q;
+
+      unsigned long
+        policy_limit;
+
+      errno=0;
+      policy_limit=strtoul(policy_value,&q,10);
+      if ((errno == 0) && (q != policy_value) && (policy_limit != 0))
+        limit=(size_t) policy_limit;
+      policy_value=DestroyString(policy_value);
+    }
+  return(limit);
+}
+
+static size_t GetMaxDPCClients(void)
+{
+  return(GetDPCPolicyLimit("max-dpc-clients",DPCMaxClientWorkers));
+}
+
+static size_t GetMaxDPCUnauthenticatedClients(void)
+{
+  size_t
+    client_workers,
+    unauthenticated_workers;
+
+  client_workers=GetMaxDPCClients();
+  unauthenticated_workers=GetDPCPolicyLimit("max-dpc-unauthenticated-clients",
+    DPCMaxUnauthenticatedClientWorkers);
+  return(MagickMin(unauthenticated_workers,client_workers));
+}
+
+static MagickBooleanType AcquireDPCClientWorker(void)
+{
+  MagickBooleanType
+    status;
+
+  size_t
+    max_dpc_clients,
+    unauthenticated_worker_limit;
+
+  status=MagickFalse;
+  max_dpc_clients=GetMaxDPCClients();
+  unauthenticated_worker_limit=GetMaxDPCUnauthenticatedClients();
+  LockDPCSemaphore();
+  if ((dpc_clients < max_dpc_clients) &&
+      (dpc_unauthenticated_clients < unauthenticated_worker_limit))
+    {
+      dpc_clients++;
+      dpc_unauthenticated_clients++;
+      status=MagickTrue;
+    }
+  UnlockSemaphoreInfo(dpc_semaphore);
+  return(status);
 }
 
 MagickExport void DistributePixelCacheServer(const int port,
@@ -1275,6 +1388,13 @@ MagickExport void DistributePixelCacheServer(const int port,
           client_socket_ptr);
         continue;
       }
+    if (AcquireDPCClientWorker() == MagickFalse)
+      {
+        CLOSE_SOCKET(*client_socket_ptr);
+        client_socket_ptr=(SOCKET_TYPE *) RelinquishMagickMemory(
+          client_socket_ptr);
+        continue;
+      }
 #if defined(MAGICKCORE_HAVE_WINSOCK2)
     {
       DWORD
@@ -1297,6 +1417,7 @@ MagickExport void DistributePixelCacheServer(const int port,
     if (status == -1)
       {
         CLOSE_SOCKET(*client_socket_ptr);
+        RelinquishDPCClient(MagickTrue);
         client_socket_ptr=(SOCKET_TYPE *) RelinquishMagickMemory(
           client_socket_ptr);
         continue;
@@ -1307,6 +1428,7 @@ MagickExport void DistributePixelCacheServer(const int port,
     if (status != 0)
       {
         CLOSE_SOCKET(*client_socket_ptr);
+        RelinquishDPCClient(MagickTrue);
         RelinquishMagickMemory(client_socket_ptr);
         continue;
       }
@@ -1314,6 +1436,7 @@ MagickExport void DistributePixelCacheServer(const int port,
     if (CreateThread(0,0,DistributePixelCacheClient,(void*) client_socket_ptr,0,&threadID) == (HANDLE) NULL)
       {
         CLOSE_SOCKET(*client_socket_ptr);
+        RelinquishDPCClient(MagickTrue);
         RelinquishMagickMemory(client_socket_ptr);
         continue;
       }
@@ -1341,16 +1464,20 @@ MagickExport void DistributePixelCacheServer(const int port,
 MagickPrivate void DistributeCacheTerminus(void)
 {
 #ifdef MAGICKCORE_HAVE_WINSOCK2
-  if (winsock2_semaphore == (SemaphoreInfo *) NULL)
-    ActivateSemaphoreInfo(&winsock2_semaphore);
-  LockSemaphoreInfo(winsock2_semaphore);
+  if (winsock_semaphore == (SemaphoreInfo *) NULL)
+    ActivateSemaphoreInfo(&winsock_semaphore);
+  LockSemaphoreInfo(winsock_semaphore);
   if (wsaData != (WSADATA *) NULL)
     {
       WSACleanup();
       wsaData=(WSADATA *) RelinquishMagickMemory((void *) wsaData);
     }
-  UnlockSemaphoreInfo(winsock2_semaphore);
-  RelinquishSemaphoreInfo(&winsock2_semaphore);
+  UnlockSemaphoreInfo(winsock_semaphore);
+  RelinquishSemaphoreInfo(&winsock_semaphore);
+#endif
+#if defined(MAGICKCORE_HAVE_DISTRIBUTE_CACHE)
+  if (dpc_semaphore != (SemaphoreInfo *) NULL)
+    RelinquishSemaphoreInfo(&dpc_semaphore);
 #endif
 }
 

@@ -157,4 +157,8 @@
   <!-- <policy domain="system" name="symlink" rights="none" pattern="follow"/> -->
   <!-- Blocks all SVG entity‑substitution attempts by denying the svg:substitute-entities define -->
   <!-- <policy domain="system" name="svg" rights="none" pattern="substitute-entities"/> -->
+  <!-- Set the maximum distributed pixel cache clients -->
+  <!-- <policy domain="cache" name="max-dpc-clients" value="128"/> -->
+  <!-- Set the maximum distributed pixel cache unauthenticated clients -->
+  <!-- <policy domain="cache" name="max-dpc-unauthenticated-clients" value="16"/> -->
 </policymap>
