@@ -535,6 +535,7 @@ jobs:
             ".git"
             ".github"
             "api_examples"
+            "logo"
             "oss-fuzz"
           )
           FILES=(
