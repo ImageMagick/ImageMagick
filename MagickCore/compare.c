@@ -1652,27 +1652,26 @@ static MagickBooleanType GetPDCSimilarity(const Image *image,
 static MemoryInfo *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
   const size_t columns,ExceptionInfo *exception)
 {
-#define HeapOverflowCheck(a,b,c) \
-  (((size_t) (a) != 0) && ((size_t) (b) <= SIZE_MAX / (size_t) (a)) && \
-   ((size_t) (c) <= SIZE_MAX / ((size_t) (a) * (size_t)(b))))
+#define HeapOverflowCheck(columns,rows,channels) \
+  (((size_t) (columns) != 0) && ((size_t) (rows) <= SIZE_MAX / (size_t) (columns)) && \
+   ((size_t) (channels) <= SIZE_MAX / ((size_t) (columns) * (size_t) (rows))))
 
   CacheView
     *image_view;
 
   double
-    *G,
+    *gradient,
     *phase;
 
   MagickBooleanType
     status;
 
   MemoryInfo
-    *G_info,
     *phase_info;
 
   size_t
-    n_G,
-    n_phase;
+    number_gradients,
+    number_phases;
 
   ssize_t
     u;
@@ -1683,44 +1682,43 @@ static MemoryInfo *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
   */
   if (HeapOverflowCheck(GetPixelChannels(image),image->rows,2) == MagickFalse)
     return((MemoryInfo *) NULL);
-  n_G=(size_t) 2*GetPixelChannels(image)*image->rows;
   if (HeapOverflowCheck(rows,columns,GetPixelChannels(image)) == MagickFalse)
     return((MemoryInfo *) NULL);
-  n_phase=(size_t) rows*columns*GetPixelChannels(image);
-  G_info=AcquireVirtualMemory(n_G,sizeof(*G));
-  phase_info=AcquireVirtualMemory(n_phase,sizeof(*phase));
-  if ((G_info == (MemoryInfo *) NULL) || (phase_info == (MemoryInfo *) NULL))
+  number_gradients=(size_t) 2*GetPixelChannels(image)*image->rows;
+  gradient=(double *) AcquireQuantumMemory(number_gradients,sizeof(*gradient));
+  number_phases=(size_t) rows*columns*GetPixelChannels(image);
+  phase_info=AcquireVirtualMemory(number_phases,sizeof(*phase));
+  if ((gradient == (double *) NULL) || (phase_info == (MemoryInfo *) NULL))
     {
-      if (G_info != (MemoryInfo *) NULL)
-        G_info=RelinquishVirtualMemory(G_info);
+      if (gradient != (double *) NULL)
+        gradient=(double *) RelinquishMagickMemory(gradient);
       if (phase_info != (MemoryInfo *) NULL)
         phase_info=RelinquishVirtualMemory(phase_info);
       return((MemoryInfo *) NULL);
     }
-  G=(double *) GetVirtualMemoryBlob(G_info);
   phase=(double *) GetVirtualMemoryBlob(phase_info);
-  (void) memset(phase,0,n_phase*sizeof(*phase));
+  (void) memset(phase,0,number_phases*sizeof(*phase));
   status=MagickTrue;
   image_view=AcquireVirtualCacheView(image,exception);
   for (u=0; u < (ssize_t) columns; u++)
   {
     double
-      base_cos,
-      base_sin,
+      cosine,
+      sine,
       theta_u;
 
     ssize_t
-      k,
+      i,
       v,
       y;
 
     /*
       Compute G(y,u) for all y.
     */
-    (void) memset(G,0,n_G*sizeof(*G));
+    (void) memset(gradient,0,number_gradients*sizeof(*gradient));
     theta_u=2.0*MagickPI*(double) u/(double) image->rows;
-    base_cos=cos(theta_u);
-    base_sin=sin(theta_u);
+    cosine=cos(theta_u);
+    sine=sin(theta_u);
     for (y=0; y < (ssize_t) image->rows; y++)
     {
       const Quantum
@@ -1746,36 +1744,34 @@ static MemoryInfo *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         double
-          new_cx,
-          new_sx,
-          Sa;
+          Sa,
+          tmp_cx;
 
         Sa=QuantumScale*(double) GetPixelAlpha(image,p);
-        for (k=0; k < (ssize_t) GetPixelChannels(image); k++)
+        for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
         {
           double
             pixel;
 
           size_t
-            i;
+            j;
 
-          PixelChannel channel = GetPixelChannelChannel(image,k);
+          PixelChannel channel = GetPixelChannelChannel(image,i);
           PixelTrait traits = GetPixelChannelTraits(image,channel);
           if (traits == UndefinedPixelTrait)
             continue;
-          pixel=(channel == AlphaPixelChannel) ? QuantumScale*(double) p[k] :
-            QuantumScale*Sa*(double) p[k];
-          i=((size_t) y*GetPixelChannels(image)+(size_t) k)*2;
-          G[i]+=pixel*cx;  /* Cr = sum f*cos(2pi*u*x/H) */
-          G[i+1]+=pixel*sx;  /* Sr = sum f*sin(2pi*u*x/H) */
+          pixel=(channel == AlphaPixelChannel) ? QuantumScale*(double) p[i] :
+            QuantumScale*Sa*(double) p[i];
+          j=2*((size_t) y*GetPixelChannels(image)+(size_t) i);
+          gradient[j]+=pixel*cx;  /* Cr = sum f*cos(2pi*u*x/H) */
+          gradient[j+1]+=pixel*sx;  /* Sr = sum f*sin(2pi*u*x/H) */
         }
         /*
           Advance recurrence: cos/sin of (x+1)*theta_u.
         */
-        new_cx=cx*base_cos-sx*base_sin;
-        new_sx=sx*base_cos+cx*base_sin;
-        cx=new_cx;
-        sx=new_sx;
+        tmp_cx=cx;
+        cx=cx*cosine-sx*sine;
+        sx=sx*cosine+tmp_cx*sine;
         p+=(ptrdiff_t) GetPixelChannels(image);
       }
     }
@@ -1784,11 +1780,11 @@ static MemoryInfo *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
     for (v=0; v < (ssize_t) rows; v++)
     {
       double
-        base_cos_v,
-        base_sin_v,
         channel_imag[MaxPixelChannels+1],
         channel_real[MaxPixelChannels+1],
+        cosine_v,
         cy,
+        sine_v,
         sy,
         theta_v;
 
@@ -1798,54 +1794,51 @@ static MemoryInfo *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
       (void) memset(channel_real,0,sizeof(channel_real));
       (void) memset(channel_imag,0,sizeof(channel_imag));
       theta_v=2.0*MagickPI*(double) v/(double) image->columns;
-      base_cos_v=cos(theta_v);
-      base_sin_v=sin(theta_v);
+      cosine_v=cos(theta_v);
+      sine_v=sin(theta_v);
       cy=1.0;  /* cos(theta_v*0.0) */
       sy=0.0;  /* sin(theta_v*0.0) */
       for (y=0; y < (ssize_t) image->rows; y++)
       {
         double
-          new_cy,
-          new_sy;
+          tmp_cy;
 
-        for (k=0; k < (ssize_t) GetPixelChannels(image); k++)
+        for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
         {
           size_t
-            i;
+            j;
 
-          PixelChannel channel = GetPixelChannelChannel(image,k);
+          PixelChannel channel = GetPixelChannelChannel(image,i);
           PixelTrait traits = GetPixelChannelTraits(image,channel);
           if (traits == UndefinedPixelTrait)
             continue;
-          i=2*((size_t) y*GetPixelChannels(image)+(size_t) k);
-          channel_real[k]+=G[i]*cy-G[i+1]*sy;
-          channel_imag[k]+=G[i+1]*cy+G[i]*sy;
+          j=2*((size_t) y*GetPixelChannels(image)+(size_t) i);
+          channel_real[i]+=gradient[j]*cy-gradient[j+1]*sy;
+          channel_imag[i]+=gradient[j+1]*cy+gradient[j]*sy;
         }
         /*
           Advance recurrence: cos/sin of (y+1)*theta_v.
         */
-        new_cy=cy*base_cos_v-sy*base_sin_v;
-        new_sy=sy*base_cos_v+cy*base_sin_v;
-        cy=new_cy;
-        sy=new_sy;
+        tmp_cy=cy;
+        cy=cy*cosine_v-sy*sine_v;
+        sy=sy*cosine_v+tmp_cy*sine_v;
       }
-      for (k=0; k < (ssize_t) GetPixelChannels(image); k++)
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         size_t
-          phase_idx;
+          j;
 
-        PixelChannel channel = GetPixelChannelChannel(image,k);
+        PixelChannel channel = GetPixelChannelChannel(image,i);
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
-        phase_idx=((size_t) v*columns+(size_t) u)*GetPixelChannels(image)+
-          (size_t) k;
-        phase[phase_idx]=atan2(channel_imag[k],channel_real[k]);
+        j=((size_t) v*columns+(size_t) u)*GetPixelChannels(image)+(size_t) i;
+        phase[j]=atan2(channel_imag[i],channel_real[i]);
       }
     }
   }
   image_view=DestroyCacheView(image_view);
-  G_info=(MemoryInfo *) RelinquishMagickMemory(G_info);
+  gradient=(double *) RelinquishMagickMemory(gradient);
   if (status == MagickFalse)
     {
       phase_info=RelinquishVirtualMemory(phase_info);
