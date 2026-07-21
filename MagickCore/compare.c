@@ -1653,8 +1653,9 @@ static MemoryInfo *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
   const size_t columns,ExceptionInfo *exception)
 {
 #define HeapOverflowCheck(columns,rows,channels) \
-  (((size_t) (columns) != 0) && ((size_t) (rows) <= SIZE_MAX / (size_t) (columns)) && \
-   ((size_t) (channels) <= SIZE_MAX / ((size_t) (columns) * (size_t) (rows))))
+  (((size_t)(columns) == 0 || (size_t)(rows) == 0 || (size_t)(channels) == 0) ? MagickTrue : \
+   ((size_t)(columns) > SIZE_MAX / (size_t)(rows) ? MagickFalse : \
+   (((size_t)(columns) * (size_t)(rows)) > SIZE_MAX / (size_t)(channels) ? MagickFalse : MagickTrue)))
 
   CacheView
     *image_view;
@@ -1680,13 +1681,13 @@ static MemoryInfo *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
     ComputeAllPhaseSpectra() precomputes the DFT phase spectrum for all (u,v)
     frequency pairs simultaneously.
   */
-  if (HeapOverflowCheck(GetPixelChannels(image),image->rows,2) == MagickFalse)
+  if (HeapOverflowCheck(2,image->rows,GetPixelChannels(image)) == MagickFalse)
     return((MemoryInfo *) NULL);
-  if (HeapOverflowCheck(rows,columns,GetPixelChannels(image)) == MagickFalse)
+  if (HeapOverflowCheck(columns,rows,GetPixelChannels(image)) == MagickFalse)
     return((MemoryInfo *) NULL);
-  number_gradients=(size_t) 2*GetPixelChannels(image)*image->rows;
+  number_gradients=(size_t) GetPixelChannels(image)*image->rows*2;
   gradient=(double *) AcquireQuantumMemory(number_gradients,sizeof(*gradient));
-  number_phases=(size_t) rows*columns*GetPixelChannels(image);
+  number_phases=(size_t) columns*rows*GetPixelChannels(image);
   phase_info=AcquireVirtualMemory(number_phases,sizeof(*phase));
   if ((gradient == (double *) NULL) || (phase_info == (MemoryInfo *) NULL))
     {
@@ -1833,7 +1834,12 @@ static MemoryInfo *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
         if (traits == UndefinedPixelTrait)
           continue;
         j=((size_t) v*columns+(size_t) u)*GetPixelChannels(image)+(size_t) i;
-        phase[j]=atan2(channel_imag[i],channel_real[i]);
+        phase[j]=channel_imag[i]*channel_imag[i]+channel_real[i]*
+          channel_real[i];
+        if (phase[j] < MagickEpsilon)
+          phase[j]=0.0;
+        else
+          phase[j]=atan2(channel_imag[i],channel_real[i]);
       }
     }
   }
