@@ -4867,6 +4867,12 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
           similarity_metric,exception);
         return(similarity_image);
       }
+      case PhaseCorrelationErrorMetric:
+      {
+        similarity_image=PhaseSimilarityImage(image,reconstruct,offset,
+          similarity_metric,exception);
+        return(similarity_image);
+      }
       case RootMeanSquaredErrorMetric:
       case UndefinedErrorMetric:
       {
