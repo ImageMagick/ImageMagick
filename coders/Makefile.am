@@ -1259,7 +1259,7 @@ coders_ps3_la_LIBADD       = $(MAGICKCORE_LIBS) $(JBIG_LIBS) $(JPEG_LIBS) $(LZMA
 coders_psd_la_SOURCES      = coders/psd.c coders/psd-private.h
 coders_psd_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
 coders_psd_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_psd_la_LIBADD       = $(MAGICKCORE_LIBS)
+coders_psd_la_LIBADD       = $(MAGICKCORE_LIBS) $(ZLIB_LIBS)
 
 # PWP coder module
 coders_pwp_la_SOURCES      = coders/pwp.c
