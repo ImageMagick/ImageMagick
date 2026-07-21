@@ -1649,7 +1649,7 @@ static MagickBooleanType GetPDCSimilarity(const Image *image,
   return(status);
 }
 
-static double *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
+static MemoryInfo *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
   const size_t columns,ExceptionInfo *exception)
 {
 #define HeapOverflowCheck(a,b,c) \
@@ -1666,6 +1666,10 @@ static double *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
   MagickBooleanType
     status;
 
+  MemoryInfo
+    *G_info,
+    *phase_info;
+
   size_t
     n_G,
     n_phase;
@@ -1678,21 +1682,23 @@ static double *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
     frequency pairs simultaneously.
   */
   if (HeapOverflowCheck(GetPixelChannels(image),image->rows,2) == MagickFalse)
-    return((double *) NULL);
+    return((MemoryInfo *) NULL);
   n_G=(size_t) 2*GetPixelChannels(image)*image->rows;
   if (HeapOverflowCheck(rows,columns,GetPixelChannels(image)) == MagickFalse)
-    return((double *) NULL);
+    return((MemoryInfo *) NULL);
   n_phase=(size_t) rows*columns*GetPixelChannels(image);
-  G=(double *) AcquireQuantumMemory(n_G,sizeof(*G));
-  phase=(double *) AcquireQuantumMemory(n_phase,sizeof(*phase));
-  if ((G == (double *) NULL) || (phase == (double *) NULL))
+  G_info=AcquireVirtualMemory(n_G,sizeof(*G));
+  phase_info=AcquireVirtualMemory(n_phase,sizeof(*phase));
+  if ((G_info == (MemoryInfo *) NULL) || (phase_info == (MemoryInfo *) NULL))
     {
-      if (G != (double *) NULL)
-        G=(double *) RelinquishMagickMemory(G);
-      if (phase != (double *) NULL)
-        phase=(double *) RelinquishMagickMemory(phase);
-      return((double *) NULL);
+      if (G_info != (MemoryInfo *) NULL)
+        G_info=RelinquishVirtualMemory(G_info);
+      if (phase_info != (MemoryInfo *) NULL)
+        phase_info=RelinquishVirtualMemory(phase_info);
+      return((MemoryInfo *) NULL);
     }
+  G=(double *) GetVirtualMemoryBlob(G_info);
+  phase=(double *) GetVirtualMemoryBlob(phase_info);
   (void) memset(phase,0,n_phase*sizeof(*phase));
   status=MagickTrue;
   image_view=AcquireVirtualCacheView(image,exception);
@@ -1839,13 +1845,13 @@ static double *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
     }
   }
   image_view=DestroyCacheView(image_view);
-  G=(double *) RelinquishMagickMemory(G);
+  G_info=(MemoryInfo *) RelinquishMagickMemory(G_info);
   if (status == MagickFalse)
     {
-      phase=(double *) RelinquishMagickMemory(phase);
-      return((double *) NULL);
+      phase_info=RelinquishVirtualMemory(phase_info);
+      return((MemoryInfo *) NULL);
     }
-  return(phase);
+  return(phase_info);
 }
 
 static MagickBooleanType GetPHASESimilarity(const Image *image,
@@ -1863,6 +1869,10 @@ static MagickBooleanType GetPHASESimilarity(const Image *image,
   MagickBooleanType
     status = MagickTrue;
 
+  MemoryInfo
+    *phase_info,
+    *reconstruct_info;
+
   size_t
     columns,
     rows;
@@ -1875,19 +1885,20 @@ static MagickBooleanType GetPHASESimilarity(const Image *image,
     Compute the phase congruency similarity.
   */
   SetImageCompareBounds(image,reconstruct_image,&columns,&rows);
-  phase_spectra=ComputeAllPhaseSpectra(image,rows,columns,exception);
-  reconstruct_spectra=ComputeAllPhaseSpectra(reconstruct_image,rows,columns,
+  phase_info=ComputeAllPhaseSpectra(image,rows,columns,exception);
+  reconstruct_info=ComputeAllPhaseSpectra(reconstruct_image,rows,columns,
     exception);
-  if ((phase_spectra == (double *) NULL) ||
-      (reconstruct_spectra == (double *) NULL))
+  if ((phase_info == (MemoryInfo *) NULL) ||
+      (reconstruct_info == (MemoryInfo *) NULL))
     {
-      if (phase_spectra != (double *) NULL)
-        phase_spectra=(double *) RelinquishMagickMemory(phase_spectra);
-      if (reconstruct_spectra != (double *) NULL)
-        reconstruct_spectra=(double *) RelinquishMagickMemory(
-          reconstruct_spectra);
+      if (phase_info != (MemoryInfo *) NULL)
+        phase_info=RelinquishVirtualMemory(phase_info);
+      if (reconstruct_info != (MemoryInfo *) NULL)
+        reconstruct_info=RelinquishVirtualMemory(reconstruct_info);
       return(MagickFalse);
     }
+  phase_spectra=(double *) GetVirtualMemoryBlob(phase_info);
+  reconstruct_spectra=(double *) GetVirtualMemoryBlob(reconstruct_info);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -1977,8 +1988,8 @@ static MagickBooleanType GetPHASESimilarity(const Image *image,
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
-  phase_spectra=(double *) RelinquishMagickMemory(phase_spectra);
-  reconstruct_spectra=(double *) RelinquishMagickMemory(reconstruct_spectra);
+  phase_info=RelinquishVirtualMemory(phase_info);
+  reconstruct_info=RelinquishVirtualMemory(reconstruct_info);
   area=MagickSafeReciprocal(area);
   for (k=0; k < (ssize_t) GetPixelChannels(image); k++)
   {
