@@ -1649,84 +1649,203 @@ static MagickBooleanType GetPDCSimilarity(const Image *image,
   return(status);
 }
 
-static MagickBooleanType DFTPhaseSpectrum(const Image *image,const ssize_t u,
-  const ssize_t v,double *phase,ExceptionInfo *exception)
+static double *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
+  const size_t columns,ExceptionInfo *exception)
 {
-#define PhaseImageTag  "Phase/Image"
+#define HeapOverflowCheck(a,b,c) \
+  (((size_t) (a) != 0) && ((size_t) (b) <= SIZE_MAX / (size_t) (a)) && \
+   ((size_t) (c) <= SIZE_MAX / ((size_t) (a) * (size_t)(b))))
 
   CacheView
     *image_view;
 
   double
-    channel_imag[MaxPixelChannels+1] = { 0.0 },
-    channel_real[MaxPixelChannels+1] = { 0.0 };
+    *G,
+    *phase;
 
   MagickBooleanType
     status;
 
+  size_t
+    n_G,
+    n_phase;
+
   ssize_t
-    k,
-    y;
+    u;
 
   /*
-    Compute DFT phase spectrum of an image.
+    ComputeAllPhaseSpectra() precomputes the DFT phase spectrum for all (u,v)
+    frequency pairs simultaneously.
   */
+  if (HeapOverflowCheck(GetPixelChannels(image),image->rows,2) == MagickFalse)
+    return((double *) NULL);
+  n_G=(size_t) 2*GetPixelChannels(image)*image->rows;
+  if (HeapOverflowCheck(rows,columns,GetPixelChannels(image)) == MagickFalse)
+    return((double *) NULL);
+  n_phase=(size_t) rows*columns*GetPixelChannels(image);
+  G=(double *) AcquireQuantumMemory(n_G,sizeof(*G));
+  phase=(double *) AcquireQuantumMemory(n_phase,sizeof(*phase));
+  if ((G == (double *) NULL) || (phase == (double *) NULL))
+    {
+      if (G != (double *) NULL)
+        G=(double *) RelinquishMagickMemory(G);
+      if (phase != (double *) NULL)
+        phase=(double *) RelinquishMagickMemory(phase);
+      return((double *) NULL);
+    }
+  (void) memset(phase,0,n_phase*sizeof(*phase));
   status=MagickTrue;
   image_view=AcquireVirtualCacheView(image,exception);
-  for (y=0; y < (ssize_t) image->rows; y++)
+  for (u=0; u < (ssize_t) columns; u++)
   {
-    const Quantum
-      *magick_restrict p;
+    double
+      base_cos,
+      base_sin,
+      theta_u;
 
     ssize_t
-      x;
+      k,
+      v,
+      y;
 
-    if (status == MagickFalse)
-      continue;
-    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    if (p == (const Quantum *) NULL)
-      {
-        status=MagickFalse;
-        continue;
-      }
-    for (x=0; x < (ssize_t) image->columns; x++)
+    /*
+      Compute G(y,u) for all y.
+    */
+    (void) memset(G,0,n_G*sizeof(*G));
+    theta_u=2.0*MagickPI*(double) u/(double) image->rows;
+    base_cos=cos(theta_u);
+    base_sin=sin(theta_u);
+    for (y=0; y < (ssize_t) image->rows; y++)
     {
+      const Quantum
+        *magick_restrict p;
+
       double
-        angle,
-        Sa;
+        cx,
+        sx;
 
       ssize_t
-        i;
+        x;
 
-      angle=(-2.0*MagickPI*((u*x/(double) image->rows)+(v*y/(double)
-        image->columns)));
-      Sa=QuantumScale*(double) GetPixelAlpha(image,p);
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      if (status == MagickFalse)
+        continue;
+      p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+      if (p == (const Quantum *) NULL)
+        {
+          status=MagickFalse;
+          continue;
+        }
+      cx=1.0;  /* cos(theta_u*0.0) */
+      sx=0.0;  /* sin(theta_u*0.0) */
+      for (x=0; x < (ssize_t) image->columns; x++)
       {
-        PixelChannel channel = GetPixelChannelChannel(image,i);
+        double
+          new_cx,
+          new_sx,
+          Sa;
+
+        Sa=QuantumScale*(double) GetPixelAlpha(image,p);
+        for (k=0; k < (ssize_t) GetPixelChannels(image); k++)
+        {
+          double
+            pixel;
+
+          size_t
+            i;
+
+          PixelChannel channel = GetPixelChannelChannel(image,k);
+          PixelTrait traits = GetPixelChannelTraits(image,channel);
+          if (traits == UndefinedPixelTrait)
+            continue;
+          pixel=(channel == AlphaPixelChannel) ? QuantumScale*(double) p[k] :
+            QuantumScale*Sa*(double) p[k];
+          i=((size_t) y*GetPixelChannels(image)+(size_t) k)*2;
+          G[i]+=pixel*cx;  /* Cr = sum f*cos(2pi*u*x/H) */
+          G[i+1]+=pixel*sx;  /* Sr = sum f*sin(2pi*u*x/H) */
+        }
+        /*
+          Advance recurrence: cos/sin of (x+1)*theta_u.
+        */
+        new_cx=cx*base_cos-sx*base_sin;
+        new_sx=sx*base_cos+cx*base_sin;
+        cx=new_cx;
+        sx=new_sx;
+        p+=(ptrdiff_t) GetPixelChannels(image);
+      }
+    }
+    if (status == MagickFalse)
+      break;
+    for (v=0; v < (ssize_t) rows; v++)
+    {
+      double
+        base_cos_v,
+        base_sin_v,
+        channel_imag[MaxPixelChannels+1],
+        channel_real[MaxPixelChannels+1],
+        cy,
+        sy,
+        theta_v;
+
+      /*
+        Collapse G over y to obtain F(u,v) for every v.
+      */
+      (void) memset(channel_real,0,sizeof(channel_real));
+      (void) memset(channel_imag,0,sizeof(channel_imag));
+      theta_v=2.0*MagickPI*(double) v/(double) image->columns;
+      base_cos_v=cos(theta_v);
+      base_sin_v=sin(theta_v);
+      cy=1.0;  /* cos(theta_v*0.0) */
+      sy=0.0;  /* sin(theta_v*0.0) */
+      for (y=0; y < (ssize_t) image->rows; y++)
+      {
+        double
+          new_cy,
+          new_sy;
+
+        for (k=0; k < (ssize_t) GetPixelChannels(image); k++)
+        {
+          size_t
+            i;
+
+          PixelChannel channel = GetPixelChannelChannel(image,k);
+          PixelTrait traits = GetPixelChannelTraits(image,channel);
+          if (traits == UndefinedPixelTrait)
+            continue;
+          i=2*((size_t) y*GetPixelChannels(image)+(size_t) k);
+          channel_real[k]+=G[i]*cy-G[i+1]*sy;
+          channel_imag[k]+=G[i+1]*cy+G[i]*sy;
+        }
+        /*
+          Advance recurrence: cos/sin of (y+1)*theta_v.
+        */
+        new_cy=cy*base_cos_v-sy*base_sin_v;
+        new_sy=sy*base_cos_v+cy*base_sin_v;
+        cy=new_cy;
+        sy=new_sy;
+      }
+      for (k=0; k < (ssize_t) GetPixelChannels(image); k++)
+      {
+        size_t
+          phase_idx;
+
+        PixelChannel channel = GetPixelChannelChannel(image,k);
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
-        if (channel == AlphaPixelChannel)
-          {
-            channel_real[i]+=(QuantumScale*p[i])*cos(angle);
-            channel_imag[i]-=(QuantumScale*p[i])*sin(angle);
-          }
-        else
-          {
-            channel_real[i]+=(QuantumScale*Sa*p[i])*cos(angle);
-            channel_imag[i]-=(QuantumScale*Sa*p[i])*sin(angle);
-          }
+        phase_idx=((size_t) v*columns+(size_t) u)*GetPixelChannels(image)+
+          (size_t) k;
+        phase[phase_idx]=atan2(channel_imag[k],channel_real[k]);
       }
-      p+=(ptrdiff_t) GetPixelChannels(image);
     }
   }
-  for (k=0; k < (ssize_t) GetPixelChannels(image); k++)
-    phase[k]=atan2(channel_imag[k],channel_real[k]);
-  phase[CompositePixelChannel]=atan2(channel_imag[CompositePixelChannel],
-    channel_real[CompositePixelChannel]);
   image_view=DestroyCacheView(image_view);
-  return(status);
+  G=(double *) RelinquishMagickMemory(G);
+  if (status == MagickFalse)
+    {
+      phase=(double *) RelinquishMagickMemory(phase);
+      return((double *) NULL);
+    }
+  return(phase);
 }
 
 static MagickBooleanType GetPHASESimilarity(const Image *image,
@@ -1737,7 +1856,9 @@ static MagickBooleanType GetPHASESimilarity(const Image *image,
     *reconstruct_view;
 
   double
-    area = 0.0;
+    area = 0.0,
+    *phase_spectra,
+    *reconstruct_spectra;
 
   MagickBooleanType
     status = MagickTrue;
@@ -1754,6 +1875,19 @@ static MagickBooleanType GetPHASESimilarity(const Image *image,
     Compute the phase congruency similarity.
   */
   SetImageCompareBounds(image,reconstruct_image,&columns,&rows);
+  phase_spectra=ComputeAllPhaseSpectra(image,rows,columns,exception);
+  reconstruct_spectra=ComputeAllPhaseSpectra(reconstruct_image,rows,columns,
+    exception);
+  if ((phase_spectra == (double *) NULL) ||
+      (reconstruct_spectra == (double *) NULL))
+    {
+      if (phase_spectra != (double *) NULL)
+        phase_spectra=(double *) RelinquishMagickMemory(phase_spectra);
+      if (reconstruct_spectra != (double *) NULL)
+        reconstruct_spectra=(double *) RelinquishMagickMemory(
+          reconstruct_spectra);
+      return(MagickFalse);
+    }
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -1784,10 +1918,6 @@ static MagickBooleanType GetPHASESimilarity(const Image *image,
       }
     for (x=0; x < (ssize_t) columns; x++)
     {
-      double
-        phase[MaxPixelChannels+1] = { 0.0 },
-        reconstruct_phase[MaxPixelChannels+1] = { 0.0 };
-
       ssize_t
         i;
 
@@ -1798,13 +1928,6 @@ static MagickBooleanType GetPHASESimilarity(const Image *image,
           q+=(ptrdiff_t) GetPixelChannels(reconstruct_image);
           continue;
         }
-      status=DFTPhaseSpectrum(image,x,y,phase,exception);
-      if (status == MagickFalse)
-        break;
-      status=DFTPhaseSpectrum(reconstruct_image,x,y,reconstruct_phase,
-        exception);
-      if (status == MagickFalse)
-        break;
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         double
@@ -1817,7 +1940,11 @@ static MagickBooleanType GetPHASESimilarity(const Image *image,
         if (((traits & UpdatePixelTrait) == 0) ||
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
-        delta=phase[i]-reconstruct_phase[i];
+        delta=(phase_spectra[((size_t) y*columns+(size_t) x)*
+          GetPixelChannels(image)+(size_t) i])-((i < (ssize_t)
+          GetPixelChannels(reconstruct_image)) ?
+          reconstruct_spectra[((size_t) y*columns+(size_t) x)*
+          GetPixelChannels(reconstruct_image)+(size_t) i] : 0.0);
         channel_similarity[i]+=cos(delta);
         channel_similarity[CompositePixelChannel]+=cos(delta);
       }
@@ -1850,6 +1977,8 @@ static MagickBooleanType GetPHASESimilarity(const Image *image,
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
+  phase_spectra=(double *) RelinquishMagickMemory(phase_spectra);
+  reconstruct_spectra=(double *) RelinquishMagickMemory(reconstruct_spectra);
   area=MagickSafeReciprocal(area);
   for (k=0; k < (ssize_t) GetPixelChannels(image); k++)
   {
@@ -1864,37 +1993,6 @@ static MagickBooleanType GetPHASESimilarity(const Image *image,
   }
   similarity[CompositePixelChannel]*=area;
   similarity[CompositePixelChannel]/=(double) GetImageChannels(image);
-  return(status);
-}
-
-static MagickBooleanType GetPSNRSimilarity(const Image *image,
-  const Image *reconstruct_image,double *similarity,ExceptionInfo *exception)
-{
-  MagickBooleanType
-    status = MagickTrue;
-
-  ssize_t
-    i;
-
-  /*
-    Compute the peak signal-to-noise ratio similarity.
-  */
-  status=GetMSESimilarity(image,reconstruct_image,similarity,exception);
-  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-  {
-    PixelChannel channel = GetPixelChannelChannel(image,i);
-    PixelTrait traits = GetPixelChannelTraits(image,channel);
-    PixelTrait reconstruct_traits = GetPixelChannelTraits(reconstruct_image,
-      channel);
-    if (((traits & UpdatePixelTrait) == 0) ||
-        ((reconstruct_traits & UpdatePixelTrait) == 0))
-      continue;
-    similarity[i]=10.0*MagickSafeLog10(MagickSafeReciprocal(
-      similarity[i]))/MagickSafePSNRRecipicol(10.0);
-  }
-  similarity[CompositePixelChannel]=10.0*MagickSafeLog10(
-    MagickSafeReciprocal(similarity[CompositePixelChannel]))/
-    MagickSafePSNRRecipicol(10.0);
   return(status);
 }
 
@@ -1989,6 +2087,37 @@ static MagickBooleanType GetPHASHSimilarity(const Image *image,
     reconstruct_phash);
   channel_phash=(ChannelPerceptualHash *) RelinquishMagickMemory(channel_phash);
   return(MagickTrue);
+}
+
+static MagickBooleanType GetPSNRSimilarity(const Image *image,
+  const Image *reconstruct_image,double *similarity,ExceptionInfo *exception)
+{
+  MagickBooleanType
+    status = MagickTrue;
+
+  ssize_t
+    i;
+
+  /*
+    Compute the peak signal-to-noise ratio similarity.
+  */
+  status=GetMSESimilarity(image,reconstruct_image,similarity,exception);
+  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+  {
+    PixelChannel channel = GetPixelChannelChannel(image,i);
+    PixelTrait traits = GetPixelChannelTraits(image,channel);
+    PixelTrait reconstruct_traits = GetPixelChannelTraits(reconstruct_image,
+      channel);
+    if (((traits & UpdatePixelTrait) == 0) ||
+        ((reconstruct_traits & UpdatePixelTrait) == 0))
+      continue;
+    similarity[i]=10.0*MagickSafeLog10(MagickSafeReciprocal(
+      similarity[i]))/MagickSafePSNRRecipicol(10.0);
+  }
+  similarity[CompositePixelChannel]=10.0*MagickSafeLog10(
+    MagickSafeReciprocal(similarity[CompositePixelChannel]))/
+    MagickSafePSNRRecipicol(10.0);
+  return(status);
 }
 
 static MagickBooleanType GetRMSESimilarity(const Image *image,
