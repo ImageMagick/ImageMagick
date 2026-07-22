@@ -1676,7 +1676,7 @@ static MemoryInfo *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
     number_threads;
 
   ssize_t
-    i,
+    k,
     u;
 
   /*
@@ -1688,29 +1688,29 @@ static MemoryInfo *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
   if (HeapOverflowCheck(columns,rows,GetPixelChannels(image)) == MagickFalse)
     return((MemoryInfo *) NULL);
   number_gradients=(size_t) GetPixelChannels(image)*rows*2;
-  number_threads=(size_t) GetOpenMPMaximumThreads();
+  number_threads=(size_t) GetMagickNumberThreads(image,image,columns,0.1);
   gradients=(double **) AcquireQuantumMemory(number_threads,sizeof(*gradients));
   if (gradients != (double **) NULL)
     {
       (void) memset(gradients,0,number_threads*sizeof(*gradients));
-      for (i=0; i < (ssize_t) number_threads; i++)
+      for (k=0; k < (ssize_t) number_threads; k++)
       {
-        gradients[i]=(double *) AcquireQuantumMemory(number_gradients,
+        gradients[k]=(double *) AcquireQuantumMemory(number_gradients,
           sizeof(**gradients));
-        if (gradients[i] == (double *) NULL)
+        if (gradients[k] == (double *) NULL)
           break;
       }
     }
   number_phases=(size_t) columns*rows*GetPixelChannels(image);
   phase_info=AcquireVirtualMemory(number_phases,sizeof(*phase));
-  if ((gradients == (double **) NULL) || (i < (ssize_t) number_threads) ||
+  if ((gradients == (double **) NULL) || (k < (ssize_t) number_threads) ||
       (phase_info == (MemoryInfo *) NULL))
     {
       if (gradients != (double **) NULL)
         {
-          for (i=0; i < (ssize_t) number_threads; i++)
-            if (gradients[i] != (double *) NULL)
-              gradients[i]=(double *) RelinquishMagickMemory(gradients[i]);
+          for (k=0; k < (ssize_t) number_threads; k++)
+            if (gradients[k] != (double *) NULL)
+              gradients[k]=(double *) RelinquishMagickMemory(gradients[k]);
           gradients=(double **) RelinquishMagickMemory(gradients);
         }
       if (phase_info != (MemoryInfo *) NULL)
@@ -1871,8 +1871,8 @@ static MemoryInfo *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
     }
   }
   image_view=DestroyCacheView(image_view);
-  for (i=0; i < (ssize_t) number_threads; i++)
-    gradients[i]=(double *) RelinquishMagickMemory(gradients[i]);
+  for (k=0; k < (ssize_t) number_threads; k++)
+    gradients[k]=(double *) RelinquishMagickMemory(gradients[k]);
   gradients=(double **) RelinquishMagickMemory(gradients);
   if (status == MagickFalse)
     {
