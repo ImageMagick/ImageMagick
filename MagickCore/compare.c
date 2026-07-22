@@ -1677,7 +1677,7 @@ static MemoryInfo *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
     number_threads;
 
   ssize_t
-    k,
+    k = 0,
     u;
 
   /*
