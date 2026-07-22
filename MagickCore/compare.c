@@ -1656,6 +1656,7 @@ static MemoryInfo *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
   (((size_t)(columns) == 0 || (size_t)(rows) == 0 || (size_t)(channels) == 0) ? MagickTrue : \
    ((size_t)(columns) > SIZE_MAX / (size_t)(rows) ? MagickFalse : \
    (((size_t)(columns) * (size_t)(rows)) > SIZE_MAX / (size_t)(channels) ? MagickFalse : MagickTrue)))
+#define WorkloadFactor  1
 
   CacheView
     *image_view;
@@ -1688,7 +1689,8 @@ static MemoryInfo *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
   if (HeapOverflowCheck(columns,rows,GetPixelChannels(image)) == MagickFalse)
     return((MemoryInfo *) NULL);
   number_gradients=(size_t) GetPixelChannels(image)*rows*2;
-  number_threads=(size_t) GetMagickNumberThreads(image,image,columns,0.1);
+  number_threads=(size_t) GetMagickNumberThreads(image,image,columns,
+    WorkloadFactor);
   gradients=(double **) AcquireQuantumMemory(number_threads,sizeof(*gradients));
   if (gradients != (double **) NULL)
     {
@@ -1723,7 +1725,7 @@ static MemoryInfo *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
   image_view=AcquireVirtualCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
-    magick_number_threads(image,image,columns,1)
+    magick_number_threads(image,image,columns,WorkloadFactor)
 #endif
   for (u=0; u < (ssize_t) columns; u++)
   {
