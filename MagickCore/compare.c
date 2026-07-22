@@ -1661,7 +1661,7 @@ static MemoryInfo *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
     *image_view;
 
   double
-    *gradient,
+    **gradients,
     *phase;
 
   MagickBooleanType
@@ -1672,9 +1672,11 @@ static MemoryInfo *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
 
   size_t
     number_gradients,
-    number_phases;
+    number_phases,
+    number_threads;
 
   ssize_t
+    i,
     u;
 
   /*
@@ -1686,13 +1688,31 @@ static MemoryInfo *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
   if (HeapOverflowCheck(columns,rows,GetPixelChannels(image)) == MagickFalse)
     return((MemoryInfo *) NULL);
   number_gradients=(size_t) GetPixelChannels(image)*rows*2;
-  gradient=(double *) AcquireQuantumMemory(number_gradients,sizeof(*gradient));
+  number_threads=(size_t) GetOpenMPMaximumThreads();
+  gradients=(double **) AcquireQuantumMemory(number_threads,sizeof(*gradients));
+  if (gradients != (double **) NULL)
+    {
+      (void) memset(gradients,0,number_threads*sizeof(*gradients));
+      for (i=0; i < (ssize_t) number_threads; i++)
+      {
+        gradients[i]=(double *) AcquireQuantumMemory(number_gradients,
+          sizeof(**gradients));
+        if (gradients[i] == (double *) NULL)
+          break;
+      }
+    }
   number_phases=(size_t) columns*rows*GetPixelChannels(image);
   phase_info=AcquireVirtualMemory(number_phases,sizeof(*phase));
-  if ((gradient == (double *) NULL) || (phase_info == (MemoryInfo *) NULL))
+  if ((gradients == (double **) NULL) || (i < (ssize_t) number_threads) ||
+      (phase_info == (MemoryInfo *) NULL))
     {
-      if (gradient != (double *) NULL)
-        gradient=(double *) RelinquishMagickMemory(gradient);
+      if (gradients != (double **) NULL)
+        {
+          for (i=0; i < (ssize_t) number_threads; i++)
+            if (gradients[i] != (double *) NULL)
+              gradients[i]=(double *) RelinquishMagickMemory(gradients[i]);
+          gradients=(double **) RelinquishMagickMemory(gradients);
+        }
       if (phase_info != (MemoryInfo *) NULL)
         phase_info=RelinquishVirtualMemory(phase_info);
       return((MemoryInfo *) NULL);
@@ -1701,10 +1721,15 @@ static MemoryInfo *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
   (void) memset(phase,0,number_phases*sizeof(*phase));
   status=MagickTrue;
   image_view=AcquireVirtualCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(status) \
+    magick_number_threads(image,image,columns,1)
+#endif
   for (u=0; u < (ssize_t) columns; u++)
   {
     double
       cosine,
+      *magick_restrict gradient,
       sine,
       theta_u;
 
@@ -1713,9 +1738,12 @@ static MemoryInfo *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
       v,
       y;
 
+    if (status == MagickFalse)
+      continue;
     /*
-      Compute G(y,u) for all y.
+      Compute G(y,u) for all y, using this thread's private buffer.
     */
+    gradient=gradients[GetOpenMPThreadId()];
     (void) memset(gradient,0,number_gradients*sizeof(*gradient));
     theta_u=2.0*MagickPI*(double) u/(double) columns;
     cosine=cos(theta_u);
@@ -1777,7 +1805,7 @@ static MemoryInfo *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
       }
     }
     if (status == MagickFalse)
-      break;
+      continue;
     for (v=0; v < (ssize_t) rows; v++)
     {
       double
@@ -1843,7 +1871,9 @@ static MemoryInfo *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
     }
   }
   image_view=DestroyCacheView(image_view);
-  gradient=(double *) RelinquishMagickMemory(gradient);
+  for (i=0; i < (ssize_t) number_threads; i++)
+    gradients[i]=(double *) RelinquishMagickMemory(gradients[i]);
+  gradients=(double **) RelinquishMagickMemory(gradients);
   if (status == MagickFalse)
     {
       phase_info=RelinquishVirtualMemory(phase_info);
@@ -1899,10 +1929,6 @@ static MagickBooleanType GetPHASESimilarity(const Image *image,
   reconstruct_spectra=(double *) GetVirtualMemoryBlob(reconstruct_info);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(area,similarity,status) \
-    magick_number_threads(image,image,rows,0.25)
-#endif
   for (y=0; y < (ssize_t) rows; y++)
   {
     const Quantum
@@ -1961,9 +1987,6 @@ static MagickBooleanType GetPHASESimilarity(const Image *image,
       p+=(ptrdiff_t) GetPixelChannels(image);
       q+=(ptrdiff_t) GetPixelChannels(reconstruct_image);
     }
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp critical (MagickCore_GetPHASESimilarity)
-#endif
     {
       ssize_t
         j;
