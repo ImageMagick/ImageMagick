@@ -1681,11 +1681,11 @@ static MemoryInfo *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
     ComputeAllPhaseSpectra() precomputes the DFT phase spectrum for all (u,v)
     frequency pairs simultaneously.
   */
-  if (HeapOverflowCheck(2,image->rows,GetPixelChannels(image)) == MagickFalse)
+  if (HeapOverflowCheck(2,rows,GetPixelChannels(image)) == MagickFalse)
     return((MemoryInfo *) NULL);
   if (HeapOverflowCheck(columns,rows,GetPixelChannels(image)) == MagickFalse)
     return((MemoryInfo *) NULL);
-  number_gradients=(size_t) GetPixelChannels(image)*image->rows*2;
+  number_gradients=(size_t) GetPixelChannels(image)*rows*2;
   gradient=(double *) AcquireQuantumMemory(number_gradients,sizeof(*gradient));
   number_phases=(size_t) columns*rows*GetPixelChannels(image);
   phase_info=AcquireVirtualMemory(number_phases,sizeof(*phase));
@@ -1717,10 +1717,10 @@ static MemoryInfo *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
       Compute G(y,u) for all y.
     */
     (void) memset(gradient,0,number_gradients*sizeof(*gradient));
-    theta_u=2.0*MagickPI*(double) u/(double) image->rows;
+    theta_u=2.0*MagickPI*(double) u/(double) columns;
     cosine=cos(theta_u);
     sine=sin(theta_u);
-    for (y=0; y < (ssize_t) image->rows; y++)
+    for (y=0; y < (ssize_t) rows; y++)
     {
       const Quantum
         *magick_restrict p;
@@ -1734,7 +1734,7 @@ static MemoryInfo *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
 
       if (status == MagickFalse)
         continue;
-      p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+      p=GetCacheViewVirtualPixels(image_view,0,y,columns,1,exception);
       if (p == (const Quantum *) NULL)
         {
           status=MagickFalse;
@@ -1742,7 +1742,7 @@ static MemoryInfo *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
         }
       cx=1.0;  /* cos(theta_u*0.0) */
       sx=0.0;  /* sin(theta_u*0.0) */
-      for (x=0; x < (ssize_t) image->columns; x++)
+      for (x=0; x < (ssize_t) columns; x++)
       {
         double
           Sa,
@@ -1764,8 +1764,8 @@ static MemoryInfo *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
           pixel=(channel == AlphaPixelChannel) ? QuantumScale*(double) p[i] :
             QuantumScale*Sa*(double) p[i];
           j=2*((size_t) y*GetPixelChannels(image)+(size_t) i);
-          gradient[j]+=pixel*cx;  /* Cr = sum f*cos(2pi*u*x/H) */
-          gradient[j+1]+=pixel*sx;  /* Sr = sum f*sin(2pi*u*x/H) */
+          gradient[j]+=pixel*cx;  /* Cr = sum f*cos(2pi*u*x/W) */
+          gradient[j+1]+=pixel*sx;  /* Sr = sum f*sin(2pi*u*x/W) */
         }
         /*
           Advance recurrence: cos/sin of (x+1)*theta_u.
@@ -1794,12 +1794,12 @@ static MemoryInfo *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
       */
       (void) memset(channel_real,0,sizeof(channel_real));
       (void) memset(channel_imag,0,sizeof(channel_imag));
-      theta_v=2.0*MagickPI*(double) v/(double) image->columns;
+      theta_v=2.0*MagickPI*(double) v/(double) rows;
       cosine_v=cos(theta_v);
       sine_v=sin(theta_v);
       cy=1.0;  /* cos(theta_v*0.0) */
       sy=0.0;  /* sin(theta_v*0.0) */
-      for (y=0; y < (ssize_t) image->rows; y++)
+      for (y=0; y < (ssize_t) rows; y++)
       {
         double
           tmp_cy;
@@ -1808,7 +1808,6 @@ static MemoryInfo *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
         {
           size_t
             j;
-
           PixelChannel channel = GetPixelChannelChannel(image,i);
           PixelTrait traits = GetPixelChannelTraits(image,channel);
           if (traits == UndefinedPixelTrait)
