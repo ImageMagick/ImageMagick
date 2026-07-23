@@ -1649,239 +1649,25 @@ static MagickBooleanType GetPDCSimilarity(const Image *image,
   return(status);
 }
 
-static MemoryInfo *ComputeAllPhaseSpectra(const Image *image,const size_t rows,
-  const size_t columns,ExceptionInfo *exception)
+static Image *GetPHASECorrelationSurface(const Image *image,
+  ExceptionInfo *exception)
 {
-#define HeapOverflowCheck(columns,rows,channels) \
-  (((size_t)(columns) == 0 || (size_t)(rows) == 0 || (size_t)(channels) == 0) ? MagickTrue : \
-   ((size_t)(columns) > SIZE_MAX / (size_t)(rows) ? MagickFalse : \
-   (((size_t)(columns) * (size_t)(rows)) > SIZE_MAX / (size_t)(channels) ? MagickFalse : MagickTrue)))
-#define WorkloadFactor  1
+  Image
+    *surface;
 
-  CacheView
-    *image_view;
-
-  double
-    **gradients,
-    *phase;
-
-  MagickBooleanType
-    status;
-
-  MemoryInfo
-    *phase_info;
-
-  size_t
-    number_gradients,
-    number_phases,
-    number_threads;
-
-  ssize_t
-    k = 0,
-    u;
+  KernelInfo
+    *kernel;
 
   /*
-    ComputeAllPhaseSpectra() precomputes the DFT phase spectrum for all (u,v)
-    frequency pairs simultaneously.
+    Build a spatial-domain correlation surface with a 3x3 Laplacian
+    high-pass convolution.
   */
-  if (HeapOverflowCheck(2,rows,GetPixelChannels(image)) == MagickFalse)
-    return((MemoryInfo *) NULL);
-  if (HeapOverflowCheck(columns,rows,GetPixelChannels(image)) == MagickFalse)
-    return((MemoryInfo *) NULL);
-  number_gradients=(size_t) GetPixelChannels(image)*rows*2;
-  number_threads=(size_t) GetMagickNumberThreads(image,image,columns,
-    WorkloadFactor);
-  gradients=(double **) AcquireQuantumMemory(number_threads,sizeof(*gradients));
-  if (gradients != (double **) NULL)
-    {
-      (void) memset(gradients,0,number_threads*sizeof(*gradients));
-      for (k=0; k < (ssize_t) number_threads; k++)
-      {
-        gradients[k]=(double *) AcquireQuantumMemory(number_gradients,
-          sizeof(**gradients));
-        if (gradients[k] == (double *) NULL)
-          break;
-      }
-    }
-  number_phases=(size_t) columns*rows*GetPixelChannels(image);
-  phase_info=AcquireVirtualMemory(number_phases,sizeof(*phase));
-  if ((gradients == (double **) NULL) || (k < (ssize_t) number_threads) ||
-      (phase_info == (MemoryInfo *) NULL))
-    {
-      if (gradients != (double **) NULL)
-        {
-          for (k=0; k < (ssize_t) number_threads; k++)
-            if (gradients[k] != (double *) NULL)
-              gradients[k]=(double *) RelinquishMagickMemory(gradients[k]);
-          gradients=(double **) RelinquishMagickMemory(gradients);
-        }
-      if (phase_info != (MemoryInfo *) NULL)
-        phase_info=RelinquishVirtualMemory(phase_info);
-      return((MemoryInfo *) NULL);
-    }
-  phase=(double *) GetVirtualMemoryBlob(phase_info);
-  (void) memset(phase,0,number_phases*sizeof(*phase));
-  status=MagickTrue;
-  image_view=AcquireVirtualCacheView(image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status) \
-    magick_number_threads(image,image,columns,WorkloadFactor)
-#endif
-  for (u=0; u < (ssize_t) columns; u++)
-  {
-    double
-      cosine,
-      *magick_restrict gradient,
-      sine,
-      theta_u;
-
-    ssize_t
-      i,
-      v,
-      y;
-
-    if (status == MagickFalse)
-      continue;
-    /*
-      Compute G(y,u) for all y, using this thread's private buffer.
-    */
-    gradient=gradients[GetOpenMPThreadId()];
-    (void) memset(gradient,0,number_gradients*sizeof(*gradient));
-    theta_u=2.0*MagickPI*(double) u/(double) columns;
-    cosine=cos(theta_u);
-    sine=sin(theta_u);
-    for (y=0; y < (ssize_t) rows; y++)
-    {
-      const Quantum
-        *magick_restrict p;
-
-      double
-        cx,
-        sx;
-
-      ssize_t
-        x;
-
-      if (status == MagickFalse)
-        continue;
-      p=GetCacheViewVirtualPixels(image_view,0,y,columns,1,exception);
-      if (p == (const Quantum *) NULL)
-        {
-          status=MagickFalse;
-          continue;
-        }
-      cx=1.0;  /* cos(theta_u*0.0) */
-      sx=0.0;  /* sin(theta_u*0.0) */
-      for (x=0; x < (ssize_t) columns; x++)
-      {
-        double
-          Sa,
-          tmp_cx;
-
-        Sa=QuantumScale*(double) GetPixelAlpha(image,p);
-        for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-        {
-          double
-            pixel;
-
-          size_t
-            j;
-
-          PixelChannel channel = GetPixelChannelChannel(image,i);
-          PixelTrait traits = GetPixelChannelTraits(image,channel);
-          if (traits == UndefinedPixelTrait)
-            continue;
-          pixel=(channel == AlphaPixelChannel) ? QuantumScale*(double) p[i] :
-            QuantumScale*Sa*(double) p[i];
-          j=2*((size_t) y*GetPixelChannels(image)+(size_t) i);
-          gradient[j]+=pixel*cx;  /* Cr = sum f*cos(2pi*u*x/W) */
-          gradient[j+1]+=pixel*sx;  /* Sr = sum f*sin(2pi*u*x/W) */
-        }
-        /*
-          Advance recurrence: cos/sin of (x+1)*theta_u.
-        */
-        tmp_cx=cx;
-        cx=cx*cosine-sx*sine;
-        sx=sx*cosine+tmp_cx*sine;
-        p+=(ptrdiff_t) GetPixelChannels(image);
-      }
-    }
-    if (status == MagickFalse)
-      continue;
-    for (v=0; v < (ssize_t) rows; v++)
-    {
-      double
-        channel_imag[MaxPixelChannels+1],
-        channel_real[MaxPixelChannels+1],
-        cosine_v,
-        cy,
-        sine_v,
-        sy,
-        theta_v;
-
-      /*
-        Collapse G over y to obtain F(u,v) for every v.
-      */
-      (void) memset(channel_real,0,sizeof(channel_real));
-      (void) memset(channel_imag,0,sizeof(channel_imag));
-      theta_v=2.0*MagickPI*(double) v/(double) rows;
-      cosine_v=cos(theta_v);
-      sine_v=sin(theta_v);
-      cy=1.0;  /* cos(theta_v*0.0) */
-      sy=0.0;  /* sin(theta_v*0.0) */
-      for (y=0; y < (ssize_t) rows; y++)
-      {
-        double
-          tmp_cy;
-
-        for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-        {
-          size_t
-            j;
-          PixelChannel channel = GetPixelChannelChannel(image,i);
-          PixelTrait traits = GetPixelChannelTraits(image,channel);
-          if (traits == UndefinedPixelTrait)
-            continue;
-          j=2*((size_t) y*GetPixelChannels(image)+(size_t) i);
-          channel_real[i]+=gradient[j]*cy-gradient[j+1]*sy;
-          channel_imag[i]+=gradient[j+1]*cy+gradient[j]*sy;
-        }
-        /*
-          Advance recurrence: cos/sin of (y+1)*theta_v.
-        */
-        tmp_cy=cy;
-        cy=cy*cosine_v-sy*sine_v;
-        sy=sy*cosine_v+tmp_cy*sine_v;
-      }
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-      {
-        size_t
-          j;
-
-        PixelChannel channel = GetPixelChannelChannel(image,i);
-        PixelTrait traits = GetPixelChannelTraits(image,channel);
-        if (traits == UndefinedPixelTrait)
-          continue;
-        j=((size_t) v*columns+(size_t) u)*GetPixelChannels(image)+(size_t) i;
-        phase[j]=channel_imag[i]*channel_imag[i]+channel_real[i]*
-          channel_real[i];
-        if (phase[j] < MagickEpsilon)
-          phase[j]=0.0;
-        else
-          phase[j]=atan2(channel_imag[i],channel_real[i]);
-      }
-    }
-  }
-  image_view=DestroyCacheView(image_view);
-  for (k=0; k < (ssize_t) number_threads; k++)
-    gradients[k]=(double *) RelinquishMagickMemory(gradients[k]);
-  gradients=(double **) RelinquishMagickMemory(gradients);
-  if (status == MagickFalse)
-    {
-      phase_info=RelinquishVirtualMemory(phase_info);
-      return((MemoryInfo *) NULL);
-    }
-  return(phase_info);
+  kernel=AcquireKernelInfo("3x3: 0,-1,0 -1,4,-1 0,-1,0",exception);
+  if (kernel == (KernelInfo *) NULL)
+    return((Image *) NULL);
+  surface=MorphologyImage(image,ConvolveMorphology,1,kernel,exception);
+  kernel=DestroyKernelInfo(kernel);
+  return(surface);
 }
 
 static MagickBooleanType GetPHASESimilarity(const Image *image,
@@ -1892,45 +1678,51 @@ static MagickBooleanType GetPHASESimilarity(const Image *image,
     *reconstruct_view;
 
   double
-    area = 0.0,
-    *phase_spectra,
-    *reconstruct_spectra;
+    correlation[MaxPixelChannels+1] = { 0.0 },
+    count = 0,
+    image_sum[MaxPixelChannels+1] = { 0.0 },
+    image_sum_squared[MaxPixelChannels+1] = { 0.0 },
+    reconstruct_sum[MaxPixelChannels+1] = { 0.0 },
+    reconstruct_sum_squared[MaxPixelChannels+1] = { 0.0 };
+
+  Image
+    *phase_image,
+    *phase_reconstruct;
 
   MagickBooleanType
     status = MagickTrue;
 
-  MemoryInfo
-    *phase_info,
-    *reconstruct_info;
-
   size_t
-    columns,
-    rows;
+    columns = 0,
+    rows = 0;
 
   ssize_t
-    k,
+    channels = 0,
+    j,
     y;
 
   /*
-    Compute the phase congruency similarity.
+    Compute the phase congruency similarity from two spatial high-pass
+    correlation surfaces.
   */
   SetImageCompareBounds(image,reconstruct_image,&columns,&rows);
-  phase_info=ComputeAllPhaseSpectra(image,rows,columns,exception);
-  reconstruct_info=ComputeAllPhaseSpectra(reconstruct_image,rows,columns,
-    exception);
-  if ((phase_info == (MemoryInfo *) NULL) ||
-      (reconstruct_info == (MemoryInfo *) NULL))
+  phase_image=GetPHASECorrelationSurface(image,exception);
+  phase_reconstruct=GetPHASECorrelationSurface(reconstruct_image,exception);
+  if ((phase_image == (Image *) NULL) ||
+      (phase_reconstruct == (Image *) NULL))
     {
-      if (phase_info != (MemoryInfo *) NULL)
-        phase_info=RelinquishVirtualMemory(phase_info);
-      if (reconstruct_info != (MemoryInfo *) NULL)
-        reconstruct_info=RelinquishVirtualMemory(reconstruct_info);
+      if (phase_image != (Image *) NULL)
+        phase_image=DestroyImage(phase_image);
+      if (phase_reconstruct != (Image *) NULL)
+        phase_reconstruct=DestroyImage(phase_reconstruct);
       return(MagickFalse);
     }
-  phase_spectra=(double *) GetVirtualMemoryBlob(phase_info);
-  reconstruct_spectra=(double *) GetVirtualMemoryBlob(reconstruct_info);
-  image_view=AcquireVirtualCacheView(image,exception);
-  reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
+  image_view=AcquireVirtualCacheView(phase_image,exception);
+  reconstruct_view=AcquireVirtualCacheView(phase_reconstruct,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(status) \
+    magick_number_threads(phase_image,phase_reconstruct,rows,1)
+#endif
   for (y=0; y < (ssize_t) rows; y++)
   {
     const Quantum
@@ -1938,10 +1730,15 @@ static MagickBooleanType GetPHASESimilarity(const Image *image,
       *magick_restrict q;
 
     double
-      channel_area = 0.0,
-      channel_similarity[MaxPixelChannels+1] = { 0.0 };
+      channel_correlation[MaxPixelChannels+1] = { 0.0 },
+      channel_count = 0,
+      channel_image_sum[MaxPixelChannels+1] = { 0.0 },
+      channel_image_sum_squared[MaxPixelChannels+1] = { 0.0 },
+      channel_reconstruct_sum[MaxPixelChannels+1] = { 0.0 },
+      channel_reconstruct_sum_squared[MaxPixelChannels+1] = { 0.0 };
 
     ssize_t
+      i,
       x;
 
     if (status == MagickFalse)
@@ -1955,78 +1752,111 @@ static MagickBooleanType GetPHASESimilarity(const Image *image,
       }
     for (x=0; x < (ssize_t) columns; x++)
     {
-      ssize_t
-        i;
-
-      if ((GetPixelReadMask(image,p) <= (QuantumRange/2)) ||
-          (GetPixelReadMask(reconstruct_image,q) <= (QuantumRange/2)))
+      if ((GetPixelReadMask(phase_image,p) <= (QuantumRange/2)) ||
+          (GetPixelReadMask(phase_reconstruct,q) <= (QuantumRange/2)))
         {
-          p+=(ptrdiff_t) GetPixelChannels(image);
-          q+=(ptrdiff_t) GetPixelChannels(reconstruct_image);
+          p+=(ptrdiff_t) GetPixelChannels(phase_image);
+          q+=(ptrdiff_t) GetPixelChannels(phase_reconstruct);
           continue;
         }
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      for (i=0; i < (ssize_t) GetPixelChannels(phase_image); i++)
       {
         double
-          delta;
+          alpha,
+          beta;
 
-        PixelChannel channel = GetPixelChannelChannel(image,i);
-        PixelTrait traits = GetPixelChannelTraits(image,channel);
-        PixelTrait reconstruct_traits = GetPixelChannelTraits(reconstruct_image,
-          channel);
+        ssize_t
+          offset;
+
+        PixelChannel
+          channel;
+
+        PixelTrait
+          reconstruct_traits,
+          traits;
+
+        channel=GetPixelChannelChannel(phase_image,i);
+        traits=GetPixelChannelTraits(phase_image,channel);
+        reconstruct_traits=GetPixelChannelTraits(phase_reconstruct,channel);
         if (((traits & UpdatePixelTrait) == 0) ||
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
-        delta=(phase_spectra[((size_t) y*columns+(size_t) x)*
-          GetPixelChannels(image)+(size_t) i])-((i < (ssize_t)
-          GetPixelChannels(reconstruct_image)) ?
-          reconstruct_spectra[((size_t) y*columns+(size_t) x)*
-          GetPixelChannels(reconstruct_image)+(size_t) i] : 0.0);
-        channel_similarity[i]+=cos(delta);
-        channel_similarity[CompositePixelChannel]+=cos(delta);
+        offset=GetPixelChannelOffset(phase_reconstruct,channel);
+        if (offset < 0)
+          continue;
+        alpha=QuantumScale*(double) p[i];
+        beta=QuantumScale*(double) q[offset];
+        channel_image_sum[i]+=alpha;
+        channel_image_sum_squared[i]+=alpha*alpha;
+        channel_reconstruct_sum[i]+=beta;
+        channel_reconstruct_sum_squared[i]+=beta*beta;
+        channel_correlation[i]+=alpha*beta;
       }
-      channel_area++;
-      p+=(ptrdiff_t) GetPixelChannels(image);
-      q+=(ptrdiff_t) GetPixelChannels(reconstruct_image);
+      channel_count++;
+      p+=(ptrdiff_t) GetPixelChannels(phase_image);
+      q+=(ptrdiff_t) GetPixelChannels(phase_reconstruct);
     }
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+    #pragma omp critical (MagickCore_GetPHASESimilarity)
+#endif
     {
-      ssize_t
-        j;
-
-      area+=channel_area;
-      for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
+      count+=channel_count;
+      for (i=0; i <= (ssize_t) MaxPixelChannels; i++)
       {
-        PixelChannel channel = GetPixelChannelChannel(image,j);
-        PixelTrait traits = GetPixelChannelTraits(image,channel);
-        PixelTrait reconstruct_traits = GetPixelChannelTraits(reconstruct_image,
-          channel);
-        if (((traits & UpdatePixelTrait) == 0) ||
-            ((reconstruct_traits & UpdatePixelTrait) == 0))
-          continue;
-        similarity[j]+=channel_similarity[j];
+        correlation[i]+=channel_correlation[i];
+        image_sum[i]+=channel_image_sum[i];
+        image_sum_squared[i]+=channel_image_sum_squared[i];
+        reconstruct_sum[i]+=channel_reconstruct_sum[i];
+        reconstruct_sum_squared[i]+=channel_reconstruct_sum_squared[i];
       }
-      similarity[CompositePixelChannel]+=
-        channel_similarity[CompositePixelChannel];
     }
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
-  phase_info=RelinquishVirtualMemory(phase_info);
-  reconstruct_info=RelinquishVirtualMemory(reconstruct_info);
-  area=MagickSafeReciprocal(area);
-  for (k=0; k < (ssize_t) GetPixelChannels(image); k++)
+  phase_image=DestroyImage(phase_image);
+  phase_reconstruct=DestroyImage(phase_reconstruct);
+  if ((status == MagickFalse) || (count < 1.0))
+    return(status);
+  /*
+    Reduce the accumulated sums to a per-channel Pearson coefficient and
+    average across channels for the composite value.
+  */
+  similarity[CompositePixelChannel]=0.0;
+  for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
   {
-    PixelChannel channel = GetPixelChannelChannel(image,k);
-    PixelTrait traits = GetPixelChannelTraits(image,channel);
-    PixelTrait reconstruct_traits = GetPixelChannelTraits(reconstruct_image,
-      channel);
+    double
+      denominator,
+      numerator,
+      pearson;
+
+    PixelChannel
+      channel;
+
+    PixelTrait
+      reconstruct_traits,
+      traits;
+
+    channel=GetPixelChannelChannel(image,j);
+    traits=GetPixelChannelTraits(image,channel);
+    reconstruct_traits=GetPixelChannelTraits(reconstruct_image,channel);
     if (((traits & UpdatePixelTrait) == 0) ||
         ((reconstruct_traits & UpdatePixelTrait) == 0))
       continue;
-    similarity[k]*=area;
+    numerator=count*correlation[j]-image_sum[j]*reconstruct_sum[j];
+    denominator=sqrt(count*image_sum_squared[j]-image_sum[j]*image_sum[j])*
+      sqrt(count*reconstruct_sum_squared[j]-reconstruct_sum[j]*
+      reconstruct_sum[j]);
+    pearson=denominator < MagickEpsilon ? 0.0 : numerator/denominator;
+    if (pearson < -1.0)
+      pearson=(-1.0);
+    if (pearson > 1.0)
+      pearson=1.0;
+    similarity[j]=pearson;
+    similarity[CompositePixelChannel]+=pearson;
+    channels++;
   }
-  similarity[CompositePixelChannel]*=area;
-  similarity[CompositePixelChannel]/=(double) GetImageChannels(image);
+  if (channels > 0)
+    similarity[CompositePixelChannel]/=(double) channels;
   return(status);
 }
 
