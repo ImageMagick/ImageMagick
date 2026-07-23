@@ -2385,6 +2385,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         case DarkenCompositeOp:
         case DifferenceCompositeOp:
         case DivideDstCompositeOp:
+        case DivideFxCompositeOp:
         case DivideSrcCompositeOp:
         case ExclusionCompositeOp:
         case FreezeCompositeOp:
@@ -2932,7 +2933,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case DivideDstCompositeOp:
           {
-            S=(Sa > 0.0) ? (Sca/Sa) : 0.0;
             D=(Da > 0.0) ? (Dca/Da) : 0.0;
             if (fabs(S) < MagickEpsilon)
               blend=1.0;
@@ -2940,6 +2940,14 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               blend=RoundToUnity(D/S);
             pixel=(double) QuantumRange*RoundToUnity(Sca*(1.0-Da)+Dca*(1.0-Sa)+
               Sa*Da*blend);
+            break;
+          }
+          case DivideFxCompositeOp:
+          {
+            if (fabs(Dca) < MagickEpsilon)
+              pixel=0.0;
+            else
+              pixel=(double) QuantumRange*(Sca/Dca);
             break;
           }
           case DivideSrcCompositeOp:

@@ -1299,6 +1299,7 @@ static const OptionInfo
     { "Distort", DistortCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "Divide", DivideDstCompositeOp, DeprecateOptionFlag, MagickTrue },
     { "DivideDst", DivideDstCompositeOp, UndefinedOptionFlag, MagickFalse },
+    { "DivideFx", DivideFxCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "DivideSrc", DivideSrcCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "DstAtop", DstAtopCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "Dst", DstCompositeOp, UndefinedOptionFlag, MagickFalse },
