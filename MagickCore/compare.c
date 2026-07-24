@@ -323,6 +323,7 @@ static MagickBooleanType GetAESimilarity(const Image *image,
     rows;
 
   ssize_t
+    channels = 0,
     k,
     y;
 
@@ -426,13 +427,24 @@ static MagickBooleanType GetAESimilarity(const Image *image,
         channel_similarity[CompositePixelChannel];
     }
   }
-  similarity[CompositePixelChannel]/=(double) GetImageChannels(image);
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
   area=MagickSafeReciprocal((double) columns*rows);
   for (k=0; k < (ssize_t) GetPixelChannels(image); k++)
+  {
+    PixelChannel channel = GetPixelChannelChannel(image,k);
+    PixelTrait traits = GetPixelChannelTraits(image,channel);
+    PixelTrait reconstruct_traits = GetPixelChannelTraits(reconstruct_image,
+      channel);
+    if (((traits & UpdatePixelTrait) == 0) ||
+        ((reconstruct_traits & UpdatePixelTrait) == 0))
+      continue;
     similarity[k]*=area;
+    channels++;
+  }
   similarity[CompositePixelChannel]*=area;
+  if (channels != 0)
+    similarity[CompositePixelChannel]/=(double) channels;
   return(status);
 }
 
@@ -791,6 +803,7 @@ static MagickBooleanType GetMAESimilarity(const Image *image,
     rows;
 
   ssize_t
+    channels = 0,
     k,
     y;
 
@@ -906,9 +919,11 @@ static MagickBooleanType GetMAESimilarity(const Image *image,
         ((reconstruct_traits & UpdatePixelTrait) == 0))
       continue;
     similarity[k]*=area;
+    channels++;
   }
   similarity[CompositePixelChannel]*=area;
-  similarity[CompositePixelChannel]/=(double) GetImageChannels(image);
+  if (channels != 0)
+    similarity[CompositePixelChannel]/=(double) channels;
   return(status);
 }
 
@@ -932,6 +947,7 @@ static MagickBooleanType GetMEPPSimilarity(Image *image,
     rows;
 
   ssize_t
+    channels = 0,
     k,
     y;
 
@@ -1054,9 +1070,11 @@ static MagickBooleanType GetMEPPSimilarity(Image *image,
         ((reconstruct_traits & UpdatePixelTrait) == 0))
       continue;
     similarity[k]*=area;
+    channels++;
   }
   similarity[CompositePixelChannel]*=area;
-  similarity[CompositePixelChannel]/=(double) GetImageChannels(image);
+  if (channels != 0)
+    similarity[CompositePixelChannel]/=(double) channels;
   image->error.mean_error_per_pixel=QuantumRange*
     similarity[CompositePixelChannel];
   image->error.normalized_mean_error=mean_error*area;
@@ -1082,6 +1100,7 @@ static MagickBooleanType GetMSESimilarity(const Image *image,
     rows;
 
   ssize_t
+    channels = 0,
     k,
     y;
 
@@ -1196,9 +1215,11 @@ static MagickBooleanType GetMSESimilarity(const Image *image,
         ((reconstruct_traits & UpdatePixelTrait) == 0))
       continue;
     similarity[k]*=area;
+    channels++;
   }
   similarity[CompositePixelChannel]*=area;
-  similarity[CompositePixelChannel]/=(double) GetImageChannels(image);
+  if (channels != 0)
+   similarity[CompositePixelChannel]/=(double) channels;
   return(status);
 }
 
@@ -1678,8 +1699,8 @@ static MagickBooleanType GetPHASESimilarity(const Image *image,
     *reconstruct_view;
 
   double
+    area = 0,
     correlation[MaxPixelChannels+1] = { 0.0 },
-    count = 0,
     image_sum[MaxPixelChannels+1] = { 0.0 },
     image_sum_squared[MaxPixelChannels+1] = { 0.0 },
     reconstruct_sum[MaxPixelChannels+1] = { 0.0 },
@@ -1730,8 +1751,8 @@ static MagickBooleanType GetPHASESimilarity(const Image *image,
       *magick_restrict q;
 
     double
+      channel_area = 0,
       channel_correlation[MaxPixelChannels+1] = { 0.0 },
-      channel_count = 0,
       channel_image_sum[MaxPixelChannels+1] = { 0.0 },
       channel_image_sum_squared[MaxPixelChannels+1] = { 0.0 },
       channel_reconstruct_sum[MaxPixelChannels+1] = { 0.0 },
@@ -1792,7 +1813,7 @@ static MagickBooleanType GetPHASESimilarity(const Image *image,
         channel_reconstruct_sum_squared[i]+=beta*beta;
         channel_correlation[i]+=alpha*beta;
       }
-      channel_count++;
+      channel_area++;
       p+=(ptrdiff_t) GetPixelChannels(phase_image);
       q+=(ptrdiff_t) GetPixelChannels(phase_reconstruct);
     }
@@ -1800,7 +1821,7 @@ static MagickBooleanType GetPHASESimilarity(const Image *image,
     #pragma omp critical (MagickCore_GetPHASESimilarity)
 #endif
     {
-      count+=channel_count;
+      area+=channel_area;
       for (i=0; i <= (ssize_t) MaxPixelChannels; i++)
       {
         correlation[i]+=channel_correlation[i];
@@ -1815,7 +1836,7 @@ static MagickBooleanType GetPHASESimilarity(const Image *image,
   image_view=DestroyCacheView(image_view);
   phase_image=DestroyImage(phase_image);
   phase_reconstruct=DestroyImage(phase_reconstruct);
-  if ((status == MagickFalse) || (count < 1.0))
+  if ((status == MagickFalse) || (area < 1.0))
     return(status);
   /*
     Reduce the accumulated sums to a per-channel Pearson coefficient and
@@ -1842,9 +1863,9 @@ static MagickBooleanType GetPHASESimilarity(const Image *image,
     if (((traits & UpdatePixelTrait) == 0) ||
         ((reconstruct_traits & UpdatePixelTrait) == 0))
       continue;
-    numerator=count*correlation[j]-image_sum[j]*reconstruct_sum[j];
-    denominator=sqrt(count*image_sum_squared[j]-image_sum[j]*image_sum[j])*
-      sqrt(count*reconstruct_sum_squared[j]-reconstruct_sum[j]*
+    numerator=area*correlation[j]-image_sum[j]*reconstruct_sum[j];
+    denominator=sqrt(area*image_sum_squared[j]-image_sum[j]*image_sum[j])*
+      sqrt(area*reconstruct_sum_squared[j]-reconstruct_sum[j]*
       reconstruct_sum[j]);
     pearson=denominator < MagickEpsilon ? 0.0 : numerator/denominator;
     if (pearson < -1.0)
@@ -1855,7 +1876,7 @@ static MagickBooleanType GetPHASESimilarity(const Image *image,
     similarity[CompositePixelChannel]+=pearson;
     channels++;
   }
-  if (channels > 0)
+  if (channels != 0)
     similarity[CompositePixelChannel]/=(double) channels;
   return(status);
 }
@@ -1871,6 +1892,7 @@ static MagickBooleanType GetPHASHSimilarity(const Image *image,
     *artifact;
 
   ssize_t
+    channels = 0,
     i;
 
   /*
@@ -1925,8 +1947,10 @@ static MagickBooleanType GetPHASHSimilarity(const Image *image,
     }
     similarity[i]+=difference;
     similarity[CompositePixelChannel]+=difference;
+    channels++;
   }
-  similarity[CompositePixelChannel]/=(double) GetImageChannels(image);
+  if (channels != 0)
+    similarity[CompositePixelChannel]/=(double) channels;
   artifact=GetImageArtifact(image,"phash:normalize");
   if (IsStringTrue(artifact) != MagickFalse)
     {
@@ -2052,6 +2076,7 @@ static MagickBooleanType GetSSIMSimularity(const Image *image,
     rows;
 
   ssize_t
+    channels = 0,
     l,
     y;
 
@@ -2238,6 +2263,7 @@ static MagickBooleanType GetSSIMSimularity(const Image *image,
   }
   image_view=DestroyCacheView(image_view);
   reconstruct_view=DestroyCacheView(reconstruct_view);
+  kernel_info=DestroyKernelInfo(kernel_info);
   area=MagickSafeReciprocal(area);
   for (l=0; l < (ssize_t) GetPixelChannels(image); l++)
   {
@@ -2249,10 +2275,11 @@ static MagickBooleanType GetSSIMSimularity(const Image *image,
         ((reconstruct_traits & UpdatePixelTrait) == 0))
       continue;
     similarity[l]*=area;
+    channels++;
   }
   similarity[CompositePixelChannel]*=area;
-  similarity[CompositePixelChannel]/=(double) GetImageChannels(image);
-  kernel_info=DestroyKernelInfo(kernel_info);
+  if (channels != 0)
+   similarity[CompositePixelChannel]/=(double) channels;
   return(status);
 }
 
