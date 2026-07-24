@@ -2884,7 +2884,7 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
     Image
       *clone_image;
 
-    ssize_t
+    size_t
       i;
 
     clone_image=CloneImage(next,0,0,MagickFalse,exception);
@@ -2899,7 +2899,7 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
     resolution=next->resolution;
     for (i=0; (columns > min_base) && (rows > min_base); i++)
     {
-      if (i > (ssize_t) max_levels)
+      if (i > max_levels)
         break;
       columns/=2;
       rows/=2;
