@@ -2884,7 +2884,7 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
     Image
       *clone_image;
 
-    ssize_t
+    size_t
       i;
 
     clone_image=CloneImage(next,0,0,MagickFalse,exception);
@@ -2899,7 +2899,7 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
     resolution=next->resolution;
     for (i=0; (columns > min_base) && (rows > min_base); i++)
     {
-      if (i > (ssize_t) max_levels)
+      if (i > max_levels)
         break;
       columns/=2;
       rows/=2;
@@ -2925,7 +2925,7 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
       images=GetFirstImageInList(images);
       write_info=CloneImageInfo(image_info);
       write_info->adjoin=MagickTrue;
-      (void) CopyMagickString(write_info->magick,"TIFF",MagickPathExtent);
+      (void) CopyMagickString(write_info->magick,"PTIF",MagickPathExtent);
       (void) CopyMagickString(images->magick,"TIFF",MagickPathExtent);
       status=WriteTIFFImage(write_info,images,exception);
       images=DestroyImageList(images);
@@ -3442,7 +3442,7 @@ static void TIFFSetProperties(TIFF *tiff,const MagickBooleanType adjoin,
   value=GetImageProperty(image,"comment",exception);
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,TIFFTAG_IMAGEDESCRIPTION,value);
-  value=GetImageArtifact(image,"tiff:subfiletype");
+  value=GetImageProperty(image,"tiff:subfiletype",exception);
   if (value != (const char *) NULL)
     {
       if (LocaleCompare(value,"REDUCEDIMAGE") == 0)
@@ -4141,8 +4141,10 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       pages=(uint16) number_scenes;
       if ((LocaleCompare(image_info->magick,"PTIF") != 0) &&
           (adjoin != MagickFalse) && (pages > 1))
-        (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_PAGE);
-      (void) TIFFSetField(tiff,TIFFTAG_PAGENUMBER,page,pages);
+        {
+          (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_PAGE);
+          (void) TIFFSetField(tiff,TIFFTAG_PAGENUMBER,page,pages);
+        }
     }
     (void) TIFFSetProperties(tiff,adjoin,image,exception);
     /*
