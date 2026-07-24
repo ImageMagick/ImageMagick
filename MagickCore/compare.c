@@ -3495,7 +3495,7 @@ static Image *SIMPhaseCorrelationImage(const Image *alpha_image,
   /*
     Divide the results.
   */
-  CompositeLayers((Image *) magnitude_image,DivideFxCompositeOp,
+  CompositeLayers((Image *) magnitude_image,DivideDstCompositeOp,
     complex_multiplication,0,0,exception);
   /*
     Do the IFT and return the cross-correlation result.

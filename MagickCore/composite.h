@@ -106,7 +106,7 @@ typedef enum
   RMSECompositeOp,
   SaliencyBlendCompositeOp,
   SeamlessBlendCompositeOp,
-  DivideFxCompositeOp
+  DivideCompositeOp
 } CompositeOperator;
 
 extern MagickExport MagickBooleanType
