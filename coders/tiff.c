@@ -3442,7 +3442,7 @@ static void TIFFSetProperties(TIFF *tiff,const MagickBooleanType adjoin,
   value=GetImageProperty(image,"comment",exception);
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,TIFFTAG_IMAGEDESCRIPTION,value);
-  value=GetImageArtifact(image,"tiff:subfiletype");
+  value=GetImageProperty(image,"tiff:subfiletype",exception);
   if (value != (const char *) NULL)
     {
       if (LocaleCompare(value,"REDUCEDIMAGE") == 0)
