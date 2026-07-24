@@ -4431,6 +4431,10 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   /*
     Identify the maxima value in the image and its location.
   */
+  status=SIMMultiplyImage(correlation_image,(double) QuantumScale,
+    (const ChannelStatistics *) NULL,exception);
+  if (status == MagickFalse)
+    ThrowPhaseSimilarityException();
   gamma_image=CloneImage(correlation_image,0,0,MagickTrue,exception);
   correlation_image=DestroyImage(correlation_image);
   if (gamma_image == (Image *) NULL)
@@ -4463,12 +4467,6 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   if (status == MagickFalse)
     ThrowPhaseSimilarityException();
   magnitude_image=DestroyImage(magnitude_image);
-  if ((QuantumScale*maxima) > 1.0)
-    {
-      status=SIMMultiplyImage(phase_image,1.0/(QuantumScale*maxima),
-        (const ChannelStatistics *) NULL,exception);
-      maxima=(double) QuantumRange;
-    }
   *similarity_metric=QuantumScale*maxima;
   return(phase_image);
 }

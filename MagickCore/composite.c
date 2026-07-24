@@ -3378,6 +3378,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case PlusCompositeOp:
           {
+            if (compose_sync == MagickFalse)
+              {
+                pixel=(double) QuantumRange*(Sc+Dc);
+                break;
+              }
             pixel=(double) QuantumRange*(Sca+Dca);
             break;
           }
