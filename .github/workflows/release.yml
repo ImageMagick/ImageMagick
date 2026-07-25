@@ -32,7 +32,7 @@ jobs:
 
     steps:
       - name: Clone ImageMagick
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -60,7 +60,7 @@ jobs:
 
     steps:
       - name: Clone ImageMagick
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -136,7 +136,7 @@ jobs:
           innosetup-6.2.0.exe /SILENT /SUPPRESSMSGBOXES /NORESTART /SP-
 
       - name: Clone ImageMagick
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
         with:
           path: ImageMagick
           persist-credentials: false
@@ -220,7 +220,7 @@ jobs:
 
     steps:
       - name: Clone ImageMagick/Windows
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
         with:
           repository: ImageMagick/Windows
           ref: refs/heads/main
@@ -279,7 +279,7 @@ jobs:
 
     steps:
       - name: Clone ImageMagick
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
         with:
           path: ImageMagick
           persist-credentials: false
@@ -368,7 +368,7 @@ jobs:
 
     steps:
       - name: Clone ImageMagick
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
         with:
           path: ImageMagick
           persist-credentials: false
@@ -449,7 +449,7 @@ jobs:
           apt-get install -y autoconf curl file fuse git kmod squashfs-tools libbz2-dev libdjvulibre-dev libfontconfig-dev libfreetype6-dev libfribidi-dev libharfbuzz-dev libheif-dev liblcms-dev libopenexr-dev libopenjp2-7-dev libturbojpeg0-dev liblqr-dev libraqm-dev libtiff-dev libwebp-dev libx11-dev libxml2-dev liblzma-dev make software-properties-common wget ${{matrix.packages}}
 
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
         with:
           persist-credentials: false
 
@@ -514,7 +514,7 @@ jobs:
 
     steps:
       - name: Clone ImageMagick
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
         with:
           path: ImageMagick
           persist-credentials: false
@@ -594,7 +594,7 @@ jobs:
 
     steps:
       - name: Clone ImageMagick
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
         with:
           persist-credentials: false
 
@@ -696,7 +696,7 @@ jobs:
           permission-contents: write
 
       - name: Clone Website
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
         with:
           repository: ImageMagick/Website
           token: ${{steps.app-token.outputs.token}}
