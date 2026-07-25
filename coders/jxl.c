@@ -934,6 +934,44 @@ ModuleExport void UnregisterJXLImage(void)
 %
 */
 
+static inline float JXLGetDistance(float quality)
+{
+#if JPEGXL_NUMERIC_VERSION >= JPEGXL_COMPUTE_NUMERIC_VERSION(0,9,0)
+  return(JxlEncoderDistanceFromQuality(quality));
+#else
+  return(quality >= 100.0f ? 0.0f : quality >= 30.0 ? 0.1f+(100.0f-quality)*
+    0.09f : 53.0f/3000.0f*quality*quality-23.0f/20.0f*quality+25.0f);
+#endif
+}
+
+static inline MagickBooleanType JXLParseOption(const char *option,
+  const double minimum,const double maximum,double *value)
+{
+  char
+    *sentinel;
+
+  double
+    number;
+
+  number=StringToDouble(option,&sentinel);
+  if ((sentinel == option) || (number < minimum) || (number > maximum))
+    return(MagickFalse);
+  *value=number;
+  return(MagickTrue);
+}
+
+static inline MagickBooleanType JXLSameFrameType(const Image *image,
+  const Image *frame)
+{
+  if (image->depth != frame->depth)
+    return(MagickFalse);
+  if (image->alpha_trait != frame->alpha_trait)
+    return(MagickFalse);
+  if (image->colorspace != frame->colorspace)
+    return(MagickFalse);
+  return(MagickTrue);
+}
+
 static JxlEncoderStatus JXLWriteMetadata(const Image *image,
   JxlEncoder *jxl_info, const StringInfo *icc_profile)
 {
@@ -959,26 +997,6 @@ static JxlEncoderStatus JXLWriteMetadata(const Image *image,
       IsGrayColorspace(image->colorspace) != MagickFalse);
   jxl_status=JxlEncoderSetColorEncoding(jxl_info,&color_encoding);
   return(jxl_status);
-}
-
-static inline float JXLGetDistance(float quality)
-{
-  return quality >= 100.0f ? 0.0f
-         : quality >= 30
-             ? 0.1f + (100 - quality) * 0.09f
-             : 53.0f / 3000.0f * quality * quality - 23.0f / 20.0f * quality + 25.0f;
-}
-
-static inline MagickBooleanType JXLSameFrameType(const Image *image,
-  const Image *frame)
-{
-  if (image->depth != frame->depth)
-    return(MagickFalse);
-  if (image->alpha_trait != frame->alpha_trait)
-    return(MagickFalse);
-  if (image->colorspace != frame->colorspace)
-    return(MagickFalse);
-  return(MagickTrue);
 }
 
 static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
@@ -1111,6 +1129,36 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       return(MagickFalse);
     }
   JXLSetFormat(image,&pixel_format,exception);
+  option=GetImageOption(image_info,"jxl:distance");
+  if (option != (const char *) NULL)
+    {
+      if (JXLParseOption(option,0.0,25.0,&distance) == MagickFalse)
+        (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
+          "InvalidSetting","`%s'",option);
+    }
+  else
+    {
+      option=GetImageOption(image_info,"jxl:quality");
+      if (option != (const char *) NULL)
+        {
+          double
+            quality;
+
+          if (JXLParseOption(option,0.0,100.0,&quality) == MagickFalse)
+            (void) ThrowMagickException(exception,GetMagickModule(),
+              OptionWarning,"InvalidSetting","`%s'",option);
+          else
+            distance=(double) JXLGetDistance((float) quality);
+        }
+    }
+  if (distance < 0.0)
+    {
+      if (image_info->quality == 100)
+        distance=0.0;
+      else
+        if (image_info->quality != 0)
+          distance=(double) JXLGetDistance((float) image_info->quality);
+    }
   JxlEncoderInitBasicInfo(&basic_info);
   basic_info.xsize=(uint32_t) image->columns;
   basic_info.ysize=(uint32_t) image->rows;
@@ -1137,7 +1185,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       basic_info.alpha_exponent_bits=basic_info.exponent_bits_per_sample;
       basic_info.num_extra_channels=1;
     }
-  if (image_info->quality == 100)
+  if (distance == 0.0)
     {
       basic_info.uses_original_profile=JXL_TRUE;
       icc_profile=GetImageProfile(image,"icc");
@@ -1159,21 +1207,6 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       JxlEncoderDestroy(jxl_info);
       ThrowWriterException(CoderError,"UnableToWriteImageData");
     }
-  option=GetImageOption(image_info,"jxl:distance");
-  if (option != (const char *) NULL)
-    distance=StringToDouble(option,(char **) NULL);
-  else
-    {
-      option=GetImageOption(image_info,"jxl:quality");
-      if (option != (const char *) NULL)
-        {
-          double quality = StringToDouble(option,(char **) NULL);
-          if (quality >= 100.0)
-            distance=0.0;
-          else
-            distance=(100.0-quality)/100.0*15.0;
-        }
-    }
   frame_settings=JxlEncoderFrameSettingsCreate(jxl_info,
     (JxlEncoderFrameSettings *) NULL);
   if (frame_settings == (JxlEncoderFrameSettings *) NULL)
@@ -1182,21 +1215,16 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       JxlEncoderDestroy(jxl_info);
       ThrowWriterException(CoderError,"MemoryAllocationFailed");
     }
-  if (image_info->quality == 100)
-    {
-      (void) JxlEncoderSetFrameDistance(frame_settings,0.f);
-      (void) JxlEncoderSetFrameLossless(frame_settings,JXL_TRUE);
-    }
-  else
-    if (image_info->quality != 0)
-      (void) JxlEncoderSetFrameDistance(frame_settings,
-        JXLGetDistance((float) image_info->quality));
   if (distance >= 0.0)
     {
       if (distance <= 0.0)
-        (void) JxlEncoderSetFrameLossless(frame_settings,1);
+        {
+          (void) JxlEncoderSetFrameDistance(frame_settings,0.f);
+          (void) JxlEncoderSetFrameLossless(frame_settings,JXL_TRUE);
+        }
       else
-        (void) JxlEncoderSetFrameDistance(frame_settings,(float) distance);
+        (void) JxlEncoderSetFrameDistance(frame_settings,JXLGetDistance((float)
+          distance));
     }
   option=GetImageOption(image_info,"jxl:effort");
   if (option != (const char *) NULL)
