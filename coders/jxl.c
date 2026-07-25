@@ -1215,17 +1215,15 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       JxlEncoderDestroy(jxl_info);
       ThrowWriterException(CoderError,"MemoryAllocationFailed");
     }
-  if (distance >= 0.0)
+  if (distance == 0.0)
     {
-      if (distance <= 0.0)
-        {
-          (void) JxlEncoderSetFrameDistance(frame_settings,0.f);
-          (void) JxlEncoderSetFrameLossless(frame_settings,JXL_TRUE);
-        }
-      else
-        (void) JxlEncoderSetFrameDistance(frame_settings,JXLGetDistance((float)
-          distance));
+      (void) JxlEncoderSetFrameDistance(frame_settings,0.0f);
+      (void) JxlEncoderSetFrameLossless(frame_settings,JXL_TRUE);
     }
+  else
+    if (distance > 0.0)
+      (void) JxlEncoderSetFrameDistance(frame_settings,
+        JXLGetDistance((float) distance));
   option=GetImageOption(image_info,"jxl:effort");
   if (option != (const char *) NULL)
     (void) JxlEncoderFrameSettingsSetOption(frame_settings,
