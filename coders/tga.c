@@ -238,6 +238,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   image->columns=tga_info.width;
   image->rows=tga_info.height;
+  image->page.x=(ssize_t) tga_info.x_origin;
+  image->page.y=(ssize_t) tga_info.y_origin;
   if ((tga_info.image_type != TGAMonochrome) &&
       (tga_info.image_type != TGARLEMonochrome))
     {
