@@ -882,7 +882,11 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
   tga_info.colormap_length=0;
   tga_info.colormap_size=0;
   tga_info.x_origin=0;
+  if ((image->page.x > 0) && (image->page.x <= MAGICK_USHORT_MAX))
+    tga_info.x_origin=(unsigned short) image->page.x;
   tga_info.y_origin=0;
+  if ((image->page.y > 0) && (image->page.y <= MAGICK_USHORT_MAX))
+    tga_info.y_origin=(unsigned short) image->page.y;
   tga_info.width=(unsigned short) image->columns;
   tga_info.height=(unsigned short) image->rows;
   tga_info.bits_per_pixel=8;
