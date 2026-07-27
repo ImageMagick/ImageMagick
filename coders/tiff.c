@@ -107,9 +107,6 @@
 # if !defined(TIFFTAG_OPIIMAGEID)
 #  define TIFFTAG_OPIIMAGEID  32781
 # endif
-# if defined(COMPRESSION_ZSTD) && defined(MAGICKCORE_ZSTD_DELEGATE)
-#   include <zstd.h>
-# endif
 
 #if (TIFFLIB_VERSION >= 20201219)
 #if defined(MAGICKCORE_HAVE_STDINT_H) || defined(MAGICKCORE_WINDOWS_SUPPORT)
