@@ -3712,6 +3712,13 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         compress_tag=COMPRESSION_PACKBITS;
         break;
       }
+#if defined(COMPRESSION_WEBP)
+      case WebPCompression:
+      {
+        compress_tag=COMPRESSION_WEBP;
+        break;
+      }
+#endif
       case ZipCompression:
       {
         compress_tag=COMPRESSION_ADOBE_DEFLATE;
