@@ -3998,6 +3998,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
 #if defined(COMPRESSION_LZMA)
       case COMPRESSION_LZMA:
       {
+        (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_BITSPERSAMPLE,
+          &bits_per_sample,sans);
         if (((photometric == PHOTOMETRIC_RGB) ||
              (photometric == PHOTOMETRIC_SEPARATED) ||
              (photometric == PHOTOMETRIC_MINISBLACK)) &&
