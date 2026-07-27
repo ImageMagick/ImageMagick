@@ -3991,11 +3991,11 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       }
       case COMPRESSION_CCITTFAX4:
         break;
-#if defined(LERC_SUPPORT) && defined(COMPRESSION_LERC)
+#if defined(COMPRESSION_LERC)
       case COMPRESSION_LERC:
         break;
 #endif
-#if defined(LZMA_SUPPORT) && defined(COMPRESSION_LZMA)
+#if defined(COMPRESSION_LZMA)
       case COMPRESSION_LZMA:
       {
         if (((photometric == PHOTOMETRIC_RGB) ||
@@ -4020,7 +4020,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
           predictor=PREDICTOR_HORIZONTAL;
         break;
       }
-#if defined(WEBP_SUPPORT) && defined(COMPRESSION_WEBP)
+#if defined(COMPRESSION_WEBP)
       case COMPRESSION_WEBP:
       {
         (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_BITSPERSAMPLE,
@@ -4036,7 +4036,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         break;
       }
 #endif
-#if defined(ZSTD_SUPPORT) && defined(COMPRESSION_ZSTD)
+#if defined(COMPRESSION_ZSTD)
       case COMPRESSION_ZSTD:
       {
         (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_BITSPERSAMPLE,
