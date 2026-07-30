@@ -1763,7 +1763,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if (image->compression == JPEGCompression)
       {
         if (photometric == PHOTOMETRIC_SEPARATED)
-          method=GetJPEGMethod(image,tiff,photometric,bits_per_sample);
+          method=GetJPEGMethod(image,tiff,bits_per_sample,samples_per_pixel);
         else if ((method != ReadStripMethod) ||
                  (compress_tag == COMPRESSION_OJPEG) ||
                  (photometric == PHOTOMETRIC_YCBCR))
