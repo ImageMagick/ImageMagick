@@ -1455,10 +1455,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       (void) SetImageColorspace(image,CMYKColorspace,exception);
     if (photometric == PHOTOMETRIC_CIELAB)
       (void) SetImageColorspace(image,LabColorspace,exception);
-    if ((photometric == PHOTOMETRIC_YCBCR) &&
-        (compress_tag != COMPRESSION_OJPEG) &&
-        (compress_tag != COMPRESSION_JPEG))
-      (void) SetImageColorspace(image,YCbCrColorspace,exception);
     TIFFGetProfiles(tiff,image,exception);
     status=TIFFGetProperties(tiff,image,exception);
     if (status == MagickFalse)
@@ -1758,6 +1754,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         method=ReadTileMethod;
       }
     if ((photometric == PHOTOMETRIC_LOGLUV) ||
+        (photometric == PHOTOMETRIC_YCBCR) ||
         (compress_tag == COMPRESSION_CCITTFAX3))
       method=ReadGenericMethod;
     if (image->compression == JPEGCompression)
@@ -1765,8 +1762,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (photometric == PHOTOMETRIC_SEPARATED)
           method=GetJPEGMethod(image,tiff,bits_per_sample,samples_per_pixel);
         else if ((method != ReadStripMethod) ||
-                 (compress_tag == COMPRESSION_OJPEG) ||
-                 (photometric == PHOTOMETRIC_YCBCR))
+                 (compress_tag == COMPRESSION_OJPEG))
           method=ReadGenericMethod;
       }
 #if defined(WORDS_BIGENDIAN)
