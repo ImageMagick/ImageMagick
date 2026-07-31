@@ -758,69 +758,68 @@ static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
     if ((offset > offset2) || (SeekBlob(image, offset, SEEK_SET) != offset))
       ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
         image->filename);
+    /*
+      Allocate the image for the tile.  NOTE: the last tile in a row or
+      column may not be a full tile!
+    */
+    tile_image_width=(size_t) (destLeft == (int) ntile_cols-1 ?
+      (int) width % TILE_WIDTH : TILE_WIDTH);
+    if (tile_image_width == 0)
+      tile_image_width=TILE_WIDTH;
+    tile_image_height = (size_t) (destTop == (int) ntile_rows-1 ?
+      (int) height % TILE_HEIGHT : TILE_HEIGHT);
+    if (tile_image_height == 0)
+      tile_image_height=TILE_HEIGHT;
+    tile_image=CloneImage(inLayerInfo->image,tile_image_width,
+      tile_image_height,MagickTrue,exception);
+    if (tile_image == (Image *) NULL)
+      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+        image->filename);
+    (void) SetImageBackgroundColor(tile_image,exception);
 
-      /*
-        Allocate the image for the tile.  NOTE: the last tile in a row or
-        column may not be a full tile!
-      */
-      tile_image_width=(size_t) (destLeft == (int) ntile_cols-1 ?
-        (int) width % TILE_WIDTH : TILE_WIDTH);
-      if (tile_image_width == 0)
-        tile_image_width=TILE_WIDTH;
-      tile_image_height = (size_t) (destTop == (int) ntile_rows-1 ?
-        (int) height % TILE_HEIGHT : TILE_HEIGHT);
-      if (tile_image_height == 0)
-        tile_image_height=TILE_HEIGHT;
-      tile_image=CloneImage(inLayerInfo->image,tile_image_width,
-        tile_image_height,MagickTrue,exception);
-      if (tile_image == (Image *) NULL)
-        ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-          image->filename);
-      (void) SetImageBackgroundColor(tile_image,exception);
-
-      /* read in the tile */
-      switch (inDocInfo->compression)
-      {
-        case COMPRESS_NONE:
-          status=load_tile(image,tile_image,inDocInfo,inLayerInfo,(size_t)
-            (offset2-offset),exception);
-          break;
-        case COMPRESS_RLE:
-          status=load_tile_rle(image,tile_image,inDocInfo,inLayerInfo,(size_t)
-            (offset2-offset),exception);
-          break;
-        case COMPRESS_ZLIB:
-          tile_image=DestroyImage(tile_image);
-          ThrowBinaryException(CoderError,"ZipCompressNotSupported",
-            image->filename)
-        case COMPRESS_FRACTAL:
-          tile_image=DestroyImage(tile_image);
-          ThrowBinaryException(CoderError,"FractalCompressNotSupported",
-            image->filename)
-      }
-
-      /* composite the tile onto the layer's image, and then destroy it */
-      if (status != MagickFalse)
-        (void) CompositeImage(inLayerInfo->image,tile_image,CopyCompositeOp,
-          MagickTrue,destLeft * TILE_WIDTH,destTop*TILE_HEIGHT,exception);
-      tile_image=DestroyImage(tile_image);
-
-      if (status == MagickFalse)
-        return(MagickFalse);
-      /* adjust tile position */
-      destLeft++;
-      if (destLeft >= (int) ntile_cols)
-        {
-          destLeft = 0;
-          destTop++;
-        }
-      /* restore the saved position so we'll be ready to
-       *  read the next offset.
-       */
-      offset=SeekBlob(image, saved_pos, SEEK_SET);
-      /* read in the offset of the next tile */
-      offset=GetXCFOffset(image,inDocInfo);
+    /* read in the tile */
+    switch (inDocInfo->compression)
+    {
+      case COMPRESS_NONE:
+        status=load_tile(image,tile_image,inDocInfo,inLayerInfo,(size_t)
+          (offset2-offset),exception);
+        break;
+      case COMPRESS_RLE:
+        status=load_tile_rle(image,tile_image,inDocInfo,inLayerInfo,(size_t)
+          (offset2-offset),exception);
+        break;
+      case COMPRESS_ZLIB:
+        tile_image=DestroyImage(tile_image);
+        ThrowBinaryException(CoderError,"ZipCompressNotSupported",
+          image->filename)
+      case COMPRESS_FRACTAL:
+        tile_image=DestroyImage(tile_image);
+        ThrowBinaryException(CoderError,"FractalCompressNotSupported",
+          image->filename)
     }
+
+    /* composite the tile onto the layer's image, and then destroy it */
+    if (status != MagickFalse)
+      (void) CompositeImage(inLayerInfo->image,tile_image,CopyCompositeOp,
+        MagickTrue,destLeft * TILE_WIDTH,destTop*TILE_HEIGHT,exception);
+    tile_image=DestroyImage(tile_image);
+
+    if (status == MagickFalse)
+      return(MagickFalse);
+    /* adjust tile position */
+    destLeft++;
+    if (destLeft >= (int) ntile_cols)
+      {
+        destLeft = 0;
+        destTop++;
+      }
+    /* restore the saved position so we'll be ready to
+      *  read the next offset.
+      */
+    offset=SeekBlob(image, saved_pos, SEEK_SET);
+    /* read in the offset of the next tile */
+    offset=GetXCFOffset(image,inDocInfo);
+  }
   if (offset != 0)
     ThrowBinaryException(CorruptImageError,"CorruptImage",image->filename)
   return(MagickTrue);

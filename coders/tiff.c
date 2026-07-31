@@ -107,9 +107,6 @@
 # if !defined(TIFFTAG_OPIIMAGEID)
 #  define TIFFTAG_OPIIMAGEID  32781
 # endif
-# if defined(COMPRESSION_ZSTD) && defined(MAGICKCORE_ZSTD_DELEGATE)
-#   include <zstd.h>
-# endif
 
 #if (TIFFLIB_VERSION >= 20201219)
 #if defined(MAGICKCORE_HAVE_STDINT_H) || defined(MAGICKCORE_WINDOWS_SUPPORT)
@@ -1458,10 +1455,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       (void) SetImageColorspace(image,CMYKColorspace,exception);
     if (photometric == PHOTOMETRIC_CIELAB)
       (void) SetImageColorspace(image,LabColorspace,exception);
-    if ((photometric == PHOTOMETRIC_YCBCR) &&
-        (compress_tag != COMPRESSION_OJPEG) &&
-        (compress_tag != COMPRESSION_JPEG))
-      (void) SetImageColorspace(image,YCbCrColorspace,exception);
     TIFFGetProfiles(tiff,image,exception);
     status=TIFFGetProperties(tiff,image,exception);
     if (status == MagickFalse)
@@ -1761,15 +1754,15 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         method=ReadTileMethod;
       }
     if ((photometric == PHOTOMETRIC_LOGLUV) ||
+        (photometric == PHOTOMETRIC_YCBCR) ||
         (compress_tag == COMPRESSION_CCITTFAX3))
       method=ReadGenericMethod;
     if (image->compression == JPEGCompression)
       {
         if (photometric == PHOTOMETRIC_SEPARATED)
-          method=GetJPEGMethod(image,tiff,photometric,bits_per_sample);
+          method=GetJPEGMethod(image,tiff,bits_per_sample,samples_per_pixel);
         else if ((method != ReadStripMethod) ||
-                 (compress_tag == COMPRESSION_OJPEG) ||
-                 (photometric == PHOTOMETRIC_YCBCR))
+                 (compress_tag == COMPRESSION_OJPEG))
           method=ReadGenericMethod;
       }
 #if defined(WORDS_BIGENDIAN)
@@ -2884,7 +2877,7 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
     Image
       *clone_image;
 
-    ssize_t
+    size_t
       i;
 
     clone_image=CloneImage(next,0,0,MagickFalse,exception);
@@ -2899,7 +2892,7 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
     resolution=next->resolution;
     for (i=0; (columns > min_base) && (rows > min_base); i++)
     {
-      if (i > (ssize_t) max_levels)
+      if (i > max_levels)
         break;
       columns/=2;
       rows/=2;
@@ -2925,7 +2918,7 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
       images=GetFirstImageInList(images);
       write_info=CloneImageInfo(image_info);
       write_info->adjoin=MagickTrue;
-      (void) CopyMagickString(write_info->magick,"TIFF",MagickPathExtent);
+      (void) CopyMagickString(write_info->magick,"PTIF",MagickPathExtent);
       (void) CopyMagickString(images->magick,"TIFF",MagickPathExtent);
       status=WriteTIFFImage(write_info,images,exception);
       images=DestroyImageList(images);
@@ -3442,7 +3435,7 @@ static void TIFFSetProperties(TIFF *tiff,const MagickBooleanType adjoin,
   value=GetImageProperty(image,"comment",exception);
   if (value != (const char *) NULL)
     (void) TIFFSetField(tiff,TIFFTAG_IMAGEDESCRIPTION,value);
-  value=GetImageArtifact(image,"tiff:subfiletype");
+  value=GetImageProperty(image,"tiff:subfiletype",exception);
   if (value != (const char *) NULL)
     {
       if (LocaleCompare(value,"REDUCEDIMAGE") == 0)
@@ -3712,6 +3705,13 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         compress_tag=COMPRESSION_PACKBITS;
         break;
       }
+#if defined(COMPRESSION_WEBP)
+      case WebPCompression:
+      {
+        compress_tag=COMPRESSION_WEBP;
+        break;
+      }
+#endif
       case ZipCompression:
       {
         compress_tag=COMPRESSION_ADOBE_DEFLATE;
@@ -3987,13 +3987,15 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       }
       case COMPRESSION_CCITTFAX4:
         break;
-#if defined(LERC_SUPPORT) && defined(COMPRESSION_LERC)
+#if defined(COMPRESSION_LERC)
       case COMPRESSION_LERC:
         break;
 #endif
-#if defined(LZMA_SUPPORT) && defined(COMPRESSION_LZMA)
+#if defined(COMPRESSION_LZMA)
       case COMPRESSION_LZMA:
       {
+        (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_BITSPERSAMPLE,
+          &bits_per_sample,sans);
         if (((photometric == PHOTOMETRIC_RGB) ||
              (photometric == PHOTOMETRIC_SEPARATED) ||
              (photometric == PHOTOMETRIC_MINISBLACK)) &&
@@ -4016,7 +4018,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
           predictor=PREDICTOR_HORIZONTAL;
         break;
       }
-#if defined(WEBP_SUPPORT) && defined(COMPRESSION_WEBP)
+#if defined(COMPRESSION_WEBP)
       case COMPRESSION_WEBP:
       {
         (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_BITSPERSAMPLE,
@@ -4026,13 +4028,14 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
              (photometric == PHOTOMETRIC_MINISBLACK)) &&
             ((bits_per_sample == 8) || (bits_per_sample == 16)))
           predictor=PREDICTOR_HORIZONTAL;
-        (void) TIFFSetField(tiff,TIFFTAG_WEBP_LEVEL,image_info->quality);
+        if (image_info->quality != UndefinedCompressionQuality)
+          (void) TIFFSetField(tiff,TIFFTAG_WEBP_LEVEL,(uint32) image_info->quality);
         if (image_info->quality >= 100)
-          (void) TIFFSetField(tiff,TIFFTAG_WEBP_LOSSLESS,1);
+          (void) TIFFSetField(tiff,TIFFTAG_WEBP_LOSSLESS,(uint32) 1);
         break;
       }
 #endif
-#if defined(ZSTD_SUPPORT) && defined(COMPRESSION_ZSTD)
+#if defined(COMPRESSION_ZSTD)
       case COMPRESSION_ZSTD:
       {
         (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_BITSPERSAMPLE,
@@ -4141,8 +4144,10 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       pages=(uint16) number_scenes;
       if ((LocaleCompare(image_info->magick,"PTIF") != 0) &&
           (adjoin != MagickFalse) && (pages > 1))
-        (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_PAGE);
-      (void) TIFFSetField(tiff,TIFFTAG_PAGENUMBER,page,pages);
+        {
+          (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_PAGE);
+          (void) TIFFSetField(tiff,TIFFTAG_PAGENUMBER,page,pages);
+        }
     }
     (void) TIFFSetProperties(tiff,adjoin,image,exception);
     /*

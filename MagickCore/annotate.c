@@ -1154,6 +1154,34 @@ static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
 #if defined(MAGICKCORE_FREETYPE_DELEGATE)
 
 #if defined(MAGICKCORE_RAQM_DELEGATE)
+static MagickBooleanType ContainsRaqmParagraphSeparator(const unsigned char *p,
+  const size_t length)
+{
+  size_t 
+    i;
+
+  if ((p == (const unsigned char*) NULL) || (length == 0))
+    return(MagickFalse);
+
+  for (i = 0; i < length; i++)
+  {
+    /* LF or CR */
+    if ((p[i] == '\n') || (p[i] == '\r'))
+      return(MagickTrue);
+
+    /* UTF-8 NEL U+0085 => C2 85 */
+    if ((p[i] == 0xC2) && (i + 1 < length) && (p[i + 1] == 0x85))
+      return(MagickTrue);
+
+    /* UTF-8 LS/PS U+2028/U+2029 => E2 80 A8/A9 */
+    if ((p[i] == 0xE2) && (i + 2 < length) && (p[i + 1] == 0x80) &&
+        ((p[i + 2] == 0xA8) || (p[i + 2] == 0xA9)))
+      return(MagickTrue);
+  }
+
+  return(MagickFalse);
+}
+
 static size_t ComplexRaqmTextLayout(const Image *image,
   const DrawInfo *draw_info,const char *text,const size_t length,
   const FT_Face face,GraphemeInfo **grapheme,ExceptionInfo *exception)
@@ -1239,7 +1267,9 @@ static size_t ComplexRaqmTextLayout(const Image *image,
 cleanup:
   raqm_destroy(rq);
   return(extent);
-#else
+}
+#endif
+
 static size_t ComplexTextLayout(const DrawInfo *draw_info,const char *text,
   const size_t length,const FT_Face face,const FT_Int32 flags,
   GraphemeInfo **grapheme)
@@ -1291,7 +1321,6 @@ static size_t ComplexTextLayout(const DrawInfo *draw_info,const char *text,
     last_glyph=(*grapheme)[i].index;
   }
   return((size_t) i);
-#endif
 }
 
 static void FreetypeCloseStream(FT_Stream stream)
@@ -1857,12 +1886,14 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
         p=(char *) utf8;
     }
   grapheme=(GraphemeInfo *) NULL;
+  length=strlen(p);
 #if defined(MAGICKCORE_RAQM_DELEGATE)
-  length=ComplexRaqmTextLayout(image,draw_info,p,strlen(p),face,&grapheme,
-    exception);
-#else
-  length=ComplexTextLayout(draw_info,p,strlen(p),face,flags,&grapheme);
+  if (ContainsRaqmParagraphSeparator((const unsigned char *) p,length) == MagickFalse)
+    length=ComplexRaqmTextLayout(image,draw_info,p,length,face,&grapheme,
+      exception);
+  else
 #endif
+  length=ComplexTextLayout(draw_info,p,length,face,flags,&grapheme);
   missing_glyph_id=FT_Get_Char_Index(face,' ');
   code=0;
   last_character=(ssize_t) length-1;
