@@ -775,6 +775,41 @@ static double GetUserSpaceCoordinateValue(const SVGInfo *svg_info,int type,
 extern "C" {
 #endif
 
+static MagickBooleanType SVGIsSupportedInlineImageFormat(const char *url)
+{
+  const char
+    prefix[] = "data:image/";
+
+  ssize_t
+    i;
+
+  static const char
+    *safe_formats[] =
+    {
+      "png",
+      "jpeg",
+      "jpg",
+      "gif",
+      "webp",
+      "svg+xml",
+      "x-icon",
+      "vnd.microsoft.icon"
+    };
+
+  if (url == (const char *) NULL)
+    return(MagickFalse);
+  if (strncmp(url,prefix,sizeof(prefix)-1) != 0)
+    return(MagickFalse);
+  for (i=0; i < (ssize_t) (sizeof(safe_formats)/sizeof(*safe_formats)); i++)
+  {
+    const char *mime = url+sizeof(prefix)-1;
+    const char *format = safe_formats[i];
+    if (strncmp(mime,format,strlen(format)) == 0)
+      return(MagickTrue);
+  }
+  return(MagickFalse);
+}
+
 static void SVGStripString(const MagickBooleanType trim,char *message)
 {
   char
@@ -2514,7 +2549,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
             }
           if (LocaleCompare(keyword,"xlink:href") == 0)
             {
-              (void) CloneString(&svg_info->url,value);
+              if (LocaleNCompare(value,"data:",5) != 0)
+                (void) CloneString(&svg_info->url,value);
+              else
+                if (SVGIsSupportedInlineImageFormat(value) != MagickFalse)
+                  (void) CloneString(&svg_info->url,value);
               break;
             }
           if (LocaleCompare(keyword,"x1") == 0)
