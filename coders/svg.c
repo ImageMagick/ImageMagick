@@ -3479,7 +3479,6 @@ ModuleExport size_t RegisterSVGImage(void)
 #endif
   entry->encoder=(EncodeImageHandler *) WriteSVGImage;
   entry->magick=(IsImageFormatHandler *) IsSVG;
-  entry->format_type=ImplicitFormatType;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
