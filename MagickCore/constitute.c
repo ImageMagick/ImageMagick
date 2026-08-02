@@ -1140,7 +1140,7 @@ static MagickBooleanType GetImplicitDataImageType(const char *data_url,
     p++;
   if (p == type)
     return(MagickFalse);
-  slash=memchr(type,'/',(size_t) (p-type));
+  slash=(const char *) memchr(type,'/',(size_t) (p-type));
   if ((slash == (const char *) NULL) || ((slash+1) >= p))
     return(MagickFalse);
   offset=(size_t) (p-(slash+1));
