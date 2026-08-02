@@ -1112,23 +1112,72 @@ MagickExport Image *ReadImages(ImageInfo *image_info,const char *filename,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static MagickBooleanType GetImplicitDataImageType(const char *data_url,
+  char *magick,ExceptionInfo *exception)
+{
+  char
+    *plus;
+
+  const char
+    *p,
+    *type,
+    *slash;
+
+  const MagickInfo
+    *magick_info;
+
+  size_t
+    offset;
+
+  if (data_url == (const char *) NULL)
+    return(MagickFalse);
+  if (strncmp(data_url,"data:",5) != 0)
+    return(MagickFalse);
+  type=data_url+5;
+  p=type;
+  while ((*p != '\0') && (*p != ';') && (*p != ','))
+    p++;
+  if (p == type)
+    return(MagickFalse);
+  slash=memchr(type,'/',(size_t) (p-type));
+  if ((slash == (const char *) NULL) || ((slash+1) >= p))
+    return(MagickFalse);
+  offset=(size_t) (p-(slash+1));
+  if (offset >= MagickPathExtent)
+    return(MagickFalse);
+  (void) memcpy(magick,slash+1,offset);
+  magick[offset]='\0';
+  plus=strchr(magick,'+');
+  if (plus != (char *) NULL)
+    *plus='\0';
+  if (LocaleNCompare(magick,"x-",2) == 0)
+    (void) memmove(magick,magick+2,strlen(magick+2)+1);
+  magick_info=GetMagickInfo(magick,exception);
+  if (magick_info == (const MagickInfo *) NULL)
+    return(MagickFalse);
+  if (magick_info->format_type == ImplicitFormatType)
+    return(MagickFalse);
+  return(MagickTrue);
+}
+
 MagickExport Image *ReadInlineImage(const ImageInfo *image_info,
   const char *content,ExceptionInfo *exception)
 {
+  const char
+    *p;
+
   Image
-    *image;
+    *image = (Image *) NULL;
 
   ImageInfo
     *read_info;
 
-  unsigned char
-    *blob;
-
   size_t
     length;
 
-  const char
-    *p;
+  unsigned char
+    *blob;
 
   /*
     Skip over header (e.g. data:image/gif;base64,).
@@ -1147,27 +1196,8 @@ MagickExport Image *ReadInlineImage(const ImageInfo *image_info,
   (void) SetImageInfoProgressMonitor(read_info,(MagickProgressMonitor) NULL,
     (void *) NULL);
   *read_info->filename='\0';
-  *read_info->magick='\0';
-  for (p=content; (*p != '/') && (*p != '\0'); p++) ;
-  if (*p != '\0')
-    {
-      char
-        *q;
-
-      ssize_t
-        i;
-
-      /*
-        Extract media type.
-      */
-      if (LocaleNCompare(++p,"x-",2) == 0)
-        p+=(ptrdiff_t) 2;
-      (void) CopyMagickString(read_info->filename,"data.",MagickPathExtent);
-      q=read_info->filename+5;
-      for (i=0; (*p != ';') && (*p != '\0') && (i < (MagickPathExtent-6)); i++)
-        *q++=(*p++);
-      *q++='\0';
-    }
+  if (GetImplicitDataImageType(content,read_info->magick,exception) == MagickFalse)
+    ThrowReaderException(ImageError,"ImageTypeNotSupported");
   image=BlobToImage(read_info,blob,length,exception);
   blob=(unsigned char *) RelinquishMagickMemory(blob);
   read_info=DestroyImageInfo(read_info);
