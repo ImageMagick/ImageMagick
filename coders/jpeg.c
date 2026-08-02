@@ -1897,7 +1897,7 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
       (jpeg_info->output_components != 4))
     {
       client_info=JPEGCleanup(jpeg_info,client_info);
-      ThrowReaderException(CorruptImageError,"ImageTypeNotSupported");
+      ThrowReaderException(ImageError,"ImageTypeNotSupported");
     }
   bytes_per_pixel=((size_t) jpeg_info->data_precision+7)/8;
   memory_info=AcquireVirtualMemory((size_t) image->columns,

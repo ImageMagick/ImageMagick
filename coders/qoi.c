@@ -487,7 +487,7 @@ static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
         (quantum_type == IndexAlphaQuantum))
       channels=4;
     else
-      ThrowWriterException(CorruptImageError,"ImageTypeNotSupported");
+      ThrowWriterException(ImageError,"ImageTypeNotSupported");
   /*
     Write QOI header.
   */

@@ -1033,7 +1033,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,ExceptionInfo *exception
 #else
   if (heif_check_filetype(magic,sizeof(magic)) == heif_filetype_no)
 #endif
-    ThrowReaderException(CorruptImageError,"ImageTypeNotSupported");
+    ThrowReaderException(ImageError,"ImageTypeNotSupported");
   (void) CloseBlob(image);
 #if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,11,0)
   if (heif_has_compatible_brand(magic,sizeof(magic), "avif") == 1)

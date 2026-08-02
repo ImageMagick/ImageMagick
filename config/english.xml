@@ -261,9 +261,6 @@
           <message name="ImageFileDoesNotContainAnyImageData">
             image file does not contain any image data
           </message>
-          <message name="ImageTypeNotSupported">
-            image type not supported
-          </message>
           <message name="ImproperImageHeader">
             improper image header
           </message>
@@ -529,6 +526,9 @@
         </message>
         <message name="ImageSizeLimitExceeded">
           Image dimension exceeds maximum supported size
+        </message>
+        <message name="ImageTypeNotSupported">
+          image type not supported
         </message>
         <message name="NegativeOrZeroImageSize">
           negative or zero image size

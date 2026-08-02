@@ -261,12 +261,6 @@
           <message name="ImageFileDoesNotContainAnyImageData">
             le fichier image ne contient pas de données d'image
           </message>
-          <message name="ImageTypeNotSupported">
-            type d'image non supporté
-          </message>
-          <message name="ImproperImageHeader">
-            En-tête d'image incorrect
-          </message>
           <message name="InsufficientImageDataInFile">
             Pas assez de données d'image dans le fichier
           </message>
@@ -539,6 +533,9 @@
         </message>
         <message name="ImageSizeLimitExceeded">
           Image dimension exceeds maximum supported size
+        </message>
+        <message name="ImproperImageHeader">
+          En-tête d'image incorrect
         </message>
         <message name="NegativeOrZeroImageSize">
           Taille d'image négative ou nulle

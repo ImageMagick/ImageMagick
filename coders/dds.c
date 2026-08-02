@@ -2583,7 +2583,7 @@ static MagickBooleanType ReadUncompressedRGB(const ImageInfo *image_info,
     (void) SetImageType(image,GrayscaleType,exception);
   else if (dds_info->pixelformat.rgb_bitcount == 16 && !IsBitMask(
     dds_info->pixelformat,0xf800,0x07e0,0x001f,0x0000))
-    ThrowBinaryException(CorruptImageError,"ImageTypeNotSupported",
+    ThrowBinaryException(ImageError,"ImageTypeNotSupported",
       image->filename);
 
   if (ReadUncompressedRGBPixels(image,dds_info,exception) == MagickFalse)
@@ -2601,7 +2601,7 @@ static MagickBooleanType ReadUncompressedAlpha(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   if (dds_info->pixelformat.rgb_bitcount != 8)
-    ThrowBinaryException(CorruptImageError,"ImageTypeNotSupported",
+    ThrowBinaryException(ImageError,"ImageTypeNotSupported",
       image->filename);
 
   if (ReadUncompressedAlphaPixels(image,dds_info,exception) == MagickFalse)
@@ -2926,7 +2926,7 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           if (dds_info.extDimension != DDSEXT_DIMENSION_TEX2D)
             {
-              ThrowReaderException(CorruptImageError,"ImageTypeNotSupported");
+              ThrowReaderException(ImageError,"ImageTypeNotSupported");
             }
 
           switch (dds_info.extFormat)
@@ -3019,7 +3019,7 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
             default:
             {
               /* Unknown format */
-              ThrowReaderException(CorruptImageError,"ImageTypeNotSupported");
+              ThrowReaderException(ImageError,"ImageTypeNotSupported");
             }
           }
 
@@ -3032,14 +3032,14 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         default:
         {
           /* Unknown FOURCC */
-          ThrowReaderException(CorruptImageError,"ImageTypeNotSupported");
+          ThrowReaderException(ImageError,"ImageTypeNotSupported");
         }
       }
     }
   else
     {
       /* Neither compressed nor uncompressed... thus unsupported */
-      ThrowReaderException(CorruptImageError,"ImageTypeNotSupported");
+      ThrowReaderException(ImageError,"ImageTypeNotSupported");
     }
   
   num_images = 1;
