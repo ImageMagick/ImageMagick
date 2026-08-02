@@ -1154,9 +1154,8 @@ static MagickBooleanType GetImplicitDataImageType(const char *data_url,
   if (LocaleNCompare(magick,"x-",2) == 0)
     (void) memmove(magick,magick+2,strlen(magick+2)+1);
   magick_info=GetMagickInfo(magick,exception);
-  if (magick_info == (const MagickInfo *) NULL)
-    return(MagickFalse);
-  if (magick_info->format_type == ImplicitFormatType)
+  if ((magick_info == (const MagickInfo *) NULL) ||
+      (GetMagickExplicitAllowed(magick_info) == MagickFalse))
     return(MagickFalse);
   return(MagickTrue);
 }
