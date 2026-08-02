@@ -656,7 +656,7 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   file_header.format_vers=(unsigned char) ReadBlobByte(image);
   if (file_header.format_vers != 0x04)
-    ThrowReaderException(CoderError,"ImageTypeNotSupported");
+    ThrowReaderException(CorruptImageError,"ImageTypeNotSupported");
   file_header.format_type=(unsigned char) ReadBlobByte(image);
   file_header.image_count=ReadBlobLSBShort(image);
   if (DiscardBlobBytes(image,8) == MagickFalse) /* reserved */

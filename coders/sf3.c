@@ -645,7 +645,7 @@ static MagickBooleanType WriteSF3Image(const ImageInfo *image_info,Image *image,
       break;
     default:
       quantum_info=DestroyQuantumInfo(quantum_info);
-      ThrowWriterException(CoderError,"ImageTypeNotSupported");
+      ThrowWriterException(CorruptImageError,"ImageTypeNotSupported");
       break;
     }
   switch (quantum_format)
@@ -715,7 +715,7 @@ static MagickBooleanType WriteSF3Image(const ImageInfo *image_info,Image *image,
       break;
     default:
       quantum_info=DestroyQuantumInfo(quantum_info);
-      ThrowWriterException(CoderError,"ImageTypeNotSupported");
+      ThrowWriterException(CorruptImageError,"ImageTypeNotSupported");
       break;
     }
   /*
