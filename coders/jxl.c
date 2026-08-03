@@ -1222,8 +1222,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     }
   else
     if (distance > 0.0)
-      (void) JxlEncoderSetFrameDistance(frame_settings,
-        JXLGetDistance((float) distance));
+      (void) JxlEncoderSetFrameDistance(frame_settings,(float) distance);
   option=GetImageOption(image_info,"jxl:effort");
   if (option != (const char *) NULL)
     (void) JxlEncoderFrameSettingsSetOption(frame_settings,
