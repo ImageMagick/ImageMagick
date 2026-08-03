@@ -738,7 +738,7 @@ static MagickBooleanType TIFFSetImageProperties(TIFF *tiff,Image *image,
 {
   char
     filename[MagickPathExtent],
-    *line;
+    *line = (char *) NULL;
 
   FILE
     *file;
