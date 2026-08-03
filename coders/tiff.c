@@ -733,18 +733,24 @@ static MagickBooleanType TIFFGetProperties(TIFF *tiff,Image *image,
   return(status);
 }
 
-static void TIFFSetImageProperties(TIFF *tiff,Image *image,const char *tag,
-  ExceptionInfo *exception)
+static MagickBooleanType TIFFSetImageProperties(TIFF *tiff,Image *image,
+  const char *tag,ExceptionInfo *exception)
 {
   char
-    buffer[MagickPathExtent],
-    filename[MagickPathExtent];
+    filename[MagickPathExtent],
+    *line;
 
   FILE
     *file;
 
   int
     unique_file;
+
+  size_t
+    length;
+
+  ssize_t
+    count;
 
   /*
     Set EXIF or GPS image properties.
@@ -756,38 +762,42 @@ static void TIFFSetImageProperties(TIFF *tiff,Image *image,const char *tag,
   if ((unique_file == -1) || (file == (FILE *) NULL))
     {
       (void) RelinquishUniqueFileResource(filename);
-      (void) ThrowMagickException(exception,GetMagickModule(),WandError,
+      (void) ThrowMagickException(exception,GetMagickModule(),FileOpenError,
         "UnableToCreateTemporaryFile","`%s'",filename);
-      return;
+      return(MagickFalse);
     }
   TIFFPrintDirectory(tiff,file,0);
   (void) fseek(file,0,SEEK_SET);
-  while (fgets(buffer,(int) sizeof(buffer),file) != NULL)
+  while ((count=getline(&line,&length,file)) != -1)
   {
     char
       *p,
-      property[MagickPathExtent],
-      value[MagickPathExtent];
+      property[MagickPathExtent];
 
-    (void) StripMagickString(buffer);
-    p=strchr(buffer,':');
+    (void) StripMagickString(line);
+    p=strchr(line,':');
     if (p == (char *) NULL)
       continue;
-    *p='\0';
-    (void) FormatLocaleString(property,MagickPathExtent,"%s%s",tag,buffer);
-    (void) FormatLocaleString(value,MagickPathExtent,"%s",p+1);
-    (void) StripMagickString(value);
-    (void) SetImageProperty(image,property,value,exception);
+    *p++='\0';
+    (void) FormatLocaleString(property,MagickPathExtent,"%s%s",tag,line);
+    (void) StripMagickString(p);
+    (void) SetImageProperty(image,property,p,exception);
   }
+  if (line != (char *) NULL)
+    free(line);
   (void) fclose(file);
   (void) RelinquishUniqueFileResource(filename);
+  return(MagickTrue);
 }
 
-static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
+static MagickBooleanType TIFFGetEXIFProperties(TIFF *tiff,Image *image,
   const ImageInfo* image_info,ExceptionInfo *exception)
 {
   const char
     *option;
+
+  MagickBooleanType
+    status = MagickTrue;
 
   tdir_t
     directory;
@@ -804,22 +814,26 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
   */
   option=GetImageOption(image_info,"tiff:exif-properties");
   if (IsStringFalse(option) != MagickFalse)
-    return;
+    return(MagickFalse);
   offset=0;
   if (TIFFGetField(tiff,TIFFTAG_EXIFIFD,&offset) != 1)
-    return;
+    return(MagickFalse);
   directory=TIFFCurrentDirectory(tiff);
   if (TIFFReadEXIFDirectory(tiff,offset) == 1)
-    TIFFSetImageProperties(tiff,image,"exif:",exception);
+    status=TIFFSetImageProperties(tiff,image,"exif:",exception);
   TIFFSetDirectory(tiff,directory);
+  return(status);
 }
 
-static void TIFFGetGPSProperties(TIFF *tiff,Image *image,
+static MagickBooleanType TIFFGetGPSProperties(TIFF *tiff,Image *image,
   const ImageInfo* image_info,ExceptionInfo *exception)
 {
 #if (TIFFLIB_VERSION >= 20210416)
   const char
     *option;
+
+  MagickBooleanType
+    status = MagickTrue;
 
   tdir_t
     directory;
@@ -836,14 +850,15 @@ static void TIFFGetGPSProperties(TIFF *tiff,Image *image,
   */
   option=GetImageOption(image_info,"tiff:gps-properties");
   if (IsStringFalse(option) != MagickFalse)
-    return;
+    return(MagickFalse);
   offset=0;
   if (TIFFGetField(tiff,TIFFTAG_GPSIFD,&offset) != 1)
-    return;
+    return(MagickFalse);
   directory=TIFFCurrentDirectory(tiff);
   if (TIFFReadGPSDirectory(tiff,offset) == 1)
-    TIFFSetImageProperties(tiff,image,"exif:GPS",exception);
+    status=TIFFSetImageProperties(tiff,image,"exif:GPS",exception);
   TIFFSetDirectory(tiff,directory);
+  return(status);
 #else
   magick_unreferenced(tiff);
   magick_unreferenced(image);
@@ -1462,8 +1477,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         TIFFClose(tiff);
         return(DestroyImageList(image));
       }
-    TIFFGetEXIFProperties(tiff,image,image_info,exception);
-    TIFFGetGPSProperties(tiff,image,image_info,exception);
+    status=TIFFGetEXIFProperties(tiff,image,image_info,exception);
+    status=TIFFGetGPSProperties(tiff,image,image_info,exception);
     if ((TIFFGetFieldDefaulted(tiff,TIFFTAG_XRESOLUTION,&x_resolution,sans) == 1) &&
         (TIFFGetFieldDefaulted(tiff,TIFFTAG_YRESOLUTION,&y_resolution,sans) == 1))
       {
