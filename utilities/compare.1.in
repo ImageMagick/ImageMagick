@@ -54,6 +54,7 @@ Image Settings:
   \-similarity-threshold value
                         minimum distortion for (sub)image match
   \-size geometry       width and height of image
+  \-strict              treat coder warnings as errors
   \-subimage-search     search for subimage
   \-synchronize         synchronize image to storage device
   \-taint               declare the image as modified
