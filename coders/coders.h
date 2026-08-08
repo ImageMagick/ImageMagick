@@ -21,6 +21,7 @@
 */
 #include "coders/aai.h"
 #include "coders/art.h"
+#include "coders/ase.h"
 #include "coders/ashlar.h"
 #include "coders/avs.h"
 #include "coders/bayer.h"

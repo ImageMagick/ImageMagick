@@ -116,6 +116,8 @@ MAGICKCORE_CODER_SRCS = \
 	coders/aai.h \
 	coders/art.c \
 	coders/art.h \
+	coders/ase.c \
+	coders/ase.h \
 	coders/ashlar.c \
 	coders/ashlar.h \
 	coders/avs.c \
@@ -405,6 +407,7 @@ MAGICKCORE_CODER_SRCS = \
 CODERS_NOINST_HDRS = \
 	coders/aai.h \
 	coders/art.h \
+	coders/ase.h \
 	coders/ashlar.h \
 	coders/avs.h \
 	coders/bayer.h \
@@ -556,6 +559,7 @@ if WITH_MODULES
 coders_LTLIBRARIES = \
 	coders/aai.la \
 	coders/art.la \
+	coders/ase.la \
 	coders/ashlar.la \
 	coders/avs.la \
 	coders/bayer.la \
@@ -708,6 +712,12 @@ coders_art_la_SOURCES      = coders/art.c
 coders_art_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
 coders_art_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_art_la_LIBADD       = $(MAGICKCORE_LIBS)
+
+# ASE coder module
+coders_ase_la_SOURCES      = coders/ase.c
+coders_ase_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
+coders_ase_la_LDFLAGS      = $(MODULECOMMONFLAGS)
+coders_ase_la_LIBADD       = $(MAGICKCORE_LIBS) $(ZLIB_LIBS)
 
 # ASHLAR coder module
 coders_ashlar_la_SOURCES   = coders/ashlar.c

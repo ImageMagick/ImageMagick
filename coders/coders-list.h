@@ -18,6 +18,7 @@
 
 AddMagickCoder(AAI)
 AddMagickCoder(ART)
+AddMagickCoder(ASE)
 AddMagickCoder(ASHLAR)
 AddMagickCoder(AVS)
 AddMagickCoder(BAYER)
