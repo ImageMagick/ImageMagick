@@ -45,8 +45,6 @@
 #include "MagickCore/blob-private.h"
 #include "MagickCore/cache.h"
 #include "MagickCore/colormap.h"
-#include "MagickCore/colorspace.h"
-#include "MagickCore/colorspace-private.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/image.h"
@@ -55,11 +53,9 @@
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/monitor.h"
-#include "MagickCore/monitor-private.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/resource_.h"
-#include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/module.h"
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
@@ -1162,16 +1158,18 @@ static MagickBooleanType WriteASEImage(const ImageInfo *image_info,
     is_indexed,
     status;
 
+  MagickOffsetType
+    chunk_count_offset,
+    end_offset,
+    file_size_offset,
+    frame_size_offset;
+
   size_t
     bytes_per_pixel,
     chunk_count,
-    chunk_count_offset,
     color_depth,
     count,
-    end_offset,
-    file_size_offset,
     frame_count,
-    frame_size_offset,
     frame_x,
     frame_y,
     pixel_count,
@@ -1417,15 +1415,15 @@ static MagickBooleanType WriteASEImage(const ImageInfo *image_info,
     }
 #endif
     end_offset=TellBlob(image);
-    SeekBlob(image,(MagickOffsetType)chunk_count_offset,SEEK_SET);
+    SeekBlob(image,chunk_count_offset,SEEK_SET);
     (void) WriteBlobLSBShort(image,(unsigned short) chunk_count);
-    SeekBlob(image,(MagickOffsetType)frame_size_offset,SEEK_SET);
+    SeekBlob(image,frame_size_offset,SEEK_SET);
     (void) WriteBlobLSBLong(image,(unsigned int) (end_offset-frame_size_offset));
     SeekBlob(image,0,SEEK_END);
   }
   pixels=(uint8_t *) RelinquishMagickMemory(pixels);
   end_offset=TellBlob(image);
-  SeekBlob(image,(MagickOffsetType)file_size_offset,SEEK_SET);
+  SeekBlob(image,file_size_offset,SEEK_SET);
   (void) WriteBlobLSBLong(image,(unsigned int) end_offset);
   SeekBlob(image,0,SEEK_END);
   if (CloseBlob(image) == MagickFalse)
