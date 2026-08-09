@@ -20,7 +20,6 @@
   Include declarations.
 */
 #include "coders/aai.h"
-#include "coders/wbinfo.h"
 #include "coders/art.h"
 #include "coders/ase.h"
 #include "coders/ashlar.h"
@@ -183,6 +182,7 @@
 #include "coders/video.h"
 #include "coders/viff.h"
 #include "coders/vips.h"
+#include "coders/wbinfo.h"
 #include "coders/wbmp.h"
 #if defined(MAGICKCORE_WEBP_DELEGATE)
   #include "coders/webp.h"

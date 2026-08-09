@@ -114,8 +114,6 @@ MAGICK_CODER_CPPFLAGS = \
 MAGICKCORE_CODER_SRCS = \
 	coders/aai.c \
 	coders/aai.h \
-	coders/wbinfo.c \
-	coders/wbinfo.h \
 	coders/art.c \
 	coders/art.h \
 	coders/ase.c \
@@ -363,6 +361,8 @@ MAGICKCORE_CODER_SRCS = \
 	coders/viff.h \
 	coders/vips.c \
 	coders/vips.h \
+	coders/wbinfo.c \
+	coders/wbinfo.h \
 	coders/wbmp.c \
 	coders/wbmp.h \
 	coders/webp.h \
@@ -408,7 +408,6 @@ MAGICKCORE_CODER_SRCS = \
 
 CODERS_NOINST_HDRS = \
 	coders/aai.h \
-	coders/wbinfo.h \
 	coders/art.h \
 	coders/ase.h \
 	coders/ashlar.h \
@@ -543,6 +542,7 @@ CODERS_NOINST_HDRS = \
 	coders/video.h \
 	coders/viff.h \
 	coders/vips.h \
+	coders/wbinfo.h \
 	coders/wbmp.h \
 	coders/webp.h \
 	coders/wmf.h \
@@ -561,7 +561,6 @@ CODERS_NOINST_HDRS = \
 if WITH_MODULES
 coders_LTLIBRARIES = \
 	coders/aai.la \
-	coders/wbinfo.la \
 	coders/art.la \
 	coders/ase.la \
 	coders/ashlar.la \
@@ -673,6 +672,7 @@ coders_LTLIBRARIES = \
 	coders/video.la \
 	coders/viff.la \
 	coders/vips.la \
+	coders/wbinfo.la \
 	coders/wbmp.la \
 	coders/wpg.la \
 	coders/xbm.la \
@@ -710,12 +710,6 @@ coders_aai_la_SOURCES      = coders/aai.c
 coders_aai_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
 coders_aai_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_aai_la_LIBADD       = $(MAGICKCORE_LIBS)
-
-# WBINFO coder module
-coders_wbinfo_la_SOURCES      = coders/wbinfo.c
-coders_wbinfo_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
-coders_wbinfo_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_wbinfo_la_LIBADD       = $(MAGICKCORE_LIBS)
 
 # ART coder module
 coders_art_la_SOURCES      = coders/art.c
@@ -1487,6 +1481,12 @@ coders_vips_la_SOURCES     = coders/vips.c
 coders_vips_la_CPPFLAGS    = $(MAGICK_CODER_CPPFLAGS)
 coders_vips_la_LDFLAGS     = $(MODULECOMMONFLAGS)
 coders_vips_la_LIBADD      = $(MAGICKCORE_LIBS) $(MATH_LIBS)
+
+# WBINFO coder module
+coders_wbinfo_la_SOURCES   = coders/wbinfo.c
+coders_wbinfo_la_CPPFLAGS  = $(MAGICK_CODER_CPPFLAGS)
+coders_wbinfo_la_LDFLAGS   = $(MODULECOMMONFLAGS)
+coders_wbinfo_la_LIBADD    = $(MAGICKCORE_LIBS) $(ZLIB_LIBS)
 
 # WBMP coder module
 coders_wbmp_la_SOURCES     = coders/wbmp.c
