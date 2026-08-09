@@ -13,7 +13,7 @@
 %                      Read/Write Aseprite Sprite Format                      %
 %                                                                             %
 %                              Software Design                                %
-%                          Dirk Lemstra & Copilot                             %
+%                                Dirk Lemstra                                 %
 %                                 August 2026                                 %
 %                                                                             %
 %                                                                             %
@@ -838,13 +838,13 @@ static Image *ReadASEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     switch (ase_header.color_depth)
     {
       case 32:
-        pixels_size=ase_header.width*ase_header.height*4;
+        pixels_size=(size_t) ase_header.width*ase_header.height*4;
         break;
       case 16:
-        pixels_size=ase_header.width*ase_header.height*2;
+        pixels_size=(size_t) ase_header.width*ase_header.height*2;
         break;
       case 8:
-        pixels_size=ase_header.width*ase_header.height;
+        pixels_size=(size_t) ase_header.width*ase_header.height;
         break;
       default:
         pixels_size=0;
