@@ -741,9 +741,11 @@ static MagickBooleanType DecodeAndRenderNewIcon(Image **image,size_t *scene,
 
 /*
   Read the ToolTypes string table and decode NewIcon (IM1=/IM2=) images
-  found in it.  On failure the exception is set and MagickFalse returned.
+  found in it.  Returns AmigaIconChunkContinue on success,
+  AmigaIconChunkStop when the table is truncated (keep the images decoded
+  so far) and AmigaIconChunkFatal on hard failures (exception is set).
 */
-static MagickBooleanType ReadToolTypesNewIcons(Image **image,size_t *scene,
+static AmigaIconChunkStatus ReadToolTypesNewIcons(Image **image,size_t *scene,
   const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
@@ -769,27 +771,28 @@ static MagickBooleanType ReadToolTypesNewIcons(Image **image,size_t *scene,
     count_field;
 
   if (EOFBlob(*image) != MagickFalse)
-    ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
-      (*image)->filename);
+    return(AmigaIconChunkStop);
   count_field=ReadBlobMSBLong(*image);
   if (GetRemainingBlobSize(*image,&remaining) == MagickFalse)
-    ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
-      (*image)->filename);
+    return(AmigaIconChunkStop);
   if (count_field < 8)
     num_entries=0;
   else
     num_entries=(size_t) (count_field/4-1);
   if ((num_entries > remaining/4) || (num_entries > MaxAmigaIconToolTypes))
-    ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
-      (*image)->filename);
+    return(AmigaIconChunkStop);
   tooltypes=(char **) NULL;
   if (num_entries > 0)
     {
       tooltypes=(char **) AcquireQuantumMemory(num_entries,
         sizeof(*tooltypes));
       if (tooltypes == (char **) NULL)
-        ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-          (*image)->filename);
+        {
+          (void) ThrowMagickException(exception,GetMagickModule(),
+            ResourceLimitError,"MemoryAllocationFailed","`%s'",
+            (*image)->filename);
+          return(AmigaIconChunkFatal);
+        }
       (void) memset(tooltypes,0,num_entries*sizeof(*tooltypes));
     }
   /*
@@ -901,14 +904,17 @@ static MagickBooleanType ReadToolTypesNewIcons(Image **image,size_t *scene,
       tooltypes=(char **) RelinquishMagickMemory(tooltypes);
     }
   if (tooltypes_resource_failure != MagickFalse)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      (*image)->filename);
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",
+        (*image)->filename);
+      return(AmigaIconChunkFatal);
+    }
   if (tooltypes_corrupt != MagickFalse)
-    ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
-      (*image)->filename);
+    return(AmigaIconChunkStop);
   if (newicon_failure != MagickFalse)
-    return(MagickFalse);
-  return(MagickTrue);
+    return(AmigaIconChunkFatal);
+  return(AmigaIconChunkContinue);
 }
 
 /*
@@ -1206,6 +1212,21 @@ static MagickBooleanType ParseFormIconChunks(Image **image,size_t *scene,
 }
 
 /*
+  Finish a read whose trailing sections (text fields, tooltypes or
+  DrawerData2) are truncated.  Real-world icons are often cut short after
+  the image data, so keep the images already decoded and warn.
+*/
+static Image *FinishTruncatedWBINFO(Image *image,const ImageInfo *image_info,
+  ExceptionInfo *exception)
+{
+  (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageWarning,
+    "InsufficientImageDataInFile","`%s'",image_info->filename);
+  if (CloseBlob(image) == MagickFalse)
+    return(DestroyImageList(image));
+  return(GetFirstImageInList(image));
+}
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -1364,7 +1385,11 @@ static Image *ReadWBINFOImage(const ImageInfo *image_info,
     {
       if (ReadAndRenderClassicImage(&image,&scene,user_data,image_info,
           exception) == MagickFalse)
-        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+        {
+          if (scene == 0)
+            ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+          return(FinishTruncatedWBINFO(image,image_info,exception));
+        }
     }
   /*
     Skip DefaultTool if present.
@@ -1380,7 +1405,12 @@ static Image *ReadWBINFOImage(const ImageInfo *image_info,
       text_len=ReadBlobMSBLong(image);
       if ((GetRemainingBlobSize(image,&remaining) == MagickFalse) ||
           ((size_t) text_len > remaining))
-        ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+        {
+          if (scene == 0)
+            ThrowReaderException(CorruptImageError,
+              "InsufficientImageDataInFile");
+          return(FinishTruncatedWBINFO(image,image_info,exception));
+        }
       if (SeekBlob(image,(MagickOffsetType) text_len,SEEK_CUR) < 0)
         ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     }
@@ -1389,9 +1419,20 @@ static Image *ReadWBINFOImage(const ImageInfo *image_info,
   */
   if (has_tooltypes)
     {
-      if (ReadToolTypesNewIcons(&image,&scene,image_info,exception) ==
-          MagickFalse)
+      AmigaIconChunkStatus
+        tooltypes_status;
+
+      tooltypes_status=ReadToolTypesNewIcons(&image,&scene,image_info,
+        exception);
+      if (tooltypes_status == AmigaIconChunkFatal)
         return(DestroyImageList(image));
+      if (tooltypes_status == AmigaIconChunkStop)
+        {
+          if (scene == 0)
+            ThrowReaderException(CorruptImageError,
+              "InsufficientImageDataInFile");
+          return(FinishTruncatedWBINFO(image,image_info,exception));
+        }
     }
   /*
     Skip ToolWindow if present.
@@ -1407,7 +1448,12 @@ static Image *ReadWBINFOImage(const ImageInfo *image_info,
       text_len=ReadBlobMSBLong(image);
       if ((GetRemainingBlobSize(image,&remaining) == MagickFalse) ||
           ((size_t) text_len > remaining))
-        ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+        {
+          if (scene == 0)
+            ThrowReaderException(CorruptImageError,
+              "InsufficientImageDataInFile");
+          return(FinishTruncatedWBINFO(image,image_info,exception));
+        }
       if (SeekBlob(image,(MagickOffsetType) text_len,SEEK_CUR) < 0)
         ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     }
@@ -1421,7 +1467,12 @@ static Image *ReadWBINFOImage(const ImageInfo *image_info,
 
       if ((GetRemainingBlobSize(image,&remaining) == MagickFalse) ||
           (remaining < 6))
-        ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+        {
+          if (scene == 0)
+            ThrowReaderException(CorruptImageError,
+              "InsufficientImageDataInFile");
+          return(FinishTruncatedWBINFO(image,image_info,exception));
+        }
       if (SeekBlob(image,6,SEEK_CUR) < 0)
         ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     }
