@@ -68,6 +68,8 @@
 #define AmigaIconMagic  0xE310
 #define MaxAmigaIconDimension  1024
 #define MaxAmigaIconFormScanSize  (64UL*1024UL*1024UL)
+#define MaxAmigaIconImageChunks  8
+#define MaxAmigaIconScenes  8
 #define MaxAmigaIconToolTypes  4096
 #define MaxNewIconBitCount \
   ((size_t) MaxAmigaIconDimension*MaxAmigaIconDimension*16)
@@ -92,7 +94,8 @@ static MagickBooleanType GetRemainingBlobSize(Image *image,size_t *remaining)
 
   offset=TellBlob(image);
   blob_size=GetBlobSize(image);
-  if ((offset < 0) || ((MagickSizeType) offset > blob_size))
+  if ((offset < 0) || ((MagickSizeType) offset > blob_size) ||
+      (blob_size-(MagickSizeType) offset > (MagickSizeType) MAGICK_SIZE_MAX))
     {
       *remaining=0;
       return(MagickFalse);
@@ -313,6 +316,8 @@ static MagickBooleanType AppendAmigaImage(Image **image,size_t width,
   if (scene > 0)
     {
       AcquireNextImage(image_info,*image,exception);
+      if (GetNextImageInList(*image) == (Image *) NULL)
+        return(MagickFalse);
       *image=SyncNextImageInList(*image);
       if (*image == (Image *) NULL)
         return(MagickFalse);
@@ -816,12 +821,14 @@ static AmigaIconChunkStatus ReadToolTypesNewIcons(Image **image,size_t *scene,
       break;
     text_len=ReadBlobMSBLong(*image);
     if ((GetRemainingBlobSize(*image,&remaining) == MagickFalse) ||
-        (text_len == 0) || ((size_t) text_len > remaining))
+        (text_len == 0) || ((size_t) text_len > remaining) ||
+        (text_len == UINT_MAX))
       {
         tooltypes_corrupt=MagickTrue;
         break;
       }
-    tooltypes[tt_idx]=(char *) AcquireQuantumMemory(text_len+1,sizeof(char));
+    tooltypes[tt_idx]=(char *) AcquireQuantumMemory((size_t) text_len+1,
+      sizeof(char));
     if (tooltypes[tt_idx] == (char *) NULL)
       {
         tooltypes_resource_failure=MagickTrue;
@@ -1153,6 +1160,7 @@ static MagickBooleanType ParseFormIconChunks(Image **image,size_t *scene,
 
   size_t
     chunk_pos,
+    image_chunks,
     icon_height,
     icon_width,
     last_pal_count;
@@ -1161,6 +1169,7 @@ static MagickBooleanType ParseFormIconChunks(Image **image,size_t *scene,
     *last_pal_data;
 
   chunk_pos=0;
+  image_chunks=0;
   icon_width=0;
   icon_height=0;
   last_pal_data=(unsigned char *) NULL;
@@ -1195,13 +1204,32 @@ static MagickBooleanType ParseFormIconChunks(Image **image,size_t *scene,
           }
       }
     else if (memcmp(chunk_id,"IMAG",4) == 0)
-      chunk_status=DecodeAndRenderGlowIcon(image,scene,chunks+chunk_data,
-        chunk_size,icon_width,icon_height,&last_pal_data,&last_pal_count,
-        image_info,exception);
+      {
+        if ((*scene >= MaxAmigaIconScenes) ||
+            (image_chunks >= MaxAmigaIconImageChunks))
+          chunk_status=AmigaIconChunkStop;
+        else
+          {
+            image_chunks++;
+            chunk_status=DecodeAndRenderGlowIcon(image,scene,
+              chunks+chunk_data,chunk_size,icon_width,icon_height,
+              &last_pal_data,&last_pal_count,image_info,exception);
+          }
+      }
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
     else if (memcmp(chunk_id,"ARGB",4) == 0)
-      chunk_status=DecodeAndRenderARGBIcon(image,scene,chunks+chunk_data,
-        chunk_size,icon_width,icon_height,image_info,exception);
+      {
+        if ((*scene >= MaxAmigaIconScenes) ||
+            (image_chunks >= MaxAmigaIconImageChunks))
+          chunk_status=AmigaIconChunkStop;
+        else
+          {
+            image_chunks++;
+            chunk_status=DecodeAndRenderARGBIcon(image,scene,
+              chunks+chunk_data,chunk_size,icon_width,icon_height,image_info,
+              exception);
+          }
+      }
 #endif
     if (chunk_status != AmigaIconChunkContinue)
       break;
