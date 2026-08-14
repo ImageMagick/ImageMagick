@@ -1628,26 +1628,27 @@ static MagickBooleanType CopyDelegateFile(const char *source,
   const char *destination,const MagickBooleanType overwrite,
   ExceptionInfo *exception)
 {
-  char
-    filename[MagickPathExtent];
+#if !defined(O_NOFOLLOW)
+#define O_NOFOLLOW 0
+#endif
 
   int
-    destination_file,
-    source_file;
+    destination_file = -1,
+    source_file = -1;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   ssize_t
-    count,
-    i;
+    count = 0,
+    i = 0;
 
   size_t
-    length,
-    quantum;
+    length = 0,
+    quantum = 0;
 
   struct stat
-    attributes;
+    attributes = { 0 };
 
   unsigned char
     *buffer;
@@ -1663,7 +1664,10 @@ static MagickBooleanType CopyDelegateFile(const char *source,
       if (status != MagickFalse)
         return(MagickTrue);
     }
-  destination_file=AcquireUniqueFileResource(filename);
+  if (IsPathAuthorized(WritePolicyRights,destination) == MagickFalse)
+    ThrowPolicyException(source,MagickFalse);
+  destination_file=open_utf8(destination,O_WRONLY | O_BINARY | O_CREAT |
+    O_NOFOLLOW,S_MODE);
   if (destination_file == -1)
     return(MagickFalse);
   if (IsPathAuthorized(ReadPolicyRights,source) == MagickFalse)
@@ -1703,8 +1707,6 @@ static MagickBooleanType CopyDelegateFile(const char *source,
   buffer=(unsigned char *) RelinquishMagickMemory(buffer);
   if (IsPathAuthorized(WritePolicyRights,destination) == MagickFalse)
     ThrowPolicyException(destination,MagickFalse);
-  if (rename_utf8(filename,destination) != 0)
-    return(MagickFalse);
   return(i != 0 ? MagickTrue : MagickFalse);
 }
 
