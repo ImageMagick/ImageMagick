@@ -906,9 +906,11 @@ static Image *GetList(pTHX_ SV *reference,SV ***reference_vector,
 
       Image
         *head,
-        *previous;
+        *previous,
+        **seen = (Image **) NULL;
 
       ssize_t
+        count = 0,
         i,
         n;
 
@@ -931,17 +933,43 @@ static Image *GetList(pTHX_ SV *reference,SV ***reference_vector,
               exception);
             if (image == (Image *) NULL)
               continue;
-            if (image == previous)
+            {
+              MagickBooleanType duplicate = MagickFalse;
+              ssize_t j = 0;
+              for (j=0; j < count; j++)
               {
-                image=CloneImage(image,0,0,MagickTrue,exception);
-                if (image == (Image *) NULL)
-                  return(NULL);
+                if (seen[j] == image)
+                  {
+                    duplicate=MagickTrue;
+                    break;
+                  }
               }
+              if (duplicate != MagickFalse)
+                {
+                  /*
+                    Clone if already seen (adjacent or non-adjacent).
+                  */
+                  Image *clone = CloneImage(image,0,0,MagickTrue,exception);
+                  if (clone == (Image *) NULL)
+                    {
+                      if (seen != (Image **) NULL)
+                        free(seen);
+                      return(NULL);
+                    }
+                  image=clone;
+                }
+              seen=(Image **) realloc(seen,(count+1)*sizeof(Image *));
+              if (seen == (Image **) NULL)
+                return((Image *) NULL);
+              seen[count++]=image;
+            }
             image->previous=previous;
             *(previous ? &previous->next : &head)=image;
             for (previous=image; previous->next; previous=previous->next) ;
           }
       }
+      if (seen != (Image **) NULL)
+        free(seen);
       return(head);
     }
     case SVt_PVMG:
