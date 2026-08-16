@@ -1628,23 +1628,25 @@ static MagickBooleanType CopyDelegateFile(const char *source,
   const char *destination,const MagickBooleanType overwrite,
   ExceptionInfo *exception)
 {
+#if !defined(O_NOFOLLOW)
+#define O_NOFOLLOW 0
+#endif
+
   int
-    destination_file,
-    source_file;
+    destination_file = -1,
+    source_file = -1;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   ssize_t
-    count,
-    i;
+    count = 0;
 
   size_t
-    length,
-    quantum;
+    quantum = 0;
 
   struct stat
-    attributes;
+    attributes = { 0 };
 
   unsigned char
     *buffer;
@@ -1654,17 +1656,22 @@ static MagickBooleanType CopyDelegateFile(const char *source,
   */
   assert(source != (const char *) NULL);
   assert(destination != (char *) NULL);
-  if (overwrite == MagickFalse)
-    {
-      status=GetPathAttributes(destination,&attributes);
-      if (status != MagickFalse)
-        return(MagickTrue);
-    }
+  if ((overwrite == MagickFalse) &&
+      (GetPathAttributes(destination,&attributes) != MagickFalse))
+    return(MagickTrue);
   if (IsPathAuthorized(WritePolicyRights,destination) == MagickFalse)
-    ThrowPolicyException(destination,MagickFalse);
-  destination_file=open_utf8(destination,O_WRONLY | O_BINARY | O_CREAT,S_MODE);
+    ThrowPolicyException(source,MagickFalse);
+  destination_file=open_utf8(destination,O_WRONLY | O_BINARY | O_CREAT |
+    O_NOFOLLOW,S_MODE);
   if (destination_file == -1)
     return(MagickFalse);
+  if (IsPathAuthorized(WritePolicyRights,destination) == MagickFalse)
+    ThrowPolicyException(destination,MagickFalse);
+  if (IsPathAuthorized(ReadPolicyRights,source) == MagickFalse)
+    {
+      (void) close_utf8(destination_file);
+      ThrowPolicyException(source,MagickFalse);
+    }
   source_file=open_utf8(source,O_RDONLY | O_BINARY,0);
   if (source_file == -1)
     {
@@ -1681,21 +1688,21 @@ static MagickBooleanType CopyDelegateFile(const char *source,
       (void) close_utf8(destination_file);
       return(MagickFalse);
     }
-  length=0;
-  for (i=0; ; i+=(ssize_t) count)
+  while ((count=read(source_file,buffer,quantum)) > 0)
   {
-    count=(ssize_t) read(source_file,buffer,quantum);
-    if (count <= 0)
-      break;
-    length=(size_t) count;
-    count=(ssize_t) write(destination_file,buffer,length);
-    if ((size_t) count != length)
-      break;
+    ssize_t written = write(destination_file,buffer,(size_t) count);
+    if (written != count)
+      {
+        status=MagickFalse;
+        break;
+      }
   }
+  if (count < 0)
+    status=MagickFalse;
   (void) close_utf8(destination_file);
   (void) close_utf8(source_file);
   buffer=(unsigned char *) RelinquishMagickMemory(buffer);
-  return(i != 0 ? MagickTrue : MagickFalse);
+  return(status);
 }
 
 MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
@@ -1855,13 +1862,6 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
   (void) CopyMagickString(input_filename,image->filename,MagickPathExtent);
   for (i=0; commands[i] != (char *) NULL; i++)
   {
-    if (IsPathAuthorized(WritePolicyRights,output_filename) == MagickFalse)
-      {
-        errno=EPERM;
-        (void) ThrowMagickException(exception,GetMagickModule(),PolicyError, \
-          "NotAuthorized","`%s'",output_filename);
-        break;
-      }
     (void) AcquireUniqueSymbolicLink(output_filename,image_info->filename);
     if (AcquireUniqueFilename(image_info->unique) == MagickFalse)
       {
@@ -1886,8 +1886,7 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
         /*
           Execute delegate.
         */
-        if (ExternalDelegateCommand(delegate_info->spawn,image_info->verbose,
-          command,(char *) NULL,exception) != 0)
+        if (ExternalDelegateCommand(delegate_info->spawn,image_info->verbose,command,(char *) NULL,exception) != 0)
           status=MagickFalse;
         if (delegate_info->spawn != MagickFalse)
           {
@@ -1906,11 +1905,17 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
     if (LocaleCompare(decode,"SCAN") != 0)
       {
         if (CopyDelegateFile(image->filename,input_filename,MagickFalse,exception) == MagickFalse)
-          (void) RelinquishUniqueFileResource(input_filename);
+          {
+            (void) RelinquishUniqueFileResource(input_filename);
+            status=MagickFalse;
+          }
       }
     if ((strcmp(input_filename,output_filename) != 0) &&
         (CopyDelegateFile(image_info->filename,output_filename,MagickTrue,exception) == MagickFalse))
-      (void) RelinquishUniqueFileResource(output_filename);
+      {
+        (void) RelinquishUniqueFileResource(output_filename);
+        status=MagickFalse;
+      }
     if (image_info->temporary != MagickFalse)
       (void) RelinquishUniqueFileResource(image_info->filename);
     (void) RelinquishUniqueFileResource(image_info->unique);
