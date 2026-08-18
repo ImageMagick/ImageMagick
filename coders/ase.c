@@ -791,14 +791,6 @@ static Image *ReadASEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         frame_image->alpha_trait=BlendPixelTrait;
         frame_image->ticks_per_second=1000;
         frame_image->dispose=BackgroundDispose;
-        status=SetImageExtent(frame_image,frame_image->columns,
-          frame_image->rows,exception);
-        if (status == MagickFalse)
-          {
-            DestroyASELayerList(&layers);
-            DestroyASECelCache(&cel_cache);
-            return(DestroyImageList(image));
-          }
         if (ase_header.color_depth == 8)
           {
             if (AcquireImageColormap(frame_image,256,exception) ==
@@ -834,6 +826,14 @@ static Image *ReadASEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) SeekBlob(image,(MagickOffsetType) ase_frame.frame_size-16,
           SEEK_CUR);
         continue;
+      }
+    status=SetImageExtent(frame_image,frame_image->columns,
+      frame_image->rows,exception);
+    if (status == MagickFalse)
+      {
+        DestroyASELayerList(&layers);
+        DestroyASECelCache(&cel_cache);
+        return(DestroyImageList(image));
       }
     switch (ase_header.color_depth)
     {
