@@ -597,6 +597,16 @@ MagickExport char *GetPolicyValue(const char *name)
 %    o path: The path to check.
 %
 */
+
+static inline MagickBooleanType IsPolicyPathSeparator(const char c)
+{
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
+  if ((c == '/') || (c == '\\'))
+    return(MagickTrue);
+#endif
+  return(c == *DirectorySeparator ? MagickTrue : MagickFalse);
+}
+
 static inline MagickBooleanType IsPathContainsSymlink(const char *path)
 {
   char
@@ -612,14 +622,15 @@ static inline MagickBooleanType IsPathContainsSymlink(const char *path)
     return(MagickFalse);
   *partial='\0';
   p=path;
-  if (*p == *DirectorySeparator)
+  if (IsPolicyPathSeparator(*p) != MagickFalse)
     {
       /*
         Path starts with a directory separator, include it.
       */
       if ((offset+1) >= (ssize_t) sizeof(partial))
         return(MagickFalse);
-      partial[offset++]=(*p++);
+      partial[offset++]=(*DirectorySeparator);
+      p++;
       partial[offset]='\0';
     }
   while (*p != '\0')
@@ -633,7 +644,7 @@ static inline MagickBooleanType IsPathContainsSymlink(const char *path)
     /*
       Copy next component into a temporary buffer.
     */
-    while ((*p != '\0') && (*p != *DirectorySeparator) &&
+    while ((*p != '\0') && (IsPolicyPathSeparator(*p) == MagickFalse) &&
            ((i+1) < (ssize_t) sizeof(component)))
       component[i++]=(*p++);
     component[i]='\0';
@@ -642,7 +653,7 @@ static inline MagickBooleanType IsPathContainsSymlink(const char *path)
         /*
           skip repeated separators.
         */
-        if (*p == *DirectorySeparator)
+        if (IsPolicyPathSeparator(*p) != MagickFalse)
           p++;
         continue;
       }
@@ -675,7 +686,7 @@ static inline MagickBooleanType IsPathContainsSymlink(const char *path)
     /*
       Skip separator.
     */
-    if (*p == *DirectorySeparator)
+    if (IsPolicyPathSeparator(*p) != MagickFalse)
       p++;
   }
   return(MagickFalse);
