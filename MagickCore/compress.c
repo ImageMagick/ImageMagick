@@ -265,9 +265,8 @@ MagickExport void Ascii85Initialize(Image *image)
     Allocate image structure.
   */
   if (image->ascii85 == (Ascii85Info *) NULL)
-    image->ascii85=(Ascii85Info *) AcquireMagickMemory(sizeof(*image->ascii85));
-  if (image->ascii85 == (Ascii85Info *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+    image->ascii85=(Ascii85Info *) AcquireCriticalMemory(
+      sizeof(*image->ascii85));
   (void) memset(image->ascii85,0,sizeof(*image->ascii85));
   image->ascii85->line_break=(ssize_t) (MaxLineExtent << 1);
   image->ascii85->offset=0;
