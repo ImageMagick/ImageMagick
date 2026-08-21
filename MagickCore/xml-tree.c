@@ -164,6 +164,74 @@ static char
 %    o offset: the tag offset.
 %
 */
+
+static XMLTreeInfo *InsertTagIntoXMLTree(XMLTreeInfo *xml_info,
+  XMLTreeInfo *child,const size_t offset)
+{
+  XMLTreeInfo
+    *head,
+    *node,
+    *previous;
+
+  child->ordered=(XMLTreeInfo *) NULL;
+  child->sibling=(XMLTreeInfo *) NULL;
+  child->next=(XMLTreeInfo *) NULL;
+  child->offset=offset;
+  child->parent=xml_info;
+  if (xml_info->child == (XMLTreeInfo *) NULL)
+    {
+      xml_info->child=child;
+      return(child);
+    }
+  head=xml_info->child;
+  if (head->offset > offset)
+    {
+      child->ordered=head;
+      xml_info->child=child;
+    }
+  else
+    {
+      node=head;
+      while ((node->ordered != (XMLTreeInfo *) NULL) &&
+             (node->ordered->offset <= offset))
+        node=node->ordered;
+      child->ordered=node->ordered;
+      node->ordered=child;
+    }
+  previous=(XMLTreeInfo *) NULL;
+  node=head;
+  while ((node != (XMLTreeInfo *) NULL) && (strcmp(node->tag,child->tag) != 0))
+  {
+    previous=node;
+    node=node->sibling;
+  }
+  if ((node != (XMLTreeInfo *) NULL) && (node->offset <= offset))
+    {
+      while ((node->next != (XMLTreeInfo *) NULL) &&
+             (node->next->offset <= offset))
+        node=node->next;
+      child->next=node->next;
+      node->next=child;
+    }
+  else
+    {
+      if ((previous != (XMLTreeInfo *) NULL) && (node != (XMLTreeInfo *) NULL))
+        previous->sibling=node->sibling;
+      child->next=node;
+      previous=(XMLTreeInfo *) NULL;
+      node=head;
+      while ((node != (XMLTreeInfo *) NULL) && (node->offset <= offset))
+      {
+        previous=node;
+        node=node->sibling;
+      }
+      child->sibling=node;
+      if (previous != (XMLTreeInfo *) NULL)
+        previous->sibling=child;
+    }
+  return(child);
+}
+
 MagickExport XMLTreeInfo *AddChildToXMLTree(XMLTreeInfo *xml_info,
   const char *tag,const size_t offset)
 {
@@ -212,6 +280,49 @@ MagickExport XMLTreeInfo *AddChildToXMLTree(XMLTreeInfo *xml_info,
 %    o offset: the tag offset.
 %
 */
+
+static char *CanonicalXMLContent(const char *content,
+  const MagickBooleanType pedantic)
+{
+  char
+    *base64,
+    *canonical_content;
+
+  const unsigned char
+    *p;
+
+  size_t
+    length;
+
+  unsigned char
+    *utf8;
+
+  utf8=ConvertLatin1ToUTF8((const unsigned char *) content);
+  if (utf8 == (unsigned char *) NULL)
+    return((char *) NULL);
+  for (p=utf8; *p != '\0'; p++)
+    if ((*p < 0x20) && (*p != 0x09) && (*p != 0x0a) && (*p != 0x0d))
+      break;
+  if (*p != '\0')
+    {
+      /*
+        String is binary, base64-encode it.
+      */
+      base64=Base64Encode(utf8,strlen((char *) utf8),&length);
+      utf8=(unsigned char *) RelinquishMagickMemory(utf8);
+      if (base64 == (char *) NULL)
+        return((char *) NULL);
+      canonical_content=AcquireString("<base64>");
+      (void) ConcatenateString(&canonical_content,base64);
+      base64=DestroyString(base64);
+      (void) ConcatenateString(&canonical_content,"</base64>");
+      return(canonical_content);
+    }
+  canonical_content=SubstituteXMLEntities((const char *) utf8,pedantic);
+  utf8=(unsigned char *) RelinquishMagickMemory(utf8);
+  return(canonical_content);
+}
+
 MagickPrivate XMLTreeInfo *AddPathToXMLTree(XMLTreeInfo *xml_info,
   const char *path,const size_t offset)
 {
@@ -252,7 +363,7 @@ MagickPrivate XMLTreeInfo *AddPathToXMLTree(XMLTreeInfo *xml_info,
       break;
     for (j=(ssize_t) StringToLong(subnode)-1; j > 0; j--)
     {
-      node=GetXMLTreeOrdered(node);
+      node=node->ordered;
       if (node == (XMLTreeInfo *) NULL)
         break;
     }
@@ -264,76 +375,6 @@ MagickPrivate XMLTreeInfo *AddPathToXMLTree(XMLTreeInfo *xml_info,
     components[i]=DestroyString(components[i]);
   components=(char **) RelinquishMagickMemory(components);
   return(node);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   C a n o n i c a l X M L C o n t e n t                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  CanonicalXMLContent() converts text to canonical XML content by converting
-%  to UTF-8, substituting predefined entities, wrapping as CDATA, or encoding
-%  as base-64 as required.
-%
-%  The format of the CanonicalXMLContent method is:
-%
-%      char *CanonicalXMLContent(const char *content,
-%        const MagickBooleanType pedantic)
-%
-%  A description of each parameter follows:
-%
-%    o content: the content.
-%
-%    o pedantic: if true, replace newlines and tabs with their respective
-%      entities.
-%
-*/
-MagickPrivate char *CanonicalXMLContent(const char *content,
-  const MagickBooleanType pedantic)
-{
-  char
-    *base64,
-    *canonical_content;
-
-  const unsigned char
-    *p;
-
-  size_t
-    length;
-
-  unsigned char
-    *utf8;
-
-  utf8=ConvertLatin1ToUTF8((const unsigned char *) content);
-  if (utf8 == (unsigned char *) NULL)
-    return((char *) NULL);
-  for (p=utf8; *p != '\0'; p++)
-    if ((*p < 0x20) && (*p != 0x09) && (*p != 0x0a) && (*p != 0x0d))
-      break;
-  if (*p != '\0')
-    {
-      /*
-        String is binary, base64-encode it.
-      */
-      base64=Base64Encode(utf8,strlen((char *) utf8),&length);
-      utf8=(unsigned char *) RelinquishMagickMemory(utf8);
-      if (base64 == (char *) NULL)
-        return((char *) NULL);
-      canonical_content=AcquireString("<base64>");
-      (void) ConcatenateString(&canonical_content,base64);
-      base64=DestroyString(base64);
-      (void) ConcatenateString(&canonical_content,"</base64>");
-      return(canonical_content);
-    }
-  canonical_content=SubstituteXMLEntities((const char *) utf8,pedantic);
-  utf8=(unsigned char *) RelinquishMagickMemory(utf8);
-  return(canonical_content);
 }
 
 /*
@@ -748,57 +789,6 @@ MagickExport const char *GetXMLTreeAttribute(XMLTreeInfo *xml_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t X M L T r e e A t t r i b u t e s                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetXMLTreeAttributes() injects all attributes associated with the current
-%  tag in the specified splay-tree.
-%
-%  The format of the GetXMLTreeAttributes method is:
-%
-%      MagickBooleanType GetXMLTreeAttributes(const XMLTreeInfo *xml_info,
-%        SplayTreeInfo *attributes)
-%
-%  A description of each parameter follows:
-%
-%    o xml_info: the xml info.
-%
-%    o attributes: the attribute splay-tree.
-%
-*/
-MagickPrivate MagickBooleanType GetXMLTreeAttributes(
-  const XMLTreeInfo *xml_info,SplayTreeInfo *attributes)
-{
-  ssize_t
-    i;
-
-  assert(xml_info != (XMLTreeInfo *) NULL);
-  assert((xml_info->signature == MagickCoreSignature) ||
-         (((const XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
-  assert(attributes != (SplayTreeInfo *) NULL);
-  if (IsEventLogging() != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  if (xml_info->attributes == (char **) NULL)
-    return(MagickTrue);
-  i=0;
-  while (xml_info->attributes[i] != (char *) NULL)
-  {
-     (void) AddValueToSplayTree(attributes,
-       ConstantString(xml_info->attributes[i]),
-       ConstantString(xml_info->attributes[i+1]));
-    i+=2;
-  }
-  return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   G e t X M L T r e e C h i l d                                             %
 %                                                                             %
 %                                                                             %
@@ -872,163 +862,6 @@ MagickExport const char *GetXMLTreeContent(XMLTreeInfo *xml_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t X M L T r e e O r d e r e d                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetXMLTreeOrdered() returns the next ordered node if found, otherwise NULL.
-%
-%  The format of the GetXMLTreeOrdered method is:
-%
-%      XMLTreeInfo *GetXMLTreeOrdered(XMLTreeInfo *xml_info)
-%
-%  A description of each parameter follows:
-%
-%    o xml_info: the xml info.
-%
-*/
-MagickPrivate XMLTreeInfo *GetXMLTreeOrdered(XMLTreeInfo *xml_info)
-{
-  assert(xml_info != (XMLTreeInfo *) NULL);
-  assert((xml_info->signature == MagickCoreSignature) ||
-         (((XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
-  if (IsEventLogging() != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  return(xml_info->ordered);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t X M L T r e e P a t h                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetXMLTreePath() traverses the XML-tree as defined by the specified path
-%  and returns the node if found, otherwise NULL.
-%
-%  The format of the GetXMLTreePath method is:
-%
-%      XMLTreeInfo *GetXMLTreePath(XMLTreeInfo *xml_info,const char *path)
-%
-%  A description of each parameter follows:
-%
-%    o xml_info: the xml info.
-%
-%    o path: the path (e.g. property/elapsed-time).
-%
-*/
-MagickPrivate XMLTreeInfo *GetXMLTreePath(XMLTreeInfo *xml_info,
-  const char *path)
-{
-  char
-    **components,
-    subnode[MagickPathExtent],
-    tag[MagickPathExtent];
-
-  size_t
-    number_components;
-
-  ssize_t
-    i,
-    j;
-
-  XMLTreeInfo
-    *node;
-
-  assert(xml_info != (XMLTreeInfo *) NULL);
-  assert((xml_info->signature == MagickCoreSignature) ||
-         (((XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
-  if (IsEventLogging() != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  node=xml_info;
-  components=GetPathComponents(path,&number_components);
-  if (components == (char **) NULL)
-    return((XMLTreeInfo *) NULL);
-  for (i=0; i < (ssize_t) number_components; i++)
-  {
-    GetPathComponent(components[i],SubimagePath,subnode);
-    GetPathComponent(components[i],CanonicalPath,tag);
-    node=GetXMLTreeChild(node,tag);
-    if (node == (XMLTreeInfo *) NULL)
-      break;
-    for (j=(ssize_t) StringToLong(subnode)-1; j > 0; j--)
-    {
-      node=GetXMLTreeOrdered(node);
-      if (node == (XMLTreeInfo *) NULL)
-        break;
-    }
-    if (node == (XMLTreeInfo *) NULL)
-      break;
-    components[i]=DestroyString(components[i]);
-  }
-  for ( ; i < (ssize_t) number_components; i++)
-    components[i]=DestroyString(components[i]);
-  components=(char **) RelinquishMagickMemory(components);
-  return(node);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t X M L T r e e P r o c e s s i n g I n s t r u c t i o n s           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetXMLTreeProcessingInstructions() returns a null terminated array of
-%  processing instructions for the given target.
-%
-%  The format of the GetXMLTreeProcessingInstructions method is:
-%
-%      const char **GetXMLTreeProcessingInstructions(XMLTreeInfo *xml_info,
-%        const char *target)
-%
-%  A description of each parameter follows:
-%
-%    o xml_info: the xml info.
-%
-*/
-MagickPrivate const char **GetXMLTreeProcessingInstructions(
-  XMLTreeInfo *xml_info,const char *target)
-{
-  ssize_t
-    i;
-
-  XMLTreeRoot
-    *root;
-
-  assert(xml_info != (XMLTreeInfo *) NULL);
-  assert((xml_info->signature == MagickCoreSignature) ||
-         (((XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
-  if (IsEventLogging() != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  root=(XMLTreeRoot *) xml_info;
-  while (root->root.parent != (XMLTreeInfo *) NULL)
-    root=(XMLTreeRoot *) root->root.parent;
-  i=0;
-  while ((root->processing_instructions[i] != (char **) NULL) &&
-         (strcmp(root->processing_instructions[i][0],target) != 0))
-    i++;
-  if (root->processing_instructions[i] == (char **) NULL)
-    return((const char **) sentinel);
-  return((const char **) (root->processing_instructions[i]+1));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   G e t X M L T r e e S i b l i n g                                         %
 %                                                                             %
 %                                                                             %
@@ -1086,101 +919,6 @@ MagickExport const char *GetXMLTreeTag(XMLTreeInfo *xml_info)
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   return(xml_info->tag);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   I n s e r t I n t o T a g X M L T r e e                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  InsertTagIntoXMLTree() inserts a tag at an offset relative to the start of
-%  the parent tag's character content.  This method returns the child tag.
-%
-%  The format of the InsertTagIntoXMLTree method is:
-%
-%      XMLTreeInfo *InsertTagIntoXMLTree(XMLTreeInfo *xml_info,
-%        XMLTreeInfo *child,const size_t offset)
-%
-%  A description of each parameter follows:
-%
-%    o xml_info: the xml info.
-%
-%    o child: the child tag.
-%
-%    o offset: the tag offset.
-%
-*/
-MagickPrivate XMLTreeInfo *InsertTagIntoXMLTree(XMLTreeInfo *xml_info,
-  XMLTreeInfo *child,const size_t offset)
-{
-  XMLTreeInfo
-    *head,
-    *node,
-    *previous;
-
-  child->ordered=(XMLTreeInfo *) NULL;
-  child->sibling=(XMLTreeInfo *) NULL;
-  child->next=(XMLTreeInfo *) NULL;
-  child->offset=offset;
-  child->parent=xml_info;
-  if (xml_info->child == (XMLTreeInfo *) NULL)
-    {
-      xml_info->child=child;
-      return(child);
-    }
-  head=xml_info->child;
-  if (head->offset > offset)
-    {
-      child->ordered=head;
-      xml_info->child=child;
-    }
-  else
-    {
-      node=head;
-      while ((node->ordered != (XMLTreeInfo *) NULL) &&
-             (node->ordered->offset <= offset))
-        node=node->ordered;
-      child->ordered=node->ordered;
-      node->ordered=child;
-    }
-  previous=(XMLTreeInfo *) NULL;
-  node=head;
-  while ((node != (XMLTreeInfo *) NULL) && (strcmp(node->tag,child->tag) != 0))
-  {
-    previous=node;
-    node=node->sibling;
-  }
-  if ((node != (XMLTreeInfo *) NULL) && (node->offset <= offset))
-    {
-      while ((node->next != (XMLTreeInfo *) NULL) &&
-             (node->next->offset <= offset))
-        node=node->next;
-      child->next=node->next;
-      node->next=child;
-    }
-  else
-    {
-      if ((previous != (XMLTreeInfo *) NULL) && (node != (XMLTreeInfo *) NULL))
-        previous->sibling=node->sibling;
-      child->next=node;
-      previous=(XMLTreeInfo *) NULL;
-      node=head;
-      while ((node != (XMLTreeInfo *) NULL) && (node->offset <= offset))
-      {
-        previous=node;
-        node=node->sibling;
-      }
-      child->sibling=node;
-      if (previous != (XMLTreeInfo *) NULL)
-        previous->sibling=child;
-    }
-  return(child);
 }
 
 /*
@@ -2302,167 +2040,6 @@ MagickExport XMLTreeInfo *NewXMLTreeTag(const char *tag)
   root->debug=IsEventLogging();
   root->signature=MagickCoreSignature;
   return(&root->root);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   P r u n e T a g F r o m X M L T r e e                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  PruneTagFromXMLTree() prunes a tag from the xml-tree along with all its
-%  subtags.
-%
-%  The format of the PruneTagFromXMLTree method is:
-%
-%      XMLTreeInfo *PruneTagFromXMLTree(XMLTreeInfo *xml_info)
-%
-%  A description of each parameter follows:
-%
-%    o xml_info: the xml info.
-%
-*/
-MagickPrivate XMLTreeInfo *PruneTagFromXMLTree(XMLTreeInfo *xml_info)
-{
-  XMLTreeInfo
-    *node;
-
-  assert(xml_info != (XMLTreeInfo *) NULL);
-  assert((xml_info->signature == MagickCoreSignature) ||
-         (((XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
-  if (IsEventLogging() != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  if (xml_info->next != (XMLTreeInfo *) NULL)
-    xml_info->next->sibling=xml_info->sibling;
-  if (xml_info->parent != (XMLTreeInfo *) NULL)
-    {
-      node=xml_info->parent->child;
-      if (node == xml_info)
-        xml_info->parent->child=xml_info->ordered;
-      else
-        {
-          while (node->ordered != xml_info)
-            node=node->ordered;
-          node->ordered=node->ordered->ordered;
-          node=xml_info->parent->child;
-          if (strcmp(node->tag,xml_info->tag) != 0)
-            {
-              while (strcmp(node->sibling->tag,xml_info->tag) != 0)
-                node=node->sibling;
-              if (node->sibling != xml_info)
-                node=node->sibling;
-              else
-                node->sibling=(xml_info->next != (XMLTreeInfo *) NULL) ?
-                  xml_info->next : node->sibling->sibling;
-            }
-          while ((node->next != (XMLTreeInfo *) NULL) &&
-                 (node->next != xml_info))
-            node=node->next;
-          if (node->next != (XMLTreeInfo *) NULL)
-            node->next=node->next->next;
-        }
-    }
-  xml_info->ordered=(XMLTreeInfo *) NULL;
-  xml_info->sibling=(XMLTreeInfo *) NULL;
-  xml_info->next=(XMLTreeInfo *) NULL;
-  return(xml_info);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   S e t X M L T r e e A t t r i b u t e                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  SetXMLTreeAttribute() sets the tag attributes or adds a new attribute if not
-%  found.  A value of NULL removes the specified attribute.
-%
-%  The format of the SetXMLTreeAttribute method is:
-%
-%      XMLTreeInfo *SetXMLTreeAttribute(XMLTreeInfo *xml_info,const char *tag,
-%        const char *value)
-%
-%  A description of each parameter follows:
-%
-%    o xml_info: the xml info.
-%
-%    o tag:  The attribute tag.
-%
-%    o value:  The attribute value.
-%
-*/
-MagickPrivate XMLTreeInfo *SetXMLTreeAttribute(XMLTreeInfo *xml_info,
-  const char *tag,const char *value)
-{
-  ssize_t
-    i,
-    j;
-
-  assert(xml_info != (XMLTreeInfo *) NULL);
-  assert((xml_info->signature == MagickCoreSignature) ||
-         (((XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
-  if (IsEventLogging() != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  i=0;
-  while ((xml_info->attributes[i] != (char *) NULL) &&
-         (strcmp(xml_info->attributes[i],tag) != 0))
-    i+=2;
-  if (xml_info->attributes[i] == (char *) NULL)
-    {
-      /*
-        Add new attribute tag.
-      */
-      if (value == (const char *) NULL)
-        return(xml_info);
-      if (xml_info->attributes != sentinel)
-        xml_info->attributes=(char **) ResizeQuantumMemory(
-          xml_info->attributes,(size_t) (i+4),sizeof(*xml_info->attributes));
-      else
-        {
-          xml_info->attributes=(char **) AcquireQuantumMemory(4,
-            sizeof(*xml_info->attributes));
-          if (xml_info->attributes != (char **) NULL)
-            xml_info->attributes[1]=ConstantString("");
-        }
-      if (xml_info->attributes == (char **) NULL)
-        ThrowFatalException(ResourceLimitFatalError,"UnableToAcquireString");
-      xml_info->attributes[i]=ConstantString(tag);
-      xml_info->attributes[i+2]=(char *) NULL;
-      (void) strlen(xml_info->attributes[i+1]);
-    }
-  /*
-    Add new value to an existing attribute.
-  */
-  for (j=i; xml_info->attributes[j] != (char *) NULL; j+=2) ;
-  if (xml_info->attributes[i+1] != (char *) NULL)
-    xml_info->attributes[i+1]=DestroyString(xml_info->attributes[i+1]);
-  if (value != (const char *) NULL)
-    {
-      xml_info->attributes[i+1]=ConstantString(value);
-      return(xml_info);
-    }
-  if (xml_info->attributes[i] != (char *) NULL)
-    xml_info->attributes[i]=DestroyString(xml_info->attributes[i]);
-  (void) memmove(xml_info->attributes+i,xml_info->attributes+i+2,(size_t)
-    (j-i)*sizeof(*xml_info->attributes));
-  xml_info->attributes=(char **) ResizeQuantumMemory(xml_info->attributes,
-    (size_t) (j+2),sizeof(*xml_info->attributes));
-  if (xml_info->attributes == (char **) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"UnableToAcquireString");
-  j-=2;
-  (void) memmove(xml_info->attributes[j+1]+(i/2),xml_info->attributes[j+1]+
-    (i/2)+1,(size_t) (((j+2)/2)-(i/2))*sizeof(**xml_info->attributes));
-  return(xml_info);
 }
 
 /*
