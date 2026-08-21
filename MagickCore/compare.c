@@ -4597,7 +4597,7 @@ static double GetSimilarityMetric(const Image *image,
   channel_similarity=(double *) AcquireQuantumMemory(length,
     sizeof(*channel_similarity));
   if (channel_similarity == (double *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+    return(NAN);
   (void) memset(channel_similarity,0,length*sizeof(*channel_similarity));
   switch (metric)
   {
