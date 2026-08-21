@@ -691,6 +691,8 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
             SetStreamInfoStorageType(stream_info,(StorageType) type);
             break;
           }
+        if (LocaleCompare("strict",option+1) == 0)
+          break;
         if (LocaleCompare("synchronize",option+1) == 0)
           break;
         ThrowStreamException(OptionError,"UnrecognizedOption",option)

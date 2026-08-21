@@ -14,6 +14,7 @@ Image Settings:
   \-quiet               suppress all warning messages
   \-regard-warnings     pay attention to warning messages
   \-seed value          seed a new sequence of pseudo-random numbers
+  \-strict              treat coder warnings as errors
   \-verbose             print detailed information about the image
 
 Miscellaneous Options:

@@ -1099,6 +1099,7 @@ static MagickBooleanType MagickCommandUsage(void)
       "  -seed value          seed a new sequence of pseudo-random numbers\n"
       "  -size geometry       width and height of image\n"
       "  -stretch type        render text with this font stretch\n"
+      "  -strict              treat coder warnings as errors\n"
       "  -stroke color        graphic primitive stroke color\n"
       "  -strokewidth value   graphic primitive stroke width\n"
       "  -style type          render text with this font style\n"
