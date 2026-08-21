@@ -531,8 +531,7 @@ static XMLTreeInfo *DestroyXMLTree_(XMLTreeInfo *xml_info,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (depth > MagickMaxRecursionDepth)
-    ThrowFatalException(ResourceLimitFatalError,
-      "MemoryAllocationFailed");
+    return((XMLTreeInfo *) NULL);
   DestroyXMLTreeChild(xml_info,depth+1);
   DestroyXMLTreeOrdered(xml_info,depth+1);
   DestroyXMLTreeRoot(xml_info);
