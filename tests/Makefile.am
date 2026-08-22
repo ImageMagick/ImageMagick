@@ -62,6 +62,7 @@ TESTS_EXTRA_DIST = \
   tests/common.shi \
   tests/rose.pnm \
   tests/input_svg_gradient_transform.svg \
+  tests/input_svg_inline_style.svg \
   tests/input_256c.miff \
   tests/input_bilevel.miff \
   tests/input_gray.miff \
