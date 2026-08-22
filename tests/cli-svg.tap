@@ -18,8 +18,18 @@
 #
 . ./common.shi
 . ${srcdir}/tests/common.shi
-echo "1..1"
+echo "1..2"
 
 # gradientTransform should not cause a double-free / SIGABRT (#8582)
 ${MAGICK} ${SRCDIR}/input_svg_gradient_transform.svg null: && echo "ok" || echo "not ok"
+
+# Inline styles override presentation attributes regardless of attribute order.
+msvg_mode=`${MAGICK} -list format | awk '$1 ~ /^MSVG/ { print $3 }'`
+case "$msvg_mode" in
+  *r*) ;;
+  *) echo "ok # SKIP MSVG coder unavailable"; exit 0 ;;
+esac
+colors=`${MAGICK} MSVG:${SRCDIR}/input_svg_inline_style.svg \
+  -format '%[fx:int(255*p{5,5}.r+0.5)],%[fx:int(255*p{5,5}.g+0.5)],%[fx:int(255*p{5,5}.b+0.5)] %[fx:int(255*p{15,5}.r+0.5)],%[fx:int(255*p{15,5}.g+0.5)],%[fx:int(255*p{15,5}.b+0.5)]' info:-`
+[ "X$colors" = "X255,255,255 255,255,255" ] && echo "ok" || echo "not ok"
 :
