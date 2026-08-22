@@ -1279,6 +1279,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
     background[MagickPathExtent],
     id[MagickPathExtent],
     *next_token,
+    *style,
     token[MagickPathExtent],
     **tokens,
     *units;
@@ -1325,6 +1326,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
     }
   svg_info->scale[svg_info->n]=svg_info->scale[svg_info->n-1];
   color=AcquireString("none");
+  style=(char *) NULL;
   units=AcquireString("userSpaceOnUse");
   *id='\0';
   *token='\0';
@@ -2252,7 +2254,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
             }
           if (LocaleCompare(keyword,"style") == 0)
             {
-              SVGProcessStyleElement(svg_info,name,value);
+              (void) CloneString(&style,value);
               break;
             }
           break;
@@ -2558,6 +2560,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
           break;
       }
       value=DestroyString(value);
+    }
+  if (style != (char *) NULL)
+    {
+      SVGProcessStyleElement(svg_info,name,style);
+      style=DestroyString(style);
     }
   if (LocaleCompare((const char *) name,"svg") == 0)
     {
