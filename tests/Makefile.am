@@ -40,6 +40,7 @@ TESTS_XFAIL_TESTS =
 TESTS_TESTS = \
   tests/cli-colorspace.tap \
   tests/cli-heic.tap \
+  tests/cli-pcx.tap \
   tests/cli-pipe.tap \
   tests/cli-svg.tap \
   tests/validate-colorspace.tap \
