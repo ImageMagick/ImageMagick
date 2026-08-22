@@ -659,7 +659,7 @@ static MagickBooleanType ClonePixelCacheOnDisk(
     }
   buffer=(unsigned char *) AcquireQuantumMemory(quantum,sizeof(*buffer));
   if (buffer == (unsigned char *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+    return(MagickFalse);
   extent=0;
   while (extent < cache_info->length)
   {
@@ -3888,6 +3888,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
             }
           if (cache_info->pixels == (Quantum *) NULL)
             {
+              RelinquishMagickResource(MemoryResource,cache_info->length);
               cache_info->mapped=source_info.mapped;
               cache_info->pixels=source_info.pixels;
             }

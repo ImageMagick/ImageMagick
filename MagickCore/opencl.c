@@ -1690,7 +1690,10 @@ static MagickBooleanType RegisterCacheEvent(MagickCLCacheInfo info,
     info->events=(cl_event *) ResizeQuantumMemory(info->events,
       ++info->event_count,sizeof(*info->events));
   if (info->events == (cl_event *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+    {
+      UnlockSemaphoreInfo(info->events_semaphore);
+      return(MagickFalse);
+    }
   info->events[info->event_count-1]=event;
   UnlockSemaphoreInfo(info->events_semaphore);
   return(MagickTrue);
@@ -2785,7 +2788,13 @@ MagickPrivate MagickBooleanType RecordProfileData(MagickCLDevice device,
       device->profile_records=(KernelProfileRecord *) ResizeQuantumMemory(
         device->profile_records,(i+2),sizeof(*device->profile_records));
       if (device->profile_records == (KernelProfileRecord *) NULL)
-        ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+        {
+          UnlockSemaphoreInfo(device->lock);
+          profile_record=(KernelProfileRecord) RelinquishMagickMemory(
+            profile_record);
+          name=DestroyString(name);
+          return(MagickFalse);
+        }
       device->profile_records[i]=profile_record;
       device->profile_records[i+1]=(KernelProfileRecord) NULL;
     }

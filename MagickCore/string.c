@@ -2385,7 +2385,7 @@ MagickExport char **StringToStrings(const char *text,size_t *count)
       textlist=(char **) AcquireQuantumMemory((size_t) lines+1UL,
         sizeof(*textlist));
       if (textlist == (char **) NULL)
-        ThrowFatalException(ResourceLimitFatalError,"UnableToConvertText");
+        return((char **) NULL);
       p=text;
       for (i=0; i < (ssize_t) lines; i++)
       {
@@ -2395,7 +2395,15 @@ MagickExport char **StringToStrings(const char *text,size_t *count)
         textlist[i]=(char *) AcquireQuantumMemory((size_t) (q-p)+1,
           sizeof(**textlist));
         if (textlist[i] == (char *) NULL)
-          ThrowFatalException(ResourceLimitFatalError,"UnableToConvertText");
+          {
+            ssize_t
+              j;
+
+            for (j=0; j < i; j++)
+              textlist[j]=DestroyString(textlist[j]);
+            textlist=(char **) RelinquishMagickMemory(textlist);
+            return((char **) NULL);
+          }
         (void) memcpy(textlist[i],p,(size_t) (q-p));
         textlist[i][q-p]='\0';
         if (*q == '\r')
@@ -2421,7 +2429,7 @@ MagickExport char **StringToStrings(const char *text,size_t *count)
       textlist=(char **) AcquireQuantumMemory((size_t) lines+1UL,
         sizeof(*textlist));
       if (textlist == (char **) NULL)
-        ThrowFatalException(ResourceLimitFatalError,"UnableToConvertText");
+        return((char **) NULL);
       p=text;
       for (i=0; i < (ssize_t) lines; i++)
       {
@@ -2431,7 +2439,12 @@ MagickExport char **StringToStrings(const char *text,size_t *count)
         textlist[i]=(char *) AcquireQuantumMemory(2UL*MagickPathExtent,
           sizeof(**textlist));
         if (textlist[i] == (char *) NULL)
-          ThrowFatalException(ResourceLimitFatalError,"UnableToConvertText");
+          {
+            for (j=0; j < i; j++)
+              textlist[j]=DestroyString(textlist[j]);
+            textlist=(char **) RelinquishMagickMemory(textlist);
+            return((char **) NULL);
+          }
         (void) FormatLocaleString(textlist[i],MagickPathExtent,"0x%08lx: ",
           (long) (CharsPerLine*i));
         q=textlist[i]+strlen(textlist[i]);
@@ -2461,10 +2474,22 @@ MagickExport char **StringToStrings(const char *text,size_t *count)
           p++;
         }
         *q='\0';
-        textlist[i]=(char *) ResizeQuantumMemory(textlist[i],(size_t) (q-
-          textlist[i]+1),sizeof(**textlist));
-        if (textlist[i] == (char *) NULL)
-          ThrowFatalException(ResourceLimitFatalError,"UnableToConvertText");
+        {
+          char
+            *resized;
+
+          resized=(char *) ResizeQuantumMemory(textlist[i],(size_t) (q-
+            textlist[i]+1),sizeof(**textlist));
+          if (resized == (char *) NULL)
+            {
+              textlist[i]=DestroyString(textlist[i]);
+              for (j=0; j < i; j++)
+                textlist[j]=DestroyString(textlist[j]);
+              textlist=(char **) RelinquishMagickMemory(textlist);
+              return((char **) NULL);
+            }
+          textlist[i]=resized;
+        }
       }
     }
   if (count != (size_t *) NULL)

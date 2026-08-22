@@ -524,7 +524,7 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
   pixel_info=(MemoryInfo *) NULL;
 #else
   pixel_buffer=rsvg_handle_get_pixbuf(svg_handle);
-  rsvg_handle_free(svg_handle);
+  g_object_unref(svg_handle);
   image->columns=gdk_pixbuf_get_width(pixel_buffer);
   image->rows=gdk_pixbuf_get_height(pixel_buffer);
 #endif
@@ -546,8 +546,9 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
         {
 #if !defined(MAGICKCORE_CAIRO_DELEGATE)
           g_object_unref(G_OBJECT(pixel_buffer));
-#endif
+#else
           g_object_unref(svg_handle);
+#endif
           ThrowReaderException(MissingDelegateError,
             "NoDecodeDelegateForThisImageFormat");
         }

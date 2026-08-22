@@ -7169,6 +7169,8 @@ static void MSLEndElement(void *context,const xmlChar *tag)
                 msl_info->image[msl_info->n]);
             msl_info->attributes[msl_info->n]=DestroyImage(
               msl_info->attributes[msl_info->n]);
+            msl_info->draw_info[msl_info->n]=DestroyDrawInfo(
+              msl_info->draw_info[msl_info->n]);
             msl_info->image_info[msl_info->n]=DestroyImageInfo(
               msl_info->image_info[msl_info->n]);
             msl_info->n--;

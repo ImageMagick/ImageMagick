@@ -1501,7 +1501,7 @@ MagickPrivate char **GetPathComponents(const char *path,
   components=(char **) AcquireQuantumMemory((size_t) *number_components+1UL,
     sizeof(*components));
   if (components == (char **) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+    return((char **) NULL);
   p=path;
   for (i=0; i < (ssize_t) *number_components; i++)
   {
@@ -1510,8 +1510,16 @@ MagickPrivate char **GetPathComponents(const char *path,
         break;
     components[i]=(char *) AcquireQuantumMemory((size_t) (q-p)+MagickPathExtent,
       sizeof(**components));
-    if (components[i] == (char *) NULL)
-      ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+    if (components[i] == (char*)NULL)
+      {
+        ssize_t
+          j;
+
+        for (j=0; j < i; j++)
+          components[j]=DestroyString(components[j]);
+        components=(char **) RelinquishMagickMemory(components);
+        return((char **) NULL);
+      }
     (void) CopyMagickString(components[i],p,(size_t) (q-p+1));
     p=q+1;
   }
@@ -1811,7 +1819,11 @@ MagickPrivate char **ListFiles(const char *directory,const char *pattern,
   */
   buffer=(struct dirent *) AcquireMagickMemory(sizeof(*buffer)+FILENAME_MAX+1);
   if (buffer == (struct dirent *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+    {
+      filelist=(char **) RelinquishMagickMemory(filelist);
+      (void) closedir(current_directory);
+      return((char **) NULL);
+    }
   while ((MagickReadDirectory(current_directory,buffer,&entry) == 0) &&
          (entry != (struct dirent *) NULL))
   {
