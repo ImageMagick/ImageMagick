@@ -341,6 +341,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     image->columns=(size_t) (pcx_info.right-pcx_info.left)+1UL;
     image->rows=(size_t) (pcx_info.bottom-pcx_info.top)+1UL;
+    image->page.x=(ssize_t) pcx_info.left;
+    image->page.y=(ssize_t) pcx_info.top;
     image->depth=pcx_info.bits_per_pixel;
     image->units=PixelsPerInchResolution;
     image->resolution.x=(double) pcx_info.horizontal_resolution;
@@ -947,9 +949,17 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
     else if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
         (void) TransformImageColorspace(image,sRGBColorspace,exception);
     pcx_info.left=0;
+    if ((image->page.x > 0) && (image->page.x <= MAGICK_USHORT_MAX) &&
+        (image->columns <= (size_t) MAGICK_USHORT_MAX+1UL-
+          (size_t) image->page.x))
+      pcx_info.left=(unsigned short) image->page.x;
     pcx_info.top=0;
-    pcx_info.right=(unsigned short) (image->columns-1);
-    pcx_info.bottom=(unsigned short) (image->rows-1);
+    if ((image->page.y > 0) && (image->page.y <= MAGICK_USHORT_MAX) &&
+        (image->rows <= (size_t) MAGICK_USHORT_MAX+1UL-
+          (size_t) image->page.y))
+      pcx_info.top=(unsigned short) image->page.y;
+    pcx_info.right=(unsigned short) (pcx_info.left+image->columns-1);
+    pcx_info.bottom=(unsigned short) (pcx_info.top+image->rows-1);
     switch (image->units)
     {
       case UndefinedResolution:
