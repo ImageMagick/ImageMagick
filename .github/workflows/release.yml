@@ -214,13 +214,13 @@ jobs:
         env:
           VERSION: ${{needs.version.outputs.version}}
           TIMESTAMP: ${{needs.version.outputs.timestamp}}
-          FILENAME: ImageMagick-${{needs.version.outputs.version}}-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.typeName}}-${{matrix.architecture}}.cdx.json
+          FILENAME: ImageMagick-${{needs.version.outputs.version}}-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.architecture}}-${{matrix.typeName}}.cdx.json
         run: |
           python ImageMagick\.github\build\windows\create-sbom.py Configure\Installer\Inno\Artifacts\%FILENAME%
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #v7.0.1
         with:
-          name: ImageMagick-${{needs.version.outputs.version}}-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.typeName}}-${{matrix.architecture}}.exe
+          name: ImageMagick-${{needs.version.outputs.version}}-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.architecture}}-${{matrix.typeName}}.exe
           path: Configure\Installer\Inno\Artifacts
 
   windows_source:
