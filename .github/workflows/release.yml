@@ -28,6 +28,7 @@ jobs:
     outputs:
       version: ${{steps.version.outputs.version}}
       semantic_version: ${{steps.version.outputs.semantic_version}}
+      timestamp: ${{steps.version.outputs.timestamp}}
       publish: ${{steps.version.outputs.publish}}
 
     steps:
@@ -46,6 +47,9 @@ jobs:
           echo "version=$version"
           echo "semantic_version=$semantic_version" >> $GITHUB_OUTPUT
           echo "semantic_version=$semantic_version"
+          timestamp=$(git log -1 --format=%cI)
+          echo "timestamp=$timestamp" >> $GITHUB_OUTPUT
+          echo "timestamp=$timestamp"
           tag=$(git describe --tags HEAD --exact-match || true)
           if [[ "$tag" == "$version" ]]; then
             echo "publish=true" >> $GITHUB_OUTPUT
@@ -204,6 +208,14 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           directory: ${{ github.workspace }}\Configure\Installer\Inno\Artifacts
           files: '*.exe'
+
+      - name: Create SBOM
+        shell: cmd
+        env:
+          VERSION: ${{needs.version.outputs.version}}
+          TIMESTAMP: ${{needs.version.outputs.timestamp}}
+        run: |
+          python ImageMagick\.github\build\windows\create-sbom.py Configure\Installer\Inno\Artifacts\ImageMagick-%VERSION%-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.typeName}}-${{matrix.architecture}}.cdx.json
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #v7.0.1
         with:
@@ -635,6 +647,7 @@ jobs:
             ${{github.workspace}}/artifacts/*.exe \
             ${{github.workspace}}/artifacts/*.intoto.jsonl \
             ${{github.workspace}}/artifacts/*.msixbundle \
+            ${{github.workspace}}/artifacts/*.cdx.json \
             ${{github.workspace}}/artifacts/*.xz
 
   prepare_msix:
