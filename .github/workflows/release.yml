@@ -47,7 +47,7 @@ jobs:
           echo "version=$version"
           echo "semantic_version=$semantic_version" >> $GITHUB_OUTPUT
           echo "semantic_version=$semantic_version"
-          timestamp=$(git log -1 --format=%cI)
+          timestamp=$(TZ=UTC git log -1 --date=format-local:%Y-%m-%dT%H:%M:%SZ --format=%cd)
           echo "timestamp=$timestamp" >> $GITHUB_OUTPUT
           echo "timestamp=$timestamp"
           tag=$(git describe --tags HEAD --exact-match || true)
