@@ -354,6 +354,20 @@ jobs:
           name: ImageMagick-${{needs.version.outputs.version}}-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.architecture}}.7z
           path: ImageMagick-${{needs.version.outputs.version}}-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.architecture}}.7z
 
+      - name: Create SBOM
+        shell: cmd
+        env:
+          VERSION: ${{needs.version.outputs.version}}
+          TIMESTAMP: ${{needs.version.outputs.timestamp}}
+          FILENAME: ImageMagick-${{needs.version.outputs.version}}-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.architecture}}.cdx.json
+        run: |
+          python ImageMagick\.github\build\windows\create-sbom.py %FILENAME%
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #v7.0.1
+        with:
+          name: ImageMagick-${{needs.version.outputs.version}}-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.architecture}}.cdx.json
+          path: ImageMagick-${{needs.version.outputs.version}}-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.architecture}}.cdx.json
+
   windows_msix:
     name: Create Msix ${{matrix.quantum}}${{matrix.hdri_flag}}
     if: github.event_name != 'pull_request'
