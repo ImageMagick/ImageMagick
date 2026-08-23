@@ -211,11 +211,8 @@ static size_t DecodeNewIconLine(const char *src,size_t src_len,
       }
     for (bit_i=6; bit_i >= 0; bit_i--)
     {
-      if (bit_count < bits_alloc*8)
-        {
-          if ((val >> bit_i) & 1)
-            bits[bit_count >> 3]|=(unsigned char) (1 << (7-(bit_count & 7)));
-        }
+      if ((bit_count < bits_alloc*8) && ((val >> bit_i) & 1))
+        bits[bit_count >> 3]|=(unsigned char) (1 << (7-(bit_count & 7)));
       bit_count++;
     }
   }
@@ -298,15 +295,6 @@ static unsigned char *DecodeAmigaRLE(const unsigned char *data,
   *decoded_count=count;
   *complete=count == expected_count ? MagickTrue : MagickFalse;
   return(result);
-}
-
-static inline void SetAmigaPixelRGBA(const Image *image,Quantum *q,
-  unsigned char r,unsigned char g,unsigned char b,unsigned char a)
-{
-  SetPixelRed(image,ScaleCharToQuantum(r),q);
-  SetPixelGreen(image,ScaleCharToQuantum(g),q);
-  SetPixelBlue(image,ScaleCharToQuantum(b),q);
-  SetPixelAlpha(image,ScaleCharToQuantum(a),q);
 }
 
 static MagickBooleanType AppendAmigaImage(Image **image,size_t width,
@@ -483,7 +471,7 @@ static MagickBooleanType ReadAndRenderClassicImage(Image **image,
     if ((planes[p_idx] == (unsigned char *) NULL) ||
         (ReadBlob(*image,plane_size,planes[p_idx]) != (ssize_t) plane_size))
       {
-        planes=RelinquishPlanes(planes,(size_t) depth);
+        planes=RelinquishPlanes(planes,p_idx);
         return(MagickFalse);
       }
   }
@@ -1129,10 +1117,19 @@ static AmigaIconChunkStatus DecodeAndRenderARGBIcon(Image **image,
 
       pi=((size_t) y*icon_width+(size_t) x)*4;
       if (pi+3 < (size_t) raw_size)
-        SetAmigaPixelRGBA(*image,q,argb_raw[pi+1],argb_raw[pi+2],
-          argb_raw[pi+3],argb_raw[pi]);
+        {
+          SetPixelRed(*image,ScaleCharToQuantum(argb_raw[pi+1]),q);
+          SetPixelGreen(*image,ScaleCharToQuantum(argb_raw[pi+2]),q);
+          SetPixelBlue(*image,ScaleCharToQuantum(argb_raw[pi+3]),q);
+          SetPixelAlpha(*image,ScaleCharToQuantum(argb_raw[pi]),q);
+        }
       else
-        SetAmigaPixelRGBA(*image,q,0,0,0,0);
+        {
+          SetPixelRed(*image,0,q);
+          SetPixelGreen(*image,0,q);
+          SetPixelBlue(*image,0,q);
+          SetPixelAlpha(*image,TransparentAlpha,q);
+        }
       q+=(ptrdiff_t) GetPixelChannels(*image);
     }
     if (SyncAuthenticPixels(*image,exception) == MagickFalse)
@@ -1391,12 +1388,6 @@ static Image *ReadWBINFOImage(const ImageInfo *image_info,
   */
   if (has_drawer_data)
     {
-      size_t
-        remaining;
-
-      if ((GetRemainingBlobSize(image,&remaining) == MagickFalse) ||
-          (remaining < 56))
-        ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
       if (SeekBlob(image,56,SEEK_CUR) < 0)
         ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     }
@@ -1424,21 +1415,10 @@ static Image *ReadWBINFOImage(const ImageInfo *image_info,
   */
   if (has_default_tool)
     {
-      size_t
-        remaining;
-
       unsigned int
         text_len;
 
       text_len=ReadBlobMSBLong(image);
-      if ((GetRemainingBlobSize(image,&remaining) == MagickFalse) ||
-          ((size_t) text_len > remaining))
-        {
-          if (scene == 0)
-            ThrowReaderException(CorruptImageError,
-              "InsufficientImageDataInFile");
-          return(FinishTruncatedWBINFO(image,image_info,exception));
-        }
       if (SeekBlob(image,(MagickOffsetType) text_len,SEEK_CUR) < 0)
         ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     }
@@ -1467,21 +1447,10 @@ static Image *ReadWBINFOImage(const ImageInfo *image_info,
   */
   if (has_tool_window)
     {
-      size_t
-        remaining;
-
       unsigned int
         text_len;
 
       text_len=ReadBlobMSBLong(image);
-      if ((GetRemainingBlobSize(image,&remaining) == MagickFalse) ||
-          ((size_t) text_len > remaining))
-        {
-          if (scene == 0)
-            ThrowReaderException(CorruptImageError,
-              "InsufficientImageDataInFile");
-          return(FinishTruncatedWBINFO(image,image_info,exception));
-        }
       if (SeekBlob(image,(MagickOffsetType) text_len,SEEK_CUR) < 0)
         ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     }
@@ -1490,17 +1459,6 @@ static Image *ReadWBINFOImage(const ImageInfo *image_info,
   */
   if (has_drawer_data && (user_data & 255))
     {
-      size_t
-        remaining;
-
-      if ((GetRemainingBlobSize(image,&remaining) == MagickFalse) ||
-          (remaining < 6))
-        {
-          if (scene == 0)
-            ThrowReaderException(CorruptImageError,
-              "InsufficientImageDataInFile");
-          return(FinishTruncatedWBINFO(image,image_info,exception));
-        }
       if (SeekBlob(image,6,SEEK_CUR) < 0)
         ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     }
