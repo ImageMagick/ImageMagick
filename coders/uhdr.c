@@ -1384,7 +1384,7 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
       sdrImgDescriptor.planes[UHDR_PLANE_Y] = NULL;
     }
 
-    yBuffer = AcquireMagickMemory(picSize);
+    yBuffer = AcquireQuantumMemory(picSize,1);
     if (yBuffer == NULL)
     {
       status = MagickFalse;
