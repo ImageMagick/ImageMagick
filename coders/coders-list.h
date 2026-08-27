@@ -43,7 +43,9 @@ AddMagickCoder(DIB)
 #if defined(MAGICKCORE_DJVU_DELEGATE)
   AddMagickCoder(DJVU)
 #endif
-AddMagickCoder(DMR)
+#if defined(MAGICKCORE_DMR_DELEGATE)
+  AddMagickCoder(DMR)
+#endif
 AddMagickCoder(DNG)
 #if defined(MAGICKCORE_GVC_DELEGATE)
   AddMagickCoder(DOT)
