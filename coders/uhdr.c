@@ -46,6 +46,7 @@
 #include "MagickCore/profile-private.h"
 #include "MagickCore/resize.h"
 #include "MagickCore/shear.h"
+#include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/transform.h"
@@ -491,7 +492,7 @@ ModuleExport size_t RegisterUHDRImage(void)
     *entry;
 
   *version='\0';
-  entry=AcquireMagickInfo("UHDr","UHDR","Ultra HDR Image Format");
+  entry=AcquireMagickInfo("UHDR","UHDR","Ultra HDR Image Format");
 #if defined(MAGICKCORE_UHDR_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadUHDRImage;
   entry->encoder=(EncodeImageHandler *) WriteUHDRImage;
@@ -525,7 +526,7 @@ ModuleExport size_t RegisterUHDRImage(void)
 */
 ModuleExport void UnregisterUHDRImage(void)
 {
-  (void) UnregisterMagickInfo("UHDr");
+  (void) UnregisterMagickInfo("UHDR");
 }
 
 #if defined(MAGICKCORE_UHDR_DELEGATE)
