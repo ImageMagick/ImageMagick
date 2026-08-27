@@ -229,10 +229,13 @@ WandExport ScriptTokenInfo *AcquireScriptTokenInfo(const char *filename)
   else {
     token_info->stream=fopen_utf8(filename, "r");
   }
-  if ( token_info->stream == (FILE *) NULL ) {
-    token_info=(ScriptTokenInfo *) RelinquishMagickMemory(token_info);
-    return(token_info);
-  }
+  if ( token_info->stream != (FILE *) NULL )
+    token_info->opened=MagickTrue;
+  else
+    {
+      token_info=(ScriptTokenInfo *) RelinquishMagickMemory(token_info);
+      return(token_info);
+    }
 
   token_info->curr_line=1;
   token_info->length=INITAL_TOKEN_LENGTH;
