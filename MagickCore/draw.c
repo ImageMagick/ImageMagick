@@ -4300,8 +4300,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
             break;
           }
         mvg_info.offset=i;
-        status&=(MagickStatusType) CheckPrimitiveExtent(&mvg_info,(double)
-          number_points);
+        status&=CheckPrimitiveExtent(&mvg_info,(double) number_points+
+          (double) coordinates+1.0);
         primitive_info=(*mvg_info.primitive_info);
         if (status == MagickFalse)
           break;
