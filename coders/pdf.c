@@ -52,8 +52,6 @@
 #include "MagickCore/colorspace-private.h"
 #include "MagickCore/compress.h"
 #include "MagickCore/constitute.h"
-#include "MagickCore/delegate.h"
-#include "MagickCore/delegate-private.h"
 #include "MagickCore/distort.h"
 #include "MagickCore/draw.h"
 #include "MagickCore/exception.h"
@@ -86,7 +84,6 @@
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
 #include "MagickCore/xml-tree-private.h"
-#include "coders/bytebuffer-private.h"
 #include "coders/coders-private.h"
 #include "coders/ghostscript-private.h"
 
@@ -914,50 +911,6 @@ ModuleExport void UnregisterPDFImage(void)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static char *EscapeParenthesis(const char *source)
-{
-  char
-    *destination;
-
-  char
-    *q;
-
-  const char
-    *p;
-
-  size_t
-    length;
-
-  assert(source != (const char *) NULL);
-  length=0;
-  for (p=source; *p != '\0'; p++)
-  {
-    if ((*p == '\\') || (*p == '(') || (*p == ')'))
-      {
-        if (~length < 1)
-          ThrowFatalException(ResourceLimitFatalError,"UnableToEscapeString");
-        length++;
-      }
-    length++;
-  }
-  destination=(char *) NULL;
-  if (~length >= (MagickPathExtent-1))
-    destination=(char *) AcquireQuantumMemory(length+MagickPathExtent,
-      sizeof(*destination));
-  if (destination == (char *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"UnableToEscapeString");
-  *destination='\0';
-  q=destination;
-  for (p=source; *p != '\0'; p++)
-  {
-    if ((*p == '\\') || (*p == '(') || (*p == ')'))
-      *q++='\\';
-    *q++=(*p);
-  }
-  *q='\0';
-  return(destination);
-}
 
 static size_t UTF8ToUTF16(const unsigned char *utf8,wchar_t *utf16)
 {
