@@ -46,6 +46,7 @@
 #if defined(MAGICKCORE_DJVU_DELEGATE)
   #include "coders/djvu.h"
 #endif
+#include "coders/dmr.h"
 #include "coders/dng.h"
 #if defined(MAGICKCORE_GVC_DELEGATE)
 #include "coders/dot.h"
