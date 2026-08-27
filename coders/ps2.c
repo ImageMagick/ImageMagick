@@ -72,6 +72,7 @@
 #include "MagickCore/timer-private.h"
 #include "MagickCore/utility.h"
 #include "coders/coders-private.h"
+#include "coders/ghostscript-private.h"
 
 /*
   Define declarations.
@@ -789,8 +790,12 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
       {
         for (i=0; labels[i] != (char *) NULL; i++)
         {
-          (void) FormatLocaleString(buffer,MagickPathExtent,"%s \n",
-            labels[i]);
+          char
+            *escape;
+
+          escape=EscapeParenthesis(labels[i]);
+          (void) FormatLocaleString(buffer,MagickPathExtent,"%s \n",escape);
+          escape=DestroyString(escape);
           (void) WriteBlobString(image,buffer);
           labels[i]=DestroyString(labels[i]);
         }

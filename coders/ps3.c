@@ -76,6 +76,7 @@
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
 #include "coders/coders-private.h"
+#include "coders/ghostscript-private.h"
 
 /*
   Define declarations.
@@ -1292,20 +1293,25 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
       {
         for (i=0; labels[i] != (char *) NULL; i++)
         {
+          char
+            *escape;
+
+          escape=EscapeParenthesis(labels[i]);
           if (compression != NoCompression)
             {
-              for (j=0; labels[i][j] != '\0'; j++)
-                (void) WriteBlobByte(image,(unsigned char) labels[i][j]);
+              for (j=0; escape[j] != '\0'; j++)
+                (void) WriteBlobByte(image,(unsigned char) escape[j]);
               (void) WriteBlobByte(image,'\n');
             }
           else
             {
               (void) WriteBlobString(image,"<~");
               Ascii85Initialize(image);
-              for (j=0; labels[i][j] != '\0'; j++)
-                Ascii85Encode(image,(unsigned char) labels[i][j]);
+              for (j=0; escape[j] != '\0'; j++)
+                Ascii85Encode(image,(unsigned char) escape[j]);
               Ascii85Flush(image);
             }
+          escape=DestroyString(escape);
           labels[i]=DestroyString(labels[i]);
         }
         labels=(char **) RelinquishMagickMemory(labels);
