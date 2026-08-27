@@ -785,7 +785,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       */
       if (GetMagickDecoderThreadSupport(magick_info) == MagickFalse)
         LockSemaphoreInfo(magick_info->semaphore);
-      status=IsCoderAuthorized(magick_info->magick_module,read_info->magick,
+      status=IsCoderAuthorized(magick_info->magick_module,magick_info->name,
         ReadPolicyRights,exception);
       image=(Image *) NULL;
       if (status != MagickFalse)
@@ -1367,7 +1367,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
       */
       if (GetMagickEncoderThreadSupport(magick_info) == MagickFalse)
         LockSemaphoreInfo(magick_info->semaphore);
-      status=IsCoderAuthorized(magick_info->magick_module,write_info->magick,
+      status=IsCoderAuthorized(magick_info->magick_module,magick_info->name,
         WritePolicyRights,exception);
       if (status != MagickFalse)
         status=encoder(write_info,image,exception);
