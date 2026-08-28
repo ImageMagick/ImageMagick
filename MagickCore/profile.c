@@ -2641,11 +2641,39 @@ static MagickBooleanType GetXmpOffsets(const StringInfo *profile,
   return(MagickTrue);
 }
 
+static MagickBooleanType TryAccumulate(const double term,
+  const unsigned long previous,const unsigned long before_previous,
+  unsigned long *result)
+{
+  double
+    accumulated;
+
+  *result=0;
+  if (term > (double) MAGICK_ULONG_MAX)
+    return(MagickFalse);
+  accumulated=(term*previous)+before_previous;
+  if ((accumulated < 0.0) || (accumulated > (double) MAGICK_ULONG_MAX))
+    return(MagickFalse);
+  *result=(unsigned long) accumulated;
+  return(MagickTrue);
+}
+
 static void GetXmpNumeratorAndDenominator(double value,
   unsigned long *numerator,unsigned long *denominator)
 {
   double
-    df;
+    remainder;
+
+  unsigned long
+    den,
+    new_den,
+    new_num,
+    num,
+    prev_den,
+    prev_num;
+
+  ssize_t
+    i;
 
   *numerator=0;
   *denominator=1;
@@ -2653,29 +2681,47 @@ static void GetXmpNumeratorAndDenominator(double value,
     return;
   if (value > (double) MAGICK_ULONG_MAX)
     {
-      *numerator = MAGICK_ULONG_MAX;
-      *denominator = 1;
+      *numerator=MAGICK_ULONG_MAX;
+      *denominator=1;
       return;
     }
   if (floor(value) == value)
     {
-      *numerator = (unsigned long) value;
-      *denominator = 1;
+      *numerator=(unsigned long) value;
+      *denominator=1;
       return;
     }
-  *numerator=1;
-  df=1.0;
-  while(fabs(df - value) > MagickEpsilon)
+  num=1;
+  prev_num=0;
+  den=0;
+  prev_den=1;
+  remainder=value;
+  for (i=0; i < 128; i++)
   {
-    if (df < value)
-      (*numerator)++;
-    else
-      {
-        (*denominator)++;
-        *numerator=(unsigned long) (value*(*denominator));
-      }
-    df=*numerator/(double)*denominator;
+    double
+      approximation,
+      fraction,
+      term;
+
+    term=floor(remainder);
+    if ((TryAccumulate(term,num,prev_num,&new_num) == MagickFalse) ||
+        (TryAccumulate(term,den,prev_den,&new_den) == MagickFalse) ||
+        (new_den == 0))
+      break;
+    prev_num=num;
+    num=new_num;
+    prev_den=den;
+    den=new_den;
+    approximation=num/(double) den;
+    if (fabs(approximation-value) <= MagickEpsilon)
+      break;
+    fraction=remainder-term;
+    if (fraction <= 0.0)
+      break;
+    remainder=1.0/fraction;
   }
+  *numerator=num;
+  *denominator=(den == 0 ? 1 : den);
 }
 
 static void SyncXmpProfile(const Image *image,StringInfo *profile)
