@@ -151,6 +151,8 @@ MAGICKCORE_CODER_SRCS = \
 	coders/cube.h \
 	coders/cut.c \
 	coders/cut.h \
+	coders/c2pa.c \
+	coders/c2pa.h \
 	coders/dcm.c \
 	coders/dcm.h \
 	coders/dds.c \
@@ -429,6 +431,7 @@ CODERS_NOINST_HDRS = \
 	coders/coders-private.h \
 	coders/cube.h \
 	coders/cut.h \
+	coders/c2pa.h \
 	coders/dcm.h \
 	coders/dds.h \
 	coders/debug.h \
@@ -577,6 +580,7 @@ coders_LTLIBRARIES = \
 	coders/cmyk.la \
 	coders/cube.la \
 	coders/cut.la \
+	coders/c2pa.la \
 	coders/dcm.la \
 	coders/dds.la \
 	coders/debug.la \
@@ -812,6 +816,12 @@ coders_cut_la_SOURCES      = coders/cut.c
 coders_cut_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
 coders_cut_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_cut_la_LIBADD       = $(MAGICKCORE_LIBS)
+
+# C2PA coder module
+coders_c2pa_la_SOURCES     = coders/c2pa.c
+coders_c2pa_la_CPPFLAGS    = $(MAGICK_CODER_CPPFLAGS)
+coders_c2pa_la_LDFLAGS     = $(MODULECOMMONFLAGS)
+coders_c2pa_la_LIBADD      = $(MAGICKCORE_LIBS)
 
 # DCM coder module
 coders_dcm_la_SOURCES      = coders/dcm.c

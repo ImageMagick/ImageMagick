@@ -3301,6 +3301,8 @@ BPGEncodeDelegateDefault='bpgenc'
 BlenderDecodeDelegateDefault='blender'
 BrowseDelegateDefault='xdg-open'
 ClipboardDelegateDefault='xclip'
+C2PADecodeDelegateDefault='c2patool'
+C2PAEncodeDelegateDefault='c2patool'
 DNGDecodeDelegateDefault='darktable-cli'
 DOCDecodeDelegateDefault='libreoffice'
 GVCDecodeDelegateDefault='dot'
@@ -3350,6 +3352,8 @@ AC_PATH_PROG([BPGEncodeDelegate],["$BPGEncodeDelegateDefault"],["$BPGEncodeDeleg
 AC_PATH_PROG([BlenderDecodeDelegate],["$BlenderDecodeDelegateDefault"],["$BlenderDecodeDelegateDefault"])
 AC_PATH_PROGS([BrowseDelegate],["$BrowseDelegateDefault" brave-browser microsoft-edge google-chrome firefox konqueror lynx],["$BrowseDelegateDefault"])
 AC_PATH_PROGS([ClipboardDelegate],["$ClipboardDelegateDefault"],["$ClipboardDelegateDefault"])
+AC_PATH_PROG([C2PADecodeDelegate],["$C2PADecodeDelegateDefault"],["$C2PADecodeDelegateDefault"])
+AC_PATH_PROG([C2PAEncodeDelegate],["$C2PAEncodeDelegateDefault"],["$C2PAEncodeDelegateDefault"])
 AC_PATH_PROG([DNGDecodeDelegate],["$DNGDecodeDelegateDefault"],["$DNGDecodeDelegateDefault"])
 AC_PATH_PROG([DOCDecodeDelegate],["$DOCDecodeDelegateDefault"],["$DOCDecodeDelegateDefault"])
 AC_PATH_PROG([DVIDecodeDelegate],["$DVIDecodeDelegateDefault"],["$DVIDecodeDelegateDefault"])
@@ -3401,6 +3405,7 @@ DisplayDelegate="${BIN_DIR}/${DisplayDelegateDefault}"
 MogrifyDelegate="${BIN_DIR}/${MogrifyDelegateDefault}"
 
 # Set delegate booleans
+have_c2pa='no'; if test "$C2PADecodeDelegate" != "$C2PADecodeDelegateDefault" ; then have_c2pa='yes'; fi
 have_gs='no'         ; if test "$PSDelegate" != "$PSDelegateDefault"; then have_gs='yes'; fi
 have_hp2xx='no'      ; if test "$HPGLDecodeDelegate" !=  "$HPGLDecodeDelegateDefault" ; then have_hp2xx='yes'; fi
 have_ilbmtoppm='no'  ; if test "$ILBMDecodeDelegate" != "$ILBMDecodeDelegateDefault" ; then have_ilbmtoppm='yes'; fi
@@ -3667,6 +3672,8 @@ if test "$with_frozenpaths" != 'yes'; then
   BrowseDelegate="$BrowseDelegateDefault"
   ClipboardDelegate="$ClipboardDelegateDefault"
   ConvertDelegate="$ConvertDelegateDefault"
+  C2PADecodeDelegate="$C2PADecodeDelegateDefault"
+  C2PAEncodeDelegate="$C2PAEncodeDelegateDefault"
   DisplayDelegate="$DisplayDelegateDefault"
   DNGDecodeDelegate="$DNGDecodeDelegateDefault"
   DOCDecodeDelegate="$DOCDecodeDelegateDefault"
@@ -3708,6 +3715,8 @@ AC_SUBST([BlenderDecodeDelegate])
 AC_SUBST([BrowseDelegate])
 AC_SUBST([ClipboardDelegate])
 AC_SUBST([ConvertDelegate])
+AC_SUBST([C2PADecodeDelegate])
+AC_SUBST([C2PAEncodeDelegate])
 AC_SUBST([GVCDecodeDelegate])
 AC_SUBST([DVIDecodeDelegate])
 AC_SUBST([EditorDelegate])
@@ -4024,6 +4033,9 @@ if test "$have_bzlib"  = 'yes' ; then
 fi
 if test "$have_cairo"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES cairo"
+fi
+if test "$have_c2pa"   = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES C2PA"
 fi
 if test "$have_dmr"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES dmr"

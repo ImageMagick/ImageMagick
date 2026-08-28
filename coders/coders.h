@@ -39,6 +39,7 @@
 #include "coders/cmyk.h"
 #include "coders/cube.h"
 #include "coders/cut.h"
+#include "coders/c2pa.h"
 #include "coders/dcm.h"
 #include "coders/dds.h"
 #include "coders/debug.h"
