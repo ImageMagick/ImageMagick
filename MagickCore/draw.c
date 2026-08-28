@@ -95,6 +95,7 @@
 #define BezierQuantum  200
 #define PrimitiveExtentPad  4296.0
 #define MaxBezierCoordinates  67108864
+#define MacroExpansionLimit  262144
 #define ThrowPointExpectedException(token,exception) \
 { \
   (void) ThrowMagickException(exception,GetMagickModule(),DrawError, \
@@ -383,6 +384,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
       MagickTrue,exception);
   clone_info->render=draw_info->render;
   clone_info->debug=draw_info->debug;
+  clone_info->macro_expansion=draw_info->macro_expansion;
   exception=DestroyExceptionInfo(exception);
   return(clone_info);
 }
@@ -4031,6 +4033,18 @@ static MagickBooleanType RenderMVGContent(Image *image,
             if (use != (const char *) NULL)
               {
                 clone_info=CloneDrawInfo((ImageInfo *) NULL,graphic_context[n]);
+                if (draw_info->macro_expansion != (size_t *) NULL)
+                  {
+                    if (*draw_info->macro_expansion >= MacroExpansionLimit)
+                      {
+                        (void) ThrowMagickException(exception,GetMagickModule(),
+                          DrawError,"NonconformingDrawingPrimitiveDefinition",
+                          "`%s'",token);
+                        clone_info=DestroyDrawInfo(clone_info);
+                        return(MagickFalse);
+                      }
+                    (*draw_info->macro_expansion)++;
+                  }
                 (void) CloneString(&clone_info->primitive,use);
                 status=RenderMVGContent(image,clone_info,depth+1,exception);
                 clone_info=DestroyDrawInfo(clone_info);
@@ -4666,7 +4680,16 @@ static MagickBooleanType RenderMVGContent(Image *image,
 MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
   ExceptionInfo *exception)
 {
-  return(RenderMVGContent(image,draw_info,0,exception));
+  MagickBooleanType
+    status;
+
+  size_t
+    macro_expansion = 0;
+
+  ((DrawInfo *) draw_info)->macro_expansion=(&macro_expansion);
+  status=RenderMVGContent(image,draw_info,0,exception);
+  ((DrawInfo *) draw_info)->macro_expansion=(size_t *) NULL;
+  return(status);
 }
 
 /*
@@ -6174,6 +6197,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->clip_path=MagickFalse;
   draw_info->debug=(GetLogEventMask() & (DrawEvent | AnnotateEvent)) != 0 ?
     MagickTrue : MagickFalse;
+  draw_info->macro_expansion=(size_t *) NULL;
   if (draw_info->image_info->font != (char *) NULL)
     draw_info->font=AcquireString(draw_info->image_info->font);
   if (draw_info->image_info->density != (char *) NULL)
