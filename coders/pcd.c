@@ -872,8 +872,12 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (LocaleCompare(image_info->magick,"PCDS") == 0)
     (void) SetImageColorspace(image,sRGBColorspace,exception);
   if (image_info->scene != 0)
-    for (i=0; i < (ssize_t) image_info->scene; i++)
-      AppendImageToList(&image,CloneImage(image,0,0,MagickTrue,exception));
+    {
+      if (AcquireMagickResource(ListLengthResource,image_info->scene) == MagickFalse)
+        ThrowPCDException(ResourceLimitError,"ListLengthExceedsLimit");
+      for (i=0; i < (ssize_t) image_info->scene; i++)
+        AppendImageToList(&image,CloneImage(image,0,0,MagickTrue,exception));
+    }
   if (status == MagickFalse)
     return(image=DestroyImageList(image));
   return(GetFirstImageInList(image));
