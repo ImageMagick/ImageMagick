@@ -18,6 +18,7 @@
 
 #include "MagickCore/delegate.h"
 #include "MagickCore/delegate-private.h"
+#include "MagickCore/exception-private.h"
 #include "MagickCore/profile-private.h"
 #include "coders/bytebuffer-private.h"
 
