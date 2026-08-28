@@ -4031,8 +4031,15 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,void *data)
     case CustomStream:
     {
       if (blob_info->custom_stream->reader != (CustomStreamHandler) NULL)
-        count=blob_info->custom_stream->reader(q,length,
-          blob_info->custom_stream->data);
+        {
+          count=blob_info->custom_stream->reader(q,length,
+            blob_info->custom_stream->data);
+          if (count <= 0)
+            {
+              blob_info->eof=MagickTrue;
+              count=0;
+            }
+        }
       break;
     }
   }
