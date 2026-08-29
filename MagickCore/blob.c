@@ -2100,6 +2100,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,
           image->blob->extent=0;
           *image->filename='\0';
           status=WriteImage(blob_info,image,exception);
+          SyncBlobStream(blob_info,image,image);
           *length=image->blob->length;
           blob=DetachBlob(image->blob);
           if (blob != (void *) NULL)
@@ -2505,7 +2506,7 @@ MagickExport void *ImagesToBlob(const ImageInfo *image_info,Image *images,
           images->blob->extent=0;
           *images->filename='\0';
           status=WriteImages(blob_info,images,images->filename,exception);
-          SyncImagesBlob(blob_info,images,images);
+          SyncBlobStream(blob_info,images,images);
           *length=images->blob->length;
           blob=DetachBlob(images->blob);
           if (blob != (void *) NULL)
@@ -5632,66 +5633,63 @@ static int SyncBlob(const Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+  S y n c I m a g e s B l o b                                                %
++  S y n c B l o b S t r e a m                                                %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SyncImagesBlob() re-synchronizes the in-memory blob stream that is shared
-%  by an image list.  An encoder may grow the blob with SetBlobExtent(), which
-%  reallocates (and therefore frees) the buffer that AttachBlob() previously
-%  handed to the other images of the list and to image_info->blob.  This method
-%  replaces every stale reference to that buffer with the current one so that a
-%  subsequent AttachBlob(), write, or free never touches freed memory.
+%  SyncBlobStream() transfers ownership of an in-memory blob stream from the
+%  image that has just been written back to the owner image and to image info.
+%  The method copies the current buffer state onto the owner, refreshes
+%  image info, and detaches the borrower so exactly one object owns the memory.
 %
-%  The format of the SyncImagesBlob method is:
+%  The format of the SyncBlobStream method is:
 %
-%      void SyncImagesBlob(ImageInfo *image,const Image *image,Image *images)
+%      void SyncBlobStream(ImageInfo *image,const Image *image,Image *owner)
 %
 %  A description of each parameter follows:
 %
-%    o image_info: the image info whose blob member is updated; may be NULL.
+%    o image_info: image info whose blob/length members are refreshed; may be
+%      NULL.
 %
-%    o image: the image that was just written (owner of the live blob).
+%    o owner: the image ImagesToBlob()/ImageToBlob() harvests the blob from
+%      (the head of the list).
 %
-%    o images: the head of the image list that is being synchronized.
+%    o image: the image that was just written; may be the owner.
 %
 */
-MagickPrivate void SyncImagesBlob(ImageInfo *image_info,const Image *image,
-  Image *images)
+MagickPrivate void SyncBlobStream(ImageInfo *image_info,Image *image,
+  Image *owner)
 {
-  Image
-    *p;
-
-  unsigned char
-    *current,
-    *stale;
-
-  assert(image != (const Image *) NULL);
+  assert(owner != (Image *) NULL);
+  assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if ((image->blob == (BlobInfo *) NULL) || (image->blob->type != BlobStream))
+  if (image->blob == (BlobInfo *) NULL)
     return;
-  current=image->blob->data;
-  stale=(unsigned char *) (image_info != (ImageInfo *) NULL ?
-    image_info->blob : (void *) NULL);
+  if (image->blob->data == (unsigned char *) NULL)
+    return;
   if (image_info != (ImageInfo *) NULL)
     {
-      image_info->blob=(void *) current;
+      image_info->blob=(void *) image->blob->data;
       image_info->length=image->blob->length;
     }
-  if ((stale == (unsigned char *) NULL) || (stale == current))
-    return;  /* nothing was reallocated */
-  for (p=images; p != (Image *) NULL; p=GetNextImageInList(p))
-  {
-    if ((p == image) || (p->blob == (BlobInfo *) NULL))
-      continue;
-    if ((p->blob->type != BlobStream) || (p->blob->data != stale))
-      continue;
-    p->blob->data=current;
-    p->blob->extent=image->blob->extent;
-    p->blob->length=image->blob->length;
-  }
+  if ((image == owner) || (owner->blob == (BlobInfo *) NULL))
+    return;
+  if (owner->blob == (BlobInfo *) NULL)
+    return;
+  /*
+    Promote the live buffer onto the owner before detaching the borrower;
+    DetachBlob() clears image->blob->data.
+  */
+  owner->blob->data=image->blob->data;
+  owner->blob->extent=image->blob->extent;
+  owner->blob->length=image->blob->length;
+  owner->blob->offset=image->blob->offset;
+  owner->blob->quantum=image->blob->quantum;
+  owner->blob->type=BlobStream;
+  owner->blob->exempt=MagickTrue;
+  (void) DetachBlob(image->blob);
 }
 
 /*
