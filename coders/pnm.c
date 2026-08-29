@@ -150,8 +150,7 @@ static MagickBooleanType IsPNM(const unsigned char *magick,const size_t extent)
 %
 */
 
-static int PNMComment(Image *image,CommentInfo *comment_info,
-  ExceptionInfo *exception)
+static int PNMComment(Image *image,CommentInfo *comment_info)
 {
   int
     c;
@@ -162,7 +161,6 @@ static int PNMComment(Image *image,CommentInfo *comment_info,
   /*
     Read comment.
   */
-  (void) exception;
   p=comment_info->comment+strlen(comment_info->comment);
   for (c='#'; (c != EOF) && (c != (int) '\n') && (c != (int) '\r'); p++)
   {
@@ -187,7 +185,7 @@ static int PNMComment(Image *image,CommentInfo *comment_info,
 }
 
 static unsigned int PNMInteger(Image *image,CommentInfo *comment_info,
-  const unsigned int base,ExceptionInfo *exception)
+  const unsigned int base)
 {
   int
     c;
@@ -204,7 +202,7 @@ static unsigned int PNMInteger(Image *image,CommentInfo *comment_info,
     if (c == EOF)
       return(0);
     if (c == (int) '#')
-      c=PNMComment(image,comment_info,exception);
+      c=PNMComment(image,comment_info);
   } while ((c == ' ') || (c == '\t') || (c == '\n') || (c == '\r'));
   if (base == 2)
     return((unsigned int) (c-(int) '0'));
@@ -225,7 +223,7 @@ static unsigned int PNMInteger(Image *image,CommentInfo *comment_info,
       return(value);
   }
   if (c == (int) '#')
-    c=PNMComment(image,comment_info,exception);
+    c=PNMComment(image,comment_info);
   return(value);
 }
 
@@ -364,8 +362,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         if (ReadBlobByte(image) == '4')
           image->alpha_trait=BlendPixelTrait;
-        image->columns=(size_t) PNMInteger(image,&comment_info,10,exception);
-        image->rows=(size_t) PNMInteger(image,&comment_info,10,exception);
+        image->columns=(size_t) PNMInteger(image,&comment_info,10);
+        image->rows=(size_t) PNMInteger(image,&comment_info,10);
         if ((format == 'f') || (format == 'F') || (format == 'h') ||
             (format == 'H'))
           {
@@ -380,8 +378,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if ((format == '1') || (format == '4'))
               max_value=1;  /* bitmap */
             else
-              max_value=(QuantumAny) PNMInteger(image,&comment_info,10,
-                exception);
+              max_value=(QuantumAny) PNMInteger(image,&comment_info,10);
           }
       }
     else
@@ -414,7 +411,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               */
               while (c == '#')
               {
-                c=PNMComment(image,&comment_info,exception);
+                c=PNMComment(image,&comment_info);
                 c=ReadBlobByte(image);
                 if (c == EOF)
                   break;
@@ -558,7 +555,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            SetPixelGray(image,PNMInteger(image,&comment_info,2,exception) ==
+            SetPixelGray(image,PNMInteger(image,&comment_info,2) ==
               0 ? QuantumRange : 0,q);
             if (PNMEOFBlob(image,x,y) != MagickFalse)
               break;
@@ -601,8 +598,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            intensity=ScaleAnyToQuantum(PNMInteger(image,&comment_info,10,
-              exception),max_value);
+            intensity=ScaleAnyToQuantum(PNMInteger(image,&comment_info,10),max_value);
             if (PNMEOFBlob(image,x,y) != MagickFalse)
               break;
             SetPixelGray(image,intensity,q);
@@ -644,16 +640,13 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             Quantum
               pixel;
 
-            pixel=ScaleAnyToQuantum(PNMInteger(image,&comment_info,10,
-              exception),max_value);
+            pixel=ScaleAnyToQuantum(PNMInteger(image,&comment_info,10),max_value);
             if (PNMEOFBlob(image,x,y) != MagickFalse)
               break;
             SetPixelRed(image,pixel,q);
-            pixel=ScaleAnyToQuantum(PNMInteger(image,&comment_info,10,
-              exception),max_value);
+            pixel=ScaleAnyToQuantum(PNMInteger(image,&comment_info,10),max_value);
             SetPixelGreen(image,pixel,q);
-            pixel=ScaleAnyToQuantum(PNMInteger(image,&comment_info,10,
-              exception),max_value);
+            pixel=ScaleAnyToQuantum(PNMInteger(image,&comment_info,10),max_value);
             SetPixelBlue(image,pixel,q);
             if ((is_gray != MagickFalse) &&
                 (IsPixelGray(image,q) == MagickFalse))
