@@ -2471,8 +2471,7 @@ MagickExport Image *TrimImage(const Image *image,ExceptionInfo *exception)
     *trim_image;
 
   RectangleInfo
-    geometry,
-    page;
+    geometry;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickCoreSignature);
@@ -2481,87 +2480,120 @@ MagickExport Image *TrimImage(const Image *image,ExceptionInfo *exception)
   geometry=GetImageBoundingBox(image,exception);
   if ((geometry.width == 0) || (geometry.height == 0))
     {
-      Image
-        *crop_image;
-
-      crop_image=CloneImage(image,1,1,MagickTrue,exception);
-      if (crop_image == (Image *) NULL)
-        return((Image *) NULL);
-      crop_image->background_color.alpha_trait=BlendPixelTrait;
-      crop_image->background_color.alpha=(MagickRealType) TransparentAlpha;
-      (void) SetImageBackgroundColor(crop_image,exception);
-      crop_image->page=image->page;
-      crop_image->page.x=(-1);
-      crop_image->page.y=(-1);
-      return(crop_image);
+      /*
+        The image is empty: return a minimal 1x1 transparent placeholder.
+      */
+      trim_image=CloneImage(image,1,1,MagickTrue,exception);
+      if (trim_image != (Image *) NULL)
+        {
+          trim_image->background_color.alpha_trait=BlendPixelTrait;
+          trim_image->background_color.alpha=(MagickRealType) TransparentAlpha;
+          (void) SetImageBackgroundColor(trim_image,exception);
+          trim_image->page.width=image->columns;
+          trim_image->page.height=image->rows;
+          trim_image->page.x=(-1);
+          trim_image->page.y=(-1);
+        }
+      return(trim_image);
     }
-  page=geometry;
   artifact=GetImageArtifact(image,"trim:minSize");
   if (artifact != (const char *) NULL)
-    (void) ParseAbsoluteGeometry(artifact,&page);
-  if ((geometry.width < page.width) && (geometry.height < page.height))
     {
+      RectangleInfo
+        minSize;
+
       /*
-        Limit trim to a minimum size.
+        Ensure trim is not less than min size dimensions relative to gravity.
       */
-      switch (image->gravity)
-      {
-        case CenterGravity:
+      minSize=geometry;
+      (void) ParseAbsoluteGeometry(artifact,&minSize);
+      if ((geometry.width < minSize.width) ||
+          (geometry.height < minSize.height))
         {
-          geometry.x-=((ssize_t) page.width-(ssize_t) geometry.width)/2;
-          geometry.y-=((ssize_t) page.height-(ssize_t) geometry.height)/2;
-          break;
+          minSize.x=(geometry.width < minSize.width) ? (ssize_t)
+            (minSize.width-geometry.width) : 0;
+          minSize.y=(geometry.height < minSize.height) ? (ssize_t)
+            (minSize.height-geometry.height) : 0;
+          switch (image->gravity)
+          {
+            case NorthWestGravity:
+            {
+              geometry.x-=minSize.x;
+              geometry.y-=minSize.y;
+              break;
+            }
+            case NorthGravity:
+            {
+              geometry.x-=minSize.x/2;
+              geometry.y-=minSize.y;
+              break;
+            }
+            case NorthEastGravity:
+            {
+              geometry.y-=minSize.y;
+              break;
+            }
+            case WestGravity:
+            {
+              geometry.x-=minSize.x;
+              geometry.y-=minSize.y/2;
+              break;
+            }
+            case EastGravity:
+            {
+              geometry.y-=minSize.y/2;
+              break;
+            }
+            case SouthWestGravity:
+            {
+              geometry.x-=minSize.x;
+              break;
+            }
+            case SouthGravity:
+            {
+              geometry.x-=minSize.x/2;
+              break;
+            }
+            case CenterGravity:
+            {
+              geometry.x-=minSize.x/2;
+              geometry.y-=minSize.y/2;
+              break;
+            }
+            case UndefinedGravity:
+            case SouthEastGravity:
+            default:
+              break;
+          }
+          if (geometry.width < minSize.width)
+            geometry.width=minSize.width;
+          if (geometry.height < minSize.height)
+            geometry.height=minSize.height;
+          if (geometry.width > image->columns)
+            geometry.width=image->columns;
+          if (geometry.height > image->rows)
+            geometry.height=image->rows;
+          if (geometry.x < 0)
+            geometry.x=0;
+          if ((geometry.x+(ssize_t) geometry.width) > (ssize_t) image->columns)
+            geometry.x=(ssize_t) image->columns-(ssize_t) geometry.width;
+          if (geometry.y < 0)
+            geometry.y=0;
+          if ((geometry.y+(ssize_t) geometry.height) > (ssize_t) image->rows)
+            geometry.y=(ssize_t) image->rows-(ssize_t) geometry.height;
         }
-        case NorthWestGravity:
-        {
-          geometry.x-=((ssize_t) page.width-(ssize_t) geometry.width);
-          geometry.y-=((ssize_t) page.height-(ssize_t) geometry.height);
-          break;
-        }
-        case NorthGravity:
-        {
-          geometry.x-=((ssize_t) page.width-(ssize_t) geometry.width)/2;
-          geometry.y-=((ssize_t) page.height-(ssize_t) geometry.height);
-          break;
-        }
-        case NorthEastGravity:
-        {
-          geometry.y-=((ssize_t) page.height-(ssize_t) geometry.height);
-          break;
-        }
-        case EastGravity:
-        {
-          geometry.y-=((ssize_t) page.height-(ssize_t) geometry.height)/2;
-          break;
-        }
-        case SouthEastGravity:
-          break;
-        case SouthGravity:
-        {
-          geometry.x-=((ssize_t) page.width-(ssize_t) geometry.width)/2;
-          break;
-        }
-        case SouthWestGravity:
-        {
-          geometry.x-=((ssize_t) page.width-(ssize_t) geometry.width);
-          break;
-        }
-        case WestGravity:
-        {
-          geometry.x-=((ssize_t) page.width-(ssize_t) geometry.width);
-          geometry.y-=((ssize_t) page.height-(ssize_t) geometry.height)/2;
-          break;
-        }
-        default:
-          break;
-      }
-      geometry.width=page.width;
-      geometry.height=page.height;
     }
   geometry.x+=image->page.x;
   geometry.y+=image->page.y;
   trim_image=CropImage(image,&geometry,exception);
   if (trim_image != (Image *) NULL)
-    Update8BIMClipPath(trim_image,image->columns,image->rows,&geometry);
+    {
+      trim_image->page.width=image->columns;
+      trim_image->page.height=image->rows;
+      if (trim_image->page.x == 0)
+        trim_image->page.x=geometry.x;
+      if (trim_image->page.y == 0)
+        trim_image->page.y=geometry.y;
+    }
   return(trim_image);
 }
