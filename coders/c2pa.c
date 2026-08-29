@@ -90,6 +90,8 @@ static MagickBooleanType
 static Image *ReadC2PAImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
+  (void) image_info;
+  (void) exception;
   return((Image *) NULL);
 }
 
@@ -183,5 +185,8 @@ ModuleExport void UnregisterC2PAImage(void)
 static MagickBooleanType WriteC2PAImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
+  (void) image_info;
+  (void) image;
+  (void) exception;
   return(MagickFalse);
 }
