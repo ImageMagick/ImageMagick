@@ -80,10 +80,10 @@ static MagickBooleanType
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % ReadC2PAImage() reads an image that is signed with C2PA content
-%  credentials.  The image is handed to the c2pa:decode delegate which
-%  validates the manifest and returns an image ImageMagick natively
-%  understands.  It allocates the memory necessary for the new Image structure
-%  and returns a pointer to the new image.
+% credentials.  The image is handed to the c2pa:decode delegate which
+% validates the manifest and returns an image ImageMagick natively
+% understands.  It allocates the memory necessary for the new Image structure
+% and returns a pointer to the new image.
 %
 %  The format of the ReadC2PAImage method is:
 %
@@ -133,8 +133,7 @@ static Image *ReadC2PAImage(const ImageInfo *image_info,
     }
   (void) CloseBlob(image);
   /*
-    Blob support is disabled for this coder, hence the filename always
-    references a seekable file on disk that the delegate can open (%i).
+    Leverage delegate to decode the image provenance.
   */
   read_info=CloneImageInfo(image_info);
   SetImageInfoBlob(read_info,(void *) NULL,0);
