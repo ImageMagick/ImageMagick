@@ -75,7 +75,11 @@ static MagickBooleanType
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadC2PAImage returns the rendered clip path associated with the image.
+% ReadC2PAImage() reads an image that is signed with C2PA content
+%  credentials.  The image is handed to the c2pa:decode delegate which
+%  validates the manifest and returns an image ImageMagick natively
+%  understands.  It allocates the memory necessary for the new Image structure
+%  and returns a pointer to the new image.
 %
 %  The format of the ReadC2PAImage method is:
 %
@@ -243,8 +247,12 @@ ModuleExport void UnregisterC2PAImage(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WriteC2PAImage() writes an image of clip bytes to a file.  It consists of
-%  data from the clip mask of the image.
+%  WriteC2PAImage() writes an image and signs it with C2PA content
+%  credentials.  The image is first written to a temporary file in a format
+%  the C2PA delegate understands (see the c2pa:format define, PNG by default)
+%  and is then handed to the c2pa:encode delegate for signing.  The signed
+%  bytes the delegate returns in %o are copied verbatim to the destination so
+%  the manifest and its signature remain intact.
 %
 %  The format of the WriteC2PAImage method is:
 %

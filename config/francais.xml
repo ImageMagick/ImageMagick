@@ -709,6 +709,9 @@
         <message name="MustSpecifyImageDepth">
           Il faut spécifier la profondeur d'image
         </message>
+        <message name="MustSpecifyImageManifest">
+          must specify an image manifest
+        </message>
         <message name="MustSpecifyImageSize">
           Il faut spécifier une taille d'image
         </message>

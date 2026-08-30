@@ -709,6 +709,9 @@
         <message name="MissingOutputFilename">
           missing output filename
         </message>
+        <message name="MustSpecifyImageManifest">
+          must specify an image manifest
+        </message>
         <message name="MustSpecifyAnImageName">
           must specify an image name
         </message>
