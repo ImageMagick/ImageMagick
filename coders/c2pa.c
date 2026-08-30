@@ -56,6 +56,7 @@
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"
+#include "MagickCore/property.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
@@ -100,13 +101,12 @@ static MagickBooleanType
 static Image *ReadC2PAImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-  ExceptionInfo
-    *sans_exception;
+  char
+    *json,
+    json_filename[MagickPathExtent];
 
   Image
-    *image,
-    *images,
-    *next;
+    *image;
 
   ImageInfo
     *read_info;
@@ -133,47 +133,36 @@ static Image *ReadC2PAImage(const ImageInfo *image_info,
     }
   (void) CloseBlob(image);
   /*
-    Leverage delegate to decode the image provenance.
+    Leverage delegate to create the image manifest.
   */
   read_info=CloneImageInfo(image_info);
   SetImageInfoBlob(read_info,(void *) NULL,0);
   read_info->temporary=MagickFalse;
-  (void) CopyMagickString(read_info->filename,image_info->filename,
-    MagickPathExtent);
   (void) CopyMagickString(image->filename,image_info->filename,
     MagickPathExtent);
   status=InvokeDelegate(read_info,image,"c2pa:decode",(char *) NULL,exception);
+  (void) FormatLocaleString(json_filename,MagickPathExtent,"%s.json",
+    read_info->unique);
+  read_info=DestroyImageInfo(read_info);
   image=DestroyImageList(image);
   if (status == MagickFalse)
-    {
-      if (*read_info->unique != '\0')
-        (void) RelinquishUniqueFileResource(read_info->unique);
-      read_info=DestroyImageInfo(read_info);
-      return((Image *) NULL);
-    }
-  /*
-    Read the image the delegate returned in %o.
-  */
-  (void) CopyMagickString(read_info->filename,read_info->unique,
-    MagickPathExtent);
-  *read_info->magick='\0';
-  sans_exception=AcquireExceptionInfo();
-  (void) SetImageInfo(read_info,1,sans_exception);
-  sans_exception=DestroyExceptionInfo(sans_exception);
-  images=ReadImage(read_info,exception);
-  (void) RelinquishUniqueFileResource(read_info->unique);
-  read_info=DestroyImageInfo(read_info);
-  if (images == (Image *) NULL)
     return((Image *) NULL);
-  for (next=images; next != (Image *) NULL; next=GetNextImageInList(next))
-  {
-    (void) CopyMagickString(next->filename,image_info->filename,
-      MagickPathExtent);
-    (void) CopyMagickString(next->magick,"C2PA",MagickPathExtent);
-    (void) CopyMagickString(next->magick_filename,image_info->filename,
-      MagickPathExtent);
-  }
-  return(GetFirstImageInList(images));
+  /*
+    Read image.
+  */
+  read_info=CloneImageInfo(image_info);
+  SetImageInfoBlob(read_info,(void *) NULL,0);
+  *read_info->magick='\0';
+  image=ReadImage(read_info,exception);
+  read_info=DestroyImageInfo(read_info);
+  if (image == (Image *) NULL)
+    return(image);
+  json=FileToString(json_filename,~0UL,exception);
+  if (json == (char *) NULL)
+    return(image);
+  (void) SetImageProperty(image,"c2pa:manifest",json,exception);
+  json=DestroyString(json);
+  return(GetFirstImageInList(image));
 }
 
 /*

@@ -94,8 +94,8 @@
 */
 
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT)
-static Image* InvokeURLDelegate(ImageInfo* read_info,Image* image,
-  const char *delegate,ExceptionInfo* exception)
+static Image *InvokeURLDelegate(ImageInfo *read_info,Image *image,
+  const char *delegate,ExceptionInfo *exception)
 {
   Image
     *images,
