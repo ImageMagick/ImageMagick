@@ -1869,7 +1869,9 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
           "UnableToCreateTemporaryFile",image_info->unique);
         break;
       }
-    if (LocaleCompare(decode,"SCAN") != 0)
+    if ((LocaleCompare(decode,"SCAN") != 0) &&
+        (LocaleCompare(decode,"http:decode") != 0) &&
+        (LocaleCompare(decode,"https:decode") != 0))
       {
         status=AcquireUniqueSymbolicLink(input_filename,image->filename);
         if (status == MagickFalse)
@@ -1902,7 +1904,9 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
           }
         command=DestroyString(command);
       }
-    if (LocaleCompare(decode,"SCAN") != 0)
+    if ((LocaleCompare(decode,"SCAN") != 0) &&
+        (LocaleCompare(decode,"http:decode") != 0) &&
+        (LocaleCompare(decode,"https:decode") != 0))
       {
         if (CopyDelegateFile(image->filename,input_filename,MagickFalse,exception) == MagickFalse)
           {
