@@ -109,8 +109,8 @@ static const char
     "  <delegate decode=\"browse\" stealth=\"True\" spawn=\"True\" command=\"" DELEGATE_ESC "xdg-open" DELEGATE_ESC " https://imagemagick.org/; rm " DELEGATE_ESC "%i" DELEGATE_ESC "\"/>"
     "  <delegate decode=\"cdr\" command=\"" DELEGATE_ESC "uniconvertor" DELEGATE_ESC " " DELEGATE_ESC "%i" DELEGATE_ESC " " DELEGATE_ESC "%o.svg" DELEGATE_ESC "; mv " DELEGATE_ESC "%o.svg" DELEGATE_ESC " " DELEGATE_ESC "%o" DELEGATE_ESC "\"/>"
     "  <delegate decode=\"cgm\" command=\"" DELEGATE_ESC "uniconvertor" DELEGATE_ESC " " DELEGATE_ESC "%i" DELEGATE_ESC " " DELEGATE_ESC "%o.svg" DELEGATE_ESC "; mv " DELEGATE_ESC "%o.svg" DELEGATE_ESC " " DELEGATE_ESC "%o" DELEGATE_ESC "\"/>"
-    "  <delegate decode=\"http\" command=\"" DELEGATE_ESC "curl" DELEGATE_ESC " -s -L -o " DELEGATE_ESC "%o" DELEGATE_ESC " " DELEGATE_ESC "http:%M" DELEGATE_ESC "\"/>"
-    "  <delegate decode=\"https\" command=\"" DELEGATE_ESC "curl" DELEGATE_ESC " -s -L -o " DELEGATE_ESC "%o" DELEGATE_ESC " " DELEGATE_ESC "https:%M" DELEGATE_ESC "\"/>"
+    "  <delegate decode=\"http:decode\" command=\"" DELEGATE_ESC "curl" DELEGATE_ESC " -s -L -o " DELEGATE_ESC "%u.dat" DELEGATE_ESC " " DELEGATE_ESC "http:%M" DELEGATE_ESC "\"/>"
+    "  <delegate decode=\"https:decode\" command=\"" DELEGATE_ESC "curl" DELEGATE_ESC " -s -L -o " DELEGATE_ESC "%u.dat" DELEGATE_ESC " " DELEGATE_ESC "https:%M" DELEGATE_ESC "\"/>"
     "  <delegate decode=\"doc\" command=\"" DELEGATE_ESC "soffice" DELEGATE_ESC " --convert-to pdf -outdir `dirname " DELEGATE_ESC "%i" DELEGATE_ESC "` " DELEGATE_ESC "%i" DELEGATE_ESC " 2&gt; " DELEGATE_ESC "%u" DELEGATE_ESC "; mv " DELEGATE_ESC "%i.pdf" DELEGATE_ESC " " DELEGATE_ESC "%o" DELEGATE_ESC "\"/>"
     "  <delegate decode=\"docx\" command=\"" DELEGATE_ESC "soffice" DELEGATE_ESC " --convert-to pdf -outdir `dirname " DELEGATE_ESC "%i" DELEGATE_ESC "` " DELEGATE_ESC "%i" DELEGATE_ESC " 2&gt; " DELEGATE_ESC "%u" DELEGATE_ESC "; mv " DELEGATE_ESC "%i.pdf" DELEGATE_ESC " " DELEGATE_ESC "%o" DELEGATE_ESC "\"/>"
     "  <delegate decode=\"dng:decode\" command=\"" DELEGATE_ESC "ufraw-batch" DELEGATE_ESC " --silent --create-id=also --out-type=png --out-depth=16 " DELEGATE_ESC "--output=%u.png" DELEGATE_ESC " " DELEGATE_ESC "%i" DELEGATE_ESC "\"/>"
@@ -1869,9 +1869,7 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
           "UnableToCreateTemporaryFile",image_info->unique);
         break;
       }
-    if ((LocaleCompare(decode,"SCAN") != 0) &&
-        (LocaleCompare(decode,"http:decode") != 0) &&
-        (LocaleCompare(decode,"https:decode") != 0))
+    if (IsPathAccessible(input_filename) != MagickFalse)
       {
         status=AcquireUniqueSymbolicLink(input_filename,image->filename);
         if (status == MagickFalse)
@@ -1904,9 +1902,7 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
           }
         command=DestroyString(command);
       }
-    if ((LocaleCompare(decode,"SCAN") != 0) &&
-        (LocaleCompare(decode,"http:decode") != 0) &&
-        (LocaleCompare(decode,"https:decode") != 0))
+    if (IsPathAccessible(input_filename) != MagickFalse)
       {
         if (CopyDelegateFile(image->filename,input_filename,MagickFalse,exception) == MagickFalse)
           {
