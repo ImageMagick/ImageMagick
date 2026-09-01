@@ -189,7 +189,6 @@ ModuleExport size_t RegisterC2PAImage(void)
 
   entry=AcquireMagickInfo("C2PA","C2PA","C2PA Provenance Metadata");
   entry->decoder=(DecodeImageHandler *) ReadC2PAImage;
-  entry->encoder=(EncodeImageHandler *) WriteC2PAImage;
   entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderBlobSupportFlag;
   entry->format_type=ExplicitFormatType;
