@@ -1907,6 +1907,9 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     if (labels != (char **) NULL)
       for (i=0; labels[i] != (char *) NULL; i++)
       {
+        char
+          *escape;
+
         (void) WriteBlobString(image,"BT\n");
         (void) FormatLocaleString(buffer,MagickPathExtent,"/F%.17g %g Tf\n",
           (double) image->scene,pointsize);
@@ -1915,8 +1918,9 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
           (double) geometry.x,(double) (geometry.y+(ssize_t) geometry.height+
           i*pointsize+12));
         (void) WriteBlobString(image,buffer);
-        (void) FormatLocaleString(buffer,MagickPathExtent,"(%s) Tj\n",
-           labels[i]);
+        escape=EscapeParenthesis(labels[i]);
+        (void) FormatLocaleString(buffer,MagickPathExtent,"(%s) Tj\n",escape);
+        escape=DestroyString(escape);
         (void) WriteBlobString(image,buffer);
         (void) WriteBlobString(image,"ET\n");
         labels[i]=DestroyString(labels[i]);
