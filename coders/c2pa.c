@@ -64,12 +64,6 @@
 #include "MagickCore/utility-private.h"
 
 /*
-  Forward declarations.
-*/
-static MagickBooleanType
-  WriteC2PAImage(const ImageInfo *,Image *,ExceptionInfo *);
-
-/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
