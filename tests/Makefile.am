@@ -42,6 +42,7 @@ TESTS_TESTS = \
   tests/cli-heic.tap \
   tests/cli-pcx.tap \
   tests/cli-pipe.tap \
+  tests/cli-strict.tap \
   tests/cli-svg.tap \
   tests/validate-colorspace.tap \
   tests/validate-compare.tap \
