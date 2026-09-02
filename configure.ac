@@ -2901,7 +2901,7 @@ UHDR_LIBS=""
 UHDR_PKG=""
 if test "$with_uhdr" != 'no'; then
     AC_MSG_RESULT([-------------------------------------------------------------])
-    PKG_CHECK_MODULES([UHDR],[libuhdr >= 1.3.0],[have_uhdr=yes],[have_uhdr=no])
+    PKG_CHECK_MODULES([UHDR],[libuhdr >= 1.4.0],[have_uhdr=yes],[have_uhdr=no])
     AC_MSG_RESULT([])
 fi
 
