@@ -5292,11 +5292,41 @@ static Quantum *SetPixelCacheNexusPixels(
   /*
     Pixels are stored in a staging region until they are synced to the cache.
   */
-  number_pixels=(MagickSizeType) width*height;
-  length=MagickMax(number_pixels,MagickMax(cache_info->columns,
-    cache_info->rows))*cache_info->number_channels*sizeof(*nexus_info->pixels);
-  if (cache_info->metacontent_extent != 0)
-    length+=number_pixels*cache_info->metacontent_extent;
+  if (CacheOverflowSanityCheckGetSize((MagickSizeType) width,height,&number_pixels) != MagickFalse)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",
+        cache_info->filename);
+      return((Quantum *) NULL);
+    }
+  {
+    MagickSizeType
+      extent,
+      packets;
+
+    packets=MagickMax(number_pixels,MagickMax(cache_info->columns,
+      cache_info->rows));
+    if ((CacheOverflowSanityCheckGetSize(packets,cache_info->number_channels,&length) != MagickFalse) ||
+        (CacheOverflowSanityCheckGetSize(length,sizeof(*nexus_info->pixels),&length) != MagickFalse))
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          ResourceLimitError,"MemoryAllocationFailed","`%s'",
+          cache_info->filename);
+        return((Quantum *) NULL);
+      }
+    if (cache_info->metacontent_extent != 0)
+      {
+        if ((CacheOverflowSanityCheckGetSize(number_pixels,cache_info->metacontent_extent,&extent) != MagickFalse) ||
+            (extent > (MagickSizeType) (~((MagickSizeType) 0))-length))
+          {
+            (void) ThrowMagickException(exception,GetMagickModule(),
+              ResourceLimitError,"MemoryAllocationFailed","`%s'",
+              cache_info->filename);
+            return((Quantum *) NULL);
+          }
+        length+=extent;
+      }
+   }
   status=MagickTrue;
   if (nexus_info->cache == (Quantum *) NULL)
     status=AcquireCacheNexusPixels(cache_info,length,nexus_info,exception);
