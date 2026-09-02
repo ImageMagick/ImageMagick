@@ -405,7 +405,7 @@ static MagickBooleanType IsUltraHDRJPEGAutoRoutingEnabled(
     return(MagickFalse);
   if (IsRightsAuthorized(CoderPolicyDomain,rights,"UHDR") == MagickFalse)
     return(MagickFalse);
-  if (IsRightsAuthorized(ModulePolicyDomain,rights,"UHDr") == MagickFalse)
+  if (IsRightsAuthorized(ModulePolicyDomain,rights,"UHDR") == MagickFalse)
     return(MagickFalse);
   return(MagickTrue);
 }
