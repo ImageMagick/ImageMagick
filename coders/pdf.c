@@ -1492,8 +1492,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     number_scenes,
     object,
     pages_id,
-    root_id,
-    text_size;
+    root_id;
 
   ssize_t
     count,
@@ -1835,11 +1834,6 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     pointsize=12.0;
     if (image_info->pointsize != 0.0)
       pointsize=image_info->pointsize;
-    text_size=0;
-    value=GetImageProperty(image,"label",exception);
-    if (value != (const char *) NULL)
-      text_size=(size_t) (MultilineCensus(value)*pointsize+12);
-    (void) text_size;
     /*
       Write Page object.
     */
