@@ -39,6 +39,7 @@ TESTS_XFAIL_TESTS =
 
 TESTS_TESTS = \
   tests/cli-colorspace.tap \
+  tests/cli-exif.tap \
   tests/cli-heic.tap \
   tests/cli-pcx.tap \
   tests/cli-pipe.tap \

@@ -1,0 +1,194 @@
+#!/bin/sh
+#
+#  Copyright 1999 ImageMagick Studio LLC, a non-profit organization
+#  dedicated to making software imaging solutions freely available.
+#
+#  You may not use this file except in compliance with the License.  You may
+#  obtain a copy of the License at
+#
+#    https://imagemagick.org/license/
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+#  Regression tests for EXIF image dimensions.
+#
+. ./common.shi
+. ${srcdir}/tests/common.shi
+
+little_profile=cli-exif-little.exif
+big_profile=cli-exif-big.exif
+little_output=cli-exif-little.jpg
+big_output=cli-exif-big.jpg
+promotion_output=cli-exif-promotion.png
+malformed_profile=cli-exif-malformed.exif
+malformed_output=cli-exif-malformed.png
+malformed_thumbnail_profile=cli-exif-malformed-thumbnail.exif
+malformed_thumbnail_output=cli-exif-malformed-thumbnail.png
+jpeg_probe=cli-exif-probe.jpg
+png_probe=cli-exif-probe.png
+
+cleanup()
+{
+  rm -f "$little_profile" "$big_profile" "$little_output" "$big_output" \
+    "$promotion_output" "$malformed_profile" "$malformed_output" \
+    "$malformed_thumbnail_profile" "$malformed_thumbnail_output" \
+    "$jpeg_probe" "$png_probe"
+}
+
+write_profile()
+{
+  profile=$1
+  endian=$2
+
+  case "$endian" in
+    little)
+      # IFD0 uses SHORT dimensions, ExifIFD uses LONG dimensions, and IFD1
+      # contains unrelated thumbnail dimensions that must not be changed.
+      printf '\111\111\052\000\010\000\000\000\003\000\000\001\003\000\001\000\000\000\070\004\000\000\001\001\003\000\001\000\000\000\070\004\000\000\151\207\004\000\001\000\000\000\062\000\000\000\120\000\000\000\002\000\002\240\004\000\001\000\000\000\070\004\000\000\003\240\004\000\001\000\000\000\070\004\000\000\000\000\000\000\006\000\000\001\004\000\001\000\000\000\100\000\000\000\001\001\004\000\001\000\000\000\040\000\000\000\022\001\003\000\001\000\000\000\006\000\000\000\032\001\005\000\001\000\000\000\236\000\000\000\033\001\005\000\001\000\000\000\246\000\000\000\050\001\003\000\001\000\000\000\003\000\000\000\000\000\000\000\054\001\000\000\001\000\000\000\310\000\000\000\001\000\000\000' > "$profile"
+      ;;
+    big)
+      # Use the opposite field types to cover LONG dimensions in IFD0 and
+      # SHORT dimensions in ExifIFD.
+      printf '\115\115\000\052\000\000\000\010\000\003\001\000\000\004\000\000\000\001\000\000\004\070\001\001\000\004\000\000\000\001\000\000\004\070\207\151\000\004\000\000\000\001\000\000\000\062\000\000\000\120\000\002\240\002\000\003\000\000\000\001\004\070\000\000\240\003\000\003\000\000\000\001\004\070\000\000\000\000\000\000\000\002\001\000\000\004\000\000\000\001\000\000\000\100\001\001\000\004\000\000\000\001\000\000\000\040\000\000\000\000' > "$profile"
+      ;;
+  esac
+}
+
+check_value()
+{
+  description=$1
+  actual=$2
+  expected=$3
+
+  if [ "X$actual" = "X$expected" ]; then
+    echo "ok - $description"
+  else
+    echo "not ok - $description"
+    echo "# expected '$expected', got '$actual'"
+  fi
+}
+
+check_profile()
+{
+  profile=$1
+  output=$2
+  endian=$3
+
+  write_profile "$profile" "$endian"
+  if ${MAGICK} "${SRCDIR}/rose.pnm" -set profile "$profile" -resize 50% \
+      "$output" >/dev/null 2>&1; then
+    actual=`${IDENTIFY} -quiet -format '%wx%h' "$output" 2>/dev/null`
+    metadata=`${IDENTIFY} -quiet -format \
+      '%[EXIF:ImageWidth]x%[EXIF:ImageLength] %[EXIF:PixelXDimension]x%[EXIF:PixelYDimension]' \
+      "$output" 2>/dev/null`
+    thumbnail=`${IDENTIFY} -quiet -format \
+      '%[EXIF:Thumbnail.ImageWidth]x%[EXIF:Thumbnail.ImageLength]' \
+      "$output" 2>/dev/null`
+    if [ "$endian" = little ]; then
+      thumbnail_metadata=`${IDENTIFY} -quiet -format \
+        '%[EXIF:Thumbnail.Orientation] %[EXIF:Thumbnail.XResolution] %[EXIF:Thumbnail.YResolution] %[EXIF:Thumbnail.ResolutionUnit]' \
+        "$output" 2>/dev/null`
+    fi
+  else
+    actual=
+    metadata=
+    thumbnail=
+    thumbnail_metadata=
+  fi
+
+  check_value "$endian image dimensions" "$actual" "35x23"
+  check_value "$endian EXIF dimensions" "$metadata" "35x23 35x23"
+  check_value "$endian thumbnail dimensions" "$thumbnail" "64x32"
+  if [ "$endian" = little ]; then
+    check_value "little thumbnail metadata" "$thumbnail_metadata" \
+      "6 300/1 200/1 3"
+  fi
+}
+
+check_promotion()
+{
+  profile=$1
+  endian=$2
+
+  write_profile "$profile" "$endian"
+  if ${MAGICK} -size 65536x1 xc:black -set profile "$profile" \
+      "$promotion_output" >/dev/null 2>&1; then
+    metadata=`${IDENTIFY} -quiet -format \
+      '%[EXIF:ImageWidth]x%[EXIF:ImageLength] %[EXIF:PixelXDimension]x%[EXIF:PixelYDimension]' \
+      "$promotion_output" 2>/dev/null`
+  else
+    metadata=
+  fi
+  check_value "$endian SHORT promotion" "$metadata" "65536x1 65536x1"
+}
+
+check_malformed_profile()
+{
+  # The ExifIFD pointer targets the final byte. It must be ignored without
+  # disturbing valid IFD0 dimensions.
+  printf '\111\111\052\000\010\000\000\000\003\000\000\001\003\000\001\000\000\000\070\004\000\000\001\001\003\000\001\000\000\000\070\004\000\000\151\207\004\000\001\000\000\000\061\000\000\000\000\000\000\000' > "$malformed_profile"
+  if ${MAGICK} "${SRCDIR}/rose.pnm" -set profile "$malformed_profile" \
+      -resize 50% "$malformed_output" >/dev/null 2>&1; then
+    metadata=`${IDENTIFY} -quiet -format \
+      '%[EXIF:ImageWidth]x%[EXIF:ImageLength]' \
+      "$malformed_output" 2>/dev/null`
+  else
+    metadata=
+  fi
+  check_value "malformed ExifIFD pointer is ignored" "$metadata" "35x23"
+}
+
+check_malformed_thumbnail()
+{
+  # Keep IFD0 and ExifIFD complete, but truncate IFD1 immediately after its
+  # entry count. The valid primary dimensions should still be synchronized.
+  write_profile "$little_profile" little
+  dd if="$little_profile" of="$malformed_thumbnail_profile" bs=1 count=82 \
+    2>/dev/null
+  if ${MAGICK} "${SRCDIR}/rose.pnm" \
+      -set profile "$malformed_thumbnail_profile" -resize 50% \
+      "$malformed_thumbnail_output" >/dev/null 2>&1; then
+    metadata=`${IDENTIFY} -quiet -format \
+      '%[EXIF:ImageWidth]x%[EXIF:ImageLength] %[EXIF:PixelXDimension]x%[EXIF:PixelYDimension]' \
+      "$malformed_thumbnail_output" 2>/dev/null`
+  else
+    metadata=
+  fi
+  check_value "valid dimensions before malformed IFD1" "$metadata" \
+    "35x23 35x23"
+}
+
+cleanup
+jpeg_format=
+if ${MAGICK} "${SRCDIR}/rose.pnm" "$jpeg_probe" >/dev/null 2>&1; then
+  jpeg_format=`${IDENTIFY} -quiet -format '%m' "$jpeg_probe" 2>/dev/null`
+fi
+if [ "X$jpeg_format" != "XJPEG" ]; then
+  echo "1..0 # SKIP JPEG coder unavailable"
+  cleanup
+  exit 0
+fi
+echo "1..11"
+check_profile "$little_profile" "$little_output" little
+check_profile "$big_profile" "$big_output" big
+png_format=
+if ${MAGICK} "${SRCDIR}/rose.pnm" "$png_probe" >/dev/null 2>&1; then
+  png_format=`${IDENTIFY} -quiet -format '%m' "$png_probe" 2>/dev/null`
+fi
+if [ "X$png_format" = "XPNG" ]; then
+  check_promotion "$little_profile" little
+  check_promotion "$big_profile" big
+  check_malformed_profile
+  check_malformed_thumbnail
+else
+  echo "ok - little SHORT promotion # SKIP PNG coder unavailable"
+  echo "ok - big SHORT promotion # SKIP PNG coder unavailable"
+  echo "ok - malformed ExifIFD pointer is ignored # SKIP PNG coder unavailable"
+  echo "ok - valid dimensions before malformed IFD1 # SKIP PNG coder unavailable"
+fi
+cleanup
+:
