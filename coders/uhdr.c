@@ -146,7 +146,7 @@ static Image *ReadUHDRImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
 #define SetHDRGMProperty(name,value) \
-  (void) FormatLocaleString(buffer,sizeof(buffer),"%f",(value)); \
+  (void) FormatLocaleString(buffer,sizeof(buffer),"%.9g",(double) (value)); \
   (void) SetImageProperty(image,"hdrgm:" name,buffer,exception)
 #define SetHDRGMPropertyInt(name,value) \
   (void) FormatLocaleString(buffer,sizeof(buffer),"%d",(value)); \
@@ -155,8 +155,8 @@ static Image *ReadUHDRImage(const ImageInfo *image_info,
   (void) FormatLocaleString(buffer,sizeof(buffer),"%.17g",(double) (value)); \
   (void) SetImageProperty(image,"hdrgm:" name,buffer,exception)
 #define SetHDRGMProperty3(name,value,value1,value2) \
-  (void) FormatLocaleString(buffer,sizeof(buffer),"%f,%f,%f", \
-     (value),(value1),(value2)); \
+  (void) FormatLocaleString(buffer,sizeof(buffer),"%.9g,%.9g,%.9g", \
+     (double) (value),(double) (value1),(double) (value2)); \
   (void) SetImageProperty(image,"hdrgm:" name,buffer,exception)
   
   Image
@@ -1143,14 +1143,71 @@ static StringInfo *TransformGainMapProfile(const ImageInfo *image_info,
   return(profile);
 }
 
+static const char *SkipHDRGMWhitespace(const char *value)
+{
+  while ((*value != '\0') &&
+         (strchr(" \f\n\r\t\v",(int) ((unsigned char) *value)) !=
+          (char *) NULL))
+    value++;
+  return(value);
+}
+
+static MagickBooleanType ParseHDRGMProperty(const char *value,float *result)
+{
+  char
+    *q;
+
+  value=SkipHDRGMWhitespace(value);
+  *result=StringToFloat(value,&q);
+  if ((q == value) || (IsNaN((double) *result) != 0) ||
+      (*result > FLT_MAX) || (*result < -FLT_MAX))
+    return(MagickFalse);
+  q=(char *) SkipHDRGMWhitespace(q);
+  return(*q == '\0' ? MagickTrue : MagickFalse);
+}
+
+static MagickBooleanType ParseHDRGMProperty3(const char *value,
+  float values[3])
+{
+  char
+    *q;
+
+  ssize_t
+    i;
+
+  for (i=0; i < 3; i++)
+  {
+    value=SkipHDRGMWhitespace(value);
+    values[i]=StringToFloat(value,&q);
+    if ((q == value) || (IsNaN((double) values[i]) != 0) ||
+        (values[i] > FLT_MAX) || (values[i] < -FLT_MAX))
+      return(MagickFalse);
+    q=(char *) SkipHDRGMWhitespace(q);
+    if (i == 2)
+      return(*q == '\0' ? MagickTrue : MagickFalse);
+    if (*q != ',')
+      return(MagickFalse);
+    value=q+1;
+  }
+  return(MagickFalse);
+}
+
 static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
   Image *images,ExceptionInfo *exception)
 {
 #define GetHDRGMProperty(name,field) \
   do { \
     const char *v = GetImageProperty(image,"hdrgm:" name,exception); \
-    if (v != (const char *) NULL) \
-      gainmap_info.field=(float) atof(v); \
+    float value; \
+    if ((v != (const char *) NULL) && \
+        (ParseHDRGMProperty(v,&value) == MagickFalse)) \
+      { \
+        (void) ThrowMagickException(exception,GetMagickModule(),OptionError, \
+          "InvalidArgument","`hdrgm:%s'",name); \
+        status=MagickFalse; \
+      } \
+    else if (v != (const char *) NULL) \
+      gainmap_info.field=value; \
   } while (0)
 #define GetHDRGMPropertyInt(name,field) \
   do { \
@@ -1161,9 +1218,20 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
 #define GetHDRGMProperty3(name,field0,field1,field2) \
   do { \
     const char *v = GetImageProperty(image,"hdrgm:" name,exception); \
-    if (v != (const char *) NULL) \
-      (void) sscanf(v,"%f,%f,%f",&gainmap_info.field0,&gainmap_info.field1, \
-        &gainmap_info.field2); \
+    float values[3]; \
+    if ((v != (const char *) NULL) && \
+        (ParseHDRGMProperty3(v,values) == MagickFalse)) \
+      { \
+        (void) ThrowMagickException(exception,GetMagickModule(),OptionError, \
+          "InvalidArgument","`hdrgm:%s'",name); \
+        status=MagickFalse; \
+      } \
+    else if (v != (const char *) NULL) \
+      { \
+        gainmap_info.field0=values[0]; \
+        gainmap_info.field1=values[1]; \
+        gainmap_info.field2=values[2]; \
+      } \
   } while (0)
 
   Image
@@ -1201,10 +1269,6 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
   assert(image->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent, GetMagickModule(), "%s", image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
-  if (status == MagickFalse)
-    return (status);
-
   const StringInfo *gainmap_profile = GetImageProfile(image,"hdrgm");
 
   const size_t
@@ -1222,10 +1286,7 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
       resized_gainmap_profile=TransformGainMapProfile(image_info,image,
         gainmap_profile,&gainmap_transform_status,exception);
       if (gainmap_transform_status == MagickFalse)
-        {
-          (void) CloseBlob(image);
-          return(MagickFalse);
-        }
+        return(MagickFalse);
       if (resized_gainmap_profile != (StringInfo *) NULL)
         gainmap_profile=(const StringInfo *) resized_gainmap_profile;
       base_image_profile=EncodeBaseImageProfile(image_info,image,exception);
@@ -1233,7 +1294,6 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
         {
           if (resized_gainmap_profile != (StringInfo *) NULL)
             resized_gainmap_profile=DestroyStringInfo(resized_gainmap_profile);
-          (void) CloseBlob(image);
           return(MagickFalse);
         }
       base_image.data=(void *) GetStringInfoDatum(base_image_profile);
@@ -1261,6 +1321,13 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
       GetHDRGMProperty("HDRCapacityMin",hdr_capacity_min);
       GetHDRGMProperty("HDRCapacityMax",hdr_capacity_max);
       GetHDRGMPropertyInt("UseBaseColorGrade",use_base_cg);
+      if (status == MagickFalse)
+        {
+          if (resized_gainmap_profile != (StringInfo *) NULL)
+            resized_gainmap_profile=DestroyStringInfo(resized_gainmap_profile);
+          base_image_profile=DestroyStringInfo(base_image_profile);
+          return(MagickFalse);
+        }
       preserve_gainmap=MagickTrue;
     }
 
@@ -1275,6 +1342,15 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
       (void) ThrowMagickException(exception,GetMagickModule(),ConfigureWarning,
         "invalid hdr color transfer received, ","%s","exiting ... ");
       return(MagickFalse);
+    }
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
+  if (status == MagickFalse)
+    {
+      if (resized_gainmap_profile != (StringInfo *) NULL)
+        resized_gainmap_profile=DestroyStringInfo(resized_gainmap_profile);
+      if (base_image_profile != (StringInfo *) NULL)
+        base_image_profile=DestroyStringInfo(base_image_profile);
+      return(status);
     }
 
   /*

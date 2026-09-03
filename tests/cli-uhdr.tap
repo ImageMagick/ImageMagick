@@ -1,0 +1,214 @@
+#!/bin/sh
+#
+#  Copyright 1999 ImageMagick Studio LLC, a non-profit organization
+#  dedicated to making software imaging solutions freely available.
+#
+#  You may not use this file except in compliance with the License.  You may
+#  obtain a copy of the License at
+#
+#    https://imagemagick.org/license/
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+#  Regression tests for Ultra HDR metadata preservation.
+#
+. ./common.shi
+. ${srcdir}/tests/common.shi
+
+raw_source=cli-uhdr-offset-raw.jpg
+source=cli-uhdr-offset-source.jpg
+output=cli-uhdr-offset-output.jpg
+transformed_output=cli-uhdr-offset-transformed.jpg
+locale_output=cli-uhdr-offset-locale.jpg
+jpeg_probe=cli-uhdr-jpeg-probe.jpg
+whitespace_output=cli-uhdr-offset-whitespace.jpg
+invalid_output=cli-uhdr-offset-invalid.jpg
+capacity_min=1.00000012
+capacity_max=2.00000024
+expected_offsets='1.00000001e-07,1.00000001e-07,1.00000001e-07 1.00000001e-07,1.00000001e-07,1.00000001e-07'
+
+cleanup()
+{
+  rm -f "$raw_source" "$source" "$output" "$transformed_output" \
+    "$locale_output" "$jpeg_probe" "$whitespace_output" "$invalid_output"
+}
+
+check_value()
+{
+  description=$1
+  actual=$2
+  expected=$3
+
+  if [ "X$actual" = "X$expected" ]; then
+    echo "ok - $description"
+  else
+    echo "not ok - $description"
+    echo "# expected '$expected', got '$actual'"
+  fi
+}
+
+cleanup
+if ! ${MAGICK} -list configure 2>/dev/null | awk '
+    $1 == "DELEGATES" {
+      for (i=2; i <= NF; i++)
+        if ($i == "uhdr")
+          found=1
+    }
+    END { exit(found ? 0 : 1) }
+  '; then
+  echo "1..0 # SKIP UHDR coder unavailable"
+  cleanup
+  exit 0
+fi
+jpeg_format=
+if ${MAGICK} "${SRCDIR}/rose.pnm" "$jpeg_probe" >/dev/null 2>&1; then
+  jpeg_format=`${IDENTIFY} -quiet -format '%m' "$jpeg_probe" 2>/dev/null`
+fi
+if [ "X$jpeg_format" != "XJPEG" ]; then
+  echo "1..0 # SKIP JPEG coder unavailable"
+  cleanup
+  exit 0
+fi
+
+echo "1..11"
+if ! ${MAGICK} \( "${SRCDIR}/rose.pnm" -depth 8 \) \
+    \( "${SRCDIR}/rose.pnm" -depth 16 \) \
+    -define uhdr:hdr-color-transfer=linear "UHDR:$raw_source" \
+    >/dev/null 2>&1; then
+  echo "Bail out! unable to create UHDR test image"
+  cleanup
+  exit 0
+fi
+if ! ${MAGICK} "UHDR:$raw_source" \
+    -set hdrgm:OffsetSDR '0.0000001,0.0000001,0.0000001' \
+    -set hdrgm:OffsetHDR '0.0000001,0.0000001,0.0000001' \
+    "UHDR:$source" >/dev/null 2>&1; then
+  echo "Bail out! unable to create UHDR metadata fixture"
+  cleanup
+  exit 0
+fi
+
+if ${MAGICK} "UHDR:$source" \
+    -set hdrgm:OffsetSDR ' 0.0000001 , 0.0000001 , 0.0000001 ' \
+    -set hdrgm:OffsetHDR ' 0.0000001 , 0.0000001 , 0.0000001 ' \
+    -set hdrgm:HDRCapacityMin " $capacity_min " \
+    -set hdrgm:HDRCapacityMax " $capacity_max " \
+    "UHDR:$whitespace_output" >/dev/null 2>&1; then
+  whitespace_metadata=`${IDENTIFY} -quiet -format \
+    '%[hdrgm:OffsetSDR] %[hdrgm:OffsetHDR] %[hdrgm:HDRCapacityMin] %[hdrgm:HDRCapacityMax]' \
+    "UHDR:$whitespace_output" 2>/dev/null`
+else
+  whitespace_metadata=
+fi
+check_value "metadata permits surrounding whitespace" "$whitespace_metadata" \
+  "$expected_offsets $capacity_min $capacity_max"
+
+printf 'sentinel' > "$invalid_output"
+if ${MAGICK} "UHDR:$source" -set hdrgm:OffsetSDR '0.1,invalid,0.3' \
+    "UHDR:$invalid_output" >/dev/null 2>&1; then
+  echo "not ok - malformed vector metadata is rejected"
+else
+  content=`cat "$invalid_output" 2>/dev/null`
+  check_value "malformed vector metadata is rejected without truncating output" \
+    "$content" sentinel
+fi
+printf 'sentinel' > "$invalid_output"
+if ${MAGICK} "UHDR:$source" -set hdrgm:HDRCapacityMax '2junk' \
+    "UHDR:$invalid_output" >/dev/null 2>&1; then
+  echo "not ok - malformed scalar metadata is rejected"
+else
+  content=`cat "$invalid_output" 2>/dev/null`
+  check_value "malformed scalar metadata is rejected without truncating output" \
+    "$content" sentinel
+fi
+
+source_offsets=`${IDENTIFY} -quiet -format \
+  '%[hdrgm:OffsetSDR] %[hdrgm:OffsetHDR]' "UHDR:$source" 2>/dev/null`
+if ${MAGICK} "UHDR:$source" \
+    -set hdrgm:HDRCapacityMin "$capacity_min" \
+    -set hdrgm:HDRCapacityMax "$capacity_max" \
+    "UHDR:$output" >/dev/null 2>&1; then
+  output_offsets=`${IDENTIFY} -quiet -format \
+    '%[hdrgm:OffsetSDR] %[hdrgm:OffsetHDR]' "UHDR:$output" 2>/dev/null`
+  output_capacity=`${IDENTIFY} -quiet -format \
+    '%[hdrgm:HDRCapacityMin] %[hdrgm:HDRCapacityMax]' \
+    "UHDR:$output" 2>/dev/null`
+else
+  output_offsets=
+  output_capacity=
+fi
+
+if ${MAGICK} "UHDR:$source" \
+    -set hdrgm:HDRCapacityMin "$capacity_min" \
+    -set hdrgm:HDRCapacityMax "$capacity_max" -resize 50% \
+    "UHDR:$transformed_output" >/dev/null 2>&1; then
+  transformed_offsets=`${IDENTIFY} -quiet -format \
+    '%[hdrgm:OffsetSDR] %[hdrgm:OffsetHDR]' \
+    "UHDR:$transformed_output" 2>/dev/null`
+  transformed_capacity=`${IDENTIFY} -quiet -format \
+    '%[hdrgm:HDRCapacityMin] %[hdrgm:HDRCapacityMax]' \
+    "UHDR:$transformed_output" 2>/dev/null`
+else
+  transformed_offsets=
+  transformed_capacity=
+fi
+
+offsets_nonzero=`echo "$source_offsets" | awk -F '[, ]+' \
+  '{ result=(NF == 6); for (i=1; i <= NF; i++) if (($i+0) == 0 || \
+     ($i+0) >= 0.000001 || ($i+0) <= -0.000001) result=0; print result }'`
+if [ "X$offsets_nonzero" = "X1" ]; then
+  echo "ok - small nonzero offsets are retained as properties"
+else
+  echo "not ok - small nonzero offsets are retained as properties"
+  echo "# got '$source_offsets'"
+fi
+check_value "source uses controlled offset values" "$source_offsets" \
+  "$expected_offsets"
+offsets_nonzero=`echo "$output_offsets" | awk -F '[, ]+' \
+  '{ result=(NF == 6); for (i=1; i <= NF; i++) if (($i+0) == 0 || \
+     ($i+0) >= 0.000001 || ($i+0) <= -0.000001) result=0; print result }'`
+if [ "X$offsets_nonzero" = "X1" ]; then
+  echo "ok - small nonzero offsets survive a read/write cycle"
+else
+  echo "not ok - small nonzero offsets survive a read/write cycle"
+  echo "# got '$output_offsets'"
+fi
+check_value "offset values are unchanged" "$output_offsets" \
+  "$source_offsets"
+check_value "capacity values retain float precision" "$output_capacity" \
+  "$capacity_min $capacity_max"
+check_value "offset values survive a geometry transform" \
+  "$transformed_offsets" "$source_offsets"
+check_value "capacity values survive a geometry transform" \
+  "$transformed_capacity" "$capacity_min $capacity_max"
+
+comma_locale=
+for candidate in de_DE.UTF-8 fr_FR.UTF-8 nl_NL.UTF-8; do
+  decimal_point=`LC_ALL=$candidate locale decimal_point 2>/dev/null`
+  if [ "X$decimal_point" = "X," ]; then
+    comma_locale=$candidate
+    break
+  fi
+done
+if [ -n "$comma_locale" ]; then
+  if LC_ALL=$comma_locale ${MAGICK} "UHDR:$source" \
+      -set hdrgm:HDRCapacityMin "$capacity_min" \
+      -set hdrgm:HDRCapacityMax "$capacity_max" \
+      "UHDR:$locale_output" >/dev/null 2>&1; then
+    locale_metadata=`${IDENTIFY} -quiet -format \
+      '%[hdrgm:OffsetSDR] %[hdrgm:OffsetHDR] %[hdrgm:HDRCapacityMin] %[hdrgm:HDRCapacityMax]' \
+      "UHDR:$locale_output" 2>/dev/null`
+  else
+    locale_metadata=
+  fi
+  check_value "metadata parsing is locale independent" "$locale_metadata" \
+    "$source_offsets $capacity_min $capacity_max"
+else
+  echo "ok - metadata parsing is locale independent # SKIP comma locale unavailable"
+fi
+cleanup
+:
