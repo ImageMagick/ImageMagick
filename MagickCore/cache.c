@@ -3799,8 +3799,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     ThrowBinaryException(CacheError,"NoPixelsDefinedInCache",image->filename);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickCoreSignature);
-  if (((MagickSizeType) image->columns > cache_info->width_limit) ||
-      ((MagickSizeType) image->rows > cache_info->height_limit))
+  if (((MagickSizeType) image->columns >= cache_info->width_limit) ||
+      ((MagickSizeType) image->rows >= cache_info->height_limit))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
         "WidthOrHeightExceedsLimit","`%s' (%.17gx%.17g) > (%.17gx%.17g)",
@@ -5243,8 +5243,8 @@ static Quantum *SetPixelCacheNexusPixels(
         "NoPixelsDefinedInCache","`%s'",cache_info->filename);
       return((Quantum *) NULL);
     }
-  if (((MagickSizeType) width > cache_info->width_limit) ||
-      ((MagickSizeType) height > cache_info->height_limit))
+  if (((MagickSizeType) width >= cache_info->width_limit) ||
+      ((MagickSizeType) height >= cache_info->height_limit))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
         "WidthOrHeightExceedsLimit","`%s'",cache_info->filename);
