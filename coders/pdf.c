@@ -1256,7 +1256,7 @@ static const char *GetPDFKeywords(const ImageInfo *image_info)
 }
 
 static void WritePDFValue(Image* image,const char *keyword,
-  const char *value,const MagickBooleanType is_pdfa)
+  const char *value,const MagickBooleanType is_pdfa,ExceptionInfo *exception)
 {
   char
     *escaped;
@@ -1274,7 +1274,7 @@ static void WritePDFValue(Image* image,const char *keyword,
     return;
   if (is_pdfa != MagickFalse)
     {
-      escaped=EscapeParenthesis(value);
+      escaped=EscapeParenthesis(value,MAGICK_SIZE_MAX,exception);
       (void) WriteBlobString(image,"/");
       (void) WriteBlobString(image,keyword);
       (void) WriteBlobString(image," (");
@@ -1912,7 +1912,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
           (double) geometry.x,(double) (geometry.y+(ssize_t) geometry.height+
           i*pointsize+12));
         (void) WriteBlobString(image,buffer);
-        escape=EscapeParenthesis(labels[i]);
+        escape=EscapeParenthesis(labels[i],MAGICK_SIZE_MAX,exception);
         (void) FormatLocaleString(buffer,MagickPathExtent,"(%s) Tj\n",escape);
         escape=DestroyString(escape);
         (void) WriteBlobString(image,buffer);
@@ -3168,12 +3168,12 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     object);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"<<\n");
-  WritePDFValue(image,"Title",GetPDFTitle(image_info,basename),is_pdfa);
-  WritePDFValue(image,"Author",GetPDFAuthor(image_info),is_pdfa);
-  WritePDFValue(image,"Creator",GetPDFCreator(image_info),is_pdfa);
-  WritePDFValue(image,"Producer",GetPDFProducer(image_info),is_pdfa);
-  WritePDFValue(image,"Subject",GetPDFSubject(image_info),is_pdfa);
-  WritePDFValue(image,"Keywords",GetPDFKeywords(image_info),is_pdfa);
+  WritePDFValue(image,"Title",GetPDFTitle(image_info,basename),is_pdfa,exception);
+  WritePDFValue(image,"Author",GetPDFAuthor(image_info),is_pdfa,exception);
+  WritePDFValue(image,"Creator",GetPDFCreator(image_info),is_pdfa,exception);
+  WritePDFValue(image,"Producer",GetPDFProducer(image_info),is_pdfa,exception);
+  WritePDFValue(image,"Subject",GetPDFSubject(image_info),is_pdfa,exception);
+  WritePDFValue(image,"Keywords",GetPDFKeywords(image_info),is_pdfa,exception);
   seconds=GetPdfCreationDate(image_info,image);
   GetMagickUTCTime(&seconds,&utc_time);
   (void) FormatLocaleString(temp,MagickPathExtent,"D:%04d%02d%02d%02d%02d%02d",

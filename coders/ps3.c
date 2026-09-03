@@ -1296,7 +1296,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
           char
             *escape;
 
-          escape=EscapeParenthesis(labels[i]);
+          escape=EscapeParenthesis(labels[i],510,exception);
           if (compression != NoCompression)
             {
               for (j=0; escape[j] != '\0'; j++)

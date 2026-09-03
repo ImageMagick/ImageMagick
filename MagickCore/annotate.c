@@ -2292,7 +2292,7 @@ static MagickBooleanType RenderPostscript(Image *image,
   (void) FormatLocaleFile(file,"[%g %g %g %g 0 0] concat\n",
     draw_info->affine.sx,-draw_info->affine.rx,-draw_info->affine.ry,
     draw_info->affine.sy);
-  text=EscapeParenthesis(draw_info->text);
+  text=EscapeParenthesis(draw_info->text,MAGICK_SIZE_MAX,exception);
   if (identity == MagickFalse)
     (void) FormatLocaleFile(file,"(%s) stringwidth pop -0.5 mul -0.5 rmoveto\n",
       text);
