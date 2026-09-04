@@ -26,6 +26,7 @@ extern "C" {
 #define MagickMin(x,y)  (((x) < (y)) ? (x) : (y))
 
 #include <limits.h>
+#include <sys/types.h>
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/quantum-private.h"
 
