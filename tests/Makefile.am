@@ -43,6 +43,7 @@ TESTS_TESTS = \
   tests/cli-pcx.tap \
   tests/cli-pipe.tap \
   tests/cli-svg.tap \
+  tests/cli-uhdr.tap \
   tests/validate-colorspace.tap \
   tests/validate-compare.tap \
   tests/validate-composite.tap \
