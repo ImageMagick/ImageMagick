@@ -24,6 +24,7 @@
 #include "MagickCore/colorspace.h"
 #include "MagickCore/gem.h"
 #include "MagickCore/image.h"
+#include "MagickCore/image-private.h"
 #include "MagickCore/memory_.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -138,9 +139,9 @@ static inline PixelTrait GetPixelChannelTraits(
 }
 
 static inline size_t GetPixelChannels(const Image *magick_restrict image)
-{
+{ 
   return(image->number_channels);
-}
+} 
 
 static inline Quantum GetPixelCompositeMask(
   const Image *magick_restrict image,const Quantum *magick_restrict pixel)
@@ -234,7 +235,7 @@ static inline MagickRealType GetPixelInfoChannel(
     case AlphaPixelChannel:
     {
       if (pixel_info->alpha_trait == UndefinedPixelTrait)
-        return(OpaqueAlpha);
+        return((MagickRealType) OpaqueAlpha);
       return(pixel_info->alpha);
     }
     case IndexPixelChannel: return(pixel_info->index);
@@ -364,10 +365,10 @@ static inline void GetPixelInfoRGBA(const Quantum red,const Quantum green,
   const Quantum blue,const Quantum alpha,PixelInfo *magick_restrict pixel)
 {
   GetPixelInfo((Image *) NULL,pixel);
-  pixel->red=red;
-  pixel->green=green;
-  pixel->blue=blue;
-  pixel->alpha=alpha;
+  pixel->red=(MagickRealType) red;
+  pixel->green=(MagickRealType) green;
+  pixel->blue=(MagickRealType) blue;
+  pixel->alpha=(MagickRealType) alpha;
 }
 
 static inline Quantum GetPixelWriteMask(
@@ -493,6 +494,30 @@ static inline MagickRealType AbsolutePixelValue(const MagickRealType x)
   return(x < 0.0 ? -x : x);
 }
 
+static inline QuantumAny CastDoubleToQuantumAny(const double x)
+{
+  double
+    value;
+
+  if (IsNaN(x) != 0)
+    {
+      errno=ERANGE;
+      return(0);
+    }
+  value=(x < 0.0) ? ceil(x) : floor(x);
+  if (value < 0.0)
+    {
+      errno=ERANGE;
+      return(0);
+    }
+  if (value >= ((double) ((QuantumAny) ~0)))
+    {
+      errno=ERANGE;
+      return((QuantumAny) ~0);
+    }
+  return((QuantumAny) value);
+}
+
 static inline MagickBooleanType IsPixelAtDepth(const Quantum pixel,
   const QuantumAny range)
 {
@@ -505,8 +530,9 @@ static inline MagickBooleanType IsPixelAtDepth(const Quantum pixel,
   quantum=(Quantum) (((double) QuantumRange*((QuantumAny) (((double) range*
     pixel)/(double) QuantumRange+0.5)))/(double) range+0.5);
 #else
-  quantum=(Quantum) (((double) QuantumRange*((QuantumAny) (((double) range*
-    (double) pixel)/(double) QuantumRange+0.5)))/(double) range);
+  quantum=(Quantum) (((double) QuantumRange*((double) CastDoubleToQuantumAny(
+    ((double) range*(double) pixel)/(double) QuantumRange+0.5)))/
+    (double) range);
 #endif
   return(pixel == quantum ? MagickTrue : MagickFalse);
 }
@@ -950,6 +976,25 @@ static inline void SetPixelYTraits(Image *image,const PixelTrait traits)
 {
   image->channel_map[YPixelChannel].traits=traits;
 }
+
+static inline size_t GetImageChannels(const Image *image)
+{ 
+  ssize_t
+    i;
+
+  size_t
+    channels;
+  
+  channels=0;
+  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+  {   
+    PixelChannel channel = GetPixelChannelChannel(image,i);
+    PixelTrait traits = GetPixelChannelTraits(image,channel);
+    if ((traits & UpdatePixelTrait) != 0)
+      channels++;
+  }   
+  return(channels == 0 ? (size_t) 1 : channels);
+} 
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

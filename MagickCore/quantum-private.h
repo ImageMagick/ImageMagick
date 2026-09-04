@@ -18,6 +18,7 @@
 #ifndef MAGICKCORE_QUANTUM_PRIVATE_H
 #define MAGICKCORE_QUANTUM_PRIVATE_H
 
+#include <stddef.h>
 #include "MagickCore/memory_.h"
 #include "MagickCore/cache.h"
 #include "MagickCore/image-private.h"
@@ -334,7 +335,7 @@ static inline Quantum ScaleAnyToQuantum(const QuantumAny quantum,
   return((Quantum) ((double) QuantumRange*(quantum*
     MagickSafeReciprocal((double) range))+0.5));
 #else
-  return((Quantum) ((double) QuantumRange*(quantum*
+  return((Quantum) ((double) QuantumRange*((double) quantum*
     MagickSafeReciprocal((double) range))));
 #endif
 }
@@ -347,9 +348,9 @@ static inline QuantumAny ScaleQuantumToAny(const Quantum quantum,
 #else
   if ((IsNaN(quantum) != 0) || (quantum <= 0.0f))
     return((QuantumAny) 0UL);
-  if (((double) range*quantum/(double) QuantumRange) >= 18446744073709551615.0)
+  if (((double) range*(double) quantum/(double) QuantumRange) >= 18446744073709551615.0)
     return((QuantumAny) MagickULLConstant(18446744073709551615));
-  return((QuantumAny) (range*(double) quantum/(double) QuantumRange+0.5));
+  return((QuantumAny) ((double) range*(double) quantum/(double) QuantumRange+0.5));
 #endif
 }
 
@@ -474,7 +475,7 @@ static inline Quantum ScaleLongLongToQuantum(const MagickSizeType value)
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   return((Quantum) ((value)/MagickULLConstant(281479271743489)));
 #else
-  return((Quantum) (value/281479271743489.0));
+  return((Quantum) ((double) value/281479271743489.0));
 #endif
 }
 

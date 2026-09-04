@@ -57,8 +57,8 @@ static double GhostscriptVersion(const GhostInfo *ghost_info)
   if ((ghost_info->revision)(&revision,(int) sizeof(revision)) != 0)
     return(0.0);
   if (revision.revision > 1000)
-    return(revision.revision/1000.0);
-  return(revision.revision/100.0);
+    return((double) revision.revision/1000.0);
+  return((double) revision.revision/100.0);
 }
 #endif
 

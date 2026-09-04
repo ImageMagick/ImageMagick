@@ -338,8 +338,8 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
     /*
       Position text relative to image.
     */
-    annotate_info->affine.tx=geometry_info.xi-image->page.x;
-    annotate_info->affine.ty=geometry_info.psi-image->page.y;
+    annotate_info->affine.tx=geometry_info.xi-(double) image->page.x;
+    annotate_info->affine.ty=geometry_info.psi-(double) image->page.y;
     (void) CloneString(&annotate->text,textlist[i]);
     if ((metrics.width == 0) || (annotate->gravity != NorthWestGravity))
       (void) GetTypeMetrics(image,annotate,&metrics,exception);
