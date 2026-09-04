@@ -27,7 +27,6 @@
 using namespace std;
 
 #define AbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
-#define MagickPI  3.14159265358979323846264338327950288419716939937510
 #define DegreesToRadians(x)  (MagickPI*(x)/180.0)
 #define ThrowImageException ThrowPPException(quiet())
 
