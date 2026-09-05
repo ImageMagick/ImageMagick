@@ -1080,6 +1080,28 @@ MagickExport MagickBooleanType ListPolicyInfo(FILE *file,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static void *DestroyPolicyElement(void *policy_info)
+{
+  PolicyInfo
+    *p;
+
+  p=(PolicyInfo *) policy_info;
+  if (p->exempt == MagickFalse)
+    {
+      if (p->value != (char *) NULL)
+        p->value=DestroyString(p->value);
+      if (p->pattern != (char *) NULL)
+        p->pattern=DestroyString(p->pattern);
+      if (p->name != (char *) NULL)
+        p->name=DestroyString(p->name);
+      if (p->path != (char *) NULL)
+        p->path=DestroyString(p->path);
+    }
+  p=(PolicyInfo *) RelinquishMagickMemory(p);
+  return((void *) NULL);
+}
+
 static MagickBooleanType LoadPolicyCache(LinkedListInfo *cache,
   const char *policy,const char *filename,const size_t depth,
   ExceptionInfo *exception)
@@ -1122,11 +1144,56 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *cache,
     (void) CopyMagickString(keyword,token,MagickPathExtent);
     if (LocaleNCompare(keyword,"<!DOCTYPE",9) == 0)
       {
+        char
+          quote = '\0';
+    
+        ssize_t
+          subset_depth = 0;
+    
         /*
-          Docdomain element.
+          Skip to the end of the DOCTYPE declaration.
         */
-        while ((LocaleNCompare(q,"]>",2) != 0) && (*q != '\0'))
-          (void) GetNextToken(q,&q,extent,token);
+        while (*q != '\0')
+        {
+          if (quote != '\0')
+            {
+              if (*q == quote)
+                quote='\0';
+              q++;
+              continue;
+            }
+          if ((*q == '\'') || (*q == '"'))
+            {
+              quote=(*q);
+              q++;
+              continue;
+            }
+          if (*q == '[')
+            {
+              subset_depth++;
+              q++;
+              continue;
+            }
+          if ((*q == ']') && (subset_depth > 0))
+            {
+              subset_depth--;
+              q++;
+              continue;
+            }
+          if ((*q == '>') && (subset_depth == 0))
+            {
+              q++;
+              break;
+            }
+          q++;
+        }
+        if (*q == '\0')
+          {
+            ThrowMagickException(exception,GetMagickModule(),
+              ConfigureError,"UnterminatedDOCTYPE","`%s'",filename);
+            policy_cache=DestroyLinkedList(policy_cache,DestroyPolicyElement);
+            return(MagickFalse);
+          }
         continue;
       }
     if (LocaleNCompare(keyword,"<!--",4) == 0)
@@ -1326,28 +1393,6 @@ MagickPrivate MagickBooleanType PolicyComponentGenesis(void)
 %      PolicyComponentTerminus(void)
 %
 */
-
-static void *DestroyPolicyElement(void *policy_info)
-{
-  PolicyInfo
-    *p;
-
-  p=(PolicyInfo *) policy_info;
-  if (p->exempt == MagickFalse)
-    {
-      if (p->value != (char *) NULL)
-        p->value=DestroyString(p->value);
-      if (p->pattern != (char *) NULL)
-        p->pattern=DestroyString(p->pattern);
-      if (p->name != (char *) NULL)
-        p->name=DestroyString(p->name);
-      if (p->path != (char *) NULL)
-        p->path=DestroyString(p->path);
-    }
-  p=(PolicyInfo *) RelinquishMagickMemory(p);
-  return((void *) NULL);
-}
-
 MagickPrivate void PolicyComponentTerminus(void)
 {
   if (policy_semaphore == (SemaphoreInfo *) NULL)
@@ -1435,7 +1480,7 @@ MagickExport MagickBooleanType SetMagickSecurityPolicy(const char *policy,
     return(MagickFalse);
   LockSemaphoreInfo(policy_semaphore);
   status=LoadPolicyCache(policy_cache,policy,"[user-policy]",0,exception);
-  UnlockSemaphoreInfo(policy_semaphore)
+  UnlockSemaphoreInfo(policy_semaphore);
   if (status == MagickFalse)
     return(status);
   /*
