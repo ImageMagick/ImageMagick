@@ -3571,7 +3571,10 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
       return((Image *) NULL);
     }
   if (AcquireMagickResource(WidthResource,4*image->columns) == MagickFalse)
-    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+    {
+      noise_image=DestroyImage(noise_image);
+      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   pixels_info=AcquireVirtualMemory(4*image->columns,image->rows*
     sizeof(*pixels));
   kernel=(float *) AcquireQuantumMemory(MagickMax(image->rows,image->columns)+1,
@@ -3582,6 +3585,7 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
         kernel=(float *) RelinquishMagickMemory(kernel);
       if (pixels_info != (MemoryInfo *) NULL)
         pixels_info=RelinquishVirtualMemory(pixels_info);
+      noise_image=DestroyImage(noise_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
   pixels=(float *) GetVirtualMemoryBlob(pixels_info);

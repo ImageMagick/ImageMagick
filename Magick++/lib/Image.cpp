@@ -12,12 +12,6 @@
 #define MAGICK_PLUSPLUS_IMPLEMENTATION 1
 
 #include "Magick++/Include.h"
-#include <cstdlib>
-#include <string>
-#include <string.h>
-#include <errno.h>
-#include <math.h>
-
 #include "Magick++/Image.h"
 #include "Magick++/Functions.h"
 #include "Magick++/Pixels.h"

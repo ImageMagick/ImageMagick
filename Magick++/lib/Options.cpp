@@ -14,14 +14,10 @@
 #define MAGICK_PLUSPLUS_IMPLEMENTATION 1
 
 #include "Magick++/Include.h"
-#include <string>
-#include <string.h>
-#include <stdlib.h>
-#include <math.h>
-
 #include "Magick++/Options.h"
 #include "Magick++/Functions.h"
 #include "Magick++/Exception.h"
+#include <cstring>
 
 #define DegreesToRadians(x)  (MagickPI*(x)/180.0)
 

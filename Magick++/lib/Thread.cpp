@@ -13,8 +13,7 @@
 
 #include "Magick++/Thread.h"
 #include "Magick++/Exception.h"
-
-#include <string.h>
+#include <cstring>
 
 // Default constructor
 Magick::MutexLock::MutexLock(void)

@@ -1751,7 +1751,12 @@ static MagickBooleanType WriteJSONImage(const ImageInfo *image_info,
     return(status);
   file=GetBlobFileHandle(image);
   if (file == (FILE *) NULL)
-    file=stdout;
+    {
+      (void) CloseBlob(image);
+      (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
+        "CoderDoesNotSupportThisStreamType","`%s'",image->filename);
+      return(MagickFalse);
+    }
   scene=0;
   number_scenes=GetImageListLength(image);
   do

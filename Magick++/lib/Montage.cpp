@@ -12,11 +12,9 @@
 #define MAGICK_PLUSPLUS_IMPLEMENTATION 1
 
 #include "Magick++/Include.h"
-#include <string>
-#include <string.h>
-
 #include "Magick++/Montage.h"
 #include "Magick++/Functions.h"
+#include <cstring>
 
 Magick::Montage::Montage(void)
   : _backgroundColor("#ffffff"),

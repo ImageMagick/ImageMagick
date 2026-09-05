@@ -160,6 +160,12 @@ static MagickBooleanType WriteINFOImage(const ImageInfo *image_info,
   const char
     *format;
 
+  FILE
+    *file;
+
+  ImageInfo
+    *clone_info;
+
   MagickBooleanType
     status;
 
@@ -183,6 +189,15 @@ static MagickBooleanType WriteINFOImage(const ImageInfo *image_info,
     return(status);
   scene=0;
   number_scenes=GetImageListLength(image);
+  file=GetBlobFileHandle(image);
+  if (file == (FILE *) NULL)
+    {
+      (void) CloseBlob(image);
+      (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
+        "CoderDoesNotSupportThisStreamType","`%s'",image->filename);
+      return(MagickFalse);
+    }
+  clone_info=CloneImageInfo(image_info);
   do
   {
     format=GetImageOption(image_info,"format");
@@ -192,15 +207,14 @@ static MagickBooleanType WriteINFOImage(const ImageInfo *image_info,
           MagickPathExtent);
         image->magick_columns=image->columns;
         image->magick_rows=image->rows;
-        (void) IdentifyImage(image,GetBlobFileHandle(image),
-          image_info->verbose,exception);
+        (void) IdentifyImage(image,file,image_info->verbose,exception);
       }
     else
       {
         char
           *text;
 
-        text=InterpretImageProperties((ImageInfo *) image_info,image,format,
+        text=InterpretImageProperties(clone_info,image,format,
           exception);
         if (text != (char *) NULL)
           {
@@ -215,6 +229,7 @@ static MagickBooleanType WriteINFOImage(const ImageInfo *image_info,
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);
+  clone_info=DestroyImageInfo(clone_info);
   if (CloseBlob(image) == MagickFalse)
     status=MagickFalse;
   return(status);

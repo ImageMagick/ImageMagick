@@ -15,11 +15,6 @@
 #include "Magick++/BlobRef.h"
 #include "Magick++/Exception.h"
 #include "Magick++/Thread.h"
-
-#ifdef memchr
-#undef memchr
-#endif
-
 #include <cstring>
 
 Magick::BlobRef::BlobRef(const void* data_,const size_t length_)

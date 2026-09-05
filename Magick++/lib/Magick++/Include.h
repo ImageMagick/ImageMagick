@@ -21,11 +21,6 @@
 #  undef class
 #endif
 
-#include <string.h>
-#include <stddef.h>
-#include <cstring>
-#include <cstddef>
-
 // Needed for stdio FILE
 #include <stdio.h>
 #include <stdarg.h>
@@ -36,6 +31,7 @@
 
 #include <errno.h>
 #include <stdint.h>
+#include <cstddef>
 
 //
 // Include ImageMagick headers into namespace "MagickCore". If

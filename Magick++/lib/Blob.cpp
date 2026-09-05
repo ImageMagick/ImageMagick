@@ -16,8 +16,6 @@
 #include "Magick++/BlobRef.h"
 #include "Magick++/Exception.h"
 
-#include <string.h>
-
 Magick::Blob::Blob(void)
   : _blobRef(new Magick::BlobRef(0,0))
 {
