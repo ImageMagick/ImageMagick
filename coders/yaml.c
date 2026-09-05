@@ -644,9 +644,9 @@ static ssize_t PrintChannelMoments(FILE *file,const PixelChannel channel,
   n+=FormatLocaleFile(file,"        ellipseIntensity: %.*g\n",
     GetMagickPrecision(),channel_moments[channel].ellipse_intensity);
   for (i=0; i < 7; i++)
-    n+=FormatLocaleFile(file,"        I%.17g: %.*g\n",i+1.0,
+    n+=FormatLocaleFile(file,"        I%.17g: %.*g\n",(double) i+1.0,
       GetMagickPrecision(),channel_moments[channel].invariant[i]);
-  n+=FormatLocaleFile(file,"        I%.17g: %.*g\n",i+1.0,
+  n+=FormatLocaleFile(file,"        I%.17g: %.*g\n",(double) i+1.0,
     GetMagickPrecision(),channel_moments[channel].invariant[i]);
   (void) FormatLocaleFile(file,"      ");
   if (separator != MagickFalse)
@@ -1718,7 +1718,12 @@ static MagickBooleanType WriteYAMLImage(const ImageInfo *image_info,
     return(status);
   file=GetBlobFileHandle(image);
   if (file == (FILE *) NULL)
-    file=stdout;
+    {
+      (void) CloseBlob(image);
+      (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
+        "CoderDoesNotSupportThisStreamType","`%s'",image->filename);
+      return(MagickFalse);
+    }
   scene=0;
   number_scenes=GetImageListLength(image);
   do

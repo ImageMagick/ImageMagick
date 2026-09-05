@@ -83,6 +83,9 @@
     </cache>
     <coder>
       <error>
+        <message name="CoderDoesNotSupportThisStreamType">
+          coder does not support this stream tyype
+        </message>
         <message name="ColormapTypeNotSupported">
           table de couleurs non supportée
         </message>

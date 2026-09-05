@@ -1758,7 +1758,8 @@ MagickExport MagickBooleanType GetBlobError(const Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetBlobFileHandle() returns the file handle associated with the image blob.
+%  GetBlobFileHandle() returns the stdio file handle associated with the image
+%  blob. If the blob is not backed by a FILE object, NULL is returned.
 %
 %  The format of the GetBlobFile method is:
 %
@@ -1773,7 +1774,23 @@ MagickExport FILE *GetBlobFileHandle(const Image *image)
 {
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  return(image->blob->file_info.file);
+  assert(image->blob != (BlobInfo *) NULL);
+  assert(image->blob->signature == MagickCoreSignature);
+  switch (image->blob->type)
+  {
+    case StandardStream:
+    case FileStream:
+    case PipeStream:
+     return(image->blob->file_info.file);
+    case UndefinedStream:
+    case ZipStream:
+    case BZipStream:
+    case FifoStream:
+    case BlobStream:
+    case CustomStream:
+      break;
+  }
+  return((FILE *) NULL);
 }
 
 /*
