@@ -29,6 +29,9 @@
 extern "C" {
 #endif
 
+#define MagickMax(x,y)  (((x) > (y)) ? (x) : (y))
+#define MagickMin(x,y)  (((x) < (y)) ? (x) : (y))
+
 typedef struct _QuantumState
 {
   double
