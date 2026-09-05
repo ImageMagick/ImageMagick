@@ -98,7 +98,6 @@ static const char
   *convert_options[] =
   {
     "",
-    "-affine 1,0,0.785,1,0,0 -transform",
     "-alpha set",
     "-black-threshold 20%",
     "-blur 0x0.5",
@@ -135,6 +134,7 @@ static const char
     "-depth 16",
     "-depth 32",
     "-despeckle",
+    "+distort AffineProjection '1,0,0.785,1,0,0'",
     "-draw \"affine 1,0,0.785,1,0,0\"",
     "-draw \"rectangle 20,10 80,50\"",
     "-edge 0x1",
