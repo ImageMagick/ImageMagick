@@ -18,18 +18,19 @@
 #ifndef MAGICKCORE_IMAGE_PRIVATE_H
 #define MAGICKCORE_IMAGE_PRIVATE_H
 
+#include <limits.h>
+#include <sys/types.h>
+#include "MagickCore/nt-base.h"
+#include "MagickCore/nt-base-private.h"
+#include "MagickCore/pixel-accessor.h"
+#include "MagickCore/quantum-private.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
 #define MagickMax(x,y)  (((x) > (y)) ? (x) : (y))
 #define MagickMin(x,y)  (((x) < (y)) ? (x) : (y))
-
-#include <limits.h>
-#include <sys/types.h>
-#include "MagickCore/nt-base.h"
-#include "MagickCore/pixel-accessor.h"
-#include "MagickCore/quantum-private.h"
 
 #define BackgroundColor  "#ffffff"  /* white */
 #define BackgroundColorRGBA  QuantumRange,QuantumRange,QuantumRange,OpaqueAlpha
