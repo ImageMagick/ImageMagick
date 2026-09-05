@@ -46,6 +46,7 @@ TESTS_TESTS = \
   tests/cli-svg.tap \
   tests/cli-uhdr.tap \
   tests/cli-uhdr-encoder.tap \
+  tests/cli-uhdr-resize-filter.tap \
   tests/validate-colorspace.tap \
   tests/validate-compare.tap \
   tests/validate-composite.tap \

@@ -794,7 +794,7 @@ static MagickBooleanType CropGainMapImage(Image **gainmap_image,
 
 static MagickBooleanType ResizeGainMapImage(Image **gainmap_image,
   size_t *base_columns,size_t *base_rows,const size_t columns,
-  const size_t rows,const Image *image,ExceptionInfo *exception)
+  const size_t rows,const FilterType filter_type,ExceptionInfo *exception)
 {
   Image
     *resize_image;
@@ -812,7 +812,7 @@ static MagickBooleanType ResizeGainMapImage(Image **gainmap_image,
       (target_rows != (*gainmap_image)->rows))
     {
       resize_image=ResizeImage(*gainmap_image,target_columns,target_rows,
-        image->filter,exception);
+        filter_type,exception);
       if (ReplaceGainMapImage(gainmap_image,resize_image) == MagickFalse)
         return(MagickFalse);
     }
@@ -839,6 +839,13 @@ static MagickBooleanType ApplyGainMapTransform(Image **gainmap_image,
   size_t
     rotations;
 
+  FilterType
+    filter_type;
+
+  int
+    fields,
+    filter_value;
+
   if (LocaleNCompare(transform,"crop ",5) == 0)
     {
       if (sscanf(transform+5,"%lfx%lf %lfx%lf%lf%lf",&source_columns,
@@ -856,14 +863,26 @@ static MagickBooleanType ApplyGainMapTransform(Image **gainmap_image,
     }
   if (LocaleNCompare(transform,"resize ",7) == 0)
     {
-      if (sscanf(transform+7,"%lfx%lf %lfx%lf",&source_columns,
-          &source_rows,&columns,&rows) != 4)
+      fields=sscanf(transform+7,"%lfx%lf %lfx%lf %d",&source_columns,
+        &source_rows,&columns,&rows,&filter_value);
+      if ((fields != 4) && (fields != 5))
         return(MagickFalse);
+      filter_type=UndefinedFilter;
+      if (fields == 5)
+        {
+          if ((filter_value <= (int) UndefinedFilter) ||
+              (filter_value >= (int) SentinelFilter))
+            return(MagickFalse);
+          filter_type=(FilterType) filter_value;
+        }
+      else
+        filter_type=image->filter;
       if (IsGainMapBaseGeometry(*base_columns,*base_rows,source_columns,
           source_rows) == MagickFalse)
         return(MagickFalse);
       return(ResizeGainMapImage(gainmap_image,base_columns,base_rows,
-        CastDoubleToSizeT(columns),CastDoubleToSizeT(rows),image,exception));
+        CastDoubleToSizeT(columns),CastDoubleToSizeT(rows),filter_type,
+        exception));
     }
   if (LocaleNCompare(transform,"flip ",5) == 0)
     {

@@ -3825,7 +3825,7 @@ MagickExport Image *ResizeImage(const Image *image,const size_t columns,
   if (resize_image != (Image *) NULL)
     {
       resize_filter=DestroyResizeFilter(resize_filter);
-      return(resize_image);
+      goto record_resize_transform;
     }
 #endif
   resize_image=CloneImage(image,columns,rows,MagickTrue,exception);
@@ -3874,14 +3874,17 @@ MagickExport Image *ResizeImage(const Image *image,const size_t columns,
       return((Image *) NULL);
     }
   resize_image->type=image->type;
+#if defined(MAGICKCORE_OPENCL_SUPPORT)
+record_resize_transform:
+#endif
   {
     char
       transform[MagickPathExtent];
 
     (void) FormatLocaleString(transform,MagickPathExtent,
-      "resize %.17gx%.17g %.17gx%.17g",(double) image->columns,
+      "resize %.17gx%.17g %.17gx%.17g %d",(double) image->columns,
       (double) image->rows,(double) resize_image->columns,
-      (double) resize_image->rows);
+      (double) resize_image->rows,(int) filter_type);
     AppendImageProfileProperty(resize_image,"hdrgm","hdrgm:Transform",
       transform,exception);
   }
