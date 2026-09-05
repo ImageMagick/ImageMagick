@@ -15,6 +15,7 @@
 #include "Magick++/BlobRef.h"
 #include "Magick++/Exception.h"
 #include "Magick++/Thread.h"
+#include <cstring>
 
 Magick::BlobRef::BlobRef(const void* data_,const size_t length_)
   : allocator(Magick::Blob::NewAllocator),

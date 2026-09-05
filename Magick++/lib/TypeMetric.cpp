@@ -13,6 +13,7 @@
 
 #include "Magick++/TypeMetric.h"
 #include "Magick++/Drawable.h"
+#include <cstring>
 
 Magick::TypeMetric::TypeMetric(void)
 {

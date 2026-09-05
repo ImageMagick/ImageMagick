@@ -17,6 +17,7 @@
 #include "Magick++/Options.h"
 #include "Magick++/Functions.h"
 #include "Magick++/Exception.h"
+#include <cstring>
 
 #define DegreesToRadians(x)  (MagickPI*(x)/180.0)
 

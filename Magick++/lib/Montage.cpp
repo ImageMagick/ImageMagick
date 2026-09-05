@@ -14,6 +14,7 @@
 #include "Magick++/Include.h"
 #include "Magick++/Montage.h"
 #include "Magick++/Functions.h"
+#include <cstring>
 
 Magick::Montage::Montage(void)
   : _backgroundColor("#ffffff"),
