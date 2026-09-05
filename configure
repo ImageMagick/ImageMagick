@@ -35988,7 +35988,7 @@ printf %s "checking whether libuhdr links from C... " >&6; }
     fi
     CPPFLAGS="$candidate_cflags $saved_CPPFLAGS"
     for cxx_runtime in '' '-lstdc++' '-lc++' '-lc++ -lc++abi'; do
-      LIBS="$candidate_libs $cxx_runtime $MATH_LIBS"
+      LIBS="$candidate_libs $cxx_runtime $MATH_LIBS $saved_LIBS"
       cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 #include <ultrahdr_api.h>

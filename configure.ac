@@ -2931,7 +2931,7 @@ if test "$have_uhdr_shared" = 'yes' || test "$have_uhdr_static" = 'yes'; then
     fi
     CPPFLAGS="$candidate_cflags $saved_CPPFLAGS"
     for cxx_runtime in '' '-lstdc++' '-lc++' '-lc++ -lc++abi'; do
-      LIBS="$candidate_libs $cxx_runtime $MATH_LIBS"
+      LIBS="$candidate_libs $cxx_runtime $MATH_LIBS $saved_LIBS"
       AC_LINK_IFELSE(
         [AC_LANG_PROGRAM([[#include <ultrahdr_api.h>]],
           [[uhdr_codec_private_t *decoder=uhdr_create_decoder();
