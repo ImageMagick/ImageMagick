@@ -5403,7 +5403,7 @@ MAGICK_PATCHLEVEL_VERSION=32
 
 MAGICK_VERSION=7.1.2-32
 
-MAGICK_GIT_REVISION=0586c686f:20260904
+MAGICK_GIT_REVISION=5921a78a0:20260905
 
 
 # Substitute library versioning
@@ -5437,7 +5437,7 @@ PACKAGE_LIB_VERSION=0x712
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,2,32
 
-PACKAGE_RELEASE_DATE=2026-09-04
+PACKAGE_RELEASE_DATE=2026-09-05
 
 
 # Ensure that make can run correctly
@@ -36793,6 +36793,12 @@ ac_fn_c_check_func "$LINENO" "j1" "ac_cv_func_j1"
 if test "x$ac_cv_func_j1" = xyes
 then :
   printf "%s\n" "#define HAVE_J1 1" >>confdefs.h
+
+fi
+ac_fn_c_check_func "$LINENO" "link" "ac_cv_func_link"
+if test "x$ac_cv_func_link" = xyes
+then :
+  printf "%s\n" "#define HAVE_LINK 1" >>confdefs.h
 
 fi
 ac_fn_c_check_func "$LINENO" "lltostr" "ac_cv_func_lltostr"

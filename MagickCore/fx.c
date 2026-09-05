@@ -1082,7 +1082,7 @@ static MagickBooleanType ExtendRPN(FxInfo * pfx)
   /*
     Keep the original table and size intact unless growth succeeds.
   */
-  element_count=(size_t) ceil(pfx->numElements*(1+TableExtend));
+  element_count=(int) ceil(pfx->numElements*(1+TableExtend));
   new_elements=(ElementT *) AcquireQuantumMemory((size_t) element_count,
     sizeof(*new_elements));
   if (new_elements == (ElementT *) NULL)
