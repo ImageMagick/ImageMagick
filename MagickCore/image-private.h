@@ -19,9 +19,6 @@
 #define MAGICKCORE_IMAGE_PRIVATE_H
 
 #include <limits.h>
-#include <sys/types.h>
-#include "MagickCore/nt-base.h"
-#include "MagickCore/nt-base-private.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/quantum-private.h"
 

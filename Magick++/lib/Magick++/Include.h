@@ -21,11 +21,6 @@
 #  undef class
 #endif
 
-#include <string.h>
-#include <stddef.h>
-#include <cstring>
-#include <cstddef>
-
 // Needed for stdio FILE
 #include <stdio.h>
 #include <stdarg.h>

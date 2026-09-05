@@ -18,8 +18,6 @@
 #ifndef MAGICKCORE_DELEGATE_PRIVATE_H
 #define MAGICKCORE_DELEGATE_PRIVATE_H
 
-#include <string.h>
-#include <stddef.h> 
 #include "MagickCore/locale_.h"
 #include "MagickCore/string_.h"
 
