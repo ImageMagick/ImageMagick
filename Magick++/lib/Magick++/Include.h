@@ -31,6 +31,7 @@
 
 #include <errno.h>
 #include <stdint.h>
+#include <cstddef>
 
 //
 // Include ImageMagick headers into namespace "MagickCore". If
