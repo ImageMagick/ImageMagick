@@ -1076,7 +1076,7 @@ static MagickBooleanType ExtendRPN(FxInfo * pfx)
   ElementT
     *new_elements;
 
-  size_t
+  int
     element_count;
 
   /*
