@@ -3274,7 +3274,7 @@ static inline fxFltType GetIntensity (FxInfo * pfx, ssize_t ImgNum, const fxFltT
 
   (void) GetPixelInfo (img, &pixelinf);
 
-  if (!InterpolatePixelInfo (img, pfx->Imgs[pfx->ImgNum].View, img->interpolate,
+  if (!InterpolatePixelInfo (img, pfx->Imgs[ImgNum].View, img->interpolate,
               (double) fx, (double) fy, &pixelinf, pfx->exception))
   {
     (void) ThrowMagickException (
