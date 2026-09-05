@@ -1864,10 +1864,6 @@ coders_uhdr_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 am_coders_uhdr_la_OBJECTS = coders/uhdr_la-uhdr.lo
 coders_uhdr_la_OBJECTS = $(am_coders_uhdr_la_OBJECTS)
-coders_uhdr_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) $(coders_uhdr_la_LDFLAGS) $(LDFLAGS) -o \
-	$@
 @UHDR_DELEGATE_TRUE@@WITH_MODULES_TRUE@am_coders_uhdr_la_rpath =  \
 @UHDR_DELEGATE_TRUE@@WITH_MODULES_TRUE@	-rpath $(codersdir)
 coders_uil_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
@@ -3529,6 +3525,10 @@ TextEncodeDelegate = @TextEncodeDelegate@
 TraceEncodeDelegate = @TraceEncodeDelegate@
 UHDR_CFLAGS = @UHDR_CFLAGS@
 UHDR_LIBS = @UHDR_LIBS@
+UHDR_SHARED_CFLAGS = @UHDR_SHARED_CFLAGS@
+UHDR_SHARED_LIBS = @UHDR_SHARED_LIBS@
+UHDR_STATIC_CFLAGS = @UHDR_STATIC_CFLAGS@
+UHDR_STATIC_LIBS = @UHDR_STATIC_LIBS@
 UMEM_LIBS = @UMEM_LIBS@
 VERSION = @VERSION@
 VIDEODecodeDelegate = @VIDEODecodeDelegate@
@@ -5182,6 +5182,11 @@ coders_uhdr_la_SOURCES = coders/uhdr.c
 coders_uhdr_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_uhdr_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_uhdr_la_LIBADD = $(MAGICKCORE_LIBS) $(UHDR_LIBS) $(MATH_LIBS)
+coders_uhdr_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
+  $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
+  $(AM_CFLAGS) $(CFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) \
+  $(coders_uhdr_la_LDFLAGS) $(LDFLAGS) -o $@
+
 
 # UIL coder module
 coders_uil_la_SOURCES = coders/uil.c
@@ -8033,7 +8038,7 @@ coders/uhdr_la-uhdr.lo: coders/$(am__dirstamp) \
 	coders/$(DEPDIR)/$(am__dirstamp)
 
 coders/uhdr.la: $(coders_uhdr_la_OBJECTS) $(coders_uhdr_la_DEPENDENCIES) $(EXTRA_coders_uhdr_la_DEPENDENCIES) coders/$(am__dirstamp)
-	$(AM_V_CCLD)$(coders_uhdr_la_LINK) $(am_coders_uhdr_la_rpath) $(coders_uhdr_la_OBJECTS) $(coders_uhdr_la_LIBADD) $(LIBS)
+	$(AM_V_GEN)$(coders_uhdr_la_LINK) $(am_coders_uhdr_la_rpath) $(coders_uhdr_la_OBJECTS) $(coders_uhdr_la_LIBADD) $(LIBS)
 coders/uil_la-uil.lo: coders/$(am__dirstamp) \
 	coders/$(DEPDIR)/$(am__dirstamp)
 

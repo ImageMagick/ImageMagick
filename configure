@@ -797,10 +797,14 @@ WEBPMUX_LIBS
 WEBPMUX_CFLAGS
 WEBP_LIBS
 WEBP_CFLAGS
-UHDR_DELEGATE_FALSE
-UHDR_DELEGATE_TRUE
 UHDR_LIBS
 UHDR_CFLAGS
+UHDR_DELEGATE_FALSE
+UHDR_DELEGATE_TRUE
+UHDR_STATIC_LIBS
+UHDR_STATIC_CFLAGS
+UHDR_SHARED_LIBS
+UHDR_SHARED_CFLAGS
 TIFF_DELEGATE_FALSE
 TIFF_DELEGATE_TRUE
 TIFF_LIBS
@@ -1373,8 +1377,10 @@ CAIRO_SVG_CFLAGS
 CAIRO_SVG_LIBS
 TIFF_CFLAGS
 TIFF_LIBS
-UHDR_CFLAGS
-UHDR_LIBS
+UHDR_SHARED_CFLAGS
+UHDR_SHARED_LIBS
+UHDR_STATIC_CFLAGS
+UHDR_STATIC_LIBS
 WEBP_CFLAGS
 WEBP_LIBS
 WEBPMUX_CFLAGS
@@ -2253,8 +2259,14 @@ Some influential environment variables:
               linker flags for CAIRO_SVG, overriding pkg-config
   TIFF_CFLAGS C compiler flags for TIFF, overriding pkg-config
   TIFF_LIBS   linker flags for TIFF, overriding pkg-config
-  UHDR_CFLAGS C compiler flags for UHDR, overriding pkg-config
-  UHDR_LIBS   linker flags for UHDR, overriding pkg-config
+  UHDR_SHARED_CFLAGS
+              C compiler flags for UHDR_SHARED, overriding pkg-config
+  UHDR_SHARED_LIBS
+              linker flags for UHDR_SHARED, overriding pkg-config
+  UHDR_STATIC_CFLAGS
+              C compiler flags for UHDR_STATIC, overriding pkg-config
+  UHDR_STATIC_LIBS
+              linker flags for UHDR_STATIC, overriding pkg-config
   WEBP_CFLAGS C compiler flags for WEBP, overriding pkg-config
   WEBP_LIBS   linker flags for WEBP, overriding pkg-config
   WEBPMUX_CFLAGS
@@ -35797,6 +35809,8 @@ if test "$with_uhdr" != 'yes'; then
 fi
 
 have_uhdr='no'
+have_uhdr_shared='no'
+have_uhdr_static='no'
 UHDR_CFLAGS=""
 UHDR_LIBS=""
 UHDR_PKG=""
@@ -35808,8 +35822,8 @@ pkg_failed=no
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for libuhdr >= 1.4.0" >&5
 printf %s "checking for libuhdr >= 1.4.0... " >&6; }
 
-if test -n "$UHDR_CFLAGS"; then
-    pkg_cv_UHDR_CFLAGS="$UHDR_CFLAGS"
+if test -n "$UHDR_SHARED_CFLAGS"; then
+    pkg_cv_UHDR_SHARED_CFLAGS="$UHDR_SHARED_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
     { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libuhdr >= 1.4.0\""; } >&5
@@ -35817,7 +35831,7 @@ if test -n "$UHDR_CFLAGS"; then
   ac_status=$?
   printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_UHDR_CFLAGS=`$PKG_CONFIG --cflags "libuhdr >= 1.4.0" 2>/dev/null`
+  pkg_cv_UHDR_SHARED_CFLAGS=`$PKG_CONFIG --cflags "libuhdr >= 1.4.0" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -35825,8 +35839,8 @@ fi
  else
     pkg_failed=untried
 fi
-if test -n "$UHDR_LIBS"; then
-    pkg_cv_UHDR_LIBS="$UHDR_LIBS"
+if test -n "$UHDR_SHARED_LIBS"; then
+    pkg_cv_UHDR_SHARED_LIBS="$UHDR_SHARED_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
     { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libuhdr >= 1.4.0\""; } >&5
@@ -35834,7 +35848,7 @@ if test -n "$UHDR_LIBS"; then
   ac_status=$?
   printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_UHDR_LIBS=`$PKG_CONFIG --libs "libuhdr >= 1.4.0" 2>/dev/null`
+  pkg_cv_UHDR_SHARED_LIBS=`$PKG_CONFIG --libs "libuhdr >= 1.4.0" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -35855,27 +35869,157 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        UHDR_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libuhdr >= 1.4.0" 2>&1`
+	        UHDR_SHARED_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libuhdr >= 1.4.0" 2>&1`
         else
-	        UHDR_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libuhdr >= 1.4.0" 2>&1`
+	        UHDR_SHARED_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libuhdr >= 1.4.0" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
-	echo "$UHDR_PKG_ERRORS" >&5
+	echo "$UHDR_SHARED_PKG_ERRORS" >&5
 
-	have_uhdr=no
+	have_uhdr_shared=no
 elif test $pkg_failed = untried; then
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
-	have_uhdr=no
+	have_uhdr_shared=no
 else
-	UHDR_CFLAGS=$pkg_cv_UHDR_CFLAGS
-	UHDR_LIBS=$pkg_cv_UHDR_LIBS
+	UHDR_SHARED_CFLAGS=$pkg_cv_UHDR_SHARED_CFLAGS
+	UHDR_SHARED_LIBS=$pkg_cv_UHDR_SHARED_LIBS
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
-	have_uhdr=yes
+	have_uhdr_shared=yes
 fi
+    _save_PKG_CONFIG=$PKG_CONFIG
+PKG_CONFIG="$PKG_CONFIG --static"
+
+pkg_failed=no
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for libuhdr >= 1.4.0" >&5
+printf %s "checking for libuhdr >= 1.4.0... " >&6; }
+
+if test -n "$UHDR_STATIC_CFLAGS"; then
+    pkg_cv_UHDR_STATIC_CFLAGS="$UHDR_STATIC_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libuhdr >= 1.4.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libuhdr >= 1.4.0") 2>&5
+  ac_status=$?
+  printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_UHDR_STATIC_CFLAGS=`$PKG_CONFIG --cflags "libuhdr >= 1.4.0" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$UHDR_STATIC_LIBS"; then
+    pkg_cv_UHDR_STATIC_LIBS="$UHDR_STATIC_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libuhdr >= 1.4.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libuhdr >= 1.4.0") 2>&5
+  ac_status=$?
+  printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_UHDR_STATIC_LIBS=`$PKG_CONFIG --libs "libuhdr >= 1.4.0" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        UHDR_STATIC_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libuhdr >= 1.4.0" 2>&1`
+        else
+	        UHDR_STATIC_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libuhdr >= 1.4.0" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$UHDR_STATIC_PKG_ERRORS" >&5
+
+	have_uhdr_static=no
+elif test $pkg_failed = untried; then
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+	have_uhdr_static=no
+else
+	UHDR_STATIC_CFLAGS=$pkg_cv_UHDR_STATIC_CFLAGS
+	UHDR_STATIC_LIBS=$pkg_cv_UHDR_STATIC_LIBS
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
+	have_uhdr_static=yes
+fi
+PKG_CONFIG=$_save_PKG_CONFIG
     { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: " >&5
 printf "%s\n" "" >&6; }
+fi
+
+if test "$have_uhdr_shared" = 'yes' || test "$have_uhdr_static" = 'yes'; then
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether libuhdr links from C" >&5
+printf %s "checking whether libuhdr links from C... " >&6; }
+  uhdr_links_from_c='no'
+  saved_CPPFLAGS="$CPPFLAGS"
+  saved_LIBS="$LIBS"
+  for uhdr_link_mode in shared static; do
+    if test "$uhdr_link_mode" = 'shared'; then
+      if test "$have_uhdr_shared" != 'yes'; then
+        continue
+      fi
+      candidate_cflags="$UHDR_SHARED_CFLAGS"
+      candidate_libs="$UHDR_SHARED_LIBS"
+    else
+      if test "$have_uhdr_static" != 'yes'; then
+        continue
+      fi
+      candidate_cflags="$UHDR_STATIC_CFLAGS"
+      candidate_libs="$UHDR_STATIC_LIBS"
+    fi
+    CPPFLAGS="$candidate_cflags $saved_CPPFLAGS"
+    for cxx_runtime in '' '-lstdc++' '-lc++' '-lc++ -lc++abi'; do
+      LIBS="$candidate_libs $cxx_runtime $MATH_LIBS $saved_LIBS"
+      cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <ultrahdr_api.h>
+int
+main (void)
+{
+uhdr_codec_private_t *decoder=uhdr_create_decoder();
+            uhdr_codec_private_t *encoder=uhdr_create_encoder();
+            (void) uhdr_encode(encoder);
+            uhdr_release_encoder(encoder);
+            uhdr_release_decoder(decoder);
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"
+then :
+  UHDR_CFLAGS="$candidate_cflags"
+         UHDR_LIBS="$candidate_libs $cxx_runtime"
+         uhdr_links_from_c='yes'
+         have_uhdr='yes'
+         break 2
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam \
+    conftest$ac_exeext conftest.$ac_ext
+    done
+  done
+  CPPFLAGS="$saved_CPPFLAGS"
+  LIBS="$saved_LIBS"
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $uhdr_links_from_c" >&5
+printf "%s\n" "$uhdr_links_from_c" >&6; }
 fi
 
 if test "$have_uhdr" = 'yes'; then
@@ -44201,4 +44345,3 @@ Options used to compile and link:
   DELEGATES         = $MAGICK_DELEGATES
 ==============================================================================
 " >&6;}
-
