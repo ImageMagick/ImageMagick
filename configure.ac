@@ -2896,13 +2896,59 @@ if test "$with_uhdr" != 'yes'; then
 fi
 
 have_uhdr='no'
+have_uhdr_shared='no'
+have_uhdr_static='no'
 UHDR_CFLAGS=""
 UHDR_LIBS=""
 UHDR_PKG=""
 if test "$with_uhdr" != 'no'; then
     AC_MSG_RESULT([-------------------------------------------------------------])
-    PKG_CHECK_MODULES([UHDR],[libuhdr >= 1.4.0],[have_uhdr=yes],[have_uhdr=no])
+    PKG_CHECK_MODULES([UHDR_SHARED],[libuhdr >= 1.4.0],
+      [have_uhdr_shared=yes],[have_uhdr_shared=no])
+    PKG_CHECK_MODULES_STATIC([UHDR_STATIC],[libuhdr >= 1.4.0],
+      [have_uhdr_static=yes],[have_uhdr_static=no])
     AC_MSG_RESULT([])
+fi
+
+if test "$have_uhdr_shared" = 'yes' || test "$have_uhdr_static" = 'yes'; then
+  AC_MSG_CHECKING([whether libuhdr links from C])
+  uhdr_links_from_c='no'
+  saved_CPPFLAGS="$CPPFLAGS"
+  saved_LIBS="$LIBS"
+  for uhdr_link_mode in shared static; do
+    if test "$uhdr_link_mode" = 'shared'; then
+      if test "$have_uhdr_shared" != 'yes'; then
+        continue
+      fi
+      candidate_cflags="$UHDR_SHARED_CFLAGS"
+      candidate_libs="$UHDR_SHARED_LIBS"
+    else
+      if test "$have_uhdr_static" != 'yes'; then
+        continue
+      fi
+      candidate_cflags="$UHDR_STATIC_CFLAGS"
+      candidate_libs="$UHDR_STATIC_LIBS"
+    fi
+    CPPFLAGS="$candidate_cflags $saved_CPPFLAGS"
+    for cxx_runtime in '' '-lstdc++' '-lc++' '-lc++ -lc++abi'; do
+      LIBS="$candidate_libs $cxx_runtime $MATH_LIBS"
+      AC_LINK_IFELSE(
+        [AC_LANG_PROGRAM([[#include <ultrahdr_api.h>]],
+          [[uhdr_codec_private_t *decoder=uhdr_create_decoder();
+            uhdr_codec_private_t *encoder=uhdr_create_encoder();
+            (void) uhdr_encode(encoder);
+            uhdr_release_encoder(encoder);
+            uhdr_release_decoder(decoder);]])],
+        [UHDR_CFLAGS="$candidate_cflags"
+         UHDR_LIBS="$candidate_libs $cxx_runtime"
+         uhdr_links_from_c='yes'
+         have_uhdr='yes'
+         break 2],[])
+    done
+  done
+  CPPFLAGS="$saved_CPPFLAGS"
+  LIBS="$saved_LIBS"
+  AC_MSG_RESULT([$uhdr_links_from_c])
 fi
 
 if test "$have_uhdr" = 'yes'; then

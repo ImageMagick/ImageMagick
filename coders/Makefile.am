@@ -1440,6 +1440,10 @@ coders_uhdr_la_SOURCES     = coders/uhdr.c
 coders_uhdr_la_CPPFLAGS    = $(MAGICK_CODER_CPPFLAGS)
 coders_uhdr_la_LDFLAGS     = $(MODULECOMMONFLAGS)
 coders_uhdr_la_LIBADD      = $(MAGICKCORE_LIBS) $(UHDR_LIBS) $(MATH_LIBS)
+coders_uhdr_la_LINK        = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
+  $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
+  $(AM_CFLAGS) $(CFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) \
+  $(coders_uhdr_la_LDFLAGS) $(LDFLAGS) -o $@
 
 # UIL coder module
 coders_uil_la_SOURCES      = coders/uil.c
