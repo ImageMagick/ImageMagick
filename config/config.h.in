@@ -296,6 +296,9 @@
 /* Define to 1 if you have the <limits.h> header file. */
 #undef HAVE_LIMITS_H
 
+/* Define to 1 if you have the 'link' function. */
+#undef HAVE_LINK
+
 /* Define if you have Linux-compatible sendfile() */
 #undef HAVE_LINUX_SENDFILE
 

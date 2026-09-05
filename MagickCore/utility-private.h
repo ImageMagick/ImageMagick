@@ -96,28 +96,11 @@ static inline MagickBooleanType is_symlink_utf8(const char *path)
 static inline int link_utf8(const char *source,const char *destination)
 {
   int
-    status;
+    status = -1;
 
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__)
-  wchar_t
-    *wide_source,
-    *wide_dest;
-
-  wide_source=ConvertUTF8ToUTF16(source);
-  wide_dest=ConvertUTF8ToUTF16(destination);
-  if ((wide_source == (wchar_t *) NULL) || (wide_dest == (wchar_t *) NULL))
-    {
-      if (wide_source != (wchar_t *) NULL)
-        free(wide_source);
-      if (wide_dest != (wchar_t *) NULL)
-        free(wide_dest);
-      errno=EINVAL;
-      return(-1);
-    }
-  status=_wlink(wide_source,wide_dest);
-  free(wide_source);
-  free(wide_dest);
-#else
+  (void) source;
+  (void) destination;
+#if defined(MAGICKCORE_HAVE_LINK)
   status=link(source,destination);
 #endif
   return(status);
