@@ -93,6 +93,36 @@ static inline MagickBooleanType is_symlink_utf8(const char *path)
 #endif
 }
 
+static inline int link_utf8(const char *source,const char *destination)
+{
+  int
+    status;
+
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__)
+  wchar_t
+    *wide_source,
+    *wide_dest;
+
+  wide_source=ConvertUTF8ToUTF16(source);
+  wide_dest=ConvertUTF8ToUTF16(destination);
+  if ((wide_source == (wchar_t *) NULL) || (wide_dest == (wchar_t *) NULL))
+    {
+      if (wide_source != (wchar_t *) NULL)
+        free(wide_source);
+      if (wide_dest != (wchar_t *) NULL)
+        free(wide_dest);
+      errno=EINVAL;
+      return(-1);
+    }
+  status=_wlink(wide_source,wide_dest);
+  free(wide_source);
+  free(wide_dest);
+#else
+  status=link(source,destination);
+#endif
+  return(status);
+}
+
 static inline ssize_t MagickRead(int fd,void *buffer,size_t extent)
 {
   unsigned char *p = (unsigned char *) buffer;
@@ -140,7 +170,6 @@ static inline ssize_t MagickWrite(int fd,const void *buffer,size_t extent)
   }
   return((ssize_t) offset);
 }
-
 
 static inline int open_utf8(const char *path,int flags,mode_t mode)
 {
