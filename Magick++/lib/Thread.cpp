@@ -14,8 +14,6 @@
 #include "Magick++/Thread.h"
 #include "Magick++/Exception.h"
 
-#include <string.h>
-
 // Default constructor
 Magick::MutexLock::MutexLock(void)
 #if defined(MAGICKCORE_HAVE_PTHREAD)

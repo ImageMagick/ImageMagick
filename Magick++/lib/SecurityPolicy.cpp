@@ -11,9 +11,7 @@
 
 #include "Magick++/SecurityPolicy.h"
 #include "Magick++/Exception.h"
-#include <string>
 #include <sstream>
-
 
 using namespace std;
 
