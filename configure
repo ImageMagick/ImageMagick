@@ -5403,7 +5403,7 @@ MAGICK_PATCHLEVEL_VERSION=32
 
 MAGICK_VERSION=7.1.2-32
 
-MAGICK_GIT_REVISION=5921a78a0:20260905
+MAGICK_GIT_REVISION=72c71e0d3:20260905
 
 
 # Substitute library versioning
@@ -44345,3 +44345,4 @@ Options used to compile and link:
   DELEGATES         = $MAGICK_DELEGATES
 ==============================================================================
 " >&6;}
+
