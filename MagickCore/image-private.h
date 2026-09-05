@@ -27,6 +27,7 @@ extern "C" {
 
 #include <limits.h>
 #include <sys/types.h>
+#include "MagickCore/nt-base.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/quantum-private.h"
 
