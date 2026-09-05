@@ -1286,15 +1286,17 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
       resized_gainmap_profile=TransformGainMapProfile(image_info,image,
         gainmap_profile,&gainmap_transform_status,exception);
       if (gainmap_transform_status == MagickFalse)
-        return(MagickFalse);
+        {
+          status=MagickFalse;
+          goto cleanup;
+        }
       if (resized_gainmap_profile != (StringInfo *) NULL)
         gainmap_profile=(const StringInfo *) resized_gainmap_profile;
       base_image_profile=EncodeBaseImageProfile(image_info,image,exception);
       if (base_image_profile == (StringInfo *) NULL)
         {
-          if (resized_gainmap_profile != (StringInfo *) NULL)
-            resized_gainmap_profile=DestroyStringInfo(resized_gainmap_profile);
-          return(MagickFalse);
+          status=MagickFalse;
+          goto cleanup;
         }
       base_image.data=(void *) GetStringInfoDatum(base_image_profile);
       base_image.data_sz=GetStringInfoLength(base_image_profile);
@@ -1322,12 +1324,7 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
       GetHDRGMProperty("HDRCapacityMax",hdr_capacity_max);
       GetHDRGMPropertyInt("UseBaseColorGrade",use_base_cg);
       if (status == MagickFalse)
-        {
-          if (resized_gainmap_profile != (StringInfo *) NULL)
-            resized_gainmap_profile=DestroyStringInfo(resized_gainmap_profile);
-          base_image_profile=DestroyStringInfo(base_image_profile);
-          return(MagickFalse);
-        }
+        goto cleanup;
       preserve_gainmap=MagickTrue;
     }
 
@@ -1341,16 +1338,8 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ConfigureWarning,
         "invalid hdr color transfer received, ","%s","exiting ... ");
-      return(MagickFalse);
-    }
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
-  if (status == MagickFalse)
-    {
-      if (resized_gainmap_profile != (StringInfo *) NULL)
-        resized_gainmap_profile=DestroyStringInfo(resized_gainmap_profile);
-      if (base_image_profile != (StringInfo *) NULL)
-        base_image_profile=DestroyStringInfo(base_image_profile);
-      return(status);
+      status=MagickFalse;
+      goto cleanup;
     }
 
   /*
@@ -1770,16 +1759,22 @@ next_image:
     {
       uhdr_compressed_image_t *output = uhdr_get_encoded_stream(handle);
 
-      (void) WriteBlob(image, output->data_sz, output->data);
+      status=OpenBlob(image_info,images,WriteBinaryBlobMode,exception);
+      if (status != MagickFalse)
+        {
+          if (WriteBlob(images,output->data_sz,output->data) !=
+              (ssize_t) output->data_sz)
+            status=MagickFalse;
+          if (CloseBlob(images) == MagickFalse)
+            status=MagickFalse;
+        }
 
       uhdr_release_encoder(handle);
     }
   }
 #undef CHECK_IF_ERR
 
-  if (CloseBlob(image) == MagickFalse)
-    status = MagickFalse;
-
+cleanup:
   if (hdrImgDescriptor.planes[UHDR_PLANE_Y])
     RelinquishMagickMemory(hdrImgDescriptor.planes[UHDR_PLANE_Y]);
 

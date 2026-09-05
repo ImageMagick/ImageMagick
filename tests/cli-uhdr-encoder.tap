@@ -1,0 +1,99 @@
+#!/bin/sh
+# Regression tests for safe Ultra HDR encoder failures.
+. ./common.shi
+. ${srcdir}/tests/common.shi
+
+encoder_error=cli-uhdr-encoder-failure.jpg
+encoder_sdr=cli-uhdr-encoder-sdr.miff
+encoder_hdr=cli-uhdr-encoder-hdr.miff
+pattern_output=cli-uhdr-encoder-pattern-%d.jpg
+pattern_first=cli-uhdr-encoder-pattern-0.jpg
+pattern_wrong=cli-uhdr-encoder-pattern-1.jpg
+
+cleanup()
+{
+  rm -f "$encoder_error" "$encoder_sdr" "$encoder_hdr" \
+    "$pattern_first" "$pattern_wrong"
+}
+
+cleanup
+if ! ${MAGICK} -list configure 2>/dev/null | awk '
+    $1 == "DELEGATES" {
+      for (i=2; i <= NF; i++)
+        {
+          if ($i == "jpeg")
+            jpeg=1
+          if ($i == "uhdr")
+            uhdr=1
+        }
+    }
+    END { exit(jpeg && uhdr ? 0 : 1) }
+  '; then
+  echo "1..0 # SKIP JPEG or UHDR coder unavailable"
+  exit 0
+fi
+
+echo "1..6"
+if ! ${MAGICK} "${SRCDIR}/rose.pnm" -depth 8 "$encoder_sdr" \
+    >/dev/null 2>&1 ||
+   ! ${MAGICK} "${SRCDIR}/rose.pnm" -depth 16 "$encoder_hdr" \
+    >/dev/null 2>&1; then
+  echo "Bail out! unable to create encoder test inputs"
+  cleanup
+  exit 0
+fi
+
+printf 'existing encoder destination' > "$encoder_error"
+encoder_error_message=`${MAGICK} "$encoder_sdr" "$encoder_hdr" \
+  -define uhdr:hdr-color-transfer=linear \
+  -define uhdr:gainmap-quality=101 "UHDR:$encoder_error" 2>&1`
+encoder_error_status=$?
+if [ "$encoder_error_status" = "0" ]; then
+  echo "not ok - invalid encoder setting fails"
+else
+  echo "ok - invalid encoder setting fails"
+fi
+case "$encoder_error_message" in
+  *quality*101*) echo "ok - invalid setting reaches the UHDR encoder" ;;
+  *)
+    echo "not ok - invalid setting reaches the UHDR encoder"
+    echo "# got '$encoder_error_message'"
+    ;;
+esac
+encoder_error_contents=`cat "$encoder_error"`
+if [ "X$encoder_error_contents" = "Xexisting encoder destination" ]; then
+  echo "ok - encoder failure preserves its destination"
+else
+  echo "not ok - encoder failure preserves its destination"
+  echo "# expected 'existing encoder destination', got '$encoder_error_contents'"
+fi
+
+printf 'existing second scene' > "$pattern_wrong"
+pattern_status=0
+${MAGICK} "$encoder_sdr" "$encoder_hdr" \
+  -define uhdr:hdr-color-transfer=linear "UHDR:$pattern_output" \
+  >/dev/null 2>&1 || pattern_status=$?
+if [ "$pattern_status" = "0" ]; then
+  echo "ok - patterned output succeeds"
+else
+  echo "not ok - patterned output succeeds"
+fi
+pattern_decode=`${IDENTIFY} -quiet -format '%m|%[profiles]' \
+  "UHDR:$pattern_first" 2>/dev/null`
+case "$pattern_status:$pattern_decode" in
+  0:UHDR\|*hdrgm*)
+    echo "ok - patterned output writes a decodable UHDR to the first scene" ;;
+  *)
+    echo "not ok - patterned output writes a decodable UHDR to the first scene"
+    echo "# status=$pattern_status decode='$pattern_decode'"
+    ;;
+esac
+if printf 'existing second scene' | cmp -s - "$pattern_wrong"; then
+  echo "ok - patterned output preserves the second scene destination"
+else
+  echo "not ok - patterned output preserves the second scene destination"
+  pattern_wrong_size=`wc -c < "$pattern_wrong" 2>/dev/null`
+  echo "# destination changed or is missing (size=$pattern_wrong_size)"
+fi
+cleanup
+:
