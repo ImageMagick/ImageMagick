@@ -30,6 +30,10 @@ invalid_output=cli-uhdr-offset-invalid.jpg
 commented_source=cli-uhdr-commented.jpg
 comment_roundtrip=cli-uhdr-comment-roundtrip.jpg
 comment_linear=cli-uhdr-comment-roundtrip-linear.miff
+crop_sequential=cli-uhdr-crop-replay-sequential.jpg
+crop_direct=cli-uhdr-crop-replay-direct.jpg
+crop_sequential_linear=cli-uhdr-crop-replay-sequential-linear.miff
+crop_direct_linear=cli-uhdr-crop-replay-direct-linear.miff
 capacity_min=1.00000012
 capacity_max=2.00000024
 expected_offsets='1.00000001e-07,1.00000001e-07,1.00000001e-07 1.00000001e-07,1.00000001e-07,1.00000001e-07'
@@ -41,7 +45,8 @@ cleanup()
   rm -f "$raw_source" "$source" "$output" "$transformed_output" \
     "$locale_output" "$jpeg_probe" "$whitespace_output" "$invalid_output"
   rm -f "$commented_source" "$comment_roundtrip" \
-    "$comment_linear"
+    "$comment_linear" "$crop_sequential" "$crop_direct" \
+    "$crop_sequential_linear" "$crop_direct_linear"
 }
 
 check_value()
@@ -81,7 +86,7 @@ if [ "X$jpeg_format" != "XJPEG" ]; then
   exit 0
 fi
 
-echo "1..13"
+echo "1..14"
 if ! ${MAGICK} \( "${SRCDIR}/rose.pnm" -depth 8 \) \
     \( "${SRCDIR}/rose.pnm" -depth 16 \) \
     -define uhdr:hdr-color-transfer=linear "UHDR:$raw_source" \
@@ -238,6 +243,30 @@ else
   roundtrip_status=$?
   echo "not ok - automatic UHDR roundtrip preserves comment and HDR decode"
   echo "# UHDR write failed (status $roundtrip_status)"
+fi
+
+if ${MAGICK} "UHDR:$source" -crop 40x30+6+4 +repage \
+    -crop 20x16+3+2 +repage -quality 85 "UHDR:$crop_sequential" \
+    >/dev/null 2>&1 &&
+   ${MAGICK} "UHDR:$source" -crop 20x16+9+6 +repage -quality 85 \
+    "UHDR:$crop_direct" >/dev/null 2>&1 &&
+   ${MAGICK} -define uhdr:output-color-transfer=linear \
+    "UHDR:$crop_sequential" "$crop_sequential_linear" >/dev/null 2>&1 &&
+   ${MAGICK} -define uhdr:output-color-transfer=linear \
+    "UHDR:$crop_direct" "$crop_direct_linear" >/dev/null 2>&1; then
+  crop_metric=`${MAGICK} compare -metric AE "$crop_sequential_linear" \
+    "$crop_direct_linear" null: 2>&1`
+  crop_status=$?
+  crop_value=`echo "$crop_metric" | awk '{print $1}'`
+  if [ "$crop_status" = "0" ] && [ "X$crop_value" = "X0" ]; then
+    echo "ok - repeated UHDR crops match direct crop"
+  else
+    echo "not ok - repeated UHDR crops match direct crop"
+    echo "# expected zero absolute error, got '$crop_metric'"
+  fi
+else
+  echo "not ok - repeated UHDR crops match direct crop"
+  echo "# unable to create or decode crop replay outputs"
 fi
 
 comma_locale=
