@@ -9,11 +9,13 @@ encoder_hdr=cli-uhdr-encoder-hdr.miff
 pattern_output=cli-uhdr-encoder-pattern-%d.jpg
 pattern_first=cli-uhdr-encoder-pattern-0.jpg
 pattern_wrong=cli-uhdr-encoder-pattern-1.jpg
+gray_source=cli-uhdr-encoder-gray-source.jpg
+gray_roundtrip=cli-uhdr-encoder-gray-roundtrip.jpg
 
 cleanup()
 {
   rm -f "$encoder_error" "$encoder_sdr" "$encoder_hdr" \
-    "$pattern_first" "$pattern_wrong"
+    "$pattern_first" "$pattern_wrong" "$gray_source" "$gray_roundtrip"
 }
 
 cleanup
@@ -33,7 +35,7 @@ if ! ${MAGICK} -list configure 2>/dev/null | awk '
   exit 0
 fi
 
-echo "1..6"
+echo "1..7"
 if ! ${MAGICK} "${SRCDIR}/rose.pnm" -depth 8 "$encoder_sdr" \
     >/dev/null 2>&1 ||
    ! ${MAGICK} "${SRCDIR}/rose.pnm" -depth 16 "$encoder_hdr" \
@@ -94,6 +96,27 @@ else
   echo "not ok - patterned output preserves the second scene destination"
   pattern_wrong_size=`wc -c < "$pattern_wrong" 2>/dev/null`
   echo "# destination changed or is missing (size=$pattern_wrong_size)"
+fi
+
+if ! ${MAGICK} \( "${SRCDIR}/rose.pnm" -colorspace Gray -colorspace sRGB \
+    -type TrueColor -depth 8 \) \
+  \( "${SRCDIR}/rose.pnm" -colorspace Gray -colorspace sRGB \
+    -type TrueColor -depth 16 \) \
+  -define uhdr:hdr-color-transfer=linear "UHDR:$gray_source" \
+  >/dev/null 2>&1 || \
+   ! ${MAGICK} -define uhdr:output-color-transfer=linear \
+    "UHDR:$gray_source" null: >/dev/null 2>&1; then
+  echo "Bail out! unable to create or decode grayscale UHDR source"
+  cleanup
+  exit 0
+fi
+
+if ${MAGICK} "$gray_source" "$gray_roundtrip" >/dev/null 2>&1 && \
+   ${MAGICK} -define uhdr:output-color-transfer=linear \
+    "UHDR:$gray_roundtrip" null: >/dev/null 2>&1; then
+  echo "ok - grayscale UHDR roundtrip decodes as linear HDR"
+else
+  echo "not ok - grayscale UHDR roundtrip decodes as linear HDR"
 fi
 cleanup
 :

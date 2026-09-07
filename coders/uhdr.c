@@ -1000,6 +1000,7 @@ static StringInfo *EncodeBaseImageProfile(const ImageInfo *image_info,
   (void) CopyMagickString(base_info->filename,"JPEG:uhdr-base.jpg",
     MagickPathExtent);
   (void) CopyMagickString(base_info->magick,"JPEG",MagickPathExtent);
+  base_info->type=TrueColorType;
   if (image->quality > 0)
     base_info->quality=image->quality;
   (void) CopyMagickString(base_image->magick,"JPEG",MagickPathExtent);
