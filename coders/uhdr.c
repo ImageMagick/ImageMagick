@@ -788,6 +788,7 @@ static MagickBooleanType CropGainMapImage(Image **gainmap_image,
   geometry.y=y0;
   geometry.width=(size_t) (x1-x0);
   geometry.height=(size_t) (y1-y0);
+  (void) ResetImagePage(*gainmap_image,"0x0+0+0");
   crop_image=CropImage(*gainmap_image,&geometry,exception);
   return(ReplaceGainMapImage(gainmap_image,crop_image));
 }
