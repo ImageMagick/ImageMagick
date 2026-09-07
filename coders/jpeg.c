@@ -1619,6 +1619,7 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
         MagickFalse))
     {
       const char
+        *comment,
         *sampling_factor;
 
       ExceptionInfo
@@ -1657,6 +1658,9 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
           if (sampling_factor != (const char *) NULL)
             (void) SetImageProperty(uhdr_image,"jpeg:sampling-factor",
               sampling_factor,exception);
+          comment=GetImageProperty(image,"comment",exception);
+          if (comment != (const char *) NULL)
+            (void) SetImageProperty(uhdr_image,"comment",comment,exception);
           InheritException(exception,uhdr_exception);
           uhdr_exception=DestroyExceptionInfo(uhdr_exception);
           client_info=JPEGCleanup(jpeg_info,client_info);
