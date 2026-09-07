@@ -27,14 +27,21 @@ locale_output=cli-uhdr-offset-locale.jpg
 jpeg_probe=cli-uhdr-jpeg-probe.jpg
 whitespace_output=cli-uhdr-offset-whitespace.jpg
 invalid_output=cli-uhdr-offset-invalid.jpg
+commented_source=cli-uhdr-commented.jpg
+comment_roundtrip=cli-uhdr-comment-roundtrip.jpg
+comment_linear=cli-uhdr-comment-roundtrip-linear.miff
 capacity_min=1.00000012
 capacity_max=2.00000024
 expected_offsets='1.00000001e-07,1.00000001e-07,1.00000001e-07 1.00000001e-07,1.00000001e-07,1.00000001e-07'
+source_comment='comments-local-baseline
+comments-local-second-line'
 
 cleanup()
 {
   rm -f "$raw_source" "$source" "$output" "$transformed_output" \
     "$locale_output" "$jpeg_probe" "$whitespace_output" "$invalid_output"
+  rm -f "$commented_source" "$comment_roundtrip" \
+    "$comment_linear"
 }
 
 check_value()
@@ -74,7 +81,7 @@ if [ "X$jpeg_format" != "XJPEG" ]; then
   exit 0
 fi
 
-echo "1..11"
+echo "1..13"
 if ! ${MAGICK} \( "${SRCDIR}/rose.pnm" -depth 8 \) \
     \( "${SRCDIR}/rose.pnm" -depth 16 \) \
     -define uhdr:hdr-color-transfer=linear "UHDR:$raw_source" \
@@ -88,6 +95,12 @@ if ! ${MAGICK} "UHDR:$raw_source" \
     -set hdrgm:OffsetHDR '0.0000001,0.0000001,0.0000001' \
     "UHDR:$source" >/dev/null 2>&1; then
   echo "Bail out! unable to create UHDR metadata fixture"
+  cleanup
+  exit 0
+fi
+if ! ${MAGICK} "UHDR:$source" -set comment "$source_comment" \
+    "UHDR:$commented_source" >/dev/null 2>&1; then
+  echo "Bail out! unable to create UHDR comment fixture"
   cleanup
   exit 0
 fi
@@ -185,6 +198,47 @@ check_value "offset values survive a geometry transform" \
   "$transformed_offsets" "$source_offsets"
 check_value "capacity values survive a geometry transform" \
   "$transformed_capacity" "$capacity_min $capacity_max"
+
+comment_status=0
+comment_value=`${IDENTIFY} -quiet -format '%[comment]' "$commented_source" \
+  2>/dev/null` || comment_status=$?
+if [ "$comment_status" = "0" ] && [ "X$comment_value" = "X$source_comment" ]; then
+  echo "ok - automatic UHDR JPEG read preserves the base comment"
+else
+  echo "not ok - automatic UHDR JPEG read preserves the base comment"
+  echo "# expected '$source_comment', got '$comment_value' (status $comment_status)"
+fi
+
+roundtrip_status=0
+if ${MAGICK} "$commented_source" "$comment_roundtrip" >/dev/null 2>&1; then
+  base_comment_status=0
+  base_comment=`${MAGICK} -define jpeg:detect-uhdr=false "$comment_roundtrip" \
+    -format '%[comment]' info: 2>/dev/null` || base_comment_status=$?
+  decode_status=0
+  ${MAGICK} -define uhdr:output-color-transfer=linear \
+    "UHDR:$comment_roundtrip" "$comment_linear" >/dev/null 2>&1 || \
+    decode_status=$?
+  profile_status=0
+  profile_decode=`${IDENTIFY} -quiet -format '%m|%[profiles]' \
+    "UHDR:$comment_roundtrip" 2>/dev/null` || profile_status=$?
+  profile_ok=0
+  case "$profile_decode" in
+    UHDR\|*hdrgm*) profile_ok=1 ;;
+  esac
+  if [ "$base_comment_status" = "0" ] && \
+      [ "X$base_comment" = "X$source_comment" ] && \
+      [ "$decode_status" = "0" ] && [ "$profile_status" = "0" ] && \
+      [ "$profile_ok" = "1" ]; then
+    echo "ok - automatic UHDR roundtrip preserves comment and HDR decode"
+  else
+    echo "not ok - automatic UHDR roundtrip preserves comment and HDR decode"
+    echo "# expected '$source_comment', got '$base_comment' (comment status $base_comment_status, decode status $decode_status, profile status $profile_status, profile '$profile_decode')"
+  fi
+else
+  roundtrip_status=$?
+  echo "not ok - automatic UHDR roundtrip preserves comment and HDR decode"
+  echo "# UHDR write failed (status $roundtrip_status)"
+fi
 
 comma_locale=
 for candidate in de_DE.UTF-8 fr_FR.UTF-8 nl_NL.UTF-8; do
