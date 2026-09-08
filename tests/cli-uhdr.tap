@@ -34,6 +34,16 @@ crop_sequential=cli-uhdr-crop-replay-sequential.jpg
 crop_direct=cli-uhdr-crop-replay-direct.jpg
 crop_sequential_linear=cli-uhdr-crop-replay-sequential-linear.miff
 crop_direct_linear=cli-uhdr-crop-replay-direct-linear.miff
+reduced_seed=cli-uhdr-crop-replay-reduced-seed.jpg
+reduced_source=cli-uhdr-crop-replay-reduced.jpg
+reduced_sequential=cli-uhdr-crop-replay-reduced-sequential.jpg
+reduced_direct=cli-uhdr-crop-replay-reduced-direct.jpg
+reduced_sequential_linear=cli-uhdr-crop-replay-reduced-sequential-linear.miff
+reduced_direct_linear=cli-uhdr-crop-replay-reduced-direct-linear.miff
+reduced_phase_sequential=cli-uhdr-crop-replay-reduced-phase-sequential.jpg
+reduced_phase_direct=cli-uhdr-crop-replay-reduced-phase-direct.jpg
+reduced_phase_sequential_linear=cli-uhdr-crop-replay-reduced-phase-sequential-linear.miff
+reduced_phase_direct_linear=cli-uhdr-crop-replay-reduced-phase-direct-linear.miff
 capacity_min=1.00000012
 capacity_max=2.00000024
 expected_offsets='1.00000001e-07,1.00000001e-07,1.00000001e-07 1.00000001e-07,1.00000001e-07,1.00000001e-07'
@@ -46,7 +56,11 @@ cleanup()
     "$locale_output" "$jpeg_probe" "$whitespace_output" "$invalid_output"
   rm -f "$commented_source" "$comment_roundtrip" \
     "$comment_linear" "$crop_sequential" "$crop_direct" \
-    "$crop_sequential_linear" "$crop_direct_linear"
+    "$crop_sequential_linear" "$crop_direct_linear" "$reduced_seed" \
+    "$reduced_source" "$reduced_sequential" "$reduced_direct" \
+    "$reduced_sequential_linear" "$reduced_direct_linear" \
+    "$reduced_phase_sequential" "$reduced_phase_direct" \
+    "$reduced_phase_sequential_linear" "$reduced_phase_direct_linear"
 }
 
 check_value()
@@ -86,7 +100,7 @@ if [ "X$jpeg_format" != "XJPEG" ]; then
   exit 0
 fi
 
-echo "1..14"
+echo "1..16"
 if ! ${MAGICK} \( "${SRCDIR}/rose.pnm" -depth 8 \) \
     \( "${SRCDIR}/rose.pnm" -depth 16 \) \
     -define uhdr:hdr-color-transfer=linear "UHDR:$raw_source" \
@@ -106,6 +120,18 @@ fi
 if ! ${MAGICK} "UHDR:$source" -set comment "$source_comment" \
     "UHDR:$commented_source" >/dev/null 2>&1; then
   echo "Bail out! unable to create UHDR comment fixture"
+  cleanup
+  exit 0
+fi
+# Enlarge only the base while retaining the original 35x23 map profile.
+if ! ${MAGICK} \( "${SRCDIR}/rose.pnm" -depth 8 -resize 50% \) \
+    \( "${SRCDIR}/rose.pnm" -depth 16 -resize 50% \) \
+    -define uhdr:hdr-color-transfer=linear "UHDR:$reduced_seed" \
+    >/dev/null 2>&1 ||
+   ! ${MAGICK} "UHDR:$reduced_seed" -resize 200% \
+    -set hdrgm:BaseWidth 70 -set hdrgm:BaseHeight 46 \
+    -set hdrgm:Transform '' "UHDR:$reduced_source" >/dev/null 2>&1; then
+  echo "Bail out! unable to create reduced-map UHDR fixture"
   cleanup
   exit 0
 fi
@@ -267,6 +293,57 @@ if ${MAGICK} "UHDR:$source" -crop 40x30+6+4 +repage \
 else
   echo "not ok - repeated UHDR crops match direct crop"
   echo "# unable to create or decode crop replay outputs"
+fi
+
+if ${MAGICK} "UHDR:$reduced_source" -crop 40x30+1+3 +repage \
+    -crop 19x15+3+1 +repage -quality 85 "UHDR:$reduced_sequential" \
+    >/dev/null 2>&1 &&
+   ${MAGICK} "UHDR:$reduced_source" -crop 19x15+4+4 +repage \
+    -quality 85 "UHDR:$reduced_direct" >/dev/null 2>&1 &&
+   ${MAGICK} -define uhdr:output-color-transfer=linear \
+    "UHDR:$reduced_sequential" "$reduced_sequential_linear" >/dev/null 2>&1 &&
+   ${MAGICK} -define uhdr:output-color-transfer=linear \
+    "UHDR:$reduced_direct" "$reduced_direct_linear" >/dev/null 2>&1; then
+  crop_metric=`${MAGICK} compare -metric AE "$reduced_sequential_linear" \
+    "$reduced_direct_linear" null: 2>&1`
+  crop_status=$?
+  crop_value=`echo "$crop_metric" | awk '{print $1}'`
+  if [ "$crop_status" = "0" ] && [ "X$crop_value" = "X0" ]; then
+    echo "ok - repeated reduced-map crops match direct HDR pixels"
+  else
+    echo "not ok - repeated reduced-map crops match direct HDR pixels"
+    echo "# expected zero absolute error, got '$crop_metric'"
+  fi
+else
+  echo "not ok - repeated reduced-map crops match direct HDR pixels"
+  echo "# unable to create or decode reduced-map crop replay outputs"
+fi
+
+if ${MAGICK} "UHDR:$reduced_source" -crop 40x30+5+3 +repage \
+    -rotate 90 -crop 15x13+3+5 +repage -quality 85 \
+    "UHDR:$reduced_phase_sequential" >/dev/null 2>&1 &&
+   ${MAGICK} "UHDR:$reduced_source" -crop 13x15+10+15 +repage \
+    -rotate 90 -quality 85 "UHDR:$reduced_phase_direct" >/dev/null 2>&1 &&
+   ${MAGICK} -define uhdr:output-color-transfer=linear \
+    "UHDR:$reduced_phase_sequential" "$reduced_phase_sequential_linear" \
+    >/dev/null 2>&1 &&
+   ${MAGICK} -define uhdr:output-color-transfer=linear \
+    "UHDR:$reduced_phase_direct" "$reduced_phase_direct_linear" \
+    >/dev/null 2>&1; then
+  crop_metric=`${MAGICK} compare -metric AE \
+    "$reduced_phase_sequential_linear" "$reduced_phase_direct_linear" \
+    null: 2>&1`
+  crop_status=$?
+  crop_value=`echo "$crop_metric" | awk '{print $1}'`
+  if [ "$crop_status" = "0" ] && [ "X$crop_value" = "X0" ]; then
+    echo "ok - reduced-map crop and rotate replay matches direct geometry"
+  else
+    echo "not ok - reduced-map crop and rotate replay matches direct geometry"
+    echo "# expected zero absolute error, got '$crop_metric'"
+  fi
+else
+  echo "not ok - reduced-map crop and rotate replay matches direct geometry"
+  echo "# unable to create or decode reduced-map crop and rotate outputs"
 fi
 
 comma_locale=
