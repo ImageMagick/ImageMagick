@@ -228,6 +228,8 @@ WandExport ScriptTokenInfo *AcquireScriptTokenInfo(const char *filename)
   }
   else {
     token_info->stream=fopen_utf8(filename, "r");
+    if (token_info->stream != (FILE *) NULL)
+      token_info->opened=MagickTrue;
   }
   if ( token_info->stream != (FILE *) NULL )
     token_info->opened=MagickTrue;
