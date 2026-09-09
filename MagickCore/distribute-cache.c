@@ -266,7 +266,7 @@ static inline MagickOffsetType dpc_receive_deadline(SOCKET_TYPE file,
         return(0);
       else
         {
-#ifdef _WIN32
+#ifdef MAGICKCORE_HAVE_WINSOCK2
           int wsa_err = WSAGetLastError();
           if ((wsa_err == WSAEINTR) || (wsa_err == WSAEWOULDBLOCK))
             continue;
@@ -276,6 +276,8 @@ static inline MagickOffsetType dpc_receive_deadline(SOCKET_TYPE file,
 #else
           if ((errno == EINTR) || (errno == EAGAIN) || (errno == EWOULDBLOCK))
             continue;
+          if (errno == ECONNRESET)
+            return(-2);
           return(-1);
 #endif
         }
