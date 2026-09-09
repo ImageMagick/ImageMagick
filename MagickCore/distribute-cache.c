@@ -246,7 +246,7 @@ static inline MagickOffsetType dpc_receive_deadline(SOCKET_TYPE file,
       now = (double) time((time_t *) NULL),
       remaining = deadline-now;
 
-    size_t
+    MagickSizeType
       chunk;
 
     ssize_t
