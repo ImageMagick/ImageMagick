@@ -205,7 +205,8 @@ static inline MagickOffsetType dpc_receive(SOCKET_TYPE file,
   MagickOffsetType offset = 0;
   while (offset < (MagickOffsetType) length)
   {
-    size_t chunk = MagickMin(length-offset,(size_t) MagickMaxBufferExtent);
+    MagickSizeType chunk = MagickMin(length-offset,(MagickSizeType)
+      MagickMaxBufferExtent);
     ssize_t count = recv(file,(char *) message+offset,(LENGTH_TYPE) chunk,0);
     if (count > 0)
       offset+=(MagickOffsetType) count;
@@ -256,7 +257,7 @@ static inline MagickOffsetType dpc_receive_deadline(SOCKET_TYPE file,
     if (remaining < 0.001)
       remaining=0.001;
     SetSocketReceiveTimeout(file,remaining);
-    chunk=MagickMin(length-offset,(size_t) MagickMaxBufferExtent);
+    chunk=MagickMin(length-offset,(MagickSizeType) MagickMaxBufferExtent);
     count=recv(file,(char *) message+offset,(LENGTH_TYPE) chunk,0);
     if (count > 0)
       offset+=(MagickOffsetType) count;
