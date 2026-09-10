@@ -1508,9 +1508,9 @@ static StringInfo *TransformGainMapProfile(const ImageInfo *image_info,
     }
   option=GetImageOption(image_info,"uhdr:gainmap-quality");
   if (option != (const char *) NULL)
-    gainmap_info->quality=StringToUnsignedLong(option);
+    gainmap_images->quality=StringToUnsignedLong(option);
   else if (image->quality > 0)
-    gainmap_info->quality=image->quality;
+    gainmap_images->quality=image->quality;
   (void) CopyMagickString(gainmap_images->magick,"JPEG",MagickPathExtent);
   blob=ImageToBlob(gainmap_info,gainmap_images,&length,exception);
   gainmap_images=DestroyImageList(gainmap_images);

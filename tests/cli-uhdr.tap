@@ -34,6 +34,12 @@ crop_sequential=cli-uhdr-crop-replay-sequential.jpg
 crop_direct=cli-uhdr-crop-replay-direct.jpg
 crop_sequential_linear=cli-uhdr-crop-replay-sequential-linear.miff
 crop_direct_linear=cli-uhdr-crop-replay-direct-linear.miff
+quality35_output=cli-uhdr-quality35.jpg
+quality85_output=cli-uhdr-quality85.jpg
+quality35_base=cli-uhdr-quality35-base.miff
+quality85_base=cli-uhdr-quality85-base.miff
+quality35_linear=cli-uhdr-quality35-linear.miff
+quality85_linear=cli-uhdr-quality85-linear.miff
 reduced_seed=cli-uhdr-crop-replay-reduced-seed.jpg
 reduced_source=cli-uhdr-crop-replay-reduced.jpg
 reduced_sequential=cli-uhdr-crop-replay-reduced-sequential.jpg
@@ -60,7 +66,10 @@ cleanup()
     "$reduced_source" "$reduced_sequential" "$reduced_direct" \
     "$reduced_sequential_linear" "$reduced_direct_linear" \
     "$reduced_phase_sequential" "$reduced_phase_direct" \
-    "$reduced_phase_sequential_linear" "$reduced_phase_direct_linear"
+    "$reduced_phase_sequential_linear" "$reduced_phase_direct_linear" \
+    "$quality35_output" "$quality85_output" \
+    "$quality35_base" "$quality85_base" "$quality35_linear" \
+    "$quality85_linear"
 }
 
 check_value()
@@ -100,7 +109,7 @@ if [ "X$jpeg_format" != "XJPEG" ]; then
   exit 0
 fi
 
-echo "1..16"
+echo "1..18"
 if ! ${MAGICK} \( "${SRCDIR}/rose.pnm" -depth 8 \) \
     \( "${SRCDIR}/rose.pnm" -depth 16 \) \
     -define uhdr:hdr-color-transfer=linear "UHDR:$raw_source" \
@@ -229,6 +238,45 @@ check_value "offset values survive a geometry transform" \
   "$transformed_offsets" "$source_offsets"
 check_value "capacity values survive a geometry transform" \
   "$transformed_capacity" "$capacity_min $capacity_max"
+
+if ${MAGICK} "UHDR:$source" -quality 85 \
+    -define uhdr:gainmap-quality=35 -resize 50% \
+    "UHDR:$quality35_output" >/dev/null 2>&1 &&
+   ${MAGICK} "UHDR:$source" -quality 85 \
+    -resize 50% \
+    "UHDR:$quality85_output" >/dev/null 2>&1 &&
+   ${MAGICK} -define jpeg:detect-uhdr=false "$quality35_output" \
+    "$quality35_base" >/dev/null 2>&1 &&
+   ${MAGICK} -define jpeg:detect-uhdr=false "$quality85_output" \
+    "$quality85_base" >/dev/null 2>&1 &&
+   ${MAGICK} -define uhdr:output-color-transfer=linear \
+    "UHDR:$quality35_output" "$quality35_linear" >/dev/null 2>&1 &&
+   ${MAGICK} -define uhdr:output-color-transfer=linear \
+    "UHDR:$quality85_output" "$quality85_linear" >/dev/null 2>&1; then
+  quality_base_metric=`${MAGICK} compare -metric AE "$quality35_base" \
+    "$quality85_base" null: 2>&1`
+  quality_base_status=$?
+  quality_hdr_metric=`${MAGICK} compare -metric AE "$quality35_linear" \
+    "$quality85_linear" null: 2>&1`
+  quality_hdr_status=$?
+  if [ "$quality_base_status" = "0" ]; then
+    echo "ok - gain-map quality leaves primary pixels unchanged"
+  else
+    echo "not ok - gain-map quality leaves primary pixels unchanged"
+    echo "# compare result '$quality_base_metric' (status $quality_base_status)"
+  fi
+  if [ "$quality_hdr_status" = "1" ]; then
+    echo "ok - gain-map quality changes HDR pixels"
+  else
+    echo "not ok - gain-map quality changes HDR pixels"
+    echo "# compare result '$quality_hdr_metric' (status $quality_hdr_status)"
+  fi
+else
+  echo "not ok - gain-map quality leaves primary pixels unchanged"
+  echo "# unable to create or decode gain-map quality outputs"
+  echo "not ok - gain-map quality changes HDR pixels"
+  echo "# unable to create or decode gain-map quality outputs"
+fi
 
 comment_status=0
 comment_value=`${IDENTIFY} -quiet -format '%[comment]' "$commented_source" \
