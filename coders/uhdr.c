@@ -736,6 +736,249 @@ static MagickBooleanType IsGainMapBaseGeometry(const size_t base_columns,
   return(MagickTrue);
 }
 
+typedef struct _UltraHDRGainMapTransformState
+{
+  size_t
+    columns,
+    rows,
+    source_columns,
+    source_rows;
+
+  ssize_t
+    origin_x,
+    origin_y;
+
+  int
+    basis_x_x,
+    basis_x_y,
+    basis_y_x,
+    basis_y_y;
+} UltraHDRGainMapTransformState;
+
+typedef struct _UltraHDRGainMapOrientation
+{
+  int
+    origin_columns,
+    origin_rows,
+    basis_x_columns,
+    basis_x_rows,
+    basis_y_columns,
+    basis_y_rows,
+    swaps;
+} UltraHDRGainMapOrientation;
+
+static const UltraHDRGainMapOrientation
+  gainmap_orientations[7] =
+  {
+    { 0, 1, 0,-1, 1, 0, 1 }, /* rotate 90 degrees clockwise */
+    { 1, 1,-1, 0, 0,-1, 0 }, /* rotate 180 degrees */
+    { 1, 0, 0, 1,-1, 0, 1 }, /* rotate 270 degrees clockwise */
+    { 0, 1, 1, 0, 0,-1, 0 }, /* flip */
+    { 1, 0,-1, 0, 0, 1, 0 }, /* flop */
+    { 0, 0, 0, 1, 1, 0, 1 }, /* transpose */
+    { 1, 1, 0,-1,-1, 0, 1 }  /* transverse */
+  };
+
+static void InitializeGainMapTransformState(
+  UltraHDRGainMapTransformState *state,const size_t columns,
+  const size_t rows)
+{
+  state->columns=columns;
+  state->rows=rows;
+  state->source_columns=columns;
+  state->source_rows=rows;
+  state->origin_x=0;
+  state->origin_y=0;
+  state->basis_x_x=1;
+  state->basis_x_y=0;
+  state->basis_y_x=0;
+  state->basis_y_y=1;
+}
+
+static MagickBooleanType AddGainMapTransformOffset(const ssize_t origin,
+  const size_t offset,const int direction,ssize_t *result)
+{
+  if (offset > (size_t) MAGICK_SSIZE_MAX)
+    return(MagickFalse);
+  if (direction == 0)
+    {
+      *result=origin;
+      return(MagickTrue);
+    }
+  if (direction > 0)
+    {
+      if (origin > (MAGICK_SSIZE_MAX-(ssize_t) offset))
+        return(MagickFalse);
+      *result=origin+(ssize_t) offset;
+    }
+  else
+    {
+      if (origin < (MAGICK_SSIZE_MIN+(ssize_t) offset))
+        return(MagickFalse);
+      *result=origin-(ssize_t) offset;
+    }
+  return(MagickTrue);
+}
+
+static MagickBooleanType AddGainMapTransformTerm(const ssize_t origin,
+  const size_t x,const int x_direction,const size_t y,const int y_direction,
+  ssize_t *result)
+{
+  ssize_t
+    value;
+
+  if (AddGainMapTransformOffset(origin,x,x_direction,&value) == MagickFalse)
+    return(MagickFalse);
+  return(AddGainMapTransformOffset(value,y,y_direction,result));
+}
+
+static MagickBooleanType UpdateGainMapTransformCrop(
+  UltraHDRGainMapTransformState *state,const size_t columns,
+  const size_t rows,const ssize_t x,const ssize_t y)
+{
+  ssize_t
+    origin_x,
+    origin_y;
+
+  if ((columns == 0) || (rows == 0) || (columns > state->columns) ||
+      (rows > state->rows) || (x < 0) || (y < 0) ||
+      ((size_t) x > state->columns-columns) ||
+      ((size_t) y > state->rows-rows))
+    return(MagickFalse);
+  if (AddGainMapTransformTerm(state->origin_x,(size_t) x,
+      state->basis_x_x,(size_t) y,state->basis_y_x,&origin_x) == MagickFalse)
+    return(MagickFalse);
+  if (AddGainMapTransformTerm(state->origin_y,(size_t) x,
+      state->basis_x_y,(size_t) y,state->basis_y_y,&origin_y) == MagickFalse)
+    return(MagickFalse);
+  state->origin_x=origin_x;
+  state->origin_y=origin_y;
+  state->columns=columns;
+  state->rows=rows;
+  return(MagickTrue);
+}
+
+static MagickBooleanType UpdateGainMapTransformOrientation(
+  UltraHDRGainMapTransformState *state,const size_t orientation)
+{
+  const UltraHDRGainMapOrientation
+    *transform;
+
+  ssize_t
+    origin_x,
+    origin_y;
+
+  int
+    basis_x_x,
+    basis_x_y,
+    basis_y_x,
+    basis_y_y;
+
+  size_t
+    columns,
+    rows;
+
+  if (orientation >= (sizeof(gainmap_orientations)/
+      sizeof(*gainmap_orientations)))
+    return(MagickFalse);
+  transform=gainmap_orientations+orientation;
+  columns=state->columns;
+  rows=state->rows;
+  if (AddGainMapTransformTerm(state->origin_x,
+      transform->origin_columns > 0 ? columns : 0,
+      transform->origin_columns*state->basis_x_x,
+      transform->origin_rows > 0 ? rows : 0,
+      transform->origin_rows*state->basis_y_x,
+      &origin_x) == MagickFalse ||
+      AddGainMapTransformTerm(state->origin_y,
+      transform->origin_columns > 0 ? columns : 0,
+      transform->origin_columns*state->basis_x_y,
+      transform->origin_rows > 0 ? rows : 0,
+      transform->origin_rows*state->basis_y_y,
+      &origin_y) == MagickFalse)
+    return(MagickFalse);
+  basis_x_x=transform->basis_x_columns*state->basis_x_x+
+    transform->basis_x_rows*state->basis_y_x;
+  basis_x_y=transform->basis_x_columns*state->basis_x_y+
+    transform->basis_x_rows*state->basis_y_y;
+  basis_y_x=transform->basis_y_columns*state->basis_x_x+
+    transform->basis_y_rows*state->basis_y_x;
+  basis_y_y=transform->basis_y_columns*state->basis_x_y+
+    transform->basis_y_rows*state->basis_y_y;
+  if (transform->swaps != 0)
+    Swap(columns,rows);
+  state->origin_x=origin_x;
+  state->origin_y=origin_y;
+  state->basis_x_x=basis_x_x;
+  state->basis_x_y=basis_x_y;
+  state->basis_y_x=basis_y_x;
+  state->basis_y_y=basis_y_y;
+  state->columns=columns;
+  state->rows=rows;
+  return(MagickTrue);
+}
+
+static MagickBooleanType UpdateGainMapTransformStateFromRecord(
+  UltraHDRGainMapTransformState *state,const char *transform)
+{
+  const char
+    *geometry;
+
+  double
+    rotations,
+    source_columns,
+    source_rows;
+
+  size_t
+    orientation;
+
+  int
+    fields;
+
+  if (LocaleNCompare(transform,"rotate ",7) == 0)
+    {
+      geometry=transform+7;
+      fields=sscanf(geometry,"%lfx%lf %lf",&source_columns,
+        &source_rows,&rotations);
+      if (fields != 3)
+        return(MagickFalse);
+      if ((IsNaN(source_columns) != 0) ||
+          (IsNaN(source_rows) != 0) || (IsNaN(rotations) != 0) ||
+          (source_columns > (double) MAGICK_SSIZE_MAX) ||
+          (source_rows > (double) MAGICK_SSIZE_MAX) ||
+          (rotations < 0.0) || (rotations > (double) MAGICK_SSIZE_MAX) ||
+          (rotations != floor(rotations)) ||
+          (IsGainMapBaseGeometry(state->columns,state->rows,source_columns,
+            source_rows) == MagickFalse))
+        return(MagickFalse);
+      orientation=CastDoubleToSizeT(rotations)%4;
+      if (orientation == 0)
+        return(MagickTrue);
+      return(UpdateGainMapTransformOrientation(state,orientation-1));
+    }
+  if (LocaleNCompare(transform,"flip ",5) == 0)
+    orientation=3;
+  else if (LocaleNCompare(transform,"flop ",5) == 0)
+    orientation=4;
+  else if (LocaleNCompare(transform,"transpose ",10) == 0)
+    orientation=5;
+  else if (LocaleNCompare(transform,"transverse ",11) == 0)
+    orientation=6;
+  else
+    return(MagickFalse);
+  geometry=transform+(orientation < 5 ? 5 : orientation == 5 ? 10 : 11);
+  fields=sscanf(geometry,"%lfx%lf",&source_columns,&source_rows);
+  if (fields != 2)
+    return(MagickFalse);
+  if ((IsNaN(source_columns) != 0) || (IsNaN(source_rows) != 0) ||
+      (source_columns > (double) MAGICK_SSIZE_MAX) ||
+      (source_rows > (double) MAGICK_SSIZE_MAX) ||
+      (IsGainMapBaseGeometry(state->columns,state->rows,source_columns,
+        source_rows) == MagickFalse))
+    return(MagickFalse);
+  return(UpdateGainMapTransformOrientation(state,orientation));
+}
+
 static MagickBooleanType ReplaceGainMapImage(Image **gainmap_image,
   Image *transform_image)
 {
@@ -830,15 +1073,7 @@ static MagickBooleanType ApplyGainMapTransform(Image **gainmap_image,
     columns,
     rows,
     source_columns,
-    source_rows,
-    x,
-    y;
-
-  Image
-    *transform_image;
-
-  size_t
-    rotations;
+    source_rows;
 
   FilterType
     filter_type;
@@ -847,26 +1082,20 @@ static MagickBooleanType ApplyGainMapTransform(Image **gainmap_image,
     fields,
     filter_value;
 
-  if (LocaleNCompare(transform,"crop ",5) == 0)
-    {
-      if (sscanf(transform+5,"%lfx%lf %lfx%lf%lf%lf",&source_columns,
-          &source_rows,&columns,&rows,&x,&y) != 6)
-        return(MagickFalse);
-      if (IsGainMapBaseGeometry(*base_columns,*base_rows,source_columns,
-          source_rows) == MagickFalse)
-        return(MagickFalse);
-      if (CropGainMapImage(gainmap_image,*base_columns,*base_rows,columns,
-          rows,x,y,exception) == MagickFalse)
-        return(MagickFalse);
-      *base_columns=CastDoubleToSizeT(columns);
-      *base_rows=CastDoubleToSizeT(rows);
-      return(MagickTrue);
-    }
   if (LocaleNCompare(transform,"resize ",7) == 0)
     {
       fields=sscanf(transform+7,"%lfx%lf %lfx%lf %d",&source_columns,
         &source_rows,&columns,&rows,&filter_value);
       if ((fields != 4) && (fields != 5))
+        return(MagickFalse);
+      if ((IsNaN(source_columns) != 0) || (IsNaN(source_rows) != 0) ||
+          (IsNaN(columns) != 0) || (IsNaN(rows) != 0) ||
+          (source_columns > (double) MAGICK_SSIZE_MAX) ||
+          (source_rows > (double) MAGICK_SSIZE_MAX) ||
+          (columns <= 0.0) || (rows <= 0.0) ||
+          (columns > (double) MAGICK_SSIZE_MAX) ||
+          (rows > (double) MAGICK_SSIZE_MAX) ||
+          (columns != floor(columns)) || (rows != floor(rows)))
         return(MagickFalse);
       filter_type=UndefinedFilter;
       if (fields == 5)
@@ -885,90 +1114,102 @@ static MagickBooleanType ApplyGainMapTransform(Image **gainmap_image,
         CastDoubleToSizeT(columns),CastDoubleToSizeT(rows),filter_type,
         exception));
     }
-  if (LocaleNCompare(transform,"flip ",5) == 0)
-    {
-      if (sscanf(transform+5,"%lfx%lf",&source_columns,&source_rows) != 2)
-        return(MagickFalse);
-      if (IsGainMapBaseGeometry(*base_columns,*base_rows,source_columns,
-          source_rows) == MagickFalse)
-        return(MagickFalse);
-      transform_image=FlipImage(*gainmap_image,exception);
-      return(ReplaceGainMapImage(gainmap_image,transform_image));
-    }
-  if (LocaleNCompare(transform,"flop ",5) == 0)
-    {
-      if (sscanf(transform+5,"%lfx%lf",&source_columns,&source_rows) != 2)
-        return(MagickFalse);
-      if (IsGainMapBaseGeometry(*base_columns,*base_rows,source_columns,
-          source_rows) == MagickFalse)
-        return(MagickFalse);
-      transform_image=FlopImage(*gainmap_image,exception);
-      return(ReplaceGainMapImage(gainmap_image,transform_image));
-    }
-  if (LocaleNCompare(transform,"rotate ",7) == 0)
-    {
-      size_t
-        next_columns,
-        next_rows;
-
-      if (sscanf(transform+7,"%lfx%lf %lf",&source_columns,&source_rows,
-          &x) != 3)
-        return(MagickFalse);
-      if (IsGainMapBaseGeometry(*base_columns,*base_rows,source_columns,
-          source_rows) == MagickFalse)
-        return(MagickFalse);
-      rotations=CastDoubleToSizeT(x) % 4;
-      if (rotations == 0)
-        return(MagickTrue);
-      transform_image=IntegralRotateImage(*gainmap_image,rotations,exception);
-      if (ReplaceGainMapImage(gainmap_image,transform_image) == MagickFalse)
-        return(MagickFalse);
-      if ((rotations == 1) || (rotations == 3))
-        {
-          next_columns=(*base_rows);
-          next_rows=(*base_columns);
-          *base_columns=next_columns;
-          *base_rows=next_rows;
-        }
-      return(MagickTrue);
-    }
-  if (LocaleNCompare(transform,"transpose ",10) == 0)
-    {
-      size_t
-        next_columns;
-
-      if (sscanf(transform+10,"%lfx%lf",&source_columns,&source_rows) != 2)
-        return(MagickFalse);
-      if (IsGainMapBaseGeometry(*base_columns,*base_rows,source_columns,
-          source_rows) == MagickFalse)
-        return(MagickFalse);
-      transform_image=TransposeImage(*gainmap_image,exception);
-      if (ReplaceGainMapImage(gainmap_image,transform_image) == MagickFalse)
-        return(MagickFalse);
-      next_columns=(*base_rows);
-      *base_rows=(*base_columns);
-      *base_columns=next_columns;
-      return(MagickTrue);
-    }
-  if (LocaleNCompare(transform,"transverse ",11) == 0)
-    {
-      size_t
-        next_columns;
-
-      if (sscanf(transform+11,"%lfx%lf",&source_columns,&source_rows) != 2)
-        return(MagickFalse);
-      if (IsGainMapBaseGeometry(*base_columns,*base_rows,source_columns,
-          source_rows) == MagickFalse)
-        return(MagickFalse);
-      transform_image=TransverseImage(*gainmap_image,exception);
-      if (ReplaceGainMapImage(gainmap_image,transform_image) == MagickFalse)
-        return(MagickFalse);
-      next_columns=(*base_rows);
-      *base_rows=(*base_columns);
-      *base_columns=next_columns;
-      return(MagickTrue);
-    }
   return(MagickFalse);
+}
+
+static MagickBooleanType ApplyGainMapTransformOrientation(
+  Image **gainmap_image,const UltraHDRGainMapTransformState *state,
+  ExceptionInfo *exception)
+{
+  Image
+    *transform_image;
+
+  size_t
+    orientation,
+    rotations;
+
+  if ((state->basis_x_x == 1) && (state->basis_x_y == 0) &&
+      (state->basis_y_x == 0) && (state->basis_y_y == 1))
+    return(MagickTrue);
+  for (orientation=0; orientation < (sizeof(gainmap_orientations)/
+      sizeof(*gainmap_orientations)); orientation++)
+    if ((state->basis_x_x == gainmap_orientations[orientation].basis_x_columns) &&
+        (state->basis_x_y == gainmap_orientations[orientation].basis_x_rows) &&
+        (state->basis_y_x == gainmap_orientations[orientation].basis_y_columns) &&
+        (state->basis_y_y == gainmap_orientations[orientation].basis_y_rows))
+      break;
+  if (orientation >= (sizeof(gainmap_orientations)/
+      sizeof(*gainmap_orientations)))
+    return(MagickFalse);
+  if (orientation < 3)
+    rotations=orientation+1;
+  else if (orientation == 3)
+    transform_image=FlipImage(*gainmap_image,exception);
+  else if (orientation == 4)
+    transform_image=FlopImage(*gainmap_image,exception);
+  else if (orientation == 5)
+    transform_image=TransposeImage(*gainmap_image,exception);
+  else
+    transform_image=TransverseImage(*gainmap_image,exception);
+  if (orientation >= 3)
+    return(ReplaceGainMapImage(gainmap_image,transform_image));
+  transform_image=IntegralRotateImage(*gainmap_image,rotations,exception);
+  return(ReplaceGainMapImage(gainmap_image,transform_image));
+}
+
+static MagickBooleanType FlushGainMapTransform(
+  Image **gainmap_image,const UltraHDRGainMapTransformState *state,
+  ExceptionInfo *exception)
+{
+  ssize_t
+    origin_x,
+    origin_y,
+    max_x,
+    max_y,
+    min_x,
+    min_y,
+    opposite_x,
+    opposite_y;
+
+  size_t
+    crop_height,
+    crop_width;
+
+  if ((state->source_columns == 0) || (state->source_rows == 0) ||
+      (state->source_columns > (size_t) MAGICK_SSIZE_MAX) ||
+      (state->source_rows > (size_t) MAGICK_SSIZE_MAX))
+    return(MagickFalse);
+  origin_x=state->origin_x;
+  origin_y=state->origin_y;
+  if (AddGainMapTransformTerm(state->origin_x,state->columns,
+      state->basis_x_x,state->rows,state->basis_y_x,&opposite_x) ==
+      MagickFalse ||
+      AddGainMapTransformTerm(state->origin_y,state->columns,
+      state->basis_x_y,state->rows,state->basis_y_y,&opposite_y) ==
+      MagickFalse)
+    return(MagickFalse);
+  min_x=MagickMin(origin_x,opposite_x);
+  min_y=MagickMin(origin_y,opposite_y);
+  max_x=MagickMax(origin_x,opposite_x);
+  max_y=MagickMax(origin_y,opposite_y);
+  if ((min_x < 0) || (min_y < 0) ||
+      (max_x > (ssize_t) state->source_columns) ||
+      (max_y > (ssize_t) state->source_rows) || (max_x <= min_x) ||
+      (max_y <= min_y))
+    return(MagickFalse);
+  crop_width=(size_t) (max_x-min_x);
+  crop_height=(size_t) (max_y-min_y);
+  if ((min_x != 0) || (min_y != 0) ||
+      (max_x != (ssize_t) state->source_columns) ||
+      (max_y != (ssize_t) state->source_rows))
+    if (CropGainMapImage(gainmap_image,state->source_columns,
+        state->source_rows,(double) crop_width,(double) crop_height,
+        (double) min_x,(double) min_y,exception) == MagickFalse)
+      return(MagickFalse);
+  if (ApplyGainMapTransformOrientation(gainmap_image,state,exception) ==
+      MagickFalse)
+    return(MagickFalse);
+  return(MagickTrue);
 }
 
 static StringInfo *EncodeBaseImageProfile(const ImageInfo *image_info,
@@ -1035,7 +1276,11 @@ static StringInfo *TransformGainMapProfile(const ImageInfo *image_info,
   MagickBooleanType
     status,
     transformed,
-    transform_required;
+    transform_required,
+    transform_pending;
+
+  UltraHDRGainMapTransformState
+    transform_state;
 
   size_t
     base_columns,
@@ -1094,6 +1339,8 @@ static StringInfo *TransformGainMapProfile(const ImageInfo *image_info,
     }
   status=MagickTrue;
   transformed=MagickFalse;
+  transform_pending=MagickFalse;
+  InitializeGainMapTransformState(&transform_state,base_columns,base_rows);
   if ((transforms != (const char *) NULL) && (*transforms != '\0'))
     {
       char
@@ -1109,15 +1356,137 @@ static StringInfo *TransformGainMapProfile(const ImageInfo *image_info,
           *next++='\0';
         if (*transform != '\0')
           {
-            status=ApplyGainMapTransform(&gainmap_images,&base_columns,
-              &base_rows,image,transform,exception);
+            if (LocaleNCompare(transform,"crop ",5) == 0)
+              {
+                double
+                  columns,
+                  rows,
+                  source_columns,
+                  source_rows,
+                  x,
+                  y;
+
+                size_t
+                  crop_columns,
+                  crop_rows;
+
+                ssize_t
+                  crop_x,
+                  crop_y;
+
+                if (sscanf(transform+5,"%lfx%lf %lfx%lf%lf%lf",
+                    &source_columns,&source_rows,&columns,&rows,&x,&y) != 6)
+                  status=MagickFalse;
+                else if ((IsNaN(source_columns) != 0) ||
+                    (IsNaN(source_rows) != 0) || (IsNaN(columns) != 0) ||
+                    (IsNaN(rows) != 0) || (IsNaN(x) != 0) ||
+                    (IsNaN(y) != 0) ||
+                    (source_columns > (double) MAGICK_SSIZE_MAX) ||
+                    (source_rows > (double) MAGICK_SSIZE_MAX) ||
+                    (columns > (double) MAGICK_SSIZE_MAX) ||
+                    (rows > (double) MAGICK_SSIZE_MAX) ||
+                    (x > (double) MAGICK_SSIZE_MAX) ||
+                    (y > (double) MAGICK_SSIZE_MAX) ||
+                    (columns != floor(columns)) ||
+                    (rows != floor(rows)) || (x != floor(x)) ||
+                    (y != floor(y)))
+                  status=MagickFalse;
+                else if (IsGainMapBaseGeometry(transform_state.columns,
+                    transform_state.rows,
+                    source_columns,source_rows) == MagickFalse)
+                  status=MagickFalse;
+                else if ((columns <= 0.0) || (rows <= 0.0) ||
+                    (x < 0.0) || (y < 0.0) ||
+                    (columns > (double) transform_state.columns) ||
+                    (rows > (double) transform_state.rows) ||
+                    (x > ((double) transform_state.columns-columns)) ||
+                    (y > ((double) transform_state.rows-rows)))
+                  status=MagickFalse;
+                if (status != MagickFalse)
+                  {
+                    crop_columns=CastDoubleToSizeT(columns);
+                    crop_rows=CastDoubleToSizeT(rows);
+                    crop_x=CastDoubleToSsizeT(x);
+                    crop_y=CastDoubleToSsizeT(y);
+                    if (transform_pending == MagickFalse)
+                      {
+                        InitializeGainMapTransformState(&transform_state,
+                          base_columns,base_rows);
+                        transform_pending=MagickTrue;
+                      }
+                    status=UpdateGainMapTransformCrop(&transform_state,
+                      crop_columns,crop_rows,crop_x,crop_y);
+                    if (status != MagickFalse)
+                      {
+                        base_columns=transform_state.columns;
+                        base_rows=transform_state.rows;
+                        transformed=MagickTrue;
+                      }
+                  }
+              }
+            else if (LocaleNCompare(transform,"resize ",7) == 0)
+              {
+                if (transform_pending != MagickFalse)
+                  {
+                    status=FlushGainMapTransform(&gainmap_images,
+                      &transform_state,exception);
+                    transform_pending=MagickFalse;
+                  }
+                if (status != MagickFalse)
+                  status=ApplyGainMapTransform(&gainmap_images,&base_columns,
+                    &base_rows,image,transform,exception);
+                if (status != MagickFalse)
+                  {
+                    InitializeGainMapTransformState(&transform_state,
+                      base_columns,base_rows);
+                    transformed=MagickTrue;
+                  }
+              }
+            else if ((LocaleNCompare(transform,"flip ",5) == 0) ||
+                (LocaleNCompare(transform,"flop ",5) == 0) ||
+                (LocaleNCompare(transform,"rotate ",7) == 0) ||
+                (LocaleNCompare(transform,"transpose ",10) == 0) ||
+                (LocaleNCompare(transform,"transverse ",11) == 0))
+              {
+                if (transform_pending == MagickFalse)
+                  {
+                    InitializeGainMapTransformState(&transform_state,
+                      base_columns,base_rows);
+                    transform_pending=MagickTrue;
+                  }
+                status=UpdateGainMapTransformStateFromRecord(
+                  &transform_state,transform);
+                if (status != MagickFalse)
+                  {
+                    base_columns=transform_state.columns;
+                    base_rows=transform_state.rows;
+                    transformed=MagickTrue;
+                  }
+              }
+            else
+              {
+                if (transform_pending != MagickFalse)
+                  {
+                    status=FlushGainMapTransform(&gainmap_images,
+                      &transform_state,exception);
+                    transform_pending=MagickFalse;
+                  }
+                if (status != MagickFalse)
+                  status=ApplyGainMapTransform(&gainmap_images,&base_columns,
+                    &base_rows,image,transform,exception);
+                if (status != MagickFalse)
+                  transformed=MagickTrue;
+              }
             if (status == MagickFalse)
               break;
-            transformed=MagickTrue;
           }
         transform=next;
       }
       transform_list=DestroyString(transform_list);
+    }
+  if ((status != MagickFalse) && (transform_pending != MagickFalse))
+    {
+      status=FlushGainMapTransform(&gainmap_images,&transform_state,exception);
     }
   if ((status != MagickFalse) &&
       ((base_columns != image->columns) || (base_rows != image->rows)))

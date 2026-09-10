@@ -2,7 +2,7 @@
 
 # build zlib
 pushd "$SRC/zlib"
-cmake . -DCMAKE_INSTALL_PREFIX=$WORK -DLIBDEFLATE_BUILD_SHARED_LIB=false
+cmake . -DCMAKE_INSTALL_PREFIX=$WORK
 make -j$(nproc) CFLAGS="$CFLAGS -fPIC"
 make install
 popd
@@ -31,7 +31,7 @@ popd
 
 # Build libjpeg-turbo
 pushd "$SRC/libjpeg-turbo"
-CFLAGS="$CFLAGS -fPIC" cmake . -DCMAKE_INSTALL_PREFIX=$WORK -DENABLE_STATIC=true -DENABLE_SHARED=false -DWITH_SYSTEM_ZLIB=ON
+CFLAGS="$CFLAGS -fPIC" cmake . -DCMAKE_INSTALL_PREFIX=$WORK -DENABLE_STATIC=true -DENABLE_SHARED=false -DWITH_SYSTEM_ZLIB=ON -DWITH_TOOLS=OFF -DWITH_TESTS=OFF -DWITH_TURBOJPEG=off
 make -j$(nproc)
 make install
 popd

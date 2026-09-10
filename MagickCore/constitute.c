@@ -1196,7 +1196,11 @@ MagickExport Image *ReadInlineImage(const ImageInfo *image_info,
     (void *) NULL);
   *read_info->filename='\0';
   if (GetImplicitDataImageType(content,read_info->magick,exception) == MagickFalse)
-    ThrowReaderException(ImageError,"ImageTypeNotSupported");
+    {
+      blob=(unsigned char *) RelinquishMagickMemory(blob);
+      read_info=DestroyImageInfo(read_info);
+      ThrowReaderException(ImageError,"ImageTypeNotSupported");
+    }
   image=BlobToImage(read_info,blob,length,exception);
   blob=(unsigned char *) RelinquishMagickMemory(blob);
   read_info=DestroyImageInfo(read_info);
