@@ -50,6 +50,9 @@ reduced_phase_sequential=cli-uhdr-crop-replay-reduced-phase-sequential.jpg
 reduced_phase_direct=cli-uhdr-crop-replay-reduced-phase-direct.jpg
 reduced_phase_sequential_linear=cli-uhdr-crop-replay-reduced-phase-sequential-linear.miff
 reduced_phase_direct_linear=cli-uhdr-crop-replay-reduced-phase-direct-linear.miff
+iptc_fixture=${SRCDIR}/cli-uhdr-iptc.jpg
+iptc_source=cli-uhdr-iptc-source.iptc
+iptc_output=cli-uhdr-iptc-output.iptc
 capacity_min=1.00000012
 capacity_max=2.00000024
 expected_offsets='1.00000001e-07,1.00000001e-07,1.00000001e-07 1.00000001e-07,1.00000001e-07,1.00000001e-07'
@@ -59,7 +62,8 @@ comments-local-second-line'
 cleanup()
 {
   rm -f "$raw_source" "$source" "$output" "$transformed_output" \
-    "$locale_output" "$jpeg_probe" "$whitespace_output" "$invalid_output"
+    "$locale_output" "$jpeg_probe" "$whitespace_output" "$invalid_output" \
+    "$iptc_source" "$iptc_output"
   rm -f "$commented_source" "$comment_roundtrip" \
     "$comment_linear" "$crop_sequential" "$crop_direct" \
     "$crop_sequential_linear" "$crop_direct_linear" "$reduced_seed" \
@@ -109,7 +113,7 @@ if [ "X$jpeg_format" != "XJPEG" ]; then
   exit 0
 fi
 
-echo "1..18"
+echo "1..20"
 if ! ${MAGICK} \( "${SRCDIR}/rose.pnm" -depth 8 \) \
     \( "${SRCDIR}/rose.pnm" -depth 16 \) \
     -define uhdr:hdr-color-transfer=linear "UHDR:$raw_source" \
@@ -144,6 +148,17 @@ if ! ${MAGICK} \( "${SRCDIR}/rose.pnm" -depth 8 -resize 50% \) \
   cleanup
   exit 0
 fi
+
+if ${MAGICK} -define jpeg:detect-uhdr=false "$iptc_fixture" \
+    "IPTC:$iptc_source" >/dev/null 2>&1 && [ -s "$iptc_source" ] && \
+    ${MAGICK} "$iptc_fixture" "IPTC:$iptc_output" >/dev/null 2>&1 && \
+    cmp -s "$iptc_source" "$iptc_output"; then
+  echo "ok - IPTC profile survives automatic UHDR read"
+else
+  echo "not ok - IPTC profile survives automatic UHDR read"
+fi
+hdrgm=`${IDENTIFY} -quiet -format '%[jpeg:hdrgm]' "$iptc_fixture" 2>/dev/null`
+check_value "IPTC fixture uses automatic UHDR routing" "$hdrgm" true
 
 if ${MAGICK} "UHDR:$source" \
     -set hdrgm:OffsetSDR ' 0.0000001 , 0.0000001 , 0.0000001 ' \

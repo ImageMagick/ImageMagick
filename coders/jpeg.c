@@ -1622,6 +1622,9 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
         *comment,
         *sampling_factor;
 
+      const StringInfo
+        *profile;
+
       ExceptionInfo
         *uhdr_exception;
 
@@ -1653,6 +1656,9 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
             uhdr_image->quality=image->quality;
           uhdr_image->resolution=image->resolution;
           uhdr_image->units=image->units;
+          profile=GetImageProfile(image,"iptc");
+          if (profile != (const StringInfo *) NULL)
+            (void) SetImageProfile(uhdr_image,"iptc",profile,uhdr_exception);
           sampling_factor=GetImageProperty(image,"jpeg:sampling-factor",
             exception);
           if (sampling_factor != (const char *) NULL)
