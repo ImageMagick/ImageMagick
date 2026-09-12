@@ -2193,6 +2193,22 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
 %
 */
 
+static MagickBooleanType IsValidPostscriptFontname(const char *font)
+{
+  const unsigned char
+    *p;
+
+  if ((font == (const char *) NULL) || (*font == '\0'))
+    return(MagickFalse);
+  for (p=(const unsigned char *) font; *p != '\0'; p++)
+  {
+    if ((isalnum(*p) != 0) || (*p == '-') || (*p == '_') || (*p == '.'))
+      continue;
+    return(MagickFalse);
+  }
+  return(MagickTrue);
+}
+
 static MagickBooleanType RenderPostscript(Image *image,
   const DrawInfo *draw_info,const PointInfo *offset,TypeMetric *metrics,
   ExceptionInfo *exception)
@@ -2281,8 +2297,7 @@ static MagickBooleanType RenderPostscript(Image *image,
     extent.x/2.0,extent.y/2.0);
   (void) FormatLocaleFile(file,"%g %g scale\n",draw_info->pointsize,
     draw_info->pointsize);
-  if ((draw_info->font == (char *) NULL) || (*draw_info->font == '\0') ||
-      (strchr(draw_info->font,'/') != (char *) NULL))
+  if (IsValidPostscriptFontname(draw_info->font) == MagickFalse)
     (void) FormatLocaleFile(file,
       "/Times-Roman-ISO dup /Times-Roman ReencodeType findfont setfont\n");
   else
