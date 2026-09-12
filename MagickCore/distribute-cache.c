@@ -1149,7 +1149,7 @@ static void RelinquishDPCClient(const MagickBooleanType unauthenticated)
   UnlockSemaphoreInfo(dpc_semaphore);
 }
 
-static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket_arg)
+static HANDLER_RETURN_TYPE DistributePixelCacheConnectionHandler(void *socket_arg)
 {
   ExceptionInfo
     *exception;
@@ -1486,7 +1486,7 @@ MagickExport void DistributePixelCacheServer(const int port,
         continue;
       }
 #if defined(MAGICKCORE_THREAD_SUPPORT)
-    status=pthread_create(&thread_id,&attributes,DistributePixelCacheClient,
+    status=pthread_create(&thread_id,&attributes,DistributePixelCacheConnectionHandler,
       (void *) client_socket_ptr);
     if (status != 0)
       {
@@ -1496,7 +1496,7 @@ MagickExport void DistributePixelCacheServer(const int port,
         continue;
       }
 #elif defined(_MSC_VER)
-    if (CreateThread(0,0,DistributePixelCacheClient,(void*) client_socket_ptr,
+    if (CreateThread(0,0,DistributePixelCacheConnectionHandler,(void*) client_socket_ptr,
           0,&threadID) == (HANDLE) NULL)
       {
         CLOSE_SOCKET(*client_socket_ptr);
