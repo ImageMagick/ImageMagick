@@ -127,6 +127,9 @@ static WSADATA
 static SemaphoreInfo
   *dpc_semaphore = (SemaphoreInfo *) NULL;
 
+static char
+  *dpc_shared_secret = (char *) NULL;
+
 static size_t
   dpc_clients = 0,
   dpc_unauthenticated_clients = 0;
@@ -1148,9 +1151,6 @@ static void RelinquishDPCClient(const MagickBooleanType unauthenticated)
 
 static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket_arg)
 {
-  const char
-    *shared_secret;
-
   ExceptionInfo
     *exception;
 
@@ -1182,18 +1182,8 @@ static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket_arg)
     command,
     nonce[DPCSessionKeyLength];
 
-  /*
-    Load shared secret.
-  */
   client_socket=(*client_socket_ptr);
   client_socket_ptr=(SOCKET_TYPE *) RelinquishMagickMemory(client_socket_ptr);
-  shared_secret=GetPolicyValue("cache:shared-secret");
-  if (shared_secret == (const char *) NULL)
-    {
-      CLOSE_SOCKET(client_socket);
-      RelinquishDPCClient(MagickTrue);
-      return(HANDLER_RETURN_VALUE);
-    }
   /*
     Generate random nonce.
   */
@@ -1205,8 +1195,7 @@ static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket_arg)
   /*
     Derive session key.
   */
-  session_key=GenerateSessionKey(shared_secret,nonce,sizeof(nonce));
-  shared_secret=DestroyString(shared_secret);
+  session_key=GenerateSessionKey(dpc_shared_secret,nonce,sizeof(nonce));
   /*
     Send nonce to client.
   */
@@ -1376,9 +1365,6 @@ MagickExport void DistributePixelCacheServer(const int port,
   char
     service[MagickPathExtent];
 
-  const char
-    *shared_secret;
-
   int
     status;
 
@@ -1414,8 +1400,8 @@ MagickExport void DistributePixelCacheServer(const int port,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
   magick_unreferenced(exception);
-  shared_secret=GetPolicyValue("cache:shared-secret");
-  if (shared_secret == (const char *) NULL)
+  dpc_shared_secret=GetPolicyValue("cache:shared-secret");
+  if (dpc_shared_secret == (char *) NULL)
     ThrowFatalException(CacheFatalError,"no shared secret");
 #if defined(MAGICKCORE_HAVE_WINSOCK2)
   InitializeWinsock2(MagickFalse);
@@ -1510,7 +1496,8 @@ MagickExport void DistributePixelCacheServer(const int port,
         continue;
       }
 #elif defined(_MSC_VER)
-    if (CreateThread(0,0,DistributePixelCacheClient,(void*) client_socket_ptr,0,&threadID) == (HANDLE) NULL)
+    if (CreateThread(0,0,DistributePixelCacheClient,(void*) client_socket_ptr,
+          0,&threadID) == (HANDLE) NULL)
       {
         CLOSE_SOCKET(*client_socket_ptr);
         RelinquishDPCClient(MagickTrue);
@@ -1553,6 +1540,8 @@ MagickPrivate void DistributeCacheTerminus(void)
   RelinquishSemaphoreInfo(&winsock_semaphore);
 #endif
 #if defined(MAGICKCORE_HAVE_DISTRIBUTE_CACHE)
+  if (dpc_shared_secret != (char *) NULL)
+    dpc_shared_secret=DestroyString(dpc_shared_secret);
   if (dpc_semaphore != (SemaphoreInfo *) NULL)
     RelinquishSemaphoreInfo(&dpc_semaphore);
 #endif
