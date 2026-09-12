@@ -1077,9 +1077,9 @@ static char *ParseEntities(char *xml,char **entities,int state)
           Character reference.
         */
         if (xml[2] != 'x')
-          c=strtol(xml+2,&entity,10);  /* base 10 */
+          c=(int) strtol(xml+2,&entity,10);  /* base 10 */
         else
-          c=strtol(xml+3,&entity,16);  /* base 16 */
+          c=(int) strtol(xml+3,&entity,16);  /* base 16 */
         if ((c == 0) || (*entity != ';'))
           {
             /*
@@ -1240,7 +1240,7 @@ static XMLTreeInfo *ParseCloseTag(XMLTreeRoot *root,char *tag,
 }
 
 static MagickBooleanType ValidateEntities(char *tag,char *xml,
-  const size_t depth,char **entities)
+  const int delimiter,const size_t depth,char **entities)
 {
   ssize_t
     i;
@@ -1252,7 +1252,7 @@ static MagickBooleanType ValidateEntities(char *tag,char *xml,
     return(MagickFalse);
   for ( ; ; xml++)
   {
-    while ((*xml != '\0') && (*xml != '&'))
+    while ((*xml != '\0') && (*xml != delimiter))
       xml++;
     if (*xml == '\0')
       return(MagickTrue);
@@ -1263,7 +1263,7 @@ static MagickBooleanType ValidateEntities(char *tag,char *xml,
            (strncmp(entities[i],xml+1,strlen(entities[i])) == 0))
       i+=2;
     if ((entities[i] != (char *) NULL) &&
-        (ValidateEntities(tag,entities[i+1],depth+1,entities) == 0))
+        (ValidateEntities(tag,entities[i+1],delimiter,depth+1,entities) == MagickFalse))
       return(MagickFalse);
   }
 }
@@ -1415,14 +1415,15 @@ static MagickBooleanType ParseInternalDoctype(XMLTreeRoot *root,char *xml,
           }
         entities[i+1]=ParseEntities(v,predefined_entities,'%');
         entities[i+2]=(char *) NULL;
-        if (ValidateEntities(n,entities[i+1],0,entities) != MagickFalse)
+        if ((ValidateEntities(n,entities[i+1],'%',0,entities) != MagickFalse) &&
+            (ValidateEntities(n,entities[i+1],'&',0,entities) != MagickFalse))
           entities[i]=n;
         else
           {
             if (entities[i+1] != v)
               entities[i+1]=DestroyString(entities[i+1]);
             (void) ThrowMagickException(exception,GetMagickModule(),
-              OptionWarning,"ParseError","circular entity declaration &%s",n);
+              OptionWarning,"ParseError","circular entity declaration %s",n);
             predefined_entities=(char **) RelinquishMagickMemory(
               predefined_entities);
             return(MagickFalse);
