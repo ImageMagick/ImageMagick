@@ -227,7 +227,7 @@ WandExport ScriptTokenInfo *AcquireScriptTokenInfo(const char *filename)
     token_info->opened=MagickFalse;
   }
   else {
-    int fd = open(filename,O_RDONLY | O_CLOEXEC | O_NOFOLLOW);
+    int fd = open_utf8(filename,O_RDONLY | O_CLOEXEC | O_NOFOLLOW);
     if (fd != -1)
       token_info->stream=fdopen(fd,"r");
     if (token_info->stream != (FILE *) NULL)
