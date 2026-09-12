@@ -3932,7 +3932,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
                 "%s-%02x%02x%02x%02x~",image->filename,key_bytes[0],
                 key_bytes[1],key_bytes[2],key_bytes[3]);
               key_info=DestroyStringInfo(key_info);
-              file=open_utf8(backup_filename,O_RDWR | O_CREAT | O_EXCL |
+              file=open_utf8(backup_filename,O_RDWR | O_CLOEXEC | O_CREAT | O_EXCL |
                 O_BINARY | O_NOFOLLOW,S_MODE);
               if ((file >= 0) || (errno != EEXIST))
                 break;

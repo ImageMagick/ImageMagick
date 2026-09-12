@@ -221,7 +221,7 @@ MagickExport MagickBooleanType AcquireUniqueSymbolicLink(const char *source,
   destination_file=AcquireUniqueFileResource(destination);
   if (destination_file == -1)
     return(MagickFalse);
-  source_file=open_utf8(source,O_RDONLY | O_BINARY,0);
+  source_file=open_utf8(source,O_RDONLY | O_CLOEXEC | O_BINARY,0);
   if (source_file == -1)
     {
       (void) close_utf8(destination_file);
@@ -2067,7 +2067,7 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
   /*
     Shred the file.
   */
-  file=open_utf8(path,O_WRONLY | O_EXCL | O_BINARY,S_MODE);
+  file=open_utf8(path,O_WRONLY | O_CLOEXEC | O_EXCL | O_BINARY,S_MODE);
   if (file == -1)
     return(MagickFalse);
   quantum=(size_t) MagickMinBufferExtent;

@@ -542,7 +542,7 @@ MagickExport int AcquireUniqueFileResource(char *path)
       *p++=portable_filename[c];
     }
     key=DestroyStringInfo(key);
-    file=open_utf8(path,O_RDWR | O_CREAT | O_EXCL | O_BINARY | O_NOFOLLOW,
+    file=open_utf8(path,O_RDWR | O_CLOEXEC | O_CREAT | O_EXCL | O_BINARY | O_NOFOLLOW,
       S_MODE);
     if ((file >= 0) || (errno != EEXIST))
       break;

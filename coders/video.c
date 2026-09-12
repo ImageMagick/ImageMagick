@@ -515,11 +515,11 @@ static MagickBooleanType CopyDelegateFile(const char *source,
 #endif
     }
   else
-    destination_file=open_utf8(destination,O_WRONLY | O_BINARY | O_CREAT |
+    destination_file=open_utf8(destination,O_WRONLY | O_CLOEXEC | O_BINARY | O_CREAT |
       O_TRUNC,S_MODE);
   if (destination_file == -1)
     return(MagickFalse);
-  source_file=open_utf8(source,O_RDONLY | O_BINARY,0);
+  source_file=open_utf8(source,O_RDONLY | O_CLOEXEC | O_BINARY,0);
   if (source_file == -1)
     {
       if (strcmp(destination,"-") != 0)

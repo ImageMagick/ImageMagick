@@ -596,7 +596,7 @@ MagickPrivate char *FileToXML(const char *filename,const size_t extent)
   length=0;
   file=fileno(stdin);
   if (LocaleCompare(filename,"-") != 0)
-    file=open_utf8(filename,O_RDONLY | O_BINARY,0);
+    file=open_utf8(filename,O_RDONLY | O_CLOEXEC | O_BINARY,0);
   if (file == -1)
     return((char *) NULL);
   offset=(MagickOffsetType) lseek(file,0,SEEK_END);

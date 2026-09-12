@@ -387,7 +387,7 @@ MagickExport MagickBooleanType BlobToFile(char *filename,const void *blob,
   if (*filename == '\0')
     file=AcquireUniqueFileResource(filename);
   else
-    file=open_utf8(filename,O_WRONLY | O_CREAT | O_EXCL | O_BINARY,P_MODE);
+    file=open_utf8(filename,O_WRONLY | O_CLOEXEC | O_CREAT | O_EXCL | O_BINARY,P_MODE);
   if (file == -1)
     {
       ThrowFileException(exception,BlobError,"UnableToWriteBlob",filename);
@@ -1457,7 +1457,7 @@ MagickExport void *FileToBlob(const char *filename,const size_t extent,
   if (LocaleCompare(filename,"-") != 0)
     {
       int
-        flags = O_RDONLY | O_BINARY;
+        flags = O_RDONLY | O_CLOEXEC | O_BINARY;
 
       status=GetPathAttributes(filename,&attributes);
       if ((status == MagickFalse) || (S_ISDIR(attributes.st_mode) != 0))
@@ -1671,7 +1671,7 @@ MagickExport MagickBooleanType FileToImage(Image *image,const char *filename,
   if (LocaleCompare(filename,"-") != 0)
     {
       int
-        flags = O_RDONLY | O_BINARY;
+        flags = O_RDONLY | O_CLOEXEC | O_BINARY;
 
       file=open_utf8(filename,flags,0);
     }
@@ -2380,7 +2380,7 @@ MagickExport MagickBooleanType ImageToFile(Image *image,char *filename,
     if (LocaleCompare(filename,"-") == 0)
       file=fileno(stdout);
     else
-      file=open_utf8(filename,O_RDWR | O_CREAT | O_EXCL | O_BINARY,P_MODE);
+      file=open_utf8(filename,O_RDWR | O_CLOEXEC | O_CREAT | O_EXCL | O_BINARY,P_MODE);
   if (file == -1)
     {
       ThrowFileException(exception,BlobError,"UnableToWriteBlob",filename);
@@ -2832,7 +2832,7 @@ MagickExport MagickBooleanType InjectImageBlob(const ImageInfo *image_info,
   /*
     Inject into image stream.
   */
-  file=open_utf8(filename,O_RDONLY | O_BINARY,0);
+  file=open_utf8(filename,O_RDONLY | O_CLOEXEC | O_BINARY,0);
   if (file == -1)
     {
       (void) RelinquishUniqueFileResource(filename);
@@ -3286,7 +3286,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
     *type;
 
   int
-    flags = O_RDONLY;
+    flags = O_RDONLY | O_CLOEXEC;
 
   MagickBooleanType
     status;
@@ -3325,43 +3325,43 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
   {
     case ReadBlobMode:
     {
-      flags=O_RDONLY;
+      flags=O_RDONLY | O_CLOEXEC;
       type="r";
       break;
     }
     case ReadBinaryBlobMode:
     {
-      flags=O_RDONLY | O_BINARY;
+      flags=O_RDONLY | O_CLOEXEC | O_BINARY;
       type="rb";
       break;
     }
     case WriteBlobMode:
     {
-      flags=O_WRONLY | O_CREAT | O_TRUNC;
+      flags=O_WRONLY | O_CLOEXEC | O_CREAT | O_TRUNC;
       type="w";
       break;
     }
     case WriteBinaryBlobMode:
     {
-      flags=O_RDWR | O_CREAT | O_TRUNC | O_BINARY;
+      flags=O_RDWR | O_CLOEXEC | O_CREAT | O_TRUNC | O_BINARY;
       type="w+b";
       break;
     }
     case AppendBlobMode:
     {
-      flags=O_WRONLY | O_CREAT | O_APPEND;
+      flags=O_WRONLY | O_CLOEXEC | O_CREAT | O_APPEND;
       type="a";
       break;
     }
     case AppendBinaryBlobMode:
     {
-      flags=O_RDWR | O_CREAT | O_APPEND | O_BINARY;
+      flags=O_RDWR | O_CLOEXEC | O_CREAT | O_APPEND | O_BINARY;
       type="a+b";
       break;
     }
     default:
     {
-      flags=O_RDONLY;
+      flags=O_RDONLY | O_CLOEXEC;
       type="r";
       break;
     }
