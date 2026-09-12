@@ -74,6 +74,7 @@ extern "C" {
 #endif
 #define DegreesToRadians(x)  (MagickPI*(x)/180.0)
 #define EndOf(array)  (&array[NumberOf(array)])
+#define MagickPI  3.1415926535897932384626433832795028841971693993751058209749445923078164062
 #define MaxArguments  35
 #ifndef na
 #define na  PL_na
