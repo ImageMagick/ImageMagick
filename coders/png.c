@@ -4084,14 +4084,14 @@ DestroyJNG(unsigned char *chunk,Image **color_image,
   }
   if (color_image && *color_image)
   {
-    if ((*color_image)->filename != '\0')
+    if (*(*color_image)->filename != '\0')
       (void) RelinquishUniqueFileResource((*color_image)->filename);
     DestroyImageList(*color_image);
     *color_image = (Image *)NULL;
   }
   if (alpha_image && *alpha_image)
   {
-    if ((*alpha_image)->filename != '\0')
+    if (*(*alpha_image)->filename != '\0')
       (void) RelinquishUniqueFileResource((*alpha_image)->filename);
     DestroyImageList(*alpha_image);
     *alpha_image = (Image *)NULL;
