@@ -24,7 +24,6 @@
 #include "MagickCore/colorspace.h"
 #include "MagickCore/gem.h"
 #include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
 #include "MagickCore/memory_.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
