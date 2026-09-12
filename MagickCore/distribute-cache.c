@@ -514,7 +514,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
     Compute keyed hash(shared_secret,nonce).
   */
   shared_secret=GetPolicyValue("cache:shared-secret");
-  if (shared_secret == (char*) NULL)
+  if (shared_secret == (const char *) NULL)
     {
       CLOSE_SOCKET(client_socket);
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
@@ -1148,7 +1148,7 @@ static void RelinquishDPCClient(const MagickBooleanType unauthenticated)
 
 static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket_arg)
 {
-  char
+  const char
     *shared_secret;
 
   ExceptionInfo
@@ -1188,8 +1188,12 @@ static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket_arg)
   client_socket=(*client_socket_ptr);
   client_socket_ptr=(SOCKET_TYPE *) RelinquishMagickMemory(client_socket_ptr);
   shared_secret=GetPolicyValue("cache:shared-secret");
-  if (shared_secret == NULL)
-    ThrowFatalException(CacheFatalError,"shared secret required");
+  if (shared_secret == (const char *) NULL)
+    {
+      CLOSE_SOCKET(client_socket);
+      RelinquishDPCClient(MagickTrue);
+      return(HANDLER_RETURN_VALUE);
+    }
   /*
     Generate random nonce.
   */
@@ -1372,6 +1376,9 @@ MagickExport void DistributePixelCacheServer(const int port,
   char
     service[MagickPathExtent];
 
+  const char
+    *shared_secret;
+
   int
     status;
 
@@ -1407,6 +1414,9 @@ MagickExport void DistributePixelCacheServer(const int port,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
   magick_unreferenced(exception);
+  shared_secret=GetPolicyValue("cache:shared-secret");
+  if (shared_secret == (const char *) NULL)
+    ThrowFatalException(CacheFatalError,"no shared secret");
 #if defined(MAGICKCORE_HAVE_WINSOCK2)
   InitializeWinsock2(MagickFalse);
 #endif
@@ -1417,7 +1427,7 @@ MagickExport void DistributePixelCacheServer(const int port,
   FormatLocaleString(service,MagickPathExtent,"%d",port);
   status=getaddrinfo(NULL,service,&hint,&result);
   if (status != 0)
-    ThrowFatalException(CacheFatalError, "UnableToListen");
+    ThrowFatalException(CacheFatalError,"UnableToListen");
   server_socket=(SOCKET_TYPE) 0;
   for (p=result; p != NULL; p=p->ai_next)
   {
