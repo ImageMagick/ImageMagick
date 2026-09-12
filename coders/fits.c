@@ -438,8 +438,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         (void) SeekBlob(image,(MagickOffsetType) number_pixels,SEEK_CUR);
       }
     if (AcquireMagickResource(ListLengthResource,fits_info.number_planes) == MagickFalse)
-      ThrowFileException(exception,ResourceLimitError,"ListLengthExceedsLimit",
-        image->filename);
+      ThrowReaderException(ResourceLimitError,"ListLengthExceedsLimit");
     for (scene=0; scene < (ssize_t) fits_info.number_planes; scene++)
     {
       image->columns=(size_t) fits_info.columns;
