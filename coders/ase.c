@@ -771,8 +771,7 @@ static Image *ReadASEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
     }
   if (AcquireMagickResource(ListLengthResource,ase_header.frames) == MagickFalse)
-    ThrowFileException(exception,ResourceLimitError,"ListLengthExceedsLimit",
-      image->filename);
+    ThrowReaderException(ResourceLimitError,"ListLengthExceedsLimit");
   frame_image=image;
   for (frame_idx=0; frame_idx < (size_t) ase_header.frames; frame_idx++)
   {
