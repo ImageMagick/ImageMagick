@@ -483,7 +483,7 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,PSInfo *ps_info,
           {
             ps_info->photoshop_profile=AcquireProfileStringInfo("8bim",
               length+1U,exception);
-            if (ps_info->icc_profile != (StringInfo*) NULL)
+            if (ps_info->photoshop_profile != (StringInfo*) NULL)
               {
                 q=GetStringInfoDatum(ps_info->photoshop_profile);
                 while (extent > 0)
