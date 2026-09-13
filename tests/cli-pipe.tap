@@ -18,7 +18,7 @@
 #
 . ./common.shi
 . ${srcdir}/tests/common.shi
-echo "1..17"
+echo "1..23"
 
 ${MAGICK} pnm:- null:   < ${SRCDIR}/rose.pnm && echo "ok" || echo "not ok"
 ${MAGICK} pnm:- info:   < ${SRCDIR}/rose.pnm && echo "ok" || echo "not ok"
@@ -51,4 +51,88 @@ echo "-write info:" | ${MAGICK} ${SRCDIR}/rose.pnm -script - && echo "ok" || ech
 # pipelined script from file descriptor, read image from stdin
 echo "-read pnm:- -write info:" |\
    ${MAGICK} -script fd:5 5<&0 <${SRCDIR}/rose.pnm && echo "ok" || echo "not ok"
+
+# Buffered writes must report errors from both file and standard streams.
+pipe_direct_output=cli-pipe-direct-output.miff
+pipe_stdout_output=cli-pipe-stdout-output.miff
+pipe_direct_error=cli-pipe-direct-error.log
+pipe_stdout_error=cli-pipe-stdout-error.log
+rm -f "$pipe_direct_output" "$pipe_stdout_output" \
+  "$pipe_direct_error" "$pipe_stdout_error"
+
+if LC_ALL=C ${MAGICK} -size 1x1 xc:white "MIFF:$pipe_direct_output" \
+    >/dev/null 2>"$pipe_direct_error" && test -s "$pipe_direct_output" &&
+    ${IDENTIFY} "$pipe_direct_output" >/dev/null 2>&1; then
+  echo "ok 18 - direct MIFF output succeeds"
+else
+  echo "not ok 18 - direct MIFF output succeeds"
+fi
+
+if LC_ALL=C ${MAGICK} -size 1x1 xc:white MIFF:- \
+    >"$pipe_stdout_output" 2>"$pipe_stdout_error" &&
+    test -s "$pipe_stdout_output" &&
+    ${IDENTIFY} "$pipe_stdout_output" >/dev/null 2>&1; then
+  echo "ok 19 - stdout MIFF output succeeds"
+else
+  echo "not ok 19 - stdout MIFF output succeeds"
+fi
+
+if test ! -c /dev/full || test ! -w /dev/full; then
+  echo "ok 20 - direct MIFF output reports a write failure # SKIP /dev/full unavailable or not writable"
+  echo "ok 21 - stdout MIFF output reports a write failure # SKIP /dev/full unavailable or not writable"
+elif printf x >/dev/full 2>/dev/null; then
+  echo "not ok 20 - direct MIFF output reports a write failure # /dev/full accepted a write"
+  echo "not ok 21 - stdout MIFF output reports a write failure # /dev/full accepted a write"
+else
+  # Confirm that this character device rejects writes before using it as a
+  # failure target.  A different character device must not produce false
+  # success in the error assertions below.
+  if LC_ALL=C ${MAGICK} -size 1x1 xc:white MIFF:/dev/full \
+      >/dev/null 2>"$pipe_direct_error"; then
+    echo "not ok 20 - direct MIFF output reports a write failure"
+    echo "# command unexpectedly succeeded"
+  elif grep -q UnableToWriteFile "$pipe_direct_error"; then
+    echo "ok 20 - direct MIFF output reports a write failure"
+  else
+    echo "not ok 20 - direct MIFF output reports a write failure"
+    echo "# expected nonzero status and UnableToWriteFile diagnostic"
+  fi
+  if LC_ALL=C ${MAGICK} -size 1x1 xc:white MIFF:- \
+      >/dev/full 2>"$pipe_stdout_error"; then
+    echo "not ok 21 - stdout MIFF output reports a write failure"
+    echo "# command unexpectedly succeeded"
+  elif grep -q UnableToWriteFile "$pipe_stdout_error"; then
+    echo "ok 21 - stdout MIFF output reports a write failure"
+  else
+    echo "not ok 21 - stdout MIFF output reports a write failure"
+    echo "# expected nonzero status and UnableToWriteFile diagnostic"
+  fi
+fi
+rm -f "$pipe_direct_output" "$pipe_stdout_output" \
+  "$pipe_direct_error" "$pipe_stdout_error"
+
+# Read-only streams may be flushed before EOF when probing a file with
+# trailing data.
+pipe_trailing_input=cli-pipe-trailing-input.gif
+rm -f "$pipe_trailing_input"
+if LC_ALL=C ${MAGICK} -size 2x2 xc:white "GIF:$pipe_trailing_input" \
+    >/dev/null 2>&1 &&
+    dd if=/dev/zero bs=8192 count=1 >>"$pipe_trailing_input" 2>/dev/null; then
+  if LC_ALL=C ${IDENTIFY} -limit map 0 -ping "GIF:$pipe_trailing_input" \
+      >/dev/null 2>&1; then
+    echo "ok 22 - ping reads GIF with trailing data"
+  else
+    echo "not ok 22 - ping reads GIF with trailing data"
+  fi
+  if LC_ALL=C ${MAGICK} -limit map 0 "GIF:$pipe_trailing_input" null: \
+      >/dev/null 2>&1; then
+    echo "ok 23 - decode reads GIF with trailing data"
+  else
+    echo "not ok 23 - decode reads GIF with trailing data"
+  fi
+else
+  echo "not ok 22 - ping reads GIF with trailing data"
+  echo "not ok 23 - decode reads GIF with trailing data"
+fi
+rm -f "$pipe_trailing_input"
 :

@@ -635,7 +635,14 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
   blob_info=image->blob;
   if ((blob_info == (BlobInfo *) NULL) || (blob_info->type == UndefinedStream))
     return(MagickTrue);
-  (void) SyncBlob(image);
+  status=SyncBlob(image);
+  /* Some platforms report an error when a read-only stream is flushed. */
+  if ((status != 0) &&
+      ((blob_info->mode == WriteBlobMode) ||
+       (blob_info->mode == WriteBinaryBlobMode) ||
+       (blob_info->mode == AppendBlobMode) ||
+       (blob_info->mode == AppendBinaryBlobMode)))
+    ThrowBlobException(blob_info);
   status=blob_info->status;
   switch (blob_info->type)
   {
@@ -5613,8 +5620,16 @@ static int SyncBlob(const Image *image)
   switch (blob_info->type)
   {
     case UndefinedStream:
-    case StandardStream:
       break;
+    case StandardStream:
+    {
+      if ((blob_info->mode == WriteBlobMode) ||
+          (blob_info->mode == WriteBinaryBlobMode) ||
+          (blob_info->mode == AppendBlobMode) ||
+          (blob_info->mode == AppendBinaryBlobMode))
+        status=fflush(blob_info->file_info.file);
+      break;
+    }
     case FileStream:
     case PipeStream:
     {
