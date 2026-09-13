@@ -843,6 +843,7 @@ static AmigaIconChunkStatus ReadToolTypesNewIcons(Image **image,size_t *scene,
               sizeof(*im1_lines));
             if (new_lines == (char **) NULL)
               {
+                im1_lines=(char **) NULL;
                 tooltypes_resource_failure=MagickTrue;
                 break;
               }
@@ -862,6 +863,7 @@ static AmigaIconChunkStatus ReadToolTypesNewIcons(Image **image,size_t *scene,
               sizeof(*im2_lines));
             if (new_lines == (char **) NULL)
               {
+                im2_lines=(char **) NULL;
                 tooltypes_resource_failure=MagickTrue;
                 break;
               }

@@ -2482,7 +2482,7 @@ MagickExport char **StringToStrings(const char *text,size_t *count)
             textlist[i]+1),sizeof(**textlist));
           if (resized == (char *) NULL)
             {
-              textlist[i]=DestroyString(textlist[i]);
+              textlist[i]=(char *) NULL;
               for (j=0; j < i; j++)
                 textlist[j]=DestroyString(textlist[j]);
               textlist=(char **) RelinquishMagickMemory(textlist);
