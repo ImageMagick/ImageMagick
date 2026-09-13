@@ -357,6 +357,39 @@ MagickPrivate void DelegateComponentTerminus(void)
 %    o exception: return any errors here.
 %
 */
+
+static inline MagickBooleanType IsExecutableToken(const char *token)
+{
+  size_t
+    length = 0;
+
+  if ((token == (const char *) NULL) || (*token == '\0'))
+    return(MagickFalse);
+  if (*token == '-')
+    return(MagickFalse);
+  if (*token == '%')
+    return(MagickFalse);
+  if ((*token == '\'') || (*token == '"'))
+    return(MagickFalse);
+  length=strlen(token);
+  if (length >= 3)
+    {
+      if ((isalpha((int) *token) != 0) && (token[1] == ':') &&
+          ((token[2] == '\\') || (token[2] == '/')))
+        return(MagickTrue);
+    }
+  if (*token == '/')
+    return(MagickTrue);
+  if (length >= 2)
+    {
+      if ((*token == '.') && ((token[1] == '\\') || (token[1] == '/')))
+        return(MagickTrue);
+    }
+  if (isalnum((int) *token))
+    return(MagickTrue);
+  return(MagickFalse);
+}
+
 MagickExport int ExternalDelegateCommand(const MagickBooleanType asynchronous,
   const MagickBooleanType verbose,const char *command,char *message,
   ExceptionInfo *exception)
@@ -391,16 +424,24 @@ MagickExport int ExternalDelegateCommand(const MagickBooleanType asynchronous,
     }
   rights=ExecutePolicyRights;
   domain=DelegatePolicyDomain;
-  if (IsRightsAuthorized(domain,rights,arguments[1]) == MagickFalse)
-    {
-      errno=EPERM;
-      (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
-        "NotAuthorized","`%s'",arguments[1]);
-      for (i=0; i < (ssize_t) number_arguments; i++)
-        arguments[i]=DestroyString(arguments[i]);
-      arguments=(char **) RelinquishMagickMemory(arguments);
-      return(-1);
-    }
+  for (i=1; i < (ssize_t) number_arguments; i++)
+  {
+    if ((i != 1) && (IsExecutableToken(arguments[i]) == MagickFalse))
+      continue;
+    if (IsRightsAuthorized(domain,rights,arguments[i]) == MagickFalse)
+      {
+        ssize_t
+          j;
+
+        errno=EPERM;
+        (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
+          "NotAuthorized","`%s'",arguments[i]);
+        for (j=0; j < (ssize_t) number_arguments; j++)
+          arguments[j]=DestroyString(arguments[j]);
+        arguments=(char **) RelinquishMagickMemory(arguments);
+        return(-1);
+      }
+  }
   if (verbose != MagickFalse)
     {
       (void) FormatLocaleFile(stderr,"%s\n",command);
