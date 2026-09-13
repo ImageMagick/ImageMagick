@@ -297,7 +297,7 @@ static int ReadSingleWEBPImage(const ImageInfo *image_info,Image *image,
     }
   if (webp_status != VP8_STATUS_OK)
     return(webp_status);
-  if (IsWEBPImageLossless((unsigned char *) stream,length) != MagickFalse)
+  if (IsWEBPImageLossless((const unsigned char *) stream,length) != MagickFalse)
     image->quality=100;
   if (image_info->ping != MagickFalse)
     return(webp_status);
@@ -991,8 +991,8 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
     if (memory_info != (MemoryInfo *) NULL)
       (void) AppendValueToLinkedList(memory_info_list,memory_info);
     WebPPictureFree(&picture);
-    effective_delta=(size_t) (frame->delay*1000*MagickSafeReciprocal(
-      (double) frame->ticks_per_second));
+    effective_delta=(size_t) CastDoubleToSizeT((double) frame->delay*1000.0*
+      MagickSafeReciprocal((double) frame->ticks_per_second));
     if (effective_delta < 10)
       effective_delta=100; /* Consistent with gif2webp */
     frame_timestamp+=effective_delta;
