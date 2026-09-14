@@ -415,14 +415,21 @@ static MagickBooleanType ReadASELayerChunk(const Image *image,
         *new_layers;
 
       new_capacity=(layers->capacity == 0) ? 16 : (layers->capacity*2);
-      new_layers=(AsepriteLayer *) ResizeQuantumMemory(layers->layers,
-        new_capacity,sizeof(*new_layers));
+      new_layers=(AsepriteLayer *) AcquireQuantumMemory(new_capacity,
+        sizeof(*new_layers));
       if (new_layers == (AsepriteLayer *) NULL)
         {
           (void) ThrowMagickException(exception,GetMagickModule(),
             ResourceLimitError,"MemoryAllocationFailed","`%s'",
             image->filename);
           return(MagickFalse);
+        }
+      if (layers->layers != (AsepriteLayer *) NULL)
+        {
+          (void) memcpy(new_layers,layers->layers,
+            layers->count*sizeof(*new_layers));
+          layers->layers=(AsepriteLayer *) RelinquishMagickMemory(
+            layers->layers);
         }
       layers->layers=new_layers;
       layers->capacity=new_capacity;
