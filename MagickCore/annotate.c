@@ -1441,26 +1441,35 @@ static inline const char *FreetypeErrorMessage(
 #endif
 }
 
-static void *FreetypeAlloc(FT_Memory magick_unused(memory),long size)
+static void *FreetypeAlloc(FT_Memory magick_unused(memory),long extent)
 {
   magick_unreferenced(memory);
-  if (size < 0)
+  if (extent <= 0)
     return((void *) NULL);
-  if ((size_t) size > GetMaxMemoryRequest())
-    return((void *) NULL);
-  return(AcquireMagickMemory((size_t) size));
+  return(AcquireQuantumMemory((size_t) extent,1));
 }
 
-static void *FreetypeRealloc(FT_Memory magick_unused(memory),
-  long magick_unused(cur_size),long size,void *block)
+static void *FreetypeRealloc(FT_Memory magick_unused(memory),long length,
+  long extent,void *block)
 {
+  void
+    *cloned_block,
+    *new_block;
+
   magick_unreferenced(memory);
-  magick_unreferenced(cur_size);
-  if (size < 0)
+  if (extent <= 0)
+    return(RelinquishMagickMemory(block));
+  if (block == (void *) NULL)
+    return(AcquireQuantumMemory((size_t) extent,1));
+  cloned_block=AcquireQuantumMemory((size_t) length,1);
+  if (cloned_block == (void *) NULL)
     return((void *) NULL);
-  if ((size_t) size > GetMaxMemoryRequest())
+  (void) memcpy(cloned_block,block,(size_t) length);
+  new_block=ResizeQuantumMemory(cloned_block,(size_t) extent,1);
+  if (new_block == (void *) NULL)
     return((void *) NULL);
-  return(ResizeMagickMemory(block,(size_t) size));
+  block=RelinquishMagickMemory(block);
+  return(new_block);
 }
 
 static void FreetypeFree(FT_Memory magick_unused(memory),void *block)
@@ -1474,9 +1483,7 @@ static FT_Memory FreetypeAcquireMemoryManager(void)
   FT_Memory
     memory;
 
-  memory=(FT_Memory) AcquireMagickMemory(sizeof(*memory));
-  if (memory == (FT_Memory) NULL)
-    return(memory);
+  memory=(FT_Memory) AcquireCriticalMemory(sizeof(*memory));
   memset(memory,0,sizeof(*memory));
   memory->alloc=(&FreetypeAlloc);
   memory->realloc=(&FreetypeRealloc);
