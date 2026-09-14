@@ -148,8 +148,10 @@ typedef struct _AsepriteCelCacheEntry
 typedef struct _AsepriteCelCache
 {
   AsepriteCelCacheEntry *entries;
+  size_t *index;
   size_t count;
   size_t capacity;
+  size_t index_capacity;
 } AsepriteCelCache;
 
 /*
@@ -216,8 +218,120 @@ static void DestroyASECelCache(AsepriteCelCache *cel_cache)
       cel_cache->entries[i].pixels);
   cel_cache->entries=(AsepriteCelCacheEntry *) RelinquishMagickMemory(
     cel_cache->entries);
+  cel_cache->index=(size_t *) RelinquishMagickMemory(cel_cache->index);
   cel_cache->count=0;
   cel_cache->capacity=0;
+  cel_cache->index_capacity=0;
+}
+
+static size_t GetASECelCacheIndex(size_t frame_index,uint16_t layer_index,
+  size_t index_capacity)
+{
+  size_t
+    hash;
+
+  hash=frame_index;
+  hash^=hash >> 17;
+  hash^=(size_t) layer_index*0x9e3779b9U;
+  hash^=hash >> 11;
+  return(hash & (index_capacity-1));
+}
+
+static AsepriteCelCacheEntry *LookupASECel(const AsepriteCelCache *cel_cache,
+  size_t frame_index,uint16_t layer_index)
+{
+  size_t
+    slot;
+
+  if (cel_cache->index_capacity == 0)
+    return((AsepriteCelCacheEntry *) NULL);
+  slot=GetASECelCacheIndex(frame_index,layer_index,
+    cel_cache->index_capacity);
+  for (;;)
+  {
+    size_t
+      entry_index;
+
+    entry_index=cel_cache->index[slot];
+    if (entry_index == 0)
+      return((AsepriteCelCacheEntry *) NULL);
+    entry_index--;
+    if ((cel_cache->entries[entry_index].frame_index == frame_index) &&
+        (cel_cache->entries[entry_index].layer_index == layer_index))
+      return(cel_cache->entries+entry_index);
+    slot=(slot+1) & (cel_cache->index_capacity-1);
+  }
+}
+
+static MagickBooleanType IndexASECel(const Image *image,
+  AsepriteCelCache *cel_cache,size_t entry_index,ExceptionInfo *exception)
+{
+  size_t
+    index_capacity,
+    slot;
+
+  if ((cel_cache->index_capacity != 0) &&
+      (cel_cache->count*2 < cel_cache->index_capacity))
+    index_capacity=cel_cache->index_capacity;
+  else
+    {
+      size_t
+        *new_index;
+
+      index_capacity=(cel_cache->index_capacity == 0) ? 16 :
+        cel_cache->index_capacity*2;
+      new_index=(size_t *) AcquireQuantumMemory(index_capacity,
+        sizeof(*new_index));
+      if (new_index == (size_t *) NULL)
+        {
+          (void) ThrowMagickException(exception,GetMagickModule(),
+            ResourceLimitError,"MemoryAllocationFailed","`%s'",
+            image->filename);
+          return(MagickFalse);
+        }
+      (void) memset(new_index,0,index_capacity*sizeof(*new_index));
+      if (cel_cache->index != (size_t *) NULL)
+        {
+          size_t
+            i;
+
+          for (i=0; i < cel_cache->index_capacity; i++)
+            if (cel_cache->index[i] != 0)
+              {
+                size_t
+                  old_entry,
+                  old_slot;
+
+                old_entry=cel_cache->index[i]-1;
+                old_slot=GetASECelCacheIndex(
+                  cel_cache->entries[old_entry].frame_index,
+                  cel_cache->entries[old_entry].layer_index,index_capacity);
+                while (new_index[old_slot] != 0)
+                  old_slot=(old_slot+1) & (index_capacity-1);
+                new_index[old_slot]=cel_cache->index[i];
+              }
+          cel_cache->index=(size_t *) RelinquishMagickMemory(cel_cache->index);
+        }
+      cel_cache->index=new_index;
+      cel_cache->index_capacity=index_capacity;
+    }
+  slot=GetASECelCacheIndex(cel_cache->entries[entry_index].frame_index,
+    cel_cache->entries[entry_index].layer_index,index_capacity);
+  while (cel_cache->index[slot] != 0)
+    {
+      size_t
+        existing;
+
+      existing=cel_cache->index[slot]-1;
+      if ((cel_cache->entries[existing].frame_index ==
+          cel_cache->entries[entry_index].frame_index) &&
+          (cel_cache->entries[existing].layer_index ==
+          cel_cache->entries[entry_index].layer_index))
+        return(MagickTrue);
+      slot=(slot+1) & (index_capacity-1);
+    }
+  cel_cache->index[slot]=entry_index+1;
+  return(MagickTrue);
 }
 
 static void ReadASEPaletteChunk(Image *image,const uint8_t *chunk_data,
@@ -444,14 +558,21 @@ static MagickBooleanType CacheASECel(const Image *image,
         new_capacity;
 
       new_capacity=(cel_cache->capacity == 0) ? 16 : (cel_cache->capacity*2);
-      new_entries=(AsepriteCelCacheEntry *) ResizeQuantumMemory(
-        cel_cache->entries,new_capacity,sizeof(*new_entries));
+      new_entries=(AsepriteCelCacheEntry *) AcquireQuantumMemory(
+        new_capacity,sizeof(*new_entries));
       if (new_entries == (AsepriteCelCacheEntry *) NULL)
         {
           (void) ThrowMagickException(exception,GetMagickModule(),
             ResourceLimitError,"MemoryAllocationFailed","`%s'",
             image->filename);
           return(MagickFalse);
+        }
+      if (cel_cache->entries != (AsepriteCelCacheEntry *) NULL)
+        {
+          (void) memcpy(new_entries,cel_cache->entries,
+            cel_cache->count*sizeof(*new_entries));
+          cel_cache->entries=(AsepriteCelCacheEntry *) RelinquishMagickMemory(
+            cel_cache->entries);
         }
       cel_cache->entries=new_entries;
       cel_cache->capacity=new_capacity;
@@ -474,7 +595,7 @@ static MagickBooleanType CacheASECel(const Image *image,
   entry->cel_height=cel_height;
   entry->cel_opacity=cel_opacity;
   cel_cache->count++;
-  return(MagickTrue);
+  return(IndexASECel(image,cel_cache,cel_cache->count-1,exception));
 }
 
 static MagickBooleanType ReadASECelChunk(const Image *image,
@@ -482,6 +603,9 @@ static MagickBooleanType ReadASECelChunk(const Image *image,
   const AsepriteLayerList *layers,size_t frame_index,
   AsepriteCelCache *cel_cache,ExceptionInfo *exception)
 {
+  AsepriteCelCacheEntry
+    *cache_entry;
+
   double
     combined_opacity;
 
@@ -494,8 +618,7 @@ static MagickBooleanType ReadASECelChunk(const Image *image,
 
   size_t
     bytes_per_pixel,
-    cel_pixels_size,
-    i;
+    cel_pixels_size;
 
   uint16_t
     cel_height,
@@ -549,23 +672,15 @@ static MagickBooleanType ReadASECelChunk(const Image *image,
       if (visible == MagickFalse)
         return(MagickTrue);
       link_frame=(size_t) (chunk_data[16] | (chunk_data[17] << 8));
-      for (i=0; i < cel_cache->count; i++)
-      {
-        AsepriteCelCacheEntry
-          *entry;
-
-        entry=cel_cache->entries+i;
-        if ((entry->frame_index == link_frame) &&
-            (entry->layer_index == layer_index))
-          {
-            combined_opacity=((double) layer_opacity/255.0)*
-              ((double) entry->cel_opacity/255.0);
-            CompositeASECel(entry->pixels,entry->cel_width,
-              entry->cel_height,entry->cel_x,entry->cel_y,combined_opacity,
-              canvas);
-            break;
-          }
-      }
+      cache_entry=LookupASECel(cel_cache,link_frame,layer_index);
+      if (cache_entry != (AsepriteCelCacheEntry *) NULL)
+        {
+          combined_opacity=((double) layer_opacity/255.0)*
+            ((double) cache_entry->cel_opacity/255.0);
+          CompositeASECel(cache_entry->pixels,cache_entry->cel_width,
+            cache_entry->cel_height,cache_entry->cel_x,cache_entry->cel_y,
+            combined_opacity,canvas);
+        }
       return(MagickTrue);
     }
   if (cel_type != 0 && cel_type != 2)
@@ -578,6 +693,14 @@ static MagickBooleanType ReadASECelChunk(const Image *image,
     }
   cel_width=(uint16_t) (chunk_data[16] | (chunk_data[17] << 8));
   cel_height=(uint16_t) (chunk_data[18] | (chunk_data[19] << 8));
+  if (((size_t) cel_width > canvas->width) ||
+      ((size_t) cel_height > canvas->height))
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        CorruptImageError,"ImageWidthsOrHeightsDiffer","`%s'",
+        image->filename);
+      return(MagickFalse);
+    }
   bytes_per_pixel=canvas->color_depth/8;
   cel_pixels_size=(size_t) cel_width*cel_height*bytes_per_pixel;
   if (cel_pixels_size == 0)
@@ -717,8 +840,10 @@ static Image *ReadASEImage(const ImageInfo *image_info,ExceptionInfo *exception)
   layers.count=0;
   layers.capacity=0;
   cel_cache.entries=(AsepriteCelCacheEntry *) NULL;
+  cel_cache.index=(size_t *) NULL;
   cel_cache.count=0;
   cel_cache.capacity=0;
+  cel_cache.index_capacity=0;
   image=AcquireImage(image_info,exception);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
