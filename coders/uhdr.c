@@ -2077,14 +2077,14 @@ next_image:
         if (status != MagickFalse && hdrImgDescriptor.planes[UHDR_PLANE_Y])
         {
           CHECK_IF_ERR(uhdr_enc_set_raw_image(handle, &hdrImgDescriptor, UHDR_HDR_IMG))
-          if (hdr_profile.data_sz != 0)
+          if ((status != MagickFalse) && (hdr_profile.data_sz != 0))
             CHECK_IF_ERR(uhdr_enc_set_exif_data(handle, &hdr_profile))
         }
 
         if (status != MagickFalse && sdrImgDescriptor.planes[UHDR_PLANE_Y])
         {
           CHECK_IF_ERR(uhdr_enc_set_raw_image(handle, &sdrImgDescriptor, UHDR_SDR_IMG))
-          if (sdr_profile.data_sz != 0)
+          if ((status != MagickFalse) && (sdr_profile.data_sz != 0))
             CHECK_IF_ERR(uhdr_enc_set_exif_data(handle, &sdr_profile))
         }
       }
