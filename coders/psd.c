@@ -765,7 +765,7 @@ static MagickBooleanType NegateCMYK(Image *image,ExceptionInfo *exception)
 }
 
 static StringInfo *ParseImageResourceBlocks(PSDInfo *psd_info,Image *image,
-  const unsigned char *blocks,size_t length)
+  const unsigned char *blocks,size_t length,ExceptionInfo *exception)
 {
   const unsigned char
     *p;
@@ -805,8 +805,14 @@ static StringInfo *ParseImageResourceBlocks(PSDInfo *psd_info,Image *image,
       break;
     p=PushLongPixel(MSBEndian,p,&count);
     offset=(ssize_t) count;
-    if (((p+offset) < blocks) || ((p+offset) > (blocks+length)))
-      break;
+    if ((offset <= 0) || ((p+offset) > (blocks+length)) ||
+        (((size_t) (p-blocks)+(size_t) offset) > (size_t) length))
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+          "Invalid PSD resource block offset","`%s'",image->filename);
+        profile=DestroyStringInfo(profile);
+        break;
+      }
     switch (id)
     {
       case 0x03ed:
@@ -2611,7 +2617,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           blocks=(unsigned char *) RelinquishMagickMemory(blocks);
           ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         }
-      profile=ParseImageResourceBlocks(&psd_info,image,blocks,(size_t) length);
+      profile=ParseImageResourceBlocks(&psd_info,image,blocks,(size_t) length,exception);
       blocks=(unsigned char *) RelinquishMagickMemory(blocks);
     }
   /*
