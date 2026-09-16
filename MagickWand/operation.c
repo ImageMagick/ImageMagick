@@ -4592,17 +4592,27 @@ static MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
         }
       if (LocaleCompare("process",option+1) == 0)
         {
-          /* FUTURE: better parsing using ScriptToken() from string ??? */
+#define DestroyArguments(arguments,argc) \
+          do \
+          { \
+            ssize_t j = 0; \
+            for ( ; j < (ssize_t) (number_arguments); j++) \
+              (arguments)[j]=DestroyString((arguments)[j]); \
+            (arguments)=(char **) RelinquishMagickMemory(arguments); \
+          } while (0)
+
           char
             **arguments;
 
           int
-            j,
             number_arguments;
 
           arguments=StringToArgv(arg1,&number_arguments);
           if ((arguments == (char **) NULL) || (number_arguments == 1))
-            break;
+            {
+              DestroyArguments(arguments,number_arguments);
+              break;
+            }
           if (strchr(arguments[1],'=') != (char *) NULL)
             {
               char
@@ -4633,7 +4643,10 @@ static MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
                 token=(char *) AcquireQuantumMemory(length+MagickPathExtent,
                   sizeof(*token));
               if (token == (char *) NULL)
-                break;
+                {
+                  DestroyArguments(arguments,number_arguments);
+                  break;
+                }
               next=0;
               p=arg1;
               token_info=AcquireTokenInfo();
@@ -4650,14 +4663,13 @@ static MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
                     _exception);
                 }
               token=DestroyString(token);
+              DestroyArguments(arguments,number_arguments);
               break;
             }
           (void) SubstituteString(&arguments[1],"-","");
           (void) InvokeDynamicImageFilter(arguments[1],&_images,
             number_arguments-2,(const char **) arguments+2,_exception);
-          for (j=0; j < number_arguments; j++)
-            arguments[j]=DestroyString(arguments[j]);
-          arguments=(char **) RelinquishMagickMemory(arguments);
+          DestroyArguments(arguments,number_arguments);
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
