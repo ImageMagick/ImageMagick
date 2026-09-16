@@ -8825,17 +8825,28 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
           }
         if (LocaleCompare("process",option+1) == 0)
           {
+#define DestroyArguments(arguments,number_arguments) \
+          do \
+          { \
+            ssize_t j = 0; \
+            for ( ; j < (ssize_t) (number_arguments); j++) \
+              (arguments)[j]=DestroyString((arguments)[j]); \
+            (arguments)=(char **) RelinquishMagickMemory(arguments); \
+          } while (0)
+
             char
               **arguments;
 
             int
-              j,
               number_arguments;
 
             (void) SyncImagesSettings(mogrify_info,*images,exception);
             arguments=StringToArgv(argv[i+1],&number_arguments);
             if ((arguments == (char **) NULL) || (number_arguments == 1))
-              break;
+              {
+                DestroyArguments(arguments,number_arguments);
+                break;
+              }
             if ((argc > 1) && (strchr(arguments[1],'=') != (char *) NULL))
               {
                 char
@@ -8865,7 +8876,10 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                   token=(char *) AcquireQuantumMemory(length+MagickPathExtent,
                     sizeof(*token));
                 if (token == (char *) NULL)
-                  break;
+                  {
+                    DestroyArguments(arguments,number_arguments);
+                    break;
+                  }
                 next=0;
                 argument=argv[i+1];
                 token_info=AcquireTokenInfo();
@@ -8882,14 +8896,13 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                       exception);
                   }
                 token=DestroyString(token);
+                DestroyArguments(arguments,number_arguments);
                 break;
               }
             (void) SubstituteString(&arguments[1],"-","");
             (void) InvokeDynamicImageFilter(arguments[1],&(*images),
               number_arguments-2,(const char **) arguments+2,exception);
-            for (j=0; j < number_arguments; j++)
-              arguments[j]=DestroyString(arguments[j]);
-            arguments=(char **) RelinquishMagickMemory(arguments);
+            DestroyArguments(arguments,number_arguments);
             break;
           }
         break;

@@ -4592,7 +4592,7 @@ static MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
         }
       if (LocaleCompare("process",option+1) == 0)
         {
-#define DestroyArguments(arguments,argc) \
+#define DestroyArguments(arguments,number_arguments) \
           do \
           { \
             ssize_t j = 0; \
