@@ -1373,6 +1373,11 @@ static void CLISettingOptionInfo(MagickCLI *cli_wand,
           _draw_info->stretch=(StretchType) parse;
           break;
         }
+      if (LocaleCompare("strict",option+1) == 0)
+        {
+          (void) SetWarningsAsErrors(ArgBoolean);
+          break;
+        }
       if (LocaleCompare("stroke",option+1) == 0)
         {
           /* set stroke color OR stroke-pattern
