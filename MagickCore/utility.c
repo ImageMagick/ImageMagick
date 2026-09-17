@@ -151,34 +151,6 @@ MagickExport MagickBooleanType AcquireUniqueFilename(char *path)
 %
 */
 
-static ssize_t GetShredPasses()
-{
-  char
-    *property;
-
-  static ssize_t
-    passes = -1;
-
-  if (passes == -1)
-    {
-      property=GetEnvironmentValue("MAGICK_SHRED_PASSES");
-      if (property != (char *) NULL)
-        {
-          passes=(ssize_t) StringToInteger(property);
-          property=DestroyString(property);
-        }
-      property=GetPolicyValue("system:shred");
-      if (property != (char *) NULL)
-        {
-          passes=(ssize_t) StringToInteger(property);
-          property=DestroyString(property);
-        }
-      if (passes == -1)
-        passes=0;
-    }
-  return(passes);
-}
-
 MagickExport MagickBooleanType AcquireUniqueSymbolicLink(const char *source,
   char *destination)
 {
@@ -196,6 +168,9 @@ MagickExport MagickBooleanType AcquireUniqueSymbolicLink(const char *source,
   ssize_t
     count;
 
+  static ssize_t
+    passes = -1;
+
   struct stat
     attributes;
 
@@ -206,15 +181,13 @@ MagickExport MagickBooleanType AcquireUniqueSymbolicLink(const char *source,
   assert(destination != (char *) NULL);
 #if defined(MAGICKCORE_HAVE_SYMLINK)
   {
-    ssize_t
-      passes;
-
     /*
       Does policy permit symbolic links?
     */
     status=IsRightsAuthorizedByName(SystemPolicyDomain,"symlink",(PolicyRights)
       (ReadPolicyRights | WritePolicyRights),"follow");
-    passes=GetShredPasses();
+    if (passes == -1)
+      passes=GetShredPasses();
     if ((passes == 0) && (status != MagickFalse))
       {
         (void) AcquireUniqueFilename(destination);
@@ -2058,8 +2031,8 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
   ssize_t
     i;
 
-  ssize_t
-    passes;
+  static ssize_t
+    passes = -1;
 
   StringInfo
     *key;
@@ -2069,7 +2042,8 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
 
   if ((path == (const char *) NULL) || (*path == '\0'))
     return(MagickFalse);
-  passes=GetShredPasses();
+  if (passes == -1)
+    passes=GetShredPasses();
   if (passes == 0)
     return(MagickTrue);
   /*
