@@ -151,6 +151,34 @@ MagickExport MagickBooleanType AcquireUniqueFilename(char *path)
 %
 */
 
+static ssize_t GetShredPasses()
+{
+  char
+    *property;
+
+  static ssize_t
+    passes = -1;
+
+  if (passes == -1)
+    {
+      property=GetEnvironmentValue("MAGICK_SHRED_PASSES");
+      if (property != (char *) NULL)
+        {
+          passes=(ssize_t) StringToInteger(property);
+          property=DestroyString(property);
+        }
+      property=GetPolicyValue("system:shred");
+      if (property != (char *) NULL)
+        {
+          passes=(ssize_t) StringToInteger(property);
+          property=DestroyString(property);
+        }
+      if (passes == -1)
+        passes=0;
+    }
+  return(passes);
+}
+
 MagickExport MagickBooleanType AcquireUniqueSymbolicLink(const char *source,
   char *destination)
 {
@@ -178,20 +206,16 @@ MagickExport MagickBooleanType AcquireUniqueSymbolicLink(const char *source,
   assert(destination != (char *) NULL);
 #if defined(MAGICKCORE_HAVE_SYMLINK)
   {
-    char
-      *passes;
+    ssize_t
+      passes;
 
     /*
       Does policy permit symbolic links?
     */
     status=IsRightsAuthorizedByName(SystemPolicyDomain,"symlink",(PolicyRights)
       (ReadPolicyRights | WritePolicyRights),"follow");
-    passes=GetPolicyValue("system:shred");
-    if (passes == (char *) NULL)
-      passes=GetEnvironmentValue("MAGICK_SHRED_PASSES");
-    if ((passes != (char *) NULL) || (status == MagickFalse))
-      passes=DestroyString(passes);
-    else
+    passes=GetShredPasses();
+    if ((passes == 0) && (status != MagickFalse))
       {
         (void) AcquireUniqueFilename(destination);
         (void) RelinquishUniqueFileResource(destination);
@@ -2034,8 +2058,8 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
   ssize_t
     i;
 
-  static ssize_t
-    passes = -1;
+  ssize_t
+    passes;
 
   StringInfo
     *key;
@@ -2045,25 +2069,7 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
 
   if ((path == (const char *) NULL) || (*path == '\0'))
     return(MagickFalse);
-  if (passes == -1)
-    {
-      char
-        *property;
-
-      passes=0;
-      property=GetEnvironmentValue("MAGICK_SHRED_PASSES");
-      if (property != (char *) NULL)
-        {
-          passes=(ssize_t) StringToInteger(property);
-          property=DestroyString(property);
-        }
-      property=GetPolicyValue("system:shred");
-      if (property != (char *) NULL)
-        {
-          passes=(ssize_t) StringToInteger(property);
-          property=DestroyString(property);
-        }
-    }
+  passes=GetShredPasses();
   if (passes == 0)
     return(MagickTrue);
   /*
