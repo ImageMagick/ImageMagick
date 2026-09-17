@@ -1508,8 +1508,10 @@ static FT_Error FreetypeInit(FT_Memory memory,FT_Library *alibrary)
   if (ft_status != 0)
     RelinquishMagickMemory(memory);
   else
-    FT_Add_Default_Modules(*alibrary);
-  FT_Set_Default_Properties(*alibrary);
+    {
+      FT_Add_Default_Modules(*alibrary);
+      FT_Set_Default_Properties(*alibrary);
+    }
   return(ft_status);
 }
 
