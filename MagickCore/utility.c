@@ -187,6 +187,8 @@ MagickExport MagickBooleanType AcquireUniqueSymbolicLink(const char *source,
     status=IsRightsAuthorizedByName(SystemPolicyDomain,"symlink",(PolicyRights)
       (ReadPolicyRights | WritePolicyRights),"follow");
     passes=GetPolicyValue("system:shred");
+    if (passes == (char *) NULL)
+      passes=GetEnvironmentValue("MAGICK_SHRED_PASSES");
     if ((passes != (char *) NULL) || (status == MagickFalse))
       passes=DestroyString(passes);
     else
