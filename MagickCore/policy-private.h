@@ -22,7 +22,9 @@
 extern "C" {
 #endif
 
+#include "MagickCore/quantum-private.h"
 #include "MagickCore/resource-private.h"
+#include "MagickCore/string-private.h"
 #include "MagickCore/utility-private.h"
 
 #if MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
@@ -44,6 +46,36 @@ extern MagickPrivate MagickBooleanType
 
 extern MagickPrivate void
   PolicyComponentTerminus(void);
+
+static inline ssize_t GetShredPasses(void)
+{
+  char
+    *option;
+
+  ssize_t
+    policy_passes = 0,
+    env_passes = 0,
+    passes;
+
+  option=GetPolicyValue("system:shred");
+  if (option != (char *) NULL)
+    {
+      policy_passes=(ssize_t) StringToLong(option);
+      option=DestroyString(option);
+      if (policy_passes < 0)
+        return(0);
+    }
+  option=GetEnvironmentValue("MAGICK_SHRED_PASSES");
+  if (option != (char *) NULL)
+    {
+      env_passes=(ssize_t) StringToLong(option);
+      option=DestroyString(option);
+      if (env_passes < 0)
+        return(0);
+    }
+  passes=MagickMax(policy_passes,env_passes);
+  return(passes);
+}
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
