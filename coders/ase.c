@@ -346,12 +346,12 @@ static void ReadASEPaletteChunk(Image *image,const uint8_t *chunk_data,
 
   if (payload_size < 20)
     return;
-  new_size=(size_t) (chunk_data[0] | (chunk_data[1] << 8) |
-    (chunk_data[2] << 16) | (chunk_data[3] << 24));
-  first_index=(size_t) (chunk_data[4] | (chunk_data[5] << 8) |
-    (chunk_data[6] << 16) | (chunk_data[7] << 24));
-  last_index=(size_t) (chunk_data[8] | (chunk_data[9] << 8) |
-    (chunk_data[10] << 16) | (chunk_data[11] << 24));
+  new_size=(size_t) chunk_data[0] | ((size_t) chunk_data[1] << 8) |
+    ((size_t) chunk_data[2] << 16) | ((size_t) chunk_data[3] << 24);
+  first_index=(size_t) chunk_data[4] | ((size_t) chunk_data[5] << 8) |
+    ((size_t) chunk_data[6] << 16) | ((size_t) chunk_data[7] << 24);
+  last_index=(size_t) chunk_data[8] | ((size_t) chunk_data[9] << 8) |
+    ((size_t) chunk_data[10] << 16) | ((size_t) chunk_data[11] << 24);
   if ((last_index < 256) && (last_index+1 > new_size))
     new_size=last_index+1;
   if ((new_size > 0) && (new_size <= 256))
