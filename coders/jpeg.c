@@ -1424,17 +1424,25 @@ static void JPEGSetImageSamplingFactor(const struct jpeg_decompress_struct *jpeg
     }
     default:
     {
+      size_t
+        length;
+
+      ssize_t
+        i;
+
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Colorspace: %d",
         jpeg_info->out_color_space);
-      (void) FormatLocaleString(sampling_factor,MagickPathExtent,
-        "%dx%d,%dx%d,%dx%d,%dx%d",jpeg_info->comp_info[0].h_samp_factor,
-        jpeg_info->comp_info[0].v_samp_factor,
-        jpeg_info->comp_info[1].h_samp_factor,
-        jpeg_info->comp_info[1].v_samp_factor,
-        jpeg_info->comp_info[2].h_samp_factor,
-        jpeg_info->comp_info[2].v_samp_factor,
-        jpeg_info->comp_info[3].h_samp_factor,
-        jpeg_info->comp_info[3].v_samp_factor);
+      (void) FormatLocaleString(sampling_factor,MagickPathExtent,"%dx%d",
+        jpeg_info->comp_info[0].h_samp_factor,
+        jpeg_info->comp_info[0].v_samp_factor);
+      length=strlen(sampling_factor);
+      for (i=1; (i < (ssize_t) jpeg_info->num_components) && (length < MagickPathExtent); i++)
+      {
+        (void) FormatLocaleString(sampling_factor+length,MagickPathExtent-
+          length,",%dx%d",jpeg_info->comp_info[i].h_samp_factor,
+          jpeg_info->comp_info[i].v_samp_factor);
+         length+=strlen(sampling_factor+length);
+      }
       break;
     }
   }
