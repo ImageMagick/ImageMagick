@@ -1118,101 +1118,111 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
           case 0xff:
           {
+            char
+              name[MagickPathExtent];
+
             MagickBooleanType
-              loop;
+              magick = MagickFalse;
+
+            size_t
+              block_length,
+              info_length,
+              reserved_length;
+
+            unsigned char
+              *info;
 
             /*
-              Read Netscape Loop extension.
+              Store GIF application extension as a generic profile.
             */
-            loop=MagickFalse;
-            if (ReadBlobBlock(image,buffer) != 0)
-              loop=LocaleNCompare((char *) buffer,"NETSCAPE2.0",11) == 0 ?
-                MagickTrue : MagickFalse;
-            if (loop != MagickFalse)
-              while (ReadBlobBlock(image,buffer) != 0)
+            if (LocaleNCompare((char *) buffer,"ImageMagick",11) == 0)
+              magick=MagickTrue;
+            else if (LocaleNCompare((char *) buffer,"ICCRGBG1012",11) == 0)
+              (void) CopyMagickString(name,"icc",sizeof(name));
+            else if (LocaleNCompare((char *) buffer,"MGK8BIM0000",11) == 0)
+              (void) CopyMagickString(name,"8bim",sizeof(name));
+            else if (LocaleNCompare((char *) buffer,"MGKIPTC0000",11) == 0)
+              (void) CopyMagickString(name,"iptc",sizeof(name));
+            else
+              (void) FormatLocaleString(name,sizeof(name),"gif:%.11s",
+                buffer);
+            reserved_length=256;
+            info=(unsigned char *) AcquireQuantumMemory(reserved_length,
+              sizeof(*info));
+            if (info == (unsigned char *) NULL)
+              ThrowGIFException(ResourceLimitError,"MemoryAllocationFailed");
+            info[0]='\0';
+            info_length=0;
+            for ( ; ; )
+            {
+              unsigned char
+                *new_info;
+
+              /*
+                Read into a fixed-size scratch buffer first. This prevents
+                ReadBlobBlock() from writing beyond the current allocation.
+              */
+              count=ReadBlobBlock(image,buffer);
+              if (count <= 0)
+                break;
+              block_length=(size_t) count;
+              if (block_length > (SIZE_MAX-info_length-1))
+                {
+                  info=(unsigned char *)
+                    RelinquishMagickMemory(info);
+                  ThrowGIFException(ResourceLimitError,
+                    "MemoryAllocationFailed");
+                }
+              if ((info_length+block_length+1) > reserved_length)
+                {
+                  size_t
+                    new_length;
+                  new_length=info_length+block_length+1;
+                  if (new_length <= (SIZE_MAX-4095))
+                    new_length=(new_length+4095) & ~((size_t) 4095);
+                  new_info=(unsigned char *) ResizeQuantumMemory(info,
+                    new_length,sizeof(*info));
+                  if (new_info == (unsigned char *) NULL)
+                    {
+                      info=(unsigned char *)
+                        RelinquishMagickMemory(info);
+                      ThrowGIFException(ResourceLimitError,
+                        "MemoryAllocationFailed");
+                    }
+                  info=new_info;
+                  reserved_length=new_length;
+                }
+              (void) memcpy(info+info_length,buffer,block_length);
+              info_length+=block_length;
+              info[info_length]='\0';
+            }
+            if (magick != MagickFalse)
               {
-                meta_image->iterations=((size_t) buffer[2] << 8) | buffer[1];
-                if (meta_image->iterations != 0)
-                  meta_image->iterations++;
+                /*
+                  ImageMagick writes this extension as "gamma=<value>".
+                  Require that prefix and a nonempty, bounded value.
+                */
+                if ((info_length > 6) &&
+                    (LocaleNCompare((char *) info,"gamma=",6) == 0))
+                  meta_image->gamma=StringToDouble((char *) info+6,
+                    (char **) NULL);
               }
             else
               {
-                char
-                  name[MagickPathExtent];
-
-                int
-                  block_length,
-                  info_length,
-                  reserved_length;
-
-                MagickBooleanType
-                  magick = MagickFalse;
-
-                unsigned char
-                  *info;
-
-                /*
-                  Store GIF application extension as a generic profile.
-                */
-                if (LocaleNCompare((char *) buffer,"ImageMagick",11) == 0)
-                  magick=MagickTrue;
-                else if (LocaleNCompare((char *) buffer,"ICCRGBG1012",11) == 0)
-                  (void) CopyMagickString(name,"icc",sizeof(name));
-                else if (LocaleNCompare((char *) buffer,"MGK8BIM0000",11) == 0)
-                  (void) CopyMagickString(name,"8bim",sizeof(name));
-                else if (LocaleNCompare((char *) buffer,"MGKIPTC0000",11) == 0)
-                  (void) CopyMagickString(name,"iptc",sizeof(name));
-                else
-                  (void) FormatLocaleString(name,sizeof(name),"gif:%.11s",
-                    buffer);
-                reserved_length=255;
-                info=(unsigned char *) AcquireQuantumMemory((size_t)
-                  reserved_length,sizeof(*info));
-                if (info == (unsigned char *) NULL)
-                  ThrowGIFException(ResourceLimitError,
-                    "MemoryAllocationFailed");
-                (void) memset(info,0,(size_t) reserved_length*sizeof(*info));
-                for (info_length=0; ; )
-                {
-                  block_length=(int) ReadBlobBlock(image,info+info_length);
-                  if (block_length == 0)
-                    break;
-                  info_length+=block_length;
-                  if (info_length > (reserved_length-255))
-                    {
-                      reserved_length+=4096;
-                      info=(unsigned char *) ResizeQuantumMemory(info,(size_t)
-                        reserved_length,sizeof(*info));
-                      if (info == (unsigned char *) NULL)
-                        {
-                          info=(unsigned char *) RelinquishMagickMemory(info);
-                          ThrowGIFException(ResourceLimitError,
-                            "MemoryAllocationFailed");
-                        }
-                    }
-                }
-                if (magick != MagickFalse)
-                  meta_image->gamma=StringToDouble((char *) info+6,
-                      (char **) NULL);
-                else
+                StringInfo
+                  *profile;
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "      profile name=%s",name);
+                profile=BlobToProfileStringInfo(name,info,info_length,
+                  exception);
+                if (profile != (StringInfo *) NULL)
                   {
-                    StringInfo
-                      *profile;
-
-                    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                      "      profile name=%s",name);
-                    profile=BlobToProfileStringInfo(name,info,(size_t) info_length,
-                      exception);
-                    if (profile != (StringInfo *) NULL)
-                      {
-                        if (profiles == (LinkedListInfo *) NULL)
-                          profiles=NewLinkedList(0);
-                        (void) AppendValueToLinkedList(profiles,profile);
-                      }
+                    if (profiles == (LinkedListInfo *) NULL)
+                      profiles=NewLinkedList(0);
+                    (void) AppendValueToLinkedList(profiles,profile);
                   }
-                info=(unsigned char *) RelinquishMagickMemory(info);
               }
-            break;
+            info=(unsigned char *) RelinquishMagickMemory(info);
           }
           default:
           {
