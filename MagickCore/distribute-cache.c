@@ -240,7 +240,7 @@ static inline MagickOffsetType dpc_receive_deadline(SOCKET_TYPE file,
   MagickSizeType length,unsigned char *message,double deadline)
 {
   /*
-    Enforce an absolute deadline for authentication reads.
+    Enforce an absolute deadline for authentication and command reads.
   */
   MagickOffsetType offset = 0;
   while (offset < (MagickOffsetType) length)
@@ -1230,10 +1230,12 @@ static HANDLER_RETURN_TYPE DistributePixelCacheConnectionHandler(void *socket_ar
     /*
       Each command must echo the authenticated session key.
     */
-    count=dpc_receive(client_socket,1,(unsigned char *) &command);
+    count=dpc_receive_deadline(client_socket,1,(unsigned char *) &command,
+      (double) time((time_t *) NULL)+5.0);
     if (count <= 0)
       break;
-    count=dpc_receive(client_socket,sizeof(key),(unsigned char *) &key);
+    count=dpc_receive_deadline(client_socket,sizeof(key),(unsigned char *) &key,
+      (double) time((time_t *) NULL)+5.0);
     if ((count != (MagickOffsetType) sizeof(key)) || (key != session_key))
       break;
     switch (command)
