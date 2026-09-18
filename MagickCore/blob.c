@@ -1318,7 +1318,8 @@ MagickExport int EOFBlob(const Image *image)
 
       status=0;
       (void) BZ2_bzerror(blob_info->file_info.bzfile,&status);
-      blob_info->eof=status == BZ_UNEXPECTED_EOF ? MagickTrue : MagickFalse;
+      if (status == BZ_UNEXPECTED_EOF)
+        blob_info->eof=MagickTrue;
 #endif
       break;
     }
@@ -4049,6 +4050,8 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,void *data)
       (void) BZ2_bzerror(blob_info->file_info.bzfile,&status);
       if ((count != (ssize_t) length) && (status != BZ_OK))
         ThrowBlobException(blob_info);
+      if ((count != (ssize_t) length) && (status == BZ_OK))
+        blob_info->eof=MagickTrue;
 #endif
       break;
     }
