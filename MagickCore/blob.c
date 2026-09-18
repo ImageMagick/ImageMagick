@@ -1193,6 +1193,8 @@ MagickExport MagickBooleanType DiscardBlobBytes(Image *image,
     (void) ReadBlobStream(image,quantum,buffer,&count);
     if (count <= 0)
       {
+        if (count == 0)
+          break; /* EOF is terminal, errno may hold a stale EINTR */
         count=0;
         if (errno != EINTR)
           break;
