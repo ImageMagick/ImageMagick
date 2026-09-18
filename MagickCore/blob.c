@@ -1113,6 +1113,23 @@ MagickExport void *DetachBlob(BlobInfo *blob_info)
 %    o image: the image.
 %
 */
+
+static inline void ResetDisassociatedBlobStorage(BlobInfo *blob_info)
+{
+  assert(blob_info != (BlobInfo *) NULL);
+  assert(blob_info->signature == MagickCoreSignature);
+  if (blob_info->mapped != MagickFalse)
+    {
+      RelinquishMagickResource(MapResource,blob_info->length);
+      blob_info->mapped=MagickFalse;
+    }
+  blob_info->data=(unsigned char *) NULL;
+  blob_info->length=0;
+  blob_info->offset=0;
+  blob_info->mode=UndefinedBlobMode;
+  blob_info->type=UndefinedStream;
+}
+
 MagickExport void DisassociateBlob(Image *image)
 {
   BlobInfo
@@ -1138,6 +1155,7 @@ MagickExport void DisassociateBlob(Image *image)
   if (clone == MagickFalse)
     return;
   clone_info=CloneBlobInfo(blob_info);
+  ResetDisassociatedBlobStorage(clone_info);
   DestroyBlob(image);
   image->blob=clone_info;
 }
@@ -3414,7 +3432,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
 
       *fileMode=(*type);
       fileMode[1]='\0';
-      blob_info->file_info.file=fdopen(StringToLong(filename+3),fileMode);
+      blob_info->file_info.file=fdopen(StringToInteger(filename+3),fileMode);
       if (blob_info->file_info.file == (FILE *) NULL)
         {
           ThrowFileException(exception,BlobError,"UnableToOpenBlob",filename);
