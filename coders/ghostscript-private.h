@@ -276,6 +276,8 @@ static inline void ReadGhostScriptXMPProfile(MagickByteBuffer *buffer,
       }
   }
   SetStringInfoLength(*profile,(size_t) count);
+  /* ReadPDFImage() scans the profile as a C string. */
+  GetStringInfoDatum(*profile)[count]='\0';
 }
 
 static inline char *EscapeParenthesis(const char *source,
