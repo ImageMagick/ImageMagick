@@ -981,6 +981,7 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *cache,const char *xml,
                       }
             }
         }
+        continue;
       }
     if (LocaleNCompare(keyword,"<!--",4) == 0)
       {

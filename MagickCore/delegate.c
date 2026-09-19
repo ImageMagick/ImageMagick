@@ -2180,6 +2180,7 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *cache,
                       }
             }
         }
+        continue;
       }
     if (LocaleNCompare(keyword,"<!--",4) == 0)
       {

@@ -1179,6 +1179,7 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *cache,
                       }
             }
         }
+        continue;
       }
     if (LocaleNCompare(keyword,"<!--",4) == 0)
       {

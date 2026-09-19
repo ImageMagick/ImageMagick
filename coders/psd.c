@@ -2029,6 +2029,13 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
     layer_info[i].page.x=left;
     layer_info[i].page.width=(size_t) (right-left);
     layer_info[i].page.height=(size_t) (bottom-top);
+    if ((layer_info[i].page.width > 300000) ||
+        (layer_info[i].page.height > 300000))
+      {
+        layer_info=DestroyLayerInfo(layer_info,number_layers);
+        ThrowBinaryException(ImageError,"WidthOrHeightExceedsLimit",
+          image->filename);
+      }
     layer_info[i].channels=ReadBlobShort(image);
     if (layer_info[i].channels > (unsigned short) MaxPSDChannels)
       {
@@ -2463,10 +2470,10 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   psd_info.columns=ReadBlobMSBLong(image);
   if ((psd_info.version == 1) && ((psd_info.rows > 30000) ||
       (psd_info.columns > 30000)))
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    ThrowReaderException(ImageError,"WidthOrHeightExceedsLimit");
   if ((psd_info.version == 2) && ((psd_info.rows > 300000) ||
       (psd_info.columns > 300000)))
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    ThrowReaderException(ImageError,"WidthOrHeightExceedsLimit");
   psd_info.depth=ReadBlobMSBShort(image);
   if ((psd_info.depth != 1) && (psd_info.depth != 8) &&
       (psd_info.depth != 16) && (psd_info.depth != 32))
