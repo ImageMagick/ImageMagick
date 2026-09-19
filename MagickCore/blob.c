@@ -1541,19 +1541,13 @@ MagickExport void *FileToBlob(const char *filename,const size_t extent,
       }
       if (LocaleCompare(filename,"-") != 0)
         file=close_utf8(file);
-      if (count < 0)
-        {
-          blob=(unsigned char *) RelinquishMagickMemory(blob);
-          ThrowFileException(exception,BlobError,"UnableToReadBlob",filename);
-          return(NULL);
-        }
       if (blob == (unsigned char *) NULL)
         {
           (void) ThrowMagickException(exception,GetMagickModule(),
             ResourceLimitError,"MemoryAllocationFailed","`%s'",filename);
           return(NULL);
         }
-      if (file == -1)
+      if ((count < 0) || (file == -1))
         {
           blob=(unsigned char *) RelinquishMagickMemory(blob);
           ThrowFileException(exception,BlobError,"UnableToReadBlob",filename);
