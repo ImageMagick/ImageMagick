@@ -1192,8 +1192,11 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     }
                 }
                 if (magick != MagickFalse)
-                  meta_image->gamma=StringToDouble((char *) info+6,
+                  {
+                    info[info_length]='\0';
+                    meta_image->gamma=StringToDouble((char *) info+6,
                       (char **) NULL);
+                  }
                 else
                   {
                     StringInfo
@@ -1201,8 +1204,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                       "      profile name=%s",name);
-                    profile=BlobToProfileStringInfo(name,info,(size_t) info_length,
-                      exception);
+                    profile=BlobToProfileStringInfo(name,info,(size_t)
+                      info_length,exception);
                     if (profile != (StringInfo *) NULL)
                       {
                         if (profiles == (LinkedListInfo *) NULL)
