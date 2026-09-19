@@ -4793,6 +4793,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 if (LocaleCompare(keyword,"filename") == 0)
                   {
                     char
+                      *guard_key,
                       thread_filename[MagickPathExtent];
 
                     Image
@@ -4808,13 +4809,21 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                           "VectorGraphicsNestedTooDeeply","`%s'",value);
                         break;
                       }
-                    (void) AddValueToSplayTree(msl_tree,ConstantString(
-                      thread_filename),(void *) 1);
+                    guard_key=ConstantString(thread_filename);
+                    if ((guard_key == (char *) NULL) ||
+                        (AddValueToSplayTree(msl_tree,guard_key,(void *) 1) == MagickFalse))
+                      {
+                        guard_key=DestroyString(guard_key);
+                        ThrowMSLException(ResourceLimitError,
+                          "MemoryAllocationFailed",value);
+                        break;
+                      }
                     *msl_info->image_info[n]->magick='\0';
                     (void) CopyMagickString(msl_info->image_info[n]->filename,
                       value,MagickPathExtent);
                     next=ReadImage(msl_info->image_info[n],exception);
                     CatchException(exception);
+                    (void) DeleteNodeFromSplayTree(msl_tree,thread_filename);
                     if (next == (Image *) NULL)
                       continue;
                     AppendImageToList(&msl_info->image[n],next);
@@ -7184,18 +7193,7 @@ static void MSLEndElement(void *context,const xmlChar *tag)
     case 'i':
     {
       if (LocaleCompare((const char *) tag, "image") == 0)
-        {
-          if (msl_info->image_info[msl_info->n] != (ImageInfo *) NULL)
-            {
-              char
-                thread_filename[MagickPathExtent];
-
-              GetMagickThreadFilename(
-                msl_info->image_info[msl_info->n]->filename,thread_filename);
-              (void) DeleteNodeFromSplayTree(msl_tree,thread_filename);
-            }
-          MSLPopImage(msl_info);
-        }
+        MSLPopImage(msl_info);
       break;
     }
     case 'L':
