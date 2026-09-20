@@ -91,21 +91,21 @@ else
       >/dev/null 2>"$pipe_direct_error"; then
     echo "not ok 20 - direct MIFF output reports a write failure"
     echo "# command unexpectedly succeeded"
-  elif grep -q UnableToWriteFile "$pipe_direct_error"; then
+  elif grep -qi "unable to write file" "$pipe_direct_error"; then
     echo "ok 20 - direct MIFF output reports a write failure"
   else
     echo "not ok 20 - direct MIFF output reports a write failure"
-    echo "# expected nonzero status and UnableToWriteFile diagnostic"
+    echo "# expected nonzero status and \"unable to write file\" diagnostic"
   fi
   if LC_ALL=C ${MAGICK} -size 1x1 xc:white MIFF:- \
       >/dev/full 2>"$pipe_stdout_error"; then
     echo "not ok 21 - stdout MIFF output reports a write failure"
     echo "# command unexpectedly succeeded"
-  elif grep -q UnableToWriteFile "$pipe_stdout_error"; then
+  elif grep -qi "unable to write file" "$pipe_stdout_error"; then
     echo "ok 21 - stdout MIFF output reports a write failure"
   else
     echo "not ok 21 - stdout MIFF output reports a write failure"
-    echo "# expected nonzero status and UnableToWriteFile diagnostic"
+    echo "# expected nonzero status and \"unable to write file\" diagnostic"
   fi
 fi
 rm -f "$pipe_direct_output" "$pipe_stdout_output" \
