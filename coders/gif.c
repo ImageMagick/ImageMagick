@@ -1653,7 +1653,13 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
           }
       }
     if ((image->storage_class == DirectClass) || (image->colors > 256))
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+      {
+        global_colormap=(unsigned char *) RelinquishMagickMemory(
+          global_colormap);
+        colormap=(unsigned char *) RelinquishMagickMemory(colormap);
+        write_info=DestroyImageInfo(write_info);
+        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+      }
     for (bits_per_pixel=1; bits_per_pixel < 8; bits_per_pixel++)
       if ((one << bits_per_pixel) >= image->colors)
         break;
