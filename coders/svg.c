@@ -4231,8 +4231,13 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
               {
                 n--;
                 if (n < 0)
-                  ThrowWriterException(DrawError,
-                    "UnbalancedGraphicContextPushPop");
+                  {
+                    token=DestroyString(token);
+                    if (primitive_info != (PrimitiveInfo *) NULL)
+                      primitive_info=(PrimitiveInfo *) RelinquishMagickMemory(primitive_info);
+                    ThrowWriterException(DrawError,
+                      "UnbalancedGraphicContextPushPop");
+                  }
                 (void) WriteBlobString(image,"</g>\n");
               }
             if (LocaleCompare("pattern",token) == 0)
@@ -4320,8 +4325,13 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
               {
                 n++;
                 if (n == MagickMaxRecursionDepth)
-                  ThrowWriterException(DrawError,
-                    "VectorGraphicsNestedTooDeeply");
+                  {
+                    token=DestroyString(token);
+                    if (primitive_info != (PrimitiveInfo *) NULL)
+                      primitive_info=(PrimitiveInfo *) RelinquishMagickMemory(primitive_info);
+                    ThrowWriterException(DrawError,
+                      "VectorGraphicsNestedTooDeeply");
+                  }
                 if (active)
                   {
                     AffineToTransform(image,&affine);
