@@ -670,17 +670,24 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
   switch (storage_type)
   {
     case EXR_STORAGE_SCANLINE:
-    case EXR_STORAGE_DEEP_SCANLINE:
       status=ReadEXRScanlineImage(ctxt,part_index,data_window,image,exception);
       break;
+    case EXR_STORAGE_DEEP_SCANLINE:
+      (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
+        "ImageTypeNotSupported","`%s'",image->filename);
+      status=MagickFalse;
+      break;
     case EXR_STORAGE_TILED:
-    case EXR_STORAGE_DEEP_TILED:
       status=ReadEXRTiledImage(ctxt,part_index,image,exception);
       break;
+    case EXR_STORAGE_DEEP_TILED:
+      (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
+        "ImageTypeNotSupported","`%s'",image->filename);
+      status=MagickFalse;
+      break;
     default:
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        CorruptImageError,"Unsupported storage type","`%d'",
-        (int) storage_type);
+      (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+        "Unsupported storage type","`%d'",(int) storage_type);
       status=MagickFalse;
       break;
   }
