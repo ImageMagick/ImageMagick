@@ -35,6 +35,12 @@ static inline Image *StrictReadImage(const ImageInfo *image_info,
   char
     magic[MagickPathExtent];
 
+  if (((ImageInfo *) image_info)->coder_depth++ > MagickMaxRecursionDepth)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        OptionError,"ImageNestedTooDeeply","`%s'",image_info->filename);
+      return((Image *) NULL);
+    }
   (void) GetPathComponent(image_info->filename,MagickPath,magic);
   if (*magic != '\0')
     {
