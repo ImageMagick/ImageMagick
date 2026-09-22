@@ -648,6 +648,12 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
+  if (((ImageInfo *) image_info)->coder_depth++ >= MagickMaxRecursionDepth)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
+        "ImageRecursionDepthExceeded","`%s'",image_info->filename);
+      return((Image *) NULL);
+    }
   read_info=CloneImageInfo(image_info);
   (void) CopyMagickString(magick_filename,read_info->filename,MagickPathExtent);
   (void) SetImageInfo(read_info,0,exception);
