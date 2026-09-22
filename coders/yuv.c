@@ -725,6 +725,7 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
       (size_t) ((ssize_t) height/vertical_factor),TriangleFilter,exception);
     if (chroma_image == (Image *) NULL)
       {
+        yuv_image=DestroyImage(yuv_image);
         (void) CloseBlob(image);
         return(MagickFalse);
       }
@@ -899,6 +900,8 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);
+  if (chroma_image != (Image *) NULL)
+    chroma_image=DestroyImage(chroma_image);
   if (CloseBlob(image) == MagickFalse)
     status=MagickFalse;
   return(status);
