@@ -4332,7 +4332,7 @@ static FxInfo *AcquireFxInfoPrivate (const Image * images, const char * expressi
         {
           ssize_t t2;
           for (t2 = t-1; t2 >= 0; t2--) {
-            DestroyFxRt (&pfx->fxrts[t]);
+            DestroyFxRt (&pfx->fxrts[t2]);
           }
         }
         pfx->fxrts = (fxRtT *) RelinquishMagickMemory (pfx->fxrts);
