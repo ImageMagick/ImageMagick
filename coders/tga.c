@@ -632,7 +632,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
             Optional extension.
           */
           char
-            buffer[325];
+            buffer[325] = { 0 };
 
           (void) ReadBlob(image,41,buffer);
           buffer[41]='\0';
