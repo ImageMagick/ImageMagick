@@ -908,8 +908,7 @@ MagickExport MagickBooleanType IsRightsAuthorizedByName(
           If this match was against a canonical form, accumulate allowed rights.
         */
         canonical_matched_any=MagickTrue;
-        canonical_allowed_accumulator=(PolicyRights) ((int)
-          canonical_allowed_accumulator & (int) policy->rights);
+        canonical_allowed_accumulator=policy->rights;
       }
   }
   UnlockSemaphoreInfo(policy_semaphore);
