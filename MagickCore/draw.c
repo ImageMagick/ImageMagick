@@ -5792,6 +5792,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
             if (clone_info->extract != (char *) NULL)
               clone_info->extract=DestroyString(clone_info->extract);
             composite_images=StrictReadImage(clone_info,exception);
+            draw_info->image_info->coder_depth=clone_info->coder_depth;
           }
       clone_info=DestroyImageInfo(clone_info);
       if (composite_images == (Image *) NULL)
