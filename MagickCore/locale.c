@@ -1289,7 +1289,7 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *cache,const char *xml,
             }
           if (LocaleCompare(keyword,"file") == 0)
             {
-              if (depth > MagickMaxRecursionDepth)
+              if (depth >= MagickMaxRecursionDepth)
                 (void) ThrowMagickException(exception,GetMagickModule(),
                   ConfigureError,"IncludeElementNestedTooDeeply","`%s'",token);
               else

@@ -2440,7 +2440,7 @@ static SplayTreeInfo *GetMVGMacros(const char *primitive,
                 }
               if (LocaleCompare(token,"push") == 0)
                 {
-                  if (n++ > MagickMaxRecursionDepth)
+                  if (n++ >= MagickMaxRecursionDepth)
                     {
                       (void) ThrowMagickException(exception,GetMagickModule(),
                         DrawError,"VectorGraphicsNestedTooDeeply","`%s'",token);
@@ -2600,7 +2600,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
   assert(draw_info->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (depth > MagickMaxRecursionDepth)
+  if (depth >= MagickMaxRecursionDepth)
     ThrowBinaryException(DrawError,"VectorGraphicsNestedTooDeeply",
       image->filename);
   if ((draw_info->primitive == (char *) NULL) ||
@@ -2801,7 +2801,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
                 break;
             if (i <= n)
               break;
-            if (classDepth++ > MagickMaxRecursionDepth)
+            if (classDepth++ >= MagickMaxRecursionDepth)
               {
                 (void) ThrowMagickException(exception,GetMagickModule(),
                   DrawError,"VectorGraphicsNestedTooDeeply","`%s'",token);
@@ -3569,7 +3569,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
                     (void) GetNextToken(q,&q,extent,token);
                     (void) CloneString(&graphic_context[n]->id,token);
                   }
-                if (n > MagickMaxRecursionDepth)
+                if (n >= MagickMaxRecursionDepth)
                   {
                     (void) ThrowMagickException(exception,GetMagickModule(),
                       DrawError,"VectorGraphicsNestedTooDeeply","`%s'",
