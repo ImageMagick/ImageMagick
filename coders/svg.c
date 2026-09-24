@@ -3610,6 +3610,7 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
     at_bitmap
       *trace;
 
+
     at_fitting_opts_type
       *fitting_options;
 
@@ -3618,6 +3619,9 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
 
     at_splines_type
       *splines;
+
+    at_spline_writer
+      *handler;
 
     const Quantum
       *p;
@@ -3658,9 +3662,10 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
     }
     splines=at_splines_new_full(trace,fitting_options,NULL,NULL,NULL,NULL,NULL,
       NULL);
-    at_splines_write(at_output_get_handler_by_suffix((char *) "svg"),
-      GetBlobFileHandle(image),image->filename,output_options,splines,NULL,
-      NULL);
+    handler=at_output_get_handler_by_suffix("svg");
+    if (handler != NULL)
+      at_splines_write(handler,GetBlobFileHandle(image),image->filename,output_options,splines,
+        NULL,NULL);
     /*
       Free resources.
     */
