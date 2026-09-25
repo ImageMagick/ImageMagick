@@ -177,7 +177,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     y;
 
   TGAInfo
-    tga_info = { (TGAImageType) 0 };
+    tga_info;
 
   unsigned char
     j,
@@ -206,6 +206,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read TGA header information.
   */
   count=ReadBlob(image,1,&tga_info.id_length);
+  (void) memset(&tga_info,0,sizeof(tga_info));
   tga_info.colormap_type=(unsigned char) ReadBlobByte(image);
   tga_info.image_type=(TGAImageType) ReadBlobByte(image);
   if ((count != 1) ||
