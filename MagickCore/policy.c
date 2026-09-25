@@ -832,8 +832,8 @@ MagickExport MagickBooleanType IsRightsAuthorizedByName(
       return(MagickTrue);
     }
   /*
-    Evaluate policies in order; last match wins, however, canonical denies are
-    enforced after evaluation.
+    Evaluate policies in order; the last matching lexical or canonical policy
+    wins.
   */
   LockSemaphoreInfo(policy_semaphore);
   ResetLinkedListIterator(policy_cache);
@@ -905,7 +905,7 @@ MagickExport MagickBooleanType IsRightsAuthorizedByName(
     if (matched_canonical != MagickFalse)
       {
         /*
-          If this match was against a canonical form, accumulate allowed rights.
+          If this matched a canonical form, retain the last matching rights.
         */
         canonical_matched_any=MagickTrue;
         canonical_allowed_accumulator=policy->rights;
