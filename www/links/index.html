@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en" data-bs-theme="auto">
 
 
 <head>
@@ -15,6 +15,7 @@
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
   <link rel="shortcut icon" href="../image/wand.png" type="image/png">
   <link rel="apple-touch-icon" href="../image/wand.png" type="image/png">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net/">
   <link rel="preconnect" href="https://localhost/">
   <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" as="style" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" crossorigin="anonymous">
@@ -22,6 +23,14 @@
   <style>
     html {
       scroll-padding-top: 70px;
+    }
+
+    iframe {
+      width: 100% !important;
+      max-width: 100% !important;
+      height: 400px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
     }
 
     a.nav-link:hover,
@@ -48,13 +57,23 @@
     :root {
       --bs-code-color: revert;
     }
+
+    .table {
+      table-layout: fixed;   /* force equal distribution of width */
+      width: 100%;           /* table spans full container */
+    }
+
+    .table td, .table th {
+      white-space: normal;     /* allow wrapping */
+      word-break: break-word;  /* break long words/strings */
+    }
   </style>
   <!-- Open Graph Meta Tags -->
   <meta property="og:title" content="ImageMagick | Related Web Sites">
   <meta property="og:description" content="">
-  <meta property="og:image" content="https://imagemagick.org/image/logo.png">
-  <meta property="og:logo" content="https://imagemagick.org/image/logo.png">
-  <meta property="og:url" content="https://imagemagick.org/links/">
+  <meta property="og:image" content="../image/logo.png">
+  <meta property="og:logo" content="../image/logo.png">
+  <meta property="og:url" content="index.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ImageMagick">
   <meta property="og:locale" content="en_us">
@@ -65,7 +84,7 @@
   <meta name="twitter:creator" content="@imagemagick">
   <meta name="twitter:title" content="ImageMagick | Related Web Sites">
   <meta name="twitter:description" content="$this->description">
-  <meta name="twitter:image" content="https://imagemagick.org/image/logo.png">
+  <meta name="twitter:image" content="../image/logo.png">
   <meta name="twitter:image:alt" content="ImageMagick logo and tag line">
   <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
@@ -78,7 +97,7 @@
         "description": "$this->description",
         "applicationCategory": "Multimedia",
         "operatingSystem": "Windows, macOS, Linux, Unix",
-        "softwareVersion": "7.1.2-27",
+        "softwareVersion": "7.1.2-31",
         "license": "https://imagemagick.org/license/",
         "creator": {
           "@type": "Organization",
@@ -199,10 +218,10 @@
     </header>
 
     <main role="main" class="container">
-      <div class="row g-5">
-        <div class="col-md-9">
+      <div class="row g-4">
+        <div class="col-lg-9 col-12">
           <div>
-<p class="text-center"><a href="#command-line">Command-line Tutorials</a> • <a href="#program-interfaces">Program Interface Tutorials</a> • <a href="#techniques">ImageMagick Techniques</a> • <a href="#install">Installation Tutorials</a> • <a href="#topics">ImageMagick Topics</a> • <a href="#book-review">ImageMagick Book Review</a> • <a href="#mirrors">Web Site Mirrors</a> • <a href="#bank">Image Bank</a> • <a href="#related-projects">Related Projects</a></p>
+<p class="text-center"><a href="#command-line">Command-line Tutorials</a> • <a href="#program-interfaces">Program Interface Tutorials</a> • <a href="#techniques">ImageMagick Techniques</a> • <a href="#topics">ImageMagick Topics</a> • <a href="#book-review">ImageMagick Book Review</a> • <a href="#mirrors">Web Site Mirrors</a> • <a href="#bank">Image Bank</a> • <a href="#related-projects">Related Projects</a></p>
 
 <p class="lead">Listed here are a number of external web sites that are related to ImageMagick.  ImageMagick Studio does not maintain or endorse most of these sites, but we feel they are a helpful adjunct to the ImageMagick project.</p>
 
@@ -217,30 +236,18 @@
 <ul>
   <dd class="col-md-8"><a href="https://usage.imagemagick.org/">Examples of ImageMagick Usage</a></dd>
   <dd class="col-md-8"><a href="http://www.smashingmagazine.com/2015/06/25/efficient-image-resizing-with-imagemagick/">Efficient Image Resizing With ImageMagick</a></dd>
-  <dd class="col-md-8"><a href="http://www.jpeek.com/articles/linuxmag/0606.pdf">ImageMagick, Part One</a></dd>
-  <dd class="col-md-8"><a href="http://www.jpeek.com/articles/linuxmag/0607.pdf">ImageMagick, Part Two</a></dd>
+  <dd class="col-md-8"><a href="https://www.jpeek.com/articles/linuxmag/0606.pdf">ImageMagick, Part One</a></dd>
+  <dd class="col-md-8"><a href="https://www.jpeek.com/articles/linuxmag/0607.pdf">ImageMagick, Part Two</a></dd>
 </ul>
 
 <h2><a class="anchor" id="program-interfaces"></a>Program Interface Tutorials</h2>
 
 <ul>
-  <dd class="col-md-8"><a href="http://www.sitepoint.com/article/dynamic-images-imagemagick">Create Dynamic Images with ImageMagick</a></dd>
-  <dd class="col-md-8"><a href="http://www.ioncannon.net/php/75/how-to-compile-imagemagick-for-php-by-hand/">How to compile ImageMagick for PHP by hand</a></dd>
-  <dd class="col-md-8"><a href="http://members.shaw.ca/el.supremo/MagickWand/">MagickWand Examples in C</a></dd>
-  <dd class="col-md-8"><a href="http://www.php-editors.com/contest/1/82-read.html">PHP Extensions: MagickWand for PHP</a></dd>
-  <dd class="col-md-8"><a href="http://www.ioncannon.net/php/61/php-imagemagick-magickwand-examples/">PHP ImageMagick MagickWand Examples</a></dd>
+  <dd class="col-md-8"><a href="../magick-wand/index.html">MagickWand C API - with Example Programs</a></dd>
+  <dd class="col-md-8"><a href="https://usage.imagemagick.org/api/">API &amp; Scripting Techniques</a></dd>
   <dd class="col-md-8"><a href="https://rmagick.github.io/rvgtut.html">RVG - Ruby Vector Graphics</a></dd>
-  <dd class="col-md-8"><a href="http://www.devshed.com/c/a/PHP/Security-Images-with-PHP-and-ImageMagick/">Security Images with PHP and ImageMagick</a></dd>
-  <dd class="col-md-8"><a href="http://php.net/manual/en/imagick.examples-1.php">Basic Uses of ImageMagick With PHP</a></dd>
-</ul>
-
-<h2><a class="anchor" id="install"></a>Installation Tutorials</h2>
-
-<ul>
-  <dd class="col-md-8"><a href="http://cactuslab.com/imagemagick/">ImageMagick Installer for Mac OS X</a></dd>
-  <dd class="col-md-8"><a href="http://www.cloudgoessocial.net/2011/03/21/im-xcode4-ios4-3/">ImageMagick on iPhone</a></dd>
-  <dd class="col-md-8"><a href="https://github.com/juan-cardelino/imagemagick_lib_iphone/">Scripts and Instructions to Compile ImageMagick as an iOS Static Library</a></dd>
-  <dd class="col-md-8"><a href="http://www.digitalsanctum.com/2009/03/18/installing-imagemagick-from-source-on-ubuntu-804/">Installing ImageMagick from Source on Ubuntu</a></dd>
+  <dd class="col-md-8"><a href="https://www.php.net/manual/en/book.imagick.php">Imagick - the PHP ImageMagick Extension (install &amp; compile)</a></dd>
+  <dd class="col-md-8"><a href="https://www.php.net/manual/en/imagick.examples-1.php">Basic Uses of ImageMagick With PHP</a></dd>
 </ul>
 
 <h2><a class="anchor" id="techniques"></a>ImageMagick Techniques</h2>
@@ -255,10 +262,10 @@
   <dd class="col-md-8"><a href="https://svnweb.freebsd.org/ports/head/graphics/ImageMagick7/">FreeBSD port</a></dd>
   <dd class="col-md-8"><a href="http://directory.fsf.org/project/ImageMagick/">Free Software Foundation</a></dd>
   <dd class="col-md-8"><a href="http://www.enterprisetech.com/2014/07/16/convey-dell-fpga-appliance-accelerates-hyperscale-image-resizing/">Hyperscale Image Resizing</a> </dd>
-  <dd class="col-md-8"><a href="http://pkgsrc.se/graphics/ImageMagick/">NetBSD</a></dd>
+  <dd class="col-md-8"><a href="https://pkgsrc.se/graphics/ImageMagick/">NetBSD</a></dd>
   <dd class="col-md-8"><a href="http://sourceforge.net/projects/imagemagick/">SourceForge</a></dd>
   <dd class="col-md-8"><a href="../vpat/index.html">Voluntary Product Accessibility Template</a></dd>
-  <dd class="col-md-8"><a href="http://en.wikipedia.org/wiki/ImageMagick">WikiPedia</a></dd>
+  <dd class="col-md-8"><a href="https://en.wikipedia.org/wiki/ImageMagick">WikiPedia</a></dd>
 </ul>
 
 <h2><a class="anchor" id="book-review"></a>ImageMagick Legacy Discussion</h2>
@@ -287,12 +294,12 @@
 </div>
 
         </div>
-        <div class="col-md-3">
+        <div class="col-lg-3 col-12 ps-lg-4 border-start d-flex flex-column align-items-center align-items-lg-start">
           <div class="container text-center my-3">
             <a href="../image/wizard.png" rel="noopener noreferrer" target="_blank">
-              <img alt="The Tao of the Spiritual Warrior" class="img-fluid img-thumbnail" height="1468" loading="lazy" src="../image/wizard.png" width="1104">
+              <img alt="ImageMagick Wizard" class="img-fluid img-thumbnail" height="351" loading="lazy" src="../image/wizard.jpg" width="264">
             </a>
-            <p class="mt-2"><iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border: 0;"></iframe></p>
+            <p class="mt-2"><iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border:0 !important; width:107px !important; height:35px !important;"></iframe></p>
           </div>
           <div class="container text-center my-3">
             <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745"
@@ -317,7 +324,7 @@
         <a href="../security-policy/index.html">Security</a> •
         <a href="../news/index.html">News</a>
         &nbsp;
-        <a href="#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../image/wand.ico"></a>
+        <a href="#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../image/wand.png"></a>
         &nbsp;
         <a href="index.html">Related</a> •
         <a href="../sitemap/index.html">Sitemap</a>

@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en" data-bs-theme="auto">
 
 
 <head>
@@ -15,6 +15,7 @@
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
   <link rel="shortcut icon" href="../image/wand.png" type="image/png">
   <link rel="apple-touch-icon" href="../image/wand.png" type="image/png">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net/">
   <link rel="preconnect" href="https://localhost/">
   <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" as="style" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" crossorigin="anonymous">
@@ -22,6 +23,14 @@
   <style>
     html {
       scroll-padding-top: 70px;
+    }
+
+    iframe {
+      width: 100% !important;
+      max-width: 100% !important;
+      height: 400px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
     }
 
     a.nav-link:hover,
@@ -48,13 +57,23 @@
     :root {
       --bs-code-color: revert;
     }
+
+    .table {
+      table-layout: fixed;   /* force equal distribution of width */
+      width: 100%;           /* table spans full container */
+    }
+
+    .table td, .table th {
+      white-space: normal;     /* allow wrapping */
+      word-break: break-word;  /* break long words/strings */
+    }
   </style>
   <!-- Open Graph Meta Tags -->
   <meta property="og:title" content="ImageMagick | Contrast Limited Adaptive Histogram Equalization">
   <meta property="og:description" content="ImageMagick supports contrast limited adaptive histogram equalization (CLAHE) to improve the contrast in images.">
-  <meta property="og:image" content="https://imagemagick.org/image/logo.png">
-  <meta property="og:logo" content="https://imagemagick.org/image/logo.png">
-  <meta property="og:url" content="https://imagemagick.org/clahe/">
+  <meta property="og:image" content="../image/logo.png">
+  <meta property="og:logo" content="../image/logo.png">
+  <meta property="og:url" content="index.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ImageMagick">
   <meta property="og:locale" content="en_us">
@@ -65,7 +84,7 @@
   <meta name="twitter:creator" content="@imagemagick">
   <meta name="twitter:title" content="ImageMagick | Contrast Limited Adaptive Histogram Equalization">
   <meta name="twitter:description" content="$this->description">
-  <meta name="twitter:image" content="https://imagemagick.org/image/logo.png">
+  <meta name="twitter:image" content="../image/logo.png">
   <meta name="twitter:image:alt" content="ImageMagick logo and tag line">
   <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
@@ -78,7 +97,7 @@
         "description": "$this->description",
         "applicationCategory": "Multimedia",
         "operatingSystem": "Windows, macOS, Linux, Unix",
-        "softwareVersion": "7.1.2-27",
+        "softwareVersion": "7.1.2-31",
         "license": "https://imagemagick.org/license/",
         "creator": {
           "@type": "Organization",
@@ -199,8 +218,8 @@
     </header>
 
     <main role="main" class="container">
-      <div class="row g-5">
-        <div class="col-md-9">
+      <div class="row g-4">
+        <div class="col-lg-9 col-12">
           <div>
 <p class="lead">Use contrast limited adaptive histogram equalization (AHE) to improve contrast in images.  Ordinary histogram equalization computes a global equalization whereas an adaptive method computes several histograms, each corresponding to a distinct section of the image, and uses them to redistribute the lightness values of the image.  It is suitable for improving the local contrast and enhancing the definitions of edges in each region of an image.  A variant of adaptive histogram equalization, contrast limited adaptive histogram equalization (CLAHE) limits AHE's tendency to overamplify noise in relatively homogeneous regions of an image.</p>
 <p>CLAHE is supported as of ImageMagick 7.0.8-24 with the <a href="../command-line-options/index.html#clahe">-clahe</a> option:</p>
@@ -231,12 +250,12 @@
 </div>
 
         </div>
-        <div class="col-md-3">
+        <div class="col-lg-3 col-12 ps-lg-4 border-start d-flex flex-column align-items-center align-items-lg-start">
           <div class="container text-center my-3">
             <a href="../image/wizard.png" rel="noopener noreferrer" target="_blank">
-              <img alt="The Tao of the Spiritual Warrior" class="img-fluid img-thumbnail" height="1468" loading="lazy" src="../image/wizard.png" width="1104">
+              <img alt="ImageMagick Wizard" class="img-fluid img-thumbnail" height="351" loading="lazy" src="../image/wizard.jpg" width="264">
             </a>
-            <p class="mt-2"><iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border: 0;"></iframe></p>
+            <p class="mt-2"><iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border:0 !important; width:107px !important; height:35px !important;"></iframe></p>
           </div>
           <div class="container text-center my-3">
             <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745"
@@ -261,7 +280,7 @@
         <a href="../security-policy/index.html">Security</a> •
         <a href="../news/index.html">News</a>
         &nbsp;
-        <a href="#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../image/wand.ico"></a>
+        <a href="#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../image/wand.png"></a>
         &nbsp;
         <a href="../links/index.html">Related</a> •
         <a href="../sitemap/index.html">Sitemap</a>

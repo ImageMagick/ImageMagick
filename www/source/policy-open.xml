@@ -1,23 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE policymap [
-<!ELEMENT policymap (policy)*>
-<!ATTLIST policymap xmlns CDATA #FIXED "">
-<!ELEMENT policy EMPTY>
-<!ATTLIST policy xmlns CDATA #FIXED "">
-<!ATTLIST policy domain NMTOKEN #REQUIRED>
-<!ATTLIST policy name NMTOKEN #IMPLIED>
-<!ATTLIST policy pattern CDATA #IMPLIED>
-<!ATTLIST policy rights NMTOKEN #IMPLIED>
-<!ATTLIST policy stealth NMTOKEN #IMPLIED>
-<!ATTLIST policy value CDATA #IMPLIED>
+  <!ELEMENT policymap (policy)*>
+  <!ATTLIST policymap
+    xmlns CDATA #FIXED ""
+  >
+
+  <!ELEMENT policy EMPTY>
+  <!ATTLIST policy
+    xmlns   CDATA   #FIXED ""
+    domain  NMTOKEN #REQUIRED
+    name    NMTOKEN #IMPLIED
+    pattern CDATA   #IMPLIED
+    rights  NMTOKEN #IMPLIED
+    stealth NMTOKEN #IMPLIED
+    value   CDATA   #IMPLIED
+  >
 ]>
 <!--
   Creating a security policy that fits your specific local environment
   before making use of ImageMagick is highly advised. You can find guidance on
-  setting up this policy at https://imagemagick.org/security-policy/,
+  setting up this policy at https://imagemagick.org/script/security-policy.php,
   and it's important to verify your policy using the validation tool located
-  at https://imagemagick-secevaluator.doyensec.com/. We also strongly 
-  recommend that all users validate their security assumptions by testing their   configurations after making any policy changes. This helps ensure that the 
+  at https://imagemagick-secevaluator.doyensec.com/. We also strongly
+  recommend that all users validate their security assumptions by testing their
+  configurations after making any policy changes. This helps ensure that the 
   intended restrictions are functioning as expected in their specific 
   deployment environment.
 
@@ -81,7 +87,7 @@
     <policy domain="coder" rights="none" pattern="*" />
     <policy domain="coder" rights="read|write" pattern="{GIF,JPEG,PNG,WEBP}" />
 
-  See https://imagemagick.org/security-policy/ for a deeper
+  See https://imagemagick.org/script/security-policy.php for a deeper
   understanding of ImageMagick security policies.
 -->
 <policymap>
@@ -143,7 +149,7 @@
   <!-- Indirect reads are not permitted. -->
   <!-- <policy domain="path" rights="none" pattern="@*"/> -->
   <!-- These image types are security risks on read, but write is fine -->
-  <!-- <policy domain="module" rights="write" pattern="{MSL,MVG,PS,SVG,TEXT,URL,XPS}"/> -->
+  <!-- <policy domain="module" rights="write" pattern="{MSL,MVG,PS,SVG,TXT,URL,XPS}"/> -->
   <!-- This policy sets the number of times to replace content of certain
        memory buffers and temporary files before they are freed or deleted. -->
   <!-- <policy domain="system" name="shred" value="1"/> -->
@@ -153,6 +159,12 @@
   <!-- Set the maximum amount of memory in bytes that are permitted for
        allocation requests. -->
   <!-- <policy domain="system" name="max-memory-request" value="256MiB"/> -->
+  <!-- If the basename of path is a symbolic link, the open fails -->
+  <!-- <policy domain="system" name="symlink" rights="none" pattern="follow"/> -->
   <!-- Blocks all SVG entity‑substitution attempts by denying the svg:substitute-entities define -->
   <!-- <policy domain="system" name="svg" rights="none" pattern="substitute-entities"/> -->
+  <!-- Set the maximum distributed pixel cache clients -->
+  <!-- <policy domain="cache" name="max-dpc-clients" value="128"/> -->
+  <!-- Set the maximum distributed pixel cache unauthenticated clients -->
+  <!-- <policy domain="cache" name="max-dpc-unauthenticated-clients" value="16"/> -->
 </policymap>

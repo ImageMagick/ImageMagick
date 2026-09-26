@@ -1,20 +1,21 @@
 
 
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en" data-bs-theme="auto">
 
 
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>ImageMagick | Alpha Compositing</title>
-  <meta name="description" content="">
+  <meta name="description" content="Complete guide to ImageMagick's -compose operators: Porter–Duff alpha blending, mathematical, lighting, and SVG 1.2 blend modes, with CLI examples.">
   <link rel="canonical" href="index.html">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#000000">
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
   <link rel="shortcut icon" href="../image/wand.png" type="image/png">
   <link rel="apple-touch-icon" href="../image/wand.png" type="image/png">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net/">
   <link rel="preconnect" href="https://localhost/">
   <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" as="style" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" crossorigin="anonymous">
@@ -22,6 +23,14 @@
   <style>
     html {
       scroll-padding-top: 70px;
+    }
+
+    iframe {
+      width: 100% !important;
+      max-width: 100% !important;
+      height: 400px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
     }
 
     a.nav-link:hover,
@@ -48,13 +57,23 @@
     :root {
       --bs-code-color: revert;
     }
+
+    .table {
+      table-layout: fixed;   /* force equal distribution of width */
+      width: 100%;           /* table spans full container */
+    }
+
+    .table td, .table th {
+      white-space: normal;     /* allow wrapping */
+      word-break: break-word;  /* break long words/strings */
+    }
   </style>
   <!-- Open Graph Meta Tags -->
   <meta property="og:title" content="ImageMagick | Alpha Compositing">
-  <meta property="og:description" content="">
-  <meta property="og:image" content="https://imagemagick.org/image/logo.png">
-  <meta property="og:logo" content="https://imagemagick.org/image/logo.png">
-  <meta property="og:url" content="https://imagemagick.org/compose/">
+  <meta property="og:description" content="Complete guide to ImageMagick's -compose operators: Porter–Duff alpha blending, mathematical, lighting, and SVG 1.2 blend modes, with CLI examples.">
+  <meta property="og:image" content="../image/logo.png">
+  <meta property="og:logo" content="../image/logo.png">
+  <meta property="og:url" content="index.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ImageMagick">
   <meta property="og:locale" content="en_us">
@@ -65,7 +84,7 @@
   <meta name="twitter:creator" content="@imagemagick">
   <meta name="twitter:title" content="ImageMagick | Alpha Compositing">
   <meta name="twitter:description" content="$this->description">
-  <meta name="twitter:image" content="https://imagemagick.org/image/logo.png">
+  <meta name="twitter:image" content="../image/logo.png">
   <meta name="twitter:image:alt" content="ImageMagick logo and tag line">
   <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
@@ -78,7 +97,7 @@
         "description": "$this->description",
         "applicationCategory": "Multimedia",
         "operatingSystem": "Windows, macOS, Linux, Unix",
-        "softwareVersion": "7.1.2-27",
+        "softwareVersion": "7.1.2-31",
         "license": "https://imagemagick.org/license/",
         "creator": {
           "@type": "Organization",
@@ -199,453 +218,745 @@
     </header>
 
     <main role="main" class="container">
-      <div class="row g-5">
-        <div class="col-md-9">
+      <div class="row g-4">
+        <div class="col-lg-9 col-12">
           <div>
 <div id="cli-examples"></div>
 
-<p class="lead">This page described the Image composition methods that is used to define how
-two images should be merged together in various image operations.  For the
-Command Line API it is typically set using the <a
-href="../command-line-options/index.html#compose" >-compose</a> setting option. </p>
+<p class="lead">This page describes the image composition methods that define how
+two images are merged together during the many image operations that combine a
+'source' (overlay) image with a 'destination' (background) image.  For the
+Command Line API the method is normally selected with the <a
+href="../command-line-options/index.html#compose">-compose</a> setting, and then applied by
+operators such as <a href="../command-line-options/index.html#composite">-composite</a>,
+<a href="../command-line-options/index.html#layers">-layers</a>, <a
+href="../command-line-options/index.html#flatten">-flatten</a>, <a
+href="../command-line-options/index.html#mosaic">-mosaic</a>, <a
+href="../command-line-options/index.html#draw">-draw</a>, and many others. </p>
 
+<p>Most of the alpha-blending operators, and a large number of the blend
+(lighting) modes, follow the W3C <a href="https://www.w3.org/TR/SVGCompositing/"
+>SVG Compositing Specification</a>, which extends the SVG&nbsp;1.1 and
+SVG&nbsp;1.2 languages with the full set of <a
+href="https://en.wikipedia.org/wiki/Alpha_compositing">Porter&ndash;Duff</a>
+alpha operators and blend modes.  Where an operator is defined by that standard,
+ImageMagick implements the same mathematical result, so the behaviour is
+directly comparable to SVG, PDF, and most modern graphics libraries.  You can
+review the precise formulae in the SVG specification, or in the ImageMagick
+"<a href="https://usage.imagemagick.org/compose/">Compositing Images</a>" usage
+examples.</p>
 
-<p>The description of composition uses abstract terminology in order to allow
-the description to be more precise, while avoiding constant values which are
-specific to a particular build configuration. Each image pixel is represented
-by red, green, and blue levels (which are equal for a gray pixel). The
-build-dependent value <var>QuantumRange</var> is the maximum integral
-value which may be stored, per pixel, in the red, green, or blue channels of
-the image. Each image pixel may also optionally (if the image matte channel is
-enabled) have an associated level of opacity, ranging from <var>opaque</var> to
-<var>transparent</var>, which may be used to determine the influence of the pixel
-color when compositing the pixel with another image pixel. If the image matte
-channel is disabled, then all pixels in the image are treated as opaque. The
-color of an opaque pixel is fully visible while the color of a transparent
-pixel color is entirely absent (pixel color is ignored).</p>
+<p>The description of composition uses abstract terminology in order to keep the
+definitions precise, while avoiding constant values that are specific to a
+particular build configuration. Each image pixel is represented by red, green,
+and blue levels (which are equal for a gray pixel). The build-dependent value
+<var>QuantumRange</var> is the maximum value that may be stored, per pixel, in
+the red, green, or blue channels of the image. Each image pixel may also
+optionally (if the image alpha/matte channel is enabled) have an associated
+level of opacity, ranging from <var>opaque</var> to <var>transparent</var>,
+which determines the influence of the pixel color when it is composited with
+another image pixel. If the alpha channel is disabled, then all pixels in the
+image are treated as opaque. The color of an opaque pixel is fully visible,
+while the color of a fully transparent pixel is entirely absent (its color is
+ignored).</p>
 
-<p>By definition, raster images have a rectangular shape. All image rows are of
+<p>By definition, raster images have a rectangular shape: all image rows are of
 equal length, as are all image columns. By treating the alpha channel as a
-visual "mask" the rectangular image may be given a "shape" by treating the
-alpha channel as a cookie-cutter for the image. This is done by setting the
-pixels within the shape to be opaque, with pixels outside the shape set as
-transparent. Pixels on the boundary of the shape may be between opaque and
+visual "mask", the rectangular image may be given an arbitrary "shape", with the
+alpha channel acting as a cookie-cutter for the image. This is done by setting
+the pixels within the shape to be opaque, and the pixels outside the shape to be
+transparent. Pixels on the boundary of the shape may lie between opaque and
 transparent in order to provide antialiasing (visually smooth edges). The
-description of the composition operators use this concept of image "shape" in
-order to make the description of the operators easier to understand. While it
-is convenient to describe the operators in terms of "shapes" they are by no
-means limited to mask-style operations since they are based on continuous
-floating-point mathematics rather than simple boolean operations.</p>
+descriptions of the composition operators use this concept of image "shape" to
+make them easier to understand. While it is convenient to describe the operators
+in terms of "shapes", they are by no means limited to mask-style operations,
+since they are based on continuous floating-point mathematics rather than simple
+boolean operations.</p>
 
-<p>The following alpha blending (Duff-Porter) compose methods are available:</p>
+<p>The compose method names are case-insensitive, and the '<code>_</code>' or
+'<code>-</code>' separators are optional. As such the method
+'<code>Dst-Over</code>' may equally be written as '<code>dst_over</code>',
+'<code>DstOver</code>', or '<code>dstover</code>'. They all mean the same
+thing.</p>
 
-<table class="table table-sm table-hover table-striped table-responsive">
+<h2>Duff&ndash;Porter Alpha Composition Methods</h2>
+
+<p>The following alpha-blending (Duff&ndash;Porter) compose methods are
+available. These are the twelve classical Porter&ndash;Duff operators, defined
+by the SVG&nbsp;1.2 Compositing standard, which merge two images purely
+according to their transparency (alpha channel).</p>
+
+<div style="max-height:75svh; overflow-y:auto; overflow-x:hidden;">
+<table class="table table-sm table-hover table-striped">
+  <colgroup>
+    <col style="width:30%">
+    <col style="width:70%">
+  </colgroup>
   <tbody>
   <tr>
-    <th align="left" style="width: 8%">Method</th>
+    <th align="left">Method</th>
     <th align="left">Description</th>
   </tr>
 
   <tr>
     <td>clear</td>
-    <td>Both the color and the alpha of the destination are
-        cleared. Neither the source nor the destination are used (except for
-        destinations size and other meta-data which is always preserved.</td>
+    <td>Both the color and the alpha of the destination are cleared. Neither the
+        source nor the destination is used as input (except for the
+        destination's size and other meta-data, which are always preserved).
+        The result is a fully transparent image.</td>
   </tr>
 
   <tr>
     <td>src</td>
-    <td>The source is copied to the destination. The destination
-        is not used as input, though it is cleared.</td>
+    <td>The source is copied to the destination. The destination is not used as
+        input; it is completely replaced, and any area not overlaid by the
+        source is cleared to transparency.</td>
   </tr>
 
   <tr>
     <td>dst</td>
-    <td>The destination is left untouched. The source image is
-        completely ignored.</td>
+    <td>The destination is left untouched. The source image is completely
+        ignored. This is effectively a "no operation" for the color data,
+        useful mainly for testing or for building larger expressions.</td>
   </tr>
 
   <tr>
     <td>src-over</td>
-    <td>The source is composited over the destination. this is
-       the default alpha blending compose method, when neither the compose
-       setting is set, nor is set in the image meta-data.</td>
+    <td>The source is composited over the destination. This is the default
+        alpha-blending compose method, used when the compose setting is neither
+        set on the command line nor recorded in the image meta-data. It is the
+        result most people expect when overlaying one image on another.</td>
   </tr>
 
   <tr>
     <td>dst-over</td>
-    <td>The destination is composited over the source and the
-        result replaces the destination.</td>
+    <td>The destination is composited over the source, and the result replaces
+        the destination. In effect the source is placed <em>under</em> the
+        destination, so only the parts of the source not hidden by the
+        destination remain visible. This is ideal for adding backgrounds or
+        drop shadows without altering the destination's size.</td>
   </tr>
 
   <tr>
     <td>src-in</td>
-    <td>The part of the source lying inside of the destination
-        replaces the destination.</td>
+    <td>The part of the source lying inside of the destination shape replaces
+        the destination. Everything outside the overlap (including the original
+        destination) is cleared to transparency.</td>
   </tr>
 
   <tr>
     <td>dst-in</td>
-    <td>The part of the destination lying inside of the source
-        replaces the destination. Areas not overlaid are cleared.</td>
+    <td>The part of the destination lying inside of the source shape replaces
+        the destination. Areas not overlaid are cleared. This is a convenient
+        way to use the source purely as an alpha mask for the destination.</td>
   </tr>
 
   <tr>
     <td>src-out</td>
-    <td>The part of the source lying outside of the destination
-        replaces the destination.</td>
+    <td>The part of the source lying outside of the destination shape replaces
+        the destination. The overlapping region and the original destination are
+        cleared to transparency.</td>
   </tr>
 
   <tr>
     <td>dst-out</td>
-    <td>The part of the destination lying outside of the source
-        replaces the destination.</td>
+    <td>The part of the destination lying outside of the source shape replaces
+        the destination. In other words, the source shape is "punched out" of
+        the destination, leaving a hole.</td>
   </tr>
 
   <tr>
     <td>src-atop</td>
-    <td>The part of the source lying inside of the destination is
-        composited onto the destination.</td>
+    <td>The part of the source lying inside of the destination shape is
+        composited onto the destination. The destination keeps its shape and
+        alpha, while the source colors sit on top within that shape.</td>
   </tr>
 
   <tr>
     <td>dst-atop</td>
-    <td>The part of the destination lying inside of the source is
+    <td>The part of the destination lying inside of the source shape is
         composited over the source and replaces the destination. Areas not
-        overlaid are cleared. </td>
+        overlaid are cleared. The result keeps the shape of the source but the
+        colors of the destination within it.</td>
   </tr>
 
   <tr>
     <td>xor</td>
-    <td>The part of the source that lies outside of the
-        destination is combined with the part of the destination that lies
-        outside of the source.  Source or Destination, but not both. </td>
+    <td>The part of the source that lies outside of the destination is combined
+        with the part of the destination that lies outside of the source. That
+        is, the result shows the source or the destination, but not where the
+        two overlap (which is cleared).</td>
   </tr>
 
   </tbody>
 </table>
+</div>
 
-<p>Any of the 'Src-*' methods can also be specified without the 'Src-' part.
-For example the default compose method can be specified as just 'Over'.</p>
+<p>Any of the '<code>Src-*</code>' methods can also be specified without the
+'<code>Src-</code>' prefix. For example the default compose method may be
+specified as just '<code>Over</code>', and similarly '<code>In</code>',
+'<code>Out</code>', and '<code>ATop</code>' are shorthand for
+'<code>Src-In</code>', '<code>Src-Out</code>', and '<code>Src-ATop</code>'.</p>
 
-<p>Many of these compose methods will clear the destination image which was
-not overlaid by the source image.  This is to be expected as part of that
-specific composition methods definition. You can disable this by setting the
-special <a href="../command-line-options/index.html#define"
->-define</a> 'compose:outside-overlay' to a value of 'false' will turn off
-this behavior. </p>
+<p>Many of these compose methods will clear the part of the destination image
+that was not overlaid by the source image. This is an intended part of that
+method's definition. The methods that clear the un-overlaid area are
+'<code>Clear</code>', '<code>Src</code>', '<code>Src-In</code>',
+'<code>Dst-In</code>', '<code>Src-Out</code>', and '<code>Dst-ATop</code>'. You
+can disable this behaviour by setting the special <a
+href="../command-line-options/index.html#define">-define</a>
+'<code>compose:outside-overlay</code>' to a value of '<code>false</code>', so
+that only the overlaid region is modified.</p>
 
-<p>On top of the above 12 Duff-Porter Alpha Composition methods, one special
-related method '<code>Copy</code>' has been provided. This is equivalent to
-using the '<code>Src</code>'  with the special <a href="../command-line-options/index.html#define"
->-define</a> option '<code>compose:outside-overlay</code>' set to
-'<code>false</code>', so as to only modify the overlaid area, without clearing
-the rest of the image outside the overlaid area.  </p>
+<p>On top of the above twelve Duff&ndash;Porter alpha-composition methods, one
+special related method '<code>Copy</code>' is provided. It is equivalent to
+using '<code>Src</code>' with the '<code>compose:outside-overlay</code>' define
+set to '<code>false</code>', so as to modify only the overlaid area without
+clearing the rest of the destination image.</p>
 
-<p>The following mathematical composition methods are also available. </p>
+<p>For example, to overlay a centered label over the built-in rose image using
+the default '<code>Over</code>' method&hellip;</p>
 
-<table class="table table-sm table-hover table-striped table-responsive">
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick rose: label.png -gravity center -compose Over -composite result.png</samp></pre>
+
+<p>Or, to place the overlay <em>under</em> the destination &mdash; handy for
+adding a hard drop shadow without changing the image size&hellip;</p>
+
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick label_white.png label_black.png -geometry +5+5 -compose Dst-Over -composite shadow.png</samp></pre>
+
+<h2>Mathematical Composition Methods</h2>
+
+<p>The following mathematical composition methods are also available. Rather
+than blending by transparency, these combine the source and destination
+color channels using a specific arithmetic or comparison formula. Several of
+them (<code>Multiply</code>, <code>Screen</code>, <code>Darken</code>,
+<code>Lighten</code>, <code>Difference</code>, and <code>Exclusion</code>) are
+the "separable blend modes" defined by the SVG&nbsp;1.2 Compositing standard,
+and behave identically to their SVG, PDF, and Photoshop equivalents.</p>
+
+<div style="max-height:75svh; overflow-y:auto; overflow-x:hidden;">
+<table class="table table-sm table-hover table-striped">
+  <colgroup>
+    <col style="width:30%">
+    <col style="width:70%">
+  </colgroup>
   <tbody>
   <tr>
-    <th align="left" style="width: 8%">Method</th>
+    <th align="left">Method</th>
     <th align="left">Description</th>
   </tr>
 
   <tr>
     <td>multiply</td>
-    <td>The source is multiplied by the destination and replaces
-        the destination. The resultant color is always at least as dark as
-        either of the two constituent colors. Multiplying any color with black
-        produces black. Multiplying any color with white leaves the original
-        color unchanged.</td>
+    <td>The source is multiplied by the destination and replaces the
+        destination. The resultant color is always at least as dark as either
+        of the two constituent colors. Multiplying any color with black produces
+        black; multiplying any color with white leaves the original color
+        unchanged.</td>
+  </tr>
+
+  <tr>
+    <td>divide</td>
+    <td>Works by dividing the pixel values of one input image by those of another, channel by channel. This produces specialized blending effects, often for normalization or highlighting contrasts.</td>
   </tr>
 
   <tr>
     <td>screen</td>
-    <td>The source and destination are complemented and then
-        multiplied and then replace the destination. The resultant color is
-        always at least as light as either of the two constituent colors.
-        Screening any color with white produces white. Screening any color
-        with black leaves the original color unchanged.</td>
+    <td>The source and destination are complemented, then multiplied, and the
+        result is complemented again and replaces the destination. The resultant
+        color is always at least as light as either of the two constituent
+        colors. Screening any color with white produces white; screening any
+        color with black leaves the original color unchanged. It is the
+        mathematical opposite of '<code>Multiply</code>'.</td>
+  </tr>
+
+  <tr>
+    <td>bumpmap</td>
+    <td>The intensity (grayscale value) of the source is multiplied with the
+        destination color. Unlike '<code>Multiply</code>', which multiplies each
+        channel by the matching source channel, '<code>Bumpmap</code>' uses the
+        single luminance of the source to shade the destination, which makes it
+        well suited to applying an embossed or relief texture as a light/shadow
+        map.</td>
+  </tr>
+
+  <tr>
+    <td>divide-dst</td>
+    <td>Performs a true mathematical division of the destination color by the
+        source color, channel by channel ( <code>Dc / Sc</code> ), and replaces
+        the destination. Where the two images are equal the result is white
+        (1.0). This is the standard '<code>Divide</code>' operator, and is an
+        efficient built-in replacement for the equivalent (but slow) <a
+        href="../command-line-options/index.html#fx">-fx</a> "divide" expression. It is
+        widely used to flatten uneven lighting or remove a background gradient,
+        e.g. by dividing a scan by a heavily blurred copy of itself.</td>
+  </tr>
+
+  <tr>
+    <td>divide-src</td>
+    <td>The reverse of '<code>Divide-Dst</code>': divides the source color by
+        the destination color ( <code>Sc / Dc</code> ) and replaces the
+        destination. Choose '<code>Divide-Src</code>' or
+        '<code>Divide-Dst</code>' depending on which image should be the
+        numerator.</td>
   </tr>
 
   <tr>
     <td>plus</td>
-    <td>The source is added to the destination and replaces the
-        destination. This operator is useful for averaging or a controlled
-        merger of two images, rather than a direct overlay.</td>
+    <td>The source is added to the destination and replaces the destination,
+        with the alpha channels also added. This operator is useful for
+        averaging, or for a controlled merger of two images, rather than a
+        direct overlay. Values that exceed <var>QuantumRange</var> are clamped
+        to white.</td>
   </tr>
 
   <tr>
-    <td>add</td>
-    <td>As per 'plus' but transparency data is treated as matte
-        values. As such any transparent areas in either image remain
-        transparent. </td>
+    <td>add<br/>(modulus-add)</td>
+    <td>As per '<code>Plus</code>', but any result that exceeds
+        <var>QuantumRange</var> "wraps around" using modulus arithmetic rather
+        than being clamped. Transparency data is treated as matte values, so any
+        transparent areas in either image remain transparent. Also available as
+        the explicit name '<code>Modulus-Add</code>'.</td>
   </tr>
 
   <tr>
-    <td>minus</td>
-    <td>Subtract the colors in the source image from the
-        destination image. When transparency is involved, opaque areas is
-        subtracted from any destination opaque areas. </td>
+    <td>minus<br/>(minus-dst)</td>
+    <td>Subtracts the source color from the destination color
+        ( <code>Dc - Sc</code> ), with negative results clamped to black. When
+        transparency is involved, the source opaque areas are subtracted from
+        the destination opaque areas.</td>
   </tr>
 
   <tr>
-    <td>subtract</td>
-    <td>Subtract the colors in the source image from the
-        destination image. When transparency is involved transparent areas are
-        subtracted, so only the opaque areas in the source remain opaque in
-        the destination image. </td>
+    <td>minus-src</td>
+    <td>The reverse of '<code>Minus-Dst</code>': subtracts the destination color
+        from the source color ( <code>Sc - Dc</code> ), with negative results
+        clamped to black.</td>
+  </tr>
+
+  <tr>
+    <td>subtract<br/>(modulus-subtract)</td>
+    <td>Subtracts the source color from the destination color, but any negative
+        result "wraps around" using modulus arithmetic rather than being clamped
+        to black. When transparency is involved, transparent areas are
+        subtracted, so only the opaque areas in the source remain opaque in the
+        destination image. Also available as '<code>Modulus-Subtract</code>'.</td>
   </tr>
 
   <tr>
     <td>difference</td>
-    <td>Subtracts the darker of the two constituent colors from
-        the lighter. Painting with white inverts the destination color.
-        Painting with black produces no change.</td>
+    <td>Subtracts the darker of the two constituent colors from the lighter one,
+        giving the absolute difference between them. Compositing with white
+        inverts the destination color; compositing with black produces no
+        change. Identical destination and source colors produce black, which
+        makes this method a convenient way to visually compare two images.</td>
   </tr>
 
   <tr>
     <td>exclusion</td>
-    <td>Produces an effect similar to that of 'difference', but
-        appears as lower contrast.  Painting with white inverts the
-        destination color. Painting with black produces no change.</td>
+    <td>Produces an effect similar to '<code>Difference</code>', but lower in
+        contrast. Compositing with white inverts the destination color;
+        compositing with black produces no change.</td>
   </tr>
 
   <tr>
     <td>darken</td>
-    <td>Selects the darker of the destination and source colors.
-        The destination is replaced with the source when the source is darker,
-        otherwise it is left unchanged.</td>
+    <td>Selects the darker of the destination and source colors, compared
+        channel by channel. The destination is replaced with the source only
+        where the source is darker; otherwise it is left unchanged.</td>
   </tr>
 
   <tr>
     <td>lighten</td>
-    <td>Selects the lighter of the destination and source colors.
-        The destination is replaced with the source when the source is
-        lighter, otherwise it is left unchanged. </td>
+    <td>Selects the lighter of the destination and source colors, compared
+        channel by channel. The destination is replaced with the source only
+        where the source is lighter; otherwise it is left unchanged.</td>
+  </tr>
+
+  <tr>
+    <td>darken-intensity</td>
+    <td>Like '<code>Darken</code>', but the choice is made by comparing the
+        overall pixel intensity (luminance) rather than each channel
+        separately. Whichever whole pixel is darker is kept, preserving its hue
+        instead of mixing channels from both images.</td>
+  </tr>
+
+  <tr>
+    <td>lighten-intensity</td>
+    <td>Like '<code>Lighten</code>', but the choice is made by comparing the
+        overall pixel intensity (luminance) rather than each channel
+        separately. Whichever whole pixel is lighter is kept.</td>
   </tr>
 
   <tr>
     <td>negate</td>
-    <td>The "opposite" of difference mode. Note that it is not difference mode inverted, because black and white return the same result, but colors between become brighter instead of darker. </td>
+    <td>The "opposite" of '<code>Difference</code>' mode. Note that it is not
+        simply '<code>Difference</code>' inverted, because black and white
+        return the same result, but intermediate colors become brighter instead
+        of darker.</td>
   </tr>
 
   <tr>
     <td>reflect</td>
-    <td>This mode is useful when adding shining objects or light zones to images. The formula is similar to color dodge, but the result is not that bright in most cases. The result looks a bit like soft light. </td>
+    <td>Useful when adding shining objects or bright light zones to an image.
+        The formula is related to '<code>Color-Dodge</code>', but the result is
+        generally not as bright, giving something between a dodge and a soft
+        light.</td>
   </tr>
 
   <tr>
     <td>freeze</td>
-    <td>Another variation of reflect mode (base and blend color inverted, the result inverted again). </td>
+    <td>Another variation of '<code>Reflect</code>' mode, computed by inverting
+        the base and blend colors, applying the reflect formula, and inverting
+        the result again. It tends to deepen and intensify shadow regions.</td>
   </tr>
 
   <tr>
     <td>stamp</td>
-    <td>This mode somehow is similar to average mode. It is helpful when applying relief or bump textures to images. </td>
+    <td>Similar in spirit to an "average" mode. It is helpful when applying
+        relief or bump-style textures to an image while retaining the
+        destination's mid-tones.</td>
   </tr>
 
   <tr>
     <td>interpolate</td>
-    <td>This mode somehow combines multiply and screen mode (looks very similar for very dark or bright colors). </td>
+    <td>Combines aspects of '<code>Multiply</code>' and '<code>Screen</code>'
+        mode using a smooth cosine interpolation, producing a gentle S-curve.
+        It looks very similar to the constituent colors for very dark or very
+        bright values.</td>
   </tr>
+  </tbody>
 </table>
+</div>
 
-<p>Typically these use the default 'Over' alpha blending when transparencies
-are also involved, except for 'Plus' which uses a 'plus' alpha blending.  This
-means the alpha channel  of both images will only be used to ensure that any
-visible input remains visible even in parts not overlaid. It also means that
-any values are weighted by the alpha channel of the input and output images.
-This 'Over' alpha blending is also applied to the lighting composition methods
-below. </p>
+<p>Typically these methods use the default '<code>Over</code>' alpha blending
+when transparencies are involved, except for '<code>Plus</code>' (and
+'<code>Add</code>'), which use a '<code>Plus</code>' alpha blending. This means
+the alpha channels of both images are used only to ensure that any visible input
+remains visible even in parts that are not overlaid, and that the color values
+are weighted by the alpha of the input and output images. This '<code>Over</code>'
+alpha blending is also applied to the lighting composition methods below.</p>
 
-<p> The math composition is applied on an individual channel basis as defined by the <a href="../command-line-options/index.html#channel" >-channel</a>.  This includes the alpha channel. This special usage allows you to perform true mathematics of the image channels, without alpha
-composition effects, becoming involved. </p>
+<p>Use <code>-define compose:sync=false</code> and the above mathematical
+compositions will no longer synchronise their action with the alpha channel.
+Instead the math composition is applied on an individual channel basis, as
+selected by the <a href="../command-line-options/index.html#channel">-channel</a> setting;
+this includes the alpha channel itself. This special usage allows you to perform
+true mathematics on the image channels, without the alpha composition becoming
+involved.</p>
 
-<p>Use <code>-define compose:sync=false</code> and the above mathematical compositions will no longer synchronise its actions with the alpha channel.  Instead the math composition is applied on an individual channel basis as defined by the <a href="../command-line-options/index.html#channel">-channel</a>.  This includes the alpha channel. This special usage allows you to perform true mathematics of the image channels, without alpha composition effects, becoming involved.</p>
+<p>This define is not applied to the lighting composition methods (see below),
+even though they are closely related to the mathematical composition
+methods.</p>
 
-<p>This define is not applied to the lighting composition methods (see below) even though they are closely related to mathematical composition methods.</p>
+<p>A classic use of '<code>Divide</code>' is to flatten uneven lighting or
+remove a background gradient by dividing an image by a heavily blurred copy of
+itself. Note the parentheses, which limit the blur to just the cloned copy&hellip;</p>
 
-<p>The following lighting composition methods are also available. </p>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick scan.png \( +clone -blur 0x20 \) -compose Divide_Src -composite flattened.png</samp></pre>
 
-<table class="table table-sm table-hover table-striped table-responsive">
+<h2>Lighting Composition Methods</h2>
+
+<p>The following lighting composition methods (the "light", "dodge", and "burn"
+blend modes) are also available. Many are the standard <em>non-separable</em>
+blend modes described by the SVG&nbsp;1.2 Compositing standard, and match the
+equivalent modes found in SVG, PDF, and popular image editors.</p>
+
+<div style="max-height:75svh; overflow-y:auto; overflow-x:hidden;">
+<table class="table table-sm table-hover table-striped">
+  <colgroup>
+    <col style="width:30%">
+    <col style="width:70%">
+  </colgroup>
   <tbody>
   <tr>
-    <th align="left" style="width: 8%">Method</th>
+    <th align="left">Method</th>
     <th align="left">Description</th>
   </tr>
 
   <tr>
     <td>linear-dodge</td>
-    <td>This is equivalent to 'Plus' in that the color channels
-        are simply added, however it does not 'Plus' the alpha channel, but
-        uses the normal 'Over' alpha blending, which transparencies are
-        involved.  Produces a sort of additive multiply-like result.  </td>
+    <td>Equivalent to '<code>Plus</code>' in that the color channels are simply
+        added; however it does not add the alpha channel, but instead uses the
+        normal '<code>Over</code>' alpha blending when transparencies are
+        involved. Produces an additive, brightening result.</td>
   </tr>
 
   <tr>
     <td>linear-burn</td>
-    <td>As 'Linear-Dodge', but also subtract one from the result.
-        Sort of a additive 'Screen' of the images. </td>
+    <td>As '<code>Linear-Dodge</code>', but also subtracts one (full white) from
+        the result, darkening the image. It is, in effect, an additive
+        counterpart to '<code>Screen</code>'.</td>
   </tr>
 
   <tr>
     <td>color-dodge</td>
-    <td>Brightens the destination color to reflect the source
-        color. Painting with black produces no change.</td>
+    <td>Brightens the destination color to reflect the source color, by dividing
+        the destination by the inverse of the source. Compositing with black
+        produces no change, while brighter source colors progressively blow out
+        the destination toward white.</td>
   </tr>
 
   <tr>
     <td>color-burn</td>
-    <td>Darkens the destination color to reflect the source
-        color.  Painting with white produces no change.  </td>
+    <td>Darkens the destination color to reflect the source color, the inverse
+        operation to '<code>Color-Dodge</code>'. Compositing with white produces
+        no change, while darker source colors progressively burn the destination
+        toward black.</td>
   </tr>
 
   <tr>
     <td>overlay</td>
-    <td>Multiplies or screens the colors, dependent on the
-        destination color. Source colors overlay the destination whilst
-        preserving its highlights and shadows. The destination color is not
-        replaced, but is mixed with the source color to reflect the lightness
-        or darkness of the destination.</td>
+    <td>Multiplies or screens the colors, depending on the destination color.
+        Source colors overlay the destination while preserving its highlights
+        and shadows. The destination color is not replaced, but is mixed with
+        the source color to reflect the lightness or darkness of the
+        destination. This is '<code>Hard-Light</code>' with the source and
+        destination roles swapped.</td>
   </tr>
 
   <tr>
     <td>hard-light</td>
-    <td>Multiplies or screens the colors, dependent on the source
-        color value. If the source color is lighter than 0.5, the destination
-        is lightened as if it were screened. If the source color is darker
-        than 0.5, the destination is darkened, as if it were multiplied. The
-        degree of lightening or darkening is proportional to the difference
-        between the source color and 0.5. If it is equal to 0.5 the
-        destination is unchanged.  Painting with pure black or white produces
-        black or white.</td>
+    <td>Multiplies or screens the colors, depending on the source color value.
+        If the source color is lighter than 0.5, the destination is lightened as
+        if screened; if the source color is darker than 0.5, the destination is
+        darkened as if multiplied. The degree of lightening or darkening is
+        proportional to the difference between the source color and 0.5. If the
+        source equals 0.5 the destination is unchanged. Compositing with pure
+        black or white produces black or white.</td>
   </tr>
 
+  <tr>
+    <td>hard-mix</td>
+    <td>Adds the source and destination color values and then thresholds the
+        result to pure black or pure white on each channel. This produces a
+        high-contrast, posterised image restricted to the primary and secondary
+        colors.</td>
+  </tr>
 
   <tr>
     <td>linear-light</td>
-    <td>Like 'Hard-Light' but using linear-dodge and linear-burn
-        instead.  Increases contrast slightly with an impact on the
-        foreground's tonal values.</td>
+    <td>Like '<code>Hard-Light</code>', but using '<code>Linear-Dodge</code>'
+        and '<code>Linear-Burn</code>' instead of screen and multiply. It
+        increases contrast noticeably, with a strong impact on the foreground's
+        tonal values.</td>
   </tr>
 
   <tr>
     <td>soft-burn</td>
-    <td>A combination of color burn and inverse color dodge mode, but a lot smoother than both of them. The base image is lightened a bit, but very dark blend colors are "burned" in. </td>
+    <td>A combination of color-burn and inverse color-dodge modes, but much
+        smoother than either. The base image is lightened a little, while very
+        dark blend colors are "burned" in.</td>
   </tr>
 
   <tr>
     <td>soft-dodge</td>
-    <td> Combination of color dodge and inverse color burn mode, but a lot smoother than both of them. The base image is darkened a bit, but very bright blend colors are "dodged" in. </td>
+    <td>A combination of color-dodge and inverse color-burn modes, but much
+        smoother than either. The base image is darkened a little, while very
+        bright blend colors are "dodged" in.</td>
   </tr>
 
   <tr>
     <td>soft-light</td>
-    <td>Darkens or lightens the colors, dependent on the source
-        color value. If the source color is lighter than 0.5, the destination
-        is lightened. If the source color is darker than 0.5, the destination
-        is darkened, as if it were burned in. The degree of darkening or
-        lightening is proportional to the difference between the source color
-        and 0.5. If it is equal to 0.5, the destination is unchanged. Painting
-        with pure black or white produces a distinctly darker or lighter area,
-        but does not result in pure black or white. </td>
+    <td>Darkens or lightens the colors, depending on the source color value. If
+        the source color is lighter than 0.5, the destination is lightened; if
+        it is darker than 0.5, the destination is darkened, as if burned in. The
+        degree of change is proportional to the difference between the source
+        color and 0.5. If the source equals 0.5 the destination is unchanged.
+        Compositing with pure black or white produces a distinctly darker or
+        lighter area, but never pure black or white. This is the SVG&nbsp;1.2
+        "soft-light" blend mode.</td>
   </tr>
 
   <tr>
     <td>pegtop-light</td>
-    <td>Almost equivalent to 'Soft-Light', but using a
-        continuous mathematical formula rather than two conditionally
-        selected formulae. </td>
+    <td>Almost equivalent to '<code>Soft-Light</code>', but computed with a
+        single continuous mathematical formula rather than two conditionally
+        selected formulae. This avoids the subtle discontinuity that
+        '<code>Soft-Light</code>' can show at a source value of 0.5.</td>
   </tr>
 
   <tr>
     <td>vivid-light</td>
-    <td>A modified 'Linear-Light' designed to preserve very strong
-        primary and secondary colors in the image.  </td>
+    <td>A modified '<code>Linear-Light</code>' (a combination of
+        '<code>Color-Dodge</code>' and '<code>Color-Burn</code>') designed to
+        preserve very strong primary and secondary colors in the image.</td>
   </tr>
 
   <tr>
     <td>pin-light</td>
-    <td>Similar to 'Hard-Light', but using sharp linear shadings,
-        to simulate the effects of a strong 'pinhole' light source. </td>
+    <td>Similar to '<code>Hard-Light</code>', but using sharp linear shadings,
+        to simulate the effect of a strong "pinhole" light source. It replaces
+        colors based on how light or dark the source is, which can remove
+        mid-tone detail.</td>
   </tr>
 
   </tbody>
 </table>
+</div>
 
-<p>Also included are these special purpose compose methods:</p>
+<p>These blend modes are selected the same way as any other method. For
+instance, to blend a texture into a photo with '<code>Soft-Light</code>'&hellip;</p>
 
-<table class="table table-sm table-hover table-striped table-responsive">
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick photo.png texture.png -compose Soft-Light -composite result.png</samp></pre>
+
+<h2>Channel-Copying and Color (HSL) Methods</h2>
+
+<p>These methods do not blend the two images arithmetically. Instead they either
+transfer individual channels from the source to the destination, or transfer one
+component of the HSL color model (hue, saturation, or luminosity). The four HSL
+methods (<code>Hue</code>, <code>Saturate</code>, <code>Luminize</code>, and
+<code>Colorize</code>) correspond to the non-separable color blend modes of the
+SVG&nbsp;1.2 Compositing standard.</p>
+
+<div style="max-height:75svh; overflow-y:auto; overflow-x:hidden;">
+<table class="table table-sm table-hover table-striped">
+  <colgroup>
+    <col style="width:30%">
+    <col style="width:70%">
+  </colgroup>
   <tbody>
   <tr>
-    <th align="left" style="width: 8%">Method</th>
+    <th align="left">Method</th>
     <th align="left">Description</th>
   </tr>
 
   <tr>
     <td>copy</td>
-    <td>This is equivalent to the Duff-Porter composition method
-        '<code>Src,</code>' but without clearing the parts of the destination
-        image that is not overlaid.  </td>
-    </tr>
+    <td>Equivalent to the Duff&ndash;Porter '<code>Src</code>' composition
+        method, but <em>without</em> clearing the parts of the destination image
+        that are not overlaid. Only the overlaid area is replaced.</td>
+  </tr>
 
   <tr>
-    <td>copy-*</td>
-    <td>Copy the specified channel (Red, Green, Blue, Cyan,
-        Magenta, Yellow, Black, or Opacity) in the source image to the
-        same channel in the destination image.  If the channel specified
-        does not exist in the source image, (which can only happen for methods,
-        '<code>copy-opacity</code>' or '<code>copy-black</code>') then it is
-        assumed that the source image is a special grayscale channel image
-        of the values that is to be copied. </td>
-    </tr>
+    <td>copy-<em>&lt;channel&gt;</em></td>
+    <td>Copies the specified channel (<code>Red</code>, <code>Green</code>,
+        <code>Blue</code>, <code>Cyan</code>, <code>Magenta</code>,
+        <code>Yellow</code>, <code>Black</code>, or <code>Alpha</code>) from the
+        source image into the same channel of the destination image, leaving the
+        other channels untouched. If the requested channel does not exist in the
+        source image (which can only happen for '<code>Copy-Alpha</code>' or
+        '<code>Copy-Black</code>'), then the source is assumed to be a grayscale
+        image whose intensity supplies the values to be copied.
+        '<code>Copy-Alpha</code>' (formerly '<code>Copy-Opacity</code>') is the
+        classic way to apply an explicit transparency mask to an image.</td>
+  </tr>
+
+  <tr>
+    <td>hue</td>
+    <td>Replaces the hue of the destination with the hue of the source, while
+        keeping the destination's saturation and luminosity.</td>
+  </tr>
+
+  <tr>
+    <td>saturate</td>
+    <td>Replaces the saturation of the destination with the saturation of the
+        source, while keeping the destination's hue and luminosity.</td>
+  </tr>
+
+  <tr>
+    <td>luminize</td>
+    <td>Replaces the luminosity (brightness) of the destination with that of the
+        source, while keeping the destination's hue and saturation.</td>
+  </tr>
+
+  <tr>
+    <td>colorize</td>
+    <td>Replaces the hue and saturation of the destination with those of the
+        source, while keeping the destination's luminosity. It is the exact
+        complement of '<code>Luminize</code>' and is ideal for tinting a
+        grayscale image with a color.</td>
+  </tr>
+
+  </tbody>
+</table>
+</div>
+
+<p>For example, to tint a grayscale portrait with a solid color using
+'<code>Colorize</code>', which keeps the destination's luminosity but takes the
+hue and saturation from the source&hellip;</p>
+
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick portrait.png xc:steelblue -compose Colorize -composite tinted.png</samp></pre>
+
+<h2>Other Special-Purpose Methods</h2>
+
+<p>Also included are these special-purpose compose methods:</p>
+
+<div style="max-height:75svh; overflow-y:auto; overflow-x:hidden;">
+<table class="table table-sm table-hover table-striped">
+  <colgroup>
+    <col style="width:30%">
+    <col style="width:70%">
+  </colgroup>
+  <tbody>
+  <tr>
+    <th align="left">Method</th>
+    <th align="left">Description</th>
+  </tr>
+
+  <tr>
+    <td>no</td>
+    <td>A true "no operation". Used internally, and when layering images, to
+        indicate that no composition should be performed. The destination is
+        returned unchanged.</td>
+  </tr>
 
   <tr>
     <td>change-mask</td>
-    <td>Replace any destination pixel that is the similar to the
-    source images pixel (as defined by the current <a
-    href="../command-line-options/index.html#fuzz">-fuzz</a> factor), with transparency.
-    </td>
+    <td>Replaces any destination pixel that is similar to the corresponding
+        source pixel (as defined by the current <a
+        href="../command-line-options/index.html#fuzz">-fuzz</a> factor) with transparency.
+        This is useful for producing a minimal "difference" overlay, such as when
+        optimising an animation.</td>
   </tr>
 
   <tr>
     <td>stereo</td>
-    <td>create a stereo anaglyph</td>
+    <td>Creates a stereo anaglyph by taking the red channel from the source
+        image and the green and blue channels from the destination image, so the
+        combined result can be viewed with red/cyan 3D glasses.</td>
   </tr>
+
   </tbody>
 </table>
+</div>
 
-<p>On top of these composed methods are a few special ones that not only require
-the two images that are being merged or overlaid, but have some extra numerical
-arguments, which are tabled below. </p>
+<h2>Composition Methods That Take Arguments</h2>
 
-<p>In the "<code>composite</code>" command these composition methods are
-selected using special options with the arguments needed. They are usually,
-but not always, the same name as the composite 'method' they use, and replaces
-the normal use of the <a href="../command-line-options/index.html#compose" >-compose</a>
-setting in the "<code>composite</code>" command.  For example... </p>
+<p>On top of the methods above are a few special ones that not only require the
+two images being merged, but also take some extra numerical arguments, which are
+tabled below.</p>
 
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><code>composite ... -blend 50x50 ...  </code></pre>
+<p>In the "<code>composite</code>" command these composition methods are usually
+selected using dedicated options that carry the arguments they need. Those
+option names are usually&mdash;but not always&mdash;the same as the compose
+'method' they use, and they replace the normal <a
+href="../command-line-options/index.html#compose">-compose</a> setting. For example&hellip;</p>
 
-<p>The "<samp>$ magick</samp>" command can accept these extra arguments to its <a href="../command-line-options/index.html#composite"
->-composite</a> operator, using the special <a href="../command-line-options/index.html#define">-define</a>
-attribute of <code>compose:args</code>.  This means you can now
-make use of these special augmented <a href="../command-line-options/index.html#compose"
->-compose</a> methods, those the argument and the method both need to be set
-separately.  For example... </p>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><code>magick composite ... -blend 50x50 ...</code></pre>
 
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><pre><samp>$ magick ... -compose blend  -define compose:args=50,50 -composite ...  </samp></pre></pre>
+<p>The "<samp>magick</samp>" command can pass these extra arguments to its <a
+href="../command-line-options/index.html#composite">-composite</a> operator using the
+special <a href="../command-line-options/index.html#define">-define</a> attribute
+<code>compose:args</code>. This means you can make use of these augmented <a
+href="../command-line-options/index.html#compose">-compose</a> methods, though the argument
+and the method must each be set separately. For example&hellip;</p>
 
-<p>The following is a table of these special 'argumented' compose methods,
-with a brief summary of what they do. For more details see the equivalent
-"composite" command option name.  </p>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick ... -compose blend -define compose:args=50,50 -composite ...</samp></pre>
 
-<table class="table table-sm table-hover table-striped table-responsive">
+<p>The following is a table of these special 'argumented' compose methods, with
+a brief summary of what they do. For more detail see the equivalent
+"<code>composite</code>" command option.</p>
+
+<div style="max-height:75svh; overflow-y:auto; overflow-x:hidden;">
+<table class="table table-sm table-hover table-striped">
+  <colgroup>
+    <col style="width:30%">
+    <col style="width:70%">
+  </colgroup>
   <tbody>
   <tr>
-    <th align="left" style="width: 8%">Method</th>
+    <th align="left">Method</th>
     <th align="left">Description</th>
   </tr>
 
@@ -654,12 +965,12 @@ with a brief summary of what they do. For more details see the equivalent
     <td>Arguments:
         <var>src_percent</var>[x<var>dst_percent</var>]
     <br/>Equivalent to "<code>composite</code>" <a href="../command-line-options/index.html#dissolve">-dissolve</a>.
-    Dissolve the 'source' image by the percentage given before overlaying
-        'over' the 'destination' image. If <var>src_percent</var> is
-        greater than 100, it starts dissolving the main image so it will
-        become transparent at a value of <code>200</code>.  If
-        both percentages are given, each image are dissolved to the
-        percentages given.
+    Dissolves the 'source' image by the percentage given before overlaying it
+        'over' the 'destination' image. If <var>src_percent</var> is greater than
+        100, it starts dissolving the destination image as well, so the
+        destination becomes fully transparent at a value of <code>200</code>. If
+        both percentages are given, each image is dissolved to the percentage
+        given.
     </td>
   </tr>
 
@@ -669,13 +980,12 @@ with a brief summary of what they do. For more details see the equivalent
         <var>src_percent</var>[x<var>dst_percent</var>]
     <br/>Equivalent to "<code>composite</code>" <a
         href="../command-line-options/index.html#blend">-blend</a>.
-    Average the images together ('plus') according to the percentages
-        given and each pixels transparency.  If only a single percentage value
-        is given it sets the weight of the composite or 'source' image, while
-        the background image is weighted by the exact opposite amount. That is
-        a <code>-blend 30</code> merges 30% of the 'source' image with 70% of
-        the 'destination' image.  Thus it is equivalent to <code>-blend
-        30x70</code>.
+    Averages the images together ('plus') according to the percentages given and
+        each pixel's transparency. If only a single percentage is given, it sets
+        the weight of the 'source' image, while the 'destination' image is
+        weighted by the exact opposite amount. That is, <code>-blend 30</code>
+        merges 30% of the source with 70% of the destination, and is therefore
+        equivalent to <code>-blend 30x70</code>.
     </td>
   </tr>
 
@@ -683,11 +993,13 @@ with a brief summary of what they do. For more details see the equivalent
     <td>mathematics</td>
     <td>Arguments: <var>A, B, C, D</var>
     <br/>Not available in "<code>composite</code>" at this time.
-    Merge the source and destination images according to the formula
+    Merges the source and destination images according to the formula
     <ul><code>A*Sc*Dc + B*Sc + C*Dc + D</code></ul>
-    Can be used to generate a custom composition method that would
-        otherwise need to be implemented using the slow <a
-        href="../command-line-options/index.html#fx">-fx</a> DIY image operator.
+    where <code>Sc</code> and <code>Dc</code> are the source and destination
+        color values. This can generate a custom composition method that would
+        otherwise need the slow <a href="../command-line-options/index.html#fx">-fx</a> DIY
+        image operator. For example, setting <var>A=1</var> with the other
+        coefficients zero reproduces '<code>Multiply</code>'.
     </td>
   </tr>
 
@@ -696,12 +1008,11 @@ with a brief summary of what they do. For more details see the equivalent
     <td>Arguments:
         <var>brightness</var>[x<var>saturation</var>]
     <br/>Equivalent to "<code>composite</code>" <a href="../command-line-options/index.html#watermark">-watermark</a>.
-    Take a grayscale image (with alpha mask) and modify the destination
-        image's brightness according to watermark image's grayscale value and
-        the <var>brightness</var> percentage.  The destinations
-        color saturation attribute is just direct modified by the <var>saturation</var> percentage, which defaults to 100 percent
-        (no color change).
-
+    Takes a grayscale image (with an alpha mask) and modifies the destination
+        image's brightness according to the source image's grayscale value and
+        the <var>brightness</var> percentage. The destination's color saturation
+        is scaled directly by the <var>saturation</var> percentage, which
+        defaults to 100 percent (no color change).
     </td>
   </tr>
 
@@ -710,26 +1021,25 @@ with a brief summary of what they do. For more details see the equivalent
     <td>Arguments:
         <var>X-scale</var>[x<var>Y-scale</var>][!][%]
     <br/>Equivalent to "<code>composite</code>" <a href="../command-line-options/index.html#displace">-displace</a>.
-    With this option, the 'overlay' image, and optionally the 'mask'
-        image, is used as a relative displacement map, which is used to
-        displace the lookup of what part of the destination image is seen at
-        each point of the overlaid area.  Much like the displacement map is a
-        'lens' that distorts the original 'background' image behind it.
+    With this method, the 'overlay' image (and optionally the 'mask' image) is
+        used as a relative displacement map, which shifts the lookup of the
+        destination pixel that is seen at each point of the overlaid area. It is
+        much like a 'lens' that distorts the background image behind it.
     <br/><br/>
-        The X-scale is modulated by the 'red' channel of the overlay image
-        while the Y-scale is modulated by the green channel, (the mask image
-        if given is rolled into green channel of the overlay image. This
-        separation allows you to modulate the X and Y lookup displacement
-        separately allowing you to do 2-dimensional displacements, rather
-        than 1-dimensional vectored displacements (using grayscale image).
+        The X-scale is modulated by the red channel of the overlay image, while
+        the Y-scale is modulated by the green channel (if a mask image is given,
+        it is rolled into the green channel of the overlay). This separation lets
+        you modulate the X and Y lookups independently, allowing 2-dimensional
+        displacements rather than the 1-dimensional vectored displacement of a
+        single grayscale image.
     <br/><br/>
-        If the overlay image contains transparency this is used as a mask
-        of the resulting image to remove 'invalid' pixels.
+        If the overlay image contains transparency, it is used as a mask on the
+        result to remove 'invalid' pixels.
     <br/><br/>
-        The '%' flag makes the displacement scale relative to the size of the
-        overlay image (100% = half width/height of image). Using '!' switches
-        percentage arguments to refer to the destination image size instead.
-    <br/><br/>
+        The '<code>%</code>' flag makes the displacement scale relative to the
+        size of the overlay image (100% = half the width/height of the image).
+        Using '<code>!</code>' switches the percentage arguments to refer to the
+        destination image size instead.
     </td>
   </tr>
 
@@ -738,17 +1048,16 @@ with a brief summary of what they do. For more details see the equivalent
     <td>Arguments:
         <var>X-scale</var>[x<var>Y-scale</var>[+<var>X-center</var>+<var>Y-center</var>]][!][%]
     <br/>Not available in "<code>composite</code>" at this time.
-    Exactly as per 'Displace' (above), but using absolute coordinates,
-        relative to the center of the overlay (or that given).  Basically
-        allows you to generate absolute distortion maps where 'black' will
-        look up the left/top edge, and 'white' looks up the bottom/right
-        edge of the destination image, according to the scale given.
+    Exactly as per '<code>Displace</code>' (above), but using absolute
+        coordinates relative to the center of the overlay (or to the center
+        given). This lets you generate absolute distortion maps, where 'black'
+        looks up the left/top edge and 'white' looks up the bottom/right edge of
+        the destination image, according to the scale given.
     <br/><br/>
-        The '!' flag not only switches percentage scaling, to use the
-        destination image, but also the image the center offset of the lookup.
-        This means the overlay can lookup a completely different region of the
-        destination image.
-    <br/><br/>
+        The '<code>!</code>' flag not only switches the percentage scaling to use
+        the destination image, but also references the center offset against the
+        destination. This means the overlay can look up a completely different
+        region of the destination image.
     </td>
   </tr>
 
@@ -757,53 +1066,66 @@ with a brief summary of what they do. For more details see the equivalent
     <td>Arguments:
         <var>Width</var>[x<var>Height</var>[+<var>Angle</var>][+<var>Angle2</var>]]
     <br/>Equivalent to "<code>composite</code>" <a href="../command-line-options/index.html#blur-composite">-blur</a>.
-    A Variable Blur Mapping Composition method, where each pixel in the
-        overlaid region is replaced with an Elliptical Weighted Average (EWA),
-        with an ellipse (typically a circle) of the given sigma size, scaled
-        according to overlay (source image) grayscale mapping.
+    A variable-blur mapping composition method, where each pixel in the overlaid
+        region is replaced with an Elliptical Weighted Average (EWA), using an
+        ellipse (typically a circle) of the given sigma size, scaled according
+        to the overlay (source) grayscale mapping.
     <br/><br/>
-        As per 'Displace' and 'Distort', the red channel will modulate the
-        width of the ellipse, while the green channel will modulate the height
-        of the ellipse. If a single Angle value is given in the arguments,
-        then the ellipse will then be rotated by the angle specified.
+        As with '<code>Displace</code>' and '<code>Distort</code>', the red
+        channel modulates the width of the ellipse while the green channel
+        modulates its height. If a single Angle value is given, the ellipse is
+        rotated by that angle.
     <br/><br/>
-        Normally the blue channel of the mapping overlay image is ignored.
-        However if a second ellipse angle is given, then it is assumed that
-        the blue channel defines a variable angle for the ellipse ranging from
-        the first angle to the second angle given.  This allows to generate
-        radial blurs, or a rough approximation for rotational blur. Or any mix
-        of the two.
-    <br/><br/>
+        Normally the blue channel of the mapping overlay is ignored. However if a
+        second angle is given, the blue channel is taken to define a variable
+        angle for the ellipse, ranging from the first angle to the second. This
+        lets you generate radial blurs, a rough approximation of rotational blur,
+        or any mix of the two.
     </td>
   </tr>
+
   <tr>
     <td>seamless-blend</td>
     <td>Arguments: <var>max-iterations</var>x<var>distortion</var>
-    <p>Seamlessly inserts the overlay image onto the background image. This operator requires a mask. Set the maximum iterations and distortion when seamlessly blending a foreground object onto a background image. The distortion is the RMSE between each iteration, a good start might be 300x0.0001. Note, seamless blending works most effectively when the HDRI feature is enabled.</p>
+    <p>Seamlessly inserts the overlay image onto the background image. This
+        operator requires a mask. Set the maximum number of iterations and the
+        target distortion when seamlessly blending a foreground object onto a
+        background. The distortion is the RMSE between each iteration; a good
+        starting point is <code>300x0.0001</code>. Note that seamless blending
+        works most effectively when the HDRI feature is enabled.</p>
     </td>
   </tr>
+
   <tr>
     <td>saliency-blend</td>
     <td>Arguments: <var>max-iterations</var>x<var>distortion</var>
-    <p>Merges the overlay image with the background image such that the image that is most salient (has the most detail) at a given pixel will show in the result. This operator requires a mask. Set the maximum iterations and distortion when seamlessly blending a foreground object onto a background image. The distortion is the RMSE between each iteration, a good start might be 300x0.0001. Note, seamless blending works most effectively when the HDRI feature is enabled. Saliency-blending will be a bit slower than seamless blending.</p>
+    <p>Merges the overlay image with the background image such that whichever
+        image is most salient (has the most detail) at a given pixel is the one
+        that shows in the result. This operator requires a mask. Set the maximum
+        number of iterations and the target distortion as for
+        '<code>Seamless-Blend</code>'; a good starting point is
+        <code>300x0.0001</code>. Note that this works most effectively when the
+        HDRI feature is enabled, and it is a little slower than seamless
+        blending.</p>
     </td>
   </tr>
 
-
   </tbody>
 </table>
+</div>
 
-<p>To print a complete list of all the available compose operators, use <a
-href="../command-line-options/index.html#list">-list compose</a>.</p>
+<p>To print a complete list of all the available compose operators supported by
+your particular build, use <a href="../command-line-options/index.html#list">-list
+compose</a>.</p>
 </div>
 
         </div>
-        <div class="col-md-3">
+        <div class="col-lg-3 col-12 ps-lg-4 border-start d-flex flex-column align-items-center align-items-lg-start">
           <div class="container text-center my-3">
             <a href="../image/wizard.png" rel="noopener noreferrer" target="_blank">
-              <img alt="The Tao of the Spiritual Warrior" class="img-fluid img-thumbnail" height="1468" loading="lazy" src="../image/wizard.png" width="1104">
+              <img alt="ImageMagick Wizard" class="img-fluid img-thumbnail" height="351" loading="lazy" src="../image/wizard.jpg" width="264">
             </a>
-            <p class="mt-2"><iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border: 0;"></iframe></p>
+            <p class="mt-2"><iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border:0 !important; width:107px !important; height:35px !important;"></iframe></p>
           </div>
           <div class="container text-center my-3">
             <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745"
@@ -828,7 +1150,7 @@ href="../command-line-options/index.html#list">-list compose</a>.</p>
         <a href="../security-policy/index.html">Security</a> •
         <a href="../news/index.html">News</a>
         &nbsp;
-        <a href="#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../image/wand.ico"></a>
+        <a href="#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../image/wand.png"></a>
         &nbsp;
         <a href="../links/index.html">Related</a> •
         <a href="../sitemap/index.html">Sitemap</a>

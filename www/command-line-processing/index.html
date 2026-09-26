@@ -1,20 +1,21 @@
 
 
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en" data-bs-theme="auto">
 
 
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>ImageMagick | Command-line Processing</title>
-  <meta name="description" content="Create, edit, compose, and convert digital images from the command-line.">
+  <meta name="description" content="Learn how ImageMagick interprets and executes command-line instructions for image manipulation. This guide explains the processing order, option handling, and input/output management, helping developers and system administrators build efficient scripts and workflows. Master the fundamentals of ImageMagick’s CLI processing to achieve precise, reproducible results across platforms.">
   <link rel="canonical" href="index.html">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#000000">
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
   <link rel="shortcut icon" href="../image/wand.png" type="image/png">
   <link rel="apple-touch-icon" href="../image/wand.png" type="image/png">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net/">
   <link rel="preconnect" href="https://localhost/">
   <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" as="style" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" crossorigin="anonymous">
@@ -22,6 +23,14 @@
   <style>
     html {
       scroll-padding-top: 70px;
+    }
+
+    iframe {
+      width: 100% !important;
+      max-width: 100% !important;
+      height: 400px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
     }
 
     a.nav-link:hover,
@@ -48,13 +57,23 @@
     :root {
       --bs-code-color: revert;
     }
+
+    .table {
+      table-layout: fixed;   /* force equal distribution of width */
+      width: 100%;           /* table spans full container */
+    }
+
+    .table td, .table th {
+      white-space: normal;     /* allow wrapping */
+      word-break: break-word;  /* break long words/strings */
+    }
   </style>
   <!-- Open Graph Meta Tags -->
   <meta property="og:title" content="ImageMagick | Command-line Processing">
-  <meta property="og:description" content="Create, edit, compose, and convert digital images from the command-line.">
-  <meta property="og:image" content="https://imagemagick.org/image/logo.png">
-  <meta property="og:logo" content="https://imagemagick.org/image/logo.png">
-  <meta property="og:url" content="https://imagemagick.org/command-line-processing/">
+  <meta property="og:description" content="Learn how ImageMagick interprets and executes command-line instructions for image manipulation. This guide explains the processing order, option handling, and input/output management, helping developers and system administrators build efficient scripts and workflows. Master the fundamentals of ImageMagick’s CLI processing to achieve precise, reproducible results across platforms.">
+  <meta property="og:image" content="../image/logo.png">
+  <meta property="og:logo" content="../image/logo.png">
+  <meta property="og:url" content="index.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ImageMagick">
   <meta property="og:locale" content="en_us">
@@ -65,7 +84,7 @@
   <meta name="twitter:creator" content="@imagemagick">
   <meta name="twitter:title" content="ImageMagick | Command-line Processing">
   <meta name="twitter:description" content="$this->description">
-  <meta name="twitter:image" content="https://imagemagick.org/image/logo.png">
+  <meta name="twitter:image" content="../image/logo.png">
   <meta name="twitter:image:alt" content="ImageMagick logo and tag line">
   <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
@@ -78,7 +97,7 @@
         "description": "$this->description",
         "applicationCategory": "Multimedia",
         "operatingSystem": "Windows, macOS, Linux, Unix",
-        "softwareVersion": "7.1.2-27",
+        "softwareVersion": "7.1.2-31",
         "license": "https://imagemagick.org/license/",
         "creator": {
           "@type": "Organization",
@@ -199,8 +218,8 @@
     </header>
 
     <main role="main" class="container">
-      <div class="row g-5">
-        <div class="col-md-9">
+      <div class="row g-4">
+        <div class="col-lg-9 col-12">
           <div>
 <p class="text-center"><a href="#anatomy">The Anatomy of the Command-line</a> • <a href="#input">Input Filename</a> • <a href="#option">Command-line Options</a> • <a href="#output">Output Filename</a></p>
 
@@ -239,27 +258,33 @@
 
 <pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>$ magick -size 320x90 canvas:none -stroke snow4 -size 1x90 -tile gradient:white-snow4 \
   -draw 'roundrectangle 16, 5, 304, 85 20,40' +tile -fill snow \
-  -draw 'roundrectangle 264, 5, 304, 85  20,40' -tile gradient:chartreuse-green \
-  -draw 'roundrectangle 16,  5, 180, 85  20,40' -tile gradient:chartreuse1-chartreuse3 \
-  -draw 'roundrectangle 140, 5, 180, 85  20,40' +tile -fill none \
+  -draw 'roundrectangle 264, 5, 304, 85  20,40' \
+  -tile gradient:chartreuse-green -draw 'roundrectangle 16, 5, 180, 85 20,40' \
+  -tile gradient:chartreuse1-chartreuse3 \
+  -draw 'roundrectangle 140, 5, 180, 85 20,40' +tile -fill none \
   -draw 'roundrectangle 264, 5, 304, 85 20,40' -strokewidth 2 \
   -draw 'roundrectangle 16, 5, 304, 85 20,40' \( +clone -background snow4 \
-  -shadow 80x3+3+3 \) +swap -background none -layers merge \( +size -pointsize 90 \
-  -strokewidth 1 -fill red label:'50 %' -trim +repage \( +clone -background firebrick3 \
-  -shadow 80x3+3+3 \) +swap -background none -layers merge \) -insert 0 -gravity center \
-  -append -background white -gravity center -extent 320x200 cylinder_shaded.png</samp></pre>
+  -shadow 80x3+3+3 \) +swap -background none -layers merge \
+  \( +size -pointsize 90 -strokewidth 1 -fill red label:'50 %' \
+  -trim +repage \( +clone -background firebrick3 -shadow 80x3+3+3 \) \
+  +swap -background none -layers merge \) -insert 0 -gravity center \
+  -append -background white -gravity center -extent 320x200 \
+  cylinder_shaded.png</samp></pre>
 
 <p>Run this script contributed by <a href="https://github.com/geemack">Geemack</a>.   You'll get a glimpse of the power and versatility of the ImageMagick command-line:</p>
-<pre class="overflow-auto p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>$ magick -background none -size 960x960 xc:black \( xc:darkred -duplicate 1 +append \) \
-  xc:gold \( xc:teal -duplicate 2 +append \) -modulate 100,100,"%[fx:rand()*200]" \
-  xc:white -scale x1 +append -write mpr:clut +delete radial-gradient: mpr:clut \
-  -clut -scale 100x4% -wave "%[fx:rand()*24+24]"x"%[fx:w/ceil(rand()*4+1)]" -extent "%[w]x%[w]" \
-  -roll +0+"%[fx:(rand()*w*0.05)+(w*0.51)]" \( +clone -blur 0x4 \) -insert 0 -composite \
-  -duplicate "%[fx:floor(rand()*3+3)*2-1]" -set option:rot "%[fx:180/n]" -virtual-pixel tile \
-  -virtual-pixel none -distort SRT "%[fx:t*360/n]" +repage -flatten -extent 100x50% \
-  \( +clone -rotate 180 \) -append +channel -virtual-pixel none -distort SRT "0.96 %[fx:rand()*360]" \
-  \( +clone -flop \) +repage -insert "%[fx:round(rand())]" -background black \
-  -flatten -brightness-contrast 20,20 -normalize dragonFire.png</samp></pre>
+<pre class="overflow-auto p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>$ magick -background none -size 960x960 xc:black \( xc:darkred -duplicate 1 \
+  +append \) xc:gold \( xc:teal -duplicate 2 +append \) \
+  -modulate 100,100,"%[fx:rand()*200]" xc:white -scale x1 +append \
+  -write mpr:clut +delete radial-gradient: mpr:clut -clut -scale 100x4% \
+  -wave "%[fx:rand()*24+24]"x"%[fx:w/ceil(rand()*4+1)]" \
+  -extent "%[w]x%[w]" -roll +0+"%[fx:(rand()*w*0.05)+(w*0.51)]" \( +clone \
+  -blur 0x4 \) -insert 0 -composite -duplicate "%[fx:floor(rand()*3+3)*2-1]" \
+  -set option:rot "%[fx:180/n]" -virtual-pixel tile -virtual-pixel none \
+  -distort SRT "%[fx:t*360/n]" +repage -flatten -extent 100x50% \
+  \( +clone -rotate 180 \) -append +channel -virtual-pixel none \
+  -distort SRT "0.96 %[fx:rand()*360]" \( +clone -flop \) +repage \
+  -insert "%[fx:round(rand())]" -background black -flatten \
+  -brightness-contrast 20,20 -normalize dragonFire.png</samp></pre>
 <p>To ensure the script can run under Windows, change any backslash-parens (\() to just parens, the backslash (\) to <code>^</code>, and double-up the percent (%) signs.</p>
 <p>In the next sections we dissect the anatomy of the ImageMagick command-line.  Hopefully, after carefully reading and better understanding how the command-line works, you should be able to accomplish complex image-processing tasks without resorting to the sometimes daunting <a href="../develop/index.html">program interfaces</a>.</p>
 
@@ -339,7 +364,7 @@ so we explicitly set one:
 <pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><pre><samp>$ magick -size 640x480 pattern:checkerboard checkerboard.png</samp></pre></pre>
 
 <h4>STDIN, STDOUT, and file descriptors</h4>
-<p>Linux and Windows permit the output of one command to be piped to the input of another. ImageMagick permits image data to be read and written from the <a href="http://en.wikipedia.org/wiki/Standard_streams">standard streams</a> STDIN (<var>standard in</var>) and STDOUT (<var>standard out</var>), respectively, using a pseudo-filename of <code>-</code>.  In this example we pipe the output of
+<p>Linux and Windows permit the output of one command to be piped to the input of another. ImageMagick permits image data to be read and written from the <a href="https://en.wikipedia.org/wiki/Standard_streams">standard streams</a> STDIN (<var>standard in</var>) and STDOUT (<var>standard out</var>), respectively, using a pseudo-filename of <code>-</code>.  In this example we pipe the output of
 <a href="../magick/index.html">magick</a> to the <a href="../display/index.html">display</a> program:
 </p>
 
@@ -385,6 +410,11 @@ In a Windows command shell the brackets are not interpreted but using quotes doe
 
 <p>Notice that in the last two commands, a single image is written. The output in this case, where the image type is MNG, is a multi-frame file because the MNG format supports multiple frames. Had the output format been JPG, which only supports single frames, the output would have consisted of separate frames. More about that below, in the section about the <a href="#output">Output Filename</a>.
 </p>
+<p>The <code>-define image:frames=<i>list</i></code> define provides an alternative to the bracket syntax for selecting specific frames from multi‑image formats such as GIF, TIFF, PDF, MIFF, and MNG. Instead of appending a frame range to the input filename, you can specify the desired frames directly with a define:</p>
+
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><pre><samp>$ magick -define image:frames=0-3 images.gif images.mng</samp></pre></pre>
+
+<p>This example extracts frames 0 through 3. The define accepts the same grammar as the bracket syntax.</p>
 
 <h4>Selecting an Image Region</h4>
 <p>Raw images are a sequence of color intensities without additional meta information such as width, height, or image signature.  With raw image formats, you must specify the image width and height but you can also specify a region of the image to read.  In our example, the image is in the raw 8-bit RGB format and is 6000 pixels wide and 4000 pixels high.  However, we only want a region of 600 by 400 near the center of the image:
@@ -779,9 +809,12 @@ setting for more specifics.</p>
 <p>The <var>geometry</var> argument might take any of the forms listed in the table below. These will described in more detail in the subsections following the table. The usual form is <var>size</var>[<var>offset</var>], meaning <var>size</var> is required and <var>offset</var> is optional. Occasionally, [<var>size</var>]<var>offset</var> is possible. In no cases are spaces permitted within the <var>geometry</var> argument.</p>
 
 
-<div>
-<table class="table table-sm table-hover table-striped table-responsive">
-  <col width="20%"/> <col width="80%"/>
+<div style="max-height:75svh; overflow-y:auto; overflow-x:hidden;">
+<table class="table table-sm table-hover table-striped">
+  <colgroup>
+    <col style="width:30%">
+    <col style="width:70%">
+  </colgroup>
   <thead>
   <tr>
     <th style="text-align:center"><var>size</var></th>
@@ -1000,12 +1033,12 @@ image-2.jpg</pre>
 </div>
 
         </div>
-        <div class="col-md-3">
+        <div class="col-lg-3 col-12 ps-lg-4 border-start d-flex flex-column align-items-center align-items-lg-start">
           <div class="container text-center my-3">
             <a href="../image/wizard.png" rel="noopener noreferrer" target="_blank">
-              <img alt="The Tao of the Spiritual Warrior" class="img-fluid img-thumbnail" height="1468" loading="lazy" src="../image/wizard.png" width="1104">
+              <img alt="ImageMagick Wizard" class="img-fluid img-thumbnail" height="351" loading="lazy" src="../image/wizard.jpg" width="264">
             </a>
-            <p class="mt-2"><iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border: 0;"></iframe></p>
+            <p class="mt-2"><iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border:0 !important; width:107px !important; height:35px !important;"></iframe></p>
           </div>
           <div class="container text-center my-3">
             <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745"
@@ -1030,7 +1063,7 @@ image-2.jpg</pre>
         <a href="../security-policy/index.html">Security</a> •
         <a href="../news/index.html">News</a>
         &nbsp;
-        <a href="#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../image/wand.ico"></a>
+        <a href="#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../image/wand.png"></a>
         &nbsp;
         <a href="../links/index.html">Related</a> •
         <a href="../sitemap/index.html">Sitemap</a>
