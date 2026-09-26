@@ -2657,6 +2657,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
   mvg_info.extent=(&number_points);
   mvg_info.exception=exception;
   graphic_context[n]=CloneDrawInfo((ImageInfo *) NULL,draw_info);
+  if (graphic_context[n]->primitive != (char *) NULL)
+    graphic_context[n]->primitive=DestroyString(graphic_context[n]->primitive);
   graphic_context[n]->viewbox=image->page;
   if ((image->page.width == 0) || (image->page.height == 0))
     {
