@@ -5773,7 +5773,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
 
       if (primitive_info->text == (char *) NULL)
         break;
-      clone_info=CloneImageInfo(draw_info->image_info);
+      clone_info=AcquireImageInfo();
       composite_images=(Image *) NULL;
       if (LocaleNCompare(primitive_info->text,"data:",5) == 0)
         composite_images=ReadInlineImage(clone_info,primitive_info->text,
@@ -5793,6 +5793,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               clone_info->size=DestroyString(clone_info->size);
             if (clone_info->extract != (char *) NULL)
               clone_info->extract=DestroyString(clone_info->extract);
+            clone_info->coder_depth=draw_info->image_info->coder_depth;
             composite_images=StrictReadImage(clone_info,exception);
             draw_info->image_info->coder_depth=clone_info->coder_depth;
           }

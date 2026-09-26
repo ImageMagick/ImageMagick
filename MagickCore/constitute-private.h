@@ -32,10 +32,12 @@ extern "C" {
 static inline Image *StrictReadImage(ImageInfo *image_info,
   ExceptionInfo *exception)
 {
+#define MagickMaxCoderDepth  250
+
   char
     magic[MagickPathExtent];
 
-  if (image_info->coder_depth >= MagickMaxRecursionDepth)
+  if (image_info->coder_depth++ >= MagickMaxCoderDepth)
     {
       errno=EPERM;
       (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
@@ -46,22 +48,14 @@ static inline Image *StrictReadImage(ImageInfo *image_info,
   if (*magic != '\0')
     {
       const MagickInfo *magick_info = GetMagickInfo(magic,exception);
-      if ((magick_info == (const MagickInfo *) NULL) ||
-          (GetMagickExplicitAllowed(magick_info) == MagickFalse))
+      if ((magick_info != (const MagickInfo *) NULL) &&
+          (GetMagickExplicitAllowed(magick_info) != MagickFalse))
+          return(ReadImage(image_info,exception));
+      else
         {
           (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
             "ExplicitCoderNotAllowed","`%s'",image_info->filename);
           return((Image *) NULL);
-        }
-      else
-        {
-          Image
-            *image;
-
-          image_info->coder_depth++;
-          image=ReadImage(image_info,exception);
-          image_info->coder_depth--;
-          return(image);
         }
     }
   if (IsPathAccessible(image_info->filename) == MagickFalse)
