@@ -7816,6 +7816,26 @@ static inline MagickBooleanType IsColorEqual(const Image *image,
   return(MagickFalse);
 }
 
+#define PNGPaletteHashSize  1024
+
+static inline size_t PNGPaletteHash(const Quantum red,const Quantum green,
+  const Quantum blue,const Quantum alpha)
+{
+  size_t
+    hash;
+
+  /*
+    Colors that compare equal share a hash (barring HDRI values within
+    MagickEpsilon of a rounding edge), so a probe that stops at the first
+    empty slot finds them.
+  */
+  hash=(size_t) ScaleQuantumToChar(red);
+  hash=31*hash+(size_t) ScaleQuantumToChar(green);
+  hash=31*hash+(size_t) ScaleQuantumToChar(blue);
+  hash=31*hash+(size_t) ScaleQuantumToChar(alpha);
+  return(hash & (PNGPaletteHashSize-1));
+}
+
 #if defined(PNG_tIME_SUPPORTED)
 static void write_tIME_chunk(Image *image,png_struct *ping,png_info *info,
   const char *timestamp,ExceptionInfo *exception)
@@ -8539,6 +8559,14 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
    Quantum
      *q;
 
+   size_t
+     h;
+
+   unsigned short
+     opaque_hash[PNGPaletteHashSize],
+     semitransparent_hash[PNGPaletteHashSize],
+     transparent_hash[PNGPaletteHashSize];
+
    if (logging != MagickFalse)
      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
          "    Enter BUILD_PALETTE:");
@@ -8603,6 +8631,9 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
      number_opaque = 0;
      number_semitransparent = 0;
      number_transparent = 0;
+     (void) memset(opaque_hash,0,sizeof(opaque_hash));
+     (void) memset(semitransparent_hash,0,sizeof(semitransparent_hash));
+     (void) memset(transparent_hash,0,sizeof(transparent_hash));
 
      for (y=0; y < (ssize_t) image->rows; y++)
      {
@@ -8619,24 +8650,27 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
              {
                if (number_opaque < 259)
                  {
+                   h=PNGPaletteHash(GetPixelRed(image,r),GetPixelGreen(image,r),
+                     GetPixelBlue(image,r),(Quantum) 0);
                    if (number_opaque == 0)
                      {
                        GetPixelInfoPixel(image,r,opaque);
                        opaque[0].alpha=OpaqueAlpha;
                        number_opaque=1;
+                       opaque_hash[h]=1;
                      }
 
-                   for (i=0; i< (ssize_t) number_opaque; i++)
-                     {
-                       if (IsColorEqual(image,r,opaque+i))
-                         break;
-                     }
+                   while ((opaque_hash[h] != 0) &&
+                          (IsColorEqual(image,r,opaque+opaque_hash[h]-1) ==
+                           MagickFalse))
+                     h=(h+1) & (PNGPaletteHashSize-1);
 
-                   if (i ==  (ssize_t) number_opaque && number_opaque < 259)
+                   if (opaque_hash[h] == 0)
                      {
-                       number_opaque++;
+                       i=(ssize_t) number_opaque++;
                        GetPixelInfoPixel(image,r,opaque+i);
                        opaque[i].alpha=OpaqueAlpha;
+                       opaque_hash[h]=(unsigned short) number_opaque;
                      }
                  }
              }
@@ -8644,6 +8678,8 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
              {
                if (number_transparent < 259)
                  {
+                   h=PNGPaletteHash(GetPixelRed(image,r),GetPixelGreen(image,r),
+                     GetPixelBlue(image,r),(Quantum) 0);
                    if (number_transparent == 0)
                      {
                        GetPixelInfoPixel(image,r,transparent);
@@ -8656,19 +8692,19 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
                        ping_trans_color.gray=(unsigned short)
                          GetPixelGray(image,r);
                        number_transparent = 1;
+                       transparent_hash[h]=1;
                      }
 
-                   for (i=0; i< (ssize_t) number_transparent; i++)
-                     {
-                       if (IsColorEqual(image,r,transparent+i))
-                         break;
-                     }
+                   while ((transparent_hash[h] != 0) &&
+                          (IsColorEqual(image,r,transparent+
+                           transparent_hash[h]-1) == MagickFalse))
+                     h=(h+1) & (PNGPaletteHashSize-1);
 
-                   if (i ==  (ssize_t) number_transparent &&
-                       number_transparent < 259)
+                   if (transparent_hash[h] == 0)
                      {
-                       number_transparent++;
+                       i=(ssize_t) number_transparent++;
                        GetPixelInfoPixel(image,r,transparent+i);
+                       transparent_hash[h]=(unsigned short) number_transparent;
                      }
                  }
              }
@@ -8676,25 +8712,31 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
              {
                if (number_semitransparent < 259)
                  {
+                   h=PNGPaletteHash(GetPixelRed(image,r),GetPixelGreen(image,r),
+                     GetPixelBlue(image,r),GetPixelAlpha(image,r));
                    if (number_semitransparent == 0)
                      {
                        GetPixelInfoPixel(image,r,semitransparent);
                        number_semitransparent = 1;
+                       semitransparent_hash[h]=1;
                      }
 
-                   for (i=0; i< (ssize_t) number_semitransparent; i++)
+                   while (semitransparent_hash[h] != 0)
                      {
+                       i=(ssize_t) semitransparent_hash[h]-1;
                        if (IsColorEqual(image,r,semitransparent+i)
                            && (double) GetPixelAlpha(image,r) ==
                            semitransparent[i].alpha)
                          break;
+                       h=(h+1) & (PNGPaletteHashSize-1);
                      }
 
-                   if (i ==  (ssize_t) number_semitransparent &&
-                       number_semitransparent < 259)
+                   if (semitransparent_hash[h] == 0)
                      {
-                       number_semitransparent++;
+                       i=(ssize_t) number_semitransparent++;
                        GetPixelInfoPixel(image,r,semitransparent+i);
+                       semitransparent_hash[h]=(unsigned short)
+                         number_semitransparent;
                      }
                  }
              }
@@ -8795,8 +8837,14 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
 
      if (image_colors < 257)
        {
+         MagickBooleanType
+           ignore_alpha;
+
          PixelInfo
            colormap[260];
+
+         unsigned short
+           colormap_hash[PNGPaletteHashSize];
 
          /*
           * Initialize image colormap.
@@ -8886,6 +8934,21 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
 
             /* Sync the pixel indices with the new colormap */
 
+            ignore_alpha=(((image->alpha_trait & BlendPixelTrait) == 0) &&
+              ((image->alpha_trait & UpdatePixelTrait) == 0)) ? MagickTrue :
+              MagickFalse;
+            (void) memset(colormap_hash,0,sizeof(colormap_hash));
+            for (i=0; i< (ssize_t) image_colors; i++)
+            {
+              h=PNGPaletteHash((Quantum) image->colormap[i].red,
+                (Quantum) image->colormap[i].green,
+                (Quantum) image->colormap[i].blue,ignore_alpha != MagickFalse ?
+                (Quantum) 0 : (Quantum) image->colormap[i].alpha);
+              while (colormap_hash[h] != 0)
+                h=(h+1) & (PNGPaletteHashSize-1);
+              colormap_hash[h]=(unsigned short) (i+1);
+            }
+
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
@@ -8895,10 +8958,13 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
 
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                for (i=0; i< (ssize_t) image_colors; i++)
+                h=PNGPaletteHash(GetPixelRed(image,q),GetPixelGreen(image,q),
+                  GetPixelBlue(image,q),ignore_alpha != MagickFalse ?
+                  (Quantum) 0 : GetPixelAlpha(image,q));
+                while (colormap_hash[h] != 0)
                 {
-                  if (((((image->alpha_trait & BlendPixelTrait) == 0) &&
-                       (((image->alpha_trait & UpdatePixelTrait) == 0))) ||
+                  i=(ssize_t) colormap_hash[h]-1;
+                  if ((ignore_alpha != MagickFalse ||
                       image->colormap[i].alpha == (double) GetPixelAlpha(image,q)) &&
                       image->colormap[i].red == (double) GetPixelRed(image,q) &&
                       image->colormap[i].green == (double) GetPixelGreen(image,q) &&
@@ -8907,6 +8973,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
                     SetPixelIndex(image,(Quantum) i,q);
                     break;
                   }
+                  h=(h+1) & (PNGPaletteHashSize-1);
                 }
                 q+=(ptrdiff_t) GetPixelChannels(image);
               }
