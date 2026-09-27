@@ -1151,7 +1151,10 @@ static Image *ReadASEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (ssize_t) frame_image->columns; x++)
           {
-            SetPixelIndex(frame_image,*p,q);
+            ssize_t index = (ssize_t) *p;
+            if (index >= frame_image->colors)
+              index=0;
+            SetPixelIndex(frame_image,(Quantum) index,q);
             p++;
             q+=GetPixelChannels(frame_image);
           }
