@@ -129,6 +129,7 @@ static const char
     "-crop 17x9+10+10",
     "-crop 60x70+10+10",
     "-cycle 200",
+    "-define connected-components:area-threshold=16 -connected-components 8",
     "-density 75x75 -resample 50x50",
     "-depth 7",
     "-depth 16",

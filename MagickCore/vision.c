@@ -821,6 +821,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     *equivalences;
 
   size_t
+    *neighbors,
     size;
 
   ssize_t
@@ -1407,6 +1408,14 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   /*
     Merge any object not within the min and max area threshold.
   */
+  neighbors=(size_t *) AcquireQuantumMemory(component_image->colors+1,
+    sizeof(*neighbors));
+  if (neighbors == (size_t *) NULL)
+    {
+      object=(CCObjectInfo *) RelinquishMagickMemory(object);
+      component_image=DestroyImage(component_image);
+      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   component_view=AcquireAuthenticCacheView(component_image,exception);
   object_view=AcquireVirtualCacheView(component_image,exception);
   (void) SetCacheViewVirtualPixelMethod(object_view,TileVirtualPixelMethod);
@@ -1416,6 +1425,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       bounding_box;
 
     size_t
+      count,
       id;
 
     ssize_t
@@ -1428,8 +1438,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     /*
       Merge this object.
     */
-    for (j=0; j < (ssize_t) component_image->colors; j++)
-      object[j].census=0;
+    count=0;
     bounding_box=object[i].bounding_box;
     for (y=0; y < (ssize_t) bounding_box.height; y++)
     {
@@ -1478,7 +1487,11 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
               }
             j=(ssize_t) GetPixelIndex(component_image,q);
             if (j != i)
-              object[j].census++;
+              {
+                if (object[j].census == 0.0)
+                  neighbors[count++]=(size_t) j;
+                object[j].census++;
+              }
           }
         p+=(ptrdiff_t) GetPixelChannels(component_image);
       }
@@ -1487,9 +1500,13 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       Merge with object of greatest adjacent area.
     */
     id=0;
-    for (j=1; j < (ssize_t) component_image->colors; j++)
-      if (object[j].census > object[id].census)
-        id=(size_t) j;
+    for (j=0; j < (ssize_t) count; j++)
+      if ((object[neighbors[j]].census > object[id].census) ||
+          ((object[neighbors[j]].census == object[id].census) &&
+           (neighbors[j] < id)))
+        id=neighbors[j];
+    for (j=0; j < (ssize_t) count; j++)
+      object[neighbors[j]].census=0.0;
     object[i].area=0.0;
     for (y=0; y < (ssize_t) bounding_box.height; y++)
     {
@@ -1520,6 +1537,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   }
   object_view=DestroyCacheView(object_view);
   component_view=DestroyCacheView(component_view);
+  neighbors=(size_t *) RelinquishMagickMemory(neighbors);
   artifact=GetImageArtifact(image,"connected-components:mean-color");
   if (IsStringTrue(artifact) != MagickFalse)
     {
