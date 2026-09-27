@@ -54,13 +54,13 @@ extern "C" {
 #define ThrowXWindowException(severity,tag,context) \
 { \
   ExceptionInfo \
-    *exception; \
+    *san_exception; \
  \
-  exception=AcquireExceptionInfo(); \
-  (void) ThrowMagickException(exception,GetMagickModule(),severity,tag, \
+  san_exception=AcquireExceptionInfo(); \
+  (void) ThrowMagickException(san_exception,GetMagickModule(),severity,tag, \
     "'%s': %s",context,strerror(errno)); \
-  CatchException(exception); \
-  (void) DestroyExceptionInfo(exception); \
+  CatchException(san_exception); \
+  san_exception=DestroyExceptionInfo(san_exception); \
 }
 #define ThrowXWindowFatalException(severity,tag,context) \
 { \
