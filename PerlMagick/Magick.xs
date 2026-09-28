@@ -1362,11 +1362,13 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       if (LocaleCompare(attribute,"comment") == 0)
         {
           for ( ; image; image=image->next)
-            {
-              char *property = InterpretImageProperties(info ? info->image_info : (ImageInfo *) NULL,image,SvPV(sval,na),exception);
-              (void) SetImageProperty(image,"Comment",property,exception);
-              if (property != (char *) NULL) property=(char *) RelinquishMagickMemory(property);
-            }
+          {
+            char *property = InterpretImageProperties(info ? info->image_info :
+              (ImageInfo *) NULL,image,SvPV(sval,na),exception);
+            (void) SetImageProperty(image,"comment",property,exception);
+            if (property != (char *) NULL)
+              property=(char *) RelinquishMagickMemory(property);
+          }
           break;
         }
       if (LocaleCompare(attribute,"compression") == 0)
@@ -1732,11 +1734,13 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       if (LocaleCompare(attribute,"label") == 0)
         {
           for ( ; image; image=image->next)
-            {
-              char *property = InterpretImageProperties(info ? info->image_info : (ImageInfo *) NULL,image,SvPV(sval,na),exception);
-              (void) SetImageProperty(image,"label",property,exception);
-              if (property != (char *) NULL) property=(char *) RelinquishMagickMemory(property);
-            }
+          {
+            char *property = InterpretImageProperties(info ? info->image_info :
+              (ImageInfo *) NULL,image,SvPV(sval,na),exception);
+            (void) SetImageProperty(image,"label",property,exception);
+            if (property != (char *) NULL)
+              property=(char *) RelinquishMagickMemory(property);
+          }
           break;
         }
       if (LocaleCompare(attribute,"loop") == 0)
@@ -7997,20 +8001,32 @@ Mogrify(ref,...)
         }
         case 1:  /* Comment */
         {
+          char
+            *property;
+
           if (attribute_flag[0] == 0)
             argument_list[0].string_reference=(char *) NULL;
-          char *property = InterpretImageProperties(info ? info->image_info : (ImageInfo *) NULL,image,argument_list[0].string_reference,exception);
+          property=InterpretImageProperties(info ? info->image_info :
+            (ImageInfo *) NULL,image,argument_list[0].string_reference,
+            exception);
           (void) SetImageProperty(image,"comment",property,exception);
-          if (property != (char *) NULL) property=(char *) RelinquishMagickMemory(property);
+          if (property != (char *) NULL)
+            property=(char *) RelinquishMagickMemory(property);
           break;
         }
         case 2:  /* Label */
         {
+          char
+            *property;
+
           if (attribute_flag[0] == 0)
             argument_list[0].string_reference=(char *) NULL;
-          char *property = InterpretImageProperties(info ? info->image_info : (ImageInfo *) NULL,image,argument_list[0].string_reference,exception);
+          property=InterpretImageProperties(info ? info->image_info :
+            (ImageInfo *) NULL,image,argument_list[0].string_reference,
+            exception);
           (void) SetImageProperty(image,"label",property,exception);
-          if (property != (char *) NULL) property=(char *) RelinquishMagickMemory(property);
+          if (property != (char *) NULL)
+            property=(char *) RelinquishMagickMemory(property);
           break;
         }
         case 3:  /* AddNoise */
@@ -11922,11 +11938,14 @@ Montage(ref,...)
           if (LocaleCompare(attribute,"label") == 0)
             {
               for (next=image; next; next=next->next)
-                {
-                  char *property = InterpretImageProperties(info ? info->image_info : (ImageInfo *) NULL,next,SvPV(ST(i),na),exception);
-                  (void) SetImageProperty(next,"label",property,exception);
-                  if (property != (char *) NULL) property=(char *) RelinquishMagickMemory(property);
-                }
+              {
+                char *property = InterpretImageProperties(info ?
+                  info->image_info : (ImageInfo *) NULL,next,SvPV(ST(i),na),
+                  exception);
+                (void) SetImageProperty(next,"label",property,exception);
+                if (property != (char *) NULL)
+                  property=(char *) RelinquishMagickMemory(property);
+              }
               break;
             }
           ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
