@@ -1377,7 +1377,11 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
       despeckle_image=DestroyImage(despeckle_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
-  length=(image->columns+2)*(image->rows+2);
+  if (HeapOverflowSanityCheckGetSize(image->columns+2,image->rows+2,&length) != MagickFalse)
+    {
+      despeckle_image=DestroyImage(despeckle_image);
+      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   pixel_info=AcquireVirtualMemory(length,sizeof(*pixels));
   buffer_info=AcquireVirtualMemory(length,sizeof(*buffer));
   if ((pixel_info == (MemoryInfo *) NULL) ||
