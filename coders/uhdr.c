@@ -1465,17 +1465,7 @@ static StringInfo *TransformGainMapProfile(const ImageInfo *image_info,
               }
             else
               {
-                if (transform_pending != MagickFalse)
-                  {
-                    status=FlushGainMapTransform(&gainmap_images,
-                      &transform_state,exception);
-                    transform_pending=MagickFalse;
-                  }
-                if (status != MagickFalse)
-                  status=ApplyGainMapTransform(&gainmap_images,&base_columns,
-                    &base_rows,image,transform,exception);
-                if (status != MagickFalse)
-                  transformed=MagickTrue;
+                status=MagickFalse;
               }
             if (status == MagickFalse)
               break;
