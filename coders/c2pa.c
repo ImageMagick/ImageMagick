@@ -108,6 +108,9 @@ static Image *ReadC2PAImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
+  struct stat
+    attributes;
+
   /*
     Open image file.
   */
@@ -140,7 +143,10 @@ static Image *ReadC2PAImage(const ImageInfo *image_info,
   read_info=DestroyImageInfo(read_info);
   image=DestroyImageList(image);
   if (status == MagickFalse)
-    return((Image *) NULL);
+    {
+      (void) RelinquishUniqueFileResource(json_filename);
+      return((Image *) NULL);
+    }
   /*
     Read image.
   */
@@ -150,8 +156,22 @@ static Image *ReadC2PAImage(const ImageInfo *image_info,
   image=ReadImage(read_info,exception);
   read_info=DestroyImageInfo(read_info);
   if (image == (Image *) NULL)
-    return(image);
-  json=FileToString(json_filename,~0UL,exception);
+    {
+      (void) RelinquishUniqueFileResource(json_filename);
+      return(image);
+    }
+  if ((GetPathAttributes(json_filename,&attributes) != MagickFalse) &&
+      ((attributes.st_size < 0) || ((MagickSizeType) attributes.st_size >
+      GetMaxProfileSize())))
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitWarning,"ProfileSizeExceedsLimit","`%llu'",
+        (unsigned long long) attributes.st_size);
+      (void) RelinquishUniqueFileResource(json_filename);
+      return(image);
+    }
+  json=FileToString(json_filename,GetMaxProfileSize(),exception);
+  (void) RelinquishUniqueFileResource(json_filename);
   if (json == (char *) NULL)
     return(image);
   (void) SetImageProperty(image,"c2pa:manifest",json,exception);
