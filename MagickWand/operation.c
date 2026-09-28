@@ -5166,7 +5166,11 @@ static void CLINoImageOperator(MagickCLI *cli_wand,const char *option,
           }
         /* Set Artifacts/Properties/Attributes all images (required) */
         if ( _images == (Image *) NULL )
-          CLIWandExceptArgBreak(OptionWarning,"NoImageForProperty",option,arg1);
+          {
+            if (profile != (StringInfo *) NULL)
+              profile=DestroyStringInfo(profile);
+            CLIWandExceptArgBreak(OptionWarning,"NoImageForProperty",option,arg1);
+          }
 
         MagickResetIterator(&cli_wand->wand);
         while (MagickNextImage(&cli_wand->wand) != MagickFalse)
@@ -5181,8 +5185,12 @@ static void CLINoImageOperator(MagickCLI *cli_wand,const char *option,
                 arg2=InterpretImageProperties(_image_info,_images,arg2n,
                   _exception);
                 if (arg2 == (char *) NULL)
-                  CLIWandExceptionBreak(OptionWarning,
-                       "InterpretPropertyFailure",option);
+                  {
+                    if (profile != (StringInfo *) NULL)
+                      profile=DestroyStringInfo(profile);
+                    CLIWandExceptionBreak(OptionWarning,
+                      "InterpretPropertyFailure",option);
+                  }
               }
             if (LocaleNCompare(arg1,"artifact:",9) == 0)
               (void) SetImageArtifact(_images,arg1+9,arg2);
