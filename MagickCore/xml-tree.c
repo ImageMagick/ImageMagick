@@ -1562,6 +1562,9 @@ static MagickBooleanType ParseInternalDoctype(XMLTreeRoot *root,char *xml,
                if ((*(xml++) == '%') && (root->standalone == MagickFalse))
                  break;
     }
+  for (i=0; predefined_entities[i] != (char *) NULL; i++)
+    if ((i & 0x01) != 0)
+       predefined_entities[i]=DestroyString(predefined_entities[i]);
   predefined_entities=(char **) RelinquishMagickMemory(predefined_entities);
   return(MagickTrue);
 }
