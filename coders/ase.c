@@ -142,6 +142,7 @@ typedef struct _AsepriteCelCacheEntry
   uint16_t cel_width;
   uint16_t cel_height;
   uint8_t cel_opacity;
+  size_t pixels_size;
   uint8_t *pixels;
 } AsepriteCelCacheEntry;
 
@@ -206,6 +207,13 @@ static void DestroyASELayerList(AsepriteLayerList *layers)
   layers->capacity=0;
 }
 
+static uint8_t *RelinquishASEPixels(uint8_t *pixels,const size_t size)
+{
+  pixels=(uint8_t *) RelinquishMagickMemory(pixels);
+  RelinquishMagickResource(MemoryResource,size);
+  return(pixels);
+}
+
 static void DestroyASECelCache(AsepriteCelCache *cel_cache)
 {
   size_t
@@ -214,8 +222,8 @@ static void DestroyASECelCache(AsepriteCelCache *cel_cache)
   if (cel_cache->entries == (AsepriteCelCacheEntry *) NULL)
     return;
   for (i=0; i < cel_cache->count; i++)
-    cel_cache->entries[i].pixels=(uint8_t *) RelinquishMagickMemory(
-      cel_cache->entries[i].pixels);
+    cel_cache->entries[i].pixels=RelinquishASEPixels(
+      cel_cache->entries[i].pixels,cel_cache->entries[i].pixels_size);
   cel_cache->entries=(AsepriteCelCacheEntry *) RelinquishMagickMemory(
     cel_cache->entries);
   cel_cache->index=(size_t *) RelinquishMagickMemory(cel_cache->index);
@@ -585,15 +593,23 @@ static MagickBooleanType CacheASECel(const Image *image,
       cel_cache->capacity=new_capacity;
     }
   entry=cel_cache->entries+cel_cache->count;
-  entry->pixels=(uint8_t *) AcquireQuantumMemory(cel_pixels_size,
-    sizeof(uint8_t));
-  if (entry->pixels == (uint8_t *) NULL)
+  if (AcquireMagickResource(MemoryResource,cel_pixels_size) == MagickFalse)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       return(MagickFalse);
     }
+  entry->pixels=(uint8_t *) AcquireQuantumMemory(cel_pixels_size,
+    sizeof(uint8_t));
+  if (entry->pixels == (uint8_t *) NULL)
+    {
+      RelinquishMagickResource(MemoryResource,cel_pixels_size);
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      return(MagickFalse);
+    }
   (void) memcpy(entry->pixels,cel_pixels,cel_pixels_size);
+  entry->pixels_size=cel_pixels_size;
   entry->frame_index=frame_index;
   entry->layer_index=layer_index;
   entry->cel_x=cel_x;
@@ -716,10 +732,16 @@ static MagickBooleanType ReadASECelChunk(const Image *image,
         CorruptImageError,"InvalidChunkSize","`%s'",image->filename);
       return(MagickFalse);
     }
-  cel_pixels=(uint8_t *) AcquireQuantumMemory(cel_pixels_size,
-    sizeof(uint8_t));
+  if (AcquireMagickResource(MemoryResource,cel_pixels_size) == MagickFalse)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      return(MagickFalse);
+    }
+  cel_pixels=(uint8_t *) AcquireQuantumMemory(cel_pixels_size,sizeof(uint8_t));
   if (cel_pixels == (uint8_t *) NULL)
     {
+      RelinquishMagickResource(MemoryResource,cel_pixels_size);
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       return(MagickFalse);
@@ -728,7 +750,7 @@ static MagickBooleanType ReadASECelChunk(const Image *image,
     {
       if ((size_t) (payload_size-20) < cel_pixels_size)
         {
-          cel_pixels=(uint8_t *) RelinquishMagickMemory(cel_pixels);
+          cel_pixels=RelinquishASEPixels(cel_pixels,cel_pixels_size);
           (void) ThrowMagickException(exception,GetMagickModule(),
             CorruptImageError,"InvalidChunkSize","`%s'",image->filename);
           return(MagickFalse);
@@ -750,14 +772,14 @@ static MagickBooleanType ReadASECelChunk(const Image *image,
       if ((zlib_status != Z_OK) || 
           (uncompressed_size != (uLongf) cel_pixels_size))
         {
-          cel_pixels=(uint8_t *) RelinquishMagickMemory(cel_pixels);
+          cel_pixels=RelinquishASEPixels(cel_pixels,cel_pixels_size);
           (void) ThrowMagickException(exception,GetMagickModule(),
             CorruptImageError,"UnableToDecompressImage","`%s'",
             image->filename);
           return(MagickFalse);
         }
 #else
-      cel_pixels=(uint8_t *) RelinquishMagickMemory(cel_pixels);
+      cel_pixels=RelinquishASEPixels(cel_pixels,cel_pixels_size);
       (void) ThrowMagickException(exception,GetMagickModule(),
         MissingDelegateError,"DelegateLibrarySupportNotBuiltIn","`%s' (ZLIB)",
         image->filename);
@@ -770,19 +792,19 @@ static MagickBooleanType ReadASECelChunk(const Image *image,
       cel_x,cel_y,cel_opacity,frame_index,layer_index,cel_cache,
       exception) == MagickFalse)
     {
-      cel_pixels=(uint8_t *) RelinquishMagickMemory(cel_pixels);
+      cel_pixels=RelinquishASEPixels(cel_pixels,cel_pixels_size);
       return(MagickFalse);
     }
   if (visible == MagickFalse)
     {
-      cel_pixels=(uint8_t *) RelinquishMagickMemory(cel_pixels);
+      cel_pixels=RelinquishASEPixels(cel_pixels,cel_pixels_size);
       return(MagickTrue);
     }
   combined_opacity=((double) layer_opacity/255.0)*((double) cel_opacity/
     255.0);
   CompositeASECel(cel_pixels,cel_width,cel_height,cel_x,cel_y,
     combined_opacity,canvas);
-  cel_pixels=(uint8_t *) RelinquishMagickMemory(cel_pixels);
+  cel_pixels=RelinquishASEPixels(cel_pixels,cel_pixels_size);
   return(MagickTrue);
 }
 
@@ -981,9 +1003,16 @@ static Image *ReadASEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         pixels_size=0;
         break;
     }
+    if (AcquireMagickResource(MemoryResource,pixels_size) == MagickFalse)
+      {
+        DestroyASELayerList(&layers);
+        DestroyASECelCache(&cel_cache);
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+      }
     pixel_data=(uint8_t *) AcquireQuantumMemory(pixels_size,sizeof(uint8_t));
     if (pixel_data == (uint8_t *) NULL)
       {
+        RelinquishMagickResource(MemoryResource,pixels_size);
         DestroyASELayerList(&layers);
         DestroyASECelCache(&cel_cache);
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -1006,7 +1035,7 @@ static Image *ReadASEImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ase_chunk.chunk_type=ReadBlobLSBShort(image);
       if ((ase_chunk.chunk_size < 6) || (ase_chunk.chunk_size > 100*1024*1024))
         {
-          pixel_data=(uint8_t *) RelinquishMagickMemory(pixel_data);
+          pixel_data=RelinquishASEPixels(pixel_data,pixels_size);
           DestroyASELayerList(&layers);
           DestroyASECelCache(&cel_cache);
           ThrowReaderException(CorruptImageError,"InvalidChunkSize");
@@ -1016,7 +1045,7 @@ static Image *ReadASEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         sizeof(uint8_t));
       if (chunk_data == (uint8_t *) NULL)
         {
-          pixel_data=(uint8_t *) RelinquishMagickMemory(pixel_data);
+          pixel_data=RelinquishASEPixels(pixel_data,pixels_size);
           DestroyASELayerList(&layers);
           DestroyASECelCache(&cel_cache);
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -1025,7 +1054,7 @@ static Image *ReadASEImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (count != payload_size)
         {
           chunk_data=(uint8_t *) RelinquishMagickMemory(chunk_data);
-          pixel_data=(uint8_t *) RelinquishMagickMemory(pixel_data);
+          pixel_data=RelinquishASEPixels(pixel_data,pixels_size);
           DestroyASELayerList(&layers);
           DestroyASECelCache(&cel_cache);
           ThrowReaderException(CorruptImageError,"UnableToReadImageData");
@@ -1044,7 +1073,7 @@ static Image *ReadASEImage(const ImageInfo *image_info,ExceptionInfo *exception)
           chunk_data=(uint8_t *) RelinquishMagickMemory(chunk_data);
           if (cel_status == MagickFalse)
             {
-              pixel_data=(uint8_t *) RelinquishMagickMemory(pixel_data);
+              pixel_data=RelinquishASEPixels(pixel_data,pixels_size);
               DestroyASELayerList(&layers);
               DestroyASECelCache(&cel_cache);
               return(DestroyImageList(image));
@@ -1067,7 +1096,7 @@ static Image *ReadASEImage(const ImageInfo *image_info,ExceptionInfo *exception)
               &layers,exception) == MagickFalse)
             {
               chunk_data=(uint8_t *) RelinquishMagickMemory(chunk_data);
-              pixel_data=(uint8_t *) RelinquishMagickMemory(pixel_data);
+              pixel_data=RelinquishASEPixels(pixel_data,pixels_size);
               DestroyASELayerList(&layers);
               DestroyASECelCache(&cel_cache);
               return(DestroyImageList(image));
@@ -1166,7 +1195,7 @@ static Image *ReadASEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       }
     }
-    pixel_data=(uint8_t *) RelinquishMagickMemory(pixel_data);
+    pixel_data=RelinquishASEPixels(pixel_data,pixels_size);
   }
   DestroyASELayerList(&layers);
   DestroyASECelCache(&cel_cache);
