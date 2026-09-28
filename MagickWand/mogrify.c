@@ -859,6 +859,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               break;
             (void) ColorDecisionListImage(*image,color_correction_collection,
               exception);
+            color_correction_collection=DestroyString(color_correction_collection);
             break;
           }
         if (LocaleCompare("channel",option+1) == 0)

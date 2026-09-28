@@ -1966,6 +1966,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             break;
           (void) ColorDecisionListImage(_image,color_correction_collection,
             _exception);
+          color_correction_collection=DestroyString(color_correction_collection);
           break;
         }
       if (LocaleCompare("channel",option+1) == 0)
