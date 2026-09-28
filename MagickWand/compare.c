@@ -1179,7 +1179,10 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
       similarity_image=SimilarityImage(image,reconstruct_image,metric,
         similarity_threshold,&offset,&similarity_metric,exception);
       if (similarity_image == (Image *) NULL)
-        return(MagickFalse);
+        {
+          DestroyCompare();
+          return(MagickFalse);
+        }
       if (similarity_metric >= dissimilarity_threshold)
         (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
           "ImagesTooDissimilar","`%s'",image->filename);
