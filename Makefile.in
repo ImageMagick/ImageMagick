@@ -6272,6 +6272,7 @@ TESTS_TESTS = \
   tests/cli-colorspace.tap \
   tests/cli-exif.tap \
   tests/cli-heic.tap \
+  tests/cli-mogrify.tap \
   tests/cli-pcx.tap \
   tests/cli-pipe.tap \
   tests/cli-svg.tap \

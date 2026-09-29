@@ -1423,7 +1423,13 @@ MagickExport void GetPathComponent(const char *path,PathType type,
           (LocaleCompare(extension,"svgz") == 0) ||
           (LocaleCompare(extension,"wmz") == 0) ||
           (LocaleCompare(extension,"Z") == 0))
-        GetPathComponent(path,BasePath,component);
+        {
+          if (IsBasenameSeparator(*p) != MagickFalse)
+            p++;
+          q=strrchr(p,'.');
+          if ((q != (char *) NULL) && (q > p))
+            *q='\0';
+        }
       break;
     }
     case ExtensionPath:
