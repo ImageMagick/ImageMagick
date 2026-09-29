@@ -102,6 +102,8 @@
   <policy domain="path" rights="none" pattern="*../*"/>
   <!-- Indirect reading is not permitted. -->
   <policy domain="path" rights="none" pattern="@*"/>
+  <!-- Pipes are not permitted. -->
+  <policy domain="path" rights="none" pattern="|*"/>
   <!-- Deny all image modules and specifically exempt reading or writing
        web-safe image formats. -->
   <policy domain="module" rights="none" pattern="*" />

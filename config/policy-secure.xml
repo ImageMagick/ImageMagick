@@ -106,6 +106,8 @@
   <policy domain="path" rights="none" pattern="*../*"/>
   <!-- Indirect reading is not permitted. -->
   <policy domain="path" rights="none" pattern="@*"/>
+  <!-- Pipes are not permitted. -->
+  <policy domain="path" rights="none" pattern="|*"/>
   <!-- These image types are security risks on read, but write is fine -->
   <policy domain="module" rights="write" pattern="{MSL,MVG,PDF,PS,SVG,TXT,URL,XPS}"/>
   <!-- This policy sets the number of times to replace content of certain
