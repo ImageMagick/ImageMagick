@@ -127,6 +127,7 @@ struct _XMLTreeRoot
     *semaphore;
 
   size_t
+    depth,
     signature;
 };
 
@@ -400,9 +401,6 @@ MagickPrivate XMLTreeInfo *AddPathToXMLTree(XMLTreeInfo *xml_info,
 %
 */
 
-static XMLTreeInfo
-  *DestroyXMLTree_(XMLTreeInfo *,const size_t);
-
 static char **DestroyXMLTreeAttributes(char **attributes)
 {
   ssize_t
@@ -427,8 +425,7 @@ static char **DestroyXMLTreeAttributes(char **attributes)
   return((char **) NULL);
 }
 
-static void DestroyXMLTreeChild(XMLTreeInfo *xml_info,
-  const size_t depth)
+static void DestroyXMLTreeChild(XMLTreeInfo *xml_info)
 {
   XMLTreeInfo
     *child,
@@ -440,12 +437,11 @@ static void DestroyXMLTreeChild(XMLTreeInfo *xml_info,
     node=child;
     child=node->child;
     node->child=(XMLTreeInfo *) NULL;
-    (void) DestroyXMLTree_(node,depth+1);
+    (void) DestroyXMLTree(node);
   }
 }
 
-static void DestroyXMLTreeOrdered(XMLTreeInfo *xml_info,
-  const size_t depth)
+static void DestroyXMLTreeOrdered(XMLTreeInfo *xml_info)
 {
   XMLTreeInfo
     *node,
@@ -457,7 +453,7 @@ static void DestroyXMLTreeOrdered(XMLTreeInfo *xml_info,
     node=ordered;
     ordered=node->ordered;
     node->ordered=(XMLTreeInfo *) NULL;
-    (void) DestroyXMLTree_(node,depth+1);
+    (void) DestroyXMLTree(node);
   }
 }
 
@@ -522,29 +518,21 @@ static void DestroyXMLTreeRoot(XMLTreeInfo *xml_info)
     }
 }
 
-static XMLTreeInfo *DestroyXMLTree_(XMLTreeInfo *xml_info,
-  const size_t depth)
+MagickExport XMLTreeInfo *DestroyXMLTree(XMLTreeInfo *xml_info)
 {
   assert(xml_info != (XMLTreeInfo *) NULL);
   assert((xml_info->signature == MagickCoreSignature) ||
          (((XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  if (depth >= MagickMaxRecursionDepth)
-    return((XMLTreeInfo *) NULL);
-  DestroyXMLTreeChild(xml_info,depth+1);
-  DestroyXMLTreeOrdered(xml_info,depth+1);
+  DestroyXMLTreeChild(xml_info);
+  DestroyXMLTreeOrdered(xml_info);
   DestroyXMLTreeRoot(xml_info);
   xml_info->attributes=DestroyXMLTreeAttributes(xml_info->attributes);
   xml_info->content=DestroyString(xml_info->content);
   xml_info->tag=DestroyString(xml_info->tag);
   xml_info=(XMLTreeInfo *) RelinquishMagickMemory(xml_info);
   return((XMLTreeInfo *) NULL);
-}
-
-MagickExport XMLTreeInfo *DestroyXMLTree(XMLTreeInfo *xml_info)
-{
-  return(DestroyXMLTree_(xml_info,0));
 }
 
 /*
@@ -1236,6 +1224,7 @@ static XMLTreeInfo *ParseCloseTag(XMLTreeRoot *root,char *tag,
       return(&root->root);
     }
   root->node=root->node->parent;
+  root->depth--;
   return((XMLTreeInfo *) NULL);
 }
 
@@ -1564,16 +1553,23 @@ static MagickBooleanType ParseInternalDoctype(XMLTreeRoot *root,char *xml,
     }
   for (i=0; predefined_entities[i] != (char *) NULL; i++)
     if ((i & 0x01) != 0)
-       predefined_entities[i]=DestroyString(predefined_entities[i]);
+      predefined_entities[i]=DestroyString(predefined_entities[i]);
   predefined_entities=(char **) RelinquishMagickMemory(predefined_entities);
   return(MagickTrue);
 }
 
-static void ParseOpenTag(XMLTreeRoot *root,char *tag,char **attributes)
+static MagickBooleanType ParseOpenTag(XMLTreeRoot *root,char *tag,
+  char **attributes,ExceptionInfo *exception)
 {
   XMLTreeInfo
     *xml_info;
 
+  if (root->depth >= MagickMaxRecursionDepth) 
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
+        "ParseError","unexpected open tag </%s>",tag);
+      return(MagickFalse);
+    }
   xml_info=root->node;
   if (xml_info->tag == (char *) NULL)
     xml_info->tag=ConstantString(tag);
@@ -1582,6 +1578,8 @@ static void ParseOpenTag(XMLTreeRoot *root,char *tag,char **attributes)
   if (xml_info != (XMLTreeInfo *) NULL)
     xml_info->attributes=attributes;
   root->node=xml_info;
+  root->depth++;
+  return(MagickTrue);
 }
 
 static const char
@@ -1802,7 +1800,14 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
               (void) DestroyXMLTreeAttributes(attributes);
             else
               {
-                ParseOpenTag(root,tag,attributes);
+                status=ParseOpenTag(root,tag,attributes,exception);
+                if (status == MagickFalse)
+                  {
+                    if (l != 0)
+                      (void) DestroyXMLTreeAttributes(attributes);
+                    utf8=DestroyString(utf8);
+                    return(&root->root);
+                  }
                 (void) ParseCloseTag(root,tag,exception);
               }
           }
@@ -1813,7 +1818,16 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
               {
                 *p='\0';
                 if ((ignore_depth == 0) && (IsSkipTag(tag) == MagickFalse))
-                  ParseOpenTag(root,tag,attributes);
+                  {
+                    status=ParseOpenTag(root,tag,attributes,exception);
+                    if (status == MagickFalse)
+                      {
+                        if (l != 0)
+                          (void) DestroyXMLTreeAttributes(attributes);
+                        utf8=DestroyString(utf8);
+                        return(&root->root);
+                      }
+                  }
                 else
                   {
                     ignore_depth++;
