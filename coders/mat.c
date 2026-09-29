@@ -1237,7 +1237,9 @@ RestoreMSCWarning
     image->colors = (size_t) GetQuantumRange(image->depth);
     if (image->columns == 0 || image->rows == 0)
       goto MATLAB_KO;
-    if((size_t)ldblk*MATLAB_HDR.SizeY > MATLAB_HDR.ObjectSize)
+    if ((ldblk < 0) ||
+         ((size_t) ldblk > ((size_t) ~0)/MATLAB_HDR.SizeY) ||
+         (((size_t) ldblk*MATLAB_HDR.SizeY) > MATLAB_HDR.ObjectSize))
       goto MATLAB_KO;
     /* Image is gray when no complex flag is set and 2D Matrix */
     if ((MATLAB_HDR.DimFlag == 8) &&
