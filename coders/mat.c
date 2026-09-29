@@ -1261,7 +1261,13 @@ RestoreMSCWarning
     }
     if ((image->columns > GetBlobSize(image)) ||
         (image->rows > GetBlobSize(image)))
-      ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+      {
+        if (clone_info != (ImageInfo *) NULL)
+          clone_info=DestroyImageInfo(clone_info);
+        if ((image != image2) && (image2 != (Image *) NULL))
+          image2=DestroyImage(image2);
+        ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+      }
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
       {
