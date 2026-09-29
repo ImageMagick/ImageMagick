@@ -12371,7 +12371,10 @@ static MagickBooleanType WriteOneJNGImage(MngWriteInfo *mng_info,
 
       jpeg_image=SeparateImage(image,AlphaChannel,exception);
       if (jpeg_image == (Image *) NULL)
-        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+        {
+          jpeg_image_info=DestroyImageInfo(jpeg_image_info);
+          ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+        }
       (void) CopyMagickString(jpeg_image->magick,"JPEG",MagickPathExtent);
       jpeg_image->alpha_trait=UndefinedPixelTrait;
       jpeg_image->quality=jng_alpha_quality;
@@ -12421,12 +12424,15 @@ static MagickBooleanType WriteOneJNGImage(MngWriteInfo *mng_info,
         {
           const char
             *value;
-
           /* Encode alpha as a grayscale PNG blob */
           status=OpenBlob(jpeg_image_info,jpeg_image,WriteBinaryBlobMode,
             exception);
           if (status == MagickFalse)
-            ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+            {
+              jpeg_image=DestroyImage(jpeg_image);
+              jpeg_image_info=DestroyImageInfo(jpeg_image_info);
+              ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+            }
 
           if (logging != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -12462,7 +12468,11 @@ static MagickBooleanType WriteOneJNGImage(MngWriteInfo *mng_info,
           status=OpenBlob(jpeg_image_info,jpeg_image,WriteBinaryBlobMode,
             exception);
           if (status == MagickFalse)
-            ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+            {
+              jpeg_image=DestroyImage(jpeg_image);
+              jpeg_image_info=DestroyImageInfo(jpeg_image_info);
+              ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+            }
 
           (void) CopyMagickString(jpeg_image_info->magick,"JPEG",
             MagickPathExtent);
