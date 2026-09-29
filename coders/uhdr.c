@@ -1065,6 +1065,35 @@ static MagickBooleanType ResizeGainMapImage(Image **gainmap_image,
   return(MagickTrue);
 }
 
+static MagickBooleanType ScaleGainMapImage(Image **gainmap_image,
+  size_t *base_columns,size_t *base_rows,const size_t columns,
+  const size_t rows,ExceptionInfo *exception)
+{
+  Image
+    *scale_image;
+
+  size_t
+    target_columns,
+    target_rows;
+
+  target_columns=ScaleGainMapExtent((*gainmap_image)->columns,columns,
+    *base_columns);
+  target_rows=ScaleGainMapExtent((*gainmap_image)->rows,rows,*base_rows);
+  if ((target_columns == 0) || (target_rows == 0))
+    return(MagickFalse);
+  if ((target_columns != (*gainmap_image)->columns) ||
+      (target_rows != (*gainmap_image)->rows))
+    {
+      scale_image=ScaleImage(*gainmap_image,target_columns,target_rows,
+        exception);
+      if (ReplaceGainMapImage(gainmap_image,scale_image) == MagickFalse)
+        return(MagickFalse);
+    }
+  *base_columns=columns;
+  *base_rows=rows;
+  return(MagickTrue);
+}
+
 static MagickBooleanType ApplyGainMapTransform(Image **gainmap_image,
   size_t *base_columns,size_t *base_rows,const Image *image,
   const char *transform,ExceptionInfo *exception)
@@ -1113,6 +1142,27 @@ static MagickBooleanType ApplyGainMapTransform(Image **gainmap_image,
       return(ResizeGainMapImage(gainmap_image,base_columns,base_rows,
         CastDoubleToSizeT(columns),CastDoubleToSizeT(rows),filter_type,
         exception));
+    }
+  else if (LocaleNCompare(transform,"scale ",6) == 0)
+    {
+      fields=sscanf(transform+6,"%lfx%lf %lfx%lf",&source_columns,
+        &source_rows,&columns,&rows);
+      if (fields != 4)
+        return(MagickFalse);
+      if ((IsNaN(source_columns) != 0) || (IsNaN(source_rows) != 0) ||
+          (IsNaN(columns) != 0) || (IsNaN(rows) != 0) ||
+          (source_columns > (double) MAGICK_SSIZE_MAX) ||
+          (source_rows > (double) MAGICK_SSIZE_MAX) ||
+          (columns <= 0.0) || (rows <= 0.0) ||
+          (columns > (double) MAGICK_SSIZE_MAX) ||
+          (rows > (double) MAGICK_SSIZE_MAX) ||
+          (columns != floor(columns)) || (rows != floor(rows)))
+        return(MagickFalse);
+      if (IsGainMapBaseGeometry(*base_columns,*base_rows,source_columns,
+          source_rows) == MagickFalse)
+        return(MagickFalse);
+      return(ScaleGainMapImage(gainmap_image,base_columns,base_rows,
+        CastDoubleToSizeT(columns),CastDoubleToSizeT(rows),exception));
     }
   return(MagickFalse);
 }
@@ -1424,7 +1474,8 @@ static StringInfo *TransformGainMapProfile(const ImageInfo *image_info,
                       }
                   }
               }
-            else if (LocaleNCompare(transform,"resize ",7) == 0)
+            else if ((LocaleNCompare(transform,"resize ",7) == 0) ||
+                (LocaleNCompare(transform,"scale ", 6) == 0))
               {
                 if (transform_pending != MagickFalse)
                   {
@@ -1465,17 +1516,7 @@ static StringInfo *TransformGainMapProfile(const ImageInfo *image_info,
               }
             else
               {
-                if (transform_pending != MagickFalse)
-                  {
-                    status=FlushGainMapTransform(&gainmap_images,
-                      &transform_state,exception);
-                    transform_pending=MagickFalse;
-                  }
-                if (status != MagickFalse)
-                  status=ApplyGainMapTransform(&gainmap_images,&base_columns,
-                    &base_rows,image,transform,exception);
-                if (status != MagickFalse)
-                  transformed=MagickTrue;
+                status=MagickFalse;
               }
             if (status == MagickFalse)
               break;
