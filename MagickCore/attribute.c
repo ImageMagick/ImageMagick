@@ -800,10 +800,23 @@ MagickExport PointInfo *GetImageConvexHull(const Image *image,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   *number_vertices=0;
+  if (HeapOverflowSanityCheck(image->columns,image->rows*sizeof(*vertices)) != MagickFalse)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      return((PointInfo *) NULL);
+    }
   vertices_info=AcquireVirtualMemory(image->columns,image->rows*
     sizeof(*vertices));
-  monotone_info=AcquireVirtualMemory(2*image->columns,2*
-    image->rows*sizeof(*monotone_chain));
+  if (HeapOverflowSanityCheck(2*image->columns,2*image->rows*sizeof(*monotone_chain)) != MagickFalse)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      vertices_info=RelinquishVirtualMemory(vertices_info);
+      return((PointInfo *) NULL);
+    }
+  monotone_info=AcquireVirtualMemory(2*image->columns,2*image->rows*
+    sizeof(*monotone_chain));
   if ((vertices_info == (MemoryInfo *) NULL) ||
       (monotone_info == (MemoryInfo *) NULL))
     {
