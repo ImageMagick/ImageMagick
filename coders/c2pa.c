@@ -161,12 +161,12 @@ static Image *ReadC2PAImage(const ImageInfo *image_info,
       return(image);
     }
   if ((GetPathAttributes(json_filename,&attributes) != MagickFalse) &&
-      ((attributes.st_size < 0) || ((MagickSizeType) attributes.st_size >
-      GetMaxProfileSize())))
+      ((attributes.st_size < 0) ||
+      ((MagickSizeType) attributes.st_size > GetMaxProfileSize())))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitWarning,"ProfileSizeExceedsLimit","`%llu'",
-        (unsigned long long) attributes.st_size);
+        ResourceLimitWarning,"ProfileSizeExceedsLimit","`%.17g'",
+        (double) attributes.st_size);
       (void) RelinquishUniqueFileResource(json_filename);
       return(image);
     }
