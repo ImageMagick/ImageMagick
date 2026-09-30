@@ -860,11 +860,17 @@ static Image *ReadDJVUImage(const ImageInfo *image_info,
     i=(ssize_t) image_info->scene;
   for ( ; i < (ssize_t) lc->pages; i++)
   {
+    Image
+      *clone_list;
+
     image=ReadOneDJVUImage(lc,i,image_info,exception);
     if (image == (Image *) NULL)
       break;
     image->scene=(size_t) i;
-    AppendImageToList(&images,CloneImageList(image,exception));
+    clone_list=CloneImageList(image,exception);
+    if (clone_list == (Image *) NULL)
+      break;
+    AppendImageToList(&images,clone_list);
     images->extent=GetBlobSize(image);
     if (image_info->number_scenes != 0)
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
