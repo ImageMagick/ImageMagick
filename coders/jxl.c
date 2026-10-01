@@ -724,6 +724,8 @@ static Image *ReadJXLImage(const ImageInfo *image_info,
 
         if (image_count++ != 0)
           {
+            JXLReleaseBoxBuffer(jxl_info,box_profile);
+            box_profile=(StringInfo *) NULL;
             JXLAddProfilesToImage(image,&exif_profile,&xmp_profile,exception);
             /*
               Allocate next image structure.
@@ -1099,10 +1101,12 @@ static inline MagickBooleanType JXLMatchICCProfile(const Image *image,
   */
   if (GetStringInfoLength(icc_profile) < 128)
     return(MagickFalse);
-  datum=GetStringInfoDatum(icc_profile)+16;
+  datum=GetStringInfoDatum(icc_profile);
+  if (memcmp(datum+36,"acsp",4) != 0)
+    return(MagickFalse);
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    return(memcmp(datum,"GRAY",4) == 0 ? MagickTrue : MagickFalse);
-  return(memcmp(datum,"RGB ",4) == 0 ? MagickTrue : MagickFalse);
+    return(memcmp(datum+16,"GRAY",4) == 0 ? MagickTrue : MagickFalse);
+  return(memcmp(datum+16,"RGB ",4) == 0 ? MagickTrue : MagickFalse);
 }
 
 static JxlEncoderStatus JXLWriteMetadata(const Image *image,
@@ -1314,12 +1318,6 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
         basic_info.bits_per_sample=32;
         basic_info.exponent_bits_per_sample=8;
       }
-    else
-      if (pixel_format.data_type == JXL_TYPE_FLOAT16)
-        {
-          basic_info.bits_per_sample=16;
-          basic_info.exponent_bits_per_sample=8;
-        }
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
     basic_info.num_color_channels=1;
   if ((image->alpha_trait & BlendPixelTrait) != 0)
@@ -1428,8 +1426,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     Write image as a JXL stream.
   */
   sample_size=sizeof(char);
-  if ((pixel_format.data_type == JXL_TYPE_FLOAT) ||
-      (pixel_format.data_type == JXL_TYPE_FLOAT16))
+  if (pixel_format.data_type == JXL_TYPE_FLOAT)
     sample_size=sizeof(float);
   else
     if (pixel_format.data_type == JXL_TYPE_UINT16)
