@@ -708,72 +708,6 @@ static SVGInfo *DestroySVGInfo(SVGInfo *svg_info)
   return((SVGInfo *) RelinquishMagickMemory(svg_info));
 }
 
-static char *EscapeSVGAttributeValue(const char *string)
-{
-  char
-    *destination;
-
-  const unsigned char
-    *p;
-
-  size_t
-    length;
-
-  /*
-    XML encode text written into SVG attribute/style value contexts.
-  */
-  if (string == (const char *) NULL)
-    return(AcquireString(""));
-  length=strlen(string);
-  destination=(char *) AcquireQuantumMemory(6UL*length+1UL,
-    sizeof(*destination));
-  if (destination == (char *) NULL)
-    return(AcquireString(""));
-  *destination='\0';
-  for (p=(const unsigned char *) string; *p != '\0'; p++)
-  {
-    switch (*p)
-    {
-      case '&':
-      {
-        (void) ConcatenateMagickString(destination,"&amp;",6UL*length+1UL);
-        break;
-      }
-      case '<':
-      {
-        (void) ConcatenateMagickString(destination,"&lt;",6UL*length+1UL);
-        break;
-      }
-      case '>':
-      {
-        (void) ConcatenateMagickString(destination,"&gt;",6UL*length+1UL);
-        break;
-      }
-      case '"':
-      {
-        (void) ConcatenateMagickString(destination,"&quot;",6UL*length+1UL);
-        break;
-      }
-      case '\'':
-      {
-        (void) ConcatenateMagickString(destination,"&apos;",6UL*length+1UL);
-        break;
-      }
-      default:
-      {
-        char
-          c[2];
-
-        c[0]=(char) *p;
-        c[1]='\0';
-        (void) ConcatenateMagickString(destination,c,6UL*length+1UL);
-        break;
-      }
-    }
-  }
-  return(destination);
-}
-
 static double GetUserSpaceCoordinateValue(const SVGInfo *svg_info,int type,
   const char *string)
 {
@@ -3653,6 +3587,72 @@ static void AffineToTransform(Image *image,AffineMatrix *affine)
     "\" transform=\"matrix(%g %g %g %g %g %g)\">\n",
     affine->sx,affine->rx,affine->ry,affine->sy,affine->tx,affine->ty);
   (void) WriteBlobString(image,transform);
+}
+
+static char *EscapeSVGAttributeValue(const char *string)
+{
+  char
+    *destination;
+
+  const unsigned char
+    *p;
+
+  size_t
+    length;
+
+  /*
+    XML encode text written into SVG attribute/style value contexts.
+  */
+  if (string == (const char *) NULL)
+    return(AcquireString(""));
+  length=strlen(string);
+  destination=(char *) AcquireQuantumMemory(6UL*length+1UL,
+    sizeof(*destination));
+  if (destination == (char *) NULL)
+    return(AcquireString(""));
+  *destination='\0';
+  for (p=(const unsigned char *) string; *p != '\0'; p++)
+  {
+    switch (*p)
+    {
+      case '&':
+      {
+        (void) ConcatenateMagickString(destination,"&amp;",6UL*length+1UL);
+        break;
+      }
+      case '<':
+      {
+        (void) ConcatenateMagickString(destination,"&lt;",6UL*length+1UL);
+        break;
+      }
+      case '>':
+      {
+        (void) ConcatenateMagickString(destination,"&gt;",6UL*length+1UL);
+        break;
+      }
+      case '"':
+      {
+        (void) ConcatenateMagickString(destination,"&quot;",6UL*length+1UL);
+        break;
+      }
+      case '\'':
+      {
+        (void) ConcatenateMagickString(destination,"&apos;",6UL*length+1UL);
+        break;
+      }
+      default:
+      {
+        char
+          c[2];
+
+        c[0]=(char) *p;
+        c[1]='\0';
+        (void) ConcatenateMagickString(destination,c,6UL*length+1UL);
+        break;
+      }
+    }
+  }
+  return(destination);
 }
 
 static MagickBooleanType IsPoint(const char *point)
