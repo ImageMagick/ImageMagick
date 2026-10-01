@@ -18,7 +18,7 @@
 #
 . ./common.shi
 . ${srcdir}/tests/common.shi
-echo "1..23"
+echo "1..26"
 
 ${MAGICK} pnm:- null:   < ${SRCDIR}/rose.pnm && echo "ok" || echo "not ok"
 ${MAGICK} pnm:- info:   < ${SRCDIR}/rose.pnm && echo "ok" || echo "not ok"
@@ -135,4 +135,30 @@ else
   echo "not ok 23 - decode reads GIF with trailing data"
 fi
 rm -f "$pipe_trailing_input"
+
+# PAM alpha samples use zero for transparent and MAXVAL for opaque, even
+# when MAXVAL is one.
+test_number=24
+for tuple in BLACKANDWHITE_ALPHA GRAYSCALE_ALPHA; do
+  alpha=`printf 'P7\nWIDTH 2\nHEIGHT 1\nDEPTH 2\nMAXVAL 1\nTUPLTYPE %s\nENDHDR\n\000\001\001\000' "$tuple" |
+    LC_ALL=C ${MAGICK} pam:- -alpha extract \
+      -format '%[pixel:p{0,0}]|%[pixel:p{1,0}]' info:- 2>/dev/null`
+  if [ "X$alpha" = 'Xgray(255)|gray(0)' ]; then
+    echo "ok $test_number - $tuple opacity"
+  else
+    echo "not ok $test_number - $tuple opacity: $alpha"
+  fi
+  test_number=$((test_number+1))
+done
+
+# Reading a one-bit PAM written by ImageMagick must preserve its alpha plane.
+roundtrip=`LC_ALL=C ${MAGICK} -size 2x1 xc:none -fill black \
+  -draw 'point 0,0' -colorspace Gray -depth 1 PAM:- 2>/dev/null |
+  LC_ALL=C ${MAGICK} PAM:- -alpha extract \
+    -format '%[pixel:p{0,0}]|%[pixel:p{1,0}]' info:- 2>/dev/null`
+if [ "X$roundtrip" = 'Xgray(255)|gray(0)' ]; then
+  echo "ok 26 - one-bit PAM writer round trip"
+else
+  echo "not ok 26 - one-bit PAM writer round trip: $roundtrip"
+fi
 :

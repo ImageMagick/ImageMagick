@@ -1180,12 +1180,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         if (image->alpha_trait != UndefinedPixelTrait)
                           {
                             p=PushCharPixel(p,&pixel);
-                            if (image->depth != 1)
-                              SetPixelAlpha(image,ScaleAnyToQuantum(pixel,
-                                max_value),q);
-                            else
-                              SetPixelAlpha(image,QuantumRange-
-                                ScaleAnyToQuantum(pixel,max_value),q);
+                            SetPixelAlpha(image,ScaleAnyToQuantum(pixel,
+                              max_value),q);
                           }
                         q+=(ptrdiff_t) GetPixelChannels(image);
                       }
