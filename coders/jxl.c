@@ -297,9 +297,52 @@ static inline void JXLInitImage(Image *image,JxlBasicInfo *basic_info)
     {
       if ((basic_info->animation.tps_numerator > 0) &&
           (basic_info->animation.tps_denominator > 0))
-      image->ticks_per_second=basic_info->animation.tps_numerator /
-        basic_info->animation.tps_denominator;
+        image->ticks_per_second=(ssize_t) basic_info->animation.tps_numerator;
       image->iterations=basic_info->animation.num_loops;
+    }
+}
+
+static inline size_t JXLGetDelay(const JxlBasicInfo *basic_info,
+  const uint32_t duration)
+{
+  uint64_t
+    delay;
+
+  /*
+    The image ticks per second is tps_numerator, the duration is in units of
+    tps_denominator ticks.
+  */
+  delay=(uint64_t) duration;
+  if ((basic_info->have_animation == JXL_TRUE) &&
+      (basic_info->animation.tps_numerator > 0) &&
+      (basic_info->animation.tps_denominator > 0))
+    delay*=(uint64_t) basic_info->animation.tps_denominator;
+  return((size_t) MagickMin(delay,(uint64_t) MAGICK_SSIZE_MAX));
+}
+
+static inline size_t JXLGetMaxBoxSize(void)
+{
+  return(MagickMin(GetMaxProfileSize(),(size_t) 16*1024*1024));
+}
+
+static inline void JXLReleaseBoxBuffer(JxlDecoder *jxl_info,
+  StringInfo *profile)
+{
+  size_t
+    length,
+    remaining;
+
+  /*
+    Release the box buffer and trim the profile to the bytes written.
+  */
+  remaining=JxlDecoderReleaseBoxBuffer(jxl_info);
+  if (profile != (StringInfo *) NULL)
+    {
+      length=GetStringInfoLength(profile);
+      if (remaining <= length)
+        SetStringInfoLength(profile,length-remaining);
+      (void) memset(GetStringInfoDatum(profile)+GetStringInfoLength(profile),0,
+        MagickPathExtent);
     }
 }
 
@@ -416,6 +459,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,
     input_size;
 
   StringInfo
+    *box_profile = (StringInfo *) NULL,
     *exif_profile = (StringInfo *) NULL,
     *xmp_profile = (StringInfo *) NULL;
 
@@ -454,6 +498,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,
     ThrowReaderException(CoderError,"MemoryAllocationFailed");
   (void) JxlDecoderSetKeepOrientation(jxl_info,JXL_TRUE);
   (void) JxlDecoderSetUnpremultiplyAlpha(jxl_info,JXL_TRUE);
+  (void) JxlDecoderSetDecompressBoxes(jxl_info,JXL_TRUE);
   events_wanted=(JxlDecoderStatus) (JXL_DEC_BASIC_INFO | JXL_DEC_BOX |
     JXL_DEC_FRAME);
   if (image_info->ping == MagickFalse)
@@ -698,7 +743,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,
           }
         (void) memset(&frame_header,0,sizeof(frame_header));
         if (JxlDecoderGetFrameHeader(jxl_info,&frame_header) == JXL_DEC_SUCCESS)
-          image->delay=(size_t) frame_header.duration;
+          image->delay=JXLGetDelay(&basic_info,frame_header.duration);
         if ((basic_info.have_animation == JXL_TRUE) &&
             (basic_info.alpha_bits != 0))
           image->dispose=BackgroundDispose;
@@ -778,17 +823,18 @@ static Image *ReadJXLImage(const ImageInfo *image_info,
         uint64_t
           size;
 
-        (void) JxlDecoderReleaseBoxBuffer(jxl_info);
-        jxl_status=JxlDecoderGetBoxType(jxl_info,type,JXL_FALSE);
+        JXLReleaseBoxBuffer(jxl_info,box_profile);
+        box_profile=(StringInfo *) NULL;
+        jxl_status=JxlDecoderGetBoxType(jxl_info,type,JXL_TRUE);
         if (jxl_status != JXL_DEC_SUCCESS)
           break;
         jxl_status=JxlDecoderGetBoxSizeRaw(jxl_info,&size);
         if (jxl_status != JXL_DEC_SUCCESS)
           break;
-        if (size <= 8)
+        if ((size <= 8) || ((size-8) > (uint64_t) JXLGetMaxBoxSize()))
           {
             /*
-              Box without payload (or unbounded), keep decoding.
+              Box without payload, unbounded or too large, keep decoding.
             */
             jxl_status=JXL_DEC_BOX;
             break;
@@ -804,8 +850,11 @@ static Image *ReadJXLImage(const ImageInfo *image_info,
               exif_profile=AcquireProfileStringInfo("exif",(size_t) size,
                 exception);
               if (exif_profile != (StringInfo *) NULL)
-                jxl_status=JxlDecoderSetBoxBuffer(jxl_info,
-                  GetStringInfoDatum(exif_profile),(size_t) size);
+                {
+                  box_profile=exif_profile;
+                  jxl_status=JxlDecoderSetBoxBuffer(jxl_info,
+                    GetStringInfoDatum(exif_profile),(size_t) size);
+                }
             }
           }
         if (LocaleNCompare(type,"xml ",sizeof(type)) == 0)
@@ -818,12 +867,55 @@ static Image *ReadJXLImage(const ImageInfo *image_info,
                 xmp_profile=AcquireProfileStringInfo("xmp",(size_t) size,
                   exception);
                 if (xmp_profile != (StringInfo *) NULL)
-                  jxl_status=JxlDecoderSetBoxBuffer(jxl_info,
-                    GetStringInfoDatum(xmp_profile),(size_t) size);
+                  {
+                    box_profile=xmp_profile;
+                    jxl_status=JxlDecoderSetBoxBuffer(jxl_info,
+                      GetStringInfoDatum(xmp_profile),(size_t) size);
+                  }
               }
           }
         if (jxl_status == JXL_DEC_SUCCESS)
           jxl_status=JXL_DEC_BOX;
+        break;
+      }
+      case JXL_DEC_BOX_NEED_MORE_OUTPUT:
+      {
+        size_t
+          length,
+          remaining;
+
+        /*
+          The decompressed box is larger than the raw box, grow the profile.
+        */
+        if (box_profile == (StringInfo *) NULL)
+          {
+            jxl_status=JXL_DEC_ERROR;
+            break;
+          }
+        length=GetStringInfoLength(box_profile);
+        remaining=JxlDecoderReleaseBoxBuffer(jxl_info);
+        if (remaining > length)
+          {
+            jxl_status=JXL_DEC_ERROR;
+            break;
+          }
+        if (length > (JXLGetMaxBoxSize()/2))
+          {
+            /*
+              Too large, skip the remainder of the box.
+            */
+            if (box_profile == exif_profile)
+              exif_profile=DestroyStringInfo(exif_profile);
+            else
+              xmp_profile=DestroyStringInfo(xmp_profile);
+            box_profile=(StringInfo *) NULL;
+            break;
+          }
+        SetStringInfoLength(box_profile,length*2);
+        jxl_status=JxlDecoderSetBoxBuffer(jxl_info,GetStringInfoDatum(
+          box_profile)+(length-remaining),length*2-(length-remaining));
+        if (jxl_status == JXL_DEC_SUCCESS)
+          jxl_status=JXL_DEC_BOX_NEED_MORE_OUTPUT;
         break;
       }
       case JXL_DEC_SUCCESS:
@@ -838,7 +930,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,
       }
     }
   }
-  (void) JxlDecoderReleaseBoxBuffer(jxl_info);
+  JXLReleaseBoxBuffer(jxl_info,box_profile);
   JXLAddProfilesToImage(image,&exif_profile,&xmp_profile,exception);
   output_buffer=(unsigned char *) RelinquishMagickMemory(output_buffer);
   pixels=(unsigned char *) RelinquishMagickMemory(pixels);
@@ -996,8 +1088,25 @@ static inline MagickBooleanType JXLSameFrameType(const Image *image,
   return(MagickTrue);
 }
 
+static inline MagickBooleanType JXLMatchICCProfile(const Image *image,
+  const StringInfo *icc_profile)
+{
+  const unsigned char
+    *datum;
+
+  /*
+    The data color space of the profile must match the color channels.
+  */
+  if (GetStringInfoLength(icc_profile) < 128)
+    return(MagickFalse);
+  datum=GetStringInfoDatum(icc_profile)+16;
+  if (IsGrayColorspace(image->colorspace) != MagickFalse)
+    return(memcmp(datum,"GRAY",4) == 0 ? MagickTrue : MagickFalse);
+  return(memcmp(datum,"RGB ",4) == 0 ? MagickTrue : MagickFalse);
+}
+
 static JxlEncoderStatus JXLWriteMetadata(const Image *image,
-  JxlEncoder *jxl_info, const StringInfo *icc_profile)
+  JxlEncoder *jxl_info, const StringInfo *icc_profile,ExceptionInfo *exception)
 {
   JxlColorEncoding
     color_encoding;
@@ -1005,11 +1114,15 @@ static JxlEncoderStatus JXLWriteMetadata(const Image *image,
   JxlEncoderStatus
     jxl_status;
 
-  if (icc_profile != (StringInfo *) NULL)
+  if ((icc_profile != (StringInfo *) NULL) &&
+      (JXLMatchICCProfile(image,icc_profile) != MagickFalse))
     {
       jxl_status=JxlEncoderSetICCProfile(jxl_info,(const uint8_t *)
         GetStringInfoDatum(icc_profile),GetStringInfoLength(icc_profile));
-      return(jxl_status);
+      if (jxl_status == JXL_ENC_SUCCESS)
+        return(jxl_status);
+      (void) ThrowMagickException(exception,GetMagickModule(),CoderWarning,
+        "UnableToCopyProfile","`%s'",image->filename);
     }
   (void) memset(&color_encoding,0,sizeof(color_encoding));
   color_encoding.color_space=JXL_COLOR_SPACE_RGB;
@@ -1091,8 +1204,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
-  if ((IssRGBCompatibleColorspace(image->colorspace) == MagickFalse) &&
-      (IsCMYKColorspace(image->colorspace) == MagickFalse))
+  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
   if ((image_info->adjoin != MagickFalse) &&
       (GetNextImageInList(image) != (Image *) NULL))
@@ -1217,10 +1329,9 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       basic_info.num_extra_channels=1;
     }
   if (distance == 0.0)
-    {
-      basic_info.uses_original_profile=JXL_TRUE;
-      icc_profile=GetImageProfile(image,"icc");
-    }
+    basic_info.uses_original_profile=JXL_TRUE;
+  if ((distance == 0.0) || (IsRGBColorspace(image->colorspace) == MagickFalse))
+    icc_profile=GetImageProfile(image,"icc");
   if ((image_info->adjoin != MagickFalse) &&
       (GetNextImageInList(image) != (Image *) NULL))
     {
@@ -1306,7 +1417,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
         }
       (void) JxlEncoderCloseBoxes(jxl_info);
     }
-  jxl_status=JXLWriteMetadata(image,jxl_info,icc_profile);
+  jxl_status=JXLWriteMetadata(image,jxl_info,icc_profile,exception);
   if (jxl_status != JXL_ENC_SUCCESS)
     {
       JxlThreadParallelRunnerDestroy(runner);
@@ -1358,7 +1469,8 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
         JxlBlendInfo
           alpha_blend_info;
 
-        frame_header.duration=(uint32_t) image->delay;
+        frame_header.duration=(uint32_t) MagickMin(image->delay,
+          (size_t) UINT32_MAX);
         if ((image->previous == (Image *) NULL) ||
             (image->previous->dispose == BackgroundDispose) ||
             (image->previous->dispose == PreviousDispose))
