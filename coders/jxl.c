@@ -303,6 +303,21 @@ static inline void JXLInitImage(Image *image,JxlBasicInfo *basic_info)
     }
 }
 
+static inline void JXLCopyColorInfo(Image *image,const Image *source,
+  ExceptionInfo *exception)
+{
+  const StringInfo
+    *profile;
+
+  image->colorspace=source->colorspace;
+  image->gamma=source->gamma;
+  image->chromaticity=source->chromaticity;
+  image->rendering_intent=source->rendering_intent;
+  profile=GetImageProfile(source,"icc");
+  if (profile != (const StringInfo *) NULL)
+    (void) SetImageProfile(image,"icc",profile,exception);
+}
+
 static inline MagickBooleanType JXLPatchExifProfile(StringInfo *exif_profile)
 {
   size_t
@@ -673,6 +688,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,
               break;
             image=SyncNextImageInList(image);
             JXLInitImage(image,&basic_info);
+            JXLCopyColorInfo(image,image->previous,exception);
             status=SetImageExtent(image,image->columns,image->rows,exception);
             if (status == MagickFalse)
               {
@@ -767,8 +783,16 @@ static Image *ReadJXLImage(const ImageInfo *image_info,
         if (jxl_status != JXL_DEC_SUCCESS)
           break;
         jxl_status=JxlDecoderGetBoxSizeRaw(jxl_info,&size);
-        if ((jxl_status != JXL_DEC_SUCCESS) || (size <= 8))
+        if (jxl_status != JXL_DEC_SUCCESS)
           break;
+        if (size <= 8)
+          {
+            /*
+              Box without payload (or unbounded), keep decoding.
+            */
+            jxl_status=JXL_DEC_BOX;
+            break;
+          }
         size-=8;
         if (LocaleNCompare(type,"Exif",sizeof(type)) == 0)
           {
@@ -1129,6 +1153,13 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       return(MagickFalse);
     }
   JXLSetFormat(image,&pixel_format,exception);
+  if (pixel_format.data_type == JXL_TYPE_FLOAT16)
+    {
+      /*
+        The pixels are exported as 32-bit floats, not as half floats.
+      */
+      pixel_format.data_type=JXL_TYPE_FLOAT;
+    }
   option=GetImageOption(image_info,"jxl:distance");
   if (option != (const char *) NULL)
     {
@@ -1225,12 +1256,22 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       (void) JxlEncoderSetFrameDistance(frame_settings,(float) distance);
   option=GetImageOption(image_info,"jxl:effort");
   if (option != (const char *) NULL)
-    (void) JxlEncoderFrameSettingsSetOption(frame_settings,
-      JXL_ENC_FRAME_SETTING_EFFORT,StringToInteger(option));
+    {
+      if (JxlEncoderFrameSettingsSetOption(frame_settings,
+          JXL_ENC_FRAME_SETTING_EFFORT,StringToInteger(option)) !=
+          JXL_ENC_SUCCESS)
+        (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
+          "InvalidSetting","`%s'",option);
+    }
   option=GetImageOption(image_info,"jxl:decoding-speed");
   if (option != (const char *) NULL)
-    (void) JxlEncoderFrameSettingsSetOption(frame_settings,
-      JXL_ENC_FRAME_SETTING_DECODING_SPEED,StringToInteger(option));
+    {
+      if (JxlEncoderFrameSettingsSetOption(frame_settings,
+          JXL_ENC_FRAME_SETTING_DECODING_SPEED,StringToInteger(option)) !=
+          JXL_ENC_SUCCESS)
+        (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
+          "InvalidSetting","`%s'",option);
+    }
   exif_profile=GetImageProfile(image,"exif");
   xmp_profile=GetImageProfile(image,"xmp");
   if ((exif_profile != (StringInfo *) NULL) ||
