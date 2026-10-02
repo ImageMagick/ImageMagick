@@ -3077,8 +3077,8 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
         {
           case ContrastStatistic:
           {
-            pixel=ClampToQuantum(MagickAbsoluteValue((maximum-minimum)*
-              MagickSafeReciprocal(maximum+minimum)));
+            pixel=ClampToQuantum(QuantumRange*MagickAbsoluteValue((maximum-
+              minimum)*MagickSafeReciprocal(maximum+minimum)));
             break;
           }
           case GradientStatistic:

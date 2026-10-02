@@ -6276,6 +6276,7 @@ TESTS_TESTS = \
   tests/cli-pcx.tap \
   tests/cli-pipe.tap \
   tests/cli-svg.tap \
+  tests/cli-statistic.tap \
   tests/cli-uhdr.tap \
   tests/cli-uhdr-encoder.tap \
   tests/cli-uhdr-resize-filter.tap \
