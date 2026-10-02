@@ -9471,7 +9471,9 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
     {
       image_info=DestroyImageInfo(image_info);
       image=DestroyImage(image);
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",IMimage->filename);
+      return(MagickFalse);
     }
 
   ping_info=png_create_info_struct(ping);
@@ -9481,7 +9483,9 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
       image_info=DestroyImageInfo(image_info);
       image=DestroyImage(image);
       png_destroy_write_struct(&ping,(png_info **) NULL);
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",IMimage->filename);
+      return(MagickFalse);
     }
 
   png_set_write_fn(ping,image,png_put_data,png_flush_data);
