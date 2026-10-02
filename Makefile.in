@@ -542,14 +542,14 @@ am__MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURC
 	coders/cube.h coders/cut.c coders/cut.h coders/c2pa.c \
 	coders/c2pa.h coders/dcm.c coders/dcm.h coders/dds.c \
 	coders/dds.h coders/debug.c coders/debug.h coders/dib.c \
-	coders/dib.h coders/djvu.h coders/dng.c coders/dng.h \
-	coders/dot.c coders/dot.h coders/dps.h coders/dpx.c \
-	coders/dpx.h coders/emf.h coders/ept.h coders/exr.h \
-	coders/farbfeld.c coders/farbfeld.h coders/fax.c coders/fax.h \
-	coders/fits.c coders/fits.h coders/fl32.c coders/fl32.h \
-	coders/flif.h coders/fpx.h coders/ftxt.h coders/ftxt.c \
-	coders/ghostscript-private.h coders/gif.c coders/gif.h \
-	coders/gradient.c coders/gradient.h coders/gray.c \
+	coders/dib.h coders/djvu.h coders/dmr.h coders/dng.c \
+	coders/dng.h coders/dot.c coders/dot.h coders/dps.h \
+	coders/dpx.c coders/dpx.h coders/emf.h coders/ept.h \
+	coders/exr.h coders/farbfeld.c coders/farbfeld.h coders/fax.c \
+	coders/fax.h coders/fits.c coders/fits.h coders/fl32.c \
+	coders/fl32.h coders/flif.h coders/fpx.h coders/ftxt.h \
+	coders/ftxt.c coders/ghostscript-private.h coders/gif.c \
+	coders/gif.h coders/gradient.c coders/gradient.h coders/gray.c \
 	coders/gray.h coders/hald.c coders/hald.h coders/hdr.c \
 	coders/hdr.h coders/heic.h coders/histogram.c \
 	coders/histogram.h coders/hrz.c coders/hrz.h coders/html.c \
@@ -3906,6 +3906,7 @@ MAGICKCORE_CODER_SRCS = \
 	coders/dib.c \
 	coders/dib.h \
 	coders/djvu.h \
+	coders/dmr.h \
 	coders/dng.c \
 	coders/dng.h \
 	coders/dot.c \
@@ -4181,6 +4182,7 @@ CODERS_NOINST_HDRS = \
 	coders/debug.h \
 	coders/dib.h \
 	coders/djvu.h \
+	coders/dmr.h \
 	coders/dng.h \
 	coders/dot.h \
 	coders/dps.h \

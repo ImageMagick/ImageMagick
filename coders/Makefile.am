@@ -162,6 +162,7 @@ MAGICKCORE_CODER_SRCS = \
 	coders/dib.c \
 	coders/dib.h \
 	coders/djvu.h \
+	coders/dmr.h \
 	coders/dng.c \
 	coders/dng.h \
 	coders/dot.c \
@@ -437,6 +438,7 @@ CODERS_NOINST_HDRS = \
 	coders/debug.h \
 	coders/dib.h \
 	coders/djvu.h \
+	coders/dmr.h \
 	coders/dng.h \
 	coders/dot.h \
 	coders/dps.h \
