@@ -900,7 +900,8 @@ MagickExport Image *CustomStreamToImage(const ImageInfo *image_info,
           {
             count=image_info->custom_stream->reader(blob,MagickMaxBufferExtent,
               image_info->custom_stream->data);
-            count=(ssize_t) write(file,(const char *) blob,(size_t) count);
+            if (count > 0)
+              count=(ssize_t) write(file,(const char *) blob,(size_t) count);
           }
           (void) fclose(blob_info->file);
           (void) FormatLocaleString(clone_info->filename,MagickPathExtent,
