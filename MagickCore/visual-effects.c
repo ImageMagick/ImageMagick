@@ -1758,8 +1758,7 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
               (void) FormatLocaleString(geometry,MagickPathExtent,"+0+%.17g",
                 metrics.ascent);
               if (annotate_info->gravity == UndefinedGravity)
-                (void) CloneString(&annotate_info->geometry,AcquireString(
-                  geometry));
+                (void) CloneString(&annotate_info->geometry,geometry);
               (void) AnnotateImage(caption_image,annotate_info,exception);
               height+=caption_image->rows;
             }
