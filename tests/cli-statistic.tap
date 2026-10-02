@@ -1,0 +1,43 @@
+#!/bin/sh
+#
+#  Copyright 1999 ImageMagick Studio LLC, a non-profit organization
+#  dedicated to making software imaging solutions freely available.
+#
+#  You may not use this file except in compliance with the License.  You may
+#  obtain a copy of the License at
+#
+#    https://imagemagick.org/license/
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+#  Regression tests for neighborhood statistics.
+#
+. ./common.shi
+. ${srcdir}/tests/common.shi
+echo "1..4"
+
+# A black-and-white neighborhood has full contrast.
+result=`${MAGICK} -size 3x1 xc:black -fill white -draw 'point 1,0' \
+  -alpha off -statistic Contrast 3x1 -format '%[fx:abs(mean-1)<0.005]' info:-`
+[ "X$result" = "X1" ] && echo "ok" || echo "not ok"
+
+# Contrast is calculated and scaled separately for each color channel.
+result=`${MAGICK} -size 3x1 'xc:rgb(0,85,255)' -fill white \
+  -draw 'point 1,0' -alpha off -statistic Contrast 3x1 \
+  -format '%[fx:abs(r-1)<0.005],%[fx:abs(g-0.5)<0.005],%[fx:abs(b)<0.005]' info:-`
+[ "X$result" = "X1,1,1" ] && echo "ok" || echo "not ok"
+
+# Uniform nonzero neighborhoods have zero contrast.
+result=`${MAGICK} -size 3x1 'xc:rgb(85,85,85)' -alpha off \
+  -statistic Contrast 3x1 -format '%[fx:mean==0]' info:-`
+[ "X$result" = "X1" ] && echo "ok" || echo "not ok"
+
+# An all-black neighborhood also has zero contrast.
+result=`${MAGICK} -size 3x1 xc:black -alpha off -statistic Contrast 3x1 \
+  -format '%[fx:mean==0]' info:-`
+[ "X$result" = "X1" ] && echo "ok" || echo "not ok"
+:
