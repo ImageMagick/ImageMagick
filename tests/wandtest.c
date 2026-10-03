@@ -5501,6 +5501,57 @@ int main(int argc,char **argv)
     }
   profile=(unsigned char *) MagickRelinquishMemory(profile);
   magick_wand=DestroyMagickWand(magick_wand);
+  {
+    DrawingWand
+      *montage_draw;
+
+    MagickWand
+      *montage_input,
+      *montage_wand;
+
+    PixelWand
+      *montage_pixel;
+
+    (void) FormatLocaleFile(stdout,"Montage without text...\n");
+    montage_input=NewMagickWand();
+    montage_draw=NewDrawingWand();
+    montage_pixel=NewPixelWand();
+    (void) PixelSetColor(montage_pixel,"rgb(255,0,0)");
+    status=MagickNewImage(montage_input,2,2,montage_pixel);
+    if (status == MagickFalse)
+      ThrowAPIException(montage_input);
+    (void) PixelSetColor(montage_pixel,"rgb(0,0,255)");
+    status=MagickNewImage(montage_input,2,2,montage_pixel);
+    if (status == MagickFalse)
+      ThrowAPIException(montage_input);
+    (void) DrawSetFont(montage_draw,"@montage-font-does-not-exist.ttf");
+    montage_wand=MagickMontageImage(montage_input,montage_draw,"2x1",
+      "2x2+0+0",UnframeMode,(const char *) NULL);
+    if ((montage_wand == (MagickWand *) NULL) ||
+        (MagickGetExceptionType(montage_input) != UndefinedException))
+      ThrowAPIException(montage_input);
+    if ((MagickGetImageWidth(montage_wand) != 4) ||
+        (MagickGetImageHeight(montage_wand) != 2))
+      {
+        (void) FormatLocaleFile(stderr,"Unexpected montage dimensions\n");
+        exit(1);
+      }
+    status=MagickGetImagePixelColor(montage_wand,0,0,montage_pixel);
+    if ((status == MagickFalse) ||
+        (PixelGetRedQuantum(montage_pixel) != (Quantum) QuantumRange) ||
+        (PixelGetGreenQuantum(montage_pixel) != 0) ||
+        (PixelGetBlueQuantum(montage_pixel) != 0))
+      ThrowAPIException(montage_wand);
+    status=MagickGetImagePixelColor(montage_wand,2,0,montage_pixel);
+    if ((status == MagickFalse) || (PixelGetRedQuantum(montage_pixel) != 0) ||
+        (PixelGetGreenQuantum(montage_pixel) != 0) ||
+        (PixelGetBlueQuantum(montage_pixel) != (Quantum) QuantumRange))
+      ThrowAPIException(montage_wand);
+    montage_wand=DestroyMagickWand(montage_wand);
+    montage_pixel=DestroyPixelWand(montage_pixel);
+    montage_draw=DestroyDrawingWand(montage_draw);
+    montage_input=DestroyMagickWand(montage_input);
+  }
   (void) FormatLocaleFile(stdout,"Wand tests pass.\n");
   MagickWandTerminus();
   return(0);

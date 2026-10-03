@@ -533,7 +533,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   draw_info->stroke=montage_info->stroke;
   draw_info->fill=montage_info->fill;
   draw_info->text=AcquireString("");
-  (void) GetTypeMetrics(image_list[0],draw_info,&metrics,exception);
+  (void) memset(&metrics,0,sizeof(metrics));
   texture=NewImageList();
   if (montage_info->texture != (char *) NULL)
     {
@@ -546,10 +546,6 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   */
   title=InterpretImageProperties(clone_info,image_list[0],montage_info->title,
     exception);
-  title_offset=0;
-  if (montage_info->title != (char *) NULL)
-    title_offset=(size_t) (2*(metrics.ascent-metrics.descent)*
-      MultilineCensus(title)+2*extract_info.y);
   number_lines=0;
   for (i=0; i < (ssize_t) number_images; i++)
   {
@@ -559,6 +555,12 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
     if (MultilineCensus(value) > number_lines)
       number_lines=MultilineCensus(value);
   }
+  if ((montage_info->title != (char *) NULL) || (number_lines != 0))
+    (void) GetTypeMetrics(image_list[0],draw_info,&metrics,exception);
+  title_offset=0;
+  if (montage_info->title != (char *) NULL)
+    title_offset=(size_t) (2*(metrics.ascent-metrics.descent)*
+      MultilineCensus(title)+2*extract_info.y);
   /*
     Allocate next structure.
   */
