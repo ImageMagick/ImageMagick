@@ -4388,9 +4388,13 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
             if (LocaleCompare("gradient",token) == 0)
               {
                 (void) GetNextToken(q,&q,extent,token);
-                (void) CopyMagickString(name,token,MagickPathExtent);
+                escaped_token=EscapeSVGAttributeValue(token);
+                (void) CopyMagickString(name,escaped_token,MagickPathExtent);
+                escaped_token=DestroyString(escaped_token);
                 (void) GetNextToken(q,&q,extent,token);
-                (void) CopyMagickString(type,token,MagickPathExtent);
+                escaped_token=EscapeSVGAttributeValue(token);
+                (void) CopyMagickString(type,escaped_token,MagickPathExtent);
+                escaped_token=DestroyString(escaped_token);
                 (void) GetNextToken(q,&q,extent,token);
                 svg_info.segment.x1=StringToDouble(token,&next_token);
                 svg_info.element.cx=StringToDouble(token,&next_token);
@@ -4455,7 +4459,9 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
             if (LocaleCompare("pattern",token) == 0)
               {
                 (void) GetNextToken(q,&q,extent,token);
-                (void) CopyMagickString(name,token,MagickPathExtent);
+                escaped_token=EscapeSVGAttributeValue(token);
+                (void) CopyMagickString(name,escaped_token,MagickPathExtent);
+                escaped_token=DestroyString(escaped_token);
                 (void) GetNextToken(q,&q,extent,token);
                 svg_info.bounds.x=StringToDouble(token,&next_token);
                 (void) GetNextToken(q,&q,extent,token);
@@ -4553,7 +4559,9 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
               color[MagickPathExtent];
 
             (void) GetNextToken(q,&q,extent,token);
-            (void) CopyMagickString(color,token,MagickPathExtent);
+            escaped_token=EscapeSVGAttributeValue(token);
+            (void) CopyMagickString(color,escaped_token,MagickPathExtent);
+            escaped_token=DestroyString(escaped_token);
             (void) GetNextToken(q,&q,extent,token);
             escaped_token=EscapeSVGAttributeValue(token);
             (void) FormatLocaleString(message,MagickPathExtent,
@@ -4620,7 +4628,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
             (void) GetNextToken(q,&q,extent,token);
             escaped_token=EscapeSVGAttributeValue(token);
             (void) FormatLocaleString(message,MagickPathExtent,
-              "stroke-dashoffset:%s;",token);
+              "stroke-dashoffset:%s;",escaped_token);
             escaped_token=DestroyString(escaped_token);
             (void) WriteBlobString(image,message);
             break;
@@ -4987,8 +4995,8 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
         if (i > ((ssize_t) number_points-(ssize_t) quantum-1))
           {
             number_points+=(size_t) quantum;
-            primitive_info=(PrimitiveInfo *) ResizeQuantumMemory(primitive_info,
-              number_points,sizeof(*primitive_info));
+            primitive_info=(PrimitiveInfo *) ResizeQuantumMemory(
+              primitive_info,number_points,sizeof(*primitive_info));
             if (primitive_info == (PrimitiveInfo *) NULL)
               {
                 (void) ThrowMagickException(exception,GetMagickModule(),
@@ -4998,7 +5006,9 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
               }
           }
         (void) WriteBlobString(image,"  <path d=\"");
-        (void) WriteBlobString(image,token);
+        escaped_token=EscapeSVGAttributeValue(token);
+        (void) WriteBlobString(image,escaped_token);
+        escaped_token=DestroyString(escaped_token);
         (void) WriteBlobString(image,"\"/>\n");
         break;
       }
