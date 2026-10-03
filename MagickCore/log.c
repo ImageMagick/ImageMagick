@@ -949,21 +949,36 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *cache,const char *xml,
         int
           bracket_depth = 0,
           quote = 0;
-
+    
         /*
-          DOCTYPE element.
+          Parse DOCTYPE element.
         */
         for ( ; *q != '\0'; q++)
         {
+          /*
+            Skip DTD comments.
+          */
+          if ((quote == 0) && (q[0] == '<') && (q[1] == '!') &&
+              (q[2] == '-') && (q[3] == '-'))
+            {
+              q+=4;
+              while ((*q != '\0') && !((q[0] == '-') && (q[1] == '-') &&
+                     (q[2] == '>')))
+                q++;
+              if (*q == '\0')
+                break;
+              q+=2;
+              continue;
+            }
           if (quote != 0)
             {
               if (*q == quote)
-                quote=0;
+                quote = 0;
             }
           else
             {
               if ((*q == '"') || (*q == '\''))
-                quote=(*q);
+                quote = (*q);
               else
                 if (*q == '[')
                   bracket_depth++;
@@ -976,11 +991,20 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *cache,const char *xml,
                   else
                     if ((*q == '>') && (bracket_depth == 0))
                       {
-                        q++;   /* consume final '>' */
+                        q++;
                         break;
                       }
             }
         }
+        if (*q == '\0')
+          {
+            /*
+              Detect unterminated DOCTYPE.
+            */
+            (void) ThrowMagickException(exception,GetMagickModule(),
+              ConfigureError,"UnterminatedDOCTYPE","`%s'",filename);
+            break;
+          }
         continue;
       }
     if (LocaleNCompare(keyword,"<!--",4) == 0)
