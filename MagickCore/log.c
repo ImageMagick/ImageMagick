@@ -948,7 +948,7 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *cache,const char *xml,
       {
         int
           bracket_depth = 0,
-          quote = 0;
+          quote=0;
     
         /*
           Parse DOCTYPE element.
@@ -973,7 +973,7 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *cache,const char *xml,
           if (quote != 0)
             {
               if (*q == quote)
-                quote = 0;
+                quote=0;
             }
           else
             {

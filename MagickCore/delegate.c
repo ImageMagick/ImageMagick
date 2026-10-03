@@ -2147,7 +2147,7 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *cache,
       {
         int
           bracket_depth = 0,
-          quote = 0;
+          quote=0;
     
         /*
           Parse DOCTYPE element.
@@ -2172,7 +2172,7 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *cache,
           if (quote != 0)
             {
               if (*q == quote)
-                quote = 0;
+                quote=0;
             }
           else
             {
