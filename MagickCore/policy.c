@@ -908,7 +908,11 @@ MagickExport MagickBooleanType IsRightsAuthorizedByName(
           If this matched a canonical form, retain the last matching rights.
         */
         canonical_matched_any=MagickTrue;
-        canonical_allowed_accumulator=policy->rights;
+        if (policy->domain != PathPolicyDomain)
+          canonical_allowed_accumulator=policy->rights;
+        else
+          canonical_allowed_accumulator=(PolicyRights) ((int)
+            canonical_allowed_accumulator & (int) policy->rights);
       }
   }
   UnlockSemaphoreInfo(policy_semaphore);
