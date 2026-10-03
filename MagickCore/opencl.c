@@ -852,14 +852,7 @@ static void LoadOpenCLDeviceBenchmark(MagickCLEnv clEnv,const char *xml)
             }
         }
         if (*q == '\0')
-          {
-            /*
-              Detect unterminated DOCTYPE.
-            */
-            (void) ThrowMagickException(exception,GetMagickModule(),
-              ConfigureError,"UnterminatedDOCTYPE","`%s'",filename);
-            break;
-          }
+          break;
         continue;
       }
     if (LocaleNCompare(keyword,"<!--",4) == 0)
