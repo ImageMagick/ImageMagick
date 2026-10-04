@@ -60,7 +60,7 @@
   <policy domain="resource" name="map" value="2GiB"/>
   <!-- Set the maximum width * height of an image that can reside in the pixel
        cache memory. Images that exceed the area limit are cached to disk. -->
-  <policy domain="resource" name="area" value="8KP"/>
+  <policy domain="resource" name="area" value="32MP"/>
   <!-- Set maximum amount of disk space in bytes permitted for use by the pixel
        cache. When this limit is exceeded, the pixel cache is not created
        and an exception is thrown. -->
