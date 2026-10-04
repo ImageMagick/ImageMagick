@@ -2202,6 +2202,109 @@ MagickPrivate MagickBooleanType SkipXMLDocType(const char **xml)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   S u b s t i t u t e X M L E n t i t i e s                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SubstituteXMLEntities() substitutes the predefined XML entities.
+%
+*/
+MagickExport char *SubstituteXMLEntities(const char *content,
+  const MagickBooleanType pedantic)
+{
+  char
+    *canonical_content;
+
+  const char
+    *p;
+
+  size_t
+    extent;
+
+  ssize_t
+    i;
+
+  /*
+    Substitute predefined entities.
+  */
+  i=0;
+  canonical_content=AcquireString((char *) NULL);
+  extent=MagickPathExtent;
+  for (p=content; *p != '\0'; p++)
+  {
+    if ((i+MagickPathExtent) > (ssize_t) extent)
+      {
+        extent+=MagickPathExtent;
+        canonical_content=(char *) ResizeQuantumMemory(canonical_content,extent,
+          sizeof(*canonical_content));
+        if (canonical_content == (char *) NULL)
+          return(canonical_content);
+      }
+    switch (*p)
+    {
+      case '&':
+      {
+        i+=FormatLocaleString(canonical_content+i,extent,"&amp;");
+        break;
+      }
+      case '<':
+      {
+        i+=FormatLocaleString(canonical_content+i,extent,"&lt;");
+        break;
+      }
+      case '>':
+      {
+        i+=FormatLocaleString(canonical_content+i,extent,"&gt;");
+        break;
+      }
+      case '"':
+      {
+        i+=FormatLocaleString(canonical_content+i,extent,"&quot;");
+        break;
+      }
+      case '\n':
+      {
+        if (pedantic == MagickFalse)
+          {
+            canonical_content[i++]=(char) (*p);
+            break;
+          }
+        i+=FormatLocaleString(canonical_content+i,extent,"&#xA;");
+        break;
+      }
+      case '\t':
+      {
+        if (pedantic == MagickFalse)
+          {
+            canonical_content[i++]=(char) (*p);
+            break;
+          }
+        i+=FormatLocaleString(canonical_content+i,extent,"&#x9;");
+        break;
+      }
+      case '\r':
+      {
+        i+=FormatLocaleString(canonical_content+i,extent,"&#xD;");
+        break;
+      }
+      default:
+      {
+        canonical_content[i++]=(char) (*p);
+        break;
+      }
+    }
+  }
+  canonical_content[i]='\0';
+  return(canonical_content);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   X M L T r e e I n f o T o X M L                                           %
 %                                                                             %
 %                                                                             %
