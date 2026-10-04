@@ -1142,57 +1142,7 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *cache,
     (void) CopyMagickString(keyword,token,MagickPathExtent);
     if (LocaleNCompare(keyword,"<!DOCTYPE",9) == 0)
       {
-        int
-          bracket_depth = 0,
-          quote = 0;
-    
-        /*
-          Parse DOCTYPE element.
-        */
-        for ( ; *q != '\0'; q++)
-        {
-          /*
-            Skip DTD comments.
-          */
-          if ((quote == 0) && (q[0] == '<') && (q[1] == '!') &&
-              (q[2] == '-') && (q[3] == '-'))
-            {
-              q+=4;
-              while ((*q != '\0') && !((q[0] == '-') && (q[1] == '-') &&
-                     (q[2] == '>')))
-                q++;
-              if (*q == '\0')
-                break;
-              q+=2;
-              continue;
-            }
-          if (quote != 0)
-            {
-              if (*q == quote)
-                quote = 0;
-            }
-          else
-            {
-              if ((*q == '"') || (*q == '\''))
-                quote = (*q);
-              else
-                if (*q == '[')
-                  bracket_depth++;
-                else
-                  if (*q == ']')
-                    {
-                      if (bracket_depth > 0)
-                        bracket_depth--;
-                    }
-                  else
-                    if ((*q == '>') && (bracket_depth == 0))
-                      {
-                        q++;
-                        break;
-                      }
-            }
-        }
-        if (*q == '\0')
+        if (SkipXMLDocType(&q) == MagickFalse)
           {
             /*
               Detect unterminated DOCTYPE.
@@ -1208,8 +1158,7 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *cache,
         /*
           Comment element.
         */
-        while ((LocaleNCompare(q,"->",2) != 0) && (*q != '\0'))
-          (void) GetNextToken(q,&q,extent,token);
+        SkipXMLComment(&q);
         continue;
       }
     if (LocaleCompare(keyword,"<include") == 0)

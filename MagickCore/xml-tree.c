@@ -2105,6 +2105,103 @@ MagickExport XMLTreeInfo *SetXMLTreeContent(XMLTreeInfo *xml_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   S k i p X M L C o m m e n t                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SkipXMLComment() advances past an XML comment.
+%
+*/
+MagickPrivate void SkipXMLComment(const char **xml)
+{
+  const char
+    *p;
+
+  for (p=*xml; *p != '\0'; p++)
+    if ((p[0] == '-') && (p[1] == '-') && (p[2] == '>'))
+      {
+        *xml=p+3;
+        return;
+      }
+  *xml=p;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S k i p X M L D O C T Y P E                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SkipXMLDocType() skips a DOCTYPE declaration, including its internal subset.
+%
+*/
+MagickPrivate MagickBooleanType SkipXMLDocType(const char **xml)
+{
+  const char
+    *p;
+
+  int
+    bracket_depth,
+    quote;
+
+  bracket_depth=0;
+  quote=0;
+  for (p=*xml; *p != '\0'; p++)
+  {
+    if ((quote == 0) && (p[0] == '<') && (p[1] == '!') &&
+        (p[2] == '-') && (p[3] == '-'))
+      {
+        p+=4;
+        while ((*p != '\0') && !((p[0] == '-') && (p[1] == '-') &&
+               (p[2] == '>')))
+          p++;
+        if (*p == '\0')
+          break;
+        p+=2;
+        continue;
+      }
+    if (quote != 0)
+      {
+        if (*p == quote)
+          quote=0;
+      }
+    else
+      {
+        if ((*p == '"') || (*p == '\''))
+          quote=(*p);
+        else
+          if (*p == '[')
+            bracket_depth++;
+          else
+            if (*p == ']')
+              {
+                if (bracket_depth > 0)
+                  bracket_depth--;
+              }
+            else
+              if ((*p == '>') && (bracket_depth == 0))
+                {
+                  *xml=p+1;
+                  return(MagickTrue);
+                }
+      }
+  }
+  *xml=p;
+  return(MagickFalse);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   X M L T r e e I n f o T o X M L                                           %
 %                                                                             %
 %                                                                             %
