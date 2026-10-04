@@ -4538,17 +4538,6 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
     scanline=(double *) RelinquishMagickMemory(scanline);
   x_vector=(double *) RelinquishMagickMemory(x_vector);
   scale_image->type=image->type;
-  {
-    char
-      transform[MagickPathExtent];
-
-    (void) FormatLocaleString(transform,MagickPathExtent,
-      "scale %.17gx%.17g %.17gx%.17g",(double) image->columns,
-      (double) image->rows,(double) scale_image->columns,
-      (double) scale_image->rows);
-    AppendImageProfileProperty(scale_image,"hdrgm","hdrgm:Transform",
-      transform,exception);
-  }
   if (status == MagickFalse)
     scale_image=DestroyImage(scale_image);
   return(scale_image);

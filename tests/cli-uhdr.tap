@@ -23,7 +23,6 @@ raw_source=cli-uhdr-offset-raw.jpg
 source=cli-uhdr-offset-source.jpg
 output=cli-uhdr-offset-output.jpg
 transformed_output=cli-uhdr-offset-transformed.jpg
-scaled_output=cli-uhdr-offset-scaled.jpg
 locale_output=cli-uhdr-offset-locale.jpg
 jpeg_probe=cli-uhdr-jpeg-probe.jpg
 whitespace_output=cli-uhdr-offset-whitespace.jpg
@@ -62,7 +61,7 @@ comments-local-second-line'
 
 cleanup()
 {
-  rm -f "$raw_source" "$source" "$output" "$transformed_output" "$scaled_output" \
+  rm -f "$raw_source" "$source" "$output" "$transformed_output" \
     "$locale_output" "$jpeg_probe" "$whitespace_output" "$invalid_output" \
     "$iptc_source" "$iptc_output"
   rm -f "$commented_source" "$comment_roundtrip" \
@@ -114,7 +113,7 @@ if [ "X$jpeg_format" != "XJPEG" ]; then
   exit 0
 fi
 
-echo "1..21"
+echo "1..20"
 if ! ${MAGICK} \( "${SRCDIR}/rose.pnm" -depth 8 \) \
     \( "${SRCDIR}/rose.pnm" -depth 16 \) \
     -define uhdr:hdr-color-transfer=linear "UHDR:$raw_source" \
@@ -254,17 +253,6 @@ check_value "offset values survive a geometry transform" \
   "$transformed_offsets" "$source_offsets"
 check_value "capacity values survive a geometry transform" \
   "$transformed_capacity" "$capacity_min $capacity_max"
-
-if ${MAGICK} "UHDR:$source" -scale 50% \
-    "UHDR:$scaled_output" >/dev/null 2>&1; then
-  scaled_offsets=`${IDENTIFY} -quiet -format \
-    '%[hdrgm:OffsetSDR] %[hdrgm:OffsetHDR]' \
-    "UHDR:$scaled_output" 2>/dev/null`
-else
-  scaled_offsets=
-fi
-check_value "offset values survive a scale transform" \
-  "$scaled_offsets" "$source_offsets"
 
 if ${MAGICK} "UHDR:$source" -quality 85 \
     -define uhdr:gainmap-quality=35 -resize 50% \
