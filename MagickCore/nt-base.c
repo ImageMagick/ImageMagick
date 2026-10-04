@@ -2371,7 +2371,7 @@ MagickExport int NTRemoveWide(const char *path)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  NTRenameWide() renames a file.
+%  NTRenameWide() renames a file, replacing an existing destination file.
 %
 %  The format of the NTRenameWide method is:
 %
@@ -2402,7 +2402,8 @@ MagickExport int NTRenameWide(const char* source, const char* destination)
       source_wide=(wchar_t *) RelinquishMagickMemory(source_wide);
       return(-1);
     }
-  status=_wrename(source_wide,destination_wide);
+  status=MoveFileExW(source_wide,destination_wide,MOVEFILE_REPLACE_EXISTING) ?
+    0 : -1;
   destination_wide=(wchar_t *) RelinquishMagickMemory(destination_wide);
   source_wide=(wchar_t *) RelinquishMagickMemory(source_wide);
   return(status);
