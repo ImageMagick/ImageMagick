@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE policymap [
   <!ELEMENT policymap (policy)*>
-  <!ATTLIST policymap xmlns CDATA #FIXED "">
+  <!ATTLIST policymap
+    xmlns CDATA #FIXED ""
+  >
+
   <!ELEMENT policy EMPTY>
-  <!ATTLIST policy xmlns CDATA #FIXED "">
-  <!ATTLIST policy domain NMTOKEN #REQUIRED>
-  <!ATTLIST policy name NMTOKEN #IMPLIED>
-  <!ATTLIST policy pattern CDATA #IMPLIED>
-  <!ATTLIST policy rights NMTOKEN #IMPLIED>
-  <!ATTLIST policy stealth NMTOKEN #IMPLIED>
-  <!ATTLIST policy value CDATA #IMPLIED>
+  <!ATTLIST policy
+    xmlns   CDATA   #FIXED ""
+    domain  NMTOKEN #REQUIRED
+    name    NMTOKEN #IMPLIED
+    pattern CDATA   #IMPLIED
+    rights  NMTOKEN #IMPLIED
+    stealth NMTOKEN #IMPLIED
+    value   CDATA   #IMPLIED
+  >
 ]>
 
 <!--
@@ -46,8 +51,8 @@
   <!-- Resource Limits                                                -->
   <!-- ============================================================= -->
 
-  <!-- Limit ImageMagick to at most two worker threads. -->
-  <policy domain="resource" name="thread" value="2"/>
+  <!-- Limit ImageMagick to at most four worker threads. -->
+  <policy domain="resource" name="thread" value="4"/>
 
   <!-- Abort operations that exceed 30 seconds of processing time. -->
   <policy domain="resource" name="time" value="30"/>
