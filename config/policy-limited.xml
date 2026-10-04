@@ -16,98 +16,122 @@
     value   CDATA   #IMPLIED
   >
 ]>
+
 <!--
-  Creating a security policy that fits your specific local environment
-  before making use of ImageMagick is highly advised. You can find guidance on
-  setting up this policy at https://imagemagick.org/script/security-policy.php,
-  and it's important to verify your policy using the validation tool located
-  at https://imagemagick-secevaluator.doyensec.com/. We also strongly
-  recommend that all users validate their security assumptions by testing their
-  configurations after making any policy changes. This helps ensure that the 
-  intended restrictions are functioning as expected in their specific 
-  deployment environment.
+  ImageMagick Security Policy
 
+  This policy is intended for general-purpose deployments that process
+  potentially untrusted images while maintaining support for common image
+  formats and workflows.
 
-  Limited ImageMagick security policy:
+  The policy balances usability and security by:
 
-  The primary objective of the limited security policy is to find a
-  middle ground between convenience and security. This policy involves the
-  deactivation of potentially hazardous functionalities, like specific coders
-  such as SVG or HTTP. Furthermore, it establishes several constraints on
-  the utilization of resources like memory, storage, and processing duration,
-  all of which are adjustable. This policy proves advantageous in situations
-  where there's a need to mitigate the potential threat of handling possibly
-  malicious or demanding images, all while retaining essential capabilities
-  for prevalent image formats.
+    * Limiting resource consumption (CPU time, memory, disk usage, image
+      dimensions, and sequence length).
+    * Blocking potentially dangerous path access methods such as indirect
+      reads (@files) and pipes.
+    * Preventing access to sensitive filesystem locations.
+    * Restricting high-risk coders that have historically been involved in
+      external content processing, scripting, or complex parsers.
+    * Limiting large allocation requests that could otherwise lead to
+      excessive memory consumption.
+
+  After modifying this policy, test and validate the resulting behavior in
+  your environment to ensure the restrictions are operating as intended.
+
+  Documentation:
+    https://imagemagick.org/script/security-policy.php
+
+  Policy Evaluator:
+    https://imagemagick-secevaluator.doyensec.com/
 -->
+
 <policymap>
-  <!-- Set maximum parallel threads. -->
+
+  <!-- Maximum number of worker threads. -->
   <policy domain="resource" name="thread" value="4"/>
-  <!-- Set maximum time in seconds. When this limit is exceeded, an exception
-       is thrown and processing stops. -->
+
+  <!-- Maximum execution time (seconds) before processing is terminated. -->
   <policy domain="resource" name="time" value="240"/>
-  <!-- Set maximum number of open pixel cache files. When this limit is
-       exceeded, any subsequent pixels cached to disk are closed and reopened
-       on demand. -->
+
+  <!-- Maximum number of simultaneously open pixel cache files. -->
   <policy domain="resource" name="file" value="768"/>
-  <!-- Set maximum amount of memory in bytes to allocate for the pixel cache
-       from the heap. When this limit is exceeded, the image pixels are cached
-       to memory-mapped disk. -->
+
+  <!-- Maximum heap memory used for pixel cache data. Excess pixels are
+       stored in mapped or disk-backed cache. -->
   <policy domain="resource" name="memory" value="768MiB"/>
-  <!-- Set maximum amount of memory map in bytes to allocate for the pixel
-       cache. When this limit is exceeded, the image pixels are cached to
-       disk. -->
+
+  <!-- Maximum memory-mapped pixel cache size. Excess cache data is
+       written to disk. -->
   <policy domain="resource" name="map" value="2GiB"/>
-  <!-- Set the maximum width * height of an image that can reside in the pixel
-       cache memory. Images that exceed the area limit are cached to disk. -->
+
+  <!-- Maximum in-memory image area before pixels are cached to disk. -->
   <policy domain="resource" name="area" value="32MP"/>
-  <!-- Set maximum amount of disk space in bytes permitted for use by the pixel
-       cache. When this limit is exceeded, the pixel cache is not created
-       and an exception is thrown. -->
+
+  <!-- Maximum disk space available for pixel cache operations. -->
   <policy domain="resource" name="disk" value="2GiB"/>
-  <!-- Set the maximum length of an image sequence.  When this limit is
-       exceeded, an exception is thrown. -->
+
+  <!-- Maximum number of images permitted in a sequence. -->
   <policy domain="resource" name="list-length" value="64"/>
-  <!-- Set the maximum width of an image.  When this limit is exceeded, an
-       exception is thrown. -->
+
+  <!-- Maximum image width. -->
   <policy domain="resource" name="width" value="16KP"/>
-  <!-- Set the maximum height of an image.  When this limit is exceeded, an
-       exception is thrown. -->
+
+  <!-- Maximum image height. -->
   <policy domain="resource" name="height" value="16KP"/>
-  <!-- Periodically yield the CPU for at least the time specified in
-       milliseconds. -->
+
+  <!-- Optional: periodically yield CPU time to improve system responsiveness. -->
   <!-- <policy domain="resource" name="throttle" value="2"/> -->
-  <!-- Do not create temporary files in the default shared directories, instead
-       specify a private area to store only ImageMagick temporary files. -->
+
+  <!-- Optional: store temporary files in a dedicated private directory. -->
   <!-- <policy domain="resource" name="temporary-path" value="/magick/tmp/"/> -->
-  <!-- Force memory initialization by memory mapping select memory
-       allocations. -->
+
+  <!-- Optional: force anonymous memory mapping for selected cache allocations. -->
   <!-- <policy domain="cache" name="memory-map" value="anonymous"/> -->
-  <!-- Ensure all image data is fully flushed and synchronized to disk. -->
+
+  <!-- Optional: fully synchronize image cache data to disk before closing. -->
   <!-- <policy domain="cache" name="synchronize" value="true"/> -->
-  <!-- Replace passphrase for secure distributed processing -->
-  <!-- <policy domain="cache" name="shared-secret" value="secret-passphrase" stealth="true"/> -->
-  <!-- Do not permit any delegates to execute. -->
+
+  <!-- Optional: shared secret used by distributed pixel cache operations.
+       Replace with a site-specific value if enabled. -->
+  <!-- <policy domain="cache" name="shared-secret"
+            value="secret-passphrase" stealth="true"/> -->
+
+  <!-- Optional: disable execution of all delegates. -->
   <!-- <policy domain="delegate" rights="none" pattern="*"/> -->
-  <!-- Do not permit any image filters to load. -->
+
+  <!-- Optional: disable loading of all image filter modules. -->
   <!-- <policy domain="filter" rights="none" pattern="*"/> -->
-  <!-- Don't read/write from/to stdin/stdout. -->
+
+  <!-- Optional: disable stdin/stdout image processing ("-"). -->
   <!-- <policy domain="path" rights="none" pattern="-"/> -->
-  <!-- don't read sensitive paths. -->
+
+  <!-- Prevent access to sensitive system configuration files. -->
   <policy domain="path" rights="none" pattern="/etc/*"/>
-  <!-- Indirect reads are not permitted. -->
+
+  <!-- Prevent indirect file reads using @filename syntax. -->
   <policy domain="path" rights="none" pattern="@*"/>
-  <!-- Pipes are not permitted. -->
+
+  <!-- Prevent use of pipes for reading or writing image data. -->
   <policy domain="path" rights="none" pattern="|*"/>
-  <!-- These image types are security risks on read, but write is fine -->
-  <policy domain="module" rights="write" pattern="{MSL,MVG,PDF,PS,SVG,TXT,URL,XPS}"/>
-  <!-- This policy sets the number of times to replace content of certain
-       memory buffers and temporary files before they are freed or deleted. -->
+
+  <!--
+    Restrict high-risk coders.
+
+    Read access is denied while write access remains permitted.
+    This allows ImageMagick to generate these formats without accepting
+    potentially untrusted input through them.
+  -->
+  <policy domain="module" rights="write"
+          pattern="{MSL,MVG,PDF,PS,SVG,TXT,URL,XPS}"/>
+
+  <!-- Optional: overwrite temporary files and buffers before deletion. -->
   <!-- <policy domain="system" name="shred" value="1"/> -->
-  <!-- Enable the initialization of buffers with zeros, resulting in a minor
-       performance penalty but with improved security. -->
+
+  <!-- Optional: initialize allocated memory with zeros for improved security. -->
   <!-- <policy domain="system" name="memory-map" value="anonymous"/> -->
-  <!-- Set the maximum amount of memory in bytes that are permitted for
-       allocation requests. -->
+
+  <!-- Maximum size of a single allocation request. -->
   <policy domain="system" name="max-memory-request" value="512MiB"/>
+
 </policymap>
