@@ -18,11 +18,7 @@
 #ifndef MAGICKCORE_XML_TREE_PRIVATE_H
 #define MAGICKCORE_XML_TREE_PRIVATE_H
 
-#include "MagickCore/locale_.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/splay-tree.h"
-#include "MagickCore/xml-tree.h"
+#include "MagickCore/magick-type.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
