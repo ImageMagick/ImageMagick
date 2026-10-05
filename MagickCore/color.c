@@ -2086,10 +2086,14 @@ static MagickBooleanType LoadColorCache(LinkedListInfo *cache,const char *xml,
                       if (LoadColorCache(cache,file_xml,path,depth+1,exception) == MagickFalse)
                         status=MagickFalse;
                       file_xml=DestroyString(file_xml);
+                      if (status == MagickFalse)
+                        break;
                     }
                 }
             }
         }
+        if (status == MagickFalse)
+          break;
         continue;
       }
     if (LocaleCompare(keyword,"<color") == 0)

@@ -1282,10 +1282,14 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *cache,const char *xml,
                       if (LoadLocaleCache(cache,file_xml,path,locale,depth+1,exception) == MagickFalse)
                         status=MagickFalse;
                       file_xml=DestroyString(file_xml);
+                      if (status == MagickFalse)
+                        break;
                     }
                 }
             }
         }
+        if (status == MagickFalse)
+          break;
         continue;
       }
     if (LocaleCompare(keyword,"<locale") == 0)
