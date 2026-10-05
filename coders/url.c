@@ -44,6 +44,7 @@
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
 #include "MagickCore/constitute.h"
+#include "MagickCore/constitute-private.h"
 #include "MagickCore/delegate.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
@@ -112,7 +113,7 @@ static Image *InvokeURLDelegate(ImageInfo *read_info,Image *image,
       (void) FormatLocaleString(read_info->filename,MagickPathExtent,
         "%s.dat",read_info->unique);
       *read_info->magick='\0';
-      images=ReadImage(read_info,exception);
+      images=ReadImageWithoutPostProcessing(read_info,exception);
       (void) RelinquishUniqueFileResource(read_info->filename);
       if (images != (Image *) NULL)
         for (next=images; next != (Image *) NULL; next=next->next)
@@ -167,7 +168,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) CopyMagickString(read_info->filename,image_info->filename+2,
         MagickPathExtent);
       *read_info->magick='\0';
-      images=ReadImage(read_info,exception);
+      images=ReadImageWithoutPostProcessing(read_info,exception);
       read_info=DestroyImageInfo(read_info);
       image=DestroyImage(image);
       return(GetFirstImageInList(images));
@@ -204,7 +205,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) fclose(file);
 #endif
   *read_info->magick='\0';
-  images=ReadImage(read_info,exception);
+  images=ReadImageWithoutPostProcessing(read_info,exception);
   (void) RelinquishUniqueFileResource(read_info->filename);
   if (images != (Image *) NULL)
     for (next=images; next != (Image *) NULL; next=next->next)

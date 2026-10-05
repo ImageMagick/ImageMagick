@@ -44,6 +44,7 @@
 #include "MagickCore/blob-private.h"
 #include "MagickCore/client.h"
 #include "MagickCore/constitute.h"
+#include "MagickCore/constitute-private.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/image.h"
@@ -160,7 +161,7 @@ static Image *ReadDOTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read SVG graph.
   */
   (void) CopyMagickString(read_info->magick,"SVG",MagickPathExtent);
-  image=ReadImage(read_info,exception);
+  image=ReadImageWithoutPostProcessing(read_info,exception);
   (void) RelinquishUniqueFileResource(read_info->filename);
   read_info=DestroyImageInfo(read_info);
   if (image == (Image *) NULL)

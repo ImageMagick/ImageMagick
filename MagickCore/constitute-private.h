@@ -29,6 +29,9 @@ extern "C" {
 #include "MagickCore/magick-private.h"
 #include "MagickCore/utility.h"
 
+extern MagickExport Image
+  *ReadImageWithoutPostProcessing(const ImageInfo *,ExceptionInfo *);
+
 static inline Image *StrictReadImage(ImageInfo *image_info,
   ExceptionInfo *exception)
 {

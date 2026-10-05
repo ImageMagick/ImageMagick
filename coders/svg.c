@@ -337,7 +337,7 @@ static Image *RenderSVGImage(const ImageInfo *image_info,Image *image,
       read_info=CloneImageInfo(image_info);
       (void) CopyMagickString(read_info->filename,output_filename,
         MagickPathExtent);
-      svg_image=ReadImage(read_info,exception);
+      svg_image=ReadImageWithoutPostProcessing(read_info,exception);
       read_info=DestroyImageInfo(read_info);
       if (svg_image != (Image *) NULL)
         {
@@ -3278,7 +3278,7 @@ static Image *RenderMSVGImage(const ImageInfo *image_info,Image *image,
       read_info->file=file;
       (void) FormatLocaleString(read_info->filename,MagickPathExtent,"mvg:%s",
         filename);
-      image=ReadImage(read_info,exception);
+      image=ReadImageWithoutPostProcessing(read_info,exception);
       read_info=DestroyImageInfo(read_info);
       if (image != (Image *) NULL)
         (void) CopyMagickString(image->filename,image_info->filename,

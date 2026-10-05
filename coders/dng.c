@@ -43,6 +43,7 @@
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
 #include "MagickCore/constitute.h"
+#include "MagickCore/constitute-private.h"
 #include "MagickCore/delegate.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
@@ -257,7 +258,7 @@ static Image *InvokeDNGDelegate(const ImageInfo *image_info,Image *image,
   (void) FormatLocaleString(read_info->filename,MagickPathExtent,"%s.tif",
     read_info->unique);
   sans_exception=AcquireExceptionInfo();
-  image=ReadImage(read_info,sans_exception);
+  image=ReadImageWithoutPostProcessing(read_info,sans_exception);
   sans_exception=DestroyExceptionInfo(sans_exception);
   if (image != (Image *) NULL)
     (void) CopyMagickString(image->magick,read_info->magick,MagickPathExtent);

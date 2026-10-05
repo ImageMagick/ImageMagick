@@ -50,6 +50,7 @@
 #include "MagickCore/colorspace.h"
 #include "MagickCore/colorspace-private.h"
 #include "MagickCore/constitute.h"
+#include "MagickCore/constitute-private.h"
 #include "MagickCore/delegate.h"
 #include "MagickCore/delegate-private.h"
 #include "MagickCore/draw.h"
@@ -854,7 +855,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       read_info->blob=NULL;
       read_info->length=0;
-      next=ReadImage(read_info,exception);
+      next=ReadImageWithoutPostProcessing(read_info,exception);
       (void) RelinquishUniqueFileResource(read_info->filename);
       if (next == (Image *) NULL)
         break;
