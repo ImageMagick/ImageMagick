@@ -97,6 +97,96 @@ static MagickBooleanType
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   C o n f o r m P i x e l I n f o C o l o r s p a c e                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ConformPixelInfoColorspace() ensures the pixel conforms with the colorspace
+%  of the image. A pixel that is sRGB compatible or CMYK is left as is.
+%
+%  The format of the ConformPixelInfoColorspace method is:
+%
+%      void ConformPixelInfoColorspace(const Image *image,PixelInfo *pixel,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o pixel: the pixel info.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickPrivate void ConformPixelInfoColorspace(const Image *image,
+  PixelInfo *pixel,ExceptionInfo *exception)
+{
+  const char
+    *value;
+
+  double
+    blue,
+    green,
+    red,
+    white_luminance = 10000.0;
+
+  IlluminantType
+    illuminant = D65Illuminant;
+
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  assert(pixel != (PixelInfo *) NULL);
+  if ((pixel->colorspace == image->colorspace) ||
+      (pixel->colorspace == CMYKColorspace) ||
+      (IssRGBCompatibleColorspace(pixel->colorspace) != MagickFalse))
+    return;
+  value=GetImageArtifact(image,"color:illuminant");
+  if (value != (const char *) NULL)
+    {
+      ssize_t
+        illuminant_type;
+
+      illuminant_type=ParseCommandOption(MagickIlluminantOptions,MagickFalse,
+        value);
+      if (illuminant_type < 0)
+        illuminant=UndefinedIlluminant;
+      else
+        illuminant=(IlluminantType) illuminant_type;
+    }
+  value=GetImageProperty(image,"white-luminance",exception);
+  if (value != (const char *) NULL)
+    white_luminance=StringToDouble(value,(char **) NULL);
+  ConvertGenericToRGB(pixel->colorspace,QuantumScale*pixel->red,
+    QuantumScale*pixel->green,QuantumScale*pixel->blue,white_luminance,
+    illuminant,&red,&green,&blue);
+  pixel->colorspace=sRGBColorspace;
+  if ((image->colorspace != CMYKColorspace) &&
+      (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse))
+    {
+      double
+        X,
+        Y,
+        Z;
+
+      ConvertRGBToGeneric(image->colorspace,red,green,blue,white_luminance,
+        illuminant,&X,&Y,&Z);
+      red=(double) QuantumRange*X;
+      green=(double) QuantumRange*Y;
+      blue=(double) QuantumRange*Z;
+      pixel->colorspace=image->colorspace;
+    }
+  pixel->red=(MagickRealType) ClampToQuantum(red);
+  pixel->green=(MagickRealType) ClampToQuantum(green);
+  pixel->blue=(MagickRealType) ClampToQuantum(blue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   C o n v e r t G e n e r i c T o R G B                                     %
 %                                                                             %
 %                                                                             %

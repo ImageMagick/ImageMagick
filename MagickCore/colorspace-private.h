@@ -1898,6 +1898,7 @@ static inline MagickBooleanType IsYCbCrCompatibleColorspace(
 }
 
 extern MagickPrivate void
+  ConformPixelInfoColorspace(const Image *,PixelInfo *,ExceptionInfo *),
   ConvertGenericToRGB(const ColorspaceType,const double,const double,
     const double,const double,const IlluminantType,double *,double *,double *),
   ConvertRGBToGeneric(const ColorspaceType,const double,const double,

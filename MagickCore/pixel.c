@@ -215,6 +215,7 @@ MagickExport void ConformPixelInfo(Image *image,const PixelInfo *source,
   assert(image->signature == MagickCoreSignature);
   assert(destination != (const PixelInfo *) NULL);
   *destination=(*source);
+  ConformPixelInfoColorspace(image,destination,exception);
   if (image->colorspace == CMYKColorspace)
     {
       if (IssRGBCompatibleColorspace(destination->colorspace) != MagickFalse)
