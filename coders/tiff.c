@@ -1259,7 +1259,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  if (TIFFGetField(tiff,TIFFTAG_DNGVERSION,&dng_version) == 1)
+  if ((image_info->affirm == MagickFalse) &&
+      (TIFFGetField(tiff,TIFFTAG_DNGVERSION,&dng_version) == 1))
     {
       Image
         *dng_image = (Image *) NULL;
