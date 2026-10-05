@@ -1316,6 +1316,13 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
         caliper_info.q=q;
         caliper_info.v=v;
       }
+    if ((caliper_info.p < 0) || (caliper_info.q < 0) || (caliper_info.v < 0))
+      {
+        vertices=RelinquishMagickMemory(vertices);
+        bounding_box=RelinquishMagickMemory(bounding_box);
+        *number_vertices=0;
+        return((PointInfo *) NULL);
+      }
   }
   /*
     Initialize minimum bounding box.
