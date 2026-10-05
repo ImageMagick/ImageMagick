@@ -1080,7 +1080,7 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *cache,const char *xml,
   const char
     *q;
 
-  MagickStatusType
+  MagickBooleanType
     status;
 
   size_t
@@ -1115,6 +1115,13 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *cache,const char *xml,
     /*
       Interpret XML.
     */
+    if (SkipXMLComment(&q) == MagickFalse)
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          ConfigureError,"UnterminatedComment","`%s'",filename);
+        status=MagickFalse;
+        break;
+      }
     (void) GetNextToken(q,&q,extent,token);
     if (*token == '\0')
       break;
@@ -1128,16 +1135,9 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *cache,const char *xml,
             */
             (void) ThrowMagickException(exception,GetMagickModule(),
               ConfigureError,"UnterminatedDOCTYPE","`%s'",filename);
+            status=MagickFalse;
             break;
           }
-        continue;
-      }
-    if (LocaleNCompare(keyword,"<!--",4) == 0)
-      {
-        /*
-          Comment element.
-        */
-        SkipXMLComment(&q);
         continue;
       }
     if (LocaleCompare(keyword,"<include") == 0)
@@ -1180,8 +1180,8 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *cache,const char *xml,
                   sans_exception=DestroyExceptionInfo(sans_exception);
                   if (file_xml != (char *) NULL)
                     {
-                      status&=(MagickStatusType) LoadTypeCache(cache,file_xml,
-                        path,depth+1,exception);
+                      if (LoadTypeCache(cache,file_xml,path,depth+1,exception) == MagickFalse)
+                        status=MagickFalse;
                       file_xml=(char *) RelinquishMagickMemory(file_xml);
                     }
                 }
@@ -1334,7 +1334,7 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *cache,const char *xml,
     }
   }
   token=(char *) RelinquishMagickMemory(token);
-  return(status != 0 ? MagickTrue : MagickFalse);
+  return(status);
 }
 
 /*
