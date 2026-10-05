@@ -143,6 +143,9 @@ static MagickBooleanType
   IsPolicyCacheInstantiated(ExceptionInfo *),
   LoadPolicyCache(LinkedListInfo *,const char *,const char *,const size_t,
     ExceptionInfo *);
+
+static void
+  *DestroyPolicyElement(void *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -157,6 +160,7 @@ static MagickBooleanType
 %
 %  AcquirePolicyCache() caches one or more policy configurations which provides
 %  a mapping between policy attributes and a policy name.
+%  It returns NULL if a policy configuration fails to load.
 %
 %  The format of the AcquirePolicyCache method is:
 %
@@ -191,8 +195,6 @@ static LinkedListInfo *AcquirePolicyCache(const char *filename,
   magick_unreferenced(filename);
   status=LoadPolicyCache(cache,ZeroConfigurationPolicy,"[zero-configuration]",0,
     exception);
-  if (status == MagickFalse)
-    CatchException(exception);
 #else
   {
     const StringInfo
@@ -208,12 +210,18 @@ static LinkedListInfo *AcquirePolicyCache(const char *filename,
       status=LoadPolicyCache(cache,(const char *) GetStringInfoDatum(option),
         GetStringInfoPath(option),0,exception);
       if (status == MagickFalse)
-        CatchException(exception);
+        break;
       option=(const StringInfo *) GetNextValueInLinkedList(options);
     }
     options=DestroyConfigureOptions(options);
   }
 #endif
+  if (status == MagickFalse)
+    {
+      cache=DestroyLinkedList(cache,DestroyPolicyElement);
+      CatchException(exception);
+      return((LinkedListInfo *) NULL);
+    }
   /*
     Load built-in policy map.
   */
@@ -828,8 +836,8 @@ MagickExport MagickBooleanType IsRightsAuthorizedByName(
     {
       if ((GetLogEventMask() & PolicyEvent) != 0)
         (void) LogMagickEvent(PolicyEvent,GetMagickModule(),
-          "  authorized: true (no security policies found)");
-      return(MagickTrue);
+          "  authorized: false (security policies could not be loaded)");
+      return(MagickFalse);
     }
   /*
     Evaluate policies in order; the last matching policy wins.  A path is
