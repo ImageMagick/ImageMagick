@@ -50,6 +50,7 @@
 #include "MagickCore/cache.h"
 #include "MagickCore/colorspace.h"
 #include "MagickCore/constitute.h"
+#include "MagickCore/constitute-private.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/geometry.h"
@@ -278,7 +279,7 @@ static Image *ReadCALSImage(const ImageInfo *image_info,
   (void) FormatLocaleString(message,MagickPathExtent,"%lu",density);
   (void) CloneString(&read_info->density,message);
   read_info->orientation=(OrientationType) orientation;
-  image=ReadImage(read_info,exception);
+  image=ReadImageWithoutPostProcessing(read_info,exception);
   read_info->file=(FILE *) NULL;
   if (image != (Image *) NULL)
     {

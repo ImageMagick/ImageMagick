@@ -796,6 +796,8 @@ static void LoadOpenCLDeviceBenchmark(MagickCLEnv clEnv,const char *xml)
     /*
       Interpret XML.
     */
+    if (SkipXMLComment(&q) == MagickFalse)
+      break;
     (void) GetNextToken(q,&q,extent,token);
     if (*token == '\0')
       break;
@@ -804,14 +806,6 @@ static void LoadOpenCLDeviceBenchmark(MagickCLEnv clEnv,const char *xml)
       {
         if (SkipXMLDocType(&q) == MagickFalse)
           break;
-        continue;
-      }
-    if (LocaleNCompare(keyword,"<!--",4) == 0)
-      {
-        /*
-          Comment element.
-        */
-        SkipXMLComment(&q);
         continue;
       }
     if (LocaleCompare(keyword,"<device") == 0)

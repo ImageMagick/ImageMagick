@@ -18,11 +18,7 @@
 #ifndef MAGICKCORE_XML_TREE_PRIVATE_H
 #define MAGICKCORE_XML_TREE_PRIVATE_H
 
-#include "MagickCore/locale_.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/splay-tree.h"
-#include "MagickCore/xml-tree.h"
+#include "MagickCore/magick-type.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -32,10 +28,8 @@ extern MagickPrivate char
   *FileToXML(const char *,const size_t);
 
 extern MagickPrivate MagickBooleanType
+  SkipXMLComment(const char **),
   SkipXMLDocType(const char **);
-
-extern MagickPrivate void
-  SkipXMLComment(const char **);
 
 extern MagickExport char
   *SubstituteXMLEntities(const char *,const MagickBooleanType);

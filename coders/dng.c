@@ -43,6 +43,7 @@
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
 #include "MagickCore/constitute.h"
+#include "MagickCore/constitute-private.h"
 #include "MagickCore/delegate.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
@@ -257,7 +258,7 @@ static Image *InvokeDNGDelegate(const ImageInfo *image_info,Image *image,
   (void) FormatLocaleString(read_info->filename,MagickPathExtent,"%s.tif",
     read_info->unique);
   sans_exception=AcquireExceptionInfo();
-  image=ReadImage(read_info,sans_exception);
+  image=ReadImageWithoutPostProcessing(read_info,sans_exception);
   sans_exception=DestroyExceptionInfo(sans_exception);
   if (image != (Image *) NULL)
     (void) CopyMagickString(image->magick,read_info->magick,MagickPathExtent);
@@ -528,6 +529,91 @@ static MagickBooleanType UnpackLibRawImage(Image *image,const ImageInfo *image_i
   libraw_dcraw_clear_mem(raw_image);
   return(MagickTrue);
 }
+
+static Image* LibrawThumbnailBitmapToImage(const ImageInfo *image_info,
+  libraw_data_t *raw_info,ExceptionInfo *exception)
+{
+  Image
+    *image;
+
+  QuantumInfo
+    *quantum_info;
+
+  QuantumType
+    quantum_type;
+
+  Quantum
+    *q;
+
+  image=AcquireImage(image_info,exception);
+  image->columns=(size_t) raw_info->thumbnail.twidth;
+  image->rows=(size_t) raw_info->thumbnail.theight;
+  if (SetImageExtent(image,image->columns,image->rows,exception) == MagickFalse)
+    return(DestroyImage(image));
+  image->depth=8;
+  quantum_type=RGBQuantum;
+  if (raw_info->thumbnail.tcolors == 1)
+    {
+      image->colorspace=GRAYColorspace;
+      image->type=GrayscaleType;
+      quantum_type=GrayQuantum;
+    }
+  quantum_info=AcquireQuantumInfo(image_info,image);
+  q=QueueAuthenticPixels(image,0,0,image->columns,
+    image->rows,exception);
+  if (q != (Quantum *) NULL)
+    {
+      (void) ImportQuantumPixels(image,(CacheView *) NULL,
+        quantum_info,quantum_type,(const unsigned char *)
+        raw_info->thumbnail.thumb,exception);
+      (void) SyncAuthenticPixels(image,exception);
+    }
+  quantum_info=DestroyQuantumInfo(quantum_info);
+  return(image);
+}
+
+static MagickBooleanType UnpackLibRawThumbnails(Image **image,const ImageInfo *image_info,
+  libraw_data_t *raw_info,int *errcode,ExceptionInfo *exception)
+{
+  ImageInfo
+    *thumbnail_info;
+
+  int
+    i;
+
+  if (raw_info->thumbs_list.thumbcount == 0)
+  {
+    *errcode=LIBRAW_NO_THUMBNAIL;
+    return(MagickFalse);
+  }
+  if (AcquireMagickResource(ListLengthResource,raw_info->thumbs_list.thumbcount) == MagickFalse)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
+        "ListLengthExceedsLimit","`%s'",image_info->filename);
+      return(MagickFalse);
+    }
+  for(i=0; i < (ssize_t) raw_info->thumbs_list.thumbcount; i++)
+  {
+    Image
+      *thumbnail;
+
+    *errcode=libraw_unpack_thumb_ex(raw_info,i);
+    if (*errcode != LIBRAW_SUCCESS)
+      return(MagickFalse);
+    thumbnail_info=AcquireImageInfo();
+    if (raw_info->thumbnail.tformat == LIBRAW_THUMBNAIL_BITMAP)
+      thumbnail=LibrawThumbnailBitmapToImage(thumbnail_info,raw_info,exception);
+    else
+      thumbnail=BlobToImage(thumbnail_info,raw_info->thumbnail.thumb,
+        raw_info->thumbnail.tlength,exception);
+    thumbnail_info=DestroyImageInfo(thumbnail_info);
+    if (thumbnail == (Image*) NULL)
+      return(MagickFalse);
+    AppendImageToList(image,thumbnail);
+  }
+  (void) RemoveImageFromList(image);
+  return(MagickTrue);
+}
 #endif
 
 static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
@@ -560,6 +646,9 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     return(InvokeDNGDelegate(image_info,image,exception));
 #if defined(MAGICKCORE_RAW_R_DELEGATE)
   {
+    const char
+      *option;
+
     int
       errcode;
 
@@ -626,7 +715,11 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         libraw_close(raw_info);
         return(image);
       }
-    status=UnpackLibRawImage(image,image_info,raw_info,&errcode,exception);
+    option=GetImageOption(image_info,"dng:read-thumbnails");
+    if (IsStringTrue(option) == MagickTrue)
+      status=UnpackLibRawThumbnails(&image,image_info,raw_info,&errcode,exception);
+    else
+      status=UnpackLibRawImage(image,image_info,raw_info,&errcode,exception);
     libraw_close(raw_info);
     if (status != MagickTrue)
       {

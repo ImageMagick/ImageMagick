@@ -55,6 +55,7 @@
 #include "MagickCore/colorspace.h"
 #include "MagickCore/colorspace-private.h"
 #include "MagickCore/constitute.h"
+#include "MagickCore/constitute-private.h"
 #include "MagickCore/enhance.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
@@ -1258,7 +1259,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  if (TIFFGetField(tiff,TIFFTAG_DNGVERSION,&dng_version) == 1)
+  if ((image_info->affirm == MagickFalse) &&
+      (TIFFGetField(tiff,TIFFTAG_DNGVERSION,&dng_version) == 1))
     {
       Image
         *dng_image = (Image *) NULL;
@@ -1270,7 +1272,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       (void) CopyMagickString(read_info->magick,"DNG",MagickPathExtent);
       TIFFClose(tiff);
       if (*read_info->filename != '\0')
-        dng_image=ReadImage(read_info,exception);
+        dng_image=ReadImageWithoutPostProcessing(read_info,exception);
       else
         {
           status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
@@ -1278,7 +1280,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             {
               status=ImageToFile(image,read_info->filename,exception);
               if (status != MagickFalse)
-                dng_image=ReadImage(read_info,exception);
+                dng_image=ReadImageWithoutPostProcessing(read_info,exception);
               (void) RelinquishUniqueFileResource(read_info->filename);
             }
         }

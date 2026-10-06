@@ -42,6 +42,7 @@
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
 #include "MagickCore/constitute.h"
+#include "MagickCore/constitute-private.h"
 #include "MagickCore/delegate.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
@@ -270,7 +271,7 @@ static Image *ReadVIDEOImage(const ImageInfo *image_info,
             MagickPathExtent);
           (void) CopyMagickString(read_info->filename,read_info->unique,
             MagickPathExtent);
-          images=ReadImage(read_info,exception);
+          images=ReadImageWithoutPostProcessing(read_info,exception);
         }
       else
         if (*message != '\0')

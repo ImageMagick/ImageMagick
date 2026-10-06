@@ -56,6 +56,7 @@
 #include "MagickCore/colorspace.h"
 #include "MagickCore/colorspace-private.h"
 #include "MagickCore/constitute.h"
+#include "MagickCore/constitute-private.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/geometry.h"
@@ -439,7 +440,7 @@ static Image *ReadUltraHDRJPEGImage(const ImageInfo *image_info,
   uhdr_info=CloneImageInfo(image_info);
   SetUltraHDRCoderFilename(uhdr_info,image_info->filename);
   (void) SetImageOption(uhdr_info,"jpeg:detect-uhdr","false");
-  images=ReadImage(uhdr_info,exception);
+  images=ReadImageWithoutPostProcessing(uhdr_info,exception);
   uhdr_info=DestroyImageInfo(uhdr_info);
   return(images);
 }

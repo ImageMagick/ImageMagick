@@ -52,6 +52,7 @@
 #include "MagickCore/colorspace-private.h"
 #include "MagickCore/compress.h"
 #include "MagickCore/constitute.h"
+#include "MagickCore/constitute-private.h"
 #include "MagickCore/distort.h"
 #include "MagickCore/draw.h"
 #include "MagickCore/exception.h"
@@ -681,7 +682,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
         read_info->blob=NULL;
         read_info->length=0;
-        next=ReadImage(read_info,exception);
+        next=ReadImageWithoutPostProcessing(read_info,exception);
         (void) RelinquishUniqueFileResource(read_info->filename);
         if (next == (Image *) NULL)
           break;

@@ -143,6 +143,9 @@ static MagickBooleanType
   IsPolicyCacheInstantiated(ExceptionInfo *),
   LoadPolicyCache(LinkedListInfo *,const char *,const char *,const size_t,
     ExceptionInfo *);
+
+static void
+  *DestroyPolicyElement(void *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -157,6 +160,7 @@ static MagickBooleanType
 %
 %  AcquirePolicyCache() caches one or more policy configurations which provides
 %  a mapping between policy attributes and a policy name.
+%  It returns NULL if a policy configuration fails to load.
 %
 %  The format of the AcquirePolicyCache method is:
 %
@@ -191,8 +195,6 @@ static LinkedListInfo *AcquirePolicyCache(const char *filename,
   magick_unreferenced(filename);
   status=LoadPolicyCache(cache,ZeroConfigurationPolicy,"[zero-configuration]",0,
     exception);
-  if (status == MagickFalse)
-    CatchException(exception);
 #else
   {
     const StringInfo
@@ -208,12 +210,18 @@ static LinkedListInfo *AcquirePolicyCache(const char *filename,
       status=LoadPolicyCache(cache,(const char *) GetStringInfoDatum(option),
         GetStringInfoPath(option),0,exception);
       if (status == MagickFalse)
-        CatchException(exception);
+        break;
       option=(const StringInfo *) GetNextValueInLinkedList(options);
     }
     options=DestroyConfigureOptions(options);
   }
 #endif
+  if (status == MagickFalse)
+    {
+      cache=DestroyLinkedList(cache,DestroyPolicyElement);
+      CatchException(exception);
+      return((LinkedListInfo *) NULL);
+    }
   /*
     Load built-in policy map.
   */
@@ -828,8 +836,8 @@ MagickExport MagickBooleanType IsRightsAuthorizedByName(
     {
       if ((GetLogEventMask() & PolicyEvent) != 0)
         (void) LogMagickEvent(PolicyEvent,GetMagickModule(),
-          "  authorized: true (no security policies found)");
-      return(MagickTrue);
+          "  authorized: false (security policies could not be loaded)");
+      return(MagickFalse);
     }
   /*
     Evaluate policies in order; the last matching policy wins.  A path is
@@ -1111,7 +1119,7 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *cache,
   const char
     *q;
 
-  MagickStatusType
+  MagickBooleanType
     status;
 
   PolicyInfo
@@ -1136,6 +1144,13 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *cache,
     /*
       Interpret XML.
     */
+    if (SkipXMLComment(&q) == MagickFalse)
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          ConfigureError,"UnterminatedComment","`%s'",filename);
+        status=MagickFalse;
+        break;
+      }
     (void) GetNextToken(q,&q,extent,token);
     if (*token == '\0')
       break;
@@ -1149,16 +1164,9 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *cache,
             */
             (void) ThrowMagickException(exception,GetMagickModule(),
               ConfigureError,"UnterminatedDOCTYPE","`%s'",filename);
+            status=MagickFalse;
             break;
           }
-        continue;
-      }
-    if (LocaleNCompare(keyword,"<!--",4) == 0)
-      {
-        /*
-          Comment element.
-        */
-        SkipXMLComment(&q);
         continue;
       }
     if (LocaleCompare(keyword,"<include") == 0)
@@ -1195,13 +1203,17 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *cache,
                   file_xml=FileToXML(path,~0UL);
                   if (file_xml != (char *) NULL)
                     {
-                      status&=(MagickStatusType) LoadPolicyCache(cache,file_xml,
-                        path,depth+1,exception);
+                      if (LoadPolicyCache(cache,file_xml,path,depth+1,exception) == MagickFalse)
+                        status=MagickFalse;
                       file_xml=DestroyString(file_xml);
+                      if (status == MagickFalse)
+                        break;
                     }
                 }
             }
         }
+        if (status == MagickFalse)
+          break;
         continue;
       }
     if (LocaleCompare(keyword,"<policy") == 0)
@@ -1302,8 +1314,10 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *cache,
         break;
     }
   }
+  if (policy_info != (PolicyInfo *) NULL)
+    (void) DestroyPolicyElement(policy_info);
   token=(char *) RelinquishMagickMemory(token);
-  return(status != 0 ? MagickTrue : MagickFalse);
+  return(status);
 }
 
 /*
