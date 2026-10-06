@@ -1139,8 +1139,8 @@ static void TIFFReadPhotoshopLayers(const ImageInfo *image_info,Image *image,
 }
 #endif
 
-static Image *ReadTIFFImage(const ImageInfo *image_info,
-  ExceptionInfo *exception)
+static Image *ReadTIFFImageInternal(const ImageInfo *image_info,
+  MagickBooleanType *is_dng,ExceptionInfo *exception)
 {
 #define ThrowTIFFException(severity,message) \
 { \
@@ -1259,35 +1259,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  if ((image_info->affirm == MagickFalse) &&
-      (TIFFGetField(tiff,TIFFTAG_DNGVERSION,&dng_version) == 1))
-    {
-      Image
-        *dng_image = (Image *) NULL;
-
-      /*
-        Redirect to DNG image reader.
-      */
-      ImageInfo *read_info = CloneImageInfo(image_info);
-      (void) CopyMagickString(read_info->magick,"DNG",MagickPathExtent);
-      TIFFClose(tiff);
-      if (*read_info->filename != '\0')
-        dng_image=ReadImageWithoutPostProcessing(read_info,exception);
-      else
-        {
-          status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
-          if (status != MagickFalse)
-            {
-              status=ImageToFile(image,read_info->filename,exception);
-              if (status != MagickFalse)
-                dng_image=ReadImageWithoutPostProcessing(read_info,exception);
-              (void) RelinquishUniqueFileResource(read_info->filename);
-            }
-        }
-      read_info=DestroyImageInfo(read_info);
-      image=DestroyImageList(image);
-      return(dng_image);
-    }
+  if (TIFFGetField(tiff,TIFFTAG_DNGVERSION,&dng_version) == 1)
+    *is_dng=MagickTrue;
   if (image_info->number_scenes != 0)
     {
       /*
@@ -2294,6 +2267,66 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   if (status == MagickFalse)
     return(DestroyImageList(image));
   return(GetFirstImageInList(image));
+}
+
+static Image *ReadTIFFImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
+{
+  ExceptionInfo
+    *dng_exception;
+
+  Image
+    *dng_image = (Image *) NULL,
+    *image;
+
+  ImageInfo
+    *read_info;
+
+  MagickBooleanType
+    is_dng = MagickFalse,
+    status;
+
+  /*
+    Read the image as TIFF and remember whether it has a DNGVersion tag.
+  */
+  image=ReadTIFFImageInternal(image_info,&is_dng,exception);
+  if ((image == (Image *) NULL) || (is_dng == MagickFalse) ||
+      (image_info->affirm != MagickFalse))
+    return(image);
+  /*
+    Try the DNG image reader and only use its result when it succeeds.
+  */
+  dng_exception=AcquireExceptionInfo();
+  read_info=CloneImageInfo(image_info);
+  (void) CopyMagickString(read_info->magick,"DNG",MagickPathExtent);
+  if (*read_info->filename != '\0')
+    dng_image=ReadImageWithoutPostProcessing(read_info,dng_exception);
+  else
+    {
+      Image
+        *blob_image;
+
+      blob_image=AcquireImage(image_info,dng_exception);
+      status=OpenBlob(image_info,blob_image,ReadBinaryBlobMode,dng_exception);
+      if (status != MagickFalse)
+        {
+          status=ImageToFile(blob_image,read_info->filename,dng_exception);
+          (void) CloseBlob(blob_image);
+          if (status != MagickFalse)
+            dng_image=ReadImageWithoutPostProcessing(read_info,dng_exception);
+          (void) RelinquishUniqueFileResource(read_info->filename);
+        }
+      blob_image=DestroyImage(blob_image);
+    }
+  read_info=DestroyImageInfo(read_info);
+  if (dng_image != (Image *) NULL)
+    {
+      image=DestroyImageList(image);
+      InheritException(exception,dng_exception);
+      image=dng_image;
+    }
+  dng_exception=DestroyExceptionInfo(dng_exception);
+  return(image);
 }
 #endif
 
