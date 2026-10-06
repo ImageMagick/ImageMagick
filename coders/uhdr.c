@@ -242,6 +242,14 @@ static Image *ReadUHDRImage(const ImageInfo *image_info,
       return(GetFirstImageInList(image));
     }
 
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    {
+      uhdr_release_decoder(handle);
+      CloseBlob(image);
+      return(DestroyImageList(image));
+    }
+
   CHECK_IF_ERR(uhdr_decode(handle))
 
   uhdr_raw_image_t
@@ -293,14 +301,6 @@ static Image *ReadUHDRImage(const ImageInfo *image_info,
       SetHDRGMPropertySize("BaseHeight",image->rows);
     }
   }
-
-  status=SetImageExtent(image,image->columns,image->rows,exception);
-  if (status == MagickFalse)
-    {
-      uhdr_release_decoder(handle);
-      CloseBlob(image);
-      return(DestroyImageList(image));
-    }
 
 #undef CHECK_IF_ERR
 
