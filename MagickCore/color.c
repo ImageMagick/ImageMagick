@@ -2549,8 +2549,17 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
               color->green=(MagickRealType) ClampToQuantum((MagickRealType)
                 (scale*geometry_info.sigma+((double) QuantumRange+1)/2.0));
             if ((flags & XiValue) != 0)
-              color->blue=(MagickRealType) ClampToQuantum((MagickRealType)
-                (scale*geometry_info.xi+((double) QuantumRange+1)/2.0));
+              {
+                if ((color->colorspace == LCHColorspace) ||
+                    (color->colorspace == LCHabColorspace) ||
+                    (color->colorspace == LCHuvColorspace))
+                  color->blue=(MagickRealType) ClampToQuantum((MagickRealType)
+                    ((double) QuantumRange*fmod(fmod(geometry_info.xi,360.0)+
+                    360.0,360.0)/360.0));
+                else
+                  color->blue=(MagickRealType) ClampToQuantum((MagickRealType)
+                    (scale*geometry_info.xi+((double) QuantumRange+1)/2.0));
+              }
           }
         else
           {

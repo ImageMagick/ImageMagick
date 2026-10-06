@@ -3231,6 +3231,10 @@ MagickExport MagickBooleanType LevelImageColors(Image *image,
   MagickStatusType
     status;
 
+  PixelInfo
+    black,
+    white;
+
   /*
     Allocate and initialize levels map.
   */
@@ -3242,6 +3246,12 @@ MagickExport MagickBooleanType LevelImageColors(Image *image,
       ((IsGrayColorspace(black_color->colorspace) == MagickFalse) ||
        (IsGrayColorspace(white_color->colorspace) == MagickFalse)))
     (void) SetImageColorspace(image,sRGBColorspace,exception);
+  black=(*black_color);
+  ConformPixelInfoColorspace(image,&black,exception);
+  black_color=(&black);
+  white=(*white_color);
+  ConformPixelInfoColorspace(image,&white,exception);
+  white_color=(&white);
   status=MagickTrue;
   if (invert == MagickFalse)
     {
