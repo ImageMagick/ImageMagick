@@ -106,6 +106,9 @@
   <!-- Prevent access to Linux kernel and device nformation. -->
   <policy domain="path" rights="none" pattern="/sys/*"/>
 
+  <!-- Disable pipe-based I/O. -->
+  <policy domain="path" rights="none" pattern="|*"/>
+
   <!-- ============================================================= -->
   <!-- Feature Restrictions                                           -->
   <!-- ============================================================= -->
