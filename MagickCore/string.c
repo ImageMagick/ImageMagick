@@ -2046,7 +2046,10 @@ MagickExport char **StringToArgv(const char *text,int *argc)
   const char
     *p,
     *q,
-    *shell_operators = ";&|><";
+    *start;
+
+  size_t
+    length;
 
   ssize_t
     i;
@@ -2064,23 +2067,34 @@ MagickExport char **StringToArgv(const char *text,int *argc)
     if (*p == '\0')
       break;
     (*argc)++;
+    if ((*p == '&') && (*(p+1) == '&'))
+      {
+        p+=2;
+        continue;
+      }
+    if ((*p == '|') && (*(p+1) == '|'))
+      {
+        p+=2;
+        continue;
+      }
+    if ((*p == ';') || (*p == '&') || (*p == '|'))
+      {
+        p++;
+        continue;
+      }
     if (*p == '"')
-      for (p++; (*p != '"') && (*p != '\0'); p++);
-    if (*p == '\'')
-      for (p++; (*p != '\'') && (*p != '\0'); p++);
-    /*
-      Advance to end of token, but stop immediately if we hit a shell operator.
-    */
-    q=p;
+      for (p++; (*p != '"') && (*p != '\0'); p++) ;
+    else
+      if (*p == '\'')
+        for (p++; (*p != '\'') && (*p != '\0'); p++) ;
+    if (*p != '\0')
+      p++;
     while ((isspace((int) ((unsigned char) *p)) == 0) && (*p != '\0'))
     {
-      if (strchr(shell_operators,(int) ((unsigned char) *p)) != (char *) NULL)
+      if ((*p == ';') || (*p == '&') || (*p == '|'))
         break;
       p++;
     }
-    if ((p == q) && (*p != '\0') &&
-        (strchr(shell_operators,(int) ((unsigned char) *p)) != (char *) NULL))
-      p++;
   }
   (*argc)++;
   argv=(char **) AcquireQuantumMemory((size_t) *argc+1UL,sizeof(*argv));
@@ -2096,32 +2110,55 @@ MagickExport char **StringToArgv(const char *text,int *argc)
     while (isspace((int) ((unsigned char) *p)) != 0)
       p++;
     q=p;
-    if (*q == '"')
-      {
-        p++;
-        for (q++; (*q != '"') && (*q != '\0'); q++) ;
-      }
+    if ((*q == '&') && (*(q+1) == '&'))
+      q+=2;
     else
-      if (*q == '\'')
-        {
-          p++;
-          for (q++; (*q != '\'') && (*q != '\0'); q++) ;
-        }
+      if ((*q == '|') && (*(q+1) == '|'))
+        q+=2;
       else
-        while ((isspace((int) ((unsigned char) *q)) == 0) && (*q != '\0'))
-        {
-          if (strchr(shell_operators,(int) ((unsigned char) *q)) != (char *) NULL)
-            break;
+        if ((*q == ';') || (*q == '&') || (*q == '|'))
           q++;
-        }
-    argv[i]=AcquireString(p);
-    (void) CopyMagickString(argv[i],p,(size_t) (q-p+1));
-    if ((*q == '"') || (*q == '\''))
-      q++;
-    else
-      if ((p == q) && (*q != '\0') &&
-          (strchr(shell_operators,(int) ((unsigned char) *q)) != (char *) NULL))
-        q++;
+        else
+          if (*q == '"')
+            {
+              for (q++; (*q != '"') && (*q != '\0'); q++) ;
+              if (*q == '"')
+                q++;
+            }
+          else
+            if (*q == '\'')
+              {
+                for (q++; (*q != '\'') && (*q != '\0'); q++) ;
+                if (*q == '\'')
+                  q++;
+              }
+            else
+              while ((isspace((int) ((unsigned char) *q)) == 0) && (*q != '\0'))
+              {
+                if ((*q == ';') || (*q == '&') || (*q == '|'))
+                  break;
+                q++;
+              }
+    argv[i]=(char *) AcquireQuantumMemory((size_t) (q-p)+MagickPathExtent,
+      sizeof(**argv));
+    if (argv[i] == (char *) NULL)
+      {
+        for (i--; i >= 0; i--)
+          argv[i]=DestroyString(argv[i]);
+        argv=(char **) RelinquishMagickMemory(argv);
+        ThrowFatalException(ResourceLimitFatalError,
+          "UnableToConvertStringToARGV");
+      }
+    start=p;
+    length=(size_t) (q-p);
+    if ((length >= 2) && ((*start == '"') || (*start == '\'')) &&
+        (*(q-1) == *start))
+      {
+        start++;
+        length-=2;
+      }
+    (void) memcpy(argv[i],start,length);
+    argv[i][length]='\0';
     p=q;
   }
   argv[i]=(char *) NULL;
