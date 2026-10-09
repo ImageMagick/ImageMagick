@@ -3952,6 +3952,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           Image *clone_image = CloneImageList(image,exception);
           if (clone_image != (Image *) NULL)
             {
+              (void) strcpy(clone_image->magick,image_info->magick);
               status&=(MagickStatusType) WriteImages(image_info,clone_image,
                 (*backup_filename != '\0') ? backup_filename :
                 clone_image->filename,exception);
