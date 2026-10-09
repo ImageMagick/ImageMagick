@@ -2058,15 +2058,22 @@ MagickExport char **StringToArgv(const char *text,int *argc)
     Determine the number of arguments.
   */
   *argc=0;
-  if (text == (char *) NULL)
+  if (text == (const char *) NULL)
     return((char **) NULL);
-  for (p=text; *p != '\0'; )
+  p=text;
+  while (*p != '\0')
   {
-    while (isspace((int) ((unsigned char) *p)) != 0)
+    /*
+      Skip whitespace and backtick delimiters.
+    */
+    while ((isspace((int) ((unsigned char) *p)) != 0) || (*p == '`'))
       p++;
     if (*p == '\0')
       break;
     (*argc)++;
+    /*
+      Shell operators are returned as individual arguments.
+    */
     if ((*p == '&') && (*(p+1) == '&'))
       {
         p+=2;
@@ -2082,32 +2089,44 @@ MagickExport char **StringToArgv(const char *text,int *argc)
         p++;
         continue;
       }
-    if (*p == '"')
-      for (p++; (*p != '"') && (*p != '\0'); p++) ;
-    else
-      if (*p == '\'')
-        for (p++; (*p != '\'') && (*p != '\0'); p++) ;
-    if (*p != '\0')
-      p++;
-    while ((isspace((int) ((unsigned char) *p)) == 0) && (*p != '\0'))
+    /*
+      Consume one argument.
+    */
+    while ((*p != '\0') &&
+           (isspace((int) ((unsigned char) *p)) == 0) &&
+           (*p != '`') && (*p != ';') && (*p != '&') && (*p != '|'))
     {
-      if ((*p == ';') || (*p == '&') || (*p == '|'))
-        break;
+      if ((*p == '"') || (*p == '\''))
+        {
+          const char quote = (*p++);
+          while ((*p != quote) && (*p != '\0'))
+            p++;
+          if (*p == quote)
+            p++;
+          continue;
+        }
       p++;
     }
   }
+  /*
+    Instantiate argv.
+  */
   (*argc)++;
   argv=(char **) AcquireQuantumMemory((size_t) *argc+1UL,sizeof(*argv));
   if (argv == (char **) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"UnableToConvertStringToARGV");
+    ThrowFatalException(ResourceLimitFatalError,
+      "UnableToConvertStringToARGV");
   /*
-    Convert string to an ASCII list.
+    Convert the string to an ASCII argument list.
   */
   argv[0]=AcquireString("magick");
   p=text;
   for (i=1; i < (ssize_t) *argc; i++)
   {
-    while (isspace((int) ((unsigned char) *p)) != 0)
+    /*
+      Skip whitespace and backtick delimiters.
+    */
+    while ((isspace((int) ((unsigned char) *p)) != 0) || (*p == '`'))
       p++;
     q=p;
     if ((*q == '&') && (*(q+1) == '&'))
@@ -2119,28 +2138,26 @@ MagickExport char **StringToArgv(const char *text,int *argc)
         if ((*q == ';') || (*q == '&') || (*q == '|'))
           q++;
         else
-          if (*q == '"')
+          {
+            while ((*q != '\0') &&
+                   (isspace((int) ((unsigned char) *q)) == 0) &&
+                   (*q != '`') && (*q != ';') && (*q != '&') &&
+                   (*q != '|'))
             {
-              for (q++; (*q != '"') && (*q != '\0'); q++) ;
-              if (*q == '"')
-                q++;
+              if ((*q == '"') || (*q == '\''))
+                {
+                  const char quote = (*q++);
+                  while ((*q != quote) && (*q != '\0'))
+                    q++;
+                  if (*q == quote)
+                    q++;
+                  continue;
+                }
+              q++;
             }
-          else
-            if (*q == '\'')
-              {
-                for (q++; (*q != '\'') && (*q != '\0'); q++) ;
-                if (*q == '\'')
-                  q++;
-              }
-            else
-              while ((isspace((int) ((unsigned char) *q)) == 0) && (*q != '\0'))
-              {
-                if ((*q == ';') || (*q == '&') || (*q == '|'))
-                  break;
-                q++;
-              }
-    argv[i]=(char *) AcquireQuantumMemory((size_t) (q-p)+MagickPathExtent,
-      sizeof(**argv));
+          }
+    argv[i]=(char *) AcquireQuantumMemory((size_t) (q-p)+
+      MagickPathExtent,sizeof(**argv));
     if (argv[i] == (char *) NULL)
       {
         for (i--; i >= 0; i--)
@@ -2151,6 +2168,9 @@ MagickExport char **StringToArgv(const char *text,int *argc)
       }
     start=p;
     length=(size_t) (q-p);
+    /*
+      Remove matching outer single or double quotes.
+    */
     if ((length >= 2) && ((*start == '"') || (*start == '\'')) &&
         (*(q-1) == *start))
       {
