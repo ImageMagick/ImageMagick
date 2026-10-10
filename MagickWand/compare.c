@@ -1183,9 +1183,15 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
           DestroyCompare();
           return(MagickFalse);
         }
-      if (similarity_metric >= dissimilarity_threshold)
-        (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
-          "ImagesTooDissimilar","`%s'",image->filename);
+      if (((metric == NormalizedCrossCorrelationMetric) ||
+           (metric == UndefinedMetric) ||
+           (metric == PeakSignalToNoiseRatioMetric) ||
+           (metric == StructuralSimilarityMetric) ||
+           (metric == StructuralDissimilarityMetric)) ?
+          (similarity_metric < dissimilarity_threshold) :
+          (similarity_metric >= dissimilarity_threshold))
+       (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
+         "ImagesTooDissimilar","`%s'",image->filename);
     }
   if (similarity_image == (Image *) NULL)
     difference_image=CompareImages(image,reconstruct_image,metric,&distortion,
