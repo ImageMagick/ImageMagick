@@ -1183,11 +1183,11 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
           DestroyCompare();
           return(MagickFalse);
         }
-      if (((metric == NormalizedCrossCorrelationMetric) ||
-           (metric == UndefinedMetric) ||
-           (metric == PeakSignalToNoiseRatioMetric) ||
-           (metric == StructuralSimilarityMetric) ||
-           (metric == StructuralDissimilarityMetric)) ?
+      if (((metric == NormalizedCrossCorrelationErrorMetric) ||
+           (metric == UndefinedErrorMetric) ||
+           (metric == PeakSignalToNoiseRatioErrorMetric) ||
+           (metric == StructuralSimilarityErrorMetric) ||
+           (metric == StructuralDissimilarityErrorMetric)) ?
           (similarity_metric < dissimilarity_threshold) :
           (similarity_metric >= dissimilarity_threshold))
        (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
