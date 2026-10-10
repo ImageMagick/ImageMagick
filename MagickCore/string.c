@@ -2044,12 +2044,7 @@ MagickExport char **StringToArgv(const char *text,int *argc)
     **argv;
 
   const char
-    *p,
-    *q,
-    *start;
-
-  size_t
-    length;
+    *p = text;
 
   ssize_t
     i;
@@ -2060,7 +2055,6 @@ MagickExport char **StringToArgv(const char *text,int *argc)
   *argc=0;
   if (text == (const char *) NULL)
     return((char **) NULL);
-  p=text;
   while (*p != '\0')
   {
     /*
@@ -2096,15 +2090,31 @@ MagickExport char **StringToArgv(const char *text,int *argc)
            (isspace((int) ((unsigned char) *p)) == 0) &&
            (*p != '`') && (*p != ';') && (*p != '&') && (*p != '|'))
     {
+      if (*p == '\\')
+        {
+          p++;  /* Skip the escape character */
+          if (*p != '\0')
+            p++;  /* Skip the escaped character */
+          continue;
+        }
       if ((*p == '"') || (*p == '\''))
         {
           const char quote = (*p++);
           while ((*p != quote) && (*p != '\0'))
+          {
+            if ((quote == '"') && (*p == '\\'))
+              {
+                p++;
+                if (*p != '\0')
+                  p++;
+                continue;
+              }
             p++;
-          if (*p == quote)
-            p++;
-          continue;
-        }
+          }
+        if (*p == quote)
+          p++;
+        continue;
+      }
       p++;
     }
   }
@@ -2114,8 +2124,7 @@ MagickExport char **StringToArgv(const char *text,int *argc)
   (*argc)++;
   argv=(char **) AcquireQuantumMemory((size_t) *argc+1UL,sizeof(*argv));
   if (argv == (char **) NULL)
-    ThrowFatalException(ResourceLimitFatalError,
-      "UnableToConvertStringToARGV");
+    ThrowFatalException(ResourceLimitFatalError,"UnableToConvertStringToARGV");
   /*
     Convert the string to an ASCII argument list.
   */
@@ -2123,6 +2132,12 @@ MagickExport char **StringToArgv(const char *text,int *argc)
   p=text;
   for (i=1; i < (ssize_t) *argc; i++)
   {
+    const char
+      *q;
+
+    size_t
+      length = 0;
+
     /*
       Skip whitespace and backtick delimiters.
     */
@@ -2141,14 +2156,29 @@ MagickExport char **StringToArgv(const char *text,int *argc)
           {
             while ((*q != '\0') &&
                    (isspace((int) ((unsigned char) *q)) == 0) &&
-                   (*q != '`') && (*q != ';') && (*q != '&') &&
-                   (*q != '|'))
+                   (*q != '`') && (*q != ';') && (*q != '&') && (*q != '|'))
             {
+              if (*q == '\\')
+                {
+                  q++;
+                  if (*q != '\0')
+                    q++;
+                  continue;
+                }
               if ((*q == '"') || (*q == '\''))
                 {
                   const char quote = (*q++);
                   while ((*q != quote) && (*q != '\0'))
+                  {
+                    if ((quote == '"') && (*q == '\\'))
+                      {
+                        q++;
+                        if (*q != '\0')
+                          q++;
+                        continue;
+                      }
                     q++;
+                  }
                   if (*q == quote)
                     q++;
                   continue;
@@ -2156,8 +2186,11 @@ MagickExport char **StringToArgv(const char *text,int *argc)
               q++;
             }
           }
-    argv[i]=(char *) AcquireQuantumMemory((size_t) (q-p)+
-      MagickPathExtent,sizeof(**argv));
+    /*
+      Allocate buffer matching at least the raw substring size + safety padding.
+    */
+    argv[i]=(char *) AcquireQuantumMemory((size_t) (q-p)+MagickPathExtent,
+      sizeof(**argv));
     if (argv[i] == (char *) NULL)
       {
         for (i--; i >= 0; i--)
@@ -2166,20 +2199,47 @@ MagickExport char **StringToArgv(const char *text,int *argc)
         ThrowFatalException(ResourceLimitFatalError,
           "UnableToConvertStringToARGV");
       }
-    start=p;
-    length=(size_t) (q-p);
     /*
-      Remove matching outer single or double quotes.
+      Copy data while unescaping and stripping quotes incrementally.
     */
-    if ((length >= 2) && ((*start == '"') || (*start == '\'')) &&
-        (*(q-1) == *start))
+    if (((p != q) && ((*p == ';') || (*p == '&') || (*p == '|'))))
       {
-        start++;
-        length-=2;
+        while (p < q)
+          argv[i][length++]=(*p++);
       }
-    (void) memcpy(argv[i],start,length);
+    else
+      {
+        while (p < q)
+        {
+          if (*p == '\\')
+            {
+              p++;  /* Skip '\\' */
+              if (p < q)
+                argv[i][length++]=(*p++);
+              continue;
+            }
+          if ((*p == '"') || (*p == '\''))
+            {
+              const char quote = *p++; /* Skip open quote */
+              while ((p < q) && (*p != quote))
+              {
+                if ((quote == '"') && (*p == '\\'))
+                  {
+                    p++;  /* Skip inner '\\' */
+                    if (p < q)
+                      argv[i][length++]=(*p++);
+                    continue;
+                  }
+                argv[i][length++]=(*p++);
+              }
+            if ((p < q) && (*p == quote))
+              p++;  /* Skip close quote */
+            continue;
+          }
+          argv[i][length++]=(*p++);
+        }
+      }
     argv[i][length]='\0';
-    p=q;
   }
   argv[i]=(char *) NULL;
   return(argv);
