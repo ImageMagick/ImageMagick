@@ -42,6 +42,7 @@
 #include "MagickCore/studio.h"
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
+#include "MagickCore/client.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/image-private.h"
@@ -2128,7 +2129,7 @@ MagickExport char **StringToArgv(const char *text,int *argc)
   /*
     Convert the string to an ASCII argument list.
   */
-  argv[0]=AcquireString("magick");
+  argv[0]=AcquireString(GetClientName());
   p=text;
   for (i=1; i < (ssize_t) *argc; i++)
   {
