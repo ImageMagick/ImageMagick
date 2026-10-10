@@ -9587,13 +9587,18 @@ static void XMakePanImage(Display *display,XResourceInfo *resource_info,
   */
   XSetCursorState(display,windows,MagickTrue);
   XCheckRefreshWindows(display,windows);
-  windows->pan.x=(int) windows->image.x;
-  windows->pan.y=(int) windows->image.y;
+  if (!windows->pan.x)
+    windows->pan.x=(int) windows->image.x;
+  if (!windows->pan.y)
+    windows->pan.y=(int) windows->image.y;
   status=XMakeImage(display,resource_info,&windows->pan,image,
     windows->pan.width,windows->pan.height,exception);
   if (status == MagickFalse)
     ThrowXWindowException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
+  if (windows->pan.x || windows->pan.y)
+    (void) XMoveWindow(display,windows->pan.id,windows->pan.x,
+		       windows->pan.y);
   (void) XSetWindowBackgroundPixmap(display,windows->pan.id,
     windows->pan.pixmap);
   (void) XClearWindow(display,windows->pan.id);
