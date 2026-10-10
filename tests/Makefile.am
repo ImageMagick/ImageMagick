@@ -44,6 +44,7 @@ TESTS_TESTS = \
   tests/cli-mogrify.tap \
   tests/cli-pcx.tap \
   tests/cli-pipe.tap \
+  tests/cli-strict.tap \
   tests/cli-svg.tap \
   tests/cli-statistic.tap \
   tests/cli-uhdr.tap \
