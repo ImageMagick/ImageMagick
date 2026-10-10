@@ -1544,7 +1544,7 @@ static PixelChannel GetChannelQualifier (FxInfo * pfx, int op)
 static ImgAttrE GetImgAttrToken (FxInfo * pfx)
 {
   ImgAttrE ia = aNull;
-  const char * iaStr;
+  const char * iaStr = "";
   for (ia = FirstImgAttr; ia < aNull; ia=(ImgAttrE) (ia+1)) {
     iaStr = ImgAttrs[ia-(int) FirstImgAttr].str;
     if (LocaleCompare (iaStr, pfx->token)==0) {
