@@ -8019,7 +8019,7 @@ MagickPrivate void XMakeStandardColormap(Display *display,
             for (x=(int) image->columns-1; x >= 0; x--)
             {
               ssize_t index = (ssize_t) GetPixelIndex(image,p);
-              if (index < image->colors)
+              if (index < (ssize_t) image->colors)
                 diversity[index].count++;
               p+=(ptrdiff_t) GetPixelChannels(image);
             }
