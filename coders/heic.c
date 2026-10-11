@@ -748,6 +748,7 @@ static MagickBooleanType ReadHEICSequenceFrames(const ImageInfo *image_info,
   track=heif_context_get_track(heif_context,0);
   if (track == (heif_track *) NULL)
     return(MagickFalse);
+
   error=heif_track_get_image_resolution(track,&track_width,&track_height);
   if (error.code != heif_error_Ok)
     {
@@ -768,19 +769,6 @@ static MagickBooleanType ReadHEICSequenceFrames(const ImageInfo *image_info,
   if (has_alpha != 0)
     image->alpha_trait=BlendPixelTrait;
 #endif
-  image->depth=8;
-  if (image->alpha_trait != UndefinedPixelTrait)
-    {
-      chroma=heif_chroma_interleaved_RGBA;
-      if (image->depth > 8)
-        chroma=heif_chroma_interleaved_RRGGBBAA_LE;
-    }
-  else
-    {
-      chroma=heif_chroma_interleaved_RGB;
-      if (image->depth > 8)
-        chroma=heif_chroma_interleaved_RRGGBB_LE;
-    }
   scene=0;
   status=MagickTrue;
   for ( ; ; )
@@ -800,6 +788,13 @@ static MagickBooleanType ReadHEICSequenceFrames(const ImageInfo *image_info,
         break;
       }
     heif_image=(struct heif_image *) NULL;
+    
+    image->depth=10;
+    if (image->alpha_trait != UndefinedPixelTrait)
+      chroma=heif_chroma_interleaved_RRGGBBAA_LE;
+    else
+      chroma=heif_chroma_interleaved_RRGGBB_LE;
+
     error=heif_track_decode_next_image(track,&heif_image,heif_colorspace_RGB,
       chroma,decode_options);
     if (error.code == heif_error_End_of_sequence)
@@ -812,6 +807,46 @@ static MagickBooleanType ReadHEICSequenceFrames(const ImageInfo *image_info,
         status=MagickFalse;
         break;
       }
+
+    if (scene == 0)
+      {
+        size_t
+          profile_size;
+
+        /*
+          Extract raw color profile from the decoded frame if available on
+          scene 0.
+        */
+        profile_size=heif_image_get_raw_color_profile_size(heif_image);
+        if (profile_size > 0)
+          {
+            unsigned char
+              *color_profile;
+
+            color_profile=(unsigned char *) AcquireQuantumMemory(1,
+             profile_size);
+            if (color_profile != (unsigned char *) NULL)
+              {
+                struct heif_error
+                  profile_error;
+
+                profile_error=heif_image_get_raw_color_profile(heif_image,
+                  color_profile);
+                if (IsHEIFSuccess(image,&profile_error,exception) != MagickFalse)
+                  {
+                    StringInfo
+                      *profile;
+
+                    profile=BlobToProfileStringInfo("icc",color_profile,
+                      profile_size,exception);
+                    (void) SetImageProfilePrivate(image,profile,exception);
+                  }
+                color_profile=(unsigned char *) RelinquishMagickMemory(
+                  color_profile);
+              }
+          }
+      }
+
     /*
       Allocate next image for frames beyond the first.
     */
@@ -843,6 +878,8 @@ static MagickBooleanType ReadHEICSequenceFrames(const ImageInfo *image_info,
     bits_per_pixel=heif_image_get_bits_per_pixel_range(heif_image,channel);
     if (bits_per_pixel > 0)
       image->depth=(size_t) bits_per_pixel;
+    else
+      image->depth=8;
     if (has_alpha != 0)
       {
         image->alpha_trait=BlendPixelTrait;
@@ -1059,7 +1096,14 @@ static Image *ReadHEICImage(const ImageInfo *image_info,ExceptionInfo *exception
   /*
     Check for image sequence (animated AVIF) and decode via track API.
   */
-  if (heif_context_has_sequence(heif_context) != 0)
+  error=heif_context_get_primary_image_ID(heif_context,&primary_image_id);
+  if (error.code != heif_error_Ok)
+    primary_image_id=0;
+
+  if ((heif_context_has_sequence(heif_context) != 0) &&
+      ((primary_image_id == 0) ||
+       (heif_has_compatible_brand(magic,sizeof(magic),"avis") == 1 &&
+        heif_has_compatible_brand(magic,sizeof(magic),"avif") == 0)))
     {
       status=ReadHEICSequenceFrames(image_info,image,heif_context,exception);
       heif_context_free(heif_context);
@@ -1068,12 +1112,6 @@ static Image *ReadHEICImage(const ImageInfo *image_info,ExceptionInfo *exception
       return(GetFirstImageInList(image));
     }
 #endif
-  error=heif_context_get_primary_image_ID(heif_context,&primary_image_id);
-  if (IsHEIFSuccess(image,&error,exception) == MagickFalse)
-    {
-      heif_context_free(heif_context);
-      return(DestroyImageList(image));
-    }
   error=heif_context_get_image_handle(heif_context,primary_image_id,
     &image_handle);
   if (IsHEIFSuccess(image,&error,exception) == MagickFalse)
