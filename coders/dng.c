@@ -578,6 +578,7 @@ static MagickBooleanType UnpackLibRawThumbnails(Image **image,const ImageInfo *i
   ImageInfo
     *thumbnail_info;
 
+#if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,21)
   int
     i;
 
@@ -598,6 +599,13 @@ static MagickBooleanType UnpackLibRawThumbnails(Image **image,const ImageInfo *i
       *thumbnail;
 
     *errcode=libraw_unpack_thumb_ex(raw_info,i);
+#else
+	/* only the best thumbnail image available before 0.21 */
+    Image
+      *thumbnail;
+
+    *errcode=libraw_unpack_thumb(raw_info);
+#endif
     if (*errcode != LIBRAW_SUCCESS)
       return(MagickFalse);
     thumbnail_info=AcquireImageInfo();
@@ -610,7 +618,9 @@ static MagickBooleanType UnpackLibRawThumbnails(Image **image,const ImageInfo *i
     if (thumbnail == (Image*) NULL)
       return(MagickFalse);
     AppendImageToList(image,thumbnail);
+#if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,21)
   }
+#endif
   (void) RemoveImageFromList(image);
   return(MagickTrue);
 }
