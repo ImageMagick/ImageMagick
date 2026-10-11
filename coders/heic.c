@@ -699,8 +699,7 @@ static MagickBooleanType ReadHEICImageHandle(const ImageInfo *image_info,
 
 #if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,20,0)
 static MagickBooleanType IsHEICPrimaryImagePreferred(const ImageInfo *image_info,
-  struct heif_context *heif_context,const unsigned char *magic,
-  const size_t length)
+  struct heif_context *heif_context,const unsigned char *magic,const size_t length)
 {
   heif_item_id
     primary_image_id;
@@ -708,12 +707,12 @@ static MagickBooleanType IsHEICPrimaryImagePreferred(const ImageInfo *image_info
   struct heif_error
     error;
 
-  uint32_t
+  heif_brand2
     major_brand;
 
   if (IsStringTrue(GetImageOption(image_info,"heic:primary-image")) != MagickFalse)
     return(MagickTrue);
-  major_brand=heif_read_main_brand(magic,length);
+  major_brand=heif_read_main_brand(magic,(int) length);
   if ((major_brand != heif_brand2_avif) &&
       (major_brand != heif_brand2_heic) &&
       (major_brand != heif_brand2_heix) &&
@@ -1173,9 +1172,8 @@ static Image *ReadHEICImage(const ImageInfo *image_info,ExceptionInfo *exception
   /*
     Prefer an available primary image for still-image major brands.
   */
-  if ((IsHEICPrimaryImagePreferred(image_info,heif_context,magic,
-        sizeof(magic)) == MagickFalse) &&
-      (heif_context_has_sequence(heif_context) != 0))
+  if ((heif_context_has_sequence(heif_context) != 0) &&
+     (IsHEICPrimaryImagePreferred(image_info,heif_context,magic,sizeof(magic)) == MagickFalse))
     {
       heif_track
         *track;
