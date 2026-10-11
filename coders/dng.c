@@ -530,6 +530,7 @@ static MagickBooleanType UnpackLibRawImage(Image *image,const ImageInfo *image_i
   return(MagickTrue);
 }
 
+#if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,21)
 static Image* LibrawThumbnailBitmapToImage(const ImageInfo *image_info,
   libraw_data_t *raw_info,ExceptionInfo *exception)
 {
@@ -571,10 +572,12 @@ static Image* LibrawThumbnailBitmapToImage(const ImageInfo *image_info,
   quantum_info=DestroyQuantumInfo(quantum_info);
   return(image);
 }
+#endif
 
 static MagickBooleanType UnpackLibRawThumbnails(Image **image,const ImageInfo *image_info,
   libraw_data_t *raw_info,int *errcode,ExceptionInfo *exception)
 {
+#if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,21)
   ImageInfo
     *thumbnail_info;
 
@@ -613,6 +616,14 @@ static MagickBooleanType UnpackLibRawThumbnails(Image **image,const ImageInfo *i
   }
   (void) RemoveImageFromList(image);
   return(MagickTrue);
+#else
+  magick_unreferenced(image_info);
+  magick_unreferenced(raw_info);
+  magick_unreferenced(errcode);
+  (void) ThrowMagickException(exception,GetMagickModule(),
+    CoderWarning,"Unsupported option","`%s'",(*image)->filename);
+  return(MagickFalse);
+#endif
 }
 #endif
 
