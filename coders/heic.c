@@ -1040,6 +1040,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,ExceptionInfo *exception
     *image;
 
   MagickBooleanType
+    primary_image,
     status;
 
   ssize_t
@@ -1088,6 +1089,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,ExceptionInfo *exception
   /*
     Decode HEIF image.
   */
+  primary_image=IsStringTrue(GetImageOption(image_info,"heic:primary-image"));
   heif_context=heif_context_alloc();
   if (heif_context == (struct heif_context *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -1105,7 +1107,8 @@ static Image *ReadHEICImage(const ImageInfo *image_info,ExceptionInfo *exception
   /*
     Prefer the still image for major brand avif, even if a sequence exists.
   */
-  if ((heif_read_main_brand(magic,sizeof(magic)) != heif_brand2_avif) &&
+  if ((primary_image == MagickFalse) &&
+      (heif_read_main_brand(magic,sizeof(magic)) != heif_brand2_avif) &&
       (heif_context_has_sequence(heif_context) != 0))
     {
       status=ReadHEICSequenceFrames(image_info,image,heif_context,exception);
@@ -1132,7 +1135,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,ExceptionInfo *exception
     exception);
   heif_image_handle_release(image_handle);
   count=(ssize_t) heif_context_get_number_of_top_level_images(heif_context);
-  if ((status != MagickFalse) && (count > 1))
+  if ((status != MagickFalse) && (primary_image == MagickFalse) && (count > 1))
     {
       heif_item_id
         *ids;
@@ -1186,7 +1189,8 @@ static Image *ReadHEICImage(const ImageInfo *image_info,ExceptionInfo *exception
       heif_context_free(heif_context);
       return(DestroyImageList(image));
     }
-  ReadHEICDepthImage(image_info,image,heif_context,image_handle,exception);
+  if (primary_image == MagickFalse)
+    ReadHEICDepthImage(image_info,image,heif_context,image_handle,exception);
   heif_image_handle_release(image_handle);
   heif_context_free(heif_context);
   if (status == MagickFalse)
