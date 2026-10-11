@@ -698,8 +698,59 @@ static MagickBooleanType ReadHEICImageHandle(const ImageInfo *image_info,
 }
 
 #if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,20,0)
+static MagickBooleanType GetHEICSequenceTrack(Image *image,
+  struct heif_context *heif_context,heif_track **sequence_track,
+  ExceptionInfo *exception)
+{
+  int
+    i,
+    number_tracks;
+
+  uint32_t
+    *track_ids;
+
+  *sequence_track=(heif_track *) NULL;
+  number_tracks=heif_context_number_of_sequence_tracks(heif_context);
+  if (AcquireMagickResource(ListLengthResource,(MagickSizeType) number_tracks) == MagickFalse)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"ListLengthExceedsLimit","`%s'",image->filename);
+      return(MagickFalse);
+    }
+  track_ids=(uint32_t *) AcquireQuantumMemory((size_t) number_tracks,sizeof(*track_ids));
+  if (track_ids == (uint32_t *) NULL)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      return(MagickFalse);
+    }
+  heif_context_get_track_ids(heif_context,track_ids);
+  for (i=0; i < number_tracks; i++)
+  {
+    heif_track
+      *track;
+
+    track=heif_context_get_track(heif_context,track_ids[i]);
+    if (track == (heif_track *) NULL)
+      {
+        track_ids=(uint32_t *) RelinquishMagickMemory(track_ids);
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          CorruptImageError,"ImageTypeNotSupported","`%s'",image->filename);
+        return(MagickFalse);
+      }
+    if (heif_track_get_track_handler_type(track) == heif_track_type_image_sequence)
+      {
+        *sequence_track=track;
+        break;
+      }
+    heif_track_release(track);
+  }
+  track_ids=(uint32_t *) RelinquishMagickMemory(track_ids);
+  return(MagickTrue);
+}
+
 static MagickBooleanType ReadHEICSequenceFrames(const ImageInfo *image_info,
-  Image *image,struct heif_context *heif_context,ExceptionInfo *exception)
+  Image *image,heif_track *track,ExceptionInfo *exception)
 {
   const uint8_t
     *pixels[4];
@@ -707,9 +758,6 @@ static MagickBooleanType ReadHEICSequenceFrames(const ImageInfo *image_info,
   const enum heif_channel
     channels[4] = { heif_channel_R, heif_channel_G, heif_channel_B,
       heif_channel_Alpha };
-
-  heif_track
-    *track;
 
   int
     bits_per_pixel[4],
@@ -739,13 +787,6 @@ static MagickBooleanType ReadHEICSequenceFrames(const ImageInfo *image_info,
 
   uint32_t
     timescale;
-
-  /*
-    Get the first visual track from the sequence.
-  */
-  track=heif_context_get_track(heif_context,0);
-  if (track == (heif_track *) NULL)
-    return(MagickFalse);
 
   error=heif_track_get_image_resolution(track,&track_width,&track_height);
   if (error.code != heif_error_Ok)
@@ -1111,11 +1152,22 @@ static Image *ReadHEICImage(const ImageInfo *image_info,ExceptionInfo *exception
       (heif_read_main_brand(magic,sizeof(magic)) != heif_brand2_avif) &&
       (heif_context_has_sequence(heif_context) != 0))
     {
-      status=ReadHEICSequenceFrames(image_info,image,heif_context,exception);
-      heif_context_free(heif_context);
-      if (status == MagickFalse)
-        return(DestroyImageList(image));
-      return(GetFirstImageInList(image));
+      heif_track
+        *track;
+
+      if (GetHEICSequenceTrack(image,heif_context,&track,exception) == MagickFalse)
+        {
+          heif_context_free(heif_context);
+          return(DestroyImageList(image));
+        }
+      if (track != (heif_track *) NULL)
+        {
+          status=ReadHEICSequenceFrames(image_info,image,track,exception);
+          heif_context_free(heif_context);
+          if (status == MagickFalse)
+            return(DestroyImageList(image));
+          return(GetFirstImageInList(image));
+        }
     }
 #endif
   error=heif_context_get_primary_image_ID(heif_context,&primary_image_id);
