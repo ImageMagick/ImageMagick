@@ -698,6 +698,31 @@ static MagickBooleanType ReadHEICImageHandle(const ImageInfo *image_info,
 }
 
 #if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,20,0)
+static MagickBooleanType IsHEICPrimaryImagePreferred(const ImageInfo *image_info,
+  struct heif_context *heif_context,const unsigned char *magic,
+  const size_t length)
+{
+  heif_item_id
+    primary_image_id;
+
+  struct heif_error
+    error;
+
+  uint32_t
+    major_brand;
+
+  if (IsStringTrue(GetImageOption(image_info,"heic:primary-image")) != MagickFalse)
+    return(MagickTrue);
+  major_brand=heif_read_main_brand(magic,length);
+  if ((major_brand != heif_brand2_avif) &&
+      (major_brand != heif_brand2_heic) &&
+      (major_brand != heif_brand2_heix) &&
+      (major_brand != heif_brand2_mif1))
+    return(MagickFalse);
+  error=heif_context_get_primary_image_ID(heif_context,&primary_image_id);
+  return(error.code == heif_error_Ok ? MagickTrue : MagickFalse);
+}
+
 static MagickBooleanType GetHEICSequenceTrack(Image *image,
   struct heif_context *heif_context,heif_track **sequence_track,
   ExceptionInfo *exception)
@@ -1146,10 +1171,10 @@ static Image *ReadHEICImage(const ImageInfo *image_info,ExceptionInfo *exception
     }
 #if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,20,0)
   /*
-    Prefer the still image for major brand avif, even if a sequence exists.
+    Prefer an available primary image for still-image major brands.
   */
-  if ((primary_image == MagickFalse) &&
-      (heif_read_main_brand(magic,sizeof(magic)) != heif_brand2_avif) &&
+  if ((IsHEICPrimaryImagePreferred(image_info,heif_context,magic,
+        sizeof(magic)) == MagickFalse) &&
       (heif_context_has_sequence(heif_context) != 0))
     {
       heif_track
