@@ -702,28 +702,26 @@ static MagickBooleanType ReadHEICSequenceFrames(const ImageInfo *image_info,
   Image *image,struct heif_context *heif_context,ExceptionInfo *exception)
 {
   const uint8_t
-    *p,
-    *pixels;
+    *pixels[4];
 
-  enum heif_channel
-    channel;
-
-  enum heif_chroma
-    chroma;
+  const enum heif_channel
+    channels[4] = { heif_channel_R, heif_channel_G, heif_channel_B,
+      heif_channel_Alpha };
 
   heif_track
     *track;
 
   int
-    bits_per_pixel,
+    bits_per_pixel[4],
     has_alpha = 0,
-    shift,
-    stride = 0;
+    stride[4];
 
   MagickBooleanType
     status;
 
   size_t
+    c,
+    number_channels,
     scene;
 
   struct heif_decoding_options
@@ -789,14 +787,8 @@ static MagickBooleanType ReadHEICSequenceFrames(const ImageInfo *image_info,
       }
     heif_image=(struct heif_image *) NULL;
     
-    image->depth=10;
-    if (image->alpha_trait != UndefinedPixelTrait)
-      chroma=heif_chroma_interleaved_RRGGBBAA_LE;
-    else
-      chroma=heif_chroma_interleaved_RRGGBB_LE;
-
     error=heif_track_decode_next_image(track,&heif_image,heif_colorspace_RGB,
-      chroma,decode_options);
+      heif_chroma_444,decode_options);
     if (error.code == heif_error_End_of_sequence)
       break;
     if (error.code != heif_error_Ok)
@@ -872,14 +864,27 @@ static MagickBooleanType ReadHEICSequenceFrames(const ImageInfo *image_info,
     /*
       Set image dimensions from the decoded frame.
     */
-    channel=heif_channel_interleaved;
-    image->columns=(size_t) heif_image_get_width(heif_image,channel);
-    image->rows=(size_t) heif_image_get_height(heif_image,channel);
-    bits_per_pixel=heif_image_get_bits_per_pixel_range(heif_image,channel);
-    if (bits_per_pixel > 0)
-      image->depth=(size_t) bits_per_pixel;
-    else
-      image->depth=8;
+    image->columns=(size_t) heif_image_get_width(heif_image,heif_channel_R);
+    image->rows=(size_t) heif_image_get_height(heif_image,heif_channel_R);
+    has_alpha=heif_image_has_channel(heif_image,heif_channel_Alpha);
+    number_channels=has_alpha != 0 ? 4 : 3;
+    for (c=0; c < number_channels; c++)
+      {
+        bits_per_pixel[c]=heif_image_get_bits_per_pixel_range(heif_image,
+          channels[c]);
+        if ((bits_per_pixel[c] <= 0) || (bits_per_pixel[c] > 16))
+          break;
+      }
+    if (c != number_channels)
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          CorruptImageError,"ImproperImageHeader","`%s'",image->filename);
+        heif_image_release(heif_image);
+        status=MagickFalse;
+        break;
+      }
+    image->depth=(size_t) bits_per_pixel[0];
+    image->alpha_trait=UndefinedPixelTrait;
     if (has_alpha != 0)
       {
         image->alpha_trait=BlendPixelTrait;
@@ -901,17 +906,26 @@ static MagickBooleanType ReadHEICSequenceFrames(const ImageInfo *image_info,
         heif_image_release(heif_image);
         break;
       }
-    pixels=heif_image_get_plane_readonly(heif_image,channel,&stride);
-    if (pixels == (const uint8_t *) NULL)
+    for (c=0; c < number_channels; c++)
       {
+        pixels[c]=heif_image_get_plane_readonly(heif_image,channels[c],
+          &stride[c]);
+        if (pixels[c] == (const uint8_t *) NULL)
+          break;
+      }
+    if (c != number_channels)
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          CorruptImageError,"ImproperImageHeader","`%s'",image->filename);
         heif_image_release(heif_image);
         status=MagickFalse;
         break;
       }
-    shift=(int) (16-image->depth);
-    if (image->depth <= 8)
-      for (y=0; y < (ssize_t) image->rows; y++)
+    for (y=0; y < (ssize_t) image->rows; y++)
       {
+        const uint8_t
+          *p[4];
+
         Quantum
           *q;
 
@@ -920,53 +934,51 @@ static MagickBooleanType ReadHEICSequenceFrames(const ImageInfo *image_info,
 
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
         if (q == (Quantum *) NULL)
-          break;
-        p=pixels+(y*stride);
+          {
+            status=MagickFalse;
+            break;
+          }
+        for (c=0; c < number_channels; c++)
+          p[c]=pixels[c]+y*stride[c];
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          SetPixelRed(image,ScaleCharToQuantum((unsigned char) *(p++)),q);
-          SetPixelGreen(image,ScaleCharToQuantum((unsigned char) *(p++)),q);
-          SetPixelBlue(image,ScaleCharToQuantum((unsigned char) *(p++)),q);
-          if (image->alpha_trait != UndefinedPixelTrait)
-            SetPixelAlpha(image,ScaleCharToQuantum((unsigned char) *(p++)),q);
-          q+=(ptrdiff_t) GetPixelChannels(image);
-        }
-        if (SyncAuthenticPixels(image,exception) == MagickFalse)
-          break;
-      }
-    else
-      for (y=0; y < (ssize_t) image->rows; y++)
-      {
-        Quantum
-          *q;
+          Quantum
+            values[4];
 
-        ssize_t
-          x;
-
-        q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-        if (q == (Quantum *) NULL)
-          break;
-        p=pixels+(y*stride);
-        for (x=0; x < (ssize_t) image->columns; x++)
-        {
-          unsigned short pixel = (((unsigned short) *(p+1) << 8) |
-            (*(p+0))) << shift; p+=(ptrdiff_t) 2;
-          SetPixelRed(image,ScaleShortToQuantum(pixel),q);
-          pixel=(((unsigned short) *(p+1) << 8) | (*(p+0))) << shift; p+=(ptrdiff_t) 2;
-          SetPixelGreen(image,ScaleShortToQuantum(pixel),q);
-          pixel=(((unsigned short) *(p+1) << 8) | (*(p+0))) << shift; p+=(ptrdiff_t) 2;
-          SetPixelBlue(image,ScaleShortToQuantum(pixel),q);
-          if (image->alpha_trait != UndefinedPixelTrait)
+          for (c=0; c < number_channels; c++)
             {
-              pixel=(((unsigned short) *(p+1) << 8) | (*(p+0))) << shift; p+=(ptrdiff_t) 2;
-              SetPixelAlpha(image,ScaleShortToQuantum(pixel),q);
+              if (bits_per_pixel[c] <= 8)
+                values[c]=ScaleCharToQuantum(*p[c]++);
+              else
+                {
+                  uint16_t
+                    pixel;
+
+                  /*
+                    Planar samples use native byte order.
+                  */
+                  (void) memcpy(&pixel,p[c],sizeof(pixel));
+                  p[c]+=(ptrdiff_t) sizeof(pixel);
+                  values[c]=ScaleShortToQuantum((unsigned short)
+                    (pixel << (16-bits_per_pixel[c])));
+                }
             }
+          SetPixelRed(image,values[0],q);
+          SetPixelGreen(image,values[1],q);
+          SetPixelBlue(image,values[2],q);
+          if (has_alpha != 0)
+            SetPixelAlpha(image,values[3],q);
           q+=(ptrdiff_t) GetPixelChannels(image);
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
-          break;
+          {
+            status=MagickFalse;
+            break;
+          }
       }
     heif_image_release(heif_image);
+    if (status == MagickFalse)
+      break;
     scene++;
     if (image_info->number_scenes != 0)
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
