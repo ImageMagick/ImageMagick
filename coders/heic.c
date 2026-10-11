@@ -1106,16 +1106,10 @@ static Image *ReadHEICImage(const ImageInfo *image_info,ExceptionInfo *exception
     }
 #if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,20,0)
   /*
-    Check for image sequence (animated AVIF) and decode via track API.
+    Prefer the still image for major brand avif, even if a sequence exists.
   */
-  error=heif_context_get_primary_image_ID(heif_context,&primary_image_id);
-  if (error.code != heif_error_Ok)
-    primary_image_id=0;
-
-  if ((heif_context_has_sequence(heif_context) != 0) &&
-      ((primary_image_id == 0) ||
-       (heif_has_compatible_brand(magic,sizeof(magic),"avis") == 1 &&
-        heif_has_compatible_brand(magic,sizeof(magic),"avif") == 0)))
+  if ((heif_read_main_brand(magic,sizeof(magic)) != heif_brand2_avif) &&
+      (heif_context_has_sequence(heif_context) != 0))
     {
       status=ReadHEICSequenceFrames(image_info,image,heif_context,exception);
       heif_context_free(heif_context);
@@ -1124,6 +1118,12 @@ static Image *ReadHEICImage(const ImageInfo *image_info,ExceptionInfo *exception
       return(GetFirstImageInList(image));
     }
 #endif
+  error=heif_context_get_primary_image_ID(heif_context,&primary_image_id);
+  if (IsHEIFSuccess(image,&error,exception) == MagickFalse)
+    {
+      heif_context_free(heif_context);
+      return(DestroyImageList(image));
+    }
   error=heif_context_get_image_handle(heif_context,primary_image_id,
     &image_handle);
   if (IsHEIFSuccess(image,&error,exception) == MagickFalse)
