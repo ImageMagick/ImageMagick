@@ -21,5 +21,5 @@
 echo "1..1"
 
 { ${VALIDATE} -validate convert && echo "ok" || echo "not ok"; } 2>&1 |
-  sed '/^WARNING: The convert command is deprecated in IMv7, use "magick" instead of "convert" or "magick convert"$/d'
+  sed '/^[[:space:]]*WARNING: The convert command is deprecated in IMv7, use "magick" instead of "convert" or "magick convert"[[:space:]]*$/d; /^[[:space:]]*$/d'
 :
