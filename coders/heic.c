@@ -800,45 +800,6 @@ static MagickBooleanType ReadHEICSequenceFrames(const ImageInfo *image_info,
         break;
       }
 
-    if (scene == 0)
-      {
-        size_t
-          profile_size;
-
-        /*
-          Extract raw color profile from the decoded frame if available on
-          scene 0.
-        */
-        profile_size=heif_image_get_raw_color_profile_size(heif_image);
-        if (profile_size > 0)
-          {
-            unsigned char
-              *color_profile;
-
-            color_profile=(unsigned char *) AcquireQuantumMemory(1,
-             profile_size);
-            if (color_profile != (unsigned char *) NULL)
-              {
-                struct heif_error
-                  profile_error;
-
-                profile_error=heif_image_get_raw_color_profile(heif_image,
-                  color_profile);
-                if (IsHEIFSuccess(image,&profile_error,exception) != MagickFalse)
-                  {
-                    StringInfo
-                      *profile;
-
-                    profile=BlobToProfileStringInfo("icc",color_profile,
-                      profile_size,exception);
-                    (void) SetImageProfilePrivate(image,profile,exception);
-                  }
-                color_profile=(unsigned char *) RelinquishMagickMemory(
-                  color_profile);
-              }
-          }
-      }
-
     /*
       Allocate next image for frames beyond the first.
     */
@@ -854,6 +815,42 @@ static MagickBooleanType ReadHEICSequenceFrames(const ImageInfo *image_info,
         image=SyncNextImageInList(image);
       }
     image->scene=scene;
+    {
+      size_t
+        profile_size;
+
+      /*
+        Extract raw color profile from each decoded frame if available.
+      */
+      profile_size=heif_image_get_raw_color_profile_size(heif_image);
+      if (profile_size > 0)
+        {
+          unsigned char
+            *color_profile;
+
+          color_profile=(unsigned char *) AcquireQuantumMemory(1,profile_size);
+          if (color_profile != (unsigned char *) NULL)
+            {
+              struct heif_error
+                profile_error;
+
+              profile_error=heif_image_get_raw_color_profile(heif_image,
+                color_profile);
+              if (IsHEIFSuccess(image,&profile_error,exception) != MagickFalse)
+                {
+                  StringInfo
+                    *profile;
+
+                  profile=BlobToProfileStringInfo("icc",color_profile,
+                    profile_size,exception);
+                  (void) SetImageProfilePrivate(image,profile,exception);
+                }
+              color_profile=(unsigned char *) RelinquishMagickMemory(
+                color_profile);
+            }
+        }
+    }
+
     /*
       Set frame timing: convert track timescale ticks to ticks_per_second.
     */
