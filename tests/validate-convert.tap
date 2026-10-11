@@ -20,6 +20,8 @@
 . ${srcdir}/tests/common.shi
 echo "1..1"
 
-{ ${VALIDATE} -validate convert && echo "ok" || echo "not ok"; } 2>&1 |
-  sed '/^[[:space:]]*WARNING: The convert command is deprecated in IMv7, use "magick" instead of "convert" or "magick convert"[[:space:]]*$/d; /^[[:space:]]*$/d'
+{
+  { ${VALIDATE} -validate convert && echo "ok" || echo "not ok"; } 2>&1 1>&3 |
+    sed '/^[[:space:]]*WARNING: The convert command is deprecated in IMv7, use "magick" instead of "convert" or "magick convert"[[:space:]]*$/d; /^[[:space:]]*$/d' >&2
+} 3>&1
 :
