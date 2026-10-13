@@ -58,6 +58,7 @@
 #include "MagickCore/string_.h"
 #include "MagickCore/module.h"
 #include "MagickCore/utility.h"
+#include "MagickCore/utility-private.h"
 #include "MagickCore/xwindow.h"
 #include "MagickCore/xwindow-private.h"
 
@@ -92,6 +93,17 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static MagickBooleanType IsInlineFileAccessible(const char *filename)
+{
+  if ((filename == (const char *) NULL) || (*filename == '\0'))
+    return(MagickFalse);
+  if ((*filename == '|') || (LocaleCompare(filename,"-") == 0) ||
+      (LocaleNCompare(filename,"fd:",3) == 0))
+    return(MagickFalse);
+  return(IsPathAccessible(filename));
+}
+
 static Image *ReadINLINEImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -135,6 +147,12 @@ static Image *ReadINLINEImage(const ImageInfo *image_info,
       data_image=ReadInlineImage(image_info,filename,exception);
       filename=DestroyString(filename);
       return(data_image);
+    }
+  if (IsInlineFileAccessible(image_info->filename) == MagickFalse)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
+        "NotAuthorized","`%s'",image_info->filename);
+      return((Image *) NULL);
     }
   image=AcquireImage(image_info,exception);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
