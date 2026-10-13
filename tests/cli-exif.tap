@@ -120,10 +120,10 @@ check_promotion()
     metadata=`${IDENTIFY} -quiet -format \
       '%[EXIF:ImageWidth]x%[EXIF:ImageLength] %[EXIF:PixelXDimension]x%[EXIF:PixelYDimension]' \
       "$promotion_output" 2>/dev/null`
+    check_value "$endian SHORT promotion" "$metadata" "65536x1 65536x1"
   else
-    metadata=
+    echo "ok - $endian SHORT promotion # SKIP width policy limit < 65536"
   fi
-  check_value "$endian SHORT promotion" "$metadata" "65536x1 65536x1"
 }
 
 check_malformed_profile()
