@@ -1328,6 +1328,93 @@ MagickExport void ReverseImageList(Image **images)
 }
 
 /*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                            %
+%                                                                            %
+%                                                                            %
+%   S h u f f l e I m a g e s                                                %
+%                                                                            %
+%                                                                            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ShuffleImages() randomly shuffles the positions of the images in an image
+%  list.
+%
+%  The format of the ShuffleImages method is:
+%
+%      Image *ShuffleImages(Image **images,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o images: the image list.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport Image *ShuffleImages(Image **images,ExceptionInfo *exception)
+{
+  Image
+    **image_array;
+
+  RandomInfo
+    *random_info;
+
+  register ssize_t
+    i;
+
+  size_t
+    number_images;
+
+  /*
+    Ensure the image list is valid.
+  */
+  assert(images != (Image **) NULL);
+  if (*images == (Image *) NULL)
+    return((Image *) NULL);
+  if ((*images)->previous != (Image *) NULL)
+    *images=GetFirstImageInList(*images);
+  number_images=GetImageListLength(*images);
+  if (number_images <= 1)
+    return(*images);
+  /*
+    Convert the image list into a temporary array of image pointers.
+  */
+  image_array=ImageListToArray(*images,exception);
+  if (image_array == (Image **) NULL)
+    return((Image *) NULL);
+  /*
+    Shuffle the array using the Fisher-Yates algorithm.
+  */
+  random_info=AcquireRandomInfo();
+  for (i=(ssize_t) number_images-1; i > 0; i--)
+  {
+    ssize_t
+      j;
+
+    Image *temp = image_array[i];
+    j=(ssize_t) (GetPseudoRandomValue(random_info)*(i+1));
+    if (j > i)
+      j=i;
+    image_array[i]=image_array[j];
+    image_array[j]=temp;
+  }
+  random_info=DestroyRandomInfo(random_info);
+  /*
+    Re-link the image list based on the shuffled order.
+  */
+  *images=image_array[0];
+  (*images)->previous=(Image *) NULL;
+  for (i=0; i < (ssize_t) number_images; i++)
+  {
+    image_array[i]->next=(i+1 < (ssize_t) number_images) ? image_array[i+1] :
+      (Image *) NULL;
+    image_array[i]->previous=(i > 0) ? image_array[i-1] : (Image *) NULL;
+  }
+  image_array=(Image **) RelinquishMagickMemory(image_array);
+  return(*images);
+}
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
