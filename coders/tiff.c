@@ -2291,7 +2291,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   */
   image=ReadTIFFImageInternal(image_info,&is_dng,exception);
   if ((image == (Image *) NULL) || (is_dng == MagickFalse) ||
-      (image_info->affirm != MagickFalse))
+      (image_info->affirm != MagickFalse) ||
+      (GetMagickInfo("DNG",exception) == (const MagickInfo *) NULL))
     return(image);
   /*
     Try the DNG image reader and only use its result when it succeeds.
