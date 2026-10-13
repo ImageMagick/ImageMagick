@@ -6,12 +6,14 @@ on:
     branches:
     - main
     paths:
-    - '.github/workflows/daily.yml'
+    - .github/build/windows/download-configure.sh
+    - .github/build/shared/download-dependencies.sh
+    - .github/workflows/daily.yml
   pull_request:
     branches:
     - main
     paths:
-    - '.github/workflows/daily.yml'
+    - .github/workflows/daily.yml
 
 permissions:
   contents: read
