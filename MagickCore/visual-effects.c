@@ -1158,6 +1158,9 @@ MagickExport Image *MorphImages(const Image *image,const size_t number_frames,
 {
 #define MorphImageTag  "Morph/Image"
 
+  const Image
+    *next;
+
   double
     alpha,
     beta;
@@ -1172,13 +1175,8 @@ MagickExport Image *MorphImages(const Image *image,const size_t number_frames,
   MagickOffsetType
     scene;
 
-  const Image
-    *next;
-
   ssize_t
-    n;
-
-  ssize_t
+    n,
     y;
 
   /*
@@ -1295,9 +1293,9 @@ MagickExport Image *MorphImages(const Image *image,const size_t number_frames,
           ssize_t
             i;
 
-          for (i=0; i < (ssize_t) GetPixelChannels(morph_image); i++)
+          for (i=0; i < (ssize_t) GetPixelChannels(morph_images); i++)
           {
-            PixelChannel channel = GetPixelChannelChannel(morph_image,i);
+            PixelChannel channel = GetPixelChannelChannel(morph_images,i);
             PixelTrait traits = GetPixelChannelTraits(morph_image,channel);
             PixelTrait morph_traits=GetPixelChannelTraits(morph_images,channel);
             if ((traits == UndefinedPixelTrait) ||
@@ -1305,11 +1303,13 @@ MagickExport Image *MorphImages(const Image *image,const size_t number_frames,
               continue;
             if ((morph_traits & CopyPixelTrait) != 0)
               {
-                SetPixelChannel(morph_image,channel,p[i],q);
+                SetPixelChannel(morph_images,channel,GetPixelChannel(
+                  morph_image,channel,p),q);
                 continue;
               }
-            SetPixelChannel(morph_image,channel,ClampToQuantum(alpha*(double)
-              GetPixelChannel(morph_images,channel,q)+beta*(double) p[i]),q);
+            SetPixelChannel(morph_images,channel,ClampToQuantum(alpha*(double)
+              GetPixelChannel(morph_images,channel,q)+beta*(double)
+              GetPixelChannel(morph_image,channel,p)),q);
           }
           p+=(ptrdiff_t) GetPixelChannels(morph_image);
           q+=(ptrdiff_t) GetPixelChannels(morph_images);
