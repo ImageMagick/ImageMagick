@@ -40,6 +40,7 @@ TESTS_XFAIL_TESTS =
 TESTS_TESTS = \
   tests/cli-colorspace.tap \
   tests/cli-exif.tap \
+  tests/cli-fx.tap \
   tests/cli-heic.tap \
   tests/cli-mogrify.tap \
   tests/cli-pcx.tap \

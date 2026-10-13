@@ -1911,9 +1911,6 @@ static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe)
 
   pExpStart = pfx->pex;
   ndx0 = pfx->usedElements;
-  if (fe==fDo) {
-    (void) AddAddressingElement (pfx, rGoto, NULL_ADDRESS); /* address will be ndx1+1 */
-  }
   if (fe==fEpoch) {
     fxFltType
       val,
@@ -1981,9 +1978,7 @@ static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe)
         ndx1 = pfx->usedElements;
         if (fe==fWhile || fe==fIf) {
           (void) AddAddressingElement (pfx, rIfZeroGoto, NULL_ADDRESS); /* address will be ndx2+1 */
-        } else if (fe==fDo) {
-          (void) AddAddressingElement (pfx, rIfZeroGoto, NULL_ADDRESS); /* address will be ndx2+1 */
-        } else if (fe==fFor) {
+        } else if (fe==fDo || fe==fFor) {
           pfx->Elements[pfx->usedElements-1].do_push = MagickFalse;
         }
         break;
@@ -2000,8 +1995,8 @@ static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe)
           pfx->Elements[pfx->usedElements-1].do_push = MagickFalse;
           (void) AddAddressingElement (pfx, rGotoChk, ndx0);
         } else if (fe==fDo) {
-          pfx->Elements[pfx->usedElements-1].do_push = MagickFalse;
-          (void) AddAddressingElement (pfx, rGotoChk, ndx0 + 1);
+          (void) AddAddressingElement (pfx, rIfZeroGoto, NULL_ADDRESS); /* address will be ndx2+2 */
+          (void) AddAddressingElement (pfx, rGotoChk, ndx0);
         } else if (fe==fFor) {
           (void) AddAddressingElement (pfx, rIfZeroGoto, NULL_ADDRESS); /* address will be ndx3 */
           pfx->Elements[pfx->usedElements-1].do_push = MagickTrue; /* we may need return from for() */
@@ -2189,8 +2184,7 @@ static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe)
   if (fe==fWhile) {
     pfx->Elements[ndx1].element_index = ndx2+1;
   } else if (fe==fDo) {
-    pfx->Elements[ndx0].element_index = ndx1+1;
-    pfx->Elements[ndx1].element_index = ndx2+1;
+    pfx->Elements[ndx2].element_index = ndx2+2;
   } else if (fe==fFor) {
     pfx->Elements[ndx2].element_index = ndx3;
   } else if (fe==fIf) {
