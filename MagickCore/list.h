@@ -37,6 +37,7 @@ extern MagickExport Image
   *RemoveImageFromList(Image **),
   *RemoveLastImageFromList(Image **),
   *RemoveFirstImageFromList(Image **),
+  *ShuffleImages(Image **,ExceptionInfo *),
   *SpliceImageIntoList(Image **,const size_t,const Image *),
   *SplitImageList(Image *),
   *SyncNextImageInList(const Image *);
