@@ -9,7 +9,7 @@ on:
     - configure
     - m4/version.m4
     - .github/build/windows/download-configure.sh
-    - .github/build/windows/download-dependencies.sh
+    - .github/build/shared/download-dependencies.sh
     - .github/workflows/release.yml
   pull_request:
     branches:

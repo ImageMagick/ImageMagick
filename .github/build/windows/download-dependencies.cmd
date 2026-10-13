@@ -8,4 +8,4 @@ call "%SCRIPT_DIR%find-bash.cmd"
 call set "PATH=%%SCRIPT_DIR:%EXECUTION_DIR%=%%"
 call set "LINUX_PATH=%PATH:\=/%"
 
-%BASH% -c "./%LINUX_PATH%/download-dependencies.sh --dependencies-artifact %1"
+%BASH% -c "./%LINUX_PATH%/../shared/download-dependencies.sh --dependencies-artifact %1"

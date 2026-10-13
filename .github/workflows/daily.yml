@@ -69,12 +69,12 @@ jobs:
         include:
           - compiler: gcc
             cxx_compiler: g++
-            compiler_flags: -Wall -Wextra -Werror -Wno-builtin-declaration-mismatch
+            compiler_flags: -Wall -Wextra -Werror -Wno-builtin-declaration-mismatch -Wno-missing-field-initializers
             packages: gcc g++
           - compiler: clang
             cxx_compiler: clang++
-            compiler_flags: -Wall -Wextra -Werror -Wno-unused-function -Wno-incompatible-library-redeclaration -Wno-compound-token-split-by-macro
-            packages: clang
+            compiler_flags: -Wall -Wextra -Werror -Wno-unused-function -Wno-incompatible-library-redeclaration -Wno-compound-token-split-by-macro -Wno-missing-field-initializers
+            packages: clang libstdc++-11-dev
 
     steps:
       - name: Install dependencies
@@ -82,7 +82,7 @@ jobs:
           set -e
           export DEBIAN_FRONTEND=noninteractive
           apt update
-          apt-get install -y autoconf libfontconfig1-dev libfreetype6-dev libltdl-dev make pkg-config ${{ matrix.packages }}
+          apt-get install -y autoconf curl libltdl-dev make pkg-config unzip ${{ matrix.packages }}
 
       - name: Clone msttcorefonts
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
@@ -99,12 +99,23 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Download dependencies
+        shell: bash
+        run: |
+          bash .github/build/shared/download-dependencies.sh --dependencies-artifact linux-x64-static.zip
+          mv Artifacts /tmp/dependencies
+
       - name: Configure ImageMagick
         env:
           CC: ${{ matrix.compiler }}
           CXX: ${{ matrix.cxx_compiler }}
           CFLAGS: ${{ matrix.compiler_flags }}
           CXXFLAGS: ${{ matrix.compiler_flags }}
+          CPPFLAGS: -I/tmp/dependencies/include
+          LDFLAGS: -L/tmp/dependencies/lib -L/tmp/dependencies/lib/x86_64-linux-gnu
+          PKG_CONFIG_PATH: /tmp/dependencies/lib/pkgconfig:/tmp/dependencies/lib/x86_64-linux-gnu/pkgconfig
+          PKG_CONFIG: pkg-config --static
+          ac_cv_c_volatile: yes
         run: |
           ./configure --with-perl --with-quantum-depth=${{matrix.quantum}} --enable-hdri=${{matrix.hdri}} --${{matrix.modules}}
 
