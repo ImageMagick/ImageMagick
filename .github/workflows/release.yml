@@ -84,7 +84,7 @@ jobs:
           mv ChangeLog.md Artifacts/ChangeLog.md
 
       - name: Upload ChangeLog.md
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 #v7.0.2
         with:
           name: ChangeLog
           path: Artifacts
@@ -218,7 +218,7 @@ jobs:
         run: |
           python ImageMagick\.github\build\windows\create-sbom.py Configure\Installer\Inno\Artifacts\%FILENAME%
 
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 #v7.0.2
         with:
           name: ImageMagick-${{needs.version.outputs.version}}-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.architecture}}-${{matrix.typeName}}.exe
           path: Configure\Installer\Inno\Artifacts
@@ -261,7 +261,7 @@ jobs:
           move ImageMagick source
           7z a -mx=9 ImageMagick-%VERSION%-Windows.7z .\source\*
 
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 #v7.0.2
         with:
           name: ImageMagick-${{needs.version.outputs.version}}-Windows.7z
           path: ImageMagick-${{needs.version.outputs.version}}-Windows.7z
@@ -349,7 +349,7 @@ jobs:
           Copy-Item "ImageMagick\LICENSE" "portable\LICENSE.txt"
           7z a -mx=9 "ImageMagick-$env:VERSION-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.architecture}}.7z" .\portable\*
 
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 #v7.0.2
         with:
           name: ImageMagick-${{needs.version.outputs.version}}-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.architecture}}.7z
           path: ImageMagick-${{needs.version.outputs.version}}-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.architecture}}.7z
@@ -363,7 +363,7 @@ jobs:
         run: |
           python ImageMagick\.github\build\windows\create-sbom.py %FILENAME%
 
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 #v7.0.2
         with:
           name: ImageMagick-${{needs.version.outputs.version}}-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.architecture}}.cdx.json
           path: ImageMagick-${{needs.version.outputs.version}}-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.architecture}}.cdx.json
@@ -443,7 +443,7 @@ jobs:
           aip-commands: |
               SetVersion ${{needs.version.outputs.semantic_version}}
 
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 #v7.0.2
         with:
           name: ImageMagick.${{matrix.quantum}}${{matrix.hdri_flag}}.msixbundle
           path: Configure\Installer\Msix\Artifacts\ImageMagick.${{matrix.quantum}}${{matrix.hdri_flag}}.msixbundle
@@ -527,7 +527,7 @@ jobs:
           find /appdir -executable -type f -exec ldd {} \; | grep " => /usr" | cut -d " " -f 2-3 | sort | uniq
 
       - name: Upload ImageMagick AppImage
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 #v7.0.2
         with:
           name: AppImage-${{matrix.compiler}}
           path: artifacts
@@ -596,7 +596,7 @@ jobs:
           XZ_OPT="-9e" tar -cJf "artifacts/ImageMagick-$VERSION.tar.xz" "ImageMagick-$VERSION"
 
       - name: Upload source archive
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 #v7.0.2
         with:
           name: ImageMagick-${{needs.version.outputs.version}}.7z
           path: artifacts
