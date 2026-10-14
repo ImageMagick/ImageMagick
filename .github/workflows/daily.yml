@@ -75,7 +75,7 @@ jobs:
             packages: gcc g++
           - compiler: clang
             cxx_compiler: clang++
-            compiler_flags: -Wall -Wextra -Werror -Wno-unused-function -Wno-incompatible-library-redeclaration -Wno-compound-token-split-by-macro -Wno-missing-field-initializers
+            compiler_flags: -Wall -Wextra -Werror -Wno-unused-function -Wno-incompatible-library-redeclaration -Wno-compound-token-split-by-macro -Wno-missing-field-initializers -Wno-error=unused-command-line-argument
             packages: clang libstdc++-11-dev
 
     steps:
