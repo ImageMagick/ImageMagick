@@ -1342,16 +1342,20 @@ MagickExport void ReverseImageList(Image **images)
 %
 %  The format of the ShuffleImages method is:
 %
-%      Image *ShuffleImages(Image **images,ExceptionInfo *exception)
+%      Image *ShuffleImages(Image **images,const ShuffleType shuffle_type,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o images: the image list.
 %
+%    o shuffle_type: the shuffle type (Ascending, descending, random).
+%
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *ShuffleImages(Image **images,ExceptionInfo *exception)
+MagickExport Image *ShuffleImages(Image **images,const ShuffleType shuffle_type,
+  ExceptionInfo *exception)
 {
   Image
     **image_array;
@@ -1368,6 +1372,7 @@ MagickExport Image *ShuffleImages(Image **images,ExceptionInfo *exception)
   /*
     Ensure the image list is valid.
   */
+  (void) shuffle_type;
   assert(images != (Image **) NULL);
   if (*images == (Image *) NULL)
     return((Image *) NULL);

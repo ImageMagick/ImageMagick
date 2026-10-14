@@ -22,6 +22,14 @@
 extern "C" {
 #endif
 
+typedef enum
+{
+  UndefinedShuffle,
+  RandomShuffle,
+  AscendingShuffle,
+  DescendingShuffle
+} ShuffleType;
+
 extern MagickExport Image
   *CloneImageList(const Image *,ExceptionInfo *),
   *CloneImages(const Image *,const char *,ExceptionInfo *),
@@ -37,7 +45,7 @@ extern MagickExport Image
   *RemoveImageFromList(Image **),
   *RemoveLastImageFromList(Image **),
   *RemoveFirstImageFromList(Image **),
-  *ShuffleImages(Image **,ExceptionInfo *),
+  *ShuffleImages(Image **,const ShuffleType,ExceptionInfo *),
   *SpliceImageIntoList(Image **,const size_t,const Image *),
   *SplitImageList(Image *),
   *SyncNextImageInList(const Image *);
