@@ -3046,7 +3046,9 @@ static MagickBooleanType RenderMVGContent(Image *image,
               }
             status&=(MagickStatusType) QueryColorCompliance(token,AllCompliance,
               &graphic_context[n]->fill,exception);
-            if (graphic_context[n]->fill_alpha != (double) OpaqueAlpha)
+            if ((graphic_context[n]->fill_alpha != (double) OpaqueAlpha) &&
+                ((graphic_context[n]->compliance != SVGCompliance) ||
+                 (graphic_context[n]->fill.alpha != (double) TransparentAlpha)))
               graphic_context[n]->fill.alpha=graphic_context[n]->fill_alpha;
             break;
           }
@@ -3070,8 +3072,9 @@ static MagickBooleanType RenderMVGContent(Image *image,
             if (graphic_context[n]->fill.alpha != (double) TransparentAlpha)
               graphic_context[n]->fill.alpha=graphic_context[n]->fill_alpha;
             else
-              graphic_context[n]->fill.alpha=(MagickRealType)
-                ClampToQuantum((double) QuantumRange*opacity);
+              if (graphic_context[n]->compliance != SVGCompliance)
+                graphic_context[n]->fill.alpha=(MagickRealType)
+                  ClampToQuantum((double) QuantumRange*opacity);
             graphic_context[n]->fill.alpha_trait=BlendPixelTrait;
             break;
           }
@@ -3326,7 +3329,15 @@ static MagickBooleanType RenderMVGContent(Image *image,
                 graphic_context[n]->fill_alpha=(double) QuantumRange*opacity;
                 graphic_context[n]->stroke_alpha=(double) QuantumRange*opacity;
               }
-            if (graphic_context[n]->fill.alpha != (double) TransparentAlpha)
+            if (graphic_context[n]->compliance == SVGCompliance)
+              {
+                if (graphic_context[n]->fill.alpha != (double) TransparentAlpha)
+                  graphic_context[n]->fill.alpha=graphic_context[n]->fill_alpha;
+                if (graphic_context[n]->stroke.alpha != (double) TransparentAlpha)
+                  graphic_context[n]->stroke.alpha=
+                    graphic_context[n]->stroke_alpha;
+              }
+            else if (graphic_context[n]->fill.alpha != (double) TransparentAlpha)
               {
                 graphic_context[n]->fill.alpha=graphic_context[n]->fill_alpha;
                 graphic_context[n]->stroke.alpha=
@@ -3808,7 +3819,9 @@ static MagickBooleanType RenderMVGContent(Image *image,
               }
             status&=(MagickStatusType) QueryColorCompliance(token,AllCompliance,
               &graphic_context[n]->stroke,exception);
-            if (graphic_context[n]->stroke_alpha != (double) OpaqueAlpha)
+            if ((graphic_context[n]->stroke_alpha != (double) OpaqueAlpha) &&
+                ((graphic_context[n]->compliance != SVGCompliance) ||
+                 (graphic_context[n]->stroke.alpha != (double) TransparentAlpha)))
               graphic_context[n]->stroke.alpha=
                 graphic_context[n]->stroke_alpha;
             break;
@@ -3944,8 +3957,9 @@ static MagickBooleanType RenderMVGContent(Image *image,
             if (graphic_context[n]->stroke.alpha != (double) TransparentAlpha)
               graphic_context[n]->stroke.alpha=graphic_context[n]->stroke_alpha;
             else
-              graphic_context[n]->stroke.alpha=(MagickRealType)
-                ClampToQuantum((double) QuantumRange*opacity);
+              if (graphic_context[n]->compliance != SVGCompliance)
+                graphic_context[n]->stroke.alpha=(MagickRealType)
+                  ClampToQuantum((double) QuantumRange*opacity);
             graphic_context[n]->stroke.alpha_trait=BlendPixelTrait;
             break;
           }
