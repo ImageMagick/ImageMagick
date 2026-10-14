@@ -1359,11 +1359,11 @@ MagickExport Image *ShuffleImages(Image **images,ExceptionInfo *exception)
   RandomInfo
     *random_info;
 
-  register ssize_t
-    i;
-
   size_t
     number_images;
+
+  ssize_t
+    i;
 
   /*
     Ensure the image list is valid.
