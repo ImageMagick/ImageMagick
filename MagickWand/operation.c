@@ -4723,6 +4723,8 @@ static MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
 
           base_image=GetImageFromList(_images,0);
           compare_image=GetImageFromList(_images,1);
+          if (compare_image == (Image *) NULL)
+            CLIWandExceptArgBreak(OptionError,"NoSuchImage",option,arg1);
 
           /* Comparison Metric */
           metric=UndefinedErrorMetric;
