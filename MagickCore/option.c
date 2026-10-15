@@ -58,6 +58,7 @@
 #include "MagickCore/image.h"
 #include "MagickCore/image-private.h"
 #include "MagickCore/layer.h"
+#include "MagickCore/list.h"
 #include "MagickCore/mime-private.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/monitor.h"
@@ -518,6 +519,7 @@ static const OptionInfo
     { "  print", 0, UndefinedOptionFlag, MagickFalse },
     { "  process", 0, UndefinedOptionFlag, MagickFalse },
     { "  quiet", 0, UndefinedOptionFlag, MagickFalse },
+    { "  shuffle", 0, UndefinedOptionFlag, MagickFalse },
     { "  swap", 0, UndefinedOptionFlag, MagickFalse },
     { "  write", 0, UndefinedOptionFlag, MagickFalse },
     { "Geometry", 0, UndefinedOptionFlag, MagickFalse },
@@ -1126,6 +1128,8 @@ static const OptionInfo
     { "-shave", 1L, SimpleOperatorFlag, MagickFalse },
     { "+shear", 1L, DeprecateOptionFlag, MagickTrue },
     { "-shear", 1L, SimpleOperatorFlag, MagickFalse },
+    { "+shuffle", 0L, DeprecateOptionFlag | FireOptionFlag, MagickTrue },
+    { "-shuffle", 1L, ListOperatorFlag | FireOptionFlag, MagickFalse },
     { "-sigmoidal-contrast", 1L, SimpleOperatorFlag, MagickFalse },
     { "+sigmoidal-contrast", 1L, SimpleOperatorFlag, MagickFalse },
     { "+silent", 0L, NonMagickOptionFlag, MagickFalse },
@@ -1266,7 +1270,7 @@ static const OptionInfo
     { "SVG", SVGCompliance, UndefinedOptionFlag, MagickFalse },
     { "X11", X11Compliance, UndefinedOptionFlag, MagickFalse },
     { "XPM", XPMCompliance, UndefinedOptionFlag, MagickFalse },
-    { (char *) NULL, UndefinedClass, UndefinedOptionFlag, MagickFalse }
+    { (char *) NULL, UndefinedCompliance, UndefinedOptionFlag, MagickFalse }
   },
   ComposeOptions[] =
   {
@@ -1463,7 +1467,7 @@ static const OptionInfo
     { "None", NoDitherMethod, UndefinedOptionFlag, MagickFalse },
     { "FloydSteinberg", FloydSteinbergDitherMethod, UndefinedOptionFlag, MagickFalse },
     { "Riemersma", RiemersmaDitherMethod, UndefinedOptionFlag, MagickFalse },
-    { (char *) NULL, UndefinedEndian, UndefinedOptionFlag, MagickFalse }
+    { (char *) NULL, UndefinedDitherMethod, UndefinedOptionFlag, MagickFalse }
   },
   EndianOptions[] =
   {
@@ -1575,7 +1579,7 @@ static const OptionInfo
     { "Undefined", UndefinedGradient, UndefinedOptionFlag, MagickTrue },
     { "Linear", LinearGradient, UndefinedOptionFlag, MagickFalse },
     { "Radial", RadialGradient, UndefinedOptionFlag, MagickFalse },
-    { (char *) NULL, UndefinedRule, UndefinedOptionFlag, MagickFalse }
+    { (char *) NULL, UndefinedGradient, UndefinedOptionFlag, MagickFalse }
   },
   GravityOptions[] =
   {
@@ -1607,7 +1611,7 @@ static const OptionInfo
     { "F2", F2Illuminant, UndefinedOptionFlag, MagickFalse },
     { "F7", F7Illuminant, UndefinedOptionFlag, MagickFalse },
     { "F11", F11Illuminant, UndefinedOptionFlag, MagickFalse },
-    { (char *) NULL, UndefinedIntent, UndefinedOptionFlag, MagickFalse }
+    { (char *) NULL, UndefinedIlluminant, UndefinedOptionFlag, MagickFalse }
   },
   IntentOptions[] =
   {
@@ -1798,6 +1802,7 @@ static const OptionInfo
     { "Primitive", MagickPrimitiveOptions, UndefinedOptionFlag, MagickFalse },
     { "QuantumFormat", MagickQuantumFormatOptions, UndefinedOptionFlag, MagickFalse },
     { "Resource", MagickResourceOptions, UndefinedOptionFlag, MagickFalse },
+    { "Shuffle", MagickShuffleOptions, UndefinedOptionFlag, MagickFalse },
     { "SparseColor", MagickSparseColorOptions, UndefinedOptionFlag, MagickFalse },
     { "Statistic", MagickStatisticOptions, UndefinedOptionFlag, MagickFalse },
     { "Storage", MagickStorageOptions, UndefinedOptionFlag, MagickFalse },
@@ -2142,7 +2147,7 @@ static const OptionInfo
     { "FloatingPoint", FloatingPointQuantumFormat, UndefinedOptionFlag, MagickFalse },
     { "Signed", SignedQuantumFormat, UndefinedOptionFlag, MagickFalse },
     { "Unsigned", UnsignedQuantumFormat, UndefinedOptionFlag, MagickFalse },
-    { (char *) NULL, FloatingPointQuantumFormat, UndefinedOptionFlag, MagickFalse }
+    { (char *) NULL, UndefinedQuantumFormat, UndefinedOptionFlag, MagickFalse }
   },
   ResolutionOptions[] =
   {
@@ -2170,16 +2175,24 @@ static const OptionInfo
     { "ListLength", ListLengthResource, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedResource, UndefinedOptionFlag, MagickFalse }
   },
+  ShuffleOptions[] =
+  {
+    { "Undefined", UndefinedShuffle, UndefinedOptionFlag, MagickTrue },
+    { "Ascending", AscendingShuffle, UndefinedOptionFlag, MagickFalse },
+    { "Descending", DescendingShuffle, UndefinedOptionFlag, MagickFalse },
+    { "Random", RandomShuffle, UndefinedOptionFlag, MagickFalse },
+    { (char *) NULL, UndefinedShuffle, UndefinedOptionFlag, MagickFalse }
+  },
   SparseColorOptions[] =
   {
-    { "Undefined", UndefinedDistortion, UndefinedOptionFlag, MagickTrue },
+    { "Undefined", UndefinedColorInterpolate, UndefinedOptionFlag, MagickTrue },
     { "Barycentric", BarycentricColorInterpolate, UndefinedOptionFlag, MagickFalse },
     { "Bilinear", BilinearColorInterpolate, UndefinedOptionFlag, MagickFalse },
     { "Inverse", InverseColorInterpolate, UndefinedOptionFlag, MagickFalse },
     { "Shepards", ShepardsColorInterpolate, UndefinedOptionFlag, MagickFalse },
     { "Voronoi", VoronoiColorInterpolate, UndefinedOptionFlag, MagickFalse },
     { "Manhattan", ManhattanColorInterpolate, UndefinedOptionFlag, MagickFalse },
-    { (char *) NULL, UndefinedResource, UndefinedOptionFlag, MagickFalse }
+    { (char *) NULL, UndefinedColorInterpolate, UndefinedOptionFlag, MagickFalse }
   },
   StatisticOptions[] =
   {
@@ -2195,7 +2208,7 @@ static const OptionInfo
     { "RootMeanSquare", RootMeanSquareStatistic, UndefinedOptionFlag, MagickFalse },
     { "RMS", RootMeanSquareStatistic, UndefinedOptionFlag, MagickFalse },
     { "StandardDeviation", StandardDeviationStatistic, UndefinedOptionFlag, MagickFalse },
-    { (char *) NULL, UndefinedMethod, UndefinedOptionFlag, MagickFalse }
+    { (char *) NULL, UndefinedStatistic, UndefinedOptionFlag, MagickFalse }
   },
   StorageOptions[] =
   {
@@ -2207,7 +2220,7 @@ static const OptionInfo
     { "LongLong", LongLongPixel, UndefinedOptionFlag, MagickFalse },
     { "Quantum", QuantumPixel, UndefinedOptionFlag, MagickFalse },
     { "Short", ShortPixel, UndefinedOptionFlag, MagickFalse },
-    { (char *) NULL, UndefinedResource, UndefinedOptionFlag, MagickFalse }
+    { (char *) NULL, UndefinedPixel, UndefinedOptionFlag, MagickFalse }
   },
   StretchOptions[] =
   {
@@ -2660,6 +2673,7 @@ static const OptionInfo *GetOptionInfo(const CommandOption option)
     case MagickQuantumFormatOptions: return(QuantumFormatOptions);
     case MagickResolutionOptions: return(ResolutionOptions);
     case MagickResourceOptions: return(ResourceOptions);
+    case MagickShuffleOptions: return(ShuffleOptions);
     case MagickSparseColorOptions: return(SparseColorOptions);
     case MagickStatisticOptions: return(StatisticOptions);
     case MagickStorageOptions: return(StorageOptions);
