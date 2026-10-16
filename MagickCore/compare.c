@@ -3986,12 +3986,14 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   if (trx_image == (Image *) NULL)
     ThrowDPCSimilarityException();
   rx_image=trx_image;
+  trx_image=(Image *) NULL;
   try_image=SIMDivideByMagnitude(ry_image,magnitude_image,image,exception);
   magnitude_image=DestroyImage(magnitude_image);
   ry_image=DestroyImage(ry_image);
   if (try_image == (Image *) NULL)
     ThrowDPCSimilarityException();
   ry_image=try_image;
+  try_image=(Image *) NULL;
   /*
     Compute X and Y derivatives of image.
   */
@@ -4018,12 +4020,14 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   if (trx_image == (Image *) NULL)
     ThrowDPCSimilarityException();
   tx_image=trx_image;
+  trx_image=(Image *) NULL;
   try_image=SIMDivideByMagnitude(ty_image,magnitude_image,image,exception);
   ty_image=DestroyImage(ty_image);
   magnitude_image=DestroyImage(magnitude_image);
   if (try_image == (Image *) NULL)
     ThrowDPCSimilarityException();
   ty_image=try_image;
+  try_image=(Image *) NULL;
   /*
     Compute the cross correlation of the test and reference images.
   */
