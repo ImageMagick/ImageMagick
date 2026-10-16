@@ -1386,7 +1386,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         if (image->alpha_trait != UndefinedPixelTrait)
           quantum_type=IndexAlphaQuantum;
       }
-    if (image->number_meta_channels != 0)
+    if ((image->number_meta_channels != 0) &&
+        (image->storage_class != PseudoClass))
       quantum_type=MultispectralQuantum;
     status=MagickTrue;
     GetPixelInfo(image,&pixel);

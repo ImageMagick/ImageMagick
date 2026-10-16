@@ -1762,7 +1762,8 @@ static Image *ReadTIFFImageInternal(const ImageInfo *image_info,
     image_quantum_type=GrayQuantum;
     if (image->storage_class == PseudoClass)
       image_quantum_type=IndexQuantum;
-    if (image->number_meta_channels != 0)
+    if ((image->number_meta_channels != 0) &&
+        (image->storage_class != PseudoClass))
       {
         image_quantum_type=MultispectralQuantum;
         (void) SetQuantumPad(image,quantum_info,0);

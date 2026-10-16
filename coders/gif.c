@@ -665,7 +665,7 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
       break;
     if (y == 0)
       {
-        waiting_code=(short) GetPixelIndex(image,p);
+        waiting_code=(short) (((size_t) GetPixelIndex(image,p)) & 0xff);
         p+=(ptrdiff_t) GetPixelChannels(image);
       }
     for (x=(ssize_t) (y == 0 ? 1 : 0); x < (ssize_t) image->columns; x++)
@@ -678,8 +678,8 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
       index=(Quantum) ((size_t) GetPixelIndex(image,p) & 0xff);
       p+=(ptrdiff_t) GetPixelChannels(image);
       k=(ssize_t) (((size_t) index << (MaxGIFBits-8))+(size_t) waiting_code);
-      if (k >= MaxHashTable)
-        k-=MaxHashTable;
+      if (k >= 0)
+        k%=MaxHashTable;
       if (k < 0)
         continue;
       if (hash_code[k] > 0)
