@@ -567,14 +567,15 @@ be applied to expand the one channel into separate RGB (or other) channels.
     (including Linux, but not MacOSX).</dd>
 <dt class="col-md-4">animate, compare, composite, conjure, convert, display, identify,
 	import, mogrify, montage, stream</dt>
-<dd class="col-md-8">To reduce the footprint of the command-line utilities, these
-	utilities are symbolic links to the <samp>$ magick</samp> utility.  On Windows these utilities are
-  installed as separate executables and the legacy <code>convert</code> executable is no longer included.  You can also invoke
-	them from the <code>magick</code> utility, for example, use <pre><samp>$ magick logo: logo.png</samp></pre>
-	to invoke the <code>magick</code> utility. Call these utilities by
-	prefacing them with <code>magick</code>, such as <code>magick compare</code>, <code>magick identify</code>, <code>magick mogrify</code>,
-	<code>magick montage</code>, etc. Do not use <code>magick convert</code>.
-</dd></dl>
+<dd class="col-md-8">On Unix-like installations, these utilities are commonly installed as symbolic links to the magick utility. 
+	On Windows they are installed as separate executables; the legacy <code>convert</code> executable is no longer included. 
+	The utilities can also be invoked explicitly through <code>magick</code>, for example <samp>$ magick identify input.png</samp>. 
+	Using <code>magick compare</code>, <code>magick identify</code>, <code>magick mogrify</code>, or 
+	<code>magick montage</code> is portable across layouts. Where an IM7 compatibility executable or symlink 
+	is installed, the corresponding bare command invokes that IM7 utility; where it is not, the bare command may be 
+	unavailable or may resolve to a separately installed older version according to PATH. 
+	Do not use <code>magick convert</code>.</dd>
+</dl>
 
 <h2>Behavioral Changes</h2>
 <p>Image settings are applied to each image on the command line.  To associate a setting with a particular image, use parenthesis to remove ambiguity.  In this example we assign a unique page offset to each image:</p>
