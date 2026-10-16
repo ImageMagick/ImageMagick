@@ -168,18 +168,6 @@ static inline MagickOffsetType dpc_receive(SOCKET_TYPE magick_unused(file),
   magick_unreferenced(message);
   return(-1);
 }
-
-static inline MagickOffsetType dpc_receive_deadline(SOCKET_TYPE
-  magick_unused(file),const MagickSizeType magick_unused(length),
-  unsigned char *magick_restrict magick_unused(message),
-  double magick_unused(deadline))
-{
-  magick_unreferenced(file);
-  magick_unreferenced(length);
-  magick_unreferenced(message);
-  magick_unreferenced(deadline);
-  return(-1);
-}
 #else
 static void SetSocketReceiveTimeout(SOCKET_TYPE file,double seconds)
 {
