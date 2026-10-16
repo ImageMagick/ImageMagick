@@ -4285,8 +4285,22 @@ static MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
     }
     case 'f':
     {
-      if (LocaleCompare("fft",option+1) == 0)
+      if (LocaleCompare("fft",option+1) == 0) 
         {
+          new_images=ForwardFourierTransformImage(_images,IsNormalOp,
+           _exception);
+          break;
+        } 
+      if (LocaleCompare("flatten",option+1) == 0)
+        {
+          /* REDIRECTED to use -layers flatten instead */
+          (void) CLIListOperatorImages(cli_wand,"-layers",option+1,NULL);
+          break;
+        }   
+      if (LocaleCompare("fx",option+1) == 0)
+        {       
+          new_images=FxImage(_images,arg1,_exception);
+          break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
