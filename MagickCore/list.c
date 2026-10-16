@@ -1389,7 +1389,7 @@ MagickExport Image *ShuffleImages(Image **images,const ShuffleStrategy strategy,
     Image
       *image;
 
-    register ssize_t
+    ssize_t
       j;
 
     image=(*images);
@@ -1403,7 +1403,7 @@ MagickExport Image *ShuffleImages(Image **images,const ShuffleStrategy strategy,
   {
     case AscendingShuffle:
     {
-      register ssize_t
+      ssize_t
         j;
 
       for (i=0; i < (ssize_t) (number_images-1); i++)
@@ -1425,7 +1425,7 @@ MagickExport Image *ShuffleImages(Image **images,const ShuffleStrategy strategy,
     }
     case DescendingShuffle:
     {
-      register ssize_t
+      ssize_t
         j;
 
       for (i=0; i < (ssize_t) (number_images-1); i++)
