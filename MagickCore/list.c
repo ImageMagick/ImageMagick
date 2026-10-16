@@ -1337,24 +1337,24 @@ MagickExport void ReverseImageList(Image **images)
 %                                                                            %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ShuffleImages() randomly shuffles the positions of the images in an image
-%  list.
+%  ShuffleImages() reorders the sequence of images in an image list based on
+%  ascending, descending, or random criteria.
 %
 %  The format of the ShuffleImages method is:
 %
-%      Image *ShuffleImages(Image **images,const ShuffleType shuffle_type,
+%      Image *ShuffleImages(Image **images,const ShuffleStrategy strategy,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o images: the image list.
 %
-%    o shuffle_type: the shuffle type (Ascending, descending, random).
+%    o strategy: the shuffle strategy (ascending, descending, random).
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *ShuffleImages(Image **images,const ShuffleType shuffle_type,
+MagickExport Image *ShuffleImages(Image **images,const ShuffleStrategy strategy,
   ExceptionInfo *exception)
 {
   Image
@@ -1369,50 +1369,115 @@ MagickExport Image *ShuffleImages(Image **images,const ShuffleType shuffle_type,
   ssize_t
     i;
 
-  /*
-    Ensure the image list is valid.
-  */
-  (void) shuffle_type;
   assert(images != (Image **) NULL);
   if (*images == (Image *) NULL)
     return((Image *) NULL);
-  if ((*images)->previous != (Image *) NULL)
-    *images=GetFirstImageInList(*images);
-  number_images=GetImageListLength(*images);
-  if (number_images <= 1)
+  if ((*images)->next == (Image *) NULL)
     return(*images);
-  /*
-    Convert the image list into a temporary array of image pointers.
-  */
-  image_array=ImageListToArray(*images,exception);
-  if (image_array == (Image **) NULL)
+  number_images=GetImageListLength(*images);
+  if (number_images == 0)
     return((Image *) NULL);
-  /*
-    Shuffle the array using the Fisher-Yates algorithm.
-  */
-  random_info=AcquireRandomInfo();
-  for (i=(ssize_t) number_images-1; i > 0; i--)
+  image_array=(Image **) AcquireQuantumMemory(number_images,
+    sizeof(*image_array));
+  if (image_array == (Image **) NULL)
+    {
+      ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
+        "MemoryAllocationFailed","%s",exception->reason);
+      return((Image *) NULL);
+    }
   {
-    ssize_t
+    Image
+      *image;
+
+    register ssize_t
       j;
 
-    Image *temp = image_array[i];
-    j=(ssize_t) (GetPseudoRandomValue(random_info)*(i+1));
-    if (j > i)
-      j=i;
-    image_array[i]=image_array[j];
-    image_array[j]=temp;
+    image=(*images);
+    for (j=0; j < (ssize_t) number_images; j++)
+    {
+      image_array[j]=image;
+      image=image->next;
+    }
   }
-  random_info=DestroyRandomInfo(random_info);
-  /*
-    Re-link the image list based on the shuffled order.
-  */
+  switch (strategy)
+  {
+    case AscendingShuffle:
+    {
+      register ssize_t
+        j;
+
+      for (i=0; i < (ssize_t) (number_images-1); i++)
+      {
+        for (j=i+1; j < (ssize_t) number_images; j++)
+        {
+          if (LocaleCompare(image_array[j]->filename,image_array[i]->filename) < 0)
+            {
+              Image
+                *swap;
+
+              swap=image_array[i];
+              image_array[i]=image_array[j];
+              image_array[j]=swap;
+            }
+        }
+      }
+      break;
+    }
+    case DescendingShuffle:
+    {
+      register ssize_t
+        j;
+
+      for (i=0; i < (ssize_t) (number_images-1); i++)
+      {
+        for (j=i+1; j < (ssize_t) number_images; j++)
+        {
+          if (LocaleCompare(image_array[j]->filename,image_array[i]->filename) > 0)
+            {
+              Image
+                *swap;
+
+              swap=image_array[i];
+              image_array[i]=image_array[j];
+              image_array[j]=swap;
+            }
+        }
+      }
+      break;
+    }
+    case RandomShuffle:
+    {
+      random_info=AcquireRandomInfo();
+      for (i=(ssize_t) number_images-1; i > 0; i--)
+      {
+        ssize_t
+          j;
+
+        j=(ssize_t) (GetPseudoRandomValue(random_info)*(i+1));
+        if (j > i)
+          j=i;
+        {
+          Image
+            *swap;
+
+          swap=image_array[i];
+          image_array[i]=image_array[j];
+          image_array[j]=swap;
+        }
+      }
+      random_info=DestroyRandomInfo(random_info);
+      break;
+    }
+    case UndefinedShuffle:
+    default:
+      break;
+  }
   *images=image_array[0];
   (*images)->previous=(Image *) NULL;
   for (i=0; i < (ssize_t) number_images; i++)
   {
-    image_array[i]->next=(i+1 < (ssize_t) number_images) ? image_array[i+1] :
-      (Image *) NULL;
+    image_array[i]->next=(i < (ssize_t) number_images-1) ?
+      image_array[i+1] : (Image *) NULL;
     image_array[i]->previous=(i > 0) ? image_array[i-1] : (Image *) NULL;
   }
   image_array=(Image **) RelinquishMagickMemory(image_array);

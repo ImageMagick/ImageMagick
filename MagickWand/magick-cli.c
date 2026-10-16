@@ -1018,6 +1018,7 @@ static MagickBooleanType MagickCommandUsage(void)
       "                       terms (coefficients and degree pairs).\n"
       "  -print string        interpret string and print to console\n"
       "  -process arguments   process the image with a custom image filter\n"
+      "  -shuffle strategy    reorders the sequence of images\n"
       "  -smush geometry      smush an image sequence together\n"
       "  -write filename      write images to this file",
     settings[] =

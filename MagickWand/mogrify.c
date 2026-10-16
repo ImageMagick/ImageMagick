@@ -3580,6 +3580,7 @@ static MagickBooleanType MogrifyUsage(void)
       "                       terms (coefficients and degree pairs).\n"
       "  -print string        interpret string and print to console\n"
       "  -process arguments   process the image with a custom image filter\n"
+      "  -shuffle strategy    reorders the sequence of images\n"
       "  -smush geometry      smush an image sequence together\n"
       "  -write filename      write images to this file",
     settings[] =
@@ -6129,6 +6130,24 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("shuffle",option+1) == 0)
+          {
+            ssize_t
+              strategy;
+
+            strategy=UndefinedShuffle;
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            strategy=ParseCommandOption(MagickShuffleOptions,MagickFalse,
+              argv[i]);
+            if (strategy < 0)
+              ThrowMogrifyException(OptionError,"UnrecognizedImageOrientation",
+                argv[i]);
             break;
           }
         if (LocaleCompare("sigmoidal-contrast",option+1) == 0)
@@ -8922,6 +8941,17 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
       }
       case 's':
       {
+        if (LocaleCompare("shuffle",option+1) == 0)
+          {
+            ShuffleStrategy
+              shuffle_type;
+
+            (void) SyncImagesSettings(mogrify_info,*images,exception);
+            shuffle_type=(ShuffleStrategy) ParseCommandOption(
+              MagickShuffleOptions,MagickFalse,argv[i+1]);
+            (void) ShuffleImages(&(*images),shuffle_type,exception);
+            break;
+          }
         if (LocaleCompare("smush",option+1) == 0)
           {
             Image

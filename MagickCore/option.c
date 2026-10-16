@@ -1128,7 +1128,7 @@ static const OptionInfo
     { "-shave", 1L, SimpleOperatorFlag, MagickFalse },
     { "+shear", 1L, DeprecateOptionFlag, MagickTrue },
     { "-shear", 1L, SimpleOperatorFlag, MagickFalse },
-    { "+shuffle", 0L, DeprecateOptionFlag | FireOptionFlag, MagickTrue },
+    { "+shuffle", 1L, DeprecateOptionFlag | FireOptionFlag, MagickTrue },
     { "-shuffle", 1L, ListOperatorFlag | FireOptionFlag, MagickFalse },
     { "-sigmoidal-contrast", 1L, SimpleOperatorFlag, MagickFalse },
     { "+sigmoidal-contrast", 1L, SimpleOperatorFlag, MagickFalse },

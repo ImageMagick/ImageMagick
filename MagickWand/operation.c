@@ -4287,20 +4287,6 @@ static MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
     {
       if (LocaleCompare("fft",option+1) == 0)
         {
-          new_images=ForwardFourierTransformImage(_images,IsNormalOp,
-           _exception);
-          break;
-        }
-      if (LocaleCompare("flatten",option+1) == 0)
-        {
-          /* REDIRECTED to use -layers flatten instead */
-          (void) CLIListOperatorImages(cli_wand,"-layers",option+1,NULL);
-          break;
-        }
-      if (LocaleCompare("fx",option+1) == 0)
-        {
-          new_images=FxImage(_images,arg1,_exception);
-          break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
@@ -4691,6 +4677,15 @@ static MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
     }
     case 's':
     {
+      if (LocaleCompare("shuffle",option+1) == 0)
+        {
+          parse=ParseCommandOption(MagickShuffleOptions,MagickFalse,arg1);
+          if ( parse < 0 )
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedShuffleStrategy",
+              option,arg1);
+          (void) ShuffleImages(&_images,(ShuffleStrategy) parse,_exception);
+          break;
+        }
       if (LocaleCompare("smush",option+1) == 0)
         {
           /* FUTURE: this option needs more work to make better */
