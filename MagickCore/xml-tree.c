@@ -56,7 +56,6 @@
 #include "MagickCore/log.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/memory-private.h"
-#include "MagickCore/resource_.h"
 #include "MagickCore/semaphore.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
@@ -1025,9 +1024,6 @@ static char *ParseEntities(char *xml,char **entities,int state)
     byte,
     c;
 
-  MagickSizeType
-    entity_memory = 0;
-
   size_t
     extent,
     length;
@@ -1126,24 +1122,8 @@ static char *ParseEntities(char *xml,char **entities,int state)
                 if ((entity != (char *) NULL) &&
                     ((length-1L) >= (size_t) (entity-xml)))
                   {
-                    MagickSizeType
-                      allocation;
-
                     offset=(ssize_t) (xml-p);
                     extent=((size_t) offset+length+strlen(entity));
-                    /*
-                      Account for additional memory required by entity expansion.
-                    */
-                    allocation=(MagickSizeType) ((extent > strlen(p)) ?
-                      (extent-strlen(p)) : 0);
-                    if ((allocation != 0) &&
-                        (AcquireMagickResource(MemoryResource,allocation) == MagickFalse))
-                      {
-                        RelinquishMagickResource(MemoryResource,entity_memory);
-                        ThrowFatalException(ResourceLimitFatalError,
-                          "MemoryAllocationFailed");
-                      }
-                    entity_memory+=allocation;
                     if (p != q)
                       {
                         p=(char *) ResizeQuantumMemory(p,extent+1,sizeof(*p));
@@ -1165,13 +1145,9 @@ static char *ParseEntities(char *xml,char **entities,int state)
                           }
                         p=extent_xml;
                       }
-                    if (p == (char *) NULL)
-                      {
-                        RelinquishMagickResource(MemoryResource,
-                          entity_memory);
-                        ThrowFatalException(ResourceLimitFatalError,
-                          "MemoryAllocationFailed");
-                      }
+                    if ((p == (char *) NULL) || (strlen(p) > GetMaxProfileSize()))
+                      ThrowFatalException(ResourceLimitFatalError,
+                        "MemoryAllocationFailed");
                     xml=p+offset;
                     entity=strchr(xml,';');
                   }
@@ -1209,8 +1185,6 @@ static char *ParseEntities(char *xml,char **entities,int state)
       if ((xml >= p) && (*xml == ' '))
         *xml='\0';
     }
-  if (entity_memory != 0)
-    RelinquishMagickResource(MemoryResource,entity_memory);
   return(p == q ? ConstantString(p) : p);
 }
 

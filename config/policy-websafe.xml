@@ -84,6 +84,9 @@
   <!-- Prevent excessively large single memory allocation requests. -->
   <policy domain="system" name="max-memory-request" value="512MiB"/>
 
+  <!-- Maximum size of a single image profile. -->
+  <policy domain="system" name="max-profile-size" value="256MiB"/>
+
   <!-- ============================================================= -->
   <!-- Path Restrictions                                              -->
   <!-- ============================================================= -->

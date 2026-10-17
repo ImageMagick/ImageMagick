@@ -131,6 +131,9 @@
   <!-- Maximum single memory allocation request. -->
   <policy domain="system" name="max-memory-request" value="256MiB"/>
 
+  <!-- Maximum size of a single image profile. -->
+  <policy domain="system" name="max-profile-size" value="256MiB"/>
+
   <!-- Fail if the target path is a symbolic link. -->
   <policy domain="system" name="symlink"
           rights="none" pattern="follow"/>
