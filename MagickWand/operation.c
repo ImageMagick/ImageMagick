@@ -4695,9 +4695,9 @@ static MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
         {
           parse=ParseCommandOption(MagickShuffleOptions,MagickFalse,arg1);
           if ( parse < 0 )
-            CLIWandExceptArgBreak(OptionError,"UnrecognizedShuffleStrategy",
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedShuffleMode",
               option,arg1);
-          (void) ShuffleImages(&_images,(ShuffleStrategy) parse,_exception);
+          (void) ShuffleImages(&_images,(ShuffleMode) parse,_exception);
           break;
         }
       if (LocaleCompare("smush",option+1) == 0)

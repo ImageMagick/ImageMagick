@@ -28,7 +28,7 @@ typedef enum
   RandomShuffle,
   AscendingShuffle,
   DescendingShuffle
-} ShuffleStrategy;
+} ShuffleMode;
 
 extern MagickExport Image
   *CloneImageList(const Image *,ExceptionInfo *),
@@ -45,7 +45,7 @@ extern MagickExport Image
   *RemoveImageFromList(Image **),
   *RemoveLastImageFromList(Image **),
   *RemoveFirstImageFromList(Image **),
-  *ShuffleImages(Image **,const ShuffleStrategy,ExceptionInfo *),
+  *ShuffleImages(Image **,const ShuffleMode,ExceptionInfo *),
   *SpliceImageIntoList(Image **,const size_t,const Image *),
   *SplitImageList(Image *),
   *SyncNextImageInList(const Image *);

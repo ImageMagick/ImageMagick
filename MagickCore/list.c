@@ -1338,23 +1338,23 @@ MagickExport void ReverseImageList(Image **images)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ShuffleImages() reorders the sequence of images in an image list based on
-%  ascending, descending, or random criteria.
+%  ascending, descending, or random mode.
 %
 %  The format of the ShuffleImages method is:
 %
-%      Image *ShuffleImages(Image **images,const ShuffleStrategy strategy,
+%      Image *ShuffleImages(Image **images,const ShuffleMode mode,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o images: the image list.
 %
-%    o strategy: the shuffle strategy (ascending, descending, random).
+%    o mode: the shuffle mode (ascending, descending, random).
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *ShuffleImages(Image **images,const ShuffleStrategy strategy,
+MagickExport Image *ShuffleImages(Image **images,const ShuffleMode mode,
   ExceptionInfo *exception)
 {
   Image
@@ -1399,7 +1399,7 @@ MagickExport Image *ShuffleImages(Image **images,const ShuffleStrategy strategy,
       image=image->next;
     }
   }
-  switch (strategy)
+  switch (mode)
   {
     case AscendingShuffle:
     {

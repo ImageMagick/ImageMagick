@@ -296,6 +296,7 @@ static MagickBooleanType ConvertUsage(void)
       "  -shadow geometry     simulate an image shadow\n"
       "  -sharpen geometry    sharpen the image\n"
       "  -shave geometry      shave pixels from the image edges\n"
+      "  -shuffle strategy    reorders the sequence of images\n"
       "  -shear geometry      slide one edge of the image along the X or Y axis\n"
       "  -sigmoidal-contrast geometry\n"
       "                       increase the contrast without saturating highlights or\n"
@@ -2867,6 +2868,23 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("shuffle",option+1) == 0)
+          {
+            ssize_t
+              mode;
+
+            mode=UndefinedShuffle;
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            mode=ParseCommandOption(MagickShuffleOptions,MagickFalse,argv[i]);
+            if (mode < 0)
+              ThrowConvertException(OptionError,"UnrecognizedImageOrientation",
+                argv[i]);
             break;
           }
         if (LocaleCompare("sigmoidal-contrast",option+1) == 0)
