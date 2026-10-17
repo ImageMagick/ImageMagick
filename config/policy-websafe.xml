@@ -85,7 +85,7 @@
   <policy domain="system" name="max-memory-request" value="512MiB"/>
 
   <!-- Maximum size of a single image profile. -->
-  <policy domain="system" name="max-profile-size" value="256MiB"/>
+  <policy domain="system" name="max-profile-size" value="16MiB"/>
 
   <!-- ============================================================= -->
   <!-- Path Restrictions                                              -->

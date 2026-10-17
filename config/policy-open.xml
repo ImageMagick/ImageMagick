@@ -206,7 +206,7 @@
 
   <!-- Maximum size of an image profile. -->
   <!-- <policy domain="system" name="max-profile-size"
-             value="256MiB"/> -->
+             value="16MiB"/> -->
 
   <!-- Refuse paths whose basename is a symbolic link. -->
   <!-- <policy domain="system"
