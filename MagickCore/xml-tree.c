@@ -1013,7 +1013,8 @@ static char *ConvertUTF16ToUTF8(const char *content,size_t *length)
   return(utf8);
 }
 
-static char *ParseEntities(char *xml,char **entities,int state)
+static char *ParseEntities(char *xml,char **entities,int state,
+  ExceptionInfo *exception)
 {
   char
     *entity,
@@ -1145,9 +1146,19 @@ static char *ParseEntities(char *xml,char **entities,int state)
                           }
                         p=extent_xml;
                       }
-                    if ((p == (char *) NULL) || (strlen(p) > GetMaxProfileSize()))
-                      ThrowFatalException(ResourceLimitFatalError,
-                        "MemoryAllocationFailed");
+                    if (p == (char *) NULL)
+                      {
+                        (void) ThrowMagickException(exception,GetMagickModule(),
+                          OptionWarning,"ParseError","memmory allocation failed");
+                        return(p);
+                      }
+                    if (strlen(p) > GetMaxProfileSize())
+                      {
+                        (void) ThrowMagickException(exception,GetMagickModule(),
+                          ResourceLimitError,"ProfileSizeExceedsLimit","`%.17g'",
+                          (double) length);
+                        return(p == q ? ConstantString(p) : p);
+                      }
                     xml=p+offset;
                     entity=strchr(xml,';');
                   }
@@ -1189,7 +1200,7 @@ static char *ParseEntities(char *xml,char **entities,int state)
 }
 
 static void ParseCharacterContent(XMLTreeRoot *root,char *xml,
-  const size_t length,const char state)
+  const size_t length,const char state,ExceptionInfo *exception)
 {
   XMLTreeInfo
     *xml_info;
@@ -1199,7 +1210,7 @@ static void ParseCharacterContent(XMLTreeRoot *root,char *xml,
       (length == 0))
     return;
   xml[length]='\0';
-  xml=ParseEntities(xml,root->entities,state);
+  xml=ParseEntities(xml,root->entities,state,exception);
   if ((xml_info->content != (char *) NULL) && (*xml_info->content != '\0'))
     {
       (void) ConcatenateString(&xml_info->content,xml);
@@ -1411,7 +1422,7 @@ static MagickBooleanType ParseInternalDoctype(XMLTreeRoot *root,char *xml,
             *xml='\0';
             xml++;
           }
-        entities[i+1]=ParseEntities(v,predefined_entities,'%');
+        entities[i+1]=ParseEntities(v,predefined_entities,'%',exception);
         entities[i+2]=(char *) NULL;
         if ((ValidateEntities(n,entities[i+1],'%',0,entities) != MagickFalse) &&
             (ValidateEntities(n,entities[i+1],'&',0,entities) != MagickFalse))
@@ -1530,7 +1541,8 @@ static MagickBooleanType ParseInternalDoctype(XMLTreeRoot *root,char *xml,
               root->attributes[i][j+2]=ConstantString(c);
               root->attributes[i][j+1]=(char *) NULL;
               if (v != (char *) NULL)
-                root->attributes[i][j+1]=ParseEntities(v,root->entities,*c);
+                root->attributes[i][j+1]=ParseEntities(v,root->entities,*c,
+                  exception);
               root->attributes[i][j]=ConstantString(n);
             }
         }
@@ -1768,7 +1780,7 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
                       attributes[l+1]=ParseEntities(attributes[l+1],
                         root->entities,(attribute != (char **) NULL) &&
                         (attribute[j] != (char *) NULL) ? *attribute[j+2] :
-                        ' ');
+                        ' ',exception);
                     }
                   attributes[l]=ConstantString(attributes[l]);
                 }
@@ -1903,7 +1915,8 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
                 {
                   p+=(ptrdiff_t) 2;
                   if (ignore_depth == 0)
-                    ParseCharacterContent(root,tag+8,(size_t) (p-tag-10),'c');
+                    ParseCharacterContent(root,tag+8,(size_t) (p-tag-10),'c',
+                      exception);
                 }
               else
                 {
@@ -1989,7 +2002,7 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
         if (*p == '\0')
           break;
         if (ignore_depth == 0)
-          ParseCharacterContent(root,tag,(size_t) (p-tag),'&');
+          ParseCharacterContent(root,tag,(size_t) (p-tag),'&',exception);
       }
     else
       if (*p == '\0')
