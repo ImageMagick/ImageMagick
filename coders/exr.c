@@ -178,7 +178,7 @@ static void EXRError(exr_const_context_t ctxt,exr_result_t magick_unused(code),
     CoderError,"CorruptImage","`%s'",msg);
 }
 
-static MagickBooleanType InitializeEXRChannels(Image *image,exr_context_t ctxt,
+static MagickBooleanType InitializeEXRChannels(Image *image,
   exr_decode_pipeline_t decoder,size_t pixel_count,size_t columns,
   PixelChannel *pixel_channels,size_t *pixel_size,uint8_t **data,
   ExceptionInfo *exception)
@@ -384,7 +384,7 @@ static MagickBooleanType ReadEXRScanlineImage(exr_context_t ctxt,int part_index,
   if (result != EXR_ERR_SUCCESS)
     ThrowBinaryException(CorruptImageError,"CorruptImage",image->filename);
   pixel_count=(size_t) scans_per_chunk*image->columns;
-  status=InitializeEXRChannels(image,ctxt,decoder,pixel_count,image->columns,
+  status=InitializeEXRChannels(image,decoder,pixel_count,image->columns,
     pixel_channels,&pixel_size,&data,exception);
   if (status == MagickFalse)
     {
@@ -495,7 +495,7 @@ static MagickBooleanType ReadEXRTiledImage(exr_context_t ctxt,int part_index,
       return(MagickFalse);
     }
   pixel_count=(size_t)tile_width*tile_height;
-  status=InitializeEXRChannels(image,ctxt,decoder,pixel_count,tile_width,
+  status=InitializeEXRChannels(image,decoder,pixel_count,tile_width,
     pixel_channels,&pixel_size,&data,exception);
   if (status == MagickFalse)
     {
