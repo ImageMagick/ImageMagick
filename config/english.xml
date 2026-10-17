@@ -1068,6 +1068,9 @@
           <message name="PixelCacheAllocationFailed">
             pixel cache allocation failed
           </message>
+          <message name="ProfileSizeExceedsLimit">
+            profile size exceeds limit
+          </message>
           <message name="TimeLimitExceeded">
             time limit exceeded
           </message>
@@ -1158,9 +1161,6 @@
         <warning>
           <message name="MemoryAllocationFailed">
             memory allocation failed
-          </message>
-          <message name="ProfileSizeExceedsLimit">
-            profile size exceeds limit
           </message>
         </warning>
       </limit>

@@ -1149,14 +1149,15 @@ static char *ParseEntities(char *xml,char **entities,int state,
                     if (p == (char *) NULL)
                       {
                         (void) ThrowMagickException(exception,GetMagickModule(),
-                          OptionWarning,"ParseError","memmory allocation failed");
+                          OptionWarning,"ParseError",
+                          "memory allocation failed");
                         return(p);
                       }
                     if (strlen(p) > GetMaxProfileSize())
                       {
                         (void) ThrowMagickException(exception,GetMagickModule(),
-                          ResourceLimitError,"ProfileSizeExceedsLimit","`%.17g'",
-                          (double) length);
+                          ResourceLimitError,"ProfileSizeExceedsLimit",
+                          "`%.17g'",(double) strlen(p));
                         return(p == q ? ConstantString(p) : p);
                       }
                     xml=p+offset;
