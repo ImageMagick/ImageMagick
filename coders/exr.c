@@ -285,15 +285,12 @@ static MagickBooleanType InitializeEXRChannels(Image *image,exr_context_t ctxt,
     image->colorspace=GRAYColorspace;
   *data=(uint8_t *) AcquireQuantumMemory(*pixel_size,pixel_count);
   if (*data == (uint8_t*)NULL)
-    {
-      exr_decoding_destroy(ctxt, &decoder);
-      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-        image->filename);
-    }
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      image->filename);
   memset(*data,0,*pixel_size*pixel_count);
   p=*data;
   channel=decoder.channels;
-  for (c = 0; c < decoder.channel_count; ++c)
+  for (c=0; c < decoder.channel_count; c++)
   {
     channel->decode_to_ptr=p;
     channel->user_pixel_stride=(int32_t) *pixel_size;
