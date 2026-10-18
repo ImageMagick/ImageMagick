@@ -134,18 +134,21 @@ ModuleExport size_t RegisterHTMLImage(void)
   entry->encoder=(EncodeImageHandler *) WriteHTMLImage;
   entry->magick=(IsImageFormatHandler *) IsHTML;
   entry->flags^=CoderAdjoinFlag;
+  entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("HTML","HTML",
     "Hypertext Markup Language and a client-side image map");
   entry->encoder=(EncodeImageHandler *) WriteHTMLImage;
   entry->magick=(IsImageFormatHandler *) IsHTML;
   entry->flags^=CoderAdjoinFlag;
+  entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("HTML","SHTML",
     "Hypertext Markup Language and a client-side image map");
   entry->encoder=(EncodeImageHandler *) WriteHTMLImage;
   entry->magick=(IsImageFormatHandler *) IsHTML;
   entry->flags^=CoderAdjoinFlag;
+  entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
