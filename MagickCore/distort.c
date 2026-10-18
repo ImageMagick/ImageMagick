@@ -3191,10 +3191,14 @@ MagickExport Image *SparseColorImage(const Image *image,
 
   sparse_image=CloneImage(image,0,0,MagickTrue,exception);
   if (sparse_image == (Image *) NULL)
-    return((Image *) NULL);
+    {
+      coeff=(double *) RelinquishMagickMemory(coeff);
+      return((Image *) NULL);
+    }
   if (SetImageStorageClass(sparse_image,DirectClass,exception) == MagickFalse)
     { /* if image is ColorMapped - change it to DirectClass */
       sparse_image=DestroyImage(sparse_image);
+      coeff=(double *) RelinquishMagickMemory(coeff);
       return((Image *) NULL);
     }
   if (IsGrayColorspace(sparse_image->colorspace) != MagickFalse)

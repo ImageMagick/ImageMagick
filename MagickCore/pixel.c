@@ -4280,7 +4280,10 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,const ssize_t x,
     }
   }
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
-    return(MagickFalse);
+    {
+      quantum_map=(QuantumType *) RelinquishMagickMemory(quantum_map);
+      return(MagickFalse);
+    }
   /*
     Transfer the pixels from the pixel data to the image.
   */

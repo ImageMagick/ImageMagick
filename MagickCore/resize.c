@@ -2012,11 +2012,13 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
     (size_t) lqr_carver_get_height(carver),MagickTrue,exception);
   if (rescale_image == (Image *) NULL)
     {
+      lqr_carver_destroy(carver);
       pixel_info=RelinquishVirtualMemory(pixel_info);
       return((Image *) NULL);
     }
   if (SetImageStorageClass(rescale_image,DirectClass,exception) == MagickFalse)
     {
+      lqr_carver_destroy(carver);
       pixel_info=RelinquishVirtualMemory(pixel_info);
       rescale_image=DestroyImage(rescale_image);
       return((Image *) NULL);

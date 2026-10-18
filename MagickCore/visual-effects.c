@@ -1246,6 +1246,7 @@ MagickExport Image *MorphImages(const Image *image,const size_t number_frames,
       if (status == MagickFalse)
         {
           morph_image=DestroyImage(morph_image);
+          morph_images=DestroyImageList(morph_images);
           return((Image *) NULL);
         }
       AppendImageToList(&morph_images,morph_image);
