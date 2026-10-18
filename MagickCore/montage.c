@@ -112,7 +112,7 @@ MagickExport MontageInfo *CloneMontageInfo(const ImageInfo *image_info,
   if (montage_info == (MontageInfo *) NULL)
     return(clone_info);
   if (montage_info->geometry != (char *) NULL)
-    clone_info->geometry=AcquireString(montage_info->geometry);
+    (void) CloneString(&clone_info->geometry,montage_info->geometry);
   if (montage_info->tile != (char *) NULL)
     clone_info->tile=AcquireString(montage_info->tile);
   if (montage_info->title != (char *) NULL)
@@ -122,7 +122,7 @@ MagickExport MontageInfo *CloneMontageInfo(const ImageInfo *image_info,
   if (montage_info->texture != (char *) NULL)
     clone_info->texture=AcquireString(montage_info->texture);
   if (montage_info->font != (char *) NULL)
-    clone_info->font=AcquireString(montage_info->font);
+    (void) CloneString(&clone_info->font,montage_info->font);
   clone_info->pointsize=montage_info->pointsize;
   clone_info->border_width=montage_info->border_width;
   clone_info->shadow=montage_info->shadow;
