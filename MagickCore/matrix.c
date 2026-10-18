@@ -221,7 +221,7 @@ MagickExport MatrixInfo *AcquireMatrixInfo(const size_t columns,
         "CacheResourcesExhausted","`%s'","matrix cache");
       return(DestroyMatrixInfo(matrix_info));
     }
-  matrix_info->type=MemoryCache;
+  matrix_info->type=UndefinedCache;
   status=AcquireMagickResource(AreaResource,matrix_info->length);
   if ((status != MagickFalse) &&
       (matrix_info->length == (MagickSizeType) ((size_t) matrix_info->length)) &&
@@ -241,6 +241,8 @@ MagickExport MatrixInfo *AcquireMatrixInfo(const size_t columns,
             }
           if (matrix_info->elements == (unsigned short *) NULL)
             RelinquishMagickResource(MemoryResource,matrix_info->length);
+          else
+            matrix_info->type=MemoryCache;
         }
     }
   matrix_info->file=(-1);
