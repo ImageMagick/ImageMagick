@@ -1089,6 +1089,8 @@ static MagickBooleanType CompositeOverImage(Image *image,
             /*
               Set alpha channel.
             */
+            if ((traits & UpdatePixelTrait) == 0)
+              continue;
             pixel=(double) QuantumRange*alpha;
             q[i]=clamp != MagickFalse ? ClampPixel(pixel) :
               ClampToQuantum(pixel);
@@ -1105,7 +1107,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
             /*
               Copy channel.
             */
-            q[i]=ClampToQuantum(Sc);
+            q[i]=ClampToQuantum(Dc);
             continue;
           }
         /*
@@ -1590,7 +1592,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               channel);
             PixelTrait traits = GetPixelChannelTraits(image,channel);
             if ((source_traits == UndefinedPixelTrait) ||
-                (traits == UndefinedPixelTrait))
+                (traits == UndefinedPixelTrait) ||
+                ((traits & UpdatePixelTrait) == 0))
               continue;
             SetPixelChannel(image,channel,p[i],q);
           }

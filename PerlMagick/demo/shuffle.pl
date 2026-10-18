@@ -30,6 +30,6 @@ foreach my $img (@$image) {
 $image->Write('ashlar:shuffle.pam');
 print "Display...\n";
 my $shuffle = Image::Magick->new();
-my $status = $shuffle->Read('shuffle.pam');
+$status = $shuffle->Read('shuffle.pam');
 $shuffle->Write(magick=>'SHOW',title=>"Shuffle");
 
