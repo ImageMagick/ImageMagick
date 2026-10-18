@@ -264,6 +264,7 @@ ModuleExport size_t RegisterVIDImage(void)
   entry->decoder=(DecodeImageHandler *) ReadVIDImage;
   entry->encoder=(EncodeImageHandler *) WriteVIDImage;
   entry->format_type=ImplicitFormatType;
+  entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

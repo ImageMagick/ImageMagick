@@ -185,6 +185,7 @@ ModuleExport size_t RegisterNULLImage(void)
   entry->encoder=(EncodeImageHandler *) WriteNULLImage;
   entry->flags^=CoderAdjoinFlag;
   entry->format_type=ImplicitFormatType;
+  entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
