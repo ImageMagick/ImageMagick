@@ -18,7 +18,7 @@
 #
 . ./common.shi
 . ${srcdir}/tests/common.shi
-echo "1..2"
+echo "1..3"
 
 dir=mogrify_format_dir
 rm -rf "$dir" mogrify_format_plain.bmp mogrify_format_gzip.bmp
@@ -35,6 +35,12 @@ ${MAGICK} -size 2x2 xc:red "$dir/mogrify_format_gzip.ppm.gz" && \
   ${MAGICK} mogrify -format bmp "$dir/mogrify_format_gzip.ppm.gz" && \
   [ -f "$dir/mogrify_format_gzip.bmp" ] && \
   [ ! -f mogrify_format_gzip.bmp ] && echo "ok" || echo "not ok"
+
+# Debug logging must not change the coder inferred for the in-place temporary file.
+${MAGICK} -size 2x2 xc:red "$dir/mogrify_debug_inplace.png" && \
+  ${MAGICK} mogrify -debug all "$dir/mogrify_debug_inplace.png" >/dev/null 2>&1 && \
+  ${MAGICK} identify "$dir/mogrify_debug_inplace.png" >/dev/null 2>&1 && \
+  echo "ok" || echo "not ok"
 
 rm -rf "$dir" mogrify_format_plain.bmp mogrify_format_gzip.bmp
 :

@@ -3952,11 +3952,25 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           Image *clone_image = CloneImageList(image,exception);
           if (clone_image != (Image *) NULL)
             {
+              char
+                output_filename[MagickPathExtent];
+
+              const char
+                *output_format;
+
               if (*clone_image->magick == '\0')
                 (void) CopyMagickString(clone_image->magick,image_info->magick,
                   MaxTextExtent);
+              output_format=(format != (char *) NULL) ? format :
+                clone_image->magick;
+              if ((*magic != '\0') || (*output_format == '\0'))
+                (void) CopyMagickString(output_filename,backup_filename,
+                  MagickPathExtent);
+              else
+                (void) FormatLocaleString(output_filename,MagickPathExtent,
+                  "%s:%s",output_format,backup_filename);
               status&=(MagickStatusType) WriteImages(image_info,clone_image,
-                (*backup_filename != '\0') ? backup_filename :
+                (*backup_filename != '\0') ? output_filename :
                 clone_image->filename,exception);
               clone_image=DestroyImageList(clone_image);
             }
