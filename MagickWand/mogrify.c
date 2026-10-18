@@ -3933,8 +3933,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
                 "%s-%02x%02x%02x%02x~",image->filename,key_bytes[0],
                 key_bytes[1],key_bytes[2],key_bytes[3]);
               key_info=DestroyStringInfo(key_info);
-              file=open_utf8(backup_filename,O_RDWR | O_CLOEXEC | O_CREAT | O_EXCL |
-                O_BINARY | O_NOFOLLOW,S_MODE);
+              file=open_utf8(backup_filename,O_RDWR | O_CLOEXEC | O_CREAT |                     O_EXCL | O_BINARY | O_NOFOLLOW,S_MODE);
               if ((file >= 0) || (errno != EEXIST))
                 break;
             }
@@ -3962,8 +3961,8 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
                     *output_format;
 
                   if (*clone_image->magick == '\0')
-                    (void) CopyMagickString(clone_image->magick,image_info->magick,
-                      MaxTextExtent);
+                    (void) CopyMagickString(clone_image->magick,
+                      image_info->magick,MaxTextExtent);
                   output_format=(format != (char *) NULL) ? format :
                     clone_image->magick;
                   if ((*magic != '\0') || (*output_format == '\0'))
