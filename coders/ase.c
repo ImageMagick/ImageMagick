@@ -128,10 +128,10 @@ typedef struct _AsepriteLayerList
 } AsepriteLayerList;
 
 /*
-  AsepriteCelCache caches the decompressed pixels (and placement/opacity) of
-  every Raw/Compressed cel keyed by (frame_index,layer_index), so a later
-  Linked Cel (cel_type==1) referencing an earlier frame's cel for the same
-  layer can be resolved and composited identically to a direct cel.
+  AsepriteCelCache caches the encoded pixels (and placement/opacity) of every
+  Raw/Compressed cel keyed by (frame_index,layer_index), so a later Linked Cel
+  (cel_type==1) referencing an earlier frame's cel for the same layer can be
+  resolved and composited identically to a direct cel.
 */
 typedef struct _AsepriteCelCacheEntry
 {
@@ -141,8 +141,11 @@ typedef struct _AsepriteCelCacheEntry
   int16_t cel_y;
   uint16_t cel_width;
   uint16_t cel_height;
+  uint16_t cel_type;
   uint8_t cel_opacity;
-  uint8_t *pixels;
+  size_t data_size;
+  size_t pixels_size;
+  uint8_t *data;
 } AsepriteCelCacheEntry;
 
 typedef struct _AsepriteCelCache
@@ -214,8 +217,8 @@ static void DestroyASECelCache(AsepriteCelCache *cel_cache)
   if (cel_cache->entries == (AsepriteCelCacheEntry *) NULL)
     return;
   for (i=0; i < cel_cache->count; i++)
-    cel_cache->entries[i].pixels=(uint8_t *) RelinquishMagickMemory(
-      cel_cache->entries[i].pixels);
+    cel_cache->entries[i].data=(uint8_t *) RelinquishMagickMemory(
+      cel_cache->entries[i].data);
   cel_cache->entries=(AsepriteCelCacheEntry *) RelinquishMagickMemory(
     cel_cache->entries);
   cel_cache->index=(size_t *) RelinquishMagickMemory(cel_cache->index);
@@ -543,15 +546,15 @@ static void CompositeASECel(const uint8_t *cel_pixels,uint16_t cel_width,
 }
 
 /*
-  CacheASECel() stores a copy of a decoded direct cel's pixels/placement so
-  a later frame's Linked Cel (cel_type==1) referencing this (frame,layer)
-  can be resolved. Returns MagickFalse on allocation failure.
+  CacheASECel() stores a copy of a direct cel's encoded pixels/placement so a
+  later frame's Linked Cel (cel_type==1) referencing this (frame,layer) can be
+  resolved. Returns MagickFalse on allocation failure.
 */
 static MagickBooleanType CacheASECel(const Image *image,
-  const uint8_t *cel_pixels,size_t cel_pixels_size,uint16_t cel_width,
-  uint16_t cel_height,int16_t cel_x,int16_t cel_y,uint8_t cel_opacity,
-  size_t frame_index,uint16_t layer_index,AsepriteCelCache *cel_cache,
-  ExceptionInfo *exception)
+  const uint8_t *cel_data,size_t cel_data_size,size_t cel_pixels_size,
+  uint16_t cel_width,uint16_t cel_height,uint16_t cel_type,int16_t cel_x,
+  int16_t cel_y,uint8_t cel_opacity,size_t frame_index,uint16_t layer_index,
+  AsepriteCelCache *cel_cache,ExceptionInfo *exception)
 {
   AsepriteCelCacheEntry
     *entry;
@@ -585,21 +588,23 @@ static MagickBooleanType CacheASECel(const Image *image,
       cel_cache->capacity=new_capacity;
     }
   entry=cel_cache->entries+cel_cache->count;
-  entry->pixels=(uint8_t *) AcquireQuantumMemory(cel_pixels_size,
-    sizeof(uint8_t));
-  if (entry->pixels == (uint8_t *) NULL)
+  entry->data=(uint8_t *) AcquireQuantumMemory(cel_data_size,sizeof(uint8_t));
+  if (entry->data == (uint8_t *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       return(MagickFalse);
     }
-  (void) memcpy(entry->pixels,cel_pixels,cel_pixels_size);
+  (void) memcpy(entry->data,cel_data,cel_data_size);
+  entry->data_size=cel_data_size;
+  entry->pixels_size=cel_pixels_size;
   entry->frame_index=frame_index;
   entry->layer_index=layer_index;
   entry->cel_x=cel_x;
   entry->cel_y=cel_y;
   entry->cel_width=cel_width;
   entry->cel_height=cel_height;
+  entry->cel_type=cel_type;
   entry->cel_opacity=cel_opacity;
   cel_cache->count++;
   return(IndexASECel(image,cel_cache,cel_cache->count-1,exception));
@@ -625,6 +630,7 @@ static MagickBooleanType ReadASECelChunk(const Image *image,
 
   size_t
     bytes_per_pixel,
+    cel_data_size,
     cel_pixels_size;
 
   uint16_t
@@ -682,11 +688,63 @@ static MagickBooleanType ReadASECelChunk(const Image *image,
       cache_entry=LookupASECel(cel_cache,link_frame,layer_index);
       if (cache_entry != (AsepriteCelCacheEntry *) NULL)
         {
+          const uint8_t
+            *linked_pixels;
+
+          uint8_t
+            *linked_buffer;
+
+          linked_buffer=(uint8_t *) NULL;
+          linked_pixels=cache_entry->data;
+          if (cache_entry->cel_type == 2)
+            {
+#if defined(MAGICKCORE_ZLIB_DELEGATE)
+              int
+                zlib_status;
+
+              uLongf
+                uncompressed_size;
+
+              /*
+                Compressed cels are kept encoded in the cache. Decode this
+                reference before compositing it, as the direct-cel path does.
+              */
+              linked_buffer=(uint8_t *) AcquireQuantumMemory(
+                cache_entry->pixels_size,sizeof(uint8_t));
+              if (linked_buffer == (uint8_t *) NULL)
+                {
+                  (void) ThrowMagickException(exception,GetMagickModule(),
+                    ResourceLimitError,"MemoryAllocationFailed","`%s'",
+                    image->filename);
+                  return(MagickFalse);
+                }
+              uncompressed_size=(uLongf) cache_entry->pixels_size;
+              zlib_status=uncompress(linked_buffer,&uncompressed_size,
+                cache_entry->data,(uLongf) cache_entry->data_size);
+              if ((zlib_status != Z_OK) || (uncompressed_size !=
+                  (uLongf) cache_entry->pixels_size))
+                {
+                  linked_buffer=(uint8_t *) RelinquishMagickMemory(
+                    linked_buffer);
+                  (void) ThrowMagickException(exception,GetMagickModule(),
+                    CorruptImageError,"UnableToDecompressImage","`%s'",
+                    image->filename);
+                  return(MagickFalse);
+                }
+              linked_pixels=linked_buffer;
+#else
+              (void) ThrowMagickException(exception,GetMagickModule(),
+                MissingDelegateError,"DelegateLibrarySupportNotBuiltIn",
+                "`%s' (ZLIB)",image->filename);
+              return(MagickFalse);
+#endif
+            }
           combined_opacity=((double) layer_opacity/255.0)*
             ((double) cache_entry->cel_opacity/255.0);
-          CompositeASECel(cache_entry->pixels,cache_entry->cel_width,
+          CompositeASECel(linked_pixels,cache_entry->cel_width,
             cache_entry->cel_height,cache_entry->cel_x,cache_entry->cel_y,
             combined_opacity,canvas);
+          linked_buffer=(uint8_t *) RelinquishMagickMemory(linked_buffer);
         }
       return(MagickTrue);
     }
@@ -764,24 +822,23 @@ static MagickBooleanType ReadASECelChunk(const Image *image,
       return(MagickFalse);
 #endif
     }
-  /* Cache this direct cel's pixels so a later frame can link to it, even
-     if the current layer is invisible or fully transparent. */
-  if (CacheASECel(image,cel_pixels,cel_pixels_size,cel_width,cel_height,
-      cel_x,cel_y,cel_opacity,frame_index,layer_index,cel_cache,
-      exception) == MagickFalse)
+  /* Cache this direct cel's encoded pixels so a later frame can link to it,
+     even if the current layer is invisible or fully transparent. */
+  cel_data_size=(cel_type == 0) ? cel_pixels_size : payload_size-20;
+  if (CacheASECel(image,chunk_data+20,cel_data_size,cel_pixels_size,cel_width,
+      cel_height,cel_type,cel_x,cel_y,cel_opacity,frame_index,layer_index,
+      cel_cache,exception) == MagickFalse)
     {
       cel_pixels=(uint8_t *) RelinquishMagickMemory(cel_pixels);
       return(MagickFalse);
     }
-  if (visible == MagickFalse)
+  if (visible != MagickFalse)
     {
-      cel_pixels=(uint8_t *) RelinquishMagickMemory(cel_pixels);
-      return(MagickTrue);
+      combined_opacity=((double) layer_opacity/255.0)*((double) cel_opacity/
+        255.0);
+      CompositeASECel(cel_pixels,cel_width,cel_height,cel_x,cel_y,
+        combined_opacity,canvas);
     }
-  combined_opacity=((double) layer_opacity/255.0)*((double) cel_opacity/
-    255.0);
-  CompositeASECel(cel_pixels,cel_width,cel_height,cel_x,cel_y,
-    combined_opacity,canvas);
   cel_pixels=(uint8_t *) RelinquishMagickMemory(cel_pixels);
   return(MagickTrue);
 }
