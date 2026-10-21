@@ -1641,6 +1641,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       if ((property != (const char *) NULL)  &&
                           (LocaleCompare(property,value) == 0))
                         {
+                          if (msl_info->image[j] == (Image *) NULL)
+                            break;
                           SetImageType(composite_image,TrueColorAlphaType,
                             exception);
                           (void) CompositeImage(composite_image,
@@ -1816,7 +1818,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               rotate_image=DestroyImageList(rotate_image);
             }
           (void) SetImageChannelMask(image,channel_mask);
-          composite_image=DestroyImageList(composite_image);
+          composite_image=DestroyImage(composite_image);
           break;
         }
       if (LocaleCompare((const char *) tag,"contrast") == 0)
@@ -3378,6 +3380,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       if ((prop != (const char *) NULL)  &&
                           (LocaleCompare(prop,value) == 0))
                         {
+                          if (msl_info->image[j] == (Image *) NULL)
+                            break;
                           affinity_image=CloneImage(msl_info->image[j],0,0,
                             MagickFalse,exception);
                           break;
@@ -3400,7 +3404,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             {
               (void) RemapImages(quantize_info,msl_info->image[n],
                 affinity_image,exception);
-              affinity_image=DestroyImageList(affinity_image);
+              affinity_image=DestroyImage(affinity_image);
             }
           quantize_info=DestroyQuantizeInfo(quantize_info);
           break;
