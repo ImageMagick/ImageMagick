@@ -143,6 +143,7 @@ typedef struct _AsepriteCelCacheEntry
   uint16_t cel_height;
   uint8_t cel_opacity;
   uint8_t *pixels;
+  size_t pixels_size;
 } AsepriteCelCacheEntry;
 
 typedef struct _AsepriteCelCache
@@ -214,8 +215,11 @@ static void DestroyASECelCache(AsepriteCelCache *cel_cache)
   if (cel_cache->entries == (AsepriteCelCacheEntry *) NULL)
     return;
   for (i=0; i < cel_cache->count; i++)
-    cel_cache->entries[i].pixels=(uint8_t *) RelinquishMagickMemory(
-      cel_cache->entries[i].pixels);
+    {
+      RelinquishMagickResource(MemoryResource,(MagickSizeType) cel_cache->entries[i].pixels_size);
+      cel_cache->entries[i].pixels=(uint8_t *) RelinquishMagickMemory(
+        cel_cache->entries[i].pixels);
+    }
   cel_cache->entries=(AsepriteCelCacheEntry *) RelinquishMagickMemory(
     cel_cache->entries);
   cel_cache->index=(size_t *) RelinquishMagickMemory(cel_cache->index);
@@ -585,10 +589,17 @@ static MagickBooleanType CacheASECel(const Image *image,
       cel_cache->capacity=new_capacity;
     }
   entry=cel_cache->entries+cel_cache->count;
+  if (AcquireMagickResource(MemoryResource,(MagickSizeType) cel_pixels_size) == MagickFalse)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      return(MagickFalse);
+    }
   entry->pixels=(uint8_t *) AcquireQuantumMemory(cel_pixels_size,
     sizeof(uint8_t));
   if (entry->pixels == (uint8_t *) NULL)
     {
+      RelinquishMagickResource(MemoryResource,(MagickSizeType) cel_pixels_size);
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       return(MagickFalse);
@@ -601,6 +612,7 @@ static MagickBooleanType CacheASECel(const Image *image,
   entry->cel_width=cel_width;
   entry->cel_height=cel_height;
   entry->cel_opacity=cel_opacity;
+  entry->pixels_size=cel_pixels_size;
   cel_cache->count++;
   return(IndexASECel(image,cel_cache,cel_cache->count-1,exception));
 }
@@ -874,6 +886,9 @@ static Image *ReadASEImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ase_header.pixel_width=ReadBlobLSBShort(image);
   ase_header.pixel_height=ReadBlobLSBShort(image);
   (void) SeekBlob(image,92,SEEK_CUR);
+  if ((GetBlobSize(image) != 0) && 
+      ((MagickSizeType) ase_header.file_size > GetBlobSize(image)))
+    ThrowReaderException(CorruptImageError,"FileSizeTooLarge");
   if ((ase_header.width == 0) || (ase_header.height == 0))
     ThrowReaderException(CorruptImageError,"InvalidImageDimensions");
   if ((ase_header.width > 16384) || (ase_header.height > 16384))
@@ -981,9 +996,16 @@ static Image *ReadASEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         pixels_size=0;
         break;
     }
+    if (AcquireMagickResource(MemoryResource,(MagickSizeType) pixels_size) == MagickFalse)
+      {
+        DestroyASELayerList(&layers);
+        DestroyASECelCache(&cel_cache);
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+      }
     pixel_data=(uint8_t *) AcquireQuantumMemory(pixels_size,sizeof(uint8_t));
     if (pixel_data == (uint8_t *) NULL)
       {
+        RelinquishMagickResource(MemoryResource,(MagickSizeType) pixels_size);
         DestroyASELayerList(&layers);
         DestroyASECelCache(&cel_cache);
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -1166,6 +1188,7 @@ static Image *ReadASEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       }
     }
+    RelinquishMagickResource(MemoryResource,(MagickSizeType) pixels_size);
     pixel_data=(uint8_t *) RelinquishMagickMemory(pixel_data);
   }
   DestroyASELayerList(&layers);
