@@ -555,6 +555,16 @@ static MagickBooleanType WriteXBMImage(const ImageInfo *image_info,Image *image,
     Write X bitmap header.
   */
   GetPathComponent(image->filename,BasePath,basename);
+  if (isalnum((int) ((unsigned char) *basename)) == 0)
+    {
+      (void) FormatLocaleString(buffer,MagickPathExtent,"xbm_%.1024s",basename);
+      (void) CopyMagickString(basename,buffer,MagickPathExtent);
+    }
+  if (isalpha((int) ((unsigned char) basename[0])) == 0)
+    basename[0]='_';
+  for (x=1; basename[x] != '\0'; x++)
+    if (isalnum((int) ((unsigned char) basename[x])) == 0)
+      basename[x]='_';
   (void) FormatLocaleString(buffer,MagickPathExtent,"#define %s_width %.17g\n",
     basename,(double) image->columns);
   (void) WriteBlob(image,strlen(buffer),(unsigned char *) buffer);
