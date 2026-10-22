@@ -49,6 +49,7 @@ Image Settings:
   \-seed value          seed a new sequence of pseudo-random numbers
   \-set attribute value set an image attribute
   \-size geometry       width and height of image
+  \-strict              treat coder warnings as errors
   \-strip               strip image of all profiles and comments
   \-unique              display the number of unique colors in the image
   \-units type          the units of image resolution

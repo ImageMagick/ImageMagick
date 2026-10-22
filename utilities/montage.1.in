@@ -69,6 +69,7 @@ Image Settings:
   \-set attribute value set an image attribute
   \-shadow              add a shadow beneath a tile to simulate depth
   \-size geometry       width and height of image
+  \-strict              treat coder warnings as errors
   \-stroke color        color to use when stroking a graphic primitive
   \-support factor      resize support: > 1.0 is blurry, < 1.0 is sharp
   \-synchronize         synchronize image to storage device
