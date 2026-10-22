@@ -17,7 +17,7 @@
 #include "coders/coders-private.h"
 
 #define MagickASEHeaders \
-  MagickCoderHeader("ASE", 4, "\xa5\xe0")
+  MagickCoderHeader("ASE", 4, "\xe0\xa5")
 
 #define MagickASEAliases \
   MagickCoderAlias("ASE", "ASEPRITE")
