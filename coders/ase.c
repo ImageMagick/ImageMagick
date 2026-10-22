@@ -66,7 +66,7 @@
 /*
   Define declarations.
 */
-#define ASE_MAGIC 0xA5E0
+#define ASE_MAGIC 0xE0A5
 #define ASE_FRAME_MAGIC 0xF1FA
 
 /*
