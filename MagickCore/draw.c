@@ -7488,7 +7488,7 @@ static MagickBooleanType TraceSquareLinecap(PrimitiveInfo *primitive_info,
       break;
   }
   if (j < 0)
-    return(MagickTrue)
+    return(MagickTrue);
   distance=hypot((double) dx,(double) dy);
   primitive_info[number_vertices-1].point.x=(double) (primitive_info[j].point.x+
     dx*(distance+offset)/distance);
