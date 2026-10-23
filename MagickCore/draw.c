@@ -7473,7 +7473,7 @@ static MagickBooleanType TraceSquareLinecap(PrimitiveInfo *primitive_info,
       break;
   }
   if (i == (ssize_t) number_vertices)
-    i=(ssize_t) number_vertices-1L;
+    return(MagickTrue);
   distance=hypot((double) dx,(double) dy);
   primitive_info[0].point.x=(double) (primitive_info[i].point.x+
     dx*(distance+offset)/distance);
@@ -7487,6 +7487,8 @@ static MagickBooleanType TraceSquareLinecap(PrimitiveInfo *primitive_info,
         (fabs((double) dy) >= MagickEpsilon))
       break;
   }
+  if (j < 0)
+    return(MagickTrue);
   distance=hypot((double) dx,(double) dy);
   primitive_info[number_vertices-1].point.x=(double) (primitive_info[j].point.x+
     dx*(distance+offset)/distance);
