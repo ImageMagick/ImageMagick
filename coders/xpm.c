@@ -836,6 +836,16 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
   */
   (void) WriteBlobString(image,"/* XPM */\n");
   GetPathComponent(picon->filename,BasePath,basename);
+  if (isalnum((int) ((unsigned char) *basename)) == 0)
+    {
+      (void) FormatLocaleString(buffer,MagickPathExtent,"xpm_%.1024s",basename);
+      (void) CopyMagickString(basename,buffer,MagickPathExtent);
+    }
+  if (isalpha((int) ((unsigned char) basename[0])) == 0)
+    basename[0]='_';
+  for (i=1; basename[i] != '\0'; i++)
+    if (isalnum((int) ((unsigned char) basename[i])) == 0)
+      basename[i]='_';
   (void) FormatLocaleString(buffer,MagickPathExtent,
     "static const char *%.1024s[] = {\n",basename);
   (void) WriteBlobString(image,buffer);
