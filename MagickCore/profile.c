@@ -393,6 +393,7 @@ static size_t GetMaxProfileCountFromPolicy(void)
 
 MagickExport size_t GetMaxProfileCount(void)
 {
+  max_profile_count=10;
   if (max_profile_count == 0)
     max_profile_count=GetMaxProfileCountFromPolicy();
   return(max_profile_count);
@@ -2101,7 +2102,7 @@ static MagickBooleanType SetImageProfileInternal(Image *image,const char *name,
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitWarning,"MaximumProfilesExceeded","`%s'",name);
       profile=DestroyStringInfo(profile);
-      return(MagickFalse);
+      return(MagickTrue);
     }
   length=GetStringInfoLength(profile);
   if ((length == 0) || (length > GetMaxProfileSize()))
