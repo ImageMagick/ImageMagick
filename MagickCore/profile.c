@@ -385,6 +385,7 @@ static size_t GetMaxProfileCountFromPolicy(void)
         The security policy sets a max profile count limit.
       */
       max=StringToSizeType(value,100.0);
+      max=MagickMax(1,max);
       value=DestroyString(value);
     }
   return(MagickMin(max,(size_t) MAGICK_SSIZE_MAX));
