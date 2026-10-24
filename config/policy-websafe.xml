@@ -86,6 +86,7 @@
 
   <!-- Maximum size of a single image profile. -->
   <policy domain="system" name="max-profile-size" value="16MiB"/>
+  <policy domain="system" name="max-profile-count" value="16"/>
 
   <!-- ============================================================= -->
   <!-- Path Restrictions                                              -->

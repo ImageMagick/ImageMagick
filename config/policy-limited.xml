@@ -134,7 +134,8 @@
   <!-- Maximum size of a single allocation request. -->
   <policy domain="system" name="max-memory-request" value="512MiB"/>
 
-  <!-- Maximum size of an image profile. -->
+  <!-- Maximum size and count of an image profile. -->
   <policy domain="system" name="max-profile-size" value="16MiB"/>
+  <policy domain="system" name="max-profile-count" value="16"/>
 
 </policymap>
