@@ -393,7 +393,6 @@ static size_t GetMaxProfileCountFromPolicy(void)
 
 MagickExport size_t GetMaxProfileCount(void)
 {
-  max_profile_count=10;
   if (max_profile_count == 0)
     max_profile_count=GetMaxProfileCountFromPolicy();
   return(max_profile_count);
