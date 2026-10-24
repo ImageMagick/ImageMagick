@@ -1193,6 +1193,11 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         }
                     }
                 }
+                if (info_length == 0)
+                  {
+                    info=(unsigned char*) RelinquishMagickMemory(info);
+                    break;
+                  }
                 if (magick != MagickFalse)
                   {
                     info[info_length]='\0';
