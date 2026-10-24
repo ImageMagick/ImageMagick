@@ -56,6 +56,7 @@
 #include "MagickCore/option.h"
 #include "MagickCore/option-private.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/policy.h"
 #include "MagickCore/profile.h"
 #include "MagickCore/profile-private.h"
 #include "MagickCore/property.h"
@@ -90,6 +91,12 @@ static MagickBooleanType
 
 static void
   WriteTo8BimProfile(Image *,const char*,const StringInfo *);
+
+/*
+  Global declarations.
+*/
+static size_t
+  max_profile_count = 0;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -343,6 +350,51 @@ MagickExport const StringInfo *GetImageProfile(const Image *image,
   profile=(const StringInfo *) GetValueFromSplayTree((SplayTreeInfo *)
     image->profiles,name);
   return(profile);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   G e t M a x P r o f i l e C o u n t                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetMaxProfileCount() returns the max profile count value.
+%
+%  The format of the GetMaxProfileCount method is:
+%
+%      size_t GetMaxProfileCount(void)
+%
+*/
+static size_t GetMaxProfileCountFromPolicy(void)
+{
+  char
+    *value;
+
+  size_t
+    max=(size_t) MAGICK_SSIZE_MAX;
+
+  value=GetPolicyValue("system:max-profile-count");
+  if (value != (char *) NULL)
+    {
+      /*
+        The security policy sets a max profile count limit.
+      */
+      max=StringToSizeType(value,100.0);
+      value=DestroyString(value);
+    }
+  return(MagickMin(max,(size_t) MAGICK_SSIZE_MAX));
+}
+
+MagickExport size_t GetMaxProfileCount(void)
+{
+  if (max_profile_count == 0)
+    max_profile_count=GetMaxProfileCountFromPolicy();
+  return(max_profile_count);
 }
 
 /*
@@ -2042,6 +2094,14 @@ static MagickBooleanType SetImageProfileInternal(Image *image,const char *name,
   assert(name != (const char *) NULL);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if ((image->profiles != (SplayTreeInfo*) NULL) &&
+      (GetNumberOfNodesInSplayTree((SplayTreeInfo*) image->profiles) >= GetMaxProfileCount()))
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitWarning,"MaximumProfilesExceeded","`%s'",name);
+      profile=DestroyStringInfo(profile);
+      return(MagickFalse);
+    }
   length=GetStringInfoLength(profile);
   if ((length == 0) || (length > GetMaxProfileSize()))
     {
