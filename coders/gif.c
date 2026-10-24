@@ -888,6 +888,8 @@ static ssize_t ReadBlobBlock(Image *image,unsigned char *data)
   count=ReadBlob(image,1,&block_count);
   if (count != 1)
     return(0);
+  if (block_count == 0)
+    return(0);
   count=ReadBlob(image,(size_t) block_count,data);
   if (count != (ssize_t) block_count)
     return(0);
