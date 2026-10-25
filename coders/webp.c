@@ -995,7 +995,7 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
       MagickSafeReciprocal((double) frame->ticks_per_second));
     if (effective_delta < 10)
       effective_delta=(image->delay == 0) && (image->previous != NULL) ? 
-        (image->previous->delay*1000/image->ticks_per_sec) : 100;
+        (image->previous->delay*1000/image->ticks_per_second) : 100;
     frame_timestamp+=effective_delta;
     frame=GetNextImageInList(frame);
   }
