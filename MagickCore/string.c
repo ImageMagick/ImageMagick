@@ -1583,6 +1583,53 @@ MagickExport void ResetStringInfo(StringInfo *string_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   S a n i t i z e S t r i n g F o r I d e n t i f i e r                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SanitizeStringForIdentifier() returns a new string suitable for use as a C
+%  identifier.  Invalid characters are replaced with underscores.  An empty
+%  source string becomes a single underscore.
+%
+%  Free the sanitized string with DestroyString().
+%
+%  The format of the SanitizeStringForIdentifier method is:
+%
+%      char *SanitizeStringForIdentifier(const char *source)
+%
+%  A description of each parameter follows:
+%
+%    o source: A character string.
+%
+*/
+MagickExport char *SanitizeStringForIdentifier(const char *source)
+{
+  char
+    *p,
+    *sanitize_source;
+
+  static const char
+    letters[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_",
+    digits[] = "0123456789";
+
+  assert(source != (const char *) NULL);
+  sanitize_source=AcquireString(*source == '\0' ? "_" : source);
+  if (strchr(letters,(int) ((unsigned char) *sanitize_source)) == (char *) NULL)
+    *sanitize_source='_';
+  for (p=sanitize_source+1; *p != '\0'; p++)
+    if ((strchr(letters,(int) ((unsigned char) *p)) == (char *) NULL) &&
+        (strchr(digits,(int) ((unsigned char) *p)) == (char *) NULL))
+      *p='_';
+  return(sanitize_source);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   S a n t i z e S t r i n g                                                 %
 %                                                                             %
 %                                                                             %

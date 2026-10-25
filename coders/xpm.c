@@ -678,7 +678,8 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
     buffer[MagickPathExtent],
     basename[MagickPathExtent],
     name[MagickPathExtent],
-    symbol[MagickPathExtent];
+    symbol[MagickPathExtent],
+    *sanitized_filename;
 
   Image
     *affinity_image,
@@ -836,8 +837,10 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
   */
   (void) WriteBlobString(image,"/* XPM */\n");
   GetPathComponent(picon->filename,BasePath,basename);
+  sanitized_filename=SanitizeStringForIdentifier(basename);
   (void) FormatLocaleString(buffer,MagickPathExtent,
-    "static const char *%.1024s[] = {\n",basename);
+    "static const char *%.1024s[] = {\n",sanitized_filename);
+  sanitized_filename=DestroyString(sanitized_filename);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"/* columns rows colors chars-per-pixel */\n");
   (void) FormatLocaleString(buffer,MagickPathExtent,
@@ -950,7 +953,8 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
     buffer[MagickPathExtent],
     basename[MagickPathExtent],
     name[MagickPathExtent],
-    symbol[MagickPathExtent];
+    symbol[MagickPathExtent],
+    *sanitized_filename;
 
   const Quantum
     *p;
@@ -1062,18 +1066,10 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
   */
   (void) WriteBlobString(image,"/* XPM */\n");
   GetPathComponent(image->filename,BasePath,basename);
-  if (isalnum((int) ((unsigned char) *basename)) == 0)
-    {
-      (void) FormatLocaleString(buffer,MagickPathExtent,"xpm_%.1024s",basename);
-      (void) CopyMagickString(basename,buffer,MagickPathExtent);
-    }
-  if (isalpha((int) ((unsigned char) basename[0])) == 0)
-    basename[0]='_';
-  for (i=1; basename[i] != '\0'; i++)
-    if (isalnum((int) ((unsigned char) basename[i])) == 0)
-      basename[i]='_';
+  sanitized_filename=SanitizeStringForIdentifier(basename);
   (void) FormatLocaleString(buffer,MagickPathExtent,
-    "static char *%.1024s[] = {\n",basename);
+    "static char *%.1024s[] = {\n",sanitized_filename);
+  sanitized_filename=DestroyString(sanitized_filename);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"/* columns rows colors chars-per-pixel */\n");
   (void) FormatLocaleString(buffer,MagickPathExtent,

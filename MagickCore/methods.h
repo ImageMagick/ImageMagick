@@ -1077,6 +1077,7 @@ extern "C" {
 #define RotationalBlurImage  PrependMagickMethod(RotationalBlurImage)
 #define SampleImage  PrependMagickMethod(SampleImage)
 #define SanitizeString  PrependMagickMethod(SanitizeString)
+#define SanitizeStringForIdentifier  PrependMagickMethod(SanitizeStringForIdentifier)
 #define ScaleGeometryKernelInfo  PrependMagickMethod(ScaleGeometryKernelInfo)
 #define ScaleImage  PrependMagickMethod(ScaleImage)
 #define ScaleKernelInfo  PrependMagickMethod(ScaleKernelInfo)

@@ -13288,8 +13288,7 @@ static MagickBooleanType WriteMAGICKImage(const ImageInfo *image_info,
       return(status);
     }
   (void) WriteBlobString(image,"/*\n");
-  sanitized_filename=AcquireString(image->filename);
-  (void) SubstituteString(&sanitized_filename,"*/","??");
+  sanitized_filename=SanitizeStringForIdentifier(image->filename);
   (void) FormatLocaleString(buffer,MagickPathExtent,"  %s (%s).\n",
     sanitized_filename,write_info->magick);
   sanitized_filename=DestroyString(sanitized_filename);
