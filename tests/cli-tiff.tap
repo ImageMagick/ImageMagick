@@ -26,8 +26,11 @@ echo "1..1"
 
 ${MAGICK} -size 100x100 xc:white -alpha set -colorspace gray \
   -threshold 50% -compress group4 tiff_group4_alpha.tiff &&
-  [ "$(${IDENTIFY} -format "%C %[channels]" tiff_group4_alpha.tiff)" = \
-    "Group4 gray" ] && echo "ok" || echo "not ok"
+  actual=$(${IDENTIFY} -format "%C %A" tiff_group4_alpha.tiff) &&
+  [ "$actual" = "Group4 Undefined" ] && echo "ok" || {
+    echo "not ok"
+    echo "# expected 'Group4 Undefined', got '$actual'"
+  }
 
 rm -f tiff_group4_alpha.tiff
 :
