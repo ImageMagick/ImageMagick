@@ -4345,8 +4345,10 @@ MagickPrivate Quantum *QueueAuthenticPixelCacheNexus(Image *image,
   if (cache_info == (Cache) NULL)
     return((Quantum *) NULL);
   assert(cache_info->signature == MagickCoreSignature);
-  if ((cache_info->columns == 0) || (cache_info->rows == 0) || (x < 0) ||
-      (y < 0) || (x >= (ssize_t) cache_info->columns) ||
+  if ((columns == 0) || (rows == 0) ||
+      (cache_info->columns == 0) || (cache_info->rows == 0) ||
+      (x < 0) || (y < 0) ||
+      (x >= (ssize_t) cache_info->columns) ||
       (y >= (ssize_t) cache_info->rows))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
