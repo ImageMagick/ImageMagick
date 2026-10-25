@@ -18,6 +18,10 @@
 #
 . ./common.shi
 . ${srcdir}/tests/common.shi
+if ! ${MAGICK} -list format | grep -E '^[[:space:]]*TIFF\*?[[:space:]]+(TIFF[[:space:]]+)?rw' >/dev/null; then
+  echo "1..0 # SKIP TIFF coder unavailable"
+  exit 0
+fi
 echo "1..1"
 
 ${MAGICK} -size 100x100 xc:white -alpha set -colorspace gray \
