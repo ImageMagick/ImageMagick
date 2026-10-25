@@ -1295,8 +1295,14 @@ static size_t WriteStreamImage(const Image *image,const void *pixels,
     Write a portion of the pixel row to the stream.
   */
   (void) StreamImagePixels(stream_info,image,stream_info->exception);
+  if (extract_info.x < 0)
+    {
+      extract_info.width=(size_t) -extract_info.x < extract_info.width ?
+        extract_info.width-(size_t) -extract_info.x : 0;
+      extract_info.x=0;
+    }
   length=0;
-  if ((extract_info.x >= 0) && ((size_t) extract_info.x < cache_info->columns))
+  if ((size_t) extract_info.x < cache_info->columns)
     length=packet_size*MagickMin((size_t) extract_info.width,
       cache_info->columns-(size_t) extract_info.x);
   if (length == 0)
