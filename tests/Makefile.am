@@ -46,6 +46,7 @@ TESTS_TESTS = \
   tests/cli-pipe.tap \
   tests/cli-svg.tap \
   tests/cli-statistic.tap \
+  tests/cli-tiff.tap \
   tests/cli-uhdr.tap \
   tests/cli-uhdr-encoder.tap \
   tests/cli-uhdr-resize-filter.tap \

@@ -3639,13 +3639,16 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       case FaxCompression:
       case Group4Compression:
       {
-        if (IsImageMonochrome(image) == MagickFalse)
-          {
-            if (IsImageGray(image) == MagickFalse)
-              (void) SetImageType(image,BilevelType,exception);
-            else
-              (void) SetImageDepth(image,1,exception);
-          }
+        if (image->alpha_trait != UndefinedPixelTrait)
+          (void) SetImageType(image,BilevelType,exception);
+        else
+          if (IsImageMonochrome(image) == MagickFalse)
+            {
+              if (IsImageGray(image) == MagickFalse)
+                (void) SetImageType(image,BilevelType,exception);
+              else
+                (void) SetImageDepth(image,1,exception);
+            }
         image->depth=1;
         image->number_meta_channels=0;
         break;
