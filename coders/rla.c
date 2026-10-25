@@ -417,6 +417,8 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->filename);
   if (CloseBlob(image) == MagickFalse)
     status=MagickFalse;
+  if (GetBlobError(image) != MagickFalse)
+    status=MagickFalse;
   if (status == MagickFalse)
     return(DestroyImageList(image));
   return(GetFirstImageInList(image));
