@@ -1,610 +1,144 @@
-
-
-<!DOCTYPE html>
-<html lang="en" data-bs-theme="auto">
-
+<!-- Note: Template file not found, using internal one -->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>ImageMagick | Mastering Digital Image Alchemy</title>
-  <meta name="description" content="ImageMagick is a powerful open-source software suite for creating, editing, converting, and manipulating images in over 200 formats.">
-  <link rel="canonical" href="index.html">
-  <meta name="robots" content="index, follow">
-  <meta name="theme-color" content="#0d1117">
-  
-  <link rel="shortcut icon" href="image/wand.png" type="image/png">
-  <link rel="apple-touch-icon" href="image/wand.png" type="image/png">
-  
-  <!-- Fonts & Icons -->
-  <link rel="preconnect" href="https://fonts.googleapis.com/">
-  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="description" content="HTTrack is an easy-to-use website mirror utility. It allows you to download a World Wide website from the Internet to a local directory,building recursively all structures, getting html, images, and other files from the server to your computer. Links are rebuiltrelatively so that you can freely browse to the local site (works with any browser). You can mirror several sites together so that you can jump from one toanother. You can, also, update an existing mirror site, or resume an interrupted download. The robot is fully configurable, with an integrated help" />
+	<meta name="keywords" content="httrack, HTTRACK, HTTrack, winhttrack, WINHTTRACK, WinHTTrack, offline browser, web mirror utility, aspirateur web, surf offline, web capture, www mirror utility, browse offline, local  site builder, website mirroring, aspirateur www, internet grabber, capture de site web, internet tool, hors connexion, unix, dos, windows 95, windows 98, solaris, ibm580, AIX 4.0, HTS, HTGet, web aspirator, web aspirateur, libre, GPL, GNU, free software" />
+	<title>Local index - HTTrack Website Copier</title>
+  <!-- Mirror and index made by HTTrack Website Copier/3.49-23 [XR&CO] -->
+	<style type="text/css">
+	<!--
 
-  <style>
-    :root {
-      --im-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      --im-font-mono: 'Fira Code', monospace;
-      --im-primary: #8b5cf6;
-      --im-primary-hover: #7c3aed;
-      --im-accent: #f59e0b;
-      --im-bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
-    }
+body {
+	margin: 0;  padding: 0;  margin-bottom: 15px;  margin-top: 8px;
+	background: #77b;
+}
+body, td {
+	font: 14px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+	}
 
-    body {
-      font-family: var(--im-font-sans);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+#subTitle {
+	background: #000;  color: #fff;  padding: 4px;  font-weight: bold; 
+	}
 
-    code, kbd, pre, .font-mono {
-      font-family: var(--im-font-mono) !important;
-    }
+#siteNavigation a, #siteNavigation .current {
+	font-weight: bold;  color: #448;
+	}
+#siteNavigation a:link    { text-decoration: none; }
+#siteNavigation a:visited { text-decoration: none; }
 
-    /* Modern Navbar */
-    .im-navbar {
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      background-color: rgba(15, 23, 42, 0.85) !important;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
+#siteNavigation .current { background-color: #ccd; }
 
-    .im-navbar .nav-link {
-      font-weight: 500;
-      color: rgba(255, 255, 255, 0.75);
-      transition: all 0.2s ease;
-      padding: 0.5rem 0.85rem;
-      border-radius: 0.375rem;
-    }
+#siteNavigation a:hover   { text-decoration: none;  background-color: #fff;  color: #000; }
+#siteNavigation a:active  { text-decoration: none;  background-color: #ccc; }
 
-    .im-navbar .nav-link:hover,
-    .im-navbar .nav-link.active {
-      color: #ffffff !important;
-      background: rgba(255, 255, 255, 0.08);
-    }
 
-    .im-brand {
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      background: linear-gradient(135deg, #a78bfa 0%, #f472b6 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
+a:link    { text-decoration: underline;  color: #00f; }
+a:visited { text-decoration: underline;  color: #000; }
+a:hover   { text-decoration: underline;  color: #c00; }
+a:active  { text-decoration: underline; }
 
-    /* Hero Section */
-    .im-hero {
-      background: var(--im-bg-gradient);
-      color: #ffffff;
-      padding: 4rem 0 3.5rem;
-      position: relative;
-      overflow: hidden;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
+#pageContent {
+	clear: both;
+	border-bottom: 6px solid #000;
+	padding: 10px;  padding-top: 20px;
+	line-height: 1.65em;
+ background-image: url(backblue.gif);
+ background-repeat: no-repeat;
+ background-position: top right;
+	}
 
-    .im-hero::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -10%;
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(0,0,0,0) 70%);
-      pointer-events: none;
-    }
+#pageContent, #siteNavigation {
+	background-color: #ccd;
+	}
 
-    /* Terminal Widget */
-    .terminal-card {
-      background: #090d16;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 0.75rem;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
-      overflow: hidden;
-    }
 
-    .terminal-header {
-      background: rgba(255, 255, 255, 0.04);
-      padding: 0.6rem 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    }
+.imgLeft  { float: left;   margin-right: 10px;  margin-bottom: 10px; }
+.imgRight { float: right;  margin-left: 10px;   margin-bottom: 10px; }
 
-    .terminal-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-    }
+hr { height: 1px;  color: #000;  background-color: #000;  margin-bottom: 15px; }
 
-    /* Cards & Container */
-    .im-card {
-      border: 1px solid var(--bs-border-color-translucent);
-      border-radius: 0.75rem;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      background: var(--bs-body-bg);
-    }
+h1 { margin: 0;  font-weight: bold;  font-size: 2em; }
+h2 { margin: 0;  font-weight: bold;  font-size: 1.6em; }
+h3 { margin: 0;  font-weight: bold;  font-size: 1.3em; }
+h4 { margin: 0;  font-weight: bold;  font-size: 1.18em; }
 
-    .im-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
-    }
+.blak { background-color: #000; }
+.hide { display: none; }
+.tableWidth { min-width: 400px; }
 
-    /* Footer */
-    .im-footer {
-      margin-top: auto;
-      background: #090d16;
-      color: rgba(255, 255, 255, 0.6);
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
+.tblRegular       { border-collapse: collapse; }
+.tblRegular td    { padding: 6px;  background-image: url(fade.gif);  border: 2px solid #99c; }
+.tblHeaderColor, .tblHeaderColor td { background: #99c; }
+.tblNoBorder td   { border: 0; }
 
-    .im-footer a {
-      color: rgba(255, 255, 255, 0.75);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
 
-    .im-footer a:hover {
-      color: var(--im-primary);
-    }
-  </style>
+// -->
+</style>
 
-  <!-- Open Graph -->
-  <meta property="og:title" content="ImageMagick | Mastering Digital Image Alchemy">
-  <meta property="og:description" content="ImageMagick is a powerful open-source software suite for creating, editing, converting, and manipulating images in over 200 formats.">
-  <meta property="og:image" content="image/logo.png">
-  <meta property="og:url" content="index.html">
-  <meta property="og:type" content="website">
-
-  <!-- JSON-LD Structured Data -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "ImageMagick",
-    "url": "https://imagemagick.org/",
-    "image": "https://imagemagick.org/image/logo.png",
-    "description": "ImageMagick is a powerful open-source software suite for creating, editing, converting, and manipulating images in over 200 formats.",
-    "applicationCategory": "MultimediaApplication",
-    "operatingSystem": "Windows, macOS, Linux, Unix",
-    "softwareVersion": "7.1.2-34",
-    "license": "https://imagemagick.org/license/",
-    "offers": {
-      "@type": "Offer",
-      "price": "0.00",
-      "priceCurrency": "USD"
-    }
-  }
-  </script>
-  <script async src="https://localhost/cse.js?cx=8720b81722164487b"></script>
 </head>
 
 <body>
-  <!-- Theme Init -->
-  <script>
-    (function() {
-      const saved = localStorage.getItem('theme') || 'auto';
-      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const applied = saved === 'auto' ? (systemDark ? 'dark' : 'light') : saved;
-      document.documentElement.setAttribute('data-bs-theme', applied);
-    })();
-  </script>
+<table width="76%" border="0" align="center" cellspacing="0" cellpadding="3" class="tableWidth">
+	<tr>
+	<td id="subTitle">HTTrack Website Copier - Open Source offline browser</td>
+	</tr>
+</table>
+<table width="76%" border="0" align="center" cellspacing="0" cellpadding="0" class="tableWidth">
+<tr class="blak">
+<td>
+	<table width="100%" border="0" align="center" cellspacing="1" cellpadding="0">
+	<tr>
+	<td colspan="6"> 
+		<table width="100%" border="0" align="center" cellspacing="0" cellpadding="10">
+		<tr> 
+		<td id="pageContent"> 
+<!-- ==================== End prologue ==================== -->
 
-  <!-- Navigation -->
-  <nav class="navbar navbar-expand-lg navbar-dark fixed-top im-navbar">
-    <div class="container-xl">
-      <a class="navbar-brand im-brand" href="index.html">
-        <img src="image/wand.png" alt="Wand Icon" width="24" height="24" class="d-inline-block align-text-top">
-        ImageMagick
-      </a>
-      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#imNavbar" aria-controls="imNavbar" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+<H1 ALIGN=Center>Index of locally available sites:</H1>
+  <TABLE BORDER="0" WIDTH="100%" CELLSPACING="1" CELLPADDING="0">
+<!-- Note: Template file not found, using internal one -->
+		<TR>
+			<TD BACKGROUND="fade.gif">
+				&middot;
+					<A HREF="index-2.html">
+						ImageMagick | Mastering Digital Image Alchemy
+					</A>		
+			</TD>
+		</TR>
+<!-- Note: Template file not found, using internal one -->
+	</TABLE>
+	<BR>
+	<BR>
+	<BR>
+  	<H6 ALIGN="RIGHT">
+	<I>Mirror and index made by HTTrack Website Copier [XR&amp;CO]</I>
+	</H6>
+	<!-- Mirror and index made by HTTrack Website Copier/3.49-23 [XR&CO] -->
+	<!-- Thanks for using HTTrack Website Copier! -->
+	<meta HTTP-EQUIV="Refresh" CONTENT="0; URL=index-2.html">
 
-      <div class="collapse navbar-collapse" id="imNavbar">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3">
-          <li class="nav-item">
-            <a class="nav-link " href="download/index.html">Download</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link " href="command-line-tools/index.html">Tools</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link " href="command-line-processing/index.html">CLI Usage</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link " href="develop/index.html">API & Develop</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" rel="noopener noreferrer" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
-          </li>
-        </ul>
 
-        <div class="d-flex align-items-center gap-2">
-          <!-- Search Trigger Modal / Input -->
-          <form class="d-flex" action="https://imagemagick.org/index.html" role="search">
-            <div class="input-group input-group-sm">
-              <input class="form-control bg-body-tertiary border-secondary-subtle" type="search" placeholder="Search site..." name="q" aria-label="Search">
-              <button class="btn btn-outline-warning" type="submit" name="sa"><i class="bi bi-search"></i></button>
-            </div>
-          </form>
+<!-- ==================== Start epilogue ==================== -->
+		</td>
+		</tr>
+		</table>
+	</td>
+	</tr>
+	</table>
+</td>
+</tr>
+</table>
 
-          <!-- Theme Dropdown -->
-          <div class="dropdown">
-            <button class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-1 border-0 text-white" type="button" id="themeSelect" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-circle-half"></i>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="themeSelect">
-              <li><button class="dropdown-item d-flex align-items-center gap-2" onclick="setTheme('light')"><i class="bi bi-sun-fill"></i> Light</button></li>
-              <li><button class="dropdown-item d-flex align-items-center gap-2" onclick="setTheme('dark')"><i class="bi bi-moon-stars-fill"></i> Dark</button></li>
-              <li><button class="dropdown-item d-flex align-items-center gap-2" onclick="setTheme('auto')"><i class="bi bi-circle-half"></i> Auto</button></li>
-            </ul>
-          </div>
+<table width="76%" border="0" align="center" valign="bottom" cellspacing="0" cellpadding="0">
+	<tr>
+	<td id="footer"><small>&copy; 1998 Xavier Roche &amp; other contributors - Web Design: Leto Kauler.</small></td>
+	</tr>
+</table>
 
-          <a href="https://github.com/ImageMagick/ImageMagick" target="_blank" class="btn btn-sm btn-outline-light d-flex align-items-center gap-1 ms-1">
-            <i class="bi bi-github"></i> <span class="d-none d-xl-inline">GitHub</span>
-          </a>
-        </div>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Hero Header Block -->
-  <header class="im-hero mt-5 pt-5">
-    <div class="container-xl pt-3">
-      <div class="row align-items-center g-4">
-        <div class="col-lg-7">
-          <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-primary bg-opacity-20 text-primary border border-primary border-opacity-30 mb-3 fs-7">
-            <span class="badge bg-primary">v7.1.2-34</span>
-            <span class="small text-light">Latest Stable Release</span>
-          </div>
-          <h1 class="display-4 fw-bold mb-3 tracking-tight">Mastering Digital Image Alchemy</h1>
-          <p class="lead text-light opacity-75 mb-4 fs-5">ImageMagick is a powerful open-source software suite for creating, editing, converting, and manipulating images in over 200 formats.</p>
-          <div class="d-flex flex-wrap gap-3">
-            <a href="download/index.html" class="btn btn-primary btn-lg px-4 fw-semibold d-flex align-items-center gap-2 shadow">
-              <i class="bi bi-download"></i> Get ImageMagick
-            </a>
-            <a href="command-line-processing/index.html" class="btn btn-outline-light btn-lg px-4 fw-semibold d-flex align-items-center gap-2">
-              <i class="bi bi-terminal"></i> Documentation
-            </a>
-          </div>
-        </div>
-
-        <!-- Terminal Quickstart Preview -->
-        <div class="col-lg-5">
-          <div class="terminal-card">
-            <div class="terminal-header">
-              <div class="terminal-dot bg-danger"></div>
-              <div class="terminal-dot bg-warning"></div>
-              <div class="terminal-dot bg-success"></div>
-              <span class="small text-secondary font-mono ms-2">quickstart.sh</span>
-            </div>
-            <div class="p-3 text-light font-mono small">
-              <div class="text-secondary"># Install via your favorite Package Manager</div>
-              <div class="text-success">$ brew install imagemagick</div>
-              <div class="text-secondary mt-2"># Convert PNG to WebP with compression</div>
-              <div>$ magick input.png -quality 85 output.webp</div>
-              <div class="text-secondary mt-2"># Resize image maintaining aspect ratio</div>
-              <div>$ magick input.jpg -resize 800x600^ output.jpg</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- Main Body Content -->
-  <main class="py-5">
-    <div class="container-xl">
-      <div class="row g-5">
-        <!-- Main Column -->
-        <div class="col-lg-8">
-          <section class="mb-5">
-  <div class="p-4 p-md-5 rounded-3 bg-body-tertiary border">
-    <p class="fs-5 leading-relaxed">
-      <strong>ImageMagick<sup><a href="https://tsdr.uspto.gov/#caseNumber=78333969&caseType=SERIAL_NO&searchType=statusSearch" rel="noopener noreferrer" target="_blank" class="text-decoration-none">&#174;</a></sup></strong> 
-      is a free, <a href="license/index.html" class="fw-medium text-decoration-none">open-source software suite</a> for editing, processing, and converting digital images. It supports over 200 format variants, including modern standards like <strong>JPEG, PNG, GIF, TIFF, WebP, AVIF, and Ultra HDR</strong>.
-    </p>
-    <div class="row g-3 mt-2">
-      <div class="col-md-4">
-        <div class="d-flex align-items-center gap-2">
-          <i class="bi bi-cpu fs-4 text-primary"></i>
-          <div>
-            <strong class="d-block">High Performance</strong>
-            <span class="small text-body-secondary">Multi-threaded, OpenCL & parallel processing.</span>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="d-flex align-items-center gap-2">
-          <i class="bi bi-terminal fs-4 text-primary"></i>
-          <div>
-            <strong class="d-block">CLI & Automation</strong>
-            <span class="small text-body-secondary">Scripting-first design for mass batch jobs.</span>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="d-flex align-items-center gap-2">
-          <i class="bi bi-code-slash fs-4 text-primary"></i>
-          <div>
-            <strong class="d-block">Extensive APIs</strong>
-            <span class="small text-body-secondary">Bindings for C, C++, Python, .NET, Node.js.</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Version & Security Cards -->
-<div class="row g-4 mb-5">
-  <div class="col-md-6">
-    <div class="card h-100 im-card p-3">
-      <div class="card-body d-flex flex-column">
-        <h5 class="card-title fw-bold"><i class="bi bi-box-seam me-2 text-primary"></i> Releases & Ecosystem</h5>
-        <p class="card-text text-body-secondary small flex-grow-1">
-          Access the latest stable version or explore legacy releases. Check out our migration guidelines when porting commands.
-        </p>
-        <div class="d-flex flex-wrap gap-2 pt-2">
-          <a href="download/index.html" class="btn btn-sm btn-outline-primary">ImageMagick 7.1.2-34</a>
-          <a href="https://legacy.imagemagick.org/" target="_blank" class="btn btn-sm btn-outline-secondary">Version 6 (Legacy)</a>
-          <a href="porting/index.html" class="btn btn-sm btn-link text-decoration-none">Porting Guide &rarr;</a>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-6">
-    <div class="card h-100 im-card p-3">
-      <div class="card-body d-flex flex-column">
-        <h5 class="card-title fw-bold"><i class="bi bi-shield-check me-2 text-success"></i> Security First</h5>
-        <p class="card-text text-body-secondary small flex-grow-1">
-          Tailor security policies to suit your server environment. Always validate your policy parameters before deploying to production.
-        </p>
-        <div class="d-flex flex-wrap gap-2 pt-2">
-          <a href="security-policy/index.html" class="btn btn-sm btn-outline-success">Security Guidelines</a>
-          <a href="https://imagemagick-secevaluator.doyensec.com/" target="_blank" class="btn btn-sm btn-outline-secondary">Validation Tool</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Features & Capabilities Section -->
-<section class="mb-5">
-  <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
-    <div>
-      <h3 class="fw-bold mb-1" id="features">Features & Capabilities</h3>
-      <p class="text-body-secondary mb-0">Discover what ImageMagick can do for your workflows.</p>
-    </div>
-    
-    <!-- Filter Search Box -->
-    <div class="w-100 w-md-auto" style="min-width: 260px;">
-      <input type="text" id="featureSearch" class="form-control" placeholder="Filter capabilities (e.g., blur, animation)...">
-    </div>
-  </div>
-
-  <!-- Interactive Grid Container -->
-  <div class="row row-cols-1 row-cols-md-2 g-3" id="featureGrid">
-
-    <div class="col feature-item" data-title="Animation">
-      <div class="card h-100 im-card p-3">
-        <div class="d-flex justify-content-between align-items-start mb-2">
-          <a href="https://usage.imagemagick.org/anim_basics/" class="fw-bold text-decoration-none fs-6">Animation</a>
-          <span class="badge bg-secondary-subtle text-secondary-emphasis">Format</span>
-        </div>
-        <p class="small text-body-secondary mb-0">Create GIF or WebP animated sequences from image frames.</p>
-      </div>
-    </div>
-
-    <div class="col feature-item" data-title="Bilateral blur">
-      <div class="card h-100 im-card p-3">
-        <div class="d-flex justify-content-between align-items-start mb-2">
-          <a href="command-line-options/index.html#bilateral-blur" class="fw-bold text-decoration-none fs-6">Bilateral Blur</a>
-          <span class="badge bg-secondary-subtle text-secondary-emphasis">Filter</span>
-        </div>
-        <p class="small text-body-secondary mb-0">Edge-preserving, noise-reducing non-linear smoothing filter.</p>
-      </div>
-    </div>
-
-    <div class="col feature-item" data-title="Color management">
-      <div class="card h-100 im-card p-3">
-        <div class="d-flex justify-content-between align-items-start mb-2">
-          <a href="color-management/index.html" class="fw-bold text-decoration-none fs-6">Color Management</a>
-          <span class="badge bg-secondary-subtle text-secondary-emphasis">Color</span>
-        </div>
-        <p class="small text-body-secondary mb-0">Accurate profile processing with built-in gamma compression and expansion.</p>
-      </div>
-    </div>
-
-    <div class="col feature-item" data-title="Command-line processing">
-      <div class="card h-100 im-card p-3">
-        <div class="d-flex justify-content-between align-items-start mb-2">
-          <a href="command-line-processing/index.html" class="fw-bold text-decoration-none fs-6">Command-Line Processing</a>
-          <span class="badge bg-primary-subtle text-primary-emphasis">Core</span>
-        </div>
-        <p class="small text-body-secondary mb-0">Automate and script complex multi-step operations efficiently from terminal interfaces.</p>
-      </div>
-    </div>
-
-    <div class="col feature-item" data-title="Convex hull & Minimum Bounding Box">
-      <div class="card h-100 im-card p-3">
-        <div class="d-flex justify-content-between align-items-start mb-2">
-          <a href="convex-hull/index.html" class="fw-bold text-decoration-none fs-6">Convex Hull</a>
-          <span class="badge bg-secondary-subtle text-secondary-emphasis">Vision</span>
-        </div>
-        <p class="small text-body-secondary mb-0">Calculate smallest area bounding polygons, unrotate angles, and geometry metadata.</p>
-      </div>
-    </div>
-
-    <div class="col feature-item" data-title="Format conversion">
-      <div class="card h-100 im-card p-3">
-        <div class="d-flex justify-content-between align-items-start mb-2">
-          <a href="convert/index.html" class="fw-bold text-decoration-none fs-6">Format Conversion</a>
-          <span class="badge bg-primary-subtle text-primary-emphasis">Core</span>
-        </div>
-        <p class="small text-body-secondary mb-0">Convert rapidly between 200+ standard formats (PNG, JPEG, WebP, AVIF, HEIC, TIFF).</p>
-      </div>
-    </div>
-
-    <div class="col feature-item" data-title="High dynamic-range images HDR">
-      <div class="card h-100 im-card p-3">
-        <div class="d-flex justify-content-between align-items-start mb-2">
-          <a href="high-dynamic-range/index.html" class="fw-bold text-decoration-none fs-6">High Dynamic-Range (HDR)</a>
-          <span class="badge bg-secondary-subtle text-secondary-emphasis">Rendering</span>
-        </div>
-        <p class="small text-body-secondary mb-0">Represent wide ranges of intensity levels across extreme light and shadow contrast.</p>
-      </div>
-    </div>
-
-    <div class="col feature-item" data-title="Large image support tera-pixel">
-      <div class="card h-100 im-card p-3">
-        <div class="d-flex justify-content-between align-items-start mb-2">
-          <a href="architecture/index.html#tera-pixel" class="fw-bold text-decoration-none fs-6">Tera-Pixel Support</a>
-          <span class="badge bg-secondary-subtle text-secondary-emphasis">Performance</span>
-        </div>
-        <p class="small text-body-secondary mb-0">Seamlessly read, process, and write giga-pixel or tera-pixel sized datasets.</p>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- Community Section -->
-<section class="card im-card p-4 p-md-5 mb-5 bg-body-tertiary">
-  <div class="row align-items-center g-4">
-    <div class="col-md-8">
-      <h3 class="fw-bold mb-2" id="community">Join the Community</h3>
-      <p class="text-body-secondary mb-0">
-        Have technical questions or feature ideas? Engage with users and maintainers on GitHub Discussions or submit an issue report.
-      </p>
-    </div>
-    <div class="col-md-4 text-md-end">
-      <a href="https://github.com/ImageMagick/ImageMagick/discussions" target="_blank" class="btn btn-primary px-4 fw-semibold">
-        <i class="bi bi-chat-dots me-1"></i> Discussions
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- Filter Script -->
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const searchInput = document.getElementById('featureSearch');
-    const items = document.querySelectorAll('.feature-item');
-
-    if (searchInput) {
-      searchInput.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase().trim();
-        items.forEach(item => {
-          const text = (item.getAttribute('data-title') + ' ' + item.textContent).toLowerCase();
-          item.style.display = text.includes(query) ? '' : 'none';
-        });
-      });
-    }
-  });
-</script>
-
-        </div>
-
-        <!-- Right Sidebar -->
-        <aside class="col-lg-4">
-          <div class="sticky-top" style="top: 90px;">
-            <!-- Sponsor Card -->
-            <div class="card im-card mb-4 overflow-hidden border-0 bg-gradient bg-primary bg-opacity-10">
-              <div class="card-body p-4 text-center">
-                <img src="image/wizard.jpg" alt="ImageMagick Wizard" class="rounded shadow mb-3 img-fluid" style="max-height: 200px;">
-                <h5 class="fw-bold">Support Open Source</h5>
-                <p class="small text-body-secondary mb-3">Help maintain and sustain ImageMagick development.</p>
-                <iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="114" class="border-0"></iframe>
-              </div>
-            </div>
-
-            <!-- Banner Ad Container -->
-            <div class="text-center p-2 mv-4 rounded border border-secondary-subtle bg-body-tertiary">
-              <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
-              <ins class="adsbygoogle"
-                   style="display:block"
-                   data-ad-client="ca-pub-3129977114552745"
-                   data-ad-slot="1083537442"
-                   data-ad-format="auto"
-                   data-full-width-responsive="true"></ins>
-              <script>
-                   (adsbygoogle = window.adsbygoogle || []).push({});
-              </script>
-            </div>
-
-            <!-- Quick Links Navigation -->
-            <div class="card im-card p-3 mb-4">
-              <h6 class="fw-bold text-uppercase fs-7 text-secondary mb-3">Resources</h6>
-              <ul class="nav flex-column gap-1 fs-6">
-                <li class="nav-item"><a href="security-policy/index.html" class="nav-link p-2 rounded text-body-secondary"><i class="bi bi-shield-check me-2 text-success"></i> Security Policy</a></li>
-                <li class="nav-item"><a href="license/index.html" class="nav-link p-2 rounded text-body-secondary"><i class="bi bi-file-earmark-text me-2 text-info"></i> Open Source License</a></li>
-                <li class="nav-item"><a href="porting/index.html" class="nav-link p-2 rounded text-body-secondary"><i class="bi bi-signpost-split me-2 text-warning"></i> Porting v6 to v7</a></li>
-                <li class="nav-item"><a href="formats/index.html" class="nav-link p-2 rounded text-body-secondary"><i class="bi bi-filetype-png me-2 text-danger"></i> Supported Formats</a></li>
-              </ul>
-            </div>
-          </div>
-        </aside>
-      </div>
-    </div>
-  </main>
-
-  <!-- Footer -->
-  <footer class="im-footer py-5 mt-auto">
-    <div class="container-xl">
-      <div class="row g-4">
-        <div class="col-md-6 col-lg-4">
-          <a class="navbar-brand im-brand mb-2 fs-5" href="index.html">ImageMagick</a>
-          <p class="small text-secondary">Mastering Digital Image Alchemy. The open-source suite for image creation, conversion, and batch manipulation.</p>
-        </div>
-        <div class="col-6 col-md-3 col-lg-2">
-          <h6 class="text-light fw-bold mb-3">Navigation</h6>
-          <ul class="list-unstyled small d-flex flex-column gap-2">
-            <li><a href="download/index.html">Download</a></li>
-            <li><a href="command-line-tools/index.html">Tools</a></li>
-            <li><a href="develop/index.html">APIs & Libraries</a></li>
-            <li><a href="sitemap/index.html">Sitemap</a></li>
-          </ul>
-        </div>
-        <div class="col-6 col-md-3 col-lg-2">
-          <h6 class="text-light fw-bold mb-3">Community</h6>
-          <ul class="list-unstyled small d-flex flex-column gap-2">
-            <li><a href="https://github.com/ImageMagick/ImageMagick/discussions" target="_blank">Discussions</a></li>
-            <li><a href="https://github.com/ImageMagick/ImageMagick/issues" target="_blank">Report an Issue</a></li>
-            <li><a href="support/index.html">Sponsor Us</a></li>
-            <li><a href="cite/index.html">Cite ImageMagick</a></li>
-          </ul>
-        </div>
-        <div class="col-md-6 col-lg-4">
-          <h6 class="text-light fw-bold mb-3">Connect</h6>
-          <div class="d-flex gap-3 fs-5">
-            <a href="https://github.com/imagemagick/imagemagick" target="_blank" aria-label="GitHub"><i class="bi bi-github"></i></a>
-            <a href="https://x.com/imagemagick" target="_blank" aria-label="X/Twitter"><i class="bi bi-twitter-x"></i></a>
-          </div>
-          <p class="small text-secondary mt-3 mb-0">Copyright © 1999 ImageMagick Studio LLC</p>
-        </div>
-      </div>
-    </div>
-  </footer>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    function setTheme(theme) {
-      localStorage.setItem('theme', theme);
-      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const applied = theme === 'auto' ? (systemDark ? 'dark' : 'light') : theme;
-      document.documentElement.setAttribute('data-bs-theme', applied);
-    }
-  </script>
-  <div style="visibility: hidden;">
-    <div class="gcse-search"></div>
-  </div>
 </body>
 
 </html>
+
+
