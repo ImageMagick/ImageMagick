@@ -4353,6 +4353,14 @@ MagickPrivate Quantum *QueueAuthenticPixelCacheNexus(Image *image,
         "PixelsAreNotAuthentic","`%s'",image->filename);
       return((Quantum *) NULL);
     }
+  if ((columns == 0) || (rows == 0) ||
+      ((MagickSizeType) columns > (MagickSizeType) (cache_info->columns-x)) ||
+      ((MagickSizeType) rows > (MagickSizeType) (cache_info->rows-y)))
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
+        "PixelsAreNotAuthentic","`%s'",image->filename);
+      return((Quantum *) NULL);
+    }
   if (IsValidPixelOffset(y,cache_info->columns) == MagickFalse)
     return((Quantum *) NULL);
   offset=y*(MagickOffsetType) cache_info->columns;
