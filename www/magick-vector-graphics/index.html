@@ -11,235 +11,329 @@
   <meta name="description" content="Explore Magick Vector Graphics (MVG) in ImageMagick — a modular language for creating 2D vector and mixed raster graphics. Learn syntax, drawing primitives, and how to render shapes, paths, and text from MVG, SVG, or program interfaces.">
   <link rel="canonical" href="index.html">
   <meta name="robots" content="index, follow">
-  <meta name="theme-color" content="#000000">
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
+  <meta name="theme-color" content="#0d1117">
+  
   <link rel="shortcut icon" href="../image/wand.png" type="image/png">
   <link rel="apple-touch-icon" href="../image/wand.png" type="image/png">
-  <link rel="preconnect" href="https://cdn.jsdelivr.net/">
-  <link rel="preconnect" href="https://localhost/">
-  <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" as="style" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" crossorigin="anonymous">
-  <!-- Accessibility Enhancement -->
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com/">
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+
   <style>
-    html {
-      scroll-padding-top: 70px;
-    }
-
-    iframe {
-      width: 100% !important;
-      max-width: 100% !important;
-      height: 400px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
-    }
-
-    a.nav-link:hover,
-    a.dropdown-item:hover {
-      color: #ffc107 !important;
-      text-shadow: 0px 2px 4px rgba(255, 193, 7, 0.8);
-    }
-
-    .btn-outline-warning {
-      color: #cd7f32;
-      border-color: #cd7f32;
-    }
-
-    .navbar-brand {
-      color: #d4af37;
-      transition: color 0.3s ease, text-shadow 0.3s ease;
-    }
-
-    .navbar-brand:hover {
-      color: #e9c03d;
-      text-shadow: 0px 2px 4px rgba(203, 163, 120, 0.6);
-    }
-
     :root {
-      --bs-code-color: revert;
+      --im-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --im-font-mono: 'Fira Code', monospace;
+      --im-primary: #8b5cf6;
+      --im-primary-hover: #7c3aed;
+      --im-accent: #f59e0b;
+      --im-bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
     }
 
-    .table {
-      table-layout: fixed;   /* force equal distribution of width */
-      width: 100%;           /* table spans full container */
+    body {
+      font-family: var(--im-font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
-    .table td, .table th {
-      white-space: normal;     /* allow wrapping */
-      word-break: break-word;  /* break long words/strings */
+    code, kbd, pre, .font-mono {
+      font-family: var(--im-font-mono) !important;
+    }
+
+    /* Modern Navbar */
+    .im-navbar {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background-color: rgba(15, 23, 42, 0.85) !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .im-navbar .nav-link {
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.75);
+      transition: all 0.2s ease;
+      padding: 0.5rem 0.85rem;
+      border-radius: 0.375rem;
+    }
+
+    .im-navbar .nav-link:hover,
+    .im-navbar .nav-link.active {
+      color: #ffffff !important;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .im-brand {
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #a78bfa 0%, #f472b6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Hero Section */
+    .im-hero {
+      background: var(--im-bg-gradient);
+      color: #ffffff;
+      padding: 4rem 0 3.5rem;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .im-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(0,0,0,0) 70%);
+      pointer-events: none;
+    }
+
+    /* Terminal Widget */
+    .terminal-card {
+      background: #090d16;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 0.75rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+    }
+
+    .terminal-header {
+      background: rgba(255, 255, 255, 0.04);
+      padding: 0.6rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .terminal-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    /* Cards & Container */
+    .im-card {
+      border: 1px solid var(--bs-border-color-translucent);
+      border-radius: 0.75rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      background: var(--bs-body-bg);
+    }
+
+    .im-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Footer */
+    .im-footer {
+      margin-top: auto;
+      background: #090d16;
+      color: rgba(255, 255, 255, 0.6);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .im-footer a {
+      color: rgba(255, 255, 255, 0.75);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .im-footer a:hover {
+      color: var(--im-primary);
     }
   </style>
-  <!-- Open Graph Meta Tags -->
+
+  <!-- Open Graph -->
   <meta property="og:title" content="ImageMagick | Magick Vector Graphics">
   <meta property="og:description" content="Explore Magick Vector Graphics (MVG) in ImageMagick — a modular language for creating 2D vector and mixed raster graphics. Learn syntax, drawing primitives, and how to render shapes, paths, and text from MVG, SVG, or program interfaces.">
   <meta property="og:image" content="../image/logo.png">
-  <meta property="og:logo" content="../image/logo.png">
   <meta property="og:url" content="index.html">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="ImageMagick">
-  <meta property="og:locale" content="en_us">
-  <!-- Twitter Card Meta Tags -->
-  <meta name="twitter:card" content="summary_large_image">
-  $site=strtolower("ImageMagick");
-  <meta name="twitter:site" content="@imagemagick">
-  <meta name="twitter:creator" content="@imagemagick">
-  <meta name="twitter:title" content="ImageMagick | Magick Vector Graphics">
-  <meta name="twitter:description" content="$this->description">
-  <meta name="twitter:image" content="../image/logo.png">
-  <meta name="twitter:image:alt" content="ImageMagick logo and tag line">
+
   <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        "name": "ImageMagick",
-        "url": "ImageMagick | Magick Vector Graphics",
-        "image": "https://imagemagick.org/image/logo.png",
-        "description": "$this->description",
-        "applicationCategory": "Multimedia",
-        "operatingSystem": "Windows, macOS, Linux, Unix",
-        "softwareVersion": "7.1.2-31",
-        "license": "https://imagemagick.org/license/",
-        "creator": {
-          "@type": "Organization",
-          "name": "ImageMagick Studio LLC",
-          "url": "https://imagemagick.org"
-        },
-			  "keywords": [
-          "".ucfirst($title)."",
-          "image processing software",
-          "image conversion tool",
-          "batch image editing",
-          "open-source image editor",
-          "ImageMagick command-line",
-          "resize images ImageMagick",
-          "crop and rotate images",
-          "ImageMagick tutorial",
-          "ImageMagick automation",
-          "ImageMagick for developers",
-          "ImageMagick CLI",
-          "ImageMagick filters and effects",
-          "ImageMagick scripting",
-          "ImageMagick API integration"
-        ],
-			  "sameAs": [
-          "https://github.com/ImageMagick",
-          "https://x.com/imagemagick"
-        ],
-        "offers": {
-          "@type": "Offer",
-          "price": "0.00",
-          "priceCurrency": "USD"
-        }
-      }
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "ImageMagick",
+    "url": "https://imagemagick.org/magick-vector-graphics/",
+    "image": "https://imagemagick.org/image/logo.png",
+    "description": "Explore Magick Vector Graphics (MVG) in ImageMagick — a modular language for creating 2D vector and mixed raster graphics. Learn syntax, drawing primitives, and how to render shapes, paths, and text from MVG, SVG, or program interfaces.",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Windows, macOS, Linux, Unix",
+    "softwareVersion": "7.1.2-34",
+    "license": "https://imagemagick.org/license/",
+    "offers": {
+      "@type": "Offer",
+      "price": "0.00",
+      "priceCurrency": "USD"
+    }
+  }
   </script>
-  <!-- Google Custom Search -->
   <script async src="https://localhost/cse.js?cx=8720b81722164487b"></script>
-  <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
 </head>
 
 <body>
+  <!-- Theme Init -->
   <script>
-    function setTheme(theme) {
-      localStorage.setItem('theme', theme);
-      updateThemeIcon(theme);
-      document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? getSystemTheme() : theme);
-    }
-    function getSystemTheme() {
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    }
-    function updateThemeIcon(theme) {
-      const iconMap = {
-        light: '☀️',
-        dark: '🌙',
-        auto: '🌓'
-      };
-      document.getElementById('currentThemeIcon').textContent = iconMap[theme] || '🌓';
-    }
-    document.addEventListener('DOMContentLoaded', () => {
-      const savedTheme = localStorage.getItem('theme') || 'auto';
-      setTheme(savedTheme);
-    });
+    (function() {
+      const saved = localStorage.getItem('theme') || 'auto';
+      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const applied = saved === 'auto' ? (systemDark ? 'dark' : 'light') : saved;
+      document.documentElement.setAttribute('data-bs-theme', applied);
+    })();
   </script>
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <div class="container-fluid">
-      <a class="navbar-brand fw-bold" href="../index-2.html" title="ImageMagick">ImageMagick</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#magick-navbars" aria-controls="magick-navbars" aria-expanded="false" aria-label="Toggle navigation">
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top im-navbar">
+    <div class="container-xl">
+      <a class="navbar-brand im-brand" href="../index.html">
+        <img src="../image/wand.png" alt="Wand Icon" width="24" height="24" class="d-inline-block align-text-top">
+        ImageMagick
+      </a>
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#imNavbar" aria-controls="imNavbar" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <div class="collapse navbar-collapse" id="magick-navbars">
-        <ul class="navbar-nav me-auto">
+      <div class="collapse navbar-collapse" id="imNavbar">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3">
           <li class="nav-item">
-            <a class="nav-link "" href="../download/index.html">Download</a>
+            <a class="nav-link " href="../download/index.html">Download</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link "" href="../command-line-tools/index.html">Tools</a>
+            <a class="nav-link " href="../command-line-tools/index.html">Tools</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link "" href="../command-line-processing/index.html">CLI</a>
+            <a class="nav-link " href="../command-line-processing/index.html">CLI Usage</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link "" href="../develop/index.html">Develop</a>
+            <a class="nav-link " href="../develop/index.html">API & Develop</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" rel="noopener noreferrer" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
           </li>
         </ul>
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item ms-3">
-            <form class="d-flex form-inline" action="https://imagemagick.org/magick-vector-graphics/">
-              <input class="form-control me-2" type="text" name="q" placeholder="Search site..." aria-label="Search">
-              <button class="btn btn-outline-warning" type="submit" name="sa">Search</button>
-            </form>
-          </li>
-          <li class="nav-item dropdown ms-3">
-            <a class="nav-link dropdown-toggle" href="#" id="themeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <span id="currentThemeIcon">🌓</span>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="themeDropdown">
-              <li><a class="dropdown-item" href="#" onclick="setTheme('light')">☀️ Light</a></li>
-              <li><a class="dropdown-item" href="#" onclick="setTheme('dark')">🌙 Dark</a></li>
-              <li><a class="dropdown-item" href="#" onclick="setTheme('auto')">🌓 Auto</a></li>
+
+        <div class="d-flex align-items-center gap-2">
+          <!-- Search Trigger Modal / Input -->
+          <form class="d-flex" action="https://imagemagick.org/magick-vector-graphics/index.html" role="search">
+            <div class="input-group input-group-sm">
+              <input class="form-control bg-body-tertiary border-secondary-subtle" type="search" placeholder="Search site..." name="q" aria-label="Search">
+              <button class="btn btn-outline-warning" type="submit" name="sa"><i class="bi bi-search"></i></button>
+            </div>
+          </form>
+
+          <!-- Theme Dropdown -->
+          <div class="dropdown">
+            <button class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-1 border-0 text-white" type="button" id="themeSelect" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-circle-half"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="themeSelect">
+              <li><button class="dropdown-item d-flex align-items-center gap-2" onclick="setTheme('light')"><i class="bi bi-sun-fill"></i> Light</button></li>
+              <li><button class="dropdown-item d-flex align-items-center gap-2" onclick="setTheme('dark')"><i class="bi bi-moon-stars-fill"></i> Dark</button></li>
+              <li><button class="dropdown-item d-flex align-items-center gap-2" onclick="setTheme('auto')"><i class="bi bi-circle-half"></i> Auto</button></li>
             </ul>
-          </li>
-        </ul>
+          </div>
+
+          <a href="https://github.com/ImageMagick/ImageMagick" target="_blank" class="btn btn-sm btn-outline-light d-flex align-items-center gap-1 ms-1">
+            <i class="bi bi-github"></i> <span class="d-none d-xl-inline">GitHub</span>
+          </a>
+        </div>
       </div>
     </div>
   </nav>
 
-  <div class="col-lg-8 mx-auto text-body-secondary pt-5 pt-lg-5">
-    <header class="d-flex align-items-center pb-3 mb-5 border-bottom">
-      <div class="mt-3 ms-3">
-        <a href="../index-2.html" class="text-decoration-none">
-          <h1 class="fs-2 mb-1 display-5">Magick Vector Graphics</h1>
-        </a>
-        <h2 class="fs-5 text-muted h4">ImageMagick</h2>
+  <!-- Hero Header Block -->
+  <header class="im-hero mt-5 pt-5">
+    <div class="container-xl pt-3">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+          <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-primary bg-opacity-20 text-primary border border-primary border-opacity-30 mb-3 fs-7">
+            <span class="badge bg-primary">v7.1.2-34</span>
+            <span class="small text-light">Latest Stable Release</span>
+          </div>
+          <h1 class="display-4 fw-bold mb-3 tracking-tight">Magick Vector Graphics</h1>
+          <p class="lead text-light opacity-75 mb-4 fs-5">Explore Magick Vector Graphics (MVG) in ImageMagick — a modular language for creating 2D vector and mixed raster graphics. Learn syntax, drawing primitives, and how to render shapes, paths, and text from MVG, SVG, or program interfaces.</p>
+          <div class="d-flex flex-wrap gap-3">
+            <a href="../download/index.html" class="btn btn-primary btn-lg px-4 fw-semibold d-flex align-items-center gap-2 shadow">
+              <i class="bi bi-download"></i> Get ImageMagick
+            </a>
+            <a href="../command-line-processing/index.html" class="btn btn-outline-light btn-lg px-4 fw-semibold d-flex align-items-center gap-2">
+              <i class="bi bi-terminal"></i> Documentation
+            </a>
+          </div>
+        </div>
+
+        <!-- Terminal Quickstart Preview -->
+        <div class="col-lg-5">
+          <div class="terminal-card">
+            <div class="terminal-header">
+              <div class="terminal-dot bg-danger"></div>
+              <div class="terminal-dot bg-warning"></div>
+              <div class="terminal-dot bg-success"></div>
+              <span class="small text-secondary font-mono ms-2">quickstart.sh</span>
+            </div>
+            <div class="p-3 text-light font-mono small">
+              <div class="text-secondary"># Install via your favorite Package Manager</div>
+              <div class="text-success">$ brew install imagemagick</div>
+              <div class="text-secondary mt-2"># Convert PNG to WebP with compression</div>
+              <div>$ magick input.png -quality 85 output.webp</div>
+              <div class="text-secondary mt-2"># Resize image maintaining aspect ratio</div>
+              <div>$ magick input.jpg -resize 800x600^ output.jpg</div>
+            </div>
+          </div>
+        </div>
       </div>
-    </header>
+    </div>
+  </header>
 
-    <main role="main" class="container">
-      <div class="row g-4">
-        <div class="col-lg-9 col-12">
-          <div>
-<p class="text-center"><a href="#overview">MVG Overview</a> • <a href="#primitives">Drawing Primitives</a></p>
-
-<p class="lead">This specification defines the features and syntax for Magick Vector Graphics (MVG), a modularized language for describing two-dimensional vector and mixed vector/raster graphics in ImageMagick.  You can use the language to draw from the
-command line, from an MVG file, from an <a href="http://www.w3.org/TR/SVG/">SVG -- Scalable Vector Graphics</a> file or from one of the ImageMagick <a href="https://imagemagick.org/magick-vector-graphics/develop.php">program interfaces</a>.  Use this command, for example, to render an arc:</p>
-
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>$ magick -size 100x60 canvas:skyblue -fill white -stroke black \
+  <!-- Main Body Content -->
+  <main class="py-5">
+    <div class="container-xl">
+      <div class="row g-5">
+        <!-- Main Column -->
+        <div class="col-lg-8">
+          <div class="mvg-container">
+  <!-- Quick Jump Navigation -->
+  <div class="card im-card p-3 mb-4 bg-body-tertiary border-0 shadow-sm">
+    <div class="d-flex justify-content-center flex-wrap gap-3 fw-semibold small text-uppercase tracking-wider">
+      <a href="#overview" class="text-decoration-none text-primary"><i class="bi bi-info-circle me-1"></i> MVG Overview</a>
+      <span class="text-muted">•</span>
+      <a href="#primitives" class="text-decoration-none text-primary"><i class="bi bi-grid-3x3 me-1"></i> Drawing Primitives</a>
+    </div>
+  </div>
+  <!-- Introductory Lead Card -->
+  <div class="card im-card p-4 mb-4 shadow-sm bg-body-tertiary border-0">
+    <p class="lead text-body mb-3">
+      This specification defines the features and syntax for Magick Vector Graphics (MVG), a modularized language for describing two-dimensional vector and mixed vector/raster graphics in ImageMagick. You can use the language to draw from the command line, from an MVG file, from an <a href="http://www.w3.org/TR/SVG/" class="text-decoration-none" rel="noopener noreferrer" target="_blank">SVG — Scalable Vector Graphics</a> file, or from one of the ImageMagick <a href="https://imagemagick.org/magick-vector-graphics/develop.php" class="text-decoration-none">program interfaces</a>. Use this command, for example, to render an arc:
+    </p>
+    <pre class="p-3 mb-3 rounded bg-body border font-mono small"><code>$ magick -size 100x60 canvas:skyblue -fill white -stroke black \
   -draw "path 'M 30,40  A 30,20  20  0,0 70,20 A 30,20  20  1,0 30,40 Z '" \
-  arc.png
-</samp></pre>
-
-<p>and here is the result:</p>
-
-<ul>
-  <a href="https://imagemagick.org/image/arc.png"><img src="https://imagemagick.org/image/arc.png" width="100" height="60" alt="arc"></a>
-</ul>
-
-<p>When the drawing gets sufficiently complex, we recommend you assemble the graphic primitives into a MVG file. For our example, we use <a href="https://imagemagick.org/source/piechart.mvg">piechart.mvg</a>:</p>
-
-<pre class="overflow-auto p-3 mb-2 text-body-secondary bg-body-tertiary" style="max-height:75svh;"><code>push graphic-context
+  arc.png</code></pre>
+    <p class="mb-2">and here is the result:</p>
+    <div class="text-center my-3">
+      <a href="https://imagemagick.org/image/arc.png" class="d-inline-block">
+        <img src="https://imagemagick.org/image/arc.png" width="100" height="60" alt="arc" class="img-thumbnail shadow-sm border" />
+      </a>
+    </div>
+  </div>
+  <!-- Pie Chart Section -->
+  <div class="card im-card p-4 mb-4 shadow-sm bg-body-tertiary border-0">
+    <p class="mb-3">
+      When the drawing gets sufficiently complex, we recommend you assemble the graphic primitives into an MVG file. For our example, we use <a href="https://imagemagick.org/source/piechart.mvg" class="text-decoration-none">piechart.mvg <i class="bi bi-box-arrow-up-right small"></i></a>:
+    </p>
+    <pre class="overflow-auto p-3 mb-3 rounded bg-body border font-mono small" style="max-height:75svh;"><code>push graphic-context
   viewbox 0 0 624 369
   affine 0.283636 0 0 0.283846 -0 -0
   push graphic-context
@@ -388,31 +482,24 @@ command line, from an MVG file, from an <a href="http://www.w3.org/TR/SVG/">SVG 
       circle 700,600 700,960
     pop graphic-context
   pop graphic-context
-pop graphic-context
-</code></pre>
-
-<p>to render a pie chart with this command:</p>
-
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>$ magick mvg:piechart.mvg piechart.png
-</samp></pre>
-
-<p>which produces this rendering:</p>
-
-<ul>
-  <a href="https://imagemagick.org/image/piechart.png"><img src="https://imagemagick.org/image/piechart.png" width="624" height="369" alt="piechart"></a>
-</ul>
-
-<p>However, in general, MVG is sufficiently difficult to work with that you probably want to use a program to generate your graphics in the SVG format.  ImageMagick automagically converts SVG to MVG and renders your image, for example, we render <a href="https://imagemagick.org/source/piechart.svg">piechart.svg</a> with this command:</p>
-
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>$ magick mvg:piechart.svg piechart.jpg
-</samp></pre>
-
-
-<p>to produce the same pie chart we created with the MVG language.</p>
-
-<p>Drawing is available from many of the ImageMagick <a href="https://imagemagick.org/magick-vector-graphics/develop.php">program interfaces</a> as well.  ImageMagick converts the drawing API calls to MVG and renders it.  Here is example code written in the <a href="https://imagemagick.org/magick-wand">MagickWand</a> language: </p>
-
-<pre class="overflow-auto p-3 mb-2 text-body-secondary bg-body-tertiary" style="max-height:75svh;"><code>(void) PushDrawingWand(draw_wand);
+pop graphic-context</code></pre>
+    <p>to render a pie chart with this command:</p>
+    <pre class="p-3 mb-3 rounded bg-body border font-mono small"><code>$ magick mvg:piechart.mvg piechart.png</code></pre>
+    <p class="mb-2">which produces this rendering:</p>
+    <div class="text-center my-3">
+      <a href="https://imagemagick.org/image/piechart.png" class="d-inline-block">
+        <img src="https://imagemagick.org/image/piechart.png" width="624" height="369" alt="piechart" class="img-thumbnail shadow-sm border" />
+      </a>
+    </div>
+    <p class="mt-4">
+      However, in general, MVG is sufficiently difficult to work with that you probably want to use a program to generate your graphics in the SVG format. ImageMagick automagically converts SVG to MVG and renders your image; for example, we render <a href="https://imagemagick.org/source/piechart.svg" class="text-decoration-none">piechart.svg</a> with this command:
+    </p>
+    <pre class="p-3 mb-3 rounded bg-body border font-mono small"><code>$ magick mvg:piechart.svg piechart.jpg</code></pre>
+    <p>to produce the same pie chart we created with the MVG language.</p>
+    <p class="mt-4">
+      Drawing is available from many of the ImageMagick <a href="https://imagemagick.org/magick-vector-graphics/develop.php" class="text-decoration-none">program interfaces</a> as well. ImageMagick converts the drawing API calls to MVG and renders it. Here is example code written in the <a href="https://imagemagick.org/magick-wand" class="text-decoration-none">MagickWand</a> language:
+    </p>
+    <pre class="overflow-auto p-3 mb-3 rounded bg-body border font-mono small" style="max-height:75svh;"><code>(void) PushDrawingWand(draw_wand);
 {
   const PointInfo points[6] =
   {
@@ -423,7 +510,6 @@ pop graphic-context
     { 77.26,578.6 },
     { 180,504 }
   };
-
   DrawSetStrokeAntialias(draw_wand,True);
   DrawSetStrokeWidth(draw_wand,9);
   DrawSetStrokeLineCap(draw_wand,RoundCap);
@@ -436,33 +522,26 @@ pop graphic-context
   DrawSetFillColor(draw_wand,color);
   DrawPolygon(draw_wand,6,points);
 }
-(void) PopDrawingWand(draw_wand);
-</code></pre>
-
-<h2><a class="anchor" id="overview"></a>MVG Overview</h2>
-
-<p>MVG ignores all white-space between commands. This allows multiple MVG commands per line. It is common convention to terminate each MVG command with a newline to make MVG easier to edit and read. This syntax description uses indentation in MVG sequences to aid with understanding. Indentation is supported but is not required.</p>
-
-<p>Metafile wrapper syntax (to support stand-alone MVG files):</p>
-
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><code>push graphic-context
+(void) PopDrawingWand(draw_wand);</code></pre>
+  </div>
+  <!-- MVG Overview Section -->
+  <h2 class="fw-bold border-bottom pb-2 mb-4 mt-5" id="overview">
+    <a class="anchor text-decoration-none text-body" href="#overview">MVG Overview</a>
+  </h2>
+  <p>MVG ignores all white-space between commands. This allows multiple MVG commands per line. It is common convention to terminate each MVG command with a newline to make MVG easier to edit and read. This syntax description uses indentation in MVG sequences to aid with understanding. Indentation is supported but is not required.</p>
+  <p class="fw-semibold mt-4">Metafile wrapper syntax (to support stand-alone MVG files):</p>
+  <pre class="p-3 mb-3 rounded bg-body-tertiary border font-mono small"><code>push graphic-context
   viewbox 0 0 width height
   [ any other MVG commands ]
-pop graphic-context
-</code></pre>
-
-<p>Pattern syntax (saving and restoring context):</p>
-
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><code>push pattern id x,y width,height
+pop graphic-context</code></pre>
+  <p class="fw-semibold mt-4">Pattern syntax (saving and restoring context):</p>
+  <pre class="p-3 mb-3 rounded bg-body-tertiary border font-mono small"><code>push pattern id x,y width,height
  push graphic-context
   [ drawing commands ]
  pop graphic-context
-pop pattern
-</code></pre>
-
-<p>an example is (%s is a identifier string):</p>
-
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><code>push defs
+pop pattern</code></pre>
+  <p>An example (%s is an identifier string):</p>
+  <pre class="p-3 mb-3 rounded bg-body-tertiary border font-mono small"><code>push defs
  push pattern %s 10,10 20,20
   push graphic-context
    fill red
@@ -473,147 +552,140 @@ pop pattern
    rectangle 10,10 20,20
   pop graphic-context
  pop pattern
-pop defs
-</code></pre>
-
-<p>For image tiling use:</p>
-
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><code>push pattern id x,y width,height
+pop defs</code></pre>
+  <p class="fw-semibold mt-4">For image tiling use:</p>
+  <pre class="p-3 mb-3 rounded bg-body-tertiary border font-mono small"><code>push pattern id x,y width,height
  image Copy ...
-pop pattern
-</code></pre>
-
-<p>Note you can use the pattern for either the fill or stroke like:</p>
-
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><code>stroke url(#%s)
-</code></pre>
-
-<p>or</p>
-
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><code>fill url(#%s)
-</code></pre>
-
-<p>The clip path defines a clipping area, where only the contained area to be drawn upon.  Areas outside of the clipping area are masked.</p>
-
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><code>push defs
+pop pattern</code></pre>
+  <p>Note you can use the pattern for either the fill or stroke like:</p>
+  <pre class="p-3 mb-3 rounded bg-body-tertiary border font-mono small"><code>stroke url(#%s)</code></pre>
+  <p>or</p>
+  <pre class="p-3 mb-3 rounded bg-body-tertiary border font-mono small"><code>fill url(#%s)</code></pre>
+  <p class="mt-4">The clip path defines a clipping area, where only the contained area is drawn upon. Areas outside of the clipping area are masked.</p>
+  <pre class="p-3 mb-3 rounded bg-body-tertiary border font-mono small"><code>push defs
  push clip-path "myClipPath"
   push graphic-context
    rectangle 10,10 20,20
   pop graphic-context
  pop clip-path
 pop defs
-clip-path url(#myClipPath)
-</code></pre>
-
-<h2><a class="anchor" id="primitives"></a>Drawing Primitives</h2>
-
-<p>Here is a complete description of the MVG drawing primitives:</p>
-
-<div style="max-height:75svh; overflow-y:auto; overflow-x:hidden;">
-<table class="table table-sm table-hover table-striped">
-  <colgroup>
-    <col style="width:30%">
-    <col style="width:70%">
-  </colgroup>
-<thead>
-  <tr>
-    <th>Primitive</th>
-    <th>Description</th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td><a class="anchor" id="affine"></a>affine <var>s<sub>x</sub></var>,<var>r<sub>x</sub></var>,<var>r<sub>y</sub></var>,<var>s<sub>y</sub></var>,<var>t<sub>x</sub></var>,<var>t<sub>y</sub></var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="arc"></a>arc <var>x<sub>0</sub></var>,<var>y<sub>0</sub></var>   <var>x<sub>1</sub></var>,<var>y<sub>1</sub></var>   <var>a<sub>0</sub></var>,<var>a<sub>1</sub></var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="bezier"></a>bezier <var>x<sub>0</sub></var>,<var>y<sub>0</sub></var> ... <var>x<sub>n</sub></var>,<var>y<sub>n</sub></var></td>
-    <td><code>Bezier</code> (spline) requires three or more x,y coordinates to define its shape. The first and last points are the knots (preserved coordinates) and any intermediate coordinates are the control points. If two control points are specified, the line between each end knot and its sequentially respective control point determines the tangent direction of the curve at that end. If one control point is specified, the lines from the end knots to the one control point determines the tangent directions of the curve at each end. If more than two control points are specified, then the additional control points act in combination to determine the intermediate shape of the curve. In order to draw complex curves, it is highly recommended either to use the <code>Path</code> primitive or to draw multiple four-point bezier segments with the start and end knots of each successive segment repeated. </td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="border-color"></a>border-color <var>color</var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="circle"></a>circle <var>origin<sub>x</sub></var>,<var>origin<sub>y</sub></var>   <var>perimeter<sub>x</sub></var>,<var>perimeter<sub>y</sub></var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="clip-path"></a>clip-path url(<var>name</var>)</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="clip-rule"></a>clip-rule <var>rule</var></td>
-    <td>Choose from these rule types:
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><code>evenodd
-nonzero</code></pre></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="clip-units"></a>clip-units <var>units</var></td>
-    <td>Choose from these unit types:
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><code>userSpace
+clip-path url(#myClipPath)</code></pre>
+  <!-- Drawing Primitives Section -->
+  <h2 class="fw-bold border-bottom pb-2 mb-4 mt-5" id="primitives">
+    <a class="anchor text-decoration-none text-body" href="#primitives">Drawing Primitives</a>
+  </h2>
+  <p class="text-body-secondary mb-3">Here is a complete description of the MVG drawing primitives:</p>
+  <div class="card im-card shadow-sm mb-4 overflow-hidden">
+    <div style="max-height:75svh; overflow-y:auto; overflow-x:hidden;" class="p-0">
+      <table class="table table-sm table-hover table-striped mb-0 align-middle">
+        <colgroup>
+          <col style="width: 35%;">
+          <col style="width: 65%;">
+        </colgroup>
+        <thead class="table-dark sticky-top">
+          <tr>
+            <th class="ps-3 py-2">Primitive</th>
+            <th class="py-2">Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="affine"></a>affine <var>s<sub>x</sub></var>,<var>r<sub>x</sub></var>,<var>r<sub>y</sub></var>,<var>s<sub>y</sub></var>,<var>t<sub>x</sub></var>,<var>t<sub>y</sub></var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="arc"></a>arc <var>x<sub>0</sub></var>,<var>y<sub>0</sub></var>   <var>x<sub>1</sub></var>,<var>y<sub>1</sub></var>   <var>a<sub>0</sub></var>,<var>a<sub>1</sub></var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="bezier"></a>bezier <var>x<sub>0</sub></var>,<var>y<sub>0</sub></var> ... <var>x<sub>n</sub></var>,<var>y<sub>n</sub></var></td>
+            <td><code>Bezier</code> (spline) requires three or more x,y coordinates to define its shape. The first and last points are the knots (preserved coordinates) and any intermediate coordinates are the control points. If two control points are specified, the line between each end knot and its sequentially respective control point determines the tangent direction of the curve at that end. If one control point is specified, the lines from the end knots to the one control point determines the tangent directions of the curve at each end. If more than two control points are specified, then the additional control points act in combination to determine the intermediate shape of the curve. In order to draw complex curves, it is highly recommended either to use the <code>Path</code> primitive or to draw multiple four-point bezier segments with the start and end knots of each successive segment repeated.</td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="border-color"></a>border-color <var>color</var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="circle"></a>circle <var>origin<sub>x</sub></var>,<var>origin<sub>y</sub></var>   <var>perimeter<sub>x</sub></var>,<var>perimeter<sub>y</sub></var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="clip-path"></a>clip-path url(<var>name</var>)</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="clip-rule"></a>clip-rule <var>rule</var></td>
+            <td>Choose from these rule types:
+              <pre class="p-2 mt-2 mb-0 bg-body border font-mono small"><code>evenodd
+nonzero</code></pre>
+            </td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="clip-units"></a>clip-units <var>units</var></td>
+            <td>Choose from these unit types:
+              <pre class="p-2 mt-2 mb-0 bg-body border font-mono small"><code>userSpace
 userSpaceOnUse
-objectBoundingBox</code></pre></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="color"></a>color <var>x</var>,<var>y</var> <var>method</var></td>
-    <td>Choose from these method types:
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><code>point
+objectBoundingBox</code></pre>
+            </td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="color"></a>color <var>x</var>,<var>y</var> <var>method</var></td>
+            <td>Choose from these method types:
+              <pre class="p-2 mt-2 mb-0 bg-body border font-mono small"><code>point
 replace
 floodfill
 filltoborder
-reset</code></pre></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="compliance"></a>compliance <var>type</var></td>
-    <td>Choose from these compliance types: MVG or SVG</td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="decorate"></a>decorate <var>type</var></td>
-    <td>Choose from these types of decorations:
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><code>none
+reset</code></pre>
+            </td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="compliance"></a>compliance <var>type</var></td>
+            <td>Choose from these compliance types: MVG or SVG</td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="decorate"></a>decorate <var>type</var></td>
+            <td>Choose from these types of decorations:
+              <pre class="p-2 mt-2 mb-0 bg-body border font-mono small"><code>none
 line-through
 overline
-underline</code></pre></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="ellipse"></a>ellipse <var>center<sub>x</sub></var>,<var>center<sub>y</sub></var>   <var>radius<sub>x</sub></var>,<var>radius<sub>y</sub></var>   <var>arc<sub>start</sub></var>,<var>arc<sub>stop</sub></var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="fill"></a>fill <var>color</var></td>
-    <td>Choose from any of these <a href="../color/index.html">colors</a>.</td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="fill-opacity"></a>fill-opacity <var>opacity</var></td>
-    <td>The opacity ranges from 0.0 (fully transparent) to 1.0 (fully opaque) or as a percentage (e.g. 50%).</td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="fill-rule"></a>fill-rule <var>rule</var></td>
-    <td>Choose from these rule types:
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><code>evenodd
-nonzero</code></pre></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="font"></a>font <var>name</var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="font-family"></a>font-family <var>family</var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="font-size"></a>font-size <var>point-size</var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="font-stretch"></a>font-stretch <var>type</var></td>
-    <td>Choose from these stretch types:
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><code>all
+underline</code></pre>
+            </td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="ellipse"></a>ellipse <var>center<sub>x</sub></var>,<var>center<sub>y</sub></var>   <var>radius<sub>x</sub></var>,<var>radius<sub>y</sub></var>   <var>arc<sub>start</sub></var>,<var>arc<sub>stop</sub></var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="fill"></a>fill <var>color</var></td>
+            <td>Choose from any of these <a href="../color/index.html" class="text-decoration-none">colors</a>.</td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="fill-opacity"></a>fill-opacity <var>opacity</var></td>
+            <td>The opacity ranges from 0.0 (fully transparent) to 1.0 (fully opaque) or as a percentage (e.g. 50%).</td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="fill-rule"></a>fill-rule <var>rule</var></td>
+            <td>Choose from these rule types:
+              <pre class="p-2 mt-2 mb-0 bg-body border font-mono small"><code>evenodd
+nonzero</code></pre>
+            </td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="font"></a>font <var>name</var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="font-family"></a>font-family <var>family</var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="font-size"></a>font-size <var>point-size</var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="font-stretch"></a>font-stretch <var>type</var></td>
+            <td>Choose from these stretch types:
+              <pre class="p-2 mt-2 mb-0 bg-body border font-mono small"><code>all
 normal
 ultra-condensed
 extra-condensed
@@ -622,20 +694,22 @@ semi-condensed
 semi-expanded
 expanded
 extra-expanded
-ultra-expanded</code></pre></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="font-style"></a>font-style <var>style</var></td>
-    <td>Choose from these styles:
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><code>all
+ultra-expanded</code></pre>
+            </td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="font-style"></a>font-style <var>style</var></td>
+            <td>Choose from these styles:
+              <pre class="p-2 mt-2 mb-0 bg-body border font-mono small"><code>all
 normal
 italic
-oblique</code></pre></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="font-weight"></a>font-weight <var>weight</var></td>
-    <td>Choose from these weights:
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><code>all
+oblique</code></pre>
+            </td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="font-weight"></a>font-weight <var>weight</var></td>
+            <td>Choose from these weights:
+              <pre class="p-2 mt-2 mb-0 bg-body border font-mono small"><code>all
 normal
 bold
 100
@@ -646,19 +720,21 @@ bold
 600
 700
 800
-900</code></pre></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="gradient-units"></a>gradient-units <var>units</var></td>
-    <td>Choose from these units:
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><code>userSpace
+900</code></pre>
+            </td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="gradient-units"></a>gradient-units <var>units</var></td>
+            <td>Choose from these units:
+              <pre class="p-2 mt-2 mb-0 bg-body border font-mono small"><code>userSpace
 userSpaceOnUse
-objectBoundingBox</code></pre></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="gravity"></a>gravity <var>type</var></td>
-    <td>Choose from these gravity types:
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><code>NorthWest
+objectBoundingBox</code></pre>
+            </td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="gravity"></a>gravity <var>type</var></td>
+            <td>Choose from these gravity types:
+              <pre class="p-2 mt-2 mb-0 bg-body border font-mono small"><code>NorthWest
 North
 NorthEast
 West
@@ -666,440 +742,441 @@ Center
 East
 SouthWest
 South
-SouthEast</code></pre></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="compose"></a>image <var>compose x,y width,height 'filename'</var></td>
-    <td>Choose from these compose operations:
-<div style="max-height:75svh; overflow-y:auto; overflow-x:hidden;">
-<table class="table table-sm table-hover table-striped">
-  <colgroup>
-    <col style="width:30%">
-    <col style="width:70%">
-  </colgroup>
-  <tbody>
-  <tr>
-    <th align="left" style="width: 8%">Method</th>
-    <th align="left">Description</th>
-  </tr>
-
-  <tr>
-    <td>clear</td>
-    <td>Both the color and the alpha of the destination are cleared. Neither the source nor the destination are used as input.</td>
-  </tr>
-
-  <tr>
-    <td>src</td>
-    <td>The source is copied to the destination. The destination is not used as input.</td>
-  </tr>
-
-  <tr>
-    <td>dst</td>
-    <td>The destination is left untouched.</td>
-  </tr>
-
-  <tr>
-    <td><b>src-over</b></td>
-    <td>The source is composited over the destination.</td>
-  </tr>
-
-  <tr>
-    <td>dst-over</td>
-    <td>The destination is composited over the source and the result replaces the destination.</td>
-  </tr>
-
-  <tr>
-    <td>src-in</td>
-    <td>The part of the source lying inside of the destination replaces the destination.</td>
-  </tr>
-
-  <tr>
-    <td>dst-in</td>
-    <td>The part of the destination lying inside of the source replaces the destination.</td>
-  </tr>
-
-  <tr>
-    <td>src-out</td>
-    <td>The part of the source lying outside of the destination replaces the destination.</td>
-  </tr>
-
-  <tr>
-    <td>dst-out</td>
-    <td>The part of the destination lying outside of the source         replaces the destination.</td>
-  </tr>
-
-  <tr>
-    <td>src-atop</td>
-    <td>The part of the source lying inside of the destination is  composited onto the destination.</td>
-  </tr>
-
-  <tr>
-    <td>dst-atop</td>
-    <td>The part of the destination lying inside of the source is composited over the source and replaces the destination.</td>
-  </tr>
-
-  <tr>
-    <td>multiply</td>
-    <td>The source is multiplied by the destination and replaces the destination. The resultant color is always at least as dark as either of the two constituent colors. Multiplying any color with black produces black. Multiplying any color with white leaves the original color unchanged.</td>
-  </tr>
-
-  <tr>
-    <td>screen</td>
-    <td>The source and destination are complemented and then multiplied and then replace the destination. The resultant color is always at least as light as either of the two constituent colors. Screening any color with white produces white. Screening any color with black leaves the original color unchanged.</td>
-  </tr>
-
-  <tr>
-    <td>overlay</td>
-    <td>Multiplies or screens the colors, dependent on the destination color. Source colors overlay the destination whilst preserving its highlights and shadows. The destination color is not replaced, but is mixed with the source color to reflect the lightness or darkness of the destination.</td>
-  </tr>
-
-  <tr>
-    <td>darken</td>
-    <td>Selects the darker of the destination and source colors.  The destination is replaced with the source when the source is darker, otherwise it is left unchanged.</td>
-  </tr>
-
-  <tr>
-    <td>lighten</td>
-    <td>Selects the lighter of the destination and source colors.  The destination is replaced with the source when the source is lighter, otherwise it is left unchanged.</td>
-  </tr>
-
-  <tr>
-    <td>linear-light</td>
-    <td>Increase contrast slightly with an impact on the foreground's tonal values.</td>
-  </tr>
-
-  <tr>
-    <td>color-dodge</td>
-    <td>Brightens the destination color to reflect the source color. Painting with black produces no change.</td>
-  </tr>
-
-  <tr>
-    <td>color-burn</td>
-    <td>Darkens the destination color to reflect the source color.  Painting with white produces no change.</td>
-  </tr>
-
-  <tr>
-    <td>hard-light</td>
-    <td>Multiplies or screens the colors, dependent on the source color value. If the source color is lighter than 0.5, the destination is lightened as if it were screened. If the source color is darker than 0.5, the destination is darkened, as if it were multiplied. The degree of lightening or darkening is proportional to the difference between the source color and 0.5. If it is equal to 0.5 the destination is unchanged. Painting with pure black or white produces black or white.</td>
-  </tr>
-
-  <tr>
-    <td>soft-light</td>
-    <td>Darkens or lightens the colors, dependent on the source color value. If the source color is lighter than 0.5, the destination is lightened. If the source color is darker than 0.5, the destination is darkened, as if it were burned in. The degree of darkening or lightening is proportional to the difference between the source color and 0.5. If it is equal to 0.5, the destination is unchanged. Painting with pure black or white produces a distinctly darker or lighter area, but does not result in pure black or white.</td>
-  </tr>
-
-  <tr>
-    <td>plus</td>
-    <td>The source is added to the destination and replaces the destination. This operator is useful for animating a dissolve between two images.</td>
-  </tr>
-
-  <tr>
-    <td>add</td>
-    <td>As per 'plus' but transparency data is treated as matte
-        values. As such any transparent areas in either image remain
-        transparent. </td>
-  </tr>
-
-  <tr>
-    <td>minus</td>
-    <td>Subtract the colors in the source image from the
-        destination image. When transparency is involved, Opaque areas will be
-        subtracted from any destination opaque areas. </td>
-  </tr>
-
-  <tr>
-    <td>subtract</td>
-    <td>Subtract the colors in the source image from the
-        destination image. When transparency is involved transparent areas are
-        subtracted, so only the opaque areas in the source remain opaque in
-        the destination image. </td>
-  </tr>
-
-  <tr>
-    <td>difference</td>
-    <td>Subtracts the darker of the two constituent colors from the lighter. Painting with white inverts the destination color. Painting with black produces no change.</td>
-  </tr>
-
-  <tr>
-    <td>exclusion</td>
-    <td>Produces an effect similar to that of 'difference', but appears as lower contrast. Painting with white inverts the destination color. Painting with black produces no change.</td>
-  </tr>
-
-  <tr>
-    <td>xor</td>
-    <td>The part of the source that lies outside of the destination is combined with the part of the destination that lies outside of the source.</td>
-  </tr>
-
-  <tr>
-    <td>copy-*</td>
-    <td>Copy the specified channel in the source image to the
-        same channel in the destination image.  If the channel specified in
-        the source image does not exist, (which can only happen for methods,
-        '<code>copy-opacity</code>' or '<code>copy-black</code>') then it is
-        assumed that the source image is a special grayscale channel image
-        of the values to be copied. </td>
-    </tr>
-
-  <tr>
-    <td>change-mask</td>
-    <td>Replace any destination pixel that is the similar to the source images pixel (as defined by the current <a href="#fuzz">-fuzz</a> factor), with transparency. </td>
-  </tr>
-  </tbody>
-</table></div></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="interline-spacing"></a>interline-spacing <var>pixels</var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="interword-spacing"></a>interword-spacing <var>pixels</var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="kerning"></a>kerning <var>pixels</var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="line"></a>line <var>x,y x<sub>1</sub>,y<sub>1</sub></var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="matte"></a>matte <var>x,y method</var></td>
-    <td>Choose from these methods:
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><code>point
+SouthEast</code></pre>
+            </td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="compose"></a>image <var>compose x,y width,height 'filename'</var></td>
+            <td>
+              Choose from these compose operations:
+              <div class="card im-card mt-2 shadow-none border overflow-hidden">
+                <div style="max-height:50svh; overflow-y:auto; overflow-x:hidden;" class="p-0">
+                  <table class="table table-sm table-hover mb-0">
+                    <thead class="table-secondary sticky-top">
+                      <tr>
+                        <th class="ps-2 py-1">Method</th>
+                        <th class="py-1">Description</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="ps-2 font-mono">clear</td>
+                        <td>Both the color and the alpha of the destination are cleared. Neither the source nor the destination are used as input.</td>
+                      </tr>
+                      <tr>
+                        <td class="ps-2 font-mono">src</td>
+                        <td>The source is copied to the destination. The destination is not used as input.</td>
+                      </tr>
+                      <tr>
+                        <td class="ps-2 font-mono">dst</td>
+                        <td>The destination is left untouched.</td>
+                      </tr>
+                      <tr>
+                        <td class="ps-2 font-mono fw-bold">src-over</td>
+                        <td>The source is composited over the destination.</td>
+                      </tr>
+                      <tr>
+                        <td class="ps-2 font-mono">dst-over</td>
+                        <td>The destination is composited over the source and the result replaces the destination.</td>
+                      </tr>
+                      <tr>
+                        <td class="ps-2 font-mono">src-in</td>
+                        <td>The part of the source lying inside of the destination replaces the destination.</td>
+                      </tr>
+                      <tr>
+                        <td class="ps-2 font-mono">dst-in</td>
+                        <td>The part of the destination lying inside of the source replaces the destination.</td>
+                      </tr>
+                      <tr>
+                        <td class="ps-2 font-mono">src-out</td>
+                        <td>The part of the source lying outside of the destination replaces the destination.</td>
+                      </tr>
+                      <tr>
+                        <td class="ps-2 font-mono">dst-out</td>
+                        <td>The part of the destination lying outside of the destination replaces the destination.</td>
+                      </tr>
+                      <tr>
+                        <td class="ps-2 font-mono">src-atop</td>
+                        <td>The part of the source lying inside of the destination is composited onto the destination.</td>
+                      </tr>
+                      <tr>
+                        <td class="ps-2 font-mono">dst-atop</td>
+                        <td>The part of the destination lying inside of the source is composited over the source and replaces the destination.</td>
+                      </tr>
+                      <tr>
+                        <td class="ps-2 font-mono">multiply</td>
+                        <td>The source is multiplied by the destination and replaces the destination. The resultant color is always at least as dark as either of the two constituent colors.</td>
+                      </tr>
+                      <tr>
+                        <td class="ps-2 font-mono">screen</td>
+                        <td>The source and destination are complemented and then multiplied and then replace the destination.</td>
+                      </tr>
+                      <tr>
+                        <td class="ps-2 font-mono">overlay</td>
+                        <td>Multiplies or screens the colors, dependent on the destination color. Source colors overlay the destination whilst preserving its highlights and shadows.</td>
+                      </tr>
+                      <tr>
+                        <td class="ps-2 font-mono">darken</td>
+                        <td>Selects the darker of the destination and source colors.</td>
+                      </tr>
+                      <tr>
+                        <td class="ps-2 font-mono">lighten</td>
+                        <td>Selects the lighter of the destination and source colors.</td>
+                      </tr>
+                      <tr>
+                        <td class="ps-2 font-mono">linear-light</td>
+                        <td>Increase contrast slightly with an impact on the foreground's tonal values.</td>
+                      </tr>
+                      <tr>
+                        <td class="ps-2 font-mono">color-dodge</td>
+                        <td>Brightens the destination color to reflect the source color.</td>
+                      </tr>
+                      <tr>
+                        <td class="ps-2 font-mono">color-burn</td>
+                        <td>Darkens the destination color to reflect the source color.</td>
+                      </tr>
+                      <tr>
+                        <td class="ps-2 font-mono">hard-light</td>
+                        <td>Multiplies or screens the colors, dependent on the source color value.</td>
+                      </tr>
+                      <tr>
+                        <td class="ps-2 font-mono">soft-light</td>
+                        <td>Darkens or lightens the colors, dependent on the source color value.</td>
+                      </tr>
+                      <tr>
+                        <td class="ps-2 font-mono">plus</td>
+                        <td>The source is added to the destination and replaces the destination.</td>
+                      </tr>
+                      <tr>
+                        <td class="ps-2 font-mono">add</td>
+                        <td>As per 'plus' but transparency data is treated as matte values.</td>
+                      </tr>
+                      <tr>
+                        <td class="ps-2 font-mono">minus</td>
+                        <td>Subtract the colors in the source image from the destination image.</td>
+                      </tr>
+                      <tr>
+                        <td class="ps-2 font-mono">subtract</td>
+                        <td>Subtract the colors in the source image from the destination image with transparency handling.</td>
+                      </tr>
+                      <tr>
+                        <td class="ps-2 font-mono">difference</td>
+                        <td>Subtracts the darker of the two constituent colors from the lighter.</td>
+                      </tr>
+                      <tr>
+                        <td class="ps-2 font-mono">exclusion</td>
+                        <td>Produces an effect similar to that of 'difference', but appears as lower contrast.</td>
+                      </tr>
+                      <tr>
+                        <td class="ps-2 font-mono">xor</td>
+                        <td>The part of the source that lies outside of the destination is combined with the part of the destination that lies outside of the source.</td>
+                      </tr>
+                      <tr>
+                        <td class="ps-2 font-mono">copy-*</td>
+                        <td>Copy the specified channel in the source image to the same channel in the destination image.</td>
+                      </tr>
+                      <tr>
+                        <td class="ps-2 font-mono">change-mask</td>
+                        <td>Replace any destination pixel that is similar to the source image's pixel with transparency.</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="interline-spacing"></a>interline-spacing <var>pixels</var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="interword-spacing"></a>interword-spacing <var>pixels</var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="kerning"></a>kerning <var>pixels</var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="line"></a>line <var>x,y x<sub>1</sub>,y<sub>1</sub></var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="matte"></a>matte <var>x,y method</var></td>
+            <td>Choose from these methods:
+              <pre class="p-2 mt-2 mb-0 bg-body border font-mono small"><code>point
 replace
 floodfill
 filltoborder
-reset</code></pre></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="offset"></a>offset <var>offset</var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="opacity"></a>opacity <var>opacity</var></td>
-    <td>Use percent (e.g. 50%).</td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="path"></a>path <var>path</var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="point"></a>point <var>x,y</var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="polygon"></a>polygon <var>x,y x<sub>1</sub>,y<sub>1</sub>, ..., x<sub>n</sub>,y<sub>n</sub></var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="polyline"></a>polyline <var>x,y x<sub>1</sub>,y<sub>1</sub>, ..., x<sub>n</sub>,y<sub>n</sub></var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="pop-clip-path"></a>pop clip-path</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="pop-defs"></a>pop defs</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="pop-gradient"></a>pop gradient</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="pop-graphic-context"></a>pop graphic-context</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="pop-pattern"></a>pop pattern</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="push"></a>push clip-path "<var>name</var>"</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="push-defs"></a>push defs</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="push-gradient-linear"></a>push gradient <var>id linear x,y x<sub>1</sub>,y<sub>1</sub></var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="push-gradient-radial"></a>push gradient <var>id radial x<sub>c</sub>,c<sub>y</sub> x<sub>f</sub>,y<sub>f</sub> radius</var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="push-graphic-context"></a>push graphic-context { "<var>id</var>" }</td>
-    <td>the <em>id</em> is optional</td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="push-pattern"></a>push pattern <var>id x,y width,height</var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="rectangle"></a>rectangle <var>x,y x<sub>1</sub>,y<sub>1</sub></var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="rotate"></a>rotate <var>angle</var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="roundrectangle"></a>roundrectangle <var>x,y x<sub>1</sub>,y<sub>1</sub> width,height</var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="scale"></a>scale <var>x,y</var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="skewX"></a>skewX <var>angle</var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="skewY"></a>skewX <var>angle</var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="stop-color"></a>stop-color <var>color offset</var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="stroke"></a>stroke <var>color</var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="stroke-antialias"></a>stroke-antialias <var>0 • 1</var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="stroke-dasharray"></a>stroke-dasharray <var>none • numeric-list</var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="stroke-dashoffset"></a>stroke-dashoffset <var>offset</var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="stroke-linecap"></a>stroke-linecap <var>type</var></td>
-    <td>Choose from these cap types:
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><code>butt
+reset</code></pre>
+            </td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="offset"></a>offset <var>offset</var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="opacity"></a>opacity <var>opacity</var></td>
+            <td>Use percent (e.g. 50%).</td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="path"></a>path <var>path</var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="point"></a>point <var>x,y</var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="polygon"></a>polygon <var>x,y x<sub>1</sub>,y<sub>1</sub>, ..., x<sub>n</sub>,y<sub>n</sub></var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="polyline"></a>polyline <var>x,y x<sub>1</sub>,y<sub>1</sub>, ..., x<sub>n</sub>,y<sub>n</sub></var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="pop-clip-path"></a>pop clip-path</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="pop-defs"></a>pop defs</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="pop-gradient"></a>pop gradient</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="pop-graphic-context"></a>pop graphic-context</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="pop-pattern"></a>pop pattern</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="push"></a>push clip-path "<var>name</var>"</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="push-defs"></a>push defs</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="push-gradient-linear"></a>push gradient <var>id linear x,y x<sub>1</sub>,y<sub>1</sub></var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="push-gradient-radial"></a>push gradient <var>id radial x<sub>c</sub>,c<sub>y</sub> x<sub>f</sub>,y<sub>f</sub> radius</var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="push-graphic-context"></a>push graphic-context { "<var>id</var>" }</td>
+            <td>the <em>id</em> is optional</td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="push-pattern"></a>push pattern <var>id x,y width,height</var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="rectangle"></a>rectangle <var>x,y x<sub>1</sub>,y<sub>1</sub></var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="rotate"></a>rotate <var>angle</var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="roundrectangle"></a>roundrectangle <var>x,y x<sub>1</sub>,y<sub>1</sub> width,height</var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="scale"></a>scale <var>x,y</var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="skewX"></a>skewX <var>angle</var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="skewY"></a>skewY <var>angle</var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="stop-color"></a>stop-color <var>color offset</var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="stroke"></a>stroke <var>color</var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="stroke-antialias"></a>stroke-antialias <var>0 • 1</var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="stroke-dasharray"></a>stroke-dasharray <var>none • numeric-list</var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="stroke-dashoffset"></a>stroke-dashoffset <var>offset</var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="stroke-linecap"></a>stroke-linecap <var>type</var></td>
+            <td>Choose from these cap types:
+              <pre class="p-2 mt-2 mb-0 bg-body border font-mono small"><code>butt
 round
-square</code></pre></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="stroke-linejoin"></a>stroke-linejoin <var>type</var></td>
-    <td>Choose from these join types:
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><code>bevel
+square</code></pre>
+            </td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="stroke-linejoin"></a>stroke-linejoin <var>type</var></td>
+            <td>Choose from these join types:
+              <pre class="p-2 mt-2 mb-0 bg-body border font-mono small"><code>bevel
 miter
-round</code></pre></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="stroke-miterlimit"></a>stroke-miterlimit <var>limit</var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="stroke-opacity"></a>stroke-opacity <var>opacity</var></td>
-    <td>The opacity ranges from 0.0 (fully transparent) to 1.0 (fully opaque) or as a percentage (e.g. 50%).</td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="stroke-width"></a>stroke-width <var>width</var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="text"></a>text <var>"text"</var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="text-antialias"></a>text-antialias <var>0 • 1</var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="text-undercolor"></a>text-undercolor <var>color</var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="translate"></a>translate <var>x,y</var></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="use"></a>use "<var>url(#id)</var>"</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a class="anchor" id="viewbox"></a>viewbox <var>x,y x<sub>1</sub>,y<sub>1</sub></var></td>
-    <td></td>
-  </tr>
-</tbody>
-</table></div>
-<p>Note, the primitives are case sensitive, e.g., use <code>viewbox</code>, not <code>viewBox</code>.</p>
+round</code></pre>
+            </td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="stroke-miterlimit"></a>stroke-miterlimit <var>limit</var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="stroke-opacity"></a>stroke-opacity <var>opacity</var></td>
+            <td>The opacity ranges from 0.0 (fully transparent) to 1.0 (fully opaque) or as a percentage (e.g. 50%).</td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="stroke-width"></a>stroke-width <var>width</var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="text"></a>text <var>"text"</var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="text-antialias"></a>text-antialias <var>0 • 1</var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="text-undercolor"></a>text-undercolor <var>color</var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="translate"></a>translate <var>x,y</var></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="use"></a>use "<var>url(#id)</var>"</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="ps-3 font-mono"><a class="anchor" id="viewbox"></a>viewbox <var>x,y x<sub>1</sub>,y<sub>1</sub></var></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <p class="text-muted small mt-2 fst-italic">Note, the primitives are case sensitive, e.g., use <code>viewbox</code>, not <code>viewBox</code>.</p>
 </div>
 
         </div>
-        <div class="col-lg-3 col-12 ps-lg-4 border-start d-flex flex-column align-items-center align-items-lg-start">
-          <div class="container text-center my-3">
-            <a href="../image/wizard.png" rel="noopener noreferrer" target="_blank">
-              <img alt="ImageMagick Wizard" class="img-fluid img-thumbnail" height="351" loading="lazy" src="../image/wizard.jpg" width="264">
-            </a>
-            <p class="mt-2"><iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border:0 !important; width:107px !important; height:35px !important;"></iframe></p>
+
+        <!-- Right Sidebar -->
+        <aside class="col-lg-4">
+          <div class="sticky-top" style="top: 90px;">
+            <!-- Sponsor Card -->
+            <div class="card im-card mb-4 overflow-hidden border-0 bg-gradient bg-primary bg-opacity-10">
+              <div class="card-body p-4 text-center">
+                <img src="../image/wizard.jpg" alt="ImageMagick Wizard" class="rounded shadow mb-3 img-fluid" style="max-height: 200px;">
+                <h5 class="fw-bold">Support Open Source</h5>
+                <p class="small text-body-secondary mb-3">Help maintain and sustain ImageMagick development.</p>
+                <iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="114" class="border-0"></iframe>
+              </div>
+            </div>
+
+            <!-- Banner Ad Container -->
+            <div class="text-center p-2 mv-4 rounded border border-secondary-subtle bg-body-tertiary">
+              <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
+              <ins class="adsbygoogle"
+                   style="display:block"
+                   data-ad-client="ca-pub-3129977114552745"
+                   data-ad-slot="1083537442"
+                   data-ad-format="auto"
+                   data-full-width-responsive="true"></ins>
+              <script>
+                   (adsbygoogle = window.adsbygoogle || []).push({});
+              </script>
+            </div>
+
+            <!-- Quick Links Navigation -->
+            <div class="card im-card p-3 mb-4">
+              <h6 class="fw-bold text-uppercase fs-7 text-secondary mb-3">Resources</h6>
+              <ul class="nav flex-column gap-1 fs-6">
+                <li class="nav-item"><a href="../security-policy/index.html" class="nav-link p-2 rounded text-body-secondary"><i class="bi bi-shield-check me-2 text-success"></i> Security Policy</a></li>
+                <li class="nav-item"><a href="../license/index.html" class="nav-link p-2 rounded text-body-secondary"><i class="bi bi-file-earmark-text me-2 text-info"></i> Open Source License</a></li>
+                <li class="nav-item"><a href="../porting/index.html" class="nav-link p-2 rounded text-body-secondary"><i class="bi bi-signpost-split me-2 text-warning"></i> Porting v6 to v7</a></li>
+                <li class="nav-item"><a href="../formats/index.html" class="nav-link p-2 rounded text-body-secondary"><i class="bi bi-filetype-png me-2 text-danger"></i> Supported Formats</a></li>
+              </ul>
+            </div>
           </div>
-          <div class="container text-center my-3">
-            <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745"
-              crossorigin="anonymous"></script>
-            <!-- Banner Ad -->
-            <ins class="adsbygoogle"
-              style="display:block"
-              data-ad-client="ca-pub-3129977114552745"
-              data-ad-slot="1083537442"
-              data-ad-format="auto"
-              data-full-width-responsive="true"></ins>
-            <script>
-              (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="im-footer py-5 mt-auto">
+    <div class="container-xl">
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-4">
+          <a class="navbar-brand im-brand mb-2 fs-5" href="../index.html">ImageMagick</a>
+          <p class="small text-secondary">Mastering Digital Image Alchemy. The open-source suite for image creation, conversion, and batch manipulation.</p>
+        </div>
+        <div class="col-6 col-md-3 col-lg-2">
+          <h6 class="text-light fw-bold mb-3">Navigation</h6>
+          <ul class="list-unstyled small d-flex flex-column gap-2">
+            <li><a href="../download/index.html">Download</a></li>
+            <li><a href="../command-line-tools/index.html">Tools</a></li>
+            <li><a href="../develop/index.html">APIs & Libraries</a></li>
+            <li><a href="../sitemap/index.html">Sitemap</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-md-3 col-lg-2">
+          <h6 class="text-light fw-bold mb-3">Community</h6>
+          <ul class="list-unstyled small d-flex flex-column gap-2">
+            <li><a href="https://github.com/ImageMagick/ImageMagick/discussions" target="_blank">Discussions</a></li>
+            <li><a href="https://github.com/ImageMagick/ImageMagick/issues" target="_blank">Report an Issue</a></li>
+            <li><a href="../support/index.html">Sponsor Us</a></li>
+            <li><a href="../cite/index.html">Cite ImageMagick</a></li>
+          </ul>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <h6 class="text-light fw-bold mb-3">Connect</h6>
+          <div class="d-flex gap-3 fs-5">
+            <a href="https://github.com/imagemagick/imagemagick" target="_blank" aria-label="GitHub"><i class="bi bi-github"></i></a>
+            <a href="https://x.com/imagemagick" target="_blank" aria-label="X/Twitter"><i class="bi bi-twitter-x"></i></a>
           </div>
+          <p class="small text-secondary mt-3 mb-0">Copyright © 1999 ImageMagick Studio LLC</p>
         </div>
       </div>
-      <a aria-label="About ImageMagick" class="btn btn-outline-warning mt-3" href="../index-2.html">About ImageMagick</a>
-    </main><!-- /.container -->
-    <footer class="text-center pt-5 my-5 text-body-secondary border-top">
-      <div class="container-fluid">
-        <a href="../security-policy/index.html">Security</a> •
-        <a href="../news/index.html">News</a>
-        &nbsp;
-        <a href="#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../image/wand.png"></a>
-        &nbsp;
-        <a href="../links/index.html">Related</a> •
-        <a href="../sitemap/index.html">Sitemap</a>
-        <br>
-        <a href="../support/index.html">Sponsor</a> •
-        <a href="../cite/index.html">Cite</a> •
-        <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-        <a href="https://github.com/ImageMagick/ImageMagick/discussions">Contact Us</a>
-        <br>
-        <a href="https://github.com/imagemagick/imagemagick" rel="noopener noreferrer" target="_blank" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false">
-            <title>GitHub</title>
-            <path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z" />
-          </svg></a> •
-        <a href="https://twitter.com/imagemagick" rel="noopener noreferrer" target="_blank" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 300 300" width="2%" height="2%" role="img" focusable="false">
-            <title>Twitter</title>
-            <path d="M178.57 127.15 290.27 0h-26.46l-97.03 110.38L89.34 0H0l117.13 166.93L0 300.25h26.46l102.4-116.59 81.8 116.59h89.34M36.01 19.54H76.66l187.13 262.13h-40.66" />
-          </svg></a>
-        <br>
-        <small>Copyright © 1999 ImageMagick Studio LLC</small>
-      </div>
-    </footer>
-    <div style="visibility: hidden;">
-      <div class="gcse-search"></div>
     </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function setTheme(theme) {
+      localStorage.setItem('theme', theme);
+      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const applied = theme === 'auto' ? (systemDark ? 'dark' : 'light') : theme;
+      document.documentElement.setAttribute('data-bs-theme', applied);
+    }
+  </script>
+  <div style="visibility: hidden;">
+    <div class="gcse-search"></div>
   </div>
-
-  <!-- Javascript assets -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
-
 
 </html>

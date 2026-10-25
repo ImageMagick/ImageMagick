@@ -8,902 +8,580 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>ImageMagick | Format and Print Image Properties</title>
-  <meta name="description" content="">
+  <meta name="description" content="Learn how to access and print image metadata, attributes, properties, artifacts, and options using percent escapes in ImageMagick.">
   <link rel="canonical" href="index.html">
   <meta name="robots" content="index, follow">
-  <meta name="theme-color" content="#000000">
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
+  <meta name="theme-color" content="#0d1117">
+  
   <link rel="shortcut icon" href="../image/wand.png" type="image/png">
   <link rel="apple-touch-icon" href="../image/wand.png" type="image/png">
-  <link rel="preconnect" href="https://cdn.jsdelivr.net/">
-  <link rel="preconnect" href="https://localhost/">
-  <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" as="style" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" crossorigin="anonymous">
-  <!-- Accessibility Enhancement -->
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com/">
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+
   <style>
-    html {
-      scroll-padding-top: 70px;
-    }
-
-    iframe {
-      width: 100% !important;
-      max-width: 100% !important;
-      height: 400px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
-    }
-
-    a.nav-link:hover,
-    a.dropdown-item:hover {
-      color: #ffc107 !important;
-      text-shadow: 0px 2px 4px rgba(255, 193, 7, 0.8);
-    }
-
-    .btn-outline-warning {
-      color: #cd7f32;
-      border-color: #cd7f32;
-    }
-
-    .navbar-brand {
-      color: #d4af37;
-      transition: color 0.3s ease, text-shadow 0.3s ease;
-    }
-
-    .navbar-brand:hover {
-      color: #e9c03d;
-      text-shadow: 0px 2px 4px rgba(203, 163, 120, 0.6);
-    }
-
     :root {
-      --bs-code-color: revert;
+      --im-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --im-font-mono: 'Fira Code', monospace;
+      --im-primary: #8b5cf6;
+      --im-primary-hover: #7c3aed;
+      --im-accent: #f59e0b;
+      --im-bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
     }
 
-    .table {
-      table-layout: fixed;   /* force equal distribution of width */
-      width: 100%;           /* table spans full container */
+    body {
+      font-family: var(--im-font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
-    .table td, .table th {
-      white-space: normal;     /* allow wrapping */
-      word-break: break-word;  /* break long words/strings */
+    code, kbd, pre, .font-mono {
+      font-family: var(--im-font-mono) !important;
+    }
+
+    /* Modern Navbar */
+    .im-navbar {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background-color: rgba(15, 23, 42, 0.85) !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .im-navbar .nav-link {
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.75);
+      transition: all 0.2s ease;
+      padding: 0.5rem 0.85rem;
+      border-radius: 0.375rem;
+    }
+
+    .im-navbar .nav-link:hover,
+    .im-navbar .nav-link.active {
+      color: #ffffff !important;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .im-brand {
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #a78bfa 0%, #f472b6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Hero Section */
+    .im-hero {
+      background: var(--im-bg-gradient);
+      color: #ffffff;
+      padding: 4rem 0 3.5rem;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .im-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(0,0,0,0) 70%);
+      pointer-events: none;
+    }
+
+    /* Terminal Widget */
+    .terminal-card {
+      background: #090d16;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 0.75rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+    }
+
+    .terminal-header {
+      background: rgba(255, 255, 255, 0.04);
+      padding: 0.6rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .terminal-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    /* Cards & Container */
+    .im-card {
+      border: 1px solid var(--bs-border-color-translucent);
+      border-radius: 0.75rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      background: var(--bs-body-bg);
+    }
+
+    .im-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Footer */
+    .im-footer {
+      margin-top: auto;
+      background: #090d16;
+      color: rgba(255, 255, 255, 0.6);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .im-footer a {
+      color: rgba(255, 255, 255, 0.75);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .im-footer a:hover {
+      color: var(--im-primary);
     }
   </style>
-  <!-- Open Graph Meta Tags -->
+
+  <!-- Open Graph -->
   <meta property="og:title" content="ImageMagick | Format and Print Image Properties">
-  <meta property="og:description" content="">
+  <meta property="og:description" content="Learn how to access and print image metadata, attributes, properties, artifacts, and options using percent escapes in ImageMagick.">
   <meta property="og:image" content="../image/logo.png">
-  <meta property="og:logo" content="../image/logo.png">
   <meta property="og:url" content="index.html">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="ImageMagick">
-  <meta property="og:locale" content="en_us">
-  <!-- Twitter Card Meta Tags -->
-  <meta name="twitter:card" content="summary_large_image">
-  $site=strtolower("ImageMagick");
-  <meta name="twitter:site" content="@imagemagick">
-  <meta name="twitter:creator" content="@imagemagick">
-  <meta name="twitter:title" content="ImageMagick | Format and Print Image Properties">
-  <meta name="twitter:description" content="$this->description">
-  <meta name="twitter:image" content="../image/logo.png">
-  <meta name="twitter:image:alt" content="ImageMagick logo and tag line">
+
   <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        "name": "ImageMagick",
-        "url": "ImageMagick | Format and Print Image Properties",
-        "image": "https://imagemagick.org/image/logo.png",
-        "description": "$this->description",
-        "applicationCategory": "Multimedia",
-        "operatingSystem": "Windows, macOS, Linux, Unix",
-        "softwareVersion": "7.1.2-31",
-        "license": "https://imagemagick.org/license/",
-        "creator": {
-          "@type": "Organization",
-          "name": "ImageMagick Studio LLC",
-          "url": "https://imagemagick.org"
-        },
-			  "keywords": [
-          "".ucfirst($title)."",
-          "image processing software",
-          "image conversion tool",
-          "batch image editing",
-          "open-source image editor",
-          "ImageMagick command-line",
-          "resize images ImageMagick",
-          "crop and rotate images",
-          "ImageMagick tutorial",
-          "ImageMagick automation",
-          "ImageMagick for developers",
-          "ImageMagick CLI",
-          "ImageMagick filters and effects",
-          "ImageMagick scripting",
-          "ImageMagick API integration"
-        ],
-			  "sameAs": [
-          "https://github.com/ImageMagick",
-          "https://x.com/imagemagick"
-        ],
-        "offers": {
-          "@type": "Offer",
-          "price": "0.00",
-          "priceCurrency": "USD"
-        }
-      }
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "ImageMagick",
+    "url": "https://imagemagick.org/escape/",
+    "image": "https://imagemagick.org/image/logo.png",
+    "description": "Learn how to access and print image metadata, attributes, properties, artifacts, and options using percent escapes in ImageMagick.",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Windows, macOS, Linux, Unix",
+    "softwareVersion": "7.1.2-34",
+    "license": "https://imagemagick.org/license/",
+    "offers": {
+      "@type": "Offer",
+      "price": "0.00",
+      "priceCurrency": "USD"
+    }
+  }
   </script>
-  <!-- Google Custom Search -->
   <script async src="https://localhost/cse.js?cx=8720b81722164487b"></script>
-  <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
 </head>
 
 <body>
+  <!-- Theme Init -->
   <script>
-    function setTheme(theme) {
-      localStorage.setItem('theme', theme);
-      updateThemeIcon(theme);
-      document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? getSystemTheme() : theme);
-    }
-    function getSystemTheme() {
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    }
-    function updateThemeIcon(theme) {
-      const iconMap = {
-        light: '☀️',
-        dark: '🌙',
-        auto: '🌓'
-      };
-      document.getElementById('currentThemeIcon').textContent = iconMap[theme] || '🌓';
-    }
-    document.addEventListener('DOMContentLoaded', () => {
-      const savedTheme = localStorage.getItem('theme') || 'auto';
-      setTheme(savedTheme);
-    });
+    (function() {
+      const saved = localStorage.getItem('theme') || 'auto';
+      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const applied = saved === 'auto' ? (systemDark ? 'dark' : 'light') : saved;
+      document.documentElement.setAttribute('data-bs-theme', applied);
+    })();
   </script>
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <div class="container-fluid">
-      <a class="navbar-brand fw-bold" href="../index-2.html" title="ImageMagick">ImageMagick</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#magick-navbars" aria-controls="magick-navbars" aria-expanded="false" aria-label="Toggle navigation">
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top im-navbar">
+    <div class="container-xl">
+      <a class="navbar-brand im-brand" href="../index.html">
+        <img src="../image/wand.png" alt="Wand Icon" width="24" height="24" class="d-inline-block align-text-top">
+        ImageMagick
+      </a>
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#imNavbar" aria-controls="imNavbar" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <div class="collapse navbar-collapse" id="magick-navbars">
-        <ul class="navbar-nav me-auto">
+      <div class="collapse navbar-collapse" id="imNavbar">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3">
           <li class="nav-item">
-            <a class="nav-link "" href="../download/index.html">Download</a>
+            <a class="nav-link " href="../download/index.html">Download</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link "" href="../command-line-tools/index.html">Tools</a>
+            <a class="nav-link " href="../command-line-tools/index.html">Tools</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link "" href="../command-line-processing/index.html">CLI</a>
+            <a class="nav-link " href="../command-line-processing/index.html">CLI Usage</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link "" href="../develop/index.html">Develop</a>
+            <a class="nav-link " href="../develop/index.html">API & Develop</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" rel="noopener noreferrer" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
           </li>
         </ul>
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item ms-3">
-            <form class="d-flex form-inline" action="https://imagemagick.org/escape/">
-              <input class="form-control me-2" type="text" name="q" placeholder="Search site..." aria-label="Search">
-              <button class="btn btn-outline-warning" type="submit" name="sa">Search</button>
-            </form>
-          </li>
-          <li class="nav-item dropdown ms-3">
-            <a class="nav-link dropdown-toggle" href="#" id="themeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <span id="currentThemeIcon">🌓</span>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="themeDropdown">
-              <li><a class="dropdown-item" href="#" onclick="setTheme('light')">☀️ Light</a></li>
-              <li><a class="dropdown-item" href="#" onclick="setTheme('dark')">🌙 Dark</a></li>
-              <li><a class="dropdown-item" href="#" onclick="setTheme('auto')">🌓 Auto</a></li>
+
+        <div class="d-flex align-items-center gap-2">
+          <!-- Search Trigger Modal / Input -->
+          <form class="d-flex" action="https://imagemagick.org/escape/index.html" role="search">
+            <div class="input-group input-group-sm">
+              <input class="form-control bg-body-tertiary border-secondary-subtle" type="search" placeholder="Search site..." name="q" aria-label="Search">
+              <button class="btn btn-outline-warning" type="submit" name="sa"><i class="bi bi-search"></i></button>
+            </div>
+          </form>
+
+          <!-- Theme Dropdown -->
+          <div class="dropdown">
+            <button class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-1 border-0 text-white" type="button" id="themeSelect" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-circle-half"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="themeSelect">
+              <li><button class="dropdown-item d-flex align-items-center gap-2" onclick="setTheme('light')"><i class="bi bi-sun-fill"></i> Light</button></li>
+              <li><button class="dropdown-item d-flex align-items-center gap-2" onclick="setTheme('dark')"><i class="bi bi-moon-stars-fill"></i> Dark</button></li>
+              <li><button class="dropdown-item d-flex align-items-center gap-2" onclick="setTheme('auto')"><i class="bi bi-circle-half"></i> Auto</button></li>
             </ul>
-          </li>
-        </ul>
+          </div>
+
+          <a href="https://github.com/ImageMagick/ImageMagick" target="_blank" class="btn btn-sm btn-outline-light d-flex align-items-center gap-1 ms-1">
+            <i class="bi bi-github"></i> <span class="d-none d-xl-inline">GitHub</span>
+          </a>
+        </div>
       </div>
     </div>
   </nav>
 
-  <div class="col-lg-8 mx-auto text-body-secondary pt-5 pt-lg-5">
-    <header class="d-flex align-items-center pb-3 mb-5 border-bottom">
-      <div class="mt-3 ms-3">
-        <a href="../index-2.html" class="text-decoration-none">
-          <h1 class="fs-2 mb-1 display-5">Format and Print Image Properties</h1>
-        </a>
-        <h2 class="fs-5 text-muted h4">ImageMagick</h2>
+  <!-- Hero Header Block -->
+  <header class="im-hero mt-5 pt-5">
+    <div class="container-xl pt-3">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+          <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-primary bg-opacity-20 text-primary border border-primary border-opacity-30 mb-3 fs-7">
+            <span class="badge bg-primary">v7.1.2-34</span>
+            <span class="small text-light">Latest Stable Release</span>
+          </div>
+          <h1 class="display-4 fw-bold mb-3 tracking-tight">Format and Print Image Properties</h1>
+          <p class="lead text-light opacity-75 mb-4 fs-5">Learn how to access and print image metadata, attributes, properties, artifacts, and options using percent escapes in ImageMagick.</p>
+          <div class="d-flex flex-wrap gap-3">
+            <a href="../download/index.html" class="btn btn-primary btn-lg px-4 fw-semibold d-flex align-items-center gap-2 shadow">
+              <i class="bi bi-download"></i> Get ImageMagick
+            </a>
+            <a href="../command-line-processing/index.html" class="btn btn-outline-light btn-lg px-4 fw-semibold d-flex align-items-center gap-2">
+              <i class="bi bi-terminal"></i> Documentation
+            </a>
+          </div>
+        </div>
+
+        <!-- Terminal Quickstart Preview -->
+        <div class="col-lg-5">
+          <div class="terminal-card">
+            <div class="terminal-header">
+              <div class="terminal-dot bg-danger"></div>
+              <div class="terminal-dot bg-warning"></div>
+              <div class="terminal-dot bg-success"></div>
+              <span class="small text-secondary font-mono ms-2">quickstart.sh</span>
+            </div>
+            <div class="p-3 text-light font-mono small">
+              <div class="text-secondary"># Install via your favorite Package Manager</div>
+              <div class="text-success">$ brew install imagemagick</div>
+              <div class="text-secondary mt-2"># Convert PNG to WebP with compression</div>
+              <div>$ magick input.png -quality 85 output.webp</div>
+              <div class="text-secondary mt-2"># Resize image maintaining aspect ratio</div>
+              <div>$ magick input.jpg -resize 800x600^ output.jpg</div>
+            </div>
+          </div>
+        </div>
       </div>
-    </header>
+    </div>
+  </header>
 
-    <main role="main" class="container">
-      <div class="row g-4">
-        <div class="col-lg-9 col-12">
-          <div>
-<p class="lead">There are copious amounts of extra data associated with images (metadata), beyond the actual image pixels. This metadata can be useful, either for display, or for various calculations, or in modifying the behavior of later image processing operations.  You can utilize percent escapes in a number of options, for example in <a href="../command-line-options/index.html#format_identify_">-format</a> or in montage <a href="../command-line-options/index.html#label" >-label</a>, to print various properties and other settings associated with an image.</p>
-
-<div style="max-height:75svh; overflow-y:auto; overflow-x:hidden;">
-<table class="table table-hover table-striped">
-  <colgroup>
-    <col style="width:30%">
-    <col style="width:70%">
-  </colgroup>
-<tr>
-    <td><b>Profile Data</b></td>
-    <td>Such as EXIF: data, containing focal lengths, exposures, dates, and in
-        some cases GPS locations.
-    </td></tr>
-<tr>
-    <td><b>Attributes</b></td>
-    <td>These are directly involved with image data, and more commonly
-        modified as part of normal image processing.  These include
-        width, height, depth, image type (colorspace), timing delays, and
-        background color. Most specific percent escapes is to access this
-        information.
-    </td></tr>
-<tr>
-    <td><b>Properties</b></td>
-    <td>These are stored as a table of free form strings, and are (if possible)
-        saved with the image (especially in MIFF and PNG image file formats).
-        These include: Labels, Captions, Comments.
-    </td></tr>
-<tr>
-    <td><b>Artifacts</b></td>
-    <td>These are various operational (expert) settings that are saved for
-        use by various operators, or by the user for future use.  It is just
-        a table of free-form strings.  They are not saved with the image when
-        written.  See Artifacts and Options below for details.
-    </td></tr>
-<tr>
-    <td><b>Options</b></td>
-    <td>Also operational (expert) settings that are saved for
-        use by various operators, but are set globally for use by a whole
-        image list (also not saved).  See Artifacts and Options below.
-    </td></tr>
-</table></div>
-
-<h2>Percent Escape Handling</h2>
-
-<p>If you request a percent escape such as <code>%[key]</code> the setting
-is looked for in the following order until the first match has been
-found...</p>
-
-<ol>
-<li>Handle special prefixes such as 'artifact:' 'option:' 'exif:', or
-    'fx:'.  This includes and calculations and or globs of those prefixes such
-    as 'exif:*' or 'artifact:*' (see below).</li>
-
-<li>If <code>key</code> contains a glob pattern (but no known prefix)
-    search free-form properties table.</li>
-
-<li>If <code>key</code> is a special image 'attribute' name (see list
-    above) return the associated or calculated image attribute.</li>
-
-<li>Search for setting as a free-form 'property'</li>
-<li>Search for setting as a free-form 'artifact'</li>
-<li>Search for setting as a free-form 'option'</li>
-
-<li>Replace escape with empty string, and perhaps produce a warning.</li>
-</ol>
-
-<p>Remember, all long name forms of percent escapes are handled in a is case
-insensitive manner. </p>
-
-<p>You can now access the Artifact and Option
-free-form string tables directly, allowing you to override the above sequence,
-and avoid accessing an attribute or property of the same name.</p>
-
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><code>%[artifact:<var>setting</var>]
-%[option:<var>setting</var>] </code></pre>
-
-<p>Escape handling requires access to an image container.  If none are available, a blank image is created to ensure the expression can be processed and a value returned.  For example, <pre><samp>$ magick -print "%[fx:.8765/3.14]" null: null:</samp></pre>.</p>
-
-<h2>Single Letter Attribute Percent Escapes</h2>
-
-<p>Here are common single letter escapes (short form) is used to report the most
-common attributes and properties of an image, such as: the image filename
-filename, type, width, height. </p>
-
-<div>
-<table class="table table-sm table-hover table-striped">
-  <tr>
-    <td>\</td>
-    <td>backslash, the next character is literal and not subject to interpretation</td>
-  </tr>
-  <tr>
-    <td>\n</td>
-    <td>newline</td>
-  </tr>
-  <tr>
-    <td>\r</td>
-    <td>carriage return</td>
-  </tr>
-  <tr>
-    <td>&lt;</td>
-    <td>less-than character.</td>
-  </tr>
-  <tr>
-    <td>&gt;</td>
-    <td>greater-than character.</td>
-  </tr>
-  <tr>
-    <td>&amp;</td>
-    <td>ampersand character.</td>
-  </tr>
-  <tr>
-    <td>%%</td>
-    <td>a percent sign</td>
-  </tr>
-  <tr>
-    <td>%b</td>
-    <td>file size of image read in (use <a href="#precision">-precision</a> 16 to force results in B)</td>
-  </tr>
-  <tr>
-    <td>%c</td>
-    <td>comment meta-data property</td>
-  </tr>
-  <tr>
-    <td>%d</td>
-    <td>directory component of path</td>
-  </tr>
-  <tr>
-    <td>%e</td>
-    <td>filename extension or suffix</td>
-  </tr>
-  <tr>
-    <td>%f</td>
-    <td>filename (including suffix)</td>
-  </tr>
-  <tr>
-    <td>%g</td>
-    <td>layer canvas page geometry   (equivalent to "%Wx%H%X%Y")</td>
-  </tr>
-  <tr>
-    <td>%h</td>
-    <td>current image height in pixels</td>
-  </tr>
-  <tr>
-    <td>%i</td>
-    <td>image filename (note: becomes output filename for "info:")</td>
-  </tr>
-  <tr>
-    <td>%k</td>
-    <td>CALCULATED: number of unique colors</td>
-  </tr>
-  <tr>
-    <td>%l</td>
-    <td>label meta-data property</td>
-  </tr>
-  <tr>
-    <td>%m</td>
-    <td>image file format (file magic)</td>
-  </tr>
-  <tr>
-    <td>%n</td>
-    <td>number of images in current image sequence, report once per frame</td>
-  </tr>
-  <tr>
-    <td>%o</td>
-    <td>output filename  (used for delegates)</td>
-  </tr>
-  <tr>
-    <td>%p</td>
-    <td>index of image in current image list</td>
-  </tr>
-  <tr>
-    <td>%q</td>
-    <td>quantum depth (compile-time constant)</td>
-  </tr>
-  <tr>
-    <td>%r</td>
-    <td>image class and colorspace</td>
-  </tr>
-  <tr>
-    <td>%s</td>
-    <td>scene number (from input unless re-assigned)</td>
-  </tr>
-  <tr>
-    <td>%t</td>
-    <td>filename without directory or extension (suffix)</td>
-  </tr>
-  <tr>
-    <td>%u</td>
-    <td>unique temporary filename (used for delegates)</td>
-  </tr>
-  <tr>
-    <td>%w</td>
-    <td>current width in pixels</td>
-  </tr>
-  <tr>
-    <td>%x</td>
-    <td>x resolution (density)</td>
-  </tr>
-  <tr>
-    <td>%y</td>
-    <td>y resolution (density)</td>
-  </tr>
-  <tr>
-    <td>%z</td>
-    <td>image depth (as read in unless modified, image save depth)</td>
-  </tr>
-  <tr>
-    <td>%A</td>
-    <td>image transparency channel. Values include Undefined (no transparency channel), Blend, Copy, or Update. </td>
-  </tr>
-  <tr>
-    <td>%B</td>
-    <td>file size of image read in bytes</td>
-  </tr>
-  <tr>
-    <td>%C</td>
-    <td>image compression type</td>
-  </tr>
-  <tr>
-    <td>%D</td>
-    <td>image GIF dispose method</td>
-  </tr>
-  <tr>
-    <td>%G</td>
-    <td>original image size (%wx%h; before any resizes)</td>
-  </tr>
-  <tr>
-    <td>%H</td>
-    <td>page (canvas) height</td>
-  </tr>
-  <tr>
-    <td>%M</td>
-    <td>Magick filename (original file exactly as given,  including read mods)</td>
-  </tr>
-  <tr>
-    <td>%N</td>
-    <td>number of images in current image sequence, report once per image sequence</td>
-  </tr>
-  <tr>
-    <td>%O</td>
-    <td>page (canvas) offset ( = %X%Y )</td>
-  </tr>
-  <tr>
-    <td>%P</td>
-    <td>page (canvas) size ( = %Wx%H )</td>
-  </tr>
-  <tr>
-    <td>%Q</td>
-    <td>image compression quality ( 0 = default )</td>
-  </tr>
-  <tr>
-    <td>%S</td>
-    <td>?? scenes ??</td>
-  </tr>
-  <tr>
-    <td>%T</td>
-    <td>image time delay (in centi-seconds)</td>
-  </tr>
-  <tr>
-    <td>%U</td>
-    <td>image resolution units</td>
-  </tr>
-  <tr>
-    <td>%W</td>
-    <td>page (canvas) width</td>
-  </tr>
-  <tr>
-    <td>%X</td>
-    <td>page (canvas) x offset (including sign)</td>
-  </tr>
-  <tr>
-    <td>%Y</td>
-    <td>page (canvas) y offset (including sign)</td>
-  </tr>
-  <tr>
-    <td>%Z</td>
-    <td>unique filename (used for delegates)</td>
-  </tr>
-  <tr>
-    <td>%@</td>
-    <td>CALCULATED: trim bounding box (without actually trimming)</td>
-  </tr>
-  <tr>
-    <td>%#</td>
-    <td>CALCULATED: 'signature' hash of image values</td>
-  </tr>
-</table></div>
-
-<p>Here is a sample command and its output for an image with filename
-<code>bird.miff</code> and whose width is 512 and height is 480.</p>
-
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><code>-> identify -format "%m:%f %wx%h" bird.miff
-MIFF:bird.miff 512x480 </code></pre>
-
-<p>Note that all single letter percent escapes can also be used using long
-form (from IM version 6.7.6-9, see next). For example <code>%[f]</code> is
-equivalent to the <code>%f</code> short form. </p>
-
-<p><b>WARNING</b>: short form percent escapes are NOT performed when the percent
-is after a number.  For example,  <code>10%x10</code> does not expand the
-<code>%x</code> as a percent escape.  If you specifically want to expand the
-'x', use the long form which overrides this special case. EG:
-<code>10%[x]10</code>. </p>
-
-<p>Also be warned that calculated attributes can take some time to generate,
-especially for large images.</p>
-
-<h2>Long Form Attribute Percent Escapes</h2>
-
-<p>In addition to the above specific and calculated attributes are recognized
-when enclosed in braces (long form):</p>
-
-<div>
-<table class="table table-sm table-hover table-striped">
-  <tr>
-    <td>%[basename]</td>
-    <td>base filename, no suffixes (as %t)</td>
-  </tr>
-  <tr>
-    <td>%[bit-depth]</td>
-    <td>Actual bit-depth of the pixel data</td>
-  </tr>
-  <tr>
-    <td>%[bounding-box]</td>
-    <td>upper left and lower right corners of the image bounding box</td>
-  </tr>
-  <tr>
-    <td>%[caption]</td>
-    <td>caption meta-data property</td>
-  </tr>
-  <tr>
-    <td>%[caption:lines]</td>
-    <td>returns the number lines generated when wrapping the caption</td>
-  </tr>
-  <tr>
-    <td>%[caption:pointsize]</td>
-    <td>returns the pointsize computed during caption: processing</td>
-  </tr>
-  <tr>
-    <td>%[channels]</td>
-    <td>colorspace mnemonic followed by total number of channels and meta channels, e.g., <code>cmyka 8.3</code> indicates a CMYK image with alpha channel for a total of 8 channels and 3 meta channels.</td>
-  </tr>
-  <tr>
-    <td>%[colors]</td>
-    <td>Number of unique colors in the image (as of IM 7.0.3.8)</td>
-  </tr>
-  <tr>
-    <td>%[colorspace]</td>
-    <td>colorspace of Image Data (excluding transparency)</td>
-  </tr>
-  <tr>
-    <td>%[compose]</td>
-    <td>&nbsp;</td>
-  </tr>
-  <tr>
-    <td>%[compression]</td>
-    <td>image compression type</td>
-  </tr>
-  <tr>
-    <td><a href="../convex-hull/index.html">%[convex-hull]</a></td>
-    <td>points that form a convex hull around the foreground object.  Use <code><a href="../command-line-options/index.html#define">-define</a> convex-hull:background-color=<em>color</em></code> to identify the image background color.  Use <code><a href="../command-line-options/index.html#fuzz">-fuzz</a> to allow for a non-uniform background color. </td>
-  </tr>
-  <tr>
-    <td><a href="../convex-hull/index.html">%[convex-hull:extreme-points]</a></td>
-    <td>return the top, right, bottom, and left extreme points of the convex hull.</td>
-  </tr>
-  <tr>
-    <td>%[copyright]</td>
-    <td>ImageMagick Copyright String</td>
-  </tr>
-  <tr>
-    <td>%[depth]</td>
-    <td>depth of image for write (as input unless changed)</td>
-  </tr>
-  <tr>
-    <td>%[deskew:angle]</td>
-    <td>The deskew angle in degrees of rotation</td>
-  </tr>
-  <tr>
-    <td>%[directory]</td>
-    <td>directory part of filename (as %d)</td>
-  </tr>
-  <tr>
-    <td>%[distortion]</td>
-    <td>how well an image resembles a reference image (<a href="../command-line-options/index.html#compare" >-compare</a>)</td>
-  </tr>
-  <tr>
-    <td>%[dominant-color]</td>
-    <td>return the dominate image color in hex.  Precede usage with <a href="../command-line-options/index.html#kmeans" >-kmeans</a>.</td>
-  </tr>
-  <tr>
-    <td>%[entropy]</td>
-    <td>CALCULATED: entropy of the image</td>
-  </tr>
-  <tr>
-    <td>%[extension]</td>
-    <td>extension part of filename (as %e)</td>
-  </tr>
-  <tr>
-    <td>%[gamma]</td>
-    <td>value of image gamma</td>
-  </tr>
-  <tr>
-    <td>%[group]</td>
-    <td>??? window group ???</td>
-  </tr>
-  <tr>
-    <td>%[height]</td>
-    <td>original height of image (when it was read in)</td>
-  </tr>
-  <tr>
-    <td>%[histogram:contrast-stretch]</td>
-    <td>computed min and max contrast stretch percentage</td>
-  </tr>
-  <tr>
-    <td>%[histogram:linear-stretch]</td>
-    <td>computed min and max linear stretch percentage</td>
-  </tr>
-  <tr>
-    <td>%[input]</td>
-    <td>the input image filename.</td>
-  </tr>
-  <tr>
-    <td>%[interlace]</td>
-    <td>Image interlace mode (as of IM 7.0.3.8)</td>
-  </tr>
-  <tr>
-    <td>%[kurtosis]</td>
-    <td>CALCULATED: kurtosis statistic of image</td>
-  </tr>
-  <tr>
-    <td>%[label]</td>
-    <td>label meta-data property</td>
-  </tr>
-   <tr>
-    <td>%[label:pointsize]</td>
-    <td>returns the pointsize computed during label: processing</td>
-  </tr>
-  <tr>
-    <td>%[magick]</td>
-    <td>coder used to read image (not the file suffix)</td>
-  </tr>
-  <tr>
-    <td>%[max]</td>
-    <td>CALCULATED: maximum value statistic of image</td>
-  </tr>
-  <tr>
-    <td>%[mean]</td>
-    <td>CALCULATED: average value statistic of image</td>
-  </tr>
-  <tr>
-    <td>%[median]</td>
-    <td>CALCULATED: median value statistic of image</td>
-  </tr>
-  <tr>
-    <td>%[min]</td>
-    <td>CALCULATED: minimum value statistic of image</td>
-  </tr>
-  <tr>
-    <td><a href="../convex-hull/index.html">%[minimum-bounding-box]</a></td>
-    <td>Use <code><a href="../command-line-options/index.html#define">-define</a> convex-hull:background-color=<em>color</em></code> to identify the image background color.  Use <code><a href="../command-line-options/index.html#fuzz">-fuzz</a> to allow for a non-uniform background color.  In addition to the bounding box points, these properties are set: <code>minimum-bounding-box:area</code>, <code>minimum-bounding-box:width</code>, <code>minimum-bounding-box:height</code>, <code>minimum-bounding-box:angle</code>, and <code>minimum-bounding-box:unrotate</code>.</td>
-  </tr>
-  <tr>
-    <td>%[opaque]</td>
-    <td>CALCULATED: is image fully-opaque?</td>
-  </tr>
-  <tr>
-    <td>%[orientation]</td>
-    <td>image orientation</td>
-  </tr>
-  <tr>
-    <td>%[page]</td>
-    <td>Virtual canvas (page) geometry</td>
-  </tr>
-  <tr>
-    <td>%[papersize:<em>name</em>]</td>
-    <td>paper size for <em>name</em> in pixels at 72DPI (e.g. papersize:A4)</td>
-  </tr>
-  <tr>
-    <td>%[printsize.x]</td>
-    <td>X printsize</td>
-  </tr>
-  <tr>
-    <td>%[printsize.y]</td>
-    <td>Y printsize</td>
-  </tr>
-  <tr>
-    <td>%[profile:icc]</td>
-    <td>ICC profile info</td>
-  </tr>
-  <tr>
-    <td>%[profile:icm]</td>
-    <td>ICM profile info</td>
-  </tr>
-  <tr>
-    <td>%[profiles]</td>
-    <td>list of any embedded profiles</td>
-  </tr>
-  <tr>
-    <td>%[quality]</td>
-    <td>Image quality value (as of IM 7.0.3.8)</td>
-  </tr>
-  <tr>
-    <td>%[rendering-intent]</td>
-    <td>Image rendering intent (as of IM 7.0.3.8)</td>
-  </tr>
-  <tr>
-    <td>%[resolution.x]</td>
-    <td>X density (resolution) without units</td>
-  </tr>
-  <tr>
-    <td>%[resolution.y]</td>
-    <td>Y density (resolution) without units</td>
-  </tr>
-  <tr>
-    <td>%[scene]</td>
-    <td>original scene number of image in input file</td>
-  </tr>
-  <tr>
-    <td>%[size]</td>
-    <td>original size of image (when it was read in)</td>
-  </tr>
-  <tr>
-    <td>%[skewness]</td>
-    <td>CALCULATED: skewness statistic of image</td>
-  </tr>
-  <tr>
-    <td>%[standard-deviation]</td>
-    <td>CALCULATED: standard deviation statistic of image</td>
-  </tr>
-  <tr>
-    <td>%[type]</td>
-    <td>CALCULATED: image type</td>
-  </tr>
-  <tr>
-    <td>%[unique]</td>
-    <td>unique temporary filename ???</td>
-  </tr>
-  <tr>
-    <td>%[units]</td>
-    <td>image resolution units</td>
-  </tr>
-  <tr>
-    <td>%[version]</td>
-    <td>Version Information of this running ImageMagick</td>
-  </tr>
-  <tr>
-    <td>%[width]</td>
-    <td>original width of image (when it was read in)</td>
-  </tr>
-  <tr>
-    <td>%[zero]</td>
-    <td>zero (unique filename for delegate use)</td>
-  </tr>
-</table></div>
-
-<h2>Properties</h2>
-
-<p>All other long forms of percent escapes (not single letter long form) are
-handled in a case insensitive manner. Such escapes will attempt to look
-up that name specific data sources. </p>
-
-<p>The primary search space (if not a specific attribute listed above) is
-a free-form property string.  Such strings are associated and saved with
-images, and are typically set using either the <a href="../command-line-options/index.html#set" >-set</a>
-CLI option (or API equivalent), or from special convenience options
-(such as <a href="../command-line-options/index.html#label"
->-label</a>, <a href="../command-line-options/index.html#comment"
->-comment</a>, <a href="../command-line-options/index.html#caption"
->-caption</a>). </p>
-
-<p>These convenience options are globally saved (as 'global options' so they can
-be set before images are read), and later are transferred to the property of
-individual images, only when they are read in. At that time any internal
-percent escape present is then handled. </p>
-
-<p>To change a property of an image already in memory, you need to use <a
-href="../command-line-options/index.html#set" >-set</a>.
-</p>
-
-<p>Note that properties, like attributes (and profiles), are saved with
-images when write, if the image file format allows. </p>
-
-
-<h2>Artifacts and Options</h2>
-
-<p>The previous percent escapes are associated with the primary Attributes and
-Properties. Which is the original and primary focus of such percent escapes.
-</p>
-
-<p>However there are many operational settings that are used by various
-ImageMagick operators that can be useful to set and later access.  These
-consist of per-image Artifacts, and Global options (associated with a list of
-images, typically the current image list).</p>
-
-<p>Note that the major difference between an artifact and a property is that
-artifacts, being an internal operational setting, is not saved with images (if
-such is possible). </p>
-
-<p>For example when you use <code>-define 'distort:viewport=100x100'</code> you
-are in fact generating a global option, which the <a href="../command-line-options/index.html#distort"
->-distort</a> operator will use to modify its behavior (distorted output
-image 'view'). </p>
-
-<p>An Option is essentially an Artifact that has been stored globally as part
-of a list of images (specifically a 'Wand' of images). As such they are
-identical, in that a Option, is simply a global Artifact for all the
-associated images. </p>
-
-<p>As such you can use <code>-set 'option:distort:viewport' '100x100'</code> to
-achieve the same result of setting a Artifact for the distort operation to use.
-</p>
-
-<p><b>Internal Handling of a Global Option...</b></p>
-
-<p>The Core library ('MagickCore') does not generally directly understand
-Global Options. As such, continuing the previous example, the
-<code>DistortImages()</code> function only looks up an artifact to discover if
-a 'viewport' has been provided to it. </p>
-
-<p>How Global Options are used when a library function requests an Artifact is
-one of the key differences between IMv6 and IMv7.</p>
-
-<p>Sets a link back to the global options
-data, so that if a specific per-image Artifact is not found , then it will
-look for a equivalent global Option for that image list.  directly.  This
-saves coping these free-form options into artifacts repeatedly, and means you
-can now separately define a global option for a list, and a individual
-overriding artifact for a specific image in that list. </p>
-
-<p>Note that many API's that do not use Wands (PerlMagick for example using
-arrays of images rather than a Wand). In these API's you will not have Global
-Options, only per-image Artifacts. </p>
-
-<p>In summery a Global Option, if available, is equivalent to a per-image
-Artifact. </p>
-
-
-<h2>Glob-Pattern Listing of Properties, Artifacts and Options</h2>
-
-<p>The <var>setting</var> can contain a glob pattern. As such you can
-now list all free-form string properties, artifacts, and options, (but not
-specific image attributes) using...</p>
-
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><code>magick ... \
+  <!-- Main Body Content -->
+  <main class="py-5">
+    <div class="container-xl">
+      <div class="row g-5">
+        <!-- Main Column -->
+        <div class="col-lg-8">
+          <div class="properties-container">
+  <!-- Quick Jump Navigation -->
+  <div class="card im-card p-3 mb-4 bg-body-tertiary border-0 shadow-sm">
+    <div class="d-flex justify-content-center flex-wrap gap-3 fw-semibold small text-uppercase tracking-wider">
+      <a href="#metadata-types" class="text-decoration-none text-primary"><i class="bi bi-info-circle me-1"></i> Metadata Types</a>
+      <span class="text-muted">•</span>
+      <a href="#percent-escapes" class="text-decoration-none text-primary"><i class="bi bi-code-slash me-1"></i> Percent Escapes</a>
+      <span class="text-muted">•</span>
+      <a href="#single-letter" class="text-decoration-none text-primary"><i class="bi bi-fonts me-1"></i> Short Form</a>
+      <span class="text-muted">•</span>
+      <a href="#long-form" class="text-decoration-none text-primary"><i class="bi bi-braces me-1"></i> Long Form</a>
+      <span class="text-muted">•</span>
+      <a href="#profiles" class="text-decoration-none text-primary"><i class="bi bi-file-earmark-text me-1"></i> Profiles & EXIF/IPTC</a>
+    </div>
+  </div>
+  <p class="lead text-body-secondary mb-4">
+    There are copious amounts of extra data associated with images (metadata), beyond the actual image pixels. This metadata can be useful, either for display, or for various calculations, or in modifying the behavior of later image processing operations. You can utilize percent escapes in a number of options, for example in <a href="../command-line-options/index.html#format_identify_">-format</a> or in montage <a href="../command-line-options/index.html#label">-label</a>, to print various properties and other settings associated with an image.
+  </p>
+  <!-- Metadata Types Table Card -->
+  <div class="card im-card shadow-sm mb-5 overflow-hidden" id="metadata-types">
+    <div class="card-header bg-dark text-white py-3 px-4">
+      <h5 class="mb-0 fw-bold"><i class="bi bi-collection me-2"></i>Image Metadata Categories</h5>
+    </div>
+    <div style="max-height:75svh; overflow-y:auto; overflow-x:hidden;" class="p-0">
+      <table class="table table-hover table-striped mb-0 align-middle">
+        <colgroup>
+          <col style="width:30%">
+          <col style="width:70%">
+        </colgroup>
+        <tbody>
+          <tr>
+            <td class="ps-3 fw-semibold text-primary">Profile Data</td>
+            <td>Such as EXIF data, containing focal lengths, exposures, dates, and in some cases GPS locations.</td>
+          </tr>
+          <tr>
+            <td class="ps-3 fw-semibold text-primary">Attributes</td>
+            <td>These are directly involved with image data, and more commonly modified as part of normal image processing. These include width, height, depth, image type (colorspace), timing delays, and background color. Most specific percent escapes are used to access this information.</td>
+          </tr>
+          <tr>
+            <td class="ps-3 fw-semibold text-primary">Properties</td>
+            <td>These are stored as a table of free form strings, and are (if possible) saved with the image (especially in MIFF and PNG image file formats). These include Labels, Captions, and Comments.</td>
+          </tr>
+          <tr>
+            <td class="ps-3 fw-semibold text-primary">Artifacts</td>
+            <td>These are various operational (expert) settings that are saved for use by various operators, or by the user for future use. It is just a table of free-form strings. They are not saved with the image when written. See Artifacts and Options below for details.</td>
+          </tr>
+          <tr>
+            <td class="ps-3 fw-semibold text-primary">Options</td>
+            <td>Also operational (expert) settings that are saved for use by various operators, but are set globally for use by a whole image list (also not saved). See Artifacts and Options below.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- Percent Escape Handling Section -->
+  <h2 class="fw-bold border-bottom pb-2 mb-4 mt-5" id="percent-escapes">
+    <a class="anchor text-decoration-none text-body" href="#percent-escapes">Percent Escape Handling</a>
+  </h2>
+  <p>If you request a percent escape such as <code>%[key]</code> the setting is looked for in the following order until the first match has been found:</p>
+  <div class="card im-card p-4 mb-4 shadow-sm bg-body-tertiary">
+    <ol class="mb-0 ps-3">
+      <li class="mb-2">Handle special prefixes such as <code>artifact:</code>, <code>option:</code>, <code>exif:</code>, or <code>fx:</code>. This includes any calculations and/or globs of those prefixes such as <code>exif:*</code> or <code>artifact:*</code> (see below).</li>
+      <li class="mb-2">If <code>key</code> contains a glob pattern (but no known prefix), search the free-form properties table.</li>
+      <li class="mb-2">If <code>key</code> is a special image 'attribute' name (see list above), return the associated or calculated image attribute.</li>
+      <li class="mb-2">Search for setting as a free-form 'property'.</li>
+      <li class="mb-2">Search for setting as a free-form 'artifact'.</li>
+      <li class="mb-2">Search for setting as a free-form 'option'.</li>
+      <li>Replace escape with an empty string, and perhaps produce a warning.</li>
+    </ol>
+  </div>
+  <p>Remember, all long name forms of percent escapes are handled in a case-insensitive manner.</p>
+  <p>You can now access the Artifact and Option free-form string tables directly, allowing you to override the above sequence, and avoid accessing an attribute or property of the same name.</p>
+  <pre class="p-3 mb-4 rounded bg-body-tertiary border font-mono small"><code>%[artifact:<var>setting</var>]
+%[option:<var>setting</var>]</code></pre>
+  <p>Escape handling requires access to an image container. If none are available, a blank image is created to ensure the expression can be processed and a value returned. For example:</p>
+  <pre class="p-3 mb-4 rounded bg-body-tertiary border font-mono small"><code>$ magick -print "%[fx:.8765/3.14]" null: null:</code></pre>
+  <!-- Single Letter Attribute Percent Escapes -->
+  <h2 class="fw-bold border-bottom pb-2 mb-4 mt-5" id="single-letter">
+    <a class="anchor text-decoration-none text-body" href="#single-letter">Single Letter Attribute Percent Escapes</a>
+  </h2>
+  <p class="text-body-secondary mb-3">Here are common single letter escapes (short form) used to report the most common attributes and properties of an image, such as filename, type, width, and height.</p>
+  <div class="card im-card shadow-sm mb-4 overflow-hidden">
+    <div style="max-height:75svh; overflow-y:auto; overflow-x:hidden;" class="p-0">
+      <table class="table table-sm table-hover table-striped mb-0 align-middle">
+        <thead class="table-dark sticky-top">
+          <tr>
+            <th class="ps-3 py-2" style="width: 20%;">Escape</th>
+            <th class="py-2" style="width: 80%;">Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="ps-3 font-mono fw-bold">\</td><td>backslash, the next character is literal and not subject to interpretation</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">\n</td><td>newline</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">\r</td><td>carriage return</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">&lt;</td><td>less-than character</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">&gt;</td><td>greater-than character</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">&amp;</td><td>ampersand character</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%%</td><td>a percent sign</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%b</td><td>file size of image read in (use <a href="#precision">-precision</a> 16 to force results in B)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%c</td><td>comment meta-data property</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%d</td><td>directory component of path</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%e</td><td>filename extension or suffix</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%f</td><td>filename (including suffix)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%g</td><td>layer canvas page geometry (equivalent to "%Wx%H%X%Y")</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%h</td><td>current image height in pixels</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%i</td><td>image filename (note: becomes output filename for "info:")</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%k</td><td>CALCULATED: number of unique colors</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%l</td><td>label meta-data property</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%m</td><td>image file format (file magic)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%n</td><td>number of images in current image sequence, report once per frame</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%o</td><td>output filename (used for delegates)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%p</td><td>index of image in current image list</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%q</td><td>quantum depth (compile-time constant)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%r</td><td>image class and colorspace</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%s</td><td>scene number (from input unless re-assigned)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%t</td><td>filename without directory or extension (suffix)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%u</td><td>unique temporary filename (used for delegates)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%w</td><td>current width in pixels</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%x</td><td>x resolution (density)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%y</td><td>y resolution (density)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%z</td><td>image depth (as read in unless modified, image save depth)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%A</td><td>image transparency channel. Values include Undefined (no transparency channel), Blend, Copy, or Update.</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%B</td><td>file size of image read in bytes</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%C</td><td>image compression type</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%D</td><td>image GIF dispose method</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%G</td><td>original image size (%wx%h; before any resizes)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%H</td><td>page (canvas) height</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%M</td><td>Magick filename (original file exactly as given, including read mods)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%N</td><td>number of images in current image sequence, report once per image sequence</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%O</td><td>page (canvas) offset ( = %X%Y )</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%P</td><td>page (canvas) size ( = %Wx%H )</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%Q</td><td>image compression quality ( 0 = default )</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%S</td><td>?? scenes ??</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%T</td><td>image time delay (in centi-seconds)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%U</td><td>image resolution units</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%W</td><td>page (canvas) width</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%X</td><td>page (canvas) x offset (including sign)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%Y</td><td>page (canvas) y offset (including sign)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%Z</td><td>unique filename (used for delegates)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%@</td><td>CALCULATED: trim bounding box (without actually trimming)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%#</td><td>CALCULATED: 'signature' hash of image values</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <p>Here is a sample command and its output for an image with filename <code>bird.miff</code> and whose width is 512 and height is 480.</p>
+  <pre class="p-3 mb-3 rounded bg-body-tertiary border font-mono small"><code>-> identify -format "%m:%f %wx%h" bird.miff
+MIFF:bird.miff 512x480</code></pre>
+  <p>Note that all single letter percent escapes can also be used using long form (from IM version 6.7.6-9). For example, <code>%[f]</code> is equivalent to the <code>%f</code> short form.</p>
+  <div class="alert alert-warning border-0 shadow-sm d-flex align-items-center gap-2 mb-4" role="alert">
+    <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+    <div>
+      <strong>WARNING:</strong> Short form percent escapes are NOT performed when the percent is after a number. For example, <code>10%x10</code> does not expand the <code>%x</code> as a percent escape. If you specifically want to expand the 'x', use the long form which overrides this special case (e.g. <code>10%[x]10</code>).
+    </div>
+  </div>
+  <p class="mb-4">Also be warned that calculated attributes can take some time to generate, especially for large images.</p>
+  <!-- Long Form Attribute Percent Escapes -->
+  <h2 class="fw-bold border-bottom pb-2 mb-4 mt-5" id="long-form">
+    <a class="anchor text-decoration-none text-body" href="#long-form">Long Form Attribute Percent Escapes</a>
+  </h2>
+  <p class="text-body-secondary mb-3">In addition to the specific and calculated attributes above, the following are recognized when enclosed in braces (long form):</p>
+  <div class="card im-card shadow-sm mb-5 overflow-hidden">
+    <div style="max-height:75svh; overflow-y:auto; overflow-x:hidden;" class="p-0">
+      <table class="table table-sm table-hover table-striped mb-0 align-middle">
+        <thead class="table-dark sticky-top">
+          <tr>
+            <th class="ps-3 py-2" style="width: 30%;">Long Form Escape</th>
+            <th class="py-2" style="width: 70%;">Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="ps-3 font-mono fw-bold">%[basename]</td><td>base filename, no suffixes (as %t)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[bit-depth]</td><td>Actual bit-depth of the pixel data</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[bounding-box]</td><td>upper left and lower right corners of the image bounding box</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[caption]</td><td>caption meta-data property</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[caption:lines]</td><td>returns the number lines generated when wrapping the caption</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[caption:pointsize]</td><td>returns the pointsize computed during caption: processing</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[channels]</td><td>colorspace mnemonic followed by total number of channels and meta channels, e.g., <code>cmyka 8.3</code> indicates a CMYK image with alpha channel for a total of 8 channels and 3 meta channels.</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[colors]</td><td>Number of unique colors in the image (as of IM 7.0.3.8)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[colorspace]</td><td>colorspace of Image Data (excluding transparency)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[compose]</td><td>&nbsp;</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[compression]</td><td>image compression type</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold"><a href="../convex-hull/index.html" class="text-decoration-none">%[convex-hull]</a></td><td>points that form a convex hull around the foreground object. Use <code><a href="../command-line-options/index.html#define">-define</a> convex-hull:background-color=<em>color</em></code> to identify the image background color. Use <code><a href="../command-line-options/index.html#fuzz">-fuzz</a></code> to allow for a non-uniform background color.</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold"><a href="../convex-hull/index.html" class="text-decoration-none">%[convex-hull:extreme-points]</a></td><td>return the top, right, bottom, and left extreme points of the convex hull.</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[copyright]</td><td>ImageMagick Copyright String</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[depth]</td><td>depth of image for write (as input unless changed)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[deskew:angle]</td><td>The deskew angle in degrees of rotation</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[directory]</td><td>directory part of filename (as %d)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[distortion]</td><td>how well an image resembles a reference image (<a href="../command-line-options/index.html#compare">-compare</a>)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[dominant-color]</td><td>return the dominate image color in hex. Precede usage with <a href="../command-line-options/index.html#kmeans">-kmeans</a>.</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[entropy]</td><td>CALCULATED: entropy of the image</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[extension]</td><td>extension part of filename (as %e)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[gamma]</td><td>value of image gamma</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[group]</td><td>??? window group ???</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[height]</td><td>original height of image (when it was read in)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[histogram:contrast-stretch]</td><td>computed min and max contrast stretch percentage</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[histogram:linear-stretch]</td><td>computed min and max linear stretch percentage</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[input]</td><td>the input image filename.</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[interlace]</td><td>Image interlace mode (as of IM 7.0.3.8)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[kurtosis]</td><td>CALCULATED: kurtosis statistic of image</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[label]</td><td>label meta-data property</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[label:pointsize]</td><td>returns the pointsize computed during label: processing</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[magick]</td><td>coder used to read image (not the file suffix)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[max]</td><td>CALCULATED: maximum value statistic of image</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[mean]</td><td>CALCULATED: average value statistic of image</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[median]</td><td>CALCULATED: median value statistic of image</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[min]</td><td>CALCULATED: minimum value statistic of image</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold"><a href="../convex-hull/index.html" class="text-decoration-none">%[minimum-bounding-box]</a></td><td>Use <code><a href="../command-line-options/index.html#define">-define</a> convex-hull:background-color=<em>color</em></code> to identify the image background color. Use <code><a href="../command-line-options/index.html#fuzz">-fuzz</a></code> to allow for a non-uniform background color. In addition to bounding box points, these properties are set: <code>minimum-bounding-box:area</code>, <code>minimum-bounding-box:width</code>, <code>minimum-bounding-box:height</code>, <code>minimum-bounding-box:angle</code>, and <code>minimum-bounding-box:unrotate</code>.</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[opaque]</td><td>CALCULATED: is image fully-opaque?</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[orientation]</td><td>image orientation</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[page]</td><td>Virtual canvas (page) geometry</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[papersize:<em>name</em>]</td><td>paper size for <em>name</em> in pixels at 72DPI (e.g. papersize:A4)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[printsize.x]</td><td>X printsize</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[printsize.y]</td><td>Y printsize</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[profile:icc]</td><td>ICC profile info</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[profile:icm]</td><td>ICM profile info</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[profiles]</td><td>list of any embedded profiles</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[quality]</td><td>Image quality value (as of IM 7.0.3.8)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[rendering-intent]</td><td>Image rendering intent (as of IM 7.0.3.8)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[resolution.x]</td><td>X density (resolution) without units</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[resolution.y]</td><td>Y density (resolution) without units</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[scene]</td><td>original scene number of image in input file</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[size]</td><td>original size of image (when it was read in)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[skewness]</td><td>CALCULATED: skewness statistic of image</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[standard-deviation]</td><td>CALCULATED: standard deviation statistic of image</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[type]</td><td>CALCULATED: image type</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[unique]</td><td>unique temporary filename ???</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[units]</td><td>image resolution units</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[version]</td><td>Version Information of this running ImageMagick</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[width]</td><td>original width of image (when it was read in)</td></tr>
+          <tr><td class="ps-3 font-mono fw-bold">%[zero]</td><td>zero (unique filename for delegate use)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- Properties Section -->
+  <h2 class="fw-bold border-bottom pb-2 mb-4 mt-5" id="properties">Properties</h2>
+  <p>All other long forms of percent escapes (not single letter long form) are handled in a case-insensitive manner. Such escapes will attempt to look up that name in specific data sources.</p>
+  <p>The primary search space (if not a specific attribute listed above) is a free-form property string. Such strings are associated and saved with images, and are typically set using either the <a href="../command-line-options/index.html#set">-set</a> CLI option (or API equivalent), or from special convenience options (such as <a href="../command-line-options/index.html#label">-label</a>, <a href="../command-line-options/index.html#comment">-comment</a>, <a href="../command-line-options/index.html#caption">-caption</a>).</p>
+  <p>These convenience options are globally saved (as 'global options' so they can be set before images are read), and later are transferred to the property of individual images only when they are read in. At that time any internal percent escape present is then handled.</p>
+  <p>To change a property of an image already in memory, you need to use <a href="../command-line-options/index.html#set">-set</a>.</p>
+  <p class="mb-4">Note that properties, like attributes (and profiles), are saved with images when written, if the image file format allows.</p>
+  <!-- Artifacts and Options Section -->
+  <h2 class="fw-bold border-bottom pb-2 mb-4 mt-5" id="artifacts-options">Artifacts and Options</h2>
+  <p>The previous percent escapes are associated with the primary Attributes and Properties, which is the original and primary focus of such percent escapes.</p>
+  <p>However, there are many operational settings that are used by various ImageMagick operators that can be useful to set and later access. These consist of per-image Artifacts, and Global options (associated with a list of images, typically the current image list).</p>
+  <p>Note that the major difference between an artifact and a property is that artifacts, being an internal operational setting, are not saved with images (if such is possible).</p>
+  <p>For example, when you use <code>-define 'distort:viewport=100x100'</code> you are in fact generating a global option, which the <a href="../command-line-options/index.html#distort">-distort</a> operator will use to modify its behavior (distorted output image 'view').</p>
+  <p>An Option is essentially an Artifact that has been stored globally as part of a list of images (specifically a 'Wand' of images). As such they are identical, in that an Option is simply a global Artifact for all the associated images.</p>
+  <p>As such, you can use <code>-set 'option:distort:viewport' '100x100'</code> to achieve the same result of setting an Artifact for the distort operation to use.</p>
+  <h5 class="fw-bold mt-4 mb-2">Internal Handling of a Global Option...</h5>
+  <p>The Core library ('MagickCore') does not generally directly understand Global Options. As such, continuing the previous example, the <code>DistortImages()</code> function only looks up an artifact to discover if a 'viewport' has been provided to it.</p>
+  <p>How Global Options are used when a library function requests an Artifact is one of the key differences between IMv6 and IMv7.</p>
+  <p>This sets a link back to the global options data, so that if a specific per-image Artifact is not found, then it will look for an equivalent global Option for that image list directly. This saves copying these free-form options into artifacts repeatedly, and means you can now separately define a global option for a list, and an individual overriding artifact for a specific image in that list.</p>
+  <p>Note that many APIs that do not use Wands (PerlMagick for example using arrays of images rather than a Wand) will not have Global Options, only per-image Artifacts.</p>
+  <p class="mb-4">In summary, a Global Option, if available, is equivalent to a per-image Artifact.</p>
+  <!-- Glob-Pattern Listing Section -->
+  <h2 class="fw-bold border-bottom pb-2 mb-4 mt-5" id="glob-pattern">Glob-Pattern Listing of Properties, Artifacts and Options</h2>
+  <p>The <var>setting</var> can contain a glob pattern. As such, you can now list all free-form string properties, artifacts, and options (but not specific image attributes) using:</p>
+  <pre class="p-3 mb-4 rounded bg-body-tertiary border font-mono small"><code>magick ... \
    -print "__Properties__\n%[*]" \
    -print "__Artifacts__\n%[artifact:*]" \
    -print "__Options__\n%[option:*]" \
-   ...  </code></pre>
-
-<p> The format of glob patterns are very specific and as such is generally
-only used to list specific settings, such as when debugging, rather than being
-used for image processing use. </p>
-
-
-<h2>Calculated Percent Escape Prefixes</h2>
-
-<p>There are some special prefixes (before the first ':') which performs
-calculations based on the user provided string that follows that prefix.  For
-example you can do a numerical calculation use <code>%[fx:...]</code> to
-evaluate the given <a href="../fx/index.html">FX</a> expressions:</p>
-
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><code>%[fx:<var>expression</var>] </code></pre>
-
-<p>Use <code>pixel:</code> or <code>hex:</code> to evaluate a pixel color as defined by the <a
-href="../fx/index.html">FX</a>
-expression:</p>
-
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><code>%[pixel:<var>expression</var>] </code></pre>
-
-<p>Use <a href="../command-line-options/index.html#define">-define</a> to specify the color compliance (e.g. <code>-define pixel:compliance=css</code>)</p>.
-
-<h2>Specific Profile Percent Escape Prefixes</h2>
-
-<p>You can also use the following special formatting syntax to print EXIF
-mage meta-data that was included in the image read in:</p>
-
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><code>%[EXIF:<var>tag</var>] </code></pre>
-
-<p>Choose <var>tag</var> from the following:</p>
-
-<pre class="overflow-auto p-3 mb-2 text-body-secondary bg-body-tertiary" style="max-height:75svh;"><code>
-*  (print all EXIF tags, in keyword=data format)
+   ...</code></pre>
+  <p class="mb-4">The format of glob patterns is very specific and as such is generally only used to list specific settings, such as when debugging, rather than being used for everyday image processing.</p>
+  <!-- Calculated Percent Escape Prefixes Section -->
+  <h2 class="fw-bold border-bottom pb-2 mb-4 mt-5" id="calculated-escapes">Calculated Percent Escape Prefixes</h2>
+  <p>There are some special prefixes (before the first ':') which perform calculations based on the user-provided string that follows that prefix. For example, you can do a numerical calculation using <code>%[fx:...]</code> to evaluate the given <a href="../fx/index.html">FX</a> expressions:</p>
+  <pre class="p-3 mb-3 rounded bg-body-tertiary border font-mono small"><code>%[fx:<var>expression</var>]</code></pre>
+  <p>Use <code>pixel:</code> or <code>hex:</code> to evaluate a pixel color as defined by the <a href="../fx/index.html">FX</a> expression:</p>
+  <pre class="p-3 mb-3 rounded bg-body-tertiary border font-mono small"><code>%[pixel:<var>expression</var>]</code></pre>
+  <p class="mb-4">Use <a href="../command-line-options/index.html#define">-define</a> to specify the color compliance (e.g., <code>-define pixel:compliance=css</code>).</p>
+  <!-- Specific Profile Percent Escape Prefixes Section -->
+  <h2 class="fw-bold border-bottom pb-2 mb-4 mt-5" id="profiles">Specific Profile Percent Escape Prefixes</h2>
+  <p>You can also use the following special formatting syntax to print EXIF image metadata that was included in the image read in:</p>
+  <pre class="p-3 mb-3 rounded bg-body-tertiary border font-mono small"><code>%[EXIF:<var>tag</var>]</code></pre>
+  <p>Choose <var>tag</var> from the following:</p>
+  <pre class="overflow-auto p-3 mb-4 rounded bg-body-tertiary border font-mono small" style="max-height:50svh;"><code>*  (print all EXIF tags, in keyword=data format)
 !  (print all EXIF tags, in tag_number data format)
 #hhhh (print data for EXIF tag #hhhh)
 ImageWidth
@@ -987,20 +665,12 @@ SubjectLocation
 ExposureIndex
 SensingMethod
 FileSource
-SceneType </code></pre>
-<br/>
-<p>Surround the format specification with quotation marks to prevent your
-shell from misinterpreting any spaces and square brackets.</p>
-
-<p>The following special formatting syntax can be used to print IPTC
-information contained in the file:</p>
-
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><code>%[IPTC:<var>dataset</var>:<var>record</var>] </code></pre>
-
-<p>Select <var>dataset</var> and <var>record</var> from the following:</p>
-
-<pre class="overflow-auto p-3 mb-2 text-body-secondary bg-body-tertiary text-body-secondary bg-body-tertiary;" style="max-height:75svh;"><code>
-  Envelope Record
+SceneType</code></pre>
+  <p>Surround the format specification with quotation marks to prevent your shell from misinterpreting any spaces and square brackets.</p>
+  <p>The following special formatting syntax can be used to print IPTC information contained in the file:</p>
+  <pre class="p-3 mb-3 rounded bg-body-tertiary border font-mono small"><code>%[IPTC:<var>dataset</var>:<var>record</var>]</code></pre>
+  <p>Select <var>dataset</var> and <var>record</var> from the following:</p>
+  <pre class="overflow-auto p-3 mb-4 rounded bg-body-tertiary border font-mono small" style="max-height:50svh;"><code>Envelope Record
   1:00  Model Version
   1:05  Destination
   1:20  File Format
@@ -1015,7 +685,6 @@ information contained in the file:</p>
   1:100  UNO (Unique Name of Object)
   1:120  ARM Identifier
   1:122  ARM Version
-
 Application Record
   2:00  Record Version
   2:03  Object Type Reference
@@ -1073,81 +742,112 @@ Application Record
   2:200  ObjectData Preview File Format
   2:201  ObjectData Preview File Format Version
   2:202  ObjectData Preview Data
-
 Pre-ObjectData Descriptor Record
   7:10   Size Mode
   7:20   Max Subfile Size
   7:90   ObjectData Size Announced
   7:95   Maximum ObjectData Size
-
 ObjectData Record
   8:10   Subfile
-
 Post ObjectData Descriptor Record
   9:10   Confirmed ObjectData Size</code></pre>
 </div>
 
         </div>
-        <div class="col-lg-3 col-12 ps-lg-4 border-start d-flex flex-column align-items-center align-items-lg-start">
-          <div class="container text-center my-3">
-            <a href="../image/wizard.png" rel="noopener noreferrer" target="_blank">
-              <img alt="ImageMagick Wizard" class="img-fluid img-thumbnail" height="351" loading="lazy" src="../image/wizard.jpg" width="264">
-            </a>
-            <p class="mt-2"><iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border:0 !important; width:107px !important; height:35px !important;"></iframe></p>
+
+        <!-- Right Sidebar -->
+        <aside class="col-lg-4">
+          <div class="sticky-top" style="top: 90px;">
+            <!-- Sponsor Card -->
+            <div class="card im-card mb-4 overflow-hidden border-0 bg-gradient bg-primary bg-opacity-10">
+              <div class="card-body p-4 text-center">
+                <img src="../image/wizard.jpg" alt="ImageMagick Wizard" class="rounded shadow mb-3 img-fluid" style="max-height: 200px;">
+                <h5 class="fw-bold">Support Open Source</h5>
+                <p class="small text-body-secondary mb-3">Help maintain and sustain ImageMagick development.</p>
+                <iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="114" class="border-0"></iframe>
+              </div>
+            </div>
+
+            <!-- Banner Ad Container -->
+            <div class="text-center p-2 mv-4 rounded border border-secondary-subtle bg-body-tertiary">
+              <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
+              <ins class="adsbygoogle"
+                   style="display:block"
+                   data-ad-client="ca-pub-3129977114552745"
+                   data-ad-slot="1083537442"
+                   data-ad-format="auto"
+                   data-full-width-responsive="true"></ins>
+              <script>
+                   (adsbygoogle = window.adsbygoogle || []).push({});
+              </script>
+            </div>
+
+            <!-- Quick Links Navigation -->
+            <div class="card im-card p-3 mb-4">
+              <h6 class="fw-bold text-uppercase fs-7 text-secondary mb-3">Resources</h6>
+              <ul class="nav flex-column gap-1 fs-6">
+                <li class="nav-item"><a href="../security-policy/index.html" class="nav-link p-2 rounded text-body-secondary"><i class="bi bi-shield-check me-2 text-success"></i> Security Policy</a></li>
+                <li class="nav-item"><a href="../license/index.html" class="nav-link p-2 rounded text-body-secondary"><i class="bi bi-file-earmark-text me-2 text-info"></i> Open Source License</a></li>
+                <li class="nav-item"><a href="../porting/index.html" class="nav-link p-2 rounded text-body-secondary"><i class="bi bi-signpost-split me-2 text-warning"></i> Porting v6 to v7</a></li>
+                <li class="nav-item"><a href="../formats/index.html" class="nav-link p-2 rounded text-body-secondary"><i class="bi bi-filetype-png me-2 text-danger"></i> Supported Formats</a></li>
+              </ul>
+            </div>
           </div>
-          <div class="container text-center my-3">
-            <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745"
-              crossorigin="anonymous"></script>
-            <!-- Banner Ad -->
-            <ins class="adsbygoogle"
-              style="display:block"
-              data-ad-client="ca-pub-3129977114552745"
-              data-ad-slot="1083537442"
-              data-ad-format="auto"
-              data-full-width-responsive="true"></ins>
-            <script>
-              (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="im-footer py-5 mt-auto">
+    <div class="container-xl">
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-4">
+          <a class="navbar-brand im-brand mb-2 fs-5" href="../index.html">ImageMagick</a>
+          <p class="small text-secondary">Mastering Digital Image Alchemy. The open-source suite for image creation, conversion, and batch manipulation.</p>
+        </div>
+        <div class="col-6 col-md-3 col-lg-2">
+          <h6 class="text-light fw-bold mb-3">Navigation</h6>
+          <ul class="list-unstyled small d-flex flex-column gap-2">
+            <li><a href="../download/index.html">Download</a></li>
+            <li><a href="../command-line-tools/index.html">Tools</a></li>
+            <li><a href="../develop/index.html">APIs & Libraries</a></li>
+            <li><a href="../sitemap/index.html">Sitemap</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-md-3 col-lg-2">
+          <h6 class="text-light fw-bold mb-3">Community</h6>
+          <ul class="list-unstyled small d-flex flex-column gap-2">
+            <li><a href="https://github.com/ImageMagick/ImageMagick/discussions" target="_blank">Discussions</a></li>
+            <li><a href="https://github.com/ImageMagick/ImageMagick/issues" target="_blank">Report an Issue</a></li>
+            <li><a href="../support/index.html">Sponsor Us</a></li>
+            <li><a href="../cite/index.html">Cite ImageMagick</a></li>
+          </ul>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <h6 class="text-light fw-bold mb-3">Connect</h6>
+          <div class="d-flex gap-3 fs-5">
+            <a href="https://github.com/imagemagick/imagemagick" target="_blank" aria-label="GitHub"><i class="bi bi-github"></i></a>
+            <a href="https://x.com/imagemagick" target="_blank" aria-label="X/Twitter"><i class="bi bi-twitter-x"></i></a>
           </div>
+          <p class="small text-secondary mt-3 mb-0">Copyright © 1999 ImageMagick Studio LLC</p>
         </div>
       </div>
-      <a aria-label="About ImageMagick" class="btn btn-outline-warning mt-3" href="../index-2.html">About ImageMagick</a>
-    </main><!-- /.container -->
-    <footer class="text-center pt-5 my-5 text-body-secondary border-top">
-      <div class="container-fluid">
-        <a href="../security-policy/index.html">Security</a> •
-        <a href="../news/index.html">News</a>
-        &nbsp;
-        <a href="#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../image/wand.png"></a>
-        &nbsp;
-        <a href="../links/index.html">Related</a> •
-        <a href="../sitemap/index.html">Sitemap</a>
-        <br>
-        <a href="../support/index.html">Sponsor</a> •
-        <a href="../cite/index.html">Cite</a> •
-        <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-        <a href="https://github.com/ImageMagick/ImageMagick/discussions">Contact Us</a>
-        <br>
-        <a href="https://github.com/imagemagick/imagemagick" rel="noopener noreferrer" target="_blank" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false">
-            <title>GitHub</title>
-            <path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z" />
-          </svg></a> •
-        <a href="https://twitter.com/imagemagick" rel="noopener noreferrer" target="_blank" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 300 300" width="2%" height="2%" role="img" focusable="false">
-            <title>Twitter</title>
-            <path d="M178.57 127.15 290.27 0h-26.46l-97.03 110.38L89.34 0H0l117.13 166.93L0 300.25h26.46l102.4-116.59 81.8 116.59h89.34M36.01 19.54H76.66l187.13 262.13h-40.66" />
-          </svg></a>
-        <br>
-        <small>Copyright © 1999 ImageMagick Studio LLC</small>
-      </div>
-    </footer>
-    <div style="visibility: hidden;">
-      <div class="gcse-search"></div>
     </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function setTheme(theme) {
+      localStorage.setItem('theme', theme);
+      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const applied = theme === 'auto' ? (systemDark ? 'dark' : 'light') : theme;
+      document.documentElement.setAttribute('data-bs-theme', applied);
+    }
+  </script>
+  <div style="visibility: hidden;">
+    <div class="gcse-search"></div>
   </div>
-
-  <!-- Javascript assets -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
-
 
 </html>

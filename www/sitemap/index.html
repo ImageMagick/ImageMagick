@@ -11,555 +11,778 @@
   <meta name="description" content="Explore the ImageMagick sitemap for quick access to downloads, installation guides, command-line tools, APIs, supported formats, tutorials, and community support. Navigate directly to resources for creating, editing, and converting images across 200+ formats.">
   <link rel="canonical" href="index.html">
   <meta name="robots" content="index, follow">
-  <meta name="theme-color" content="#000000">
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
+  <meta name="theme-color" content="#0d1117">
+  
   <link rel="shortcut icon" href="../image/wand.png" type="image/png">
   <link rel="apple-touch-icon" href="../image/wand.png" type="image/png">
-  <link rel="preconnect" href="https://cdn.jsdelivr.net/">
-  <link rel="preconnect" href="https://localhost/">
-  <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" as="style" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" crossorigin="anonymous">
-  <!-- Accessibility Enhancement -->
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com/">
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+
   <style>
-    html {
-      scroll-padding-top: 70px;
-    }
-
-    iframe {
-      width: 100% !important;
-      max-width: 100% !important;
-      height: 400px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
-    }
-
-    a.nav-link:hover,
-    a.dropdown-item:hover {
-      color: #ffc107 !important;
-      text-shadow: 0px 2px 4px rgba(255, 193, 7, 0.8);
-    }
-
-    .btn-outline-warning {
-      color: #cd7f32;
-      border-color: #cd7f32;
-    }
-
-    .navbar-brand {
-      color: #d4af37;
-      transition: color 0.3s ease, text-shadow 0.3s ease;
-    }
-
-    .navbar-brand:hover {
-      color: #e9c03d;
-      text-shadow: 0px 2px 4px rgba(203, 163, 120, 0.6);
-    }
-
     :root {
-      --bs-code-color: revert;
+      --im-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --im-font-mono: 'Fira Code', monospace;
+      --im-primary: #8b5cf6;
+      --im-primary-hover: #7c3aed;
+      --im-accent: #f59e0b;
+      --im-bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
     }
 
-    .table {
-      table-layout: fixed;   /* force equal distribution of width */
-      width: 100%;           /* table spans full container */
+    body {
+      font-family: var(--im-font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
-    .table td, .table th {
-      white-space: normal;     /* allow wrapping */
-      word-break: break-word;  /* break long words/strings */
+    code, kbd, pre, .font-mono {
+      font-family: var(--im-font-mono) !important;
+    }
+
+    /* Modern Navbar */
+    .im-navbar {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background-color: rgba(15, 23, 42, 0.85) !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .im-navbar .nav-link {
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.75);
+      transition: all 0.2s ease;
+      padding: 0.5rem 0.85rem;
+      border-radius: 0.375rem;
+    }
+
+    .im-navbar .nav-link:hover,
+    .im-navbar .nav-link.active {
+      color: #ffffff !important;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .im-brand {
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #a78bfa 0%, #f472b6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Hero Section */
+    .im-hero {
+      background: var(--im-bg-gradient);
+      color: #ffffff;
+      padding: 4rem 0 3.5rem;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .im-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(0,0,0,0) 70%);
+      pointer-events: none;
+    }
+
+    /* Terminal Widget */
+    .terminal-card {
+      background: #090d16;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 0.75rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+    }
+
+    .terminal-header {
+      background: rgba(255, 255, 255, 0.04);
+      padding: 0.6rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .terminal-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    /* Cards & Container */
+    .im-card {
+      border: 1px solid var(--bs-border-color-translucent);
+      border-radius: 0.75rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      background: var(--bs-body-bg);
+    }
+
+    .im-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Footer */
+    .im-footer {
+      margin-top: auto;
+      background: #090d16;
+      color: rgba(255, 255, 255, 0.6);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .im-footer a {
+      color: rgba(255, 255, 255, 0.75);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .im-footer a:hover {
+      color: var(--im-primary);
     }
   </style>
-  <!-- Open Graph Meta Tags -->
+
+  <!-- Open Graph -->
   <meta property="og:title" content="ImageMagick | Sitemap">
   <meta property="og:description" content="Explore the ImageMagick sitemap for quick access to downloads, installation guides, command-line tools, APIs, supported formats, tutorials, and community support. Navigate directly to resources for creating, editing, and converting images across 200+ formats.">
   <meta property="og:image" content="../image/logo.png">
-  <meta property="og:logo" content="../image/logo.png">
   <meta property="og:url" content="index.html">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="ImageMagick">
-  <meta property="og:locale" content="en_us">
-  <!-- Twitter Card Meta Tags -->
-  <meta name="twitter:card" content="summary_large_image">
-  $site=strtolower("ImageMagick");
-  <meta name="twitter:site" content="@imagemagick">
-  <meta name="twitter:creator" content="@imagemagick">
-  <meta name="twitter:title" content="ImageMagick | Sitemap">
-  <meta name="twitter:description" content="$this->description">
-  <meta name="twitter:image" content="../image/logo.png">
-  <meta name="twitter:image:alt" content="ImageMagick logo and tag line">
+
   <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        "name": "ImageMagick",
-        "url": "ImageMagick | Sitemap",
-        "image": "https://imagemagick.org/image/logo.png",
-        "description": "$this->description",
-        "applicationCategory": "Multimedia",
-        "operatingSystem": "Windows, macOS, Linux, Unix",
-        "softwareVersion": "7.1.2-31",
-        "license": "https://imagemagick.org/license/",
-        "creator": {
-          "@type": "Organization",
-          "name": "ImageMagick Studio LLC",
-          "url": "https://imagemagick.org"
-        },
-			  "keywords": [
-          "".ucfirst($title)."",
-          "image processing software",
-          "image conversion tool",
-          "batch image editing",
-          "open-source image editor",
-          "ImageMagick command-line",
-          "resize images ImageMagick",
-          "crop and rotate images",
-          "ImageMagick tutorial",
-          "ImageMagick automation",
-          "ImageMagick for developers",
-          "ImageMagick CLI",
-          "ImageMagick filters and effects",
-          "ImageMagick scripting",
-          "ImageMagick API integration"
-        ],
-			  "sameAs": [
-          "https://github.com/ImageMagick",
-          "https://x.com/imagemagick"
-        ],
-        "offers": {
-          "@type": "Offer",
-          "price": "0.00",
-          "priceCurrency": "USD"
-        }
-      }
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "ImageMagick",
+    "url": "https://imagemagick.org/sitemap/",
+    "image": "https://imagemagick.org/image/logo.png",
+    "description": "Explore the ImageMagick sitemap for quick access to downloads, installation guides, command-line tools, APIs, supported formats, tutorials, and community support. Navigate directly to resources for creating, editing, and converting images across 200+ formats.",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Windows, macOS, Linux, Unix",
+    "softwareVersion": "7.1.2-34",
+    "license": "https://imagemagick.org/license/",
+    "offers": {
+      "@type": "Offer",
+      "price": "0.00",
+      "priceCurrency": "USD"
+    }
+  }
   </script>
-  <!-- Google Custom Search -->
   <script async src="https://localhost/cse.js?cx=8720b81722164487b"></script>
-  <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
 </head>
 
 <body>
+  <!-- Theme Init -->
   <script>
-    function setTheme(theme) {
-      localStorage.setItem('theme', theme);
-      updateThemeIcon(theme);
-      document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? getSystemTheme() : theme);
-    }
-    function getSystemTheme() {
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    }
-    function updateThemeIcon(theme) {
-      const iconMap = {
-        light: '☀️',
-        dark: '🌙',
-        auto: '🌓'
-      };
-      document.getElementById('currentThemeIcon').textContent = iconMap[theme] || '🌓';
-    }
-    document.addEventListener('DOMContentLoaded', () => {
-      const savedTheme = localStorage.getItem('theme') || 'auto';
-      setTheme(savedTheme);
-    });
+    (function() {
+      const saved = localStorage.getItem('theme') || 'auto';
+      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const applied = saved === 'auto' ? (systemDark ? 'dark' : 'light') : saved;
+      document.documentElement.setAttribute('data-bs-theme', applied);
+    })();
   </script>
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <div class="container-fluid">
-      <a class="navbar-brand fw-bold" href="../index-2.html" title="ImageMagick">ImageMagick</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#magick-navbars" aria-controls="magick-navbars" aria-expanded="false" aria-label="Toggle navigation">
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top im-navbar">
+    <div class="container-xl">
+      <a class="navbar-brand im-brand" href="../index.html">
+        <img src="../image/wand.png" alt="Wand Icon" width="24" height="24" class="d-inline-block align-text-top">
+        ImageMagick
+      </a>
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#imNavbar" aria-controls="imNavbar" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <div class="collapse navbar-collapse" id="magick-navbars">
-        <ul class="navbar-nav me-auto">
+      <div class="collapse navbar-collapse" id="imNavbar">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3">
           <li class="nav-item">
-            <a class="nav-link "" href="../download/index.html">Download</a>
+            <a class="nav-link " href="../download/index.html">Download</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link "" href="../command-line-tools/index.html">Tools</a>
+            <a class="nav-link " href="../command-line-tools/index.html">Tools</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link "" href="../command-line-processing/index.html">CLI</a>
+            <a class="nav-link " href="../command-line-processing/index.html">CLI Usage</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link "" href="../develop/index.html">Develop</a>
+            <a class="nav-link " href="../develop/index.html">API & Develop</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" rel="noopener noreferrer" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
           </li>
         </ul>
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item ms-3">
-            <form class="d-flex form-inline" action="https://imagemagick.org/sitemap/">
-              <input class="form-control me-2" type="text" name="q" placeholder="Search site..." aria-label="Search">
-              <button class="btn btn-outline-warning" type="submit" name="sa">Search</button>
-            </form>
-          </li>
-          <li class="nav-item dropdown ms-3">
-            <a class="nav-link dropdown-toggle" href="#" id="themeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <span id="currentThemeIcon">🌓</span>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="themeDropdown">
-              <li><a class="dropdown-item" href="#" onclick="setTheme('light')">☀️ Light</a></li>
-              <li><a class="dropdown-item" href="#" onclick="setTheme('dark')">🌙 Dark</a></li>
-              <li><a class="dropdown-item" href="#" onclick="setTheme('auto')">🌓 Auto</a></li>
+
+        <div class="d-flex align-items-center gap-2">
+          <!-- Search Trigger Modal / Input -->
+          <form class="d-flex" action="https://imagemagick.org/sitemap/index.html" role="search">
+            <div class="input-group input-group-sm">
+              <input class="form-control bg-body-tertiary border-secondary-subtle" type="search" placeholder="Search site..." name="q" aria-label="Search">
+              <button class="btn btn-outline-warning" type="submit" name="sa"><i class="bi bi-search"></i></button>
+            </div>
+          </form>
+
+          <!-- Theme Dropdown -->
+          <div class="dropdown">
+            <button class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-1 border-0 text-white" type="button" id="themeSelect" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-circle-half"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="themeSelect">
+              <li><button class="dropdown-item d-flex align-items-center gap-2" onclick="setTheme('light')"><i class="bi bi-sun-fill"></i> Light</button></li>
+              <li><button class="dropdown-item d-flex align-items-center gap-2" onclick="setTheme('dark')"><i class="bi bi-moon-stars-fill"></i> Dark</button></li>
+              <li><button class="dropdown-item d-flex align-items-center gap-2" onclick="setTheme('auto')"><i class="bi bi-circle-half"></i> Auto</button></li>
             </ul>
-          </li>
-        </ul>
+          </div>
+
+          <a href="https://github.com/ImageMagick/ImageMagick" target="_blank" class="btn btn-sm btn-outline-light d-flex align-items-center gap-1 ms-1">
+            <i class="bi bi-github"></i> <span class="d-none d-xl-inline">GitHub</span>
+          </a>
+        </div>
       </div>
     </div>
   </nav>
 
-  <div class="col-lg-8 mx-auto text-body-secondary pt-5 pt-lg-5">
-    <header class="d-flex align-items-center pb-3 mb-5 border-bottom">
-      <div class="mt-3 ms-3">
-        <a href="../index-2.html" class="text-decoration-none">
-          <h1 class="fs-2 mb-1 display-5">Sitemap</h1>
-        </a>
-        <h2 class="fs-5 text-muted h4">ImageMagick</h2>
-      </div>
-    </header>
-
-    <main role="main" class="container">
-      <div class="row g-4">
-        <div class="col-lg-9 col-12">
-          <div>
-<p class="text-center"><a href="#overview">Overview</a> • <a href="#download">Download ImageMagick</a> • <a href="#install">Install ImageMagick</a> • <a href="#command-line">Command-line Tools</a> • <a href="#program-interfaces">Program Interfaces</a> • <a href="#formats">Image Formats</a> • <a href="#help">Getting Help</a> • <a href="#support">Support ImageMagick</a> • <a href="#miscellaneous">Miscellaneous Topics</a></p>
-
-<p class="lead">Use this ImageMagick sitemap to quickly jump to one of the areas of interest listed below.  If you can't find what you want on this page, try our <a href="../search/index4840.html?q=ImageMagick&amp;sa=">site search</a>.</p>
-
-<h2><a class="anchor" id="overview"></a>Overview</h2>
-
-<dl >
-  <li><a href="../index-2.html">Introduction</a>: convert, edit, or compose images from the command-line or program interface.</li>
-  <li><a href="../examples/index.html">Examples of ImageMagick usage</a>: a few examples that show what you can do with an image using ImageMagick.</li>
-  <li><a href="https://usage.imagemagick.org/">Anthony Thyssen's examples of ImageMagick usage</a>:  a comprehensive tutorial of using ImageMagick from the command line.</li>
-  <li><a href="../color/index.html">Color names</a>: how to specify a color name, a hex color, or a numerical RGB, RGBA, HSL, HSLA, CMYK, or CMYKA color.</li>
-  <li><a href="../color-management/index.html">Color management</a>: accurate color management with color profiles or in lieu of-- built-in gamma compression or expansion as demanded by the colorspace.</li>
-  <li><a href="../resources/index.html">Resources</a>: ImageMagick depends on external resources including configuration files, loadable modules, fonts, and environment variables.</li>
-  <li><a href="../openmp/index.html">Parallel execution</a>: ImageMagick is threaded to take advantage of speed-ups offered by the multicore processor chips.</li>
-  <li><a href="../security-policy/index.html">Security policy</a>: best practices strongly encourage you to configure a security policy that suits your local environment.</li>
-  <li><a href="../architecture/index.html">Architecture</a>: get to know more about the software and algorithms behind ImageMagick.</li>
-  <li><a href="../license/index.html">License</a>: the legally binding and authoritative terms and conditions for use, reproduction, and distribution of ImageMagick.</li>
-  <li><a href="../export/index.html">Export classification</a>: export control status of ImageMagick.</li>
-  <li><a href="../privacy-policy/index.html">Privacy policy</a>: we do not collect personal identifier information.</li>
-  <li><a href="../porting/index.html">ImageMagick version 7</a>: learn how ImageMagick version 7 differs from previous versions.</li>
-  <li><a href="../changelog/index.html">Changelog</a>: a chronological list of changes, bug fixes, and new features for each ImageMagick release.</li>
-  <li><a href="../history/index.html">History</a>: how ImageMagick was conceived and developed.</li>
-</dl>
-
-<h2><a class="anchor" id="download"></a>Download ImageMagick</h2>
-
-<dl >
-  <li><a href="../download/index.html">Download ImageMagick</a>: ImageMagick source and binary distributions are available from a variety of FTP and Web mirrors.</li>
-  <li><a href="https://download.imagemagick.org/archive/">Linux source</a>: Linux source distributions.</li>
-  <li><a href="https://download.imagemagick.org/archive/windows/">Windows source</a>: Windows source distributions.</li>
-  <li><a href="https://download.imagemagick.org/archive/binaries/">Linux and Windows binaries</a>: Linux and Windows binary distributions.</li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick">Git repository</a>: stable and development source releases.</li>
-</dl>
-
-<h2><a class="anchor" id="install"></a>Install ImageMagick</h2>
-
-  <p>You can install ImageMagick from source. However, if you don't have a proper development environment or if you're anxious to get started, download a ready-to-run Linux or Windows executable.</p>
-<dl >
-    <li><a href="../install-source/index.html">Install from source</a>: ImageMagick builds under Windows, macOS, and Linux.</li>
-</dl>
-
-<h2><a class="anchor" id="command-line"></a>Command-line Tools</h2>
-<dl >
-  <li><a href="../command-line-tools/index.html">Command-line tools</a>: overview of the ImageMagick commands.
-  <ul >
-    <li><a href="../magick/index.html">magick</a>: convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and more.</li>
-    <li><a href="../animate/index.html">magick animate</a>: animates an image sequence on any X server.</li>
-    <li><a href="../compare/index.html">magick compare</a>: mathematically and visually annotate the difference between an image and its reconstruction.</li>
-    <li><a href="../composite/index.html">magick composite</a>: overlaps one image over another.</li>
-    <li><a href="../conjure/index.html">magick conjure</a>: interprets and executes scripts written in the Magick Scripting Language (MSL).</li>
-    <li><a href="../display/index.html">magick display</a>: displays an image or image sequence on any X server.</li>
-    <li><a href="../identify/index.html">magick identify</a>: describes the format and characteristics of one or more image files.</li>
-    <li><a href="../import/index.html">magick import</a>: saves any visible window on an X server and outputs it as an image file.</li>
-    <li><a href="../mogrify/index.html">magick mogrify</a>: resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and more.</li>
-    <li><a href="../montage/index.html">magick montage</a>: create a composite image by combining several separate images.</li>
-    <li><a href="../stream/index.html">magick stream</a>: a lightweight tool to stream one or more pixel components of the image or portion of the image to your choice of storage formats.</li>
-  </ul></li>
-  <li><a href="../command-line-processing/index.html">Command line processing</a>: the anatomy of the command line.</li>
-  <li><a href="../command-line-options/index.html">Command line options</a>: annotated list of all options that can appear on the command-line.</li>
-  <li><a href="../fx/index.html">Fx</a>: apply a mathematical expression to an image or image channels.</li>
-  <li><a href="http://www.fmwconcepts.com/imagemagick/" rel="noopener noreferrer" target="_blank">Fred's ImageMagick Scripts</a>:  a plethora of command-line scripts that perform geometric transforms, blurs, sharpens, edging, noise removal, and color manipulations.</li>
-</dl>
-
-<h2><a class="anchor" id="program-interfaces"></a>Program Interfaces</h2>
-
-<dl >
-  <li><a href="../develop/index.html">Program interfaces</a>: application programming interfaces.
-  <ul >
-    <li><a href="http://common-lisp.net/project/cl-magick/">CL-Magick</a>: provides a Common Lisp interface to the ImageMagick library.</li>
-    <li><a href="https://github.com/dlemstra/Magick.NET">Magick.NET</a>: Use Magick.NET to convert, compose, and edit images from Windows .NET.</li>
-    <li><a href="../magick%2b%2b/index.html">Magick++</a>: provides an object-oriented C++ interface to ImageMagick.</li>
-    <li><a href="http://pecl.php.net/package/imagick">IMagick</a>: is a native PHP extension to create and modify images using the ImageMagick API.</li>
-    <li><a href="https://github.com/techblue/jmagick">JMagick</a>: provides an object-oriented Java interface to ImageMagick.</li>
-    <li><a href="../magick-core/index.html">MagickCore</a>: C API, recommended for wizard-level developers.</li>
-    <li><a href="../magick-wand/index.html">MagickWand</a>: convert, compose, and edit images from the C language.</li>
-    <li><a href="https://code.google.com/archive/p/nmagick">nMagick</a>: is a port of the ImageMagick library to the haXe and Neko platforms.</li>
-    <li><a href="https://wiki.freepascal.org/PascalMagick">PascalMagick</a>: a Pascal binding for the MagickWand API and also the low-level MagickCore library.</li>
-    <li><a href="../perl-magick/index.html">PerlMagick</a>: convert, compose, and edit images from the Perl language.</li>
-    <li><a href="https://download.imagemagick.org/archive/python/">PythonMagick</a>: an object-oriented Python interface to ImageMagick.</li>
-    <li><a href="https://rmagick.github.io/">RMagick</a>: is an interface between the Ruby programming language and ImageMagick.</li>
-    <li><a href="https://download.imagemagick.org/archive/tcl/">TclMagick</a>: a native Tcl-extension to the ImageMagick MagickWand API.</li>
-  </ul></li>
-</dl>
-
-<h2><a class="anchor" id="format"></a>Image Formats</h2>
-<dl >
-  <li><a href="../formats/index.html">Supported image formats</a>: annotated list of all image formats that ImageMagick can read and/or write.</li>
-  <li><a href="../motion-picture/index.html">Motion picture digital images</a>: use SMPTE DPX Version 2.0 to process images used by the motion picture (film and high-definition) industry.</li>
-  <li><a href="../high-dynamic-range/index.html">High dynamic-range images</a>: accurately represent the wide range of intensity levels found in real scenes ranging from the brightest direct sunlight to the deepest darkest shadows.</li>
-  <li><a href="../magick-vector-graphics/index.html">Magick Vector Graphics</a>: a modularized language for describing two-dimensional vector and mixed vector/raster graphics in ImageMagick.</li>
-  <li><a href="../miff/index.html">Magick Image File Format</a>: MIFF is ImageMagick's own platform-independent format for storing bitmap images.</li>
-</dl>
-
-<h2><a class="anchor" id="help"></a>Getting Help</h2>
-
-<dl >
-  <li><a href="https://github.com/ImageMagick/ImageMagick/discussions">Discussions</a> forums: to get help from fellow ImageMagick users and developers, post to these forums.</li>
-</dl>
-
-<h2><a class="anchor" id="support"></a>Support ImageMagick</h2>
-
-<dl >
-  <li><a href="https://github.com/ImageMagick/ImageMagick/issues">Report bugs and vulnerabilities</a>: our highest priority is to fix security defects and bug reports, usually within 48 hours of your report.</li>
-  <li><a href="../support/index.html">Sponsor ImageMagick</a>: contribute bug fixes, enhancements, hardware, funds, etc. to ensure the ImageMagick project thrives.</li>
-</dl>
-
-<h2><a class="anchor" id="miscellaneous"></a>Miscellaneous Topics</h2>
-<div style="max-height:75svh; overflow-y:auto; overflow-x:hidden;">
-<table class="table table-sm table-hover table-striped">
-  <colgroup>
-    <col style="width:30%">
-    <col style="width:70%">
-  </colgroup>
-  <tr>
-    <td><a href="https://usage.imagemagick.org/anim_basics/">Animation</a></td>
-    <td>create a GIF animation sequence from a group of images.</td>
-  </tr>
-  <tr>
-    <td><a href="../command-line-options/index.html#bilateral-blur">Bilateral blur</a></td>
-    <td>non-linear, edge-preserving, and noise-reducing smoothing filter.</td>
-  </tr>
-  <tr>
-    <td><a href="../color-management/index.html">Color management</a></td>
-    <td>accurate color management with color profiles or in lieu of-- built-in gamma compression or expansion as demanded by the colorspace.</td>
-  </tr>
-  <tr>
-    <td><a href="../color-thresholding/index.html">Color thresholding</a></td>
-    <td>force all pixels in the color range to white otherwise black.</td>
-  </tr>
-  <tr>
-    <td><a href="../command-line-processing/index.html">Command-line processing</a></td>
-    <td>utilize ImageMagick from the command-line.</td>
-  </tr>
-  <tr>
-    <td><a href="https://en.wikipedia.org/wiki/Complex_text_layout">Complex text layout</a></td>
-    <td>bidirectional text support and shaping.</td>
-  </tr>
-  <tr>
-    <td><a href="../composite/index.html">Composite</a></td>
-    <td>overlap one image over another.</td>
-  </tr>
-  <tr>
-    <td><a href="../connected-components/index.html">Connected component labeling</a></td>
-    <td>uniquely label connected regions in an image.</td>
-  </tr>
-  <tr>
-    <td><a href="../content-provenance-authenticity/index.html">Content provenance authenticity</a></td>
-    <td>embed and verify content provenance using cryptographic keys, certificates, and manifests. This enables trusted workflows for digital assets.</td>
-  </tr>
-  <tr>
-    <td><a href="../convex-hull/index.html">Convex hull</a></td>
-    <td>smallest area convex polygon containing the image foreground objects.  In addition, the minimum bounding box and unrotate angle are also generated.</td>
-  </tr>
-  <tr>
-    <td><a href="https://usage.imagemagick.org/crop/">Decorate</a></td>
-    <td>add a border or frame to an image.</td>
-  </tr>
-  <tr>
-    <td><a href="https://usage.imagemagick.org/transform/#vision">Delineate image features</a></td>
-    <td><a href="https://usage.imagemagick.org/transform/#canny">Canny edge detection</a>, <a href="../command-line-options/index.html#hough-lines">Hough lines</a>.</td>
-  </tr>
-  <tr>
-    <td><a href="https://usage.imagemagick.org/fourier/">Discrete Fourier transform</a></td>
-    <td>implements the forward and inverse <a href="https://en.wikipedia.org/wiki/Discrete_Fourier_transform">DFT</a>.</td>
-  </tr>
-  <tr>
-    <td><a href="../distribute-pixel-cache/index.html">Distributed pixel cache</a></td>
-    <td>offload intermediate pixel storage to one or more remote servers.</td>
-  </tr>
-  <tr>
-    <td><a href="https://usage.imagemagick.org/draw/">Draw</a></td>
-    <td>add shapes or text to an image.</td>
-  </tr>
-  <tr>
-    <td><a href="../cipher/index.html">Encipher or decipher an image</a></td>
-    <td>convert ordinary images into unintelligible gibberish and back again.</td>
-  </tr>
-  <tr>
-    <td><a href="../convert/index.html">Format conversion</a></td>
-    <td>convert an image from one <a href="../formats/index.html">format </a> to another (e.g. PNG to JPEG).</td>
-  </tr>
-  <tr>
-    <td><a href="https://usage.imagemagick.org/distorts/">Generalized pixel distortion</a></td>
-    <td>correct for, or induce image distortions including perspective.</td>
-  </tr>
-  <tr>
-    <td><a href="../architecture/index.html#distributed">Heterogeneous distributed processing</a></td>
-    <td>certain algorithms are <a href="../opencl/index.html">OpenCL</a>-enabled to take advantage of speed-ups offered by executing in concert across heterogeneous platforms consisting of CPUs, GPUs, and other processors.</td>
-  </tr>
-  <tr>
-    <td><a href="../high-dynamic-range/index.html">High dynamic-range images</a></td>
-    <td>accurately represent the wide range of intensity levels found in real scenes ranging from the brightest direct sunlight to the deepest darkest shadows.</td>
-  </tr>
-  <tr>
-    <td><a href="../clahe/index.html">Histogram equalization</a></td>
-    <td>use adaptive histogram equalization to improve contrast in images.</td>
-  </tr>
-  <tr>
-    <td><a href="../magick-cache/index.html">Image cache</a></td>
-    <td>secure methods and tools to cache images, image sequences, video, audio or metadata in a local folder..</td>
-  </tr>
-  <tr>
-    <td><a href="../fx/index.html">Image calculator</a></td>
-    <td>apply a mathematical expression to an image, image sequence, or image channels.</td>
-  </tr>
-  <tr>
-    <td><a href="../gradient/index.html">Image gradients</a></td>
-    <td>create a gradual blend of two colors whose shape is horizontal, vertical, circular, or elliptical.</td>
-  </tr>
-  <tr>
-    <td><a href="../identify/index.html">Image identification</a></td>
-    <td>describe the format and attributes of an image.</td>
-  </tr>
-  <tr>
-    <td><a href="../download/index.html#iOS">ImageMagick on the iPhone</a></td>
-    <td>convert, edit, or compose images on your <a href="https://www.apple.com/os/ios/">iOS</a> device such as the iPhone or iPad.</td>
-  </tr>
-  <tr>
-    <td><a href="../architecture/index.html#tera-pixel">Large image support</a></td>
-    <td>read, process, or write mega-, giga-, or tera-pixel image sizes.</td>
-  </tr>
-  <tr>
-    <td><a href="../montage/index.html">Montage</a></td>
-    <td>juxtapose image thumbnails on an image canvas.</td>
-  </tr>
-  <tr>
-    <td><a href="https://usage.imagemagick.org/morphology/">Morphology of shapes</a></td>
-    <td>extract features, describe shapes, and recognize patterns in images.</td>
-  </tr>
-  <tr>
-    <td><a href="../motion-picture/index.html">Motion picture support</a></td>
-    <td>read and write the common image formats used in digital film work.</td>
-  </tr>
-  <tr>
-    <td><a href="../architecture/index.html#multispectral">Multispectral imagery</a></td>
-    <td>support multispectral imagery up to 32 bands, 22 of them meta channels.</td>
-  </tr>
-  <tr>
-    <td><a href="https://usage.imagemagick.org/transform/#vision">Noise and color reduction</a></td>
-    <td>Kuwahara Filter, mean-shift.</td>
-  </tr>
-  <tr>
-    <td><a href="http://www.fmwconcepts.com/misc_tests/perceptual_hash_test_results_510/index.html">Perceptual hash</a></td>
-    <td>map visually identical images to the same or similar hash-- useful in image retrieval, authentication, indexing, or copy detection as well as digital watermarking.</td>
-  </tr>
-  <tr>
-    <td><a href="https://usage.imagemagick.org/blur/">Special effects</a></td>
-    <td>blur, sharpen, threshold, or tint an image.</td>
-  </tr>
-  <tr>
-    <td><a href="https://usage.imagemagick.org/text/">Text &amp; comments</a></td>
-    <td>insert descriptive or artistic text in an image.</td>
-  </tr>
-  <tr>
-    <td><a href="../architecture/index.html#threads">Threads of execution support</a></td>
-    <td>ImageMagick is thread safe and most internal algorithms execute in <a href="../openmp/index.html">parallel</a> to take advantage of speed-ups offered by multicore processor chips.</td>
-  </tr>
-  <tr>
-    <td><a href="https://usage.imagemagick.org/resize/">Transform</a></td>
-    <td>resize, rotate, deskew, crop, flip or trim an image.</td>
-  </tr>
-  <tr>
-    <td><a href="https://usage.imagemagick.org/masking/">Transparency</a></td>
-    <td>render portions of an image invisible.</td>
-  </tr>
-  <tr>
-    <td><a href="../architecture/index.html#virtual-pixels">Virtual pixel support</a></td>
-    <td>convenient access to pixels outside the image boundaries.</td>
-  </tr>
-</table>
-</div>
-<br/>
-
-<h2><a class="anchor" id="legacy"></a>ImageMagick Legacy</h2>
-<p>We continue to maintain the legacy release of ImageMagick, version 6, at <a href="https://legacy.imagemagick.org/">https://legacy.imagemagick.org</a>.</p>
-</div>
-
-
-        </div>
-        <div class="col-lg-3 col-12 ps-lg-4 border-start d-flex flex-column align-items-center align-items-lg-start">
-          <div class="container text-center my-3">
-            <a href="../image/wizard.png" rel="noopener noreferrer" target="_blank">
-              <img alt="ImageMagick Wizard" class="img-fluid img-thumbnail" height="351" loading="lazy" src="../image/wizard.jpg" width="264">
+  <!-- Hero Header Block -->
+  <header class="im-hero mt-5 pt-5">
+    <div class="container-xl pt-3">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+          <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-primary bg-opacity-20 text-primary border border-primary border-opacity-30 mb-3 fs-7">
+            <span class="badge bg-primary">v7.1.2-34</span>
+            <span class="small text-light">Latest Stable Release</span>
+          </div>
+          <h1 class="display-4 fw-bold mb-3 tracking-tight">Sitemap</h1>
+          <p class="lead text-light opacity-75 mb-4 fs-5">Explore the ImageMagick sitemap for quick access to downloads, installation guides, command-line tools, APIs, supported formats, tutorials, and community support. Navigate directly to resources for creating, editing, and converting images across 200+ formats.</p>
+          <div class="d-flex flex-wrap gap-3">
+            <a href="../download/index.html" class="btn btn-primary btn-lg px-4 fw-semibold d-flex align-items-center gap-2 shadow">
+              <i class="bi bi-download"></i> Get ImageMagick
             </a>
-            <p class="mt-2"><iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border:0 !important; width:107px !important; height:35px !important;"></iframe></p>
+            <a href="../command-line-processing/index.html" class="btn btn-outline-light btn-lg px-4 fw-semibold d-flex align-items-center gap-2">
+              <i class="bi bi-terminal"></i> Documentation
+            </a>
           </div>
-          <div class="container text-center my-3">
-            <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745"
-              crossorigin="anonymous"></script>
-            <!-- Banner Ad -->
-            <ins class="adsbygoogle"
-              style="display:block"
-              data-ad-client="ca-pub-3129977114552745"
-              data-ad-slot="1083537442"
-              data-ad-format="auto"
-              data-full-width-responsive="true"></ins>
-            <script>
-              (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
+        </div>
+
+        <!-- Terminal Quickstart Preview -->
+        <div class="col-lg-5">
+          <div class="terminal-card">
+            <div class="terminal-header">
+              <div class="terminal-dot bg-danger"></div>
+              <div class="terminal-dot bg-warning"></div>
+              <div class="terminal-dot bg-success"></div>
+              <span class="small text-secondary font-mono ms-2">quickstart.sh</span>
+            </div>
+            <div class="p-3 text-light font-mono small">
+              <div class="text-secondary"># Install via your favorite Package Manager</div>
+              <div class="text-success">$ brew install imagemagick</div>
+              <div class="text-secondary mt-2"># Convert PNG to WebP with compression</div>
+              <div>$ magick input.png -quality 85 output.webp</div>
+              <div class="text-secondary mt-2"># Resize image maintaining aspect ratio</div>
+              <div>$ magick input.jpg -resize 800x600^ output.jpg</div>
+            </div>
           </div>
         </div>
       </div>
-      <a aria-label="About ImageMagick" class="btn btn-outline-warning mt-3" href="../index-2.html">About ImageMagick</a>
-    </main><!-- /.container -->
-    <footer class="text-center pt-5 my-5 text-body-secondary border-top">
-      <div class="container-fluid">
-        <a href="../security-policy/index.html">Security</a> •
-        <a href="../news/index.html">News</a>
-        &nbsp;
-        <a href="#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../image/wand.png"></a>
-        &nbsp;
-        <a href="../links/index.html">Related</a> •
-        <a href="index.html">Sitemap</a>
-        <br>
-        <a href="../support/index.html">Sponsor</a> •
-        <a href="../cite/index.html">Cite</a> •
-        <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-        <a href="https://github.com/ImageMagick/ImageMagick/discussions">Contact Us</a>
-        <br>
-        <a href="https://github.com/imagemagick/imagemagick" rel="noopener noreferrer" target="_blank" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false">
-            <title>GitHub</title>
-            <path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z" />
-          </svg></a> •
-        <a href="https://twitter.com/imagemagick" rel="noopener noreferrer" target="_blank" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 300 300" width="2%" height="2%" role="img" focusable="false">
-            <title>Twitter</title>
-            <path d="M178.57 127.15 290.27 0h-26.46l-97.03 110.38L89.34 0H0l117.13 166.93L0 300.25h26.46l102.4-116.59 81.8 116.59h89.34M36.01 19.54H76.66l187.13 262.13h-40.66" />
-          </svg></a>
-        <br>
-        <small>Copyright © 1999 ImageMagick Studio LLC</small>
+    </div>
+  </header>
+
+  <!-- Main Body Content -->
+  <main class="py-5">
+    <div class="container-xl">
+      <div class="row g-5">
+        <!-- Main Column -->
+        <div class="col-lg-8">
+          <div class="container py-4">
+  <!-- Page Quick Nav Pills -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="d-flex flex-wrap justify-content-center gap-2 p-2 bg-body-tertiary rounded-3 border">
+        <a href="#overview" class="btn btn-sm btn-outline-secondary border-0">Overview</a>
+        <a href="#download" class="btn btn-sm btn-outline-secondary border-0">Download</a>
+        <a href="#install" class="btn btn-sm btn-outline-secondary border-0">Install</a>
+        <a href="#command-line" class="btn btn-sm btn-outline-secondary border-0">CLI Tools</a>
+        <a href="#program-interfaces" class="btn btn-sm btn-outline-secondary border-0">APIs</a>
+        <a href="#format" class="btn btn-sm btn-outline-secondary border-0">Formats</a>
+        <a href="#help" class="btn btn-sm btn-outline-secondary border-0">Help</a>
+        <a href="#support" class="btn btn-sm btn-outline-secondary border-0">Support</a>
+        <a href="#miscellaneous" class="btn btn-sm btn-outline-secondary border-0">Miscellaneous</a>
+        <a href="#legacy" class="btn btn-sm btn-outline-secondary border-0">Legacy</a>
       </div>
-    </footer>
-    <div style="visibility: hidden;">
-      <div class="gcse-search"></div>
     </div>
   </div>
 
-  <!-- Javascript assets -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-</body>
+  <!-- Lead Description -->
+  <div class="row mb-5">
+    <div class="col-lg-10 mx-auto text-center">
+      <p class="lead text-body-secondary">
+        Use this ImageMagick sitemap to quickly jump to one of the areas of interest listed below. If you can't find what you want on this page, try our <a href="../search/index4840.html?q=ImageMagick&amp;sa=" class="text-decoration-none fw-semibold">site search</a>.
+      </p>
+    </div>
+  </div>
 
+  <!-- Sitemap Sections Grid -->
+  <div class="row g-4 mb-5">
+    <!-- Overview -->
+    <div class="col-lg-6">
+      <div class="card im-card h-100 p-4" id="overview">
+        <div class="d-flex align-items-center gap-2 mb-3 border-bottom pb-2">
+          <i class="bi bi-info-circle text-primary fs-5"></i>
+          <h2 class="h4 fw-bold mb-0">Overview</h2>
+        </div>
+        <ul class="list-unstyled d-flex flex-column gap-2 mb-0 small text-body-secondary">
+          <li><a href="../index.html" class="text-decoration-none fw-semibold">Introduction</a>: convert, edit, or compose images from the command-line or program interface.</li>
+          <li><a href="../examples/index.html" class="text-decoration-none fw-semibold">Examples of ImageMagick usage</a>: a few examples that show what you can do with an image using ImageMagick.</li>
+          <li><a href="https://usage.imagemagick.org/" class="text-decoration-none fw-semibold" rel="noopener noreferrer" target="_blank">Anthony Thyssen's examples of ImageMagick usage</a>: a comprehensive tutorial of using ImageMagick from the command line.</li>
+          <li><a href="../color/index.html" class="text-decoration-none fw-semibold">Color names</a>: how to specify a color name, a hex color, or a numerical RGB, RGBA, HSL, HSLA, CMYK, or CMYKA color.</li>
+          <li><a href="../color-management/index.html" class="text-decoration-none fw-semibold">Color management</a>: accurate color management with color profiles or in lieu of-- built-in gamma compression or expansion as demanded by the colorspace.</li>
+          <li><a href="../resources/index.html" class="text-decoration-none fw-semibold">Resources</a>: ImageMagick depends on external resources including configuration files, loadable modules, fonts, and environment variables.</li>
+          <li><a href="../openmp/index.html" class="text-decoration-none fw-semibold">Parallel execution</a>: ImageMagick is threaded to take advantage of speed-ups offered by the multicore processor chips.</li>
+          <li><a href="../security-policy/index.html" class="text-decoration-none fw-semibold">Security policy</a>: best practices strongly encourage you to configure a security policy that suits your local environment.</li>
+          <li><a href="../architecture/index.html" class="text-decoration-none fw-semibold">Architecture</a>: get to know more about the software and algorithms behind ImageMagick.</li>
+          <li><a href="../license/index.html" class="text-decoration-none fw-semibold">License</a>: the legally binding and authoritative terms and conditions for use, reproduction, and distribution of ImageMagick.</li>
+          <li><a href="../export/index.html" class="text-decoration-none fw-semibold">Export classification</a>: export control status of ImageMagick.</li>
+          <li><a href="../privacy-policy/index.html" class="text-decoration-none fw-semibold">Privacy policy</a>: we do not collect personal identifier information.</li>
+          <li><a href="../porting/index.html" class="text-decoration-none fw-semibold">ImageMagick version 7</a>: learn how ImageMagick version 7 differs from previous versions.</li>
+          <li><a href="../changelog/index.html" class="text-decoration-none fw-semibold">Changelog</a>: a chronological list of changes, bug fixes, and new features for each ImageMagick release.</li>
+          <li><a href="../history/index.html" class="text-decoration-none fw-semibold">History</a>: how ImageMagick was conceived and developed.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Download & Install -->
+    <div class="col-lg-6">
+      <div class="d-flex flex-column gap-4 h-100">
+        <!-- Download -->
+        <div class="card im-card p-4" id="download">
+          <div class="d-flex align-items-center gap-2 mb-3 border-bottom pb-2">
+            <i class="bi bi-download text-primary fs-5"></i>
+            <h2 class="h4 fw-bold mb-0">Download ImageMagick</h2>
+          </div>
+          <ul class="list-unstyled d-flex flex-column gap-2 mb-0 small text-body-secondary">
+            <li><a href="../download/index.html" class="text-decoration-none fw-semibold">Download ImageMagick</a>: ImageMagick source and binary distributions are available from a variety of FTP and Web mirrors.</li>
+            <li><a href="https://download.imagemagick.org/archive/" class="text-decoration-none fw-semibold" rel="noopener noreferrer" target="_blank">Linux source</a>: Linux source distributions.</li>
+            <li><a href="https://download.imagemagick.org/archive/windows/" class="text-decoration-none fw-semibold" rel="noopener noreferrer" target="_blank">Windows source</a>: Windows source distributions.</li>
+            <li><a href="https://download.imagemagick.org/archive/binaries/" class="text-decoration-none fw-semibold" rel="noopener noreferrer" target="_blank">Linux and Windows binaries</a>: Linux and Windows binary distributions.</li>
+            <li><a href="https://github.com/ImageMagick/ImageMagick" class="text-decoration-none fw-semibold" rel="noopener noreferrer" target="_blank">Git repository</a>: stable and development source releases.</li>
+          </ul>
+        </div>
+
+        <!-- Install -->
+        <div class="card im-card p-4" id="install">
+          <div class="d-flex align-items-center gap-2 mb-3 border-bottom pb-2">
+            <i class="bi bi-hdd-stack text-primary fs-5"></i>
+            <h2 class="h4 fw-bold mb-0">Install ImageMagick</h2>
+          </div>
+          <p class="small text-body-secondary mb-2">
+            You can install ImageMagick from source. However, if you don't have a proper development environment or if you're anxious to get started, download a ready-to-run Linux or Windows executable.
+          </p>
+          <ul class="list-unstyled mb-0 small text-body-secondary">
+            <li><a href="../install-source/index.html" class="text-decoration-none fw-semibold">Install from source</a>: ImageMagick builds under Windows, macOS, and Linux.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Command-line Tools -->
+    <div class="col-lg-6">
+      <div class="card im-card h-100 p-4" id="command-line">
+        <div class="d-flex align-items-center gap-2 mb-3 border-bottom pb-2">
+          <i class="bi bi-terminal text-primary fs-5"></i>
+          <h2 class="h4 fw-bold mb-0">Command-line Tools</h2>
+        </div>
+        <ul class="list-unstyled d-flex flex-column gap-2 mb-0 small text-body-secondary">
+          <li><a href="../command-line-tools/index.html" class="text-decoration-none fw-semibold">Command-line tools</a>: overview of the ImageMagick commands.
+            <ul class="mt-2 d-flex flex-column gap-1">
+              <li><a href="../magick/index.html" class="text-decoration-none font-mono">magick</a>: convert, resize, blur, crop, dither, draw, flip, join, re-sample, and more.</li>
+              <li><a href="../animate/index.html" class="text-decoration-none font-mono">magick animate</a>: animates an image sequence on any X server.</li>
+              <li><a href="../compare/index.html" class="text-decoration-none font-mono">magick compare</a>: mathematically and visually annotate the difference between an image and its reconstruction.</li>
+              <li><a href="../composite/index.html" class="text-decoration-none font-mono">magick composite</a>: overlaps one image over another.</li>
+              <li><a href="../conjure/index.html" class="text-decoration-none font-mono">magick conjure</a>: interprets and executes scripts written in the Magick Scripting Language (MSL).</li>
+              <li><a href="../display/index.html" class="text-decoration-none font-mono">magick display</a>: displays an image or image sequence on any X server.</li>
+              <li><a href="../identify/index.html" class="text-decoration-none font-mono">magick identify</a>: describes the format and characteristics of one or more image files.</li>
+              <li><a href="../import/index.html" class="text-decoration-none font-mono">magick import</a>: saves any visible window on an X server and outputs it as an image file.</li>
+              <li><a href="../mogrify/index.html" class="text-decoration-none font-mono">magick mogrify</a>: resize, blur, crop, despeckle, dither, draw, flip, join, re-sample, etc.</li>
+              <li><a href="../montage/index.html" class="text-decoration-none font-mono">magick montage</a>: create a composite image by combining several separate images.</li>
+              <li><a href="../stream/index.html" class="text-decoration-none font-mono">magick stream</a>: lightweight tool to stream pixel components to choice of storage formats.</li>
+            </ul>
+          </li>
+          <li class="mt-2"><a href="../command-line-processing/index.html" class="text-decoration-none fw-semibold">Command line processing</a>: the anatomy of the command line.</li>
+          <li><a href="../command-line-options/index.html" class="text-decoration-none fw-semibold">Command line options</a>: annotated list of all options that can appear on the command-line.</li>
+          <li><a href="../fx/index.html" class="text-decoration-none fw-semibold">Fx</a>: apply a mathematical expression to an image or image channels.</li>
+          <li><a href="http://www.fmwconcepts.com/imagemagick/" class="text-decoration-none fw-semibold" rel="noopener noreferrer" target="_blank">Fred's ImageMagick Scripts</a>: a plethora of command-line scripts for geometric transforms, blurs, sharpens, edging, and color manipulations.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Program Interfaces & Formats -->
+    <div class="col-lg-6">
+      <div class="d-flex flex-column gap-4 h-100">
+        <!-- Program Interfaces -->
+        <div class="card im-card p-4" id="program-interfaces">
+          <div class="d-flex align-items-center gap-2 mb-3 border-bottom pb-2">
+            <i class="bi bi-code-square text-primary fs-5"></i>
+            <h2 class="h4 fw-bold mb-0">Program Interfaces</h2>
+          </div>
+          <ul class="list-unstyled d-flex flex-column gap-2 mb-0 small text-body-secondary">
+            <li><a href="../develop/index.html" class="text-decoration-none fw-semibold">Program interfaces</a>: application programming interfaces.
+              <ul class="mt-2 d-flex flex-column gap-1">
+                <li><a href="http://common-lisp.net/project/cl-magick/" class="text-decoration-none" rel="noopener noreferrer" target="_blank">CL-Magick</a>: Common Lisp interface.</li>
+                <li><a href="https://github.com/dlemstra/Magick.NET" class="text-decoration-none" rel="noopener noreferrer" target="_blank">Magick.NET</a>: Windows .NET support.</li>
+                <li><a href="../magick%2b%2b/index.html" class="text-decoration-none" rel="noopener noreferrer" target="_blank">Magick++</a>: Object-oriented C++ interface.</li>
+                <li><a href="http://pecl.php.net/package/imagick" class="text-decoration-none" rel="noopener noreferrer" target="_blank">IMagick</a>: Native PHP extension.</li>
+                <li><a href="https://github.com/techblue/jmagick" class="text-decoration-none" rel="noopener noreferrer" target="_blank">JMagick</a>: Object-oriented Java interface.</li>
+                <li><a href="../magick-core/index.html" class="text-decoration-none">MagickCore</a>: C API for wizard-level developers.</li>
+                <li><a href="../magick-wand/index.html" class="text-decoration-none">MagickWand</a>: C language API.</li>
+                <li><a href="https://code.google.com/archive/p/nmagick" class="text-decoration-none" rel="noopener noreferrer" target="_blank">nMagick</a>: haXe and Neko platforms.</li>
+                <li><a href="https://wiki.freepascal.org/PascalMagick" class="text-decoration-none" rel="noopener noreferrer" target="_blank">PascalMagick</a>: Pascal binding.</li>
+                <li><a href="../perl-magick/index.html" class="text-decoration-none">PerlMagick</a>: Perl language interface.</li>
+                <li><a href="https://download.imagemagick.org/archive/python/" class="text-decoration-none" rel="noopener noreferrer" target="_blank">PythonMagick</a>: Python interface.</li>
+                <li><a href="https://rmagick.github.io/" class="text-decoration-none" rel="noopener noreferrer" target="_blank">RMagick</a>: Ruby interface.</li>
+                <li><a href="https://download.imagemagick.org/archive/tcl/" class="text-decoration-none" rel="noopener noreferrer" target="_blank">TclMagick</a>: Tcl-extension.</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Image Formats -->
+        <div class="card im-card p-4" id="format">
+          <div class="d-flex align-items-center gap-2 mb-3 border-bottom pb-2">
+            <i class="bi bi-file-earmark-image text-primary fs-5"></i>
+            <h2 class="h4 fw-bold mb-0">Image Formats</h2>
+          </div>
+          <ul class="list-unstyled d-flex flex-column gap-2 mb-0 small text-body-secondary">
+            <li><a href="../formats/index.html" class="text-decoration-none fw-semibold">Supported image formats</a>: annotated list of all formats ImageMagick reads/writes.</li>
+            <li><a href="../motion-picture/index.html" class="text-decoration-none fw-semibold">Motion picture digital images</a>: SMPTE DPX Version 2.0 support.</li>
+            <li><a href="../high-dynamic-range/index.html" class="text-decoration-none fw-semibold">High dynamic-range images</a>: represent wide intensity range from direct sunlight to shadows.</li>
+            <li><a href="../magick-vector-graphics/index.html" class="text-decoration-none fw-semibold">Magick Vector Graphics</a>: modularized language for 2D vector/raster graphics.</li>
+            <li><a href="../miff/index.html" class="text-decoration-none fw-semibold">Magick Image File Format</a>: platform-independent format for storing bitmaps.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Help & Support -->
+    <div class="col-lg-6">
+      <div class="card im-card h-100 p-4" id="help">
+        <div class="d-flex align-items-center gap-2 mb-3 border-bottom pb-2">
+          <i class="bi bi-question-circle text-primary fs-5"></i>
+          <h2 class="h4 fw-bold mb-0">Getting Help</h2>
+        </div>
+        <ul class="list-unstyled d-flex flex-column gap-2 mb-0 small text-body-secondary">
+          <li><a href="https://github.com/ImageMagick/ImageMagick/discussions" class="text-decoration-none fw-semibold" rel="noopener noreferrer" target="_blank">Discussions forums</a>: get help from fellow users and developers.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="card im-card h-100 p-4" id="support">
+        <div class="d-flex align-items-center gap-2 mb-3 border-bottom pb-2">
+          <i class="bi bi-shield-check text-primary fs-5"></i>
+          <h2 class="h4 fw-bold mb-0">Support ImageMagick</h2>
+        </div>
+        <ul class="list-unstyled d-flex flex-column gap-2 mb-0 small text-body-secondary">
+          <li><a href="https://github.com/ImageMagick/ImageMagick/issues" class="text-decoration-none fw-semibold" rel="noopener noreferrer" target="_blank">Report bugs and vulnerabilities</a>: high priority security fixes within 48 hours.</li>
+          <li><a href="../support/index.html" class="text-decoration-none fw-semibold">Sponsor ImageMagick</a>: contribute bug fixes, hardware, or funds to ensure project thrives.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Miscellaneous Topics Section -->
+  <section id="miscellaneous" class="mb-5">
+    <div class="d-flex align-items-center gap-2 mb-4 border-bottom pb-2">
+      <i class="bi bi-collection text-primary fs-4"></i>
+      <h2 class="h3 fw-bold mb-0">Miscellaneous Topics</h2>
+    </div>
+
+    <div class="card im-card overflow-hidden">
+      <div class="table-responsive" style="max-height: 75svh;">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-dark">
+            <tr>
+              <th scope="col" style="width: 30%;">Topic / Feature</th>
+              <th scope="col" style="width: 70%;">Description</th>
+            </tr>
+          </thead>
+          <tbody class="font-mono small">
+            <tr>
+              <td><a href="https://usage.imagemagick.org/anim_basics/" class="fw-semibold text-primary text-decoration-none">Animation</a></td>
+              <td class="text-body">create a GIF animation sequence from a group of images.</td>
+            </tr>
+            <tr>
+              <td><a href="../command-line-options/index.html#bilateral-blur" class="fw-semibold text-primary text-decoration-none">Bilateral blur</a></td>
+              <td class="text-body">non-linear, edge-preserving, and noise-reducing smoothing filter.</td>
+            </tr>
+            <tr>
+              <td><a href="../color-management/index.html" class="fw-semibold text-primary text-decoration-none">Color management</a></td>
+              <td class="text-body">accurate color management with color profiles or built-in gamma compression.</td>
+            </tr>
+            <tr>
+              <td><a href="../color-thresholding/index.html" class="fw-semibold text-primary text-decoration-none">Color thresholding</a></td>
+              <td class="text-body">force all pixels in the color range to white otherwise black.</td>
+            </tr>
+            <tr>
+              <td><a href="../command-line-processing/index.html" class="fw-semibold text-primary text-decoration-none">Command-line processing</a></td>
+              <td class="text-body">utilize ImageMagick from the command-line.</td>
+            </tr>
+            <tr>
+              <td><a href="https://en.wikipedia.org/wiki/Complex_text_layout" class="fw-semibold text-primary text-decoration-none">Complex text layout</a></td>
+              <td class="text-body">bidirectional text support and shaping.</td>
+            </tr>
+            <tr>
+              <td><a href="../composite/index.html" class="fw-semibold text-primary text-decoration-none">Composite</a></td>
+              <td class="text-body">overlap one image over another.</td>
+            </tr>
+            <tr>
+              <td><a href="../connected-components/index.html" class="fw-semibold text-primary text-decoration-none">Connected component labeling</a></td>
+              <td class="text-body">uniquely label connected regions in an image.</td>
+            </tr>
+            <tr>
+              <td><a href="../content-provenance-authenticity/index.html" class="fw-semibold text-primary text-decoration-none">Content provenance authenticity</a></td>
+              <td class="text-body">embed and verify content provenance using cryptographic keys, certificates, and manifests.</td>
+            </tr>
+            <tr>
+              <td><a href="../convex-hull/index.html" class="fw-semibold text-primary text-decoration-none">Convex hull</a></td>
+              <td class="text-body">smallest area convex polygon containing foreground objects plus minimum bounding box.</td>
+            </tr>
+            <tr>
+              <td><a href="https://usage.imagemagick.org/crop/" class="fw-semibold text-primary text-decoration-none">Decorate</a></td>
+              <td class="text-body">add a border or frame to an image.</td>
+            </tr>
+            <tr>
+              <td><a href="https://usage.imagemagick.org/transform/#vision" class="fw-semibold text-primary text-decoration-none">Delineate image features</a></td>
+              <td class="text-body">Canny edge detection, Hough lines.</td>
+            </tr>
+            <tr>
+              <td><a href="https://usage.imagemagick.org/fourier/" class="fw-semibold text-primary text-decoration-none">Discrete Fourier transform</a></td>
+              <td class="text-body">implements forward and inverse DFT.</td>
+            </tr>
+            <tr>
+              <td><a href="../distribute-pixel-cache/index.html" class="fw-semibold text-primary text-decoration-none">Distributed pixel cache</a></td>
+              <td class="text-body">offload intermediate pixel storage to remote servers.</td>
+            </tr>
+            <tr>
+              <td><a href="https://usage.imagemagick.org/draw/" class="fw-semibold text-primary text-decoration-none">Draw</a></td>
+              <td class="text-body">add shapes or text to an image.</td>
+            </tr>
+            <tr>
+              <td><a href="../cipher/index.html" class="fw-semibold text-primary text-decoration-none">Encipher or decipher an image</a></td>
+              <td class="text-body">convert ordinary images into unintelligible gibberish and back.</td>
+            </tr>
+            <tr>
+              <td><a href="../magick/index.html" class="fw-semibold text-primary text-decoration-none">Format conversion</a></td>
+              <td class="text-body">convert an image from one format to another (e.g. PNG to JPEG).</td>
+            </tr>
+            <tr>
+              <td><a href="https://usage.imagemagick.org/distorts/" class="fw-semibold text-primary text-decoration-none">Generalized pixel distortion</a></td>
+              <td class="text-body">correct for or induce image distortions including perspective.</td>
+            </tr>
+            <tr>
+              <td><a href="../architecture/index.html#distributed" class="fw-semibold text-primary text-decoration-none">Heterogeneous distributed processing</a></td>
+              <td class="text-body">OpenCL-enabled algorithms executing across heterogeneous platforms.</td>
+            </tr>
+            <tr>
+              <td><a href="../high-dynamic-range/index.html" class="fw-semibold text-primary text-decoration-none">High dynamic-range images</a></td>
+              <td class="text-body">accurately represent wide intensity levels from sunlight to shadows.</td>
+            </tr>
+            <tr>
+              <td><a href="../clahe/index.html" class="fw-semibold text-primary text-decoration-none">Histogram equalization</a></td>
+              <td class="text-body">use adaptive histogram equalization to improve contrast.</td>
+            </tr>
+            <tr>
+              <td><a href="../magick-cache/index.html" class="fw-semibold text-primary text-decoration-none">Image cache</a></td>
+              <td class="text-body">secure methods and tools to cache media or metadata locally.</td>
+            </tr>
+            <tr>
+              <td><a href="../fx/index.html" class="fw-semibold text-primary text-decoration-none">Image calculator</a></td>
+              <td class="text-body">apply mathematical expression to an image, sequence, or channels.</td>
+            </tr>
+            <tr>
+              <td><a href="../gradient/index.html" class="fw-semibold text-primary text-decoration-none">Image gradients</a></td>
+              <td class="text-body">create gradual blend of two colors (horizontal, vertical, circular).</td>
+            </tr>
+            <tr>
+              <td><a href="../identify/index.html" class="fw-semibold text-primary text-decoration-none">Image identification</a></td>
+              <td class="text-body">describe format and attributes of an image.</td>
+            </tr>
+            <tr>
+              <td><a href="../download/index.html#iOS" class="fw-semibold text-primary text-decoration-none">ImageMagick on the iPhone</a></td>
+              <td class="text-body">convert, edit, or compose images on iOS device.</td>
+            </tr>
+            <tr>
+              <td><a href="../architecture/index.html#tera-pixel" class="fw-semibold text-primary text-decoration-none">Large image support</a></td>
+              <td class="text-body">read, process, or write mega-, giga-, or tera-pixel image sizes.</td>
+            </tr>
+            <tr>
+              <td><a href="../montage/index.html" class="fw-semibold text-primary text-decoration-none">Montage</a></td>
+              <td class="text-body">juxtapose image thumbnails on a canvas.</td>
+            </tr>
+            <tr>
+              <td><a href="https://usage.imagemagick.org/morphology/" class="fw-semibold text-primary text-decoration-none">Morphology of shapes</a></td>
+              <td class="text-body">extract features, describe shapes, and recognize patterns.</td>
+            </tr>
+            <tr>
+              <td><a href="../motion-picture/index.html" class="fw-semibold text-primary text-decoration-none">Motion picture support</a></td>
+              <td class="text-body">read and write common digital film formats.</td>
+            </tr>
+            <tr>
+              <td><a href="../architecture/index.html#multispectral" class="fw-semibold text-primary text-decoration-none">Multispectral imagery</a></td>
+              <td class="text-body">support multispectral imagery up to 32 bands.</td>
+            </tr>
+            <tr>
+              <td><a href="https://usage.imagemagick.org/transform/#vision" class="fw-semibold text-primary text-decoration-none">Noise and color reduction</a></td>
+              <td class="text-body">Kuwahara Filter, mean-shift.</td>
+            </tr>
+            <tr>
+              <td><a href="http://www.fmwconcepts.com/misc_tests/perceptual_hash_test_results_510/index.html" class="fw-semibold text-primary text-decoration-none" rel="noopener noreferrer" target="_blank">Perceptual hash</a></td>
+              <td class="text-body">map visually identical images to similar hashes for retrieval.</td>
+            </tr>
+            <tr>
+              <td><a href="https://usage.imagemagick.org/blur/" class="fw-semibold text-primary text-decoration-none">Special effects</a></td>
+              <td class="text-body">blur, sharpen, threshold, or tint an image.</td>
+            </tr>
+            <tr>
+              <td><a href="https://usage.imagemagick.org/text/" class="fw-semibold text-primary text-decoration-none">Text &amp; comments</a></td>
+              <td class="text-body">insert descriptive or artistic text.</td>
+            </tr>
+            <tr>
+              <td><a href="../architecture/index.html#threads" class="fw-semibold text-primary text-decoration-none">Threads of execution support</a></td>
+              <td class="text-body">thread safe execution in parallel on multicore processors.</td>
+            </tr>
+            <tr>
+              <td><a href="https://usage.imagemagick.org/resize/" class="fw-semibold text-primary text-decoration-none">Transform</a></td>
+              <td class="text-body">resize, rotate, deskew, crop, flip, or trim.</td>
+            </tr>
+            <tr>
+              <td><a href="https://usage.imagemagick.org/masking/" class="fw-semibold text-primary text-decoration-none">Transparency</a></td>
+              <td class="text-body">render portions of an image invisible.</td>
+            </tr>
+            <tr>
+              <td><a href="../architecture/index.html#virtual-pixels" class="fw-semibold text-primary text-decoration-none">Virtual pixel support</a></td>
+              <td class="text-body">convenient access to pixels outside image boundaries.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Legacy Section -->
+  <div class="card im-card p-4 bg-body-tertiary text-center" id="legacy">
+    <h3 class="fw-bold mb-2">ImageMagick Legacy</h3>
+    <p class="small text-body-secondary mb-0">
+      We continue to maintain the legacy release of ImageMagick, version 6, at <a href="https://legacy.imagemagick.org/" class="text-decoration-none fw-semibold font-mono" rel="noopener noreferrer" target="_blank">https://legacy.imagemagick.org</a>.
+    </p>
+  </div>
+</div>
+
+        </div>
+
+        <!-- Right Sidebar -->
+        <aside class="col-lg-4">
+          <div class="sticky-top" style="top: 90px;">
+            <!-- Sponsor Card -->
+            <div class="card im-card mb-4 overflow-hidden border-0 bg-gradient bg-primary bg-opacity-10">
+              <div class="card-body p-4 text-center">
+                <img src="../image/wizard.jpg" alt="ImageMagick Wizard" class="rounded shadow mb-3 img-fluid" style="max-height: 200px;">
+                <h5 class="fw-bold">Support Open Source</h5>
+                <p class="small text-body-secondary mb-3">Help maintain and sustain ImageMagick development.</p>
+                <iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="114" class="border-0"></iframe>
+              </div>
+            </div>
+
+            <!-- Banner Ad Container -->
+            <div class="text-center p-2 mv-4 rounded border border-secondary-subtle bg-body-tertiary">
+              <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
+              <ins class="adsbygoogle"
+                   style="display:block"
+                   data-ad-client="ca-pub-3129977114552745"
+                   data-ad-slot="1083537442"
+                   data-ad-format="auto"
+                   data-full-width-responsive="true"></ins>
+              <script>
+                   (adsbygoogle = window.adsbygoogle || []).push({});
+              </script>
+            </div>
+
+            <!-- Quick Links Navigation -->
+            <div class="card im-card p-3 mb-4">
+              <h6 class="fw-bold text-uppercase fs-7 text-secondary mb-3">Resources</h6>
+              <ul class="nav flex-column gap-1 fs-6">
+                <li class="nav-item"><a href="../security-policy/index.html" class="nav-link p-2 rounded text-body-secondary"><i class="bi bi-shield-check me-2 text-success"></i> Security Policy</a></li>
+                <li class="nav-item"><a href="../license/index.html" class="nav-link p-2 rounded text-body-secondary"><i class="bi bi-file-earmark-text me-2 text-info"></i> Open Source License</a></li>
+                <li class="nav-item"><a href="../porting/index.html" class="nav-link p-2 rounded text-body-secondary"><i class="bi bi-signpost-split me-2 text-warning"></i> Porting v6 to v7</a></li>
+                <li class="nav-item"><a href="../formats/index.html" class="nav-link p-2 rounded text-body-secondary"><i class="bi bi-filetype-png me-2 text-danger"></i> Supported Formats</a></li>
+              </ul>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="im-footer py-5 mt-auto">
+    <div class="container-xl">
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-4">
+          <a class="navbar-brand im-brand mb-2 fs-5" href="../index.html">ImageMagick</a>
+          <p class="small text-secondary">Mastering Digital Image Alchemy. The open-source suite for image creation, conversion, and batch manipulation.</p>
+        </div>
+        <div class="col-6 col-md-3 col-lg-2">
+          <h6 class="text-light fw-bold mb-3">Navigation</h6>
+          <ul class="list-unstyled small d-flex flex-column gap-2">
+            <li><a href="../download/index.html">Download</a></li>
+            <li><a href="../command-line-tools/index.html">Tools</a></li>
+            <li><a href="../develop/index.html">APIs & Libraries</a></li>
+            <li><a href="index.html">Sitemap</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-md-3 col-lg-2">
+          <h6 class="text-light fw-bold mb-3">Community</h6>
+          <ul class="list-unstyled small d-flex flex-column gap-2">
+            <li><a href="https://github.com/ImageMagick/ImageMagick/discussions" target="_blank">Discussions</a></li>
+            <li><a href="https://github.com/ImageMagick/ImageMagick/issues" target="_blank">Report an Issue</a></li>
+            <li><a href="../support/index.html">Sponsor Us</a></li>
+            <li><a href="../cite/index.html">Cite ImageMagick</a></li>
+          </ul>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <h6 class="text-light fw-bold mb-3">Connect</h6>
+          <div class="d-flex gap-3 fs-5">
+            <a href="https://github.com/imagemagick/imagemagick" target="_blank" aria-label="GitHub"><i class="bi bi-github"></i></a>
+            <a href="https://x.com/imagemagick" target="_blank" aria-label="X/Twitter"><i class="bi bi-twitter-x"></i></a>
+          </div>
+          <p class="small text-secondary mt-3 mb-0">Copyright © 1999 ImageMagick Studio LLC</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function setTheme(theme) {
+      localStorage.setItem('theme', theme);
+      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const applied = theme === 'auto' ? (systemDark ? 'dark' : 'light') : theme;
+      document.documentElement.setAttribute('data-bs-theme', applied);
+    }
+  </script>
+  <div style="visibility: hidden;">
+    <div class="gcse-search"></div>
+  </div>
+</body>
 
 </html>

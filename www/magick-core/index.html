@@ -11,289 +11,420 @@
   <meta name="description" content="Explore ImageMagick’s MagickCore API, a powerful C library for image processing. Learn functions for reading, writing, transforming, and analyzing images with cross‑platform support and advanced features.">
   <link rel="canonical" href="index.html">
   <meta name="robots" content="index, follow">
-  <meta name="theme-color" content="#000000">
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
+  <meta name="theme-color" content="#0d1117">
+  
   <link rel="shortcut icon" href="../image/wand.png" type="image/png">
   <link rel="apple-touch-icon" href="../image/wand.png" type="image/png">
-  <link rel="preconnect" href="https://cdn.jsdelivr.net/">
-  <link rel="preconnect" href="https://localhost/">
-  <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" as="style" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" crossorigin="anonymous">
-  <!-- Accessibility Enhancement -->
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com/">
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+
   <style>
-    html {
-      scroll-padding-top: 70px;
-    }
-
-    iframe {
-      width: 100% !important;
-      max-width: 100% !important;
-      height: 400px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
-    }
-
-    a.nav-link:hover,
-    a.dropdown-item:hover {
-      color: #ffc107 !important;
-      text-shadow: 0px 2px 4px rgba(255, 193, 7, 0.8);
-    }
-
-    .btn-outline-warning {
-      color: #cd7f32;
-      border-color: #cd7f32;
-    }
-
-    .navbar-brand {
-      color: #d4af37;
-      transition: color 0.3s ease, text-shadow 0.3s ease;
-    }
-
-    .navbar-brand:hover {
-      color: #e9c03d;
-      text-shadow: 0px 2px 4px rgba(203, 163, 120, 0.6);
-    }
-
     :root {
-      --bs-code-color: revert;
+      --im-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --im-font-mono: 'Fira Code', monospace;
+      --im-primary: #8b5cf6;
+      --im-primary-hover: #7c3aed;
+      --im-accent: #f59e0b;
+      --im-bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
     }
 
-    .table {
-      table-layout: fixed;   /* force equal distribution of width */
-      width: 100%;           /* table spans full container */
+    body {
+      font-family: var(--im-font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
-    .table td, .table th {
-      white-space: normal;     /* allow wrapping */
-      word-break: break-word;  /* break long words/strings */
+    code, kbd, pre, .font-mono {
+      font-family: var(--im-font-mono) !important;
+    }
+
+    /* Modern Navbar */
+    .im-navbar {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background-color: rgba(15, 23, 42, 0.85) !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .im-navbar .nav-link {
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.75);
+      transition: all 0.2s ease;
+      padding: 0.5rem 0.85rem;
+      border-radius: 0.375rem;
+    }
+
+    .im-navbar .nav-link:hover,
+    .im-navbar .nav-link.active {
+      color: #ffffff !important;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .im-brand {
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #a78bfa 0%, #f472b6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Hero Section */
+    .im-hero {
+      background: var(--im-bg-gradient);
+      color: #ffffff;
+      padding: 4rem 0 3.5rem;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .im-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(0,0,0,0) 70%);
+      pointer-events: none;
+    }
+
+    /* Terminal Widget */
+    .terminal-card {
+      background: #090d16;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 0.75rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+    }
+
+    .terminal-header {
+      background: rgba(255, 255, 255, 0.04);
+      padding: 0.6rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .terminal-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    /* Cards & Container */
+    .im-card {
+      border: 1px solid var(--bs-border-color-translucent);
+      border-radius: 0.75rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      background: var(--bs-body-bg);
+    }
+
+    .im-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Footer */
+    .im-footer {
+      margin-top: auto;
+      background: #090d16;
+      color: rgba(255, 255, 255, 0.6);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .im-footer a {
+      color: rgba(255, 255, 255, 0.75);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .im-footer a:hover {
+      color: var(--im-primary);
     }
   </style>
-  <!-- Open Graph Meta Tags -->
+
+  <!-- Open Graph -->
   <meta property="og:title" content="ImageMagick | MagickCore, Low-level C API">
   <meta property="og:description" content="Explore ImageMagick’s MagickCore API, a powerful C library for image processing. Learn functions for reading, writing, transforming, and analyzing images with cross‑platform support and advanced features.">
   <meta property="og:image" content="../image/logo.png">
-  <meta property="og:logo" content="../image/logo.png">
   <meta property="og:url" content="index.html">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="ImageMagick">
-  <meta property="og:locale" content="en_us">
-  <!-- Twitter Card Meta Tags -->
-  <meta name="twitter:card" content="summary_large_image">
-  $site=strtolower("ImageMagick");
-  <meta name="twitter:site" content="@imagemagick">
-  <meta name="twitter:creator" content="@imagemagick">
-  <meta name="twitter:title" content="ImageMagick | MagickCore, Low-level C API">
-  <meta name="twitter:description" content="$this->description">
-  <meta name="twitter:image" content="../image/logo.png">
-  <meta name="twitter:image:alt" content="ImageMagick logo and tag line">
+
   <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        "name": "ImageMagick",
-        "url": "ImageMagick | MagickCore, Low-level C API",
-        "image": "https://imagemagick.org/image/logo.png",
-        "description": "$this->description",
-        "applicationCategory": "Multimedia",
-        "operatingSystem": "Windows, macOS, Linux, Unix",
-        "softwareVersion": "7.1.2-31",
-        "license": "https://imagemagick.org/license/",
-        "creator": {
-          "@type": "Organization",
-          "name": "ImageMagick Studio LLC",
-          "url": "https://imagemagick.org"
-        },
-			  "keywords": [
-          "".ucfirst($title)."",
-          "image processing software",
-          "image conversion tool",
-          "batch image editing",
-          "open-source image editor",
-          "ImageMagick command-line",
-          "resize images ImageMagick",
-          "crop and rotate images",
-          "ImageMagick tutorial",
-          "ImageMagick automation",
-          "ImageMagick for developers",
-          "ImageMagick CLI",
-          "ImageMagick filters and effects",
-          "ImageMagick scripting",
-          "ImageMagick API integration"
-        ],
-			  "sameAs": [
-          "https://github.com/ImageMagick",
-          "https://x.com/imagemagick"
-        ],
-        "offers": {
-          "@type": "Offer",
-          "price": "0.00",
-          "priceCurrency": "USD"
-        }
-      }
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "ImageMagick",
+    "url": "https://imagemagick.org/magick-core/",
+    "image": "https://imagemagick.org/image/logo.png",
+    "description": "Explore ImageMagick’s MagickCore API, a powerful C library for image processing. Learn functions for reading, writing, transforming, and analyzing images with cross‑platform support and advanced features.",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Windows, macOS, Linux, Unix",
+    "softwareVersion": "7.1.2-34",
+    "license": "https://imagemagick.org/license/",
+    "offers": {
+      "@type": "Offer",
+      "price": "0.00",
+      "priceCurrency": "USD"
+    }
+  }
   </script>
-  <!-- Google Custom Search -->
   <script async src="https://localhost/cse.js?cx=8720b81722164487b"></script>
-  <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
 </head>
 
 <body>
+  <!-- Theme Init -->
   <script>
-    function setTheme(theme) {
-      localStorage.setItem('theme', theme);
-      updateThemeIcon(theme);
-      document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? getSystemTheme() : theme);
-    }
-    function getSystemTheme() {
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    }
-    function updateThemeIcon(theme) {
-      const iconMap = {
-        light: '☀️',
-        dark: '🌙',
-        auto: '🌓'
-      };
-      document.getElementById('currentThemeIcon').textContent = iconMap[theme] || '🌓';
-    }
-    document.addEventListener('DOMContentLoaded', () => {
-      const savedTheme = localStorage.getItem('theme') || 'auto';
-      setTheme(savedTheme);
-    });
+    (function() {
+      const saved = localStorage.getItem('theme') || 'auto';
+      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const applied = saved === 'auto' ? (systemDark ? 'dark' : 'light') : saved;
+      document.documentElement.setAttribute('data-bs-theme', applied);
+    })();
   </script>
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <div class="container-fluid">
-      <a class="navbar-brand fw-bold" href="../index-2.html" title="ImageMagick">ImageMagick</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#magick-navbars" aria-controls="magick-navbars" aria-expanded="false" aria-label="Toggle navigation">
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top im-navbar">
+    <div class="container-xl">
+      <a class="navbar-brand im-brand" href="../index.html">
+        <img src="../image/wand.png" alt="Wand Icon" width="24" height="24" class="d-inline-block align-text-top">
+        ImageMagick
+      </a>
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#imNavbar" aria-controls="imNavbar" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <div class="collapse navbar-collapse" id="magick-navbars">
-        <ul class="navbar-nav me-auto">
+      <div class="collapse navbar-collapse" id="imNavbar">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3">
           <li class="nav-item">
-            <a class="nav-link "" href="../download/index.html">Download</a>
+            <a class="nav-link " href="../download/index.html">Download</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link "" href="../command-line-tools/index.html">Tools</a>
+            <a class="nav-link " href="../command-line-tools/index.html">Tools</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link "" href="../command-line-processing/index.html">CLI</a>
+            <a class="nav-link " href="../command-line-processing/index.html">CLI Usage</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link "" href="../develop/index.html">Develop</a>
+            <a class="nav-link " href="../develop/index.html">API & Develop</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" rel="noopener noreferrer" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
           </li>
         </ul>
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item ms-3">
-            <form class="d-flex form-inline" action="https://imagemagick.org/magick-core/">
-              <input class="form-control me-2" type="text" name="q" placeholder="Search site..." aria-label="Search">
-              <button class="btn btn-outline-warning" type="submit" name="sa">Search</button>
-            </form>
-          </li>
-          <li class="nav-item dropdown ms-3">
-            <a class="nav-link dropdown-toggle" href="#" id="themeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <span id="currentThemeIcon">🌓</span>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="themeDropdown">
-              <li><a class="dropdown-item" href="#" onclick="setTheme('light')">☀️ Light</a></li>
-              <li><a class="dropdown-item" href="#" onclick="setTheme('dark')">🌙 Dark</a></li>
-              <li><a class="dropdown-item" href="#" onclick="setTheme('auto')">🌓 Auto</a></li>
+
+        <div class="d-flex align-items-center gap-2">
+          <!-- Search Trigger Modal / Input -->
+          <form class="d-flex" action="https://imagemagick.org/magick-core/index.html" role="search">
+            <div class="input-group input-group-sm">
+              <input class="form-control bg-body-tertiary border-secondary-subtle" type="search" placeholder="Search site..." name="q" aria-label="Search">
+              <button class="btn btn-outline-warning" type="submit" name="sa"><i class="bi bi-search"></i></button>
+            </div>
+          </form>
+
+          <!-- Theme Dropdown -->
+          <div class="dropdown">
+            <button class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-1 border-0 text-white" type="button" id="themeSelect" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-circle-half"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="themeSelect">
+              <li><button class="dropdown-item d-flex align-items-center gap-2" onclick="setTheme('light')"><i class="bi bi-sun-fill"></i> Light</button></li>
+              <li><button class="dropdown-item d-flex align-items-center gap-2" onclick="setTheme('dark')"><i class="bi bi-moon-stars-fill"></i> Dark</button></li>
+              <li><button class="dropdown-item d-flex align-items-center gap-2" onclick="setTheme('auto')"><i class="bi bi-circle-half"></i> Auto</button></li>
             </ul>
-          </li>
-        </ul>
+          </div>
+
+          <a href="https://github.com/ImageMagick/ImageMagick" target="_blank" class="btn btn-sm btn-outline-light d-flex align-items-center gap-1 ms-1">
+            <i class="bi bi-github"></i> <span class="d-none d-xl-inline">GitHub</span>
+          </a>
+        </div>
       </div>
     </div>
   </nav>
 
-  <div class="col-lg-8 mx-auto text-body-secondary pt-5 pt-lg-5">
-    <header class="d-flex align-items-center pb-3 mb-5 border-bottom">
-      <div class="mt-3 ms-3">
-        <a href="../index-2.html" class="text-decoration-none">
-          <h1 class="fs-2 mb-1 display-5">MagickCore, Low-level C API</h1>
-        </a>
-        <h2 class="fs-5 text-muted h4">ImageMagick</h2>
+  <!-- Hero Header Block -->
+  <header class="im-hero mt-5 pt-5">
+    <div class="container-xl pt-3">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+          <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-primary bg-opacity-20 text-primary border border-primary border-opacity-30 mb-3 fs-7">
+            <span class="badge bg-primary">v7.1.2-34</span>
+            <span class="small text-light">Latest Stable Release</span>
+          </div>
+          <h1 class="display-4 fw-bold mb-3 tracking-tight">MagickCore, Low-level C API</h1>
+          <p class="lead text-light opacity-75 mb-4 fs-5">Explore ImageMagick’s MagickCore API, a powerful C library for image processing. Learn functions for reading, writing, transforming, and analyzing images with cross‑platform support and advanced features.</p>
+          <div class="d-flex flex-wrap gap-3">
+            <a href="../download/index.html" class="btn btn-primary btn-lg px-4 fw-semibold d-flex align-items-center gap-2 shadow">
+              <i class="bi bi-download"></i> Get ImageMagick
+            </a>
+            <a href="../command-line-processing/index.html" class="btn btn-outline-light btn-lg px-4 fw-semibold d-flex align-items-center gap-2">
+              <i class="bi bi-terminal"></i> Documentation
+            </a>
+          </div>
+        </div>
+
+        <!-- Terminal Quickstart Preview -->
+        <div class="col-lg-5">
+          <div class="terminal-card">
+            <div class="terminal-header">
+              <div class="terminal-dot bg-danger"></div>
+              <div class="terminal-dot bg-warning"></div>
+              <div class="terminal-dot bg-success"></div>
+              <span class="small text-secondary font-mono ms-2">quickstart.sh</span>
+            </div>
+            <div class="p-3 text-light font-mono small">
+              <div class="text-secondary"># Install via your favorite Package Manager</div>
+              <div class="text-success">$ brew install imagemagick</div>
+              <div class="text-secondary mt-2"># Convert PNG to WebP with compression</div>
+              <div>$ magick input.png -quality 85 output.webp</div>
+              <div class="text-secondary mt-2"># Resize image maintaining aspect ratio</div>
+              <div>$ magick input.jpg -resize 800x600^ output.jpg</div>
+            </div>
+          </div>
+        </div>
       </div>
-    </header>
+    </div>
+  </header>
 
-    <main role="main" class="container">
-      <div class="row g-4">
-        <div class="col-lg-9 col-12">
-          <div>
-<p  class="lead">The <a href="https://github.com/ImageMagick/ImageMagick/tree/main/MagickCore">MagickCore API</a> is a low-level interface between the C programming language and the ImageMagick image processing libraries and is recommended for wizard-level programmers only.  Unlike the <a href="https://github.com/ImageMagick/ImageMagick/tree/main/MagickWand">MagickWand</a> C API which uses only a few opaque types and accessors, with MagickCore you almost exclusively access the structure members directly.  A description of the MagickCore public methods are found on GitHub:</p>
+  <!-- Main Body Content -->
+  <main class="py-5">
+    <div class="container-xl">
+      <div class="row g-5">
+        <!-- Main Column -->
+        <div class="col-lg-8">
+          <div class="container-fluid px-0">
+  <!-- Lead Introduction -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <p class="lead text-body-secondary">
+        The <a href="https://github.com/ImageMagick/ImageMagick/tree/main/MagickCore">MagickCore API</a> is a low-level interface between the C programming language and ImageMagick's core processing libraries. Designed for wizard-level programmers, MagickCore gives you direct access to structure members—unlike the <a href="https://github.com/ImageMagick/ImageMagick/tree/main/MagickWand">MagickWand</a> C API, which uses opaque types and accessors.
+      </p>
+    </div>
+  </div>
 
-<ul>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/magick.h">Initialize or Destroy the ImageMagick Environment</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/constitute.h">Constitute an Image</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/composite.h">Composite an Image</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/image.h">Image Methods</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/channel.h">Image Channel Methods</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/color.h">Count the Colors in an Image</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/colormap.h">Colormap Methods</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/colorspace.h">Colorspace Methods</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/distort.h">Image Distortions</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/layer.h">Dealing with Image Layers</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/profile.h">Dealing with Image Profiles</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/quantize.h">Reduce the Number of Unique Colors in an Image</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/histogram.h">Image Histograms</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/segment.h">Segment an Image with Thresholding Fuzzy c-Means</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/resize.h">Resize an Image</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/transform.h">Transform an Image</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/shear.h">Shear or Rotate an Image by an Arbitrary Angle</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/enhance.h">Enhance an Image</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/effect.h">Add an Effect</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/morphology.h">Morphological Erosions, Dilations, Openings, and Closings</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/fx.h">Add a Special Effect</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/decorate.h">Decorate an Image</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/attribute.h">Get/Set an Image Attribute</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/property.h">Get/Set Image Properties</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/statistic.h">Get Image Statistics</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/feature.h">Get Image Features</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/annotate.h">Annotate an Image</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/paint.h">Paint on an Image</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/draw.h">Draw on an Image</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/montage.h">Create an Image Thumbnail</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/fourier.h">Compute the discrete Fourier transform (DFT)</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/compare.h">Compare an Image to a Reconstructed Image</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/vision.h">Computer Vision</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/display.h">Interactively Display and Edit an Image</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/animate.h">Interactively Animate an Image Sequence</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/cipher.h">Convert to and from Cipher Pixels</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/list.h">Working with Image Lists</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/image-view.h">Image View Methods</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/cache.h">Get or Set Image Pixels</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/cache-view.h">Working with Cache Views</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/stream.h">The Pixel FIFO</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/blob.h">Read or Write Binary Large OBjects</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/module.h">Loadable Modules</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/signature.h">Compute a Message Digest for an Image</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/registry.h">The Image Registry</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/exception.h">Dealing with Exceptions</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/memory_.h">Memory Allocation</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/resource_.h">Monitor or Limit Resource Consumption</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/monitor.h">Monitor the Progress of an Image Operation</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/version.h.in">Get the Version and Copyrights</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/mime.h">Mime Methods</a></li>
-  <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/deprecate.h">Deprecated Methods</a></li>
-  <li><a href="https://imagemagick.org/exception/">Error and Warning Codes</a></li>
-</ul>
+  <!-- API Index Reference -->
+  <section class="mb-5">
+    <h2 class="h4 pb-2 border-bottom mb-3">MagickCore Public Methods Reference</h2>
+    <p class="text-muted small">Explore headers and function definitions directly on GitHub:</p>
 
-<p>After you write your MagickCore program, compile it like this:</p>
+    <div class="card border-0 bg-body-tertiary shadow-sm mb-4">
+      <div class="card-body p-3">
+        <div class="row g-2 small">
+          <div class="col-md-6 col-lg-4">
+            <ul class="list-unstyled mb-0">
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/magick.h" class="text-decoration-none">&bull; Environment Init &amp; Destroy</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/constitute.h" class="text-decoration-none">&bull; Constitute an Image</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/composite.h" class="text-decoration-none">&bull; Composite an Image</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/image.h" class="text-decoration-none">&bull; Core Image Methods</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/channel.h" class="text-decoration-none">&bull; Image Channel Methods</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/color.h" class="text-decoration-none">&bull; Count Image Colors</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/colormap.h" class="text-decoration-none">&bull; Colormap Methods</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/colorspace.h" class="text-decoration-none">&bull; Colorspace Methods</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/distort.h" class="text-decoration-none">&bull; Image Distortions</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/layer.h" class="text-decoration-none">&bull; Dealing with Layers</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/profile.h" class="text-decoration-none">&bull; Image Profiles</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/quantize.h" class="text-decoration-none">&bull; Quantize &amp; Color Reduction</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/histogram.h" class="text-decoration-none">&bull; Image Histograms</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/segment.h" class="text-decoration-none">&bull; Fuzzy c-Means Segmentation</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/resize.h" class="text-decoration-none">&bull; Resize Methods</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/transform.h" class="text-decoration-none">&bull; Transform Methods</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/shear.h" class="text-decoration-none">&bull; Shear or Rotate</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/enhance.h" class="text-decoration-none">&bull; Enhance Methods</a></li>
+            </ul>
+          </div>
+          <div class="col-md-6 col-lg-4">
+            <ul class="list-unstyled mb-0">
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/effect.h" class="text-decoration-none">&bull; Add Effects</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/morphology.h" class="text-decoration-none">&bull; Morphology Operations</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/fx.h" class="text-decoration-none">&bull; Special Effects (FX)</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/decorate.h" class="text-decoration-none">&bull; Decorate Methods</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/attribute.h" class="text-decoration-none">&bull; Get/Set Attributes</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/property.h" class="text-decoration-none">&bull; Get/Set Properties</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/statistic.h" class="text-decoration-none">&bull; Image Statistics</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/feature.h" class="text-decoration-none">&bull; Image Features</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/annotate.h" class="text-decoration-none">&bull; Annotate Image</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/paint.h" class="text-decoration-none">&bull; Paint Methods</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/draw.h" class="text-decoration-none">&bull; Vector Drawing</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/montage.h" class="text-decoration-none">&bull; Thumbnails &amp; Montage</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/fourier.h" class="text-decoration-none">&bull; Discrete Fourier Transform</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/compare.h" class="text-decoration-none">&bull; Compare Images</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/vision.h" class="text-decoration-none">&bull; Computer Vision</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/display.h" class="text-decoration-none">&bull; Interactive Display/Edit</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/animate.h" class="text-decoration-none">&bull; Interactive Animation</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/cipher.h" class="text-decoration-none">&bull; Cipher Pixels</a></li>
+            </ul>
+          </div>
+          <div class="col-md-6 col-lg-4">
+            <ul class="list-unstyled mb-0">
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/list.h" class="text-decoration-none">&bull; Image Lists</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/image-view.h" class="text-decoration-none">&bull; Image Views</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/cache.h" class="text-decoration-none">&bull; Pixel Cache</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/cache-view.h" class="text-decoration-none">&bull; Cache Views</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/stream.h" class="text-decoration-none">&bull; Pixel FIFO Stream</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/blob.h" class="text-decoration-none">&bull; Binary Large OBjects (BLOB)</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/module.h" class="text-decoration-none">&bull; Loadable Modules</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/signature.h" class="text-decoration-none">&bull; Message Digest Signature</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/registry.h" class="text-decoration-none">&bull; Image Registry</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/exception.h" class="text-decoration-none">&bull; Exception Handling</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/memory_.h" class="text-decoration-none">&bull; Memory Allocation</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/resource_.h" class="text-decoration-none">&bull; Resource Limits</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/monitor.h" class="text-decoration-none">&bull; Progress Monitoring</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/version.h.in" class="text-decoration-none">&bull; Version &amp; Copyright</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/mime.h" class="text-decoration-none">&bull; MIME Type Methods</a></li>
+              <li><a href="https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/deprecate.h" class="text-decoration-none">&bull; Deprecated Methods</a></li>
+              <li><a href="https://imagemagick.org/exception/" class="text-decoration-none">&bull; Error &amp; Warning Codes</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><samp>$ cc `MagickCore-config --cflags --cppflags` -O2 -o core core.c `MagickCore-config --ldflags --libs`</samp></pre>
+  <!-- Compilation & Environment Setup -->
+  <section class="mb-5">
+    <h2 class="h4 pb-2 border-bottom mb-3">Compiling MagickCore Programs</h2>
+    <p>Compile your MagickCore C program using <code>MagickCore-config</code> flags:</p>
 
-<p>Set the <code>PKG_CONFIG_PATH</code> environment variable if ImageMagick is not in your default system path:</p>
+    <div class="card bg-body-tertiary border-0 shadow-sm mb-3">
+      <div class="card-body">
+        <pre class="mb-0 font-monospace text-body-secondary"><samp>$ cc `MagickCore-config --cflags --cppflags` -O2 -o core core.c `MagickCore-config --ldflags --libs`</samp></pre>
+      </div>
+    </div>
 
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><samp>$ export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig </samp></pre>
+    <p class="small text-muted">If ImageMagick is installed outside your system's default path, export <code>PKG_CONFIG_PATH</code>:</p>
+    <div class="card bg-body-tertiary border-0 shadow-sm mb-3">
+      <div class="card-body">
+        <pre class="mb-0 font-monospace text-body-secondary"><samp>$ export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig</samp></pre>
+      </div>
+    </div>
+  </section>
 
-<p>Here is a example program that utilizes the MagickCore API to get you started, <a href="https://imagemagick.org/source/core.c">core.c</a>. It reads a GIF image, creates a thumbnail, and writes it to disk in the PNG image format.</p>
+  <!-- Code Examples Section -->
+  <section class="mb-5">
+    <h2 class="h4 pb-2 border-bottom mb-3">Code Examples</h2>
 
-<pre class="overflow-auto p-3 mb-2 text-body-secondary bg-body-tertiary" style="max-height:75svh;"><code>#include &lt;stdio.h>
-#include &lt;stdlib.h>
-#include &lt;string.h>
-#include &lt;time.h>
-#include &lt;MagickCore/MagickCore.h>
+    <h3 class="h5 mt-4 mb-3">Example 1: Basic Image Resizing (<a href="https://imagemagick.org/source/core.c">core.c</a>)</h3>
+    <p>This example reads a GIF image, resizes it into a thumbnail, and writes it back as a PNG file:</p>
+
+    <div class="card bg-body-tertiary border-0 shadow-sm mb-4">
+      <div class="card-body p-0">
+        <pre class="overflow-auto p-3 mb-0 font-monospace text-body-secondary small" style="max-height: 60vh;"><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;time.h&gt;
+#include &lt;MagickCore/MagickCore.h&gt;
 
 int main(int argc,char **argv)
 {
@@ -352,12 +483,20 @@ int main(int argc,char **argv)
   MagickCoreTerminus();
   return(0);
 }</code></pre>
-<p><a class="anchor" id="image-view"></a>Now lets perform the same contrast enhancement while taking advantage of our dual or quad-core processing system by running the algorithm in parallel utilizing wand views.  The <a href="https://imagemagick.org/source/core/sigmoidal-contrast.c">sigmoidal-contrast.c</a> module reads an image, applies sigmoidal non-linearity contrast control, and writes the result to disk just like the previous contrast enhancement program, but now it does its work in parallel (assumes ImageMagick is built with OpenMP support).</p>
+      </div>
+    </div>
 
-<pre class="overflow-auto p-3 mb-2 text-body-secondary bg-body-tertiary" style="max-height:75svh;"><code>#include &lt;stdio.h>
-#include &lt;stdlib.h>
-#include &lt;math.h>
-#include &lt;MagickCore/MagickCore.h>
+    <h3 class="h5 mt-4 mb-3" id="image-view">Example 2: Parallel Processing with Wand Views (<a href="https://imagemagick.org/source/core/sigmoidal-contrast.c">sigmoidal-contrast.c</a>)</h3>
+    <p>
+      This program applies sigmoidal non-linearity contrast control across multicore systems in parallel using OpenMP-backed Wand Views:
+    </p>
+
+    <div class="card bg-body-tertiary border-0 shadow-sm mb-4">
+      <div class="card-body p-0">
+        <pre class="overflow-auto p-3 mb-0 font-monospace text-body-secondary small" style="max-height: 60vh;"><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;math.h&gt;
+#include &lt;MagickCore/MagickCore.h&gt;
 
 static MagickBooleanType SigmoidalContrast(ImageView *contrast_view,
   const ssize_t y,const int id,void *context)
@@ -382,10 +521,10 @@ static MagickBooleanType SigmoidalContrast(ImageView *contrast_view,
   pixels=GetImageViewAuthenticPixels(contrast_view);
   for (x=0; x &lt; (ssize_t) (extent.width-extent.x); x++)
   {
-    SetPixelRed(pixels,RoundToQuantum(SigmoidalContrast(GetPixelRed(pixels)));
-    SetPixelGreen(pixels,RoundToQuantum(SigmoidalContrast(GetPixelGreen(pixels)));
-    SetPixelBlue(pixels,RoundToQuantum(SigmoidalContrast(GetPixelBlue(pixels)));
-    SetPixelOpacity(pixels,RoundToQuantum(SigmoidalContrast(GetPixelOpacity(pixels)));
+    SetPixelRed(pixels,RoundToQuantum(SigmoidalContrast(GetPixelRed(pixels))));
+    SetPixelGreen(pixels,RoundToQuantum(SigmoidalContrast(GetPixelGreen(pixels))));
+    SetPixelBlue(pixels,RoundToQuantum(SigmoidalContrast(GetPixelBlue(pixels))));
+    SetPixelOpacity(pixels,RoundToQuantum(SigmoidalContrast(GetPixelOpacity(pixels))));
     pixels++;
   }
   indexes=GetImageViewAuthenticIndexes(contrast_view);
@@ -399,7 +538,6 @@ int main(int argc,char **argv)
 {
 #define ThrowImageException(image) \
 { \
- \
   CatchException(exception); \
   if (contrast_image != (Image *) NULL) \
     contrast_image=DestroyImage(contrast_image); \
@@ -409,10 +547,8 @@ int main(int argc,char **argv)
 { \
   char \
     *description; \
- \
   ExceptionType \
     severity; \
- \
   description=GetImageViewException(view,&amp;severity); \
   (void) fprintf(stderr,"%s %s %lu %s\n",GetMagickModule(),description); \
   description=DestroyString(description); \
@@ -444,7 +580,7 @@ int main(int argc,char **argv)
   */
   MagickCoreGenesis(*argv,MagickTrue);
   image_info=AcquireImageInfo();
-  (void) CopyMagickString(image_info->filename,argv[1],MaxTextExtent);
+  (void) CopyMagickString(image_info-&gt;filename,argv[1],MaxTextExtent);
   exception=AcquireExceptionInfo();
   contrast_image=ReadImage(image_info,exception);
   if (contrast_image == (Image *) NULL)
@@ -471,74 +607,123 @@ int main(int argc,char **argv)
   MagickCoreTerminus();
   return(0);
 }</code></pre>
-<p><code>MagickCoreTerminus()</code> is a function in the ImageMagick library that is used to clean up and release resources when shutting down an application that uses ImageMagick. This function should be called in the primary thread of the application's process during the shutdown process. It's crucial that this function is invoked only after any threads that are using ImageMagick functions have terminated.</p>
+      </div>
+    </div>
+  </section>
 
-<p>ImageMagick might internally use threads via OpenMP (a method for parallel programming). As a result, it's important to ensure that any function calls into ImageMagick have completed before calling <code>MagickCoreTerminus()</code>. This prevents issues with OpenMP worker threads accessing resources that are destroyed by this termination function.</p>
+  <!-- Cleanup & OpenMP Resource Termination -->
+  <section class="mb-4">
+    <h2 class="h4 pb-2 border-bottom mb-3">Resource Cleanup and OpenMP Considerations</h2>
+    <p>
+      The <code>MagickCoreTerminus()</code> function cleans up and releases internal resources upon application shutdown. Call this in the main application thread only after all secondary worker threads using ImageMagick functions have completed.
+    </p>
 
-<p>If OpenMP is being used (starting from version 5.0), the OpenMP implementation itself handles starting and stopping worker threads and allocating and freeing resources using its own methods. This means that after calling <code>MagickCoreTerminus()</code>, some OpenMP resources and worker threads might still remain allocated. To address this, the function <code>omp_pause_resource_all(omp_pause_hard)</code> can be invoked. This function, introduced in OpenMP version 5.0, ensures that any resources allocated by OpenMP (such as threads and thread-specific memory) are freed. It's recommended to call this function after <code>MagickCoreTerminus()</code> has completed its execution.</p>
+    <div class="card border-0 bg-body-tertiary shadow-sm mb-3">
+      <div class="card-body">
+        <h4 class="h6 fw-bold mb-2">OpenMP Resource Deallocation (v5.0+)</h4>
+        <p class="small text-muted mb-0">
+          When OpenMP threading is used, the runtime handles worker thread lifecycles and thread-local memory allocation. Consequently, some OpenMP worker threads and memory allocations may persist after <code>MagickCoreTerminus()</code> completes. To release these remaining resources, call <code>omp_pause_resource_all(omp_pause_hard)</code> immediately following <code>MagickCoreTerminus()</code>.
+        </p>
+      </div>
+    </div>
+  </section>
 </div>
 
         </div>
-        <div class="col-lg-3 col-12 ps-lg-4 border-start d-flex flex-column align-items-center align-items-lg-start">
-          <div class="container text-center my-3">
-            <a href="../image/wizard.png" rel="noopener noreferrer" target="_blank">
-              <img alt="ImageMagick Wizard" class="img-fluid img-thumbnail" height="351" loading="lazy" src="../image/wizard.jpg" width="264">
-            </a>
-            <p class="mt-2"><iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border:0 !important; width:107px !important; height:35px !important;"></iframe></p>
+
+        <!-- Right Sidebar -->
+        <aside class="col-lg-4">
+          <div class="sticky-top" style="top: 90px;">
+            <!-- Sponsor Card -->
+            <div class="card im-card mb-4 overflow-hidden border-0 bg-gradient bg-primary bg-opacity-10">
+              <div class="card-body p-4 text-center">
+                <img src="../image/wizard.jpg" alt="ImageMagick Wizard" class="rounded shadow mb-3 img-fluid" style="max-height: 200px;">
+                <h5 class="fw-bold">Support Open Source</h5>
+                <p class="small text-body-secondary mb-3">Help maintain and sustain ImageMagick development.</p>
+                <iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="114" class="border-0"></iframe>
+              </div>
+            </div>
+
+            <!-- Banner Ad Container -->
+            <div class="text-center p-2 mv-4 rounded border border-secondary-subtle bg-body-tertiary">
+              <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
+              <ins class="adsbygoogle"
+                   style="display:block"
+                   data-ad-client="ca-pub-3129977114552745"
+                   data-ad-slot="1083537442"
+                   data-ad-format="auto"
+                   data-full-width-responsive="true"></ins>
+              <script>
+                   (adsbygoogle = window.adsbygoogle || []).push({});
+              </script>
+            </div>
+
+            <!-- Quick Links Navigation -->
+            <div class="card im-card p-3 mb-4">
+              <h6 class="fw-bold text-uppercase fs-7 text-secondary mb-3">Resources</h6>
+              <ul class="nav flex-column gap-1 fs-6">
+                <li class="nav-item"><a href="../security-policy/index.html" class="nav-link p-2 rounded text-body-secondary"><i class="bi bi-shield-check me-2 text-success"></i> Security Policy</a></li>
+                <li class="nav-item"><a href="../license/index.html" class="nav-link p-2 rounded text-body-secondary"><i class="bi bi-file-earmark-text me-2 text-info"></i> Open Source License</a></li>
+                <li class="nav-item"><a href="../porting/index.html" class="nav-link p-2 rounded text-body-secondary"><i class="bi bi-signpost-split me-2 text-warning"></i> Porting v6 to v7</a></li>
+                <li class="nav-item"><a href="../formats/index.html" class="nav-link p-2 rounded text-body-secondary"><i class="bi bi-filetype-png me-2 text-danger"></i> Supported Formats</a></li>
+              </ul>
+            </div>
           </div>
-          <div class="container text-center my-3">
-            <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745"
-              crossorigin="anonymous"></script>
-            <!-- Banner Ad -->
-            <ins class="adsbygoogle"
-              style="display:block"
-              data-ad-client="ca-pub-3129977114552745"
-              data-ad-slot="1083537442"
-              data-ad-format="auto"
-              data-full-width-responsive="true"></ins>
-            <script>
-              (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="im-footer py-5 mt-auto">
+    <div class="container-xl">
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-4">
+          <a class="navbar-brand im-brand mb-2 fs-5" href="../index.html">ImageMagick</a>
+          <p class="small text-secondary">Mastering Digital Image Alchemy. The open-source suite for image creation, conversion, and batch manipulation.</p>
+        </div>
+        <div class="col-6 col-md-3 col-lg-2">
+          <h6 class="text-light fw-bold mb-3">Navigation</h6>
+          <ul class="list-unstyled small d-flex flex-column gap-2">
+            <li><a href="../download/index.html">Download</a></li>
+            <li><a href="../command-line-tools/index.html">Tools</a></li>
+            <li><a href="../develop/index.html">APIs & Libraries</a></li>
+            <li><a href="../sitemap/index.html">Sitemap</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-md-3 col-lg-2">
+          <h6 class="text-light fw-bold mb-3">Community</h6>
+          <ul class="list-unstyled small d-flex flex-column gap-2">
+            <li><a href="https://github.com/ImageMagick/ImageMagick/discussions" target="_blank">Discussions</a></li>
+            <li><a href="https://github.com/ImageMagick/ImageMagick/issues" target="_blank">Report an Issue</a></li>
+            <li><a href="../support/index.html">Sponsor Us</a></li>
+            <li><a href="../cite/index.html">Cite ImageMagick</a></li>
+          </ul>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <h6 class="text-light fw-bold mb-3">Connect</h6>
+          <div class="d-flex gap-3 fs-5">
+            <a href="https://github.com/imagemagick/imagemagick" target="_blank" aria-label="GitHub"><i class="bi bi-github"></i></a>
+            <a href="https://x.com/imagemagick" target="_blank" aria-label="X/Twitter"><i class="bi bi-twitter-x"></i></a>
           </div>
+          <p class="small text-secondary mt-3 mb-0">Copyright © 1999 ImageMagick Studio LLC</p>
         </div>
       </div>
-      <a aria-label="About ImageMagick" class="btn btn-outline-warning mt-3" href="../index-2.html">About ImageMagick</a>
-    </main><!-- /.container -->
-    <footer class="text-center pt-5 my-5 text-body-secondary border-top">
-      <div class="container-fluid">
-        <a href="../security-policy/index.html">Security</a> •
-        <a href="../news/index.html">News</a>
-        &nbsp;
-        <a href="#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../image/wand.png"></a>
-        &nbsp;
-        <a href="../links/index.html">Related</a> •
-        <a href="../sitemap/index.html">Sitemap</a>
-        <br>
-        <a href="../support/index.html">Sponsor</a> •
-        <a href="../cite/index.html">Cite</a> •
-        <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-        <a href="https://github.com/ImageMagick/ImageMagick/discussions">Contact Us</a>
-        <br>
-        <a href="https://github.com/imagemagick/imagemagick" rel="noopener noreferrer" target="_blank" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false">
-            <title>GitHub</title>
-            <path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z" />
-          </svg></a> •
-        <a href="https://twitter.com/imagemagick" rel="noopener noreferrer" target="_blank" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 300 300" width="2%" height="2%" role="img" focusable="false">
-            <title>Twitter</title>
-            <path d="M178.57 127.15 290.27 0h-26.46l-97.03 110.38L89.34 0H0l117.13 166.93L0 300.25h26.46l102.4-116.59 81.8 116.59h89.34M36.01 19.54H76.66l187.13 262.13h-40.66" />
-          </svg></a>
-        <br>
-        <small>Copyright © 1999 ImageMagick Studio LLC</small>
-      </div>
-    </footer>
-    <div style="visibility: hidden;">
-      <div class="gcse-search"></div>
     </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function setTheme(theme) {
+      localStorage.setItem('theme', theme);
+      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const applied = theme === 'auto' ? (systemDark ? 'dark' : 'light') : theme;
+      document.documentElement.setAttribute('data-bs-theme', applied);
+    }
+  </script>
+  <div style="visibility: hidden;">
+    <div class="gcse-search"></div>
   </div>
-
-  <!-- Javascript assets -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
-
 
 </html>

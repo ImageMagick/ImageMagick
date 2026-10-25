@@ -8,635 +8,701 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>ImageMagick | Command-line Tools: Import</title>
-  <meta name="description" content="">
+  <meta name="description" content="Learn how to use ImageMagick’s import program to capture an X server screen, windows, or screen regions and save them directly to files or the clipboard.">
   <link rel="canonical" href="index.html">
   <meta name="robots" content="index, follow">
-  <meta name="theme-color" content="#000000">
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
+  <meta name="theme-color" content="#0d1117">
+  
   <link rel="shortcut icon" href="../image/wand.png" type="image/png">
   <link rel="apple-touch-icon" href="../image/wand.png" type="image/png">
-  <link rel="preconnect" href="https://cdn.jsdelivr.net/">
-  <link rel="preconnect" href="https://localhost/">
-  <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" as="style" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" crossorigin="anonymous">
-  <!-- Accessibility Enhancement -->
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com/">
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+
   <style>
-    html {
-      scroll-padding-top: 70px;
-    }
-
-    iframe {
-      width: 100% !important;
-      max-width: 100% !important;
-      height: 400px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
-    }
-
-    a.nav-link:hover,
-    a.dropdown-item:hover {
-      color: #ffc107 !important;
-      text-shadow: 0px 2px 4px rgba(255, 193, 7, 0.8);
-    }
-
-    .btn-outline-warning {
-      color: #cd7f32;
-      border-color: #cd7f32;
-    }
-
-    .navbar-brand {
-      color: #d4af37;
-      transition: color 0.3s ease, text-shadow 0.3s ease;
-    }
-
-    .navbar-brand:hover {
-      color: #e9c03d;
-      text-shadow: 0px 2px 4px rgba(203, 163, 120, 0.6);
-    }
-
     :root {
-      --bs-code-color: revert;
+      --im-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --im-font-mono: 'Fira Code', monospace;
+      --im-primary: #8b5cf6;
+      --im-primary-hover: #7c3aed;
+      --im-accent: #f59e0b;
+      --im-bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
     }
 
-    .table {
-      table-layout: fixed;   /* force equal distribution of width */
-      width: 100%;           /* table spans full container */
+    body {
+      font-family: var(--im-font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
-    .table td, .table th {
-      white-space: normal;     /* allow wrapping */
-      word-break: break-word;  /* break long words/strings */
+    code, kbd, pre, .font-mono {
+      font-family: var(--im-font-mono) !important;
+    }
+
+    /* Modern Navbar */
+    .im-navbar {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background-color: rgba(15, 23, 42, 0.85) !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .im-navbar .nav-link {
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.75);
+      transition: all 0.2s ease;
+      padding: 0.5rem 0.85rem;
+      border-radius: 0.375rem;
+    }
+
+    .im-navbar .nav-link:hover,
+    .im-navbar .nav-link.active {
+      color: #ffffff !important;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .im-brand {
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #a78bfa 0%, #f472b6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Hero Section */
+    .im-hero {
+      background: var(--im-bg-gradient);
+      color: #ffffff;
+      padding: 4rem 0 3.5rem;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .im-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(0,0,0,0) 70%);
+      pointer-events: none;
+    }
+
+    /* Terminal Widget */
+    .terminal-card {
+      background: #090d16;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 0.75rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+    }
+
+    .terminal-header {
+      background: rgba(255, 255, 255, 0.04);
+      padding: 0.6rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .terminal-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    /* Cards & Container */
+    .im-card {
+      border: 1px solid var(--bs-border-color-translucent);
+      border-radius: 0.75rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      background: var(--bs-body-bg);
+    }
+
+    .im-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Footer */
+    .im-footer {
+      margin-top: auto;
+      background: #090d16;
+      color: rgba(255, 255, 255, 0.6);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .im-footer a {
+      color: rgba(255, 255, 255, 0.75);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .im-footer a:hover {
+      color: var(--im-primary);
     }
   </style>
-  <!-- Open Graph Meta Tags -->
+
+  <!-- Open Graph -->
   <meta property="og:title" content="ImageMagick | Command-line Tools: Import">
-  <meta property="og:description" content="">
+  <meta property="og:description" content="Learn how to use ImageMagick’s import program to capture an X server screen, windows, or screen regions and save them directly to files or the clipboard.">
   <meta property="og:image" content="../image/logo.png">
-  <meta property="og:logo" content="../image/logo.png">
   <meta property="og:url" content="index.html">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="ImageMagick">
-  <meta property="og:locale" content="en_us">
-  <!-- Twitter Card Meta Tags -->
-  <meta name="twitter:card" content="summary_large_image">
-  $site=strtolower("ImageMagick");
-  <meta name="twitter:site" content="@imagemagick">
-  <meta name="twitter:creator" content="@imagemagick">
-  <meta name="twitter:title" content="ImageMagick | Command-line Tools: Import">
-  <meta name="twitter:description" content="$this->description">
-  <meta name="twitter:image" content="../image/logo.png">
-  <meta name="twitter:image:alt" content="ImageMagick logo and tag line">
+
   <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        "name": "ImageMagick",
-        "url": "ImageMagick | Command-line Tools: Import",
-        "image": "https://imagemagick.org/image/logo.png",
-        "description": "$this->description",
-        "applicationCategory": "Multimedia",
-        "operatingSystem": "Windows, macOS, Linux, Unix",
-        "softwareVersion": "7.1.2-31",
-        "license": "https://imagemagick.org/license/",
-        "creator": {
-          "@type": "Organization",
-          "name": "ImageMagick Studio LLC",
-          "url": "https://imagemagick.org"
-        },
-			  "keywords": [
-          "".ucfirst($title)."",
-          "image processing software",
-          "image conversion tool",
-          "batch image editing",
-          "open-source image editor",
-          "ImageMagick command-line",
-          "resize images ImageMagick",
-          "crop and rotate images",
-          "ImageMagick tutorial",
-          "ImageMagick automation",
-          "ImageMagick for developers",
-          "ImageMagick CLI",
-          "ImageMagick filters and effects",
-          "ImageMagick scripting",
-          "ImageMagick API integration"
-        ],
-			  "sameAs": [
-          "https://github.com/ImageMagick",
-          "https://x.com/imagemagick"
-        ],
-        "offers": {
-          "@type": "Offer",
-          "price": "0.00",
-          "priceCurrency": "USD"
-        }
-      }
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "ImageMagick",
+    "url": "https://imagemagick.org/import/",
+    "image": "https://imagemagick.org/image/logo.png",
+    "description": "Learn how to use ImageMagick’s import program to capture an X server screen, windows, or screen regions and save them directly to files or the clipboard.",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Windows, macOS, Linux, Unix",
+    "softwareVersion": "7.1.2-34",
+    "license": "https://imagemagick.org/license/",
+    "offers": {
+      "@type": "Offer",
+      "price": "0.00",
+      "priceCurrency": "USD"
+    }
+  }
   </script>
-  <!-- Google Custom Search -->
   <script async src="https://localhost/cse.js?cx=8720b81722164487b"></script>
-  <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
 </head>
 
 <body>
+  <!-- Theme Init -->
   <script>
-    function setTheme(theme) {
-      localStorage.setItem('theme', theme);
-      updateThemeIcon(theme);
-      document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? getSystemTheme() : theme);
-    }
-    function getSystemTheme() {
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    }
-    function updateThemeIcon(theme) {
-      const iconMap = {
-        light: '☀️',
-        dark: '🌙',
-        auto: '🌓'
-      };
-      document.getElementById('currentThemeIcon').textContent = iconMap[theme] || '🌓';
-    }
-    document.addEventListener('DOMContentLoaded', () => {
-      const savedTheme = localStorage.getItem('theme') || 'auto';
-      setTheme(savedTheme);
-    });
+    (function() {
+      const saved = localStorage.getItem('theme') || 'auto';
+      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const applied = saved === 'auto' ? (systemDark ? 'dark' : 'light') : saved;
+      document.documentElement.setAttribute('data-bs-theme', applied);
+    })();
   </script>
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <div class="container-fluid">
-      <a class="navbar-brand fw-bold" href="../index-2.html" title="ImageMagick">ImageMagick</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#magick-navbars" aria-controls="magick-navbars" aria-expanded="false" aria-label="Toggle navigation">
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top im-navbar">
+    <div class="container-xl">
+      <a class="navbar-brand im-brand" href="../index.html">
+        <img src="../image/wand.png" alt="Wand Icon" width="24" height="24" class="d-inline-block align-text-top">
+        ImageMagick
+      </a>
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#imNavbar" aria-controls="imNavbar" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <div class="collapse navbar-collapse" id="magick-navbars">
-        <ul class="navbar-nav me-auto">
+      <div class="collapse navbar-collapse" id="imNavbar">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3">
           <li class="nav-item">
-            <a class="nav-link "" href="../download/index.html">Download</a>
+            <a class="nav-link " href="../download/index.html">Download</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link "" href="../command-line-tools/index.html">Tools</a>
+            <a class="nav-link " href="../command-line-tools/index.html">Tools</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link "" href="../command-line-processing/index.html">CLI</a>
+            <a class="nav-link " href="../command-line-processing/index.html">CLI Usage</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link "" href="../develop/index.html">Develop</a>
+            <a class="nav-link " href="../develop/index.html">API & Develop</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" rel="noopener noreferrer" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
           </li>
         </ul>
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item ms-3">
-            <form class="d-flex form-inline" action="https://imagemagick.org/import/">
-              <input class="form-control me-2" type="text" name="q" placeholder="Search site..." aria-label="Search">
-              <button class="btn btn-outline-warning" type="submit" name="sa">Search</button>
-            </form>
-          </li>
-          <li class="nav-item dropdown ms-3">
-            <a class="nav-link dropdown-toggle" href="#" id="themeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <span id="currentThemeIcon">🌓</span>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="themeDropdown">
-              <li><a class="dropdown-item" href="#" onclick="setTheme('light')">☀️ Light</a></li>
-              <li><a class="dropdown-item" href="#" onclick="setTheme('dark')">🌙 Dark</a></li>
-              <li><a class="dropdown-item" href="#" onclick="setTheme('auto')">🌓 Auto</a></li>
+
+        <div class="d-flex align-items-center gap-2">
+          <!-- Search Trigger Modal / Input -->
+          <form class="d-flex" action="https://imagemagick.org/import/index.html" role="search">
+            <div class="input-group input-group-sm">
+              <input class="form-control bg-body-tertiary border-secondary-subtle" type="search" placeholder="Search site..." name="q" aria-label="Search">
+              <button class="btn btn-outline-warning" type="submit" name="sa"><i class="bi bi-search"></i></button>
+            </div>
+          </form>
+
+          <!-- Theme Dropdown -->
+          <div class="dropdown">
+            <button class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-1 border-0 text-white" type="button" id="themeSelect" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-circle-half"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="themeSelect">
+              <li><button class="dropdown-item d-flex align-items-center gap-2" onclick="setTheme('light')"><i class="bi bi-sun-fill"></i> Light</button></li>
+              <li><button class="dropdown-item d-flex align-items-center gap-2" onclick="setTheme('dark')"><i class="bi bi-moon-stars-fill"></i> Dark</button></li>
+              <li><button class="dropdown-item d-flex align-items-center gap-2" onclick="setTheme('auto')"><i class="bi bi-circle-half"></i> Auto</button></li>
             </ul>
-          </li>
-        </ul>
+          </div>
+
+          <a href="https://github.com/ImageMagick/ImageMagick" target="_blank" class="btn btn-sm btn-outline-light d-flex align-items-center gap-1 ms-1">
+            <i class="bi bi-github"></i> <span class="d-none d-xl-inline">GitHub</span>
+          </a>
+        </div>
       </div>
     </div>
   </nav>
 
-  <div class="col-lg-8 mx-auto text-body-secondary pt-5 pt-lg-5">
-    <header class="d-flex align-items-center pb-3 mb-5 border-bottom">
-      <div class="mt-3 ms-3">
-        <a href="../index-2.html" class="text-decoration-none">
-          <h1 class="fs-2 mb-1 display-5">Command-line Tools: Import</h1>
-        </a>
-        <h2 class="fs-5 text-muted h4">ImageMagick</h2>
-      </div>
-    </header>
-
-    <main role="main" class="container">
-      <div class="row g-4">
-        <div class="col-lg-9 col-12">
-          <div>
-<p class="text-center"><a href="#usage">Example Usage</a> • <a href="#options">Option Summary</a></p>
-
-<p class="lead">Use the <code>import</code> program to capture some or all of an X server screen and save the image to a file. <code>import</code> captures the window selected by clicking or program argument. See <a href="../command-line-processing/index.html">Command Line Processing</a> for advice on how to structure your <code>import</code> command or see below for example usages of the command.</p>
-
-<h2><a class="anchor" id="usage"></a>Example Usage</h2>
-
-<p>We list a few examples of the <code>import</code> command here to illustrate its usefulness and ease of use.  To get started, lets import an image of an X11 window in the JPEG format:</p>
-
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>$ magick import rose.jpg </samp></pre>
-
-<p>To select the area you want to capture, move the cursor to the desired window and click (or click and drag) the left mouse button. To cancel the capture, click the right mouse button.</p>
-
-<p>To capture the entire X server screen in the Postscript image format:</p>
-
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>$ magick import -window root screen.ps </samp></pre>
-
-<p>This command enables you to select a specific area on your screen and copy the selection to your clipboard. You can use this feature to conveniently post images on applications that support image uploading:</p>
-
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>$ magick import clipboard:</samp></pre>
-
-<p>You can find additional examples of using <code>import</code> in <a href="https://usage.imagemagick.org/">Examples of ImageMagick Usage</a>.</p>
-
-
-<h2><a class="anchor" id="options"></a>Option Summary</h2>
-
-<p>The <code>import</code> command recognizes these options.  Click on an option to get more details about how that option works.</p>
-
-<div style="max-height:75svh; overflow-y:auto; overflow-x:hidden;">
-<table class="table table-sm table-hover table-striped">
-  <colgroup>
-    <col style="width:30%">
-    <col style="width:70%">
-  </colgroup>
-  <tbody>
-  <tr>
-    <th align="left">Option</th>
-    <th align="left">Description</th>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#adjoin">-adjoin</a></td>
-    <td>join images into a single multi-image file</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#annotate">-annotate <var>geometry text</var></a></td>
-    <td>annotate the image with text</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#border">-border</a></td>
-    <td>include window border in the output image</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#channel">-channel <var>type</var></a></td>
-    <td>apply option to select image channels</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#colors">-colors <var>value</var></a></td>
-    <td>preferred number of colors in the image</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#colorspace">-colorspace <var>type</var></a></td>
-    <td>set image colorspace</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#comment">-comment <var>string</var></a></td>
-    <td>annotate image with comment</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#compress">-compress <var>type</var></a></td>
-    <td>image compression type</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#contrast">-contrast</a></td>
-    <td>enhance or reduce the image contrast</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#crop">-crop <var>geometry</var></a></td>
-    <td>preferred size and location of the cropped image</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#debug">-debug <var>events</var></a></td>
-    <td>import copious debugging information</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#define">-define <var>format:option</var></a></td>
-    <td>define one or more image format options</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#delay">-delay <var>centiseconds</var></a></td>
-    <td>import the next image after pausing</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#density">-density <var>geometry</var></a></td>
-    <td>horizontal and vertical density of the image</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#depth">-depth <var>value</var></a></td>
-    <td>image depth</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#despeckle">-descend</a></td>
-    <td>obtain image by descending window hierarchy</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#display">-display <var>server</var></a></td>
-    <td>get image or font from this X server</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#dispose">-dispose <var>method</var></a></td>
-    <td>layer disposal method</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#dither">-dither  <var>method</var></a></td>
-    <td>apply error diffusion to image</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#encipher">-encipher <var>filename</var></a></td>
-    <td>convert plain pixels to cipher pixels</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#encoding">-encoding <var>type</var></a></td>
-    <td>text encoding type</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#endian">-endian <var>type</var></a></td>
-    <td>endianness (MSB or LSB) of the image</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#filter">-filter <var>type</var></a></td>
-    <td>use this filter when resizing an image</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#frame">-frame</a></td>
-    <td>include window manager frame</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#geometry">-geometry <var>geometry</var></a></td>
-    <td>preferred size or location of the image</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#gravity">-gravity <var>type</var></a></td>
-    <td>horizontal and vertical text placement</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#help">-help</a></td>
-    <td>print program options</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#identify">-identify</a></td>
-    <td>identify the format and characteristics of the image</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#interlace">-interlace <var>type</var></a></td>
-    <td>type of image interlacing scheme</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#interpolate">-interpolate <var>method</var></a></td>
-    <td>pixel color interpolation method</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#label">-label <var>name</var></a></td>
-    <td>assign a label to an image</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#limit">-limit <var>type value</var></a></td>
-    <td>pixel cache resource limit</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#log">-log <var>format</var></a></td>
-    <td>format of debugging information</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#monitor">-monitor</a></td>
-    <td>monitor progress</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#monochrome">-monochrome</a></td>
-    <td>transform image to black and white</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#negate">-negate</a></td>
-    <td>replace each pixel with its complementary color </td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#page">-page <var>geometry</var></a></td>
-    <td>size and location of an image canvas (setting)</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#pause">-pause <var>seconds</var></a></td>
-    <td>seconds delay between snapshots</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#quality">-quality <var>value</var></a></td>
-    <td>JPEG/MIFF/PNG compression level</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#quantize">-quantize <var>colorspace</var></a></td>
-    <td>reduce image colors in this colorspace</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#quiet">-quiet</a></td>
-    <td>suppress all warning messages</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#regard-warnings">-regard-warnings</a></td>
-    <td>pay attention to warning messages.</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#repage">-repage <var>geometry</var></a></td>
-    <td>size and location of an image canvas</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#resize">-resize <var>geometry</var></a></td>
-    <td>resize the image</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#respect-parentheses">-respect-parentheses</a></td>
-    <td>settings remain in effect until parenthesis boundary.</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#rotate">-rotate <var>degrees</var></a></td>
-    <td>apply Paeth rotation to the image</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#sampling-factor">-sampling-factor <var>geometry</var></a></td>
-    <td>horizontal and vertical sampling factor</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#scene">-scene <var>value</var></a></td>
-    <td>image scene number</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#screen">-screen</a></td>
-    <td>select image from root window</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#seed">-seed <var>value</var></a></td>
-    <td>seed a new sequence of pseudo-random numbers</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#set">-set <var>attribute value</var></a></td>
-    <td>set an image attribute</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#sharpen">-silent</a></td>
-    <td>operate silently, i.e. don't ring any bells</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#strip">-strip</a></td>
-    <td>strip image of all profiles and comments</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#synchronize">-synchronize</a></td>
-    <td>synchronize image to storage device</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#taint">-taint</a></td>
-    <td>mark the image as modified</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#transparent-color">-transparent-color <var>color</var></a></td>
-    <td>transparent color</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#trim">-trim</a></td>
-    <td>trim image edges</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#update">-type <var>type</var></a></td>
-    <td>image type</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#verbose">-verbose</a></td>
-    <td>print detailed information about the image</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#version">-version</a></td>
-    <td>print version information</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#virtual-pixel">-virtual-pixel <var>method</var></a></td>
-    <td>access method for pixels outside the boundaries of the image</td>
-  </tr>
-
-  <tr>
-    <td><a href="../command-line-options/index.html#write">-window <var>id</var></a></td>
-    <td>select window with this id or name</td>
-  </tr>
-
-  </tbody>
-</table>
-</div>
-
-</div>
-
-        </div>
-        <div class="col-lg-3 col-12 ps-lg-4 border-start d-flex flex-column align-items-center align-items-lg-start">
-          <div class="container text-center my-3">
-            <a href="../image/wizard.png" rel="noopener noreferrer" target="_blank">
-              <img alt="ImageMagick Wizard" class="img-fluid img-thumbnail" height="351" loading="lazy" src="../image/wizard.jpg" width="264">
+  <!-- Hero Header Block -->
+  <header class="im-hero mt-5 pt-5">
+    <div class="container-xl pt-3">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+          <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-primary bg-opacity-20 text-primary border border-primary border-opacity-30 mb-3 fs-7">
+            <span class="badge bg-primary">v7.1.2-34</span>
+            <span class="small text-light">Latest Stable Release</span>
+          </div>
+          <h1 class="display-4 fw-bold mb-3 tracking-tight">Command-line Tools: Import</h1>
+          <p class="lead text-light opacity-75 mb-4 fs-5">Learn how to use ImageMagick’s import program to capture an X server screen, windows, or screen regions and save them directly to files or the clipboard.</p>
+          <div class="d-flex flex-wrap gap-3">
+            <a href="../download/index.html" class="btn btn-primary btn-lg px-4 fw-semibold d-flex align-items-center gap-2 shadow">
+              <i class="bi bi-download"></i> Get ImageMagick
             </a>
-            <p class="mt-2"><iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border:0 !important; width:107px !important; height:35px !important;"></iframe></p>
+            <a href="../command-line-processing/index.html" class="btn btn-outline-light btn-lg px-4 fw-semibold d-flex align-items-center gap-2">
+              <i class="bi bi-terminal"></i> Documentation
+            </a>
           </div>
-          <div class="container text-center my-3">
-            <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745"
-              crossorigin="anonymous"></script>
-            <!-- Banner Ad -->
-            <ins class="adsbygoogle"
-              style="display:block"
-              data-ad-client="ca-pub-3129977114552745"
-              data-ad-slot="1083537442"
-              data-ad-format="auto"
-              data-full-width-responsive="true"></ins>
-            <script>
-              (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
+        </div>
+
+        <!-- Terminal Quickstart Preview -->
+        <div class="col-lg-5">
+          <div class="terminal-card">
+            <div class="terminal-header">
+              <div class="terminal-dot bg-danger"></div>
+              <div class="terminal-dot bg-warning"></div>
+              <div class="terminal-dot bg-success"></div>
+              <span class="small text-secondary font-mono ms-2">quickstart.sh</span>
+            </div>
+            <div class="p-3 text-light font-mono small">
+              <div class="text-secondary"># Install via your favorite Package Manager</div>
+              <div class="text-success">$ brew install imagemagick</div>
+              <div class="text-secondary mt-2"># Convert PNG to WebP with compression</div>
+              <div>$ magick input.png -quality 85 output.webp</div>
+              <div class="text-secondary mt-2"># Resize image maintaining aspect ratio</div>
+              <div>$ magick input.jpg -resize 800x600^ output.jpg</div>
+            </div>
           </div>
         </div>
       </div>
-      <a aria-label="About ImageMagick" class="btn btn-outline-warning mt-3" href="../index-2.html">About ImageMagick</a>
-    </main><!-- /.container -->
-    <footer class="text-center pt-5 my-5 text-body-secondary border-top">
-      <div class="container-fluid">
-        <a href="../security-policy/index.html">Security</a> •
-        <a href="../news/index.html">News</a>
-        &nbsp;
-        <a href="#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../image/wand.png"></a>
-        &nbsp;
-        <a href="../links/index.html">Related</a> •
-        <a href="../sitemap/index.html">Sitemap</a>
-        <br>
-        <a href="../support/index.html">Sponsor</a> •
-        <a href="../cite/index.html">Cite</a> •
-        <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-        <a href="https://github.com/ImageMagick/ImageMagick/discussions">Contact Us</a>
-        <br>
-        <a href="https://github.com/imagemagick/imagemagick" rel="noopener noreferrer" target="_blank" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false">
-            <title>GitHub</title>
-            <path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z" />
-          </svg></a> •
-        <a href="https://twitter.com/imagemagick" rel="noopener noreferrer" target="_blank" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 300 300" width="2%" height="2%" role="img" focusable="false">
-            <title>Twitter</title>
-            <path d="M178.57 127.15 290.27 0h-26.46l-97.03 110.38L89.34 0H0l117.13 166.93L0 300.25h26.46l102.4-116.59 81.8 116.59h89.34M36.01 19.54H76.66l187.13 262.13h-40.66" />
-          </svg></a>
-        <br>
-        <small>Copyright © 1999 ImageMagick Studio LLC</small>
-      </div>
-    </footer>
-    <div style="visibility: hidden;">
-      <div class="gcse-search"></div>
+    </div>
+  </header>
+
+  <!-- Main Body Content -->
+  <main class="py-5">
+    <div class="container-xl">
+      <div class="row g-5">
+        <!-- Main Column -->
+        <div class="col-lg-8">
+          <div class="import-container">
+  <!-- Quick Jump Navigation -->
+  <div class="card im-card p-3 mb-4 bg-body-tertiary border-0 shadow-sm">
+    <div class="d-flex justify-content-center flex-wrap gap-3 fw-semibold small text-uppercase tracking-wider">
+      <a href="#usage" class="text-decoration-none text-primary"><i class="bi bi-terminal me-1"></i> Example Usage</a>
+      <span class="text-muted">•</span>
+      <a href="#options" class="text-decoration-none text-primary"><i class="bi bi-list-columns me-1"></i> Option Summary</a>
     </div>
   </div>
+  <!-- Introductory Lead Card -->
+  <div class="card im-card p-4 mb-4 shadow-sm bg-body-tertiary border-0">
+    <p class="lead text-body mb-0">
+      Use the <code>import</code> program to capture some or all of an X server screen and save the image to a file. <code>import</code> captures the window selected by clicking or program argument. See <a href="../command-line-processing/index.html" class="text-decoration-none">Command Line Processing</a> for advice on how to structure your <code>import</code> command or see below for example usages of the command.
+    </p>
+  </div>
+  <!-- Example Usage Section -->
+  <h2 class="fw-bold border-bottom pb-2 mb-4 mt-5" id="usage">
+    <a class="anchor text-decoration-none text-body" href="#usage">Example Usage</a>
+  </h2>
+  <p>We list a few examples of the <code>import</code> command here to illustrate its usefulness and ease of use. To get started, let's import an image of an X11 window in the JPEG format:</p>
+  <pre class="p-3 mb-3 rounded bg-body-tertiary border font-mono small"><code>$ magick import rose.jpg</code></pre>
+  <p class="text-body-secondary fst-italic small mb-3">
+    To select the area you want to capture, move the cursor to the desired window and click (or click and drag) the left mouse button. To cancel the capture, click the right mouse button.
+  </p>
+  <p>To capture the entire X server screen in the PostScript image format:</p>
+  <pre class="p-3 mb-3 rounded bg-body-tertiary border font-mono small"><code>$ magick import -window root screen.ps</code></pre>
+  <p>This command enables you to select a specific area on your screen and copy the selection to your clipboard. You can use this feature to conveniently post images on applications that support image uploading:</p>
+  <pre class="p-3 mb-3 rounded bg-body-tertiary border font-mono small"><code>$ magick import clipboard:</code></pre>
+  <p class="mb-5">
+    You can find additional examples of using <code>import</code> in <a href="https://usage.imagemagick.org/" class="text-decoration-none" rel="noopener noreferrer" target="_blank">Examples of ImageMagick Usage <i class="bi bi-box-arrow-up-right small"></i></a>.
+  </p>
+  <!-- Option Summary Section -->
+  <h2 class="fw-bold border-bottom pb-2 mb-4 mt-5" id="options">
+    <a class="anchor text-decoration-none text-body" href="#options">Option Summary</a>
+  </h2>
+  <p class="text-body-secondary mb-3">The <code>import</code> command recognizes these options. Click on an option to get more details about how that option works.</p>
+  <div class="card im-card shadow-sm mb-5 overflow-hidden">
+    <div style="max-height:75svh; overflow-y:auto; overflow-x:hidden;" class="p-0">
+      <table class="table table-sm table-hover table-striped mb-0 align-middle">
+        <colgroup>
+          <col style="width:30%">
+          <col style="width:70%">
+        </colgroup>
+        <thead class="table-dark sticky-top">
+          <tr>
+            <th class="ps-3 py-2">Option</th>
+            <th class="py-2">Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#adjoin" class="text-decoration-none fw-semibold">-adjoin</a></td>
+            <td>join images into a single multi-image file</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#annotate" class="text-decoration-none fw-semibold">-annotate <var>geometry text</var></a></td>
+            <td>annotate the image with text</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#border" class="text-decoration-none fw-semibold">-border</a></td>
+            <td>include window border in the output image</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#channel" class="text-decoration-none fw-semibold">-channel <var>type</var></a></td>
+            <td>apply option to select image channels</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#colors" class="text-decoration-none fw-semibold">-colors <var>value</var></a></td>
+            <td>preferred number of colors in the image</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#colorspace" class="text-decoration-none fw-semibold">-colorspace <var>type</var></a></td>
+            <td>set image colorspace</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#comment" class="text-decoration-none fw-semibold">-comment <var>string</var></a></td>
+            <td>annotate image with comment</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#compress" class="text-decoration-none fw-semibold">-compress <var>type</var></a></td>
+            <td>image compression type</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#contrast" class="text-decoration-none fw-semibold">-contrast</a></td>
+            <td>enhance or reduce the image contrast</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#crop" class="text-decoration-none fw-semibold">-crop <var>geometry</var></a></td>
+            <td>preferred size and location of the cropped image</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#debug" class="text-decoration-none fw-semibold">-debug <var>events</var></a></td>
+            <td>import copious debugging information</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#define" class="text-decoration-none fw-semibold">-define <var>format:option</var></a></td>
+            <td>define one or more image format options</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#delay" class="text-decoration-none fw-semibold">-delay <var>centiseconds</var></a></td>
+            <td>import the next image after pausing</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#density" class="text-decoration-none fw-semibold">-density <var>geometry</var></a></td>
+            <td>horizontal and vertical density of the image</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#depth" class="text-decoration-none fw-semibold">-depth <var>value</var></a></td>
+            <td>image depth</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#despeckle" class="text-decoration-none fw-semibold">-descend</a></td>
+            <td>obtain image by descending window hierarchy</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#display" class="text-decoration-none fw-semibold">-display <var>server</var></a></td>
+            <td>get image or font from this X server</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#dispose" class="text-decoration-none fw-semibold">-dispose <var>method</var></a></td>
+            <td>layer disposal method</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#dither" class="text-decoration-none fw-semibold">-dither <var>method</var></a></td>
+            <td>apply error diffusion to image</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#encipher" class="text-decoration-none fw-semibold">-encipher <var>filename</var></a></td>
+            <td>convert plain pixels to cipher pixels</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#encoding" class="text-decoration-none fw-semibold">-encoding <var>type</var></a></td>
+            <td>text encoding type</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#endian" class="text-decoration-none fw-semibold">-endian <var>type</var></a></td>
+            <td>endianness (MSB or LSB) of the image</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#filter" class="text-decoration-none fw-semibold">-filter <var>type</var></a></td>
+            <td>use this filter when resizing an image</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#frame" class="text-decoration-none fw-semibold">-frame</a></td>
+            <td>include window manager frame</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#geometry" class="text-decoration-none fw-semibold">-geometry <var>geometry</var></a></td>
+            <td>preferred size or location of the image</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#gravity" class="text-decoration-none fw-semibold">-gravity <var>type</var></a></td>
+            <td>horizontal and vertical text placement</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#help" class="text-decoration-none fw-semibold">-help</a></td>
+            <td>print program options</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#identify" class="text-decoration-none fw-semibold">-identify</a></td>
+            <td>identify the format and characteristics of the image</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#interlace" class="text-decoration-none fw-semibold">-interlace <var>type</var></a></td>
+            <td>type of image interlacing scheme</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#interpolate" class="text-decoration-none fw-semibold">-interpolate <var>method</var></a></td>
+            <td>pixel color interpolation method</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#label" class="text-decoration-none fw-semibold">-label <var>name</var></a></td>
+            <td>assign a label to an image</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#limit" class="text-decoration-none fw-semibold">-limit <var>type value</var></a></td>
+            <td>pixel cache resource limit</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#log" class="text-decoration-none fw-semibold">-log <var>format</var></a></td>
+            <td>format of debugging information</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#monitor" class="text-decoration-none fw-semibold">-monitor</a></td>
+            <td>monitor progress</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#monochrome" class="text-decoration-none fw-semibold">-monochrome</a></td>
+            <td>transform image to black and white</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#negate" class="text-decoration-none fw-semibold">-negate</a></td>
+            <td>replace each pixel with its complementary color</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#page" class="text-decoration-none fw-semibold">-page <var>geometry</var></a></td>
+            <td>size and location of an image canvas (setting)</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#pause" class="text-decoration-none fw-semibold">-pause <var>seconds</var></a></td>
+            <td>seconds delay between snapshots</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#quality" class="text-decoration-none fw-semibold">-quality <var>value</var></a></td>
+            <td>JPEG/MIFF/PNG compression level</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#quantize" class="text-decoration-none fw-semibold">-quantize <var>colorspace</var></a></td>
+            <td>reduce image colors in this colorspace</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#quiet" class="text-decoration-none fw-semibold">-quiet</a></td>
+            <td>suppress all warning messages</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#regard-warnings" class="text-decoration-none fw-semibold">-regard-warnings</a></td>
+            <td>pay attention to warning messages</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#repage" class="text-decoration-none fw-semibold">-repage <var>geometry</var></a></td>
+            <td>size and location of an image canvas</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#resize" class="text-decoration-none fw-semibold">-resize <var>geometry</var></a></td>
+            <td>resize the image</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#respect-parentheses" class="text-decoration-none fw-semibold">-respect-parentheses</a></td>
+            <td>settings remain in effect until parenthesis boundary</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#rotate" class="text-decoration-none fw-semibold">-rotate <var>degrees</var></a></td>
+            <td>apply Paeth rotation to the image</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#sampling-factor" class="text-decoration-none fw-semibold">-sampling-factor <var>geometry</var></a></td>
+            <td>horizontal and vertical sampling factor</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#scene" class="text-decoration-none fw-semibold">-scene <var>value</var></a></td>
+            <td>image scene number</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#screen" class="text-decoration-none fw-semibold">-screen</a></td>
+            <td>select image from root window</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#seed" class="text-decoration-none fw-semibold">-seed <var>value</var></a></td>
+            <td>seed a new sequence of pseudo-random numbers</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#set" class="text-decoration-none fw-semibold">-set <var>attribute value</var></a></td>
+            <td>set an image attribute</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#sharpen" class="text-decoration-none fw-semibold">-silent</a></td>
+            <td>operate silently, i.e. don't ring any bells</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#strip" class="text-decoration-none fw-semibold">-strip</a></td>
+            <td>strip image of all profiles and comments</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#synchronize" class="text-decoration-none fw-semibold">-synchronize</a></td>
+            <td>synchronize image to storage device</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#taint" class="text-decoration-none fw-semibold">-taint</a></td>
+            <td>mark the image as modified</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#transparent-color" class="text-decoration-none fw-semibold">-transparent-color <var>color</var></a></td>
+            <td>transparent color</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#trim" class="text-decoration-none fw-semibold">-trim</a></td>
+            <td>trim image edges</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#update" class="text-decoration-none fw-semibold">-type <var>type</var></a></td>
+            <td>image type</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#verbose" class="text-decoration-none fw-semibold">-verbose</a></td>
+            <td>print detailed information about the image</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#version" class="text-decoration-none fw-semibold">-version</a></td>
+            <td>print version information</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#virtual-pixel" class="text-decoration-none fw-semibold">-virtual-pixel <var>method</var></a></td>
+            <td>access method for pixels outside the boundaries of the image</td>
+          </tr>
+          <tr>
+            <td class="ps-3"><a href="../command-line-options/index.html#write" class="text-decoration-none fw-semibold">-window <var>id</var></a></td>
+            <td>select window with this id or name</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
-  <!-- Javascript assets -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+        </div>
+
+        <!-- Right Sidebar -->
+        <aside class="col-lg-4">
+          <div class="sticky-top" style="top: 90px;">
+            <!-- Sponsor Card -->
+            <div class="card im-card mb-4 overflow-hidden border-0 bg-gradient bg-primary bg-opacity-10">
+              <div class="card-body p-4 text-center">
+                <img src="../image/wizard.jpg" alt="ImageMagick Wizard" class="rounded shadow mb-3 img-fluid" style="max-height: 200px;">
+                <h5 class="fw-bold">Support Open Source</h5>
+                <p class="small text-body-secondary mb-3">Help maintain and sustain ImageMagick development.</p>
+                <iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="114" class="border-0"></iframe>
+              </div>
+            </div>
+
+            <!-- Banner Ad Container -->
+            <div class="text-center p-2 mv-4 rounded border border-secondary-subtle bg-body-tertiary">
+              <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
+              <ins class="adsbygoogle"
+                   style="display:block"
+                   data-ad-client="ca-pub-3129977114552745"
+                   data-ad-slot="1083537442"
+                   data-ad-format="auto"
+                   data-full-width-responsive="true"></ins>
+              <script>
+                   (adsbygoogle = window.adsbygoogle || []).push({});
+              </script>
+            </div>
+
+            <!-- Quick Links Navigation -->
+            <div class="card im-card p-3 mb-4">
+              <h6 class="fw-bold text-uppercase fs-7 text-secondary mb-3">Resources</h6>
+              <ul class="nav flex-column gap-1 fs-6">
+                <li class="nav-item"><a href="../security-policy/index.html" class="nav-link p-2 rounded text-body-secondary"><i class="bi bi-shield-check me-2 text-success"></i> Security Policy</a></li>
+                <li class="nav-item"><a href="../license/index.html" class="nav-link p-2 rounded text-body-secondary"><i class="bi bi-file-earmark-text me-2 text-info"></i> Open Source License</a></li>
+                <li class="nav-item"><a href="../porting/index.html" class="nav-link p-2 rounded text-body-secondary"><i class="bi bi-signpost-split me-2 text-warning"></i> Porting v6 to v7</a></li>
+                <li class="nav-item"><a href="../formats/index.html" class="nav-link p-2 rounded text-body-secondary"><i class="bi bi-filetype-png me-2 text-danger"></i> Supported Formats</a></li>
+              </ul>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="im-footer py-5 mt-auto">
+    <div class="container-xl">
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-4">
+          <a class="navbar-brand im-brand mb-2 fs-5" href="../index.html">ImageMagick</a>
+          <p class="small text-secondary">Mastering Digital Image Alchemy. The open-source suite for image creation, conversion, and batch manipulation.</p>
+        </div>
+        <div class="col-6 col-md-3 col-lg-2">
+          <h6 class="text-light fw-bold mb-3">Navigation</h6>
+          <ul class="list-unstyled small d-flex flex-column gap-2">
+            <li><a href="../download/index.html">Download</a></li>
+            <li><a href="../command-line-tools/index.html">Tools</a></li>
+            <li><a href="../develop/index.html">APIs & Libraries</a></li>
+            <li><a href="../sitemap/index.html">Sitemap</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-md-3 col-lg-2">
+          <h6 class="text-light fw-bold mb-3">Community</h6>
+          <ul class="list-unstyled small d-flex flex-column gap-2">
+            <li><a href="https://github.com/ImageMagick/ImageMagick/discussions" target="_blank">Discussions</a></li>
+            <li><a href="https://github.com/ImageMagick/ImageMagick/issues" target="_blank">Report an Issue</a></li>
+            <li><a href="../support/index.html">Sponsor Us</a></li>
+            <li><a href="../cite/index.html">Cite ImageMagick</a></li>
+          </ul>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <h6 class="text-light fw-bold mb-3">Connect</h6>
+          <div class="d-flex gap-3 fs-5">
+            <a href="https://github.com/imagemagick/imagemagick" target="_blank" aria-label="GitHub"><i class="bi bi-github"></i></a>
+            <a href="https://x.com/imagemagick" target="_blank" aria-label="X/Twitter"><i class="bi bi-twitter-x"></i></a>
+          </div>
+          <p class="small text-secondary mt-3 mb-0">Copyright © 1999 ImageMagick Studio LLC</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function setTheme(theme) {
+      localStorage.setItem('theme', theme);
+      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const applied = theme === 'auto' ? (systemDark ? 'dark' : 'light') : theme;
+      document.documentElement.setAttribute('data-bs-theme', applied);
+    }
+  </script>
+  <div style="visibility: hidden;">
+    <div class="gcse-search"></div>
+  </div>
 </body>
-
 
 </html>

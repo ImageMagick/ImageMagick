@@ -11,1175 +11,946 @@
   <meta name="description" content="Complete guide to ImageMagick's -compose operators: Porter–Duff alpha blending, mathematical, lighting, and SVG 1.2 blend modes, with CLI examples.">
   <link rel="canonical" href="index.html">
   <meta name="robots" content="index, follow">
-  <meta name="theme-color" content="#000000">
-  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4">
+  <meta name="theme-color" content="#0d1117">
+  
   <link rel="shortcut icon" href="../image/wand.png" type="image/png">
   <link rel="apple-touch-icon" href="../image/wand.png" type="image/png">
-  <link rel="preconnect" href="https://cdn.jsdelivr.net/">
-  <link rel="preconnect" href="https://localhost/">
-  <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" as="style" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" crossorigin="anonymous">
-  <!-- Accessibility Enhancement -->
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com/">
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+
   <style>
-    html {
-      scroll-padding-top: 70px;
-    }
-
-    iframe {
-      width: 100% !important;
-      max-width: 100% !important;
-      height: 400px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
-    }
-
-    a.nav-link:hover,
-    a.dropdown-item:hover {
-      color: #ffc107 !important;
-      text-shadow: 0px 2px 4px rgba(255, 193, 7, 0.8);
-    }
-
-    .btn-outline-warning {
-      color: #cd7f32;
-      border-color: #cd7f32;
-    }
-
-    .navbar-brand {
-      color: #d4af37;
-      transition: color 0.3s ease, text-shadow 0.3s ease;
-    }
-
-    .navbar-brand:hover {
-      color: #e9c03d;
-      text-shadow: 0px 2px 4px rgba(203, 163, 120, 0.6);
-    }
-
     :root {
-      --bs-code-color: revert;
+      --im-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --im-font-mono: 'Fira Code', monospace;
+      --im-primary: #8b5cf6;
+      --im-primary-hover: #7c3aed;
+      --im-accent: #f59e0b;
+      --im-bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
     }
 
-    .table {
-      table-layout: fixed;   /* force equal distribution of width */
-      width: 100%;           /* table spans full container */
+    body {
+      font-family: var(--im-font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
-    .table td, .table th {
-      white-space: normal;     /* allow wrapping */
-      word-break: break-word;  /* break long words/strings */
+    code, kbd, pre, .font-mono {
+      font-family: var(--im-font-mono) !important;
+    }
+
+    /* Modern Navbar */
+    .im-navbar {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background-color: rgba(15, 23, 42, 0.85) !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .im-navbar .nav-link {
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.75);
+      transition: all 0.2s ease;
+      padding: 0.5rem 0.85rem;
+      border-radius: 0.375rem;
+    }
+
+    .im-navbar .nav-link:hover,
+    .im-navbar .nav-link.active {
+      color: #ffffff !important;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .im-brand {
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #a78bfa 0%, #f472b6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Hero Section */
+    .im-hero {
+      background: var(--im-bg-gradient);
+      color: #ffffff;
+      padding: 4rem 0 3.5rem;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .im-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(0,0,0,0) 70%);
+      pointer-events: none;
+    }
+
+    /* Terminal Widget */
+    .terminal-card {
+      background: #090d16;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 0.75rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+    }
+
+    .terminal-header {
+      background: rgba(255, 255, 255, 0.04);
+      padding: 0.6rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .terminal-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    /* Cards & Container */
+    .im-card {
+      border: 1px solid var(--bs-border-color-translucent);
+      border-radius: 0.75rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      background: var(--bs-body-bg);
+    }
+
+    .im-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Footer */
+    .im-footer {
+      margin-top: auto;
+      background: #090d16;
+      color: rgba(255, 255, 255, 0.6);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .im-footer a {
+      color: rgba(255, 255, 255, 0.75);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .im-footer a:hover {
+      color: var(--im-primary);
     }
   </style>
-  <!-- Open Graph Meta Tags -->
+
+  <!-- Open Graph -->
   <meta property="og:title" content="ImageMagick | Alpha Compositing">
   <meta property="og:description" content="Complete guide to ImageMagick's -compose operators: Porter–Duff alpha blending, mathematical, lighting, and SVG 1.2 blend modes, with CLI examples.">
   <meta property="og:image" content="../image/logo.png">
-  <meta property="og:logo" content="../image/logo.png">
   <meta property="og:url" content="index.html">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="ImageMagick">
-  <meta property="og:locale" content="en_us">
-  <!-- Twitter Card Meta Tags -->
-  <meta name="twitter:card" content="summary_large_image">
-  $site=strtolower("ImageMagick");
-  <meta name="twitter:site" content="@imagemagick">
-  <meta name="twitter:creator" content="@imagemagick">
-  <meta name="twitter:title" content="ImageMagick | Alpha Compositing">
-  <meta name="twitter:description" content="$this->description">
-  <meta name="twitter:image" content="../image/logo.png">
-  <meta name="twitter:image:alt" content="ImageMagick logo and tag line">
+
   <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        "name": "ImageMagick",
-        "url": "ImageMagick | Alpha Compositing",
-        "image": "https://imagemagick.org/image/logo.png",
-        "description": "$this->description",
-        "applicationCategory": "Multimedia",
-        "operatingSystem": "Windows, macOS, Linux, Unix",
-        "softwareVersion": "7.1.2-31",
-        "license": "https://imagemagick.org/license/",
-        "creator": {
-          "@type": "Organization",
-          "name": "ImageMagick Studio LLC",
-          "url": "https://imagemagick.org"
-        },
-			  "keywords": [
-          "".ucfirst($title)."",
-          "image processing software",
-          "image conversion tool",
-          "batch image editing",
-          "open-source image editor",
-          "ImageMagick command-line",
-          "resize images ImageMagick",
-          "crop and rotate images",
-          "ImageMagick tutorial",
-          "ImageMagick automation",
-          "ImageMagick for developers",
-          "ImageMagick CLI",
-          "ImageMagick filters and effects",
-          "ImageMagick scripting",
-          "ImageMagick API integration"
-        ],
-			  "sameAs": [
-          "https://github.com/ImageMagick",
-          "https://x.com/imagemagick"
-        ],
-        "offers": {
-          "@type": "Offer",
-          "price": "0.00",
-          "priceCurrency": "USD"
-        }
-      }
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "ImageMagick",
+    "url": "https://imagemagick.org/compose/",
+    "image": "https://imagemagick.org/image/logo.png",
+    "description": "Complete guide to ImageMagick's -compose operators: Porter–Duff alpha blending, mathematical, lighting, and SVG 1.2 blend modes, with CLI examples.",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Windows, macOS, Linux, Unix",
+    "softwareVersion": "7.1.2-34",
+    "license": "https://imagemagick.org/license/",
+    "offers": {
+      "@type": "Offer",
+      "price": "0.00",
+      "priceCurrency": "USD"
+    }
+  }
   </script>
-  <!-- Google Custom Search -->
   <script async src="https://localhost/cse.js?cx=8720b81722164487b"></script>
-  <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
 </head>
 
 <body>
+  <!-- Theme Init -->
   <script>
-    function setTheme(theme) {
-      localStorage.setItem('theme', theme);
-      updateThemeIcon(theme);
-      document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? getSystemTheme() : theme);
-    }
-    function getSystemTheme() {
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    }
-    function updateThemeIcon(theme) {
-      const iconMap = {
-        light: '☀️',
-        dark: '🌙',
-        auto: '🌓'
-      };
-      document.getElementById('currentThemeIcon').textContent = iconMap[theme] || '🌓';
-    }
-    document.addEventListener('DOMContentLoaded', () => {
-      const savedTheme = localStorage.getItem('theme') || 'auto';
-      setTheme(savedTheme);
-    });
+    (function() {
+      const saved = localStorage.getItem('theme') || 'auto';
+      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const applied = saved === 'auto' ? (systemDark ? 'dark' : 'light') : saved;
+      document.documentElement.setAttribute('data-bs-theme', applied);
+    })();
   </script>
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <div class="container-fluid">
-      <a class="navbar-brand fw-bold" href="../index-2.html" title="ImageMagick">ImageMagick</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#magick-navbars" aria-controls="magick-navbars" aria-expanded="false" aria-label="Toggle navigation">
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top im-navbar">
+    <div class="container-xl">
+      <a class="navbar-brand im-brand" href="../index.html">
+        <img src="../image/wand.png" alt="Wand Icon" width="24" height="24" class="d-inline-block align-text-top">
+        ImageMagick
+      </a>
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#imNavbar" aria-controls="imNavbar" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <div class="collapse navbar-collapse" id="magick-navbars">
-        <ul class="navbar-nav me-auto">
+      <div class="collapse navbar-collapse" id="imNavbar">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3">
           <li class="nav-item">
-            <a class="nav-link "" href="../download/index.html">Download</a>
+            <a class="nav-link " href="../download/index.html">Download</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link "" href="../command-line-tools/index.html">Tools</a>
+            <a class="nav-link " href="../command-line-tools/index.html">Tools</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link "" href="../command-line-processing/index.html">CLI</a>
+            <a class="nav-link " href="../command-line-processing/index.html">CLI Usage</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link "" href="../develop/index.html">Develop</a>
+            <a class="nav-link " href="../develop/index.html">API & Develop</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" rel="noopener noreferrer" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
           </li>
         </ul>
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item ms-3">
-            <form class="d-flex form-inline" action="https://imagemagick.org/compose/">
-              <input class="form-control me-2" type="text" name="q" placeholder="Search site..." aria-label="Search">
-              <button class="btn btn-outline-warning" type="submit" name="sa">Search</button>
-            </form>
-          </li>
-          <li class="nav-item dropdown ms-3">
-            <a class="nav-link dropdown-toggle" href="#" id="themeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <span id="currentThemeIcon">🌓</span>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="themeDropdown">
-              <li><a class="dropdown-item" href="#" onclick="setTheme('light')">☀️ Light</a></li>
-              <li><a class="dropdown-item" href="#" onclick="setTheme('dark')">🌙 Dark</a></li>
-              <li><a class="dropdown-item" href="#" onclick="setTheme('auto')">🌓 Auto</a></li>
+
+        <div class="d-flex align-items-center gap-2">
+          <!-- Search Trigger Modal / Input -->
+          <form class="d-flex" action="https://imagemagick.org/compose/index.html" role="search">
+            <div class="input-group input-group-sm">
+              <input class="form-control bg-body-tertiary border-secondary-subtle" type="search" placeholder="Search site..." name="q" aria-label="Search">
+              <button class="btn btn-outline-warning" type="submit" name="sa"><i class="bi bi-search"></i></button>
+            </div>
+          </form>
+
+          <!-- Theme Dropdown -->
+          <div class="dropdown">
+            <button class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-1 border-0 text-white" type="button" id="themeSelect" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-circle-half"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="themeSelect">
+              <li><button class="dropdown-item d-flex align-items-center gap-2" onclick="setTheme('light')"><i class="bi bi-sun-fill"></i> Light</button></li>
+              <li><button class="dropdown-item d-flex align-items-center gap-2" onclick="setTheme('dark')"><i class="bi bi-moon-stars-fill"></i> Dark</button></li>
+              <li><button class="dropdown-item d-flex align-items-center gap-2" onclick="setTheme('auto')"><i class="bi bi-circle-half"></i> Auto</button></li>
             </ul>
-          </li>
-        </ul>
+          </div>
+
+          <a href="https://github.com/ImageMagick/ImageMagick" target="_blank" class="btn btn-sm btn-outline-light d-flex align-items-center gap-1 ms-1">
+            <i class="bi bi-github"></i> <span class="d-none d-xl-inline">GitHub</span>
+          </a>
+        </div>
       </div>
     </div>
   </nav>
 
-  <div class="col-lg-8 mx-auto text-body-secondary pt-5 pt-lg-5">
-    <header class="d-flex align-items-center pb-3 mb-5 border-bottom">
-      <div class="mt-3 ms-3">
-        <a href="../index-2.html" class="text-decoration-none">
-          <h1 class="fs-2 mb-1 display-5">Alpha Compositing</h1>
-        </a>
-        <h2 class="fs-5 text-muted h4">ImageMagick</h2>
-      </div>
-    </header>
-
-    <main role="main" class="container">
-      <div class="row g-4">
-        <div class="col-lg-9 col-12">
-          <div>
-<div id="cli-examples"></div>
-
-<p class="lead">This page describes the image composition methods that define how
-two images are merged together during the many image operations that combine a
-'source' (overlay) image with a 'destination' (background) image.  For the
-Command Line API the method is normally selected with the <a
-href="../command-line-options/index.html#compose">-compose</a> setting, and then applied by
-operators such as <a href="../command-line-options/index.html#composite">-composite</a>,
-<a href="../command-line-options/index.html#layers">-layers</a>, <a
-href="../command-line-options/index.html#flatten">-flatten</a>, <a
-href="../command-line-options/index.html#mosaic">-mosaic</a>, <a
-href="../command-line-options/index.html#draw">-draw</a>, and many others. </p>
-
-<p>Most of the alpha-blending operators, and a large number of the blend
-(lighting) modes, follow the W3C <a href="https://www.w3.org/TR/SVGCompositing/"
->SVG Compositing Specification</a>, which extends the SVG&nbsp;1.1 and
-SVG&nbsp;1.2 languages with the full set of <a
-href="https://en.wikipedia.org/wiki/Alpha_compositing">Porter&ndash;Duff</a>
-alpha operators and blend modes.  Where an operator is defined by that standard,
-ImageMagick implements the same mathematical result, so the behaviour is
-directly comparable to SVG, PDF, and most modern graphics libraries.  You can
-review the precise formulae in the SVG specification, or in the ImageMagick
-"<a href="https://usage.imagemagick.org/compose/">Compositing Images</a>" usage
-examples.</p>
-
-<p>The description of composition uses abstract terminology in order to keep the
-definitions precise, while avoiding constant values that are specific to a
-particular build configuration. Each image pixel is represented by red, green,
-and blue levels (which are equal for a gray pixel). The build-dependent value
-<var>QuantumRange</var> is the maximum value that may be stored, per pixel, in
-the red, green, or blue channels of the image. Each image pixel may also
-optionally (if the image alpha/matte channel is enabled) have an associated
-level of opacity, ranging from <var>opaque</var> to <var>transparent</var>,
-which determines the influence of the pixel color when it is composited with
-another image pixel. If the alpha channel is disabled, then all pixels in the
-image are treated as opaque. The color of an opaque pixel is fully visible,
-while the color of a fully transparent pixel is entirely absent (its color is
-ignored).</p>
-
-<p>By definition, raster images have a rectangular shape: all image rows are of
-equal length, as are all image columns. By treating the alpha channel as a
-visual "mask", the rectangular image may be given an arbitrary "shape", with the
-alpha channel acting as a cookie-cutter for the image. This is done by setting
-the pixels within the shape to be opaque, and the pixels outside the shape to be
-transparent. Pixels on the boundary of the shape may lie between opaque and
-transparent in order to provide antialiasing (visually smooth edges). The
-descriptions of the composition operators use this concept of image "shape" to
-make them easier to understand. While it is convenient to describe the operators
-in terms of "shapes", they are by no means limited to mask-style operations,
-since they are based on continuous floating-point mathematics rather than simple
-boolean operations.</p>
-
-<p>The compose method names are case-insensitive, and the '<code>_</code>' or
-'<code>-</code>' separators are optional. As such the method
-'<code>Dst-Over</code>' may equally be written as '<code>dst_over</code>',
-'<code>DstOver</code>', or '<code>dstover</code>'. They all mean the same
-thing.</p>
-
-<h2>Duff&ndash;Porter Alpha Composition Methods</h2>
-
-<p>The following alpha-blending (Duff&ndash;Porter) compose methods are
-available. These are the twelve classical Porter&ndash;Duff operators, defined
-by the SVG&nbsp;1.2 Compositing standard, which merge two images purely
-according to their transparency (alpha channel).</p>
-
-<div style="max-height:75svh; overflow-y:auto; overflow-x:hidden;">
-<table class="table table-sm table-hover table-striped">
-  <colgroup>
-    <col style="width:30%">
-    <col style="width:70%">
-  </colgroup>
-  <tbody>
-  <tr>
-    <th align="left">Method</th>
-    <th align="left">Description</th>
-  </tr>
-
-  <tr>
-    <td>clear</td>
-    <td>Both the color and the alpha of the destination are cleared. Neither the
-        source nor the destination is used as input (except for the
-        destination's size and other meta-data, which are always preserved).
-        The result is a fully transparent image.</td>
-  </tr>
-
-  <tr>
-    <td>src</td>
-    <td>The source is copied to the destination. The destination is not used as
-        input; it is completely replaced, and any area not overlaid by the
-        source is cleared to transparency.</td>
-  </tr>
-
-  <tr>
-    <td>dst</td>
-    <td>The destination is left untouched. The source image is completely
-        ignored. This is effectively a "no operation" for the color data,
-        useful mainly for testing or for building larger expressions.</td>
-  </tr>
-
-  <tr>
-    <td>src-over</td>
-    <td>The source is composited over the destination. This is the default
-        alpha-blending compose method, used when the compose setting is neither
-        set on the command line nor recorded in the image meta-data. It is the
-        result most people expect when overlaying one image on another.</td>
-  </tr>
-
-  <tr>
-    <td>dst-over</td>
-    <td>The destination is composited over the source, and the result replaces
-        the destination. In effect the source is placed <em>under</em> the
-        destination, so only the parts of the source not hidden by the
-        destination remain visible. This is ideal for adding backgrounds or
-        drop shadows without altering the destination's size.</td>
-  </tr>
-
-  <tr>
-    <td>src-in</td>
-    <td>The part of the source lying inside of the destination shape replaces
-        the destination. Everything outside the overlap (including the original
-        destination) is cleared to transparency.</td>
-  </tr>
-
-  <tr>
-    <td>dst-in</td>
-    <td>The part of the destination lying inside of the source shape replaces
-        the destination. Areas not overlaid are cleared. This is a convenient
-        way to use the source purely as an alpha mask for the destination.</td>
-  </tr>
-
-  <tr>
-    <td>src-out</td>
-    <td>The part of the source lying outside of the destination shape replaces
-        the destination. The overlapping region and the original destination are
-        cleared to transparency.</td>
-  </tr>
-
-  <tr>
-    <td>dst-out</td>
-    <td>The part of the destination lying outside of the source shape replaces
-        the destination. In other words, the source shape is "punched out" of
-        the destination, leaving a hole.</td>
-  </tr>
-
-  <tr>
-    <td>src-atop</td>
-    <td>The part of the source lying inside of the destination shape is
-        composited onto the destination. The destination keeps its shape and
-        alpha, while the source colors sit on top within that shape.</td>
-  </tr>
-
-  <tr>
-    <td>dst-atop</td>
-    <td>The part of the destination lying inside of the source shape is
-        composited over the source and replaces the destination. Areas not
-        overlaid are cleared. The result keeps the shape of the source but the
-        colors of the destination within it.</td>
-  </tr>
-
-  <tr>
-    <td>xor</td>
-    <td>The part of the source that lies outside of the destination is combined
-        with the part of the destination that lies outside of the source. That
-        is, the result shows the source or the destination, but not where the
-        two overlap (which is cleared).</td>
-  </tr>
-
-  </tbody>
-</table>
-</div>
-
-<p>Any of the '<code>Src-*</code>' methods can also be specified without the
-'<code>Src-</code>' prefix. For example the default compose method may be
-specified as just '<code>Over</code>', and similarly '<code>In</code>',
-'<code>Out</code>', and '<code>ATop</code>' are shorthand for
-'<code>Src-In</code>', '<code>Src-Out</code>', and '<code>Src-ATop</code>'.</p>
-
-<p>Many of these compose methods will clear the part of the destination image
-that was not overlaid by the source image. This is an intended part of that
-method's definition. The methods that clear the un-overlaid area are
-'<code>Clear</code>', '<code>Src</code>', '<code>Src-In</code>',
-'<code>Dst-In</code>', '<code>Src-Out</code>', and '<code>Dst-ATop</code>'. You
-can disable this behaviour by setting the special <a
-href="../command-line-options/index.html#define">-define</a>
-'<code>compose:outside-overlay</code>' to a value of '<code>false</code>', so
-that only the overlaid region is modified.</p>
-
-<p>On top of the above twelve Duff&ndash;Porter alpha-composition methods, one
-special related method '<code>Copy</code>' is provided. It is equivalent to
-using '<code>Src</code>' with the '<code>compose:outside-overlay</code>' define
-set to '<code>false</code>', so as to modify only the overlaid area without
-clearing the rest of the destination image.</p>
-
-<p>For example, to overlay a centered label over the built-in rose image using
-the default '<code>Over</code>' method&hellip;</p>
-
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick rose: label.png -gravity center -compose Over -composite result.png</samp></pre>
-
-<p>Or, to place the overlay <em>under</em> the destination &mdash; handy for
-adding a hard drop shadow without changing the image size&hellip;</p>
-
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick label_white.png label_black.png -geometry +5+5 -compose Dst-Over -composite shadow.png</samp></pre>
-
-<h2>Mathematical Composition Methods</h2>
-
-<p>The following mathematical composition methods are also available. Rather
-than blending by transparency, these combine the source and destination
-color channels using a specific arithmetic or comparison formula. Several of
-them (<code>Multiply</code>, <code>Screen</code>, <code>Darken</code>,
-<code>Lighten</code>, <code>Difference</code>, and <code>Exclusion</code>) are
-the "separable blend modes" defined by the SVG&nbsp;1.2 Compositing standard,
-and behave identically to their SVG, PDF, and Photoshop equivalents.</p>
-
-<div style="max-height:75svh; overflow-y:auto; overflow-x:hidden;">
-<table class="table table-sm table-hover table-striped">
-  <colgroup>
-    <col style="width:30%">
-    <col style="width:70%">
-  </colgroup>
-  <tbody>
-  <tr>
-    <th align="left">Method</th>
-    <th align="left">Description</th>
-  </tr>
-
-  <tr>
-    <td>multiply</td>
-    <td>The source is multiplied by the destination and replaces the
-        destination. The resultant color is always at least as dark as either
-        of the two constituent colors. Multiplying any color with black produces
-        black; multiplying any color with white leaves the original color
-        unchanged.</td>
-  </tr>
-
-  <tr>
-    <td>divide</td>
-    <td>Works by dividing the pixel values of one input image by those of another, channel by channel. This produces specialized blending effects, often for normalization or highlighting contrasts.</td>
-  </tr>
-
-  <tr>
-    <td>screen</td>
-    <td>The source and destination are complemented, then multiplied, and the
-        result is complemented again and replaces the destination. The resultant
-        color is always at least as light as either of the two constituent
-        colors. Screening any color with white produces white; screening any
-        color with black leaves the original color unchanged. It is the
-        mathematical opposite of '<code>Multiply</code>'.</td>
-  </tr>
-
-  <tr>
-    <td>bumpmap</td>
-    <td>The intensity (grayscale value) of the source is multiplied with the
-        destination color. Unlike '<code>Multiply</code>', which multiplies each
-        channel by the matching source channel, '<code>Bumpmap</code>' uses the
-        single luminance of the source to shade the destination, which makes it
-        well suited to applying an embossed or relief texture as a light/shadow
-        map.</td>
-  </tr>
-
-  <tr>
-    <td>divide-dst</td>
-    <td>Performs a true mathematical division of the destination color by the
-        source color, channel by channel ( <code>Dc / Sc</code> ), and replaces
-        the destination. Where the two images are equal the result is white
-        (1.0). This is the standard '<code>Divide</code>' operator, and is an
-        efficient built-in replacement for the equivalent (but slow) <a
-        href="../command-line-options/index.html#fx">-fx</a> "divide" expression. It is
-        widely used to flatten uneven lighting or remove a background gradient,
-        e.g. by dividing a scan by a heavily blurred copy of itself.</td>
-  </tr>
-
-  <tr>
-    <td>divide-src</td>
-    <td>The reverse of '<code>Divide-Dst</code>': divides the source color by
-        the destination color ( <code>Sc / Dc</code> ) and replaces the
-        destination. Choose '<code>Divide-Src</code>' or
-        '<code>Divide-Dst</code>' depending on which image should be the
-        numerator.</td>
-  </tr>
-
-  <tr>
-    <td>plus</td>
-    <td>The source is added to the destination and replaces the destination,
-        with the alpha channels also added. This operator is useful for
-        averaging, or for a controlled merger of two images, rather than a
-        direct overlay. Values that exceed <var>QuantumRange</var> are clamped
-        to white.</td>
-  </tr>
-
-  <tr>
-    <td>add<br/>(modulus-add)</td>
-    <td>As per '<code>Plus</code>', but any result that exceeds
-        <var>QuantumRange</var> "wraps around" using modulus arithmetic rather
-        than being clamped. Transparency data is treated as matte values, so any
-        transparent areas in either image remain transparent. Also available as
-        the explicit name '<code>Modulus-Add</code>'.</td>
-  </tr>
-
-  <tr>
-    <td>minus<br/>(minus-dst)</td>
-    <td>Subtracts the source color from the destination color
-        ( <code>Dc - Sc</code> ), with negative results clamped to black. When
-        transparency is involved, the source opaque areas are subtracted from
-        the destination opaque areas.</td>
-  </tr>
-
-  <tr>
-    <td>minus-src</td>
-    <td>The reverse of '<code>Minus-Dst</code>': subtracts the destination color
-        from the source color ( <code>Sc - Dc</code> ), with negative results
-        clamped to black.</td>
-  </tr>
-
-  <tr>
-    <td>subtract<br/>(modulus-subtract)</td>
-    <td>Subtracts the source color from the destination color, but any negative
-        result "wraps around" using modulus arithmetic rather than being clamped
-        to black. When transparency is involved, transparent areas are
-        subtracted, so only the opaque areas in the source remain opaque in the
-        destination image. Also available as '<code>Modulus-Subtract</code>'.</td>
-  </tr>
-
-  <tr>
-    <td>difference</td>
-    <td>Subtracts the darker of the two constituent colors from the lighter one,
-        giving the absolute difference between them. Compositing with white
-        inverts the destination color; compositing with black produces no
-        change. Identical destination and source colors produce black, which
-        makes this method a convenient way to visually compare two images.</td>
-  </tr>
-
-  <tr>
-    <td>exclusion</td>
-    <td>Produces an effect similar to '<code>Difference</code>', but lower in
-        contrast. Compositing with white inverts the destination color;
-        compositing with black produces no change.</td>
-  </tr>
-
-  <tr>
-    <td>darken</td>
-    <td>Selects the darker of the destination and source colors, compared
-        channel by channel. The destination is replaced with the source only
-        where the source is darker; otherwise it is left unchanged.</td>
-  </tr>
-
-  <tr>
-    <td>lighten</td>
-    <td>Selects the lighter of the destination and source colors, compared
-        channel by channel. The destination is replaced with the source only
-        where the source is lighter; otherwise it is left unchanged.</td>
-  </tr>
-
-  <tr>
-    <td>darken-intensity</td>
-    <td>Like '<code>Darken</code>', but the choice is made by comparing the
-        overall pixel intensity (luminance) rather than each channel
-        separately. Whichever whole pixel is darker is kept, preserving its hue
-        instead of mixing channels from both images.</td>
-  </tr>
-
-  <tr>
-    <td>lighten-intensity</td>
-    <td>Like '<code>Lighten</code>', but the choice is made by comparing the
-        overall pixel intensity (luminance) rather than each channel
-        separately. Whichever whole pixel is lighter is kept.</td>
-  </tr>
-
-  <tr>
-    <td>negate</td>
-    <td>The "opposite" of '<code>Difference</code>' mode. Note that it is not
-        simply '<code>Difference</code>' inverted, because black and white
-        return the same result, but intermediate colors become brighter instead
-        of darker.</td>
-  </tr>
-
-  <tr>
-    <td>reflect</td>
-    <td>Useful when adding shining objects or bright light zones to an image.
-        The formula is related to '<code>Color-Dodge</code>', but the result is
-        generally not as bright, giving something between a dodge and a soft
-        light.</td>
-  </tr>
-
-  <tr>
-    <td>freeze</td>
-    <td>Another variation of '<code>Reflect</code>' mode, computed by inverting
-        the base and blend colors, applying the reflect formula, and inverting
-        the result again. It tends to deepen and intensify shadow regions.</td>
-  </tr>
-
-  <tr>
-    <td>stamp</td>
-    <td>Similar in spirit to an "average" mode. It is helpful when applying
-        relief or bump-style textures to an image while retaining the
-        destination's mid-tones.</td>
-  </tr>
-
-  <tr>
-    <td>interpolate</td>
-    <td>Combines aspects of '<code>Multiply</code>' and '<code>Screen</code>'
-        mode using a smooth cosine interpolation, producing a gentle S-curve.
-        It looks very similar to the constituent colors for very dark or very
-        bright values.</td>
-  </tr>
-  </tbody>
-</table>
-</div>
-
-<p>Typically these methods use the default '<code>Over</code>' alpha blending
-when transparencies are involved, except for '<code>Plus</code>' (and
-'<code>Add</code>'), which use a '<code>Plus</code>' alpha blending. This means
-the alpha channels of both images are used only to ensure that any visible input
-remains visible even in parts that are not overlaid, and that the color values
-are weighted by the alpha of the input and output images. This '<code>Over</code>'
-alpha blending is also applied to the lighting composition methods below.</p>
-
-<p>Use <code>-define compose:sync=false</code> and the above mathematical
-compositions will no longer synchronise their action with the alpha channel.
-Instead the math composition is applied on an individual channel basis, as
-selected by the <a href="../command-line-options/index.html#channel">-channel</a> setting;
-this includes the alpha channel itself. This special usage allows you to perform
-true mathematics on the image channels, without the alpha composition becoming
-involved.</p>
-
-<p>This define is not applied to the lighting composition methods (see below),
-even though they are closely related to the mathematical composition
-methods.</p>
-
-<p>A classic use of '<code>Divide</code>' is to flatten uneven lighting or
-remove a background gradient by dividing an image by a heavily blurred copy of
-itself. Note the parentheses, which limit the blur to just the cloned copy&hellip;</p>
-
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick scan.png \( +clone -blur 0x20 \) -compose Divide_Src -composite flattened.png</samp></pre>
-
-<h2>Lighting Composition Methods</h2>
-
-<p>The following lighting composition methods (the "light", "dodge", and "burn"
-blend modes) are also available. Many are the standard <em>non-separable</em>
-blend modes described by the SVG&nbsp;1.2 Compositing standard, and match the
-equivalent modes found in SVG, PDF, and popular image editors.</p>
-
-<div style="max-height:75svh; overflow-y:auto; overflow-x:hidden;">
-<table class="table table-sm table-hover table-striped">
-  <colgroup>
-    <col style="width:30%">
-    <col style="width:70%">
-  </colgroup>
-  <tbody>
-  <tr>
-    <th align="left">Method</th>
-    <th align="left">Description</th>
-  </tr>
-
-  <tr>
-    <td>linear-dodge</td>
-    <td>Equivalent to '<code>Plus</code>' in that the color channels are simply
-        added; however it does not add the alpha channel, but instead uses the
-        normal '<code>Over</code>' alpha blending when transparencies are
-        involved. Produces an additive, brightening result.</td>
-  </tr>
-
-  <tr>
-    <td>linear-burn</td>
-    <td>As '<code>Linear-Dodge</code>', but also subtracts one (full white) from
-        the result, darkening the image. It is, in effect, an additive
-        counterpart to '<code>Screen</code>'.</td>
-  </tr>
-
-  <tr>
-    <td>color-dodge</td>
-    <td>Brightens the destination color to reflect the source color, by dividing
-        the destination by the inverse of the source. Compositing with black
-        produces no change, while brighter source colors progressively blow out
-        the destination toward white.</td>
-  </tr>
-
-  <tr>
-    <td>color-burn</td>
-    <td>Darkens the destination color to reflect the source color, the inverse
-        operation to '<code>Color-Dodge</code>'. Compositing with white produces
-        no change, while darker source colors progressively burn the destination
-        toward black.</td>
-  </tr>
-
-  <tr>
-    <td>overlay</td>
-    <td>Multiplies or screens the colors, depending on the destination color.
-        Source colors overlay the destination while preserving its highlights
-        and shadows. The destination color is not replaced, but is mixed with
-        the source color to reflect the lightness or darkness of the
-        destination. This is '<code>Hard-Light</code>' with the source and
-        destination roles swapped.</td>
-  </tr>
-
-  <tr>
-    <td>hard-light</td>
-    <td>Multiplies or screens the colors, depending on the source color value.
-        If the source color is lighter than 0.5, the destination is lightened as
-        if screened; if the source color is darker than 0.5, the destination is
-        darkened as if multiplied. The degree of lightening or darkening is
-        proportional to the difference between the source color and 0.5. If the
-        source equals 0.5 the destination is unchanged. Compositing with pure
-        black or white produces black or white.</td>
-  </tr>
-
-  <tr>
-    <td>hard-mix</td>
-    <td>Adds the source and destination color values and then thresholds the
-        result to pure black or pure white on each channel. This produces a
-        high-contrast, posterised image restricted to the primary and secondary
-        colors.</td>
-  </tr>
-
-  <tr>
-    <td>linear-light</td>
-    <td>Like '<code>Hard-Light</code>', but using '<code>Linear-Dodge</code>'
-        and '<code>Linear-Burn</code>' instead of screen and multiply. It
-        increases contrast noticeably, with a strong impact on the foreground's
-        tonal values.</td>
-  </tr>
-
-  <tr>
-    <td>soft-burn</td>
-    <td>A combination of color-burn and inverse color-dodge modes, but much
-        smoother than either. The base image is lightened a little, while very
-        dark blend colors are "burned" in.</td>
-  </tr>
-
-  <tr>
-    <td>soft-dodge</td>
-    <td>A combination of color-dodge and inverse color-burn modes, but much
-        smoother than either. The base image is darkened a little, while very
-        bright blend colors are "dodged" in.</td>
-  </tr>
-
-  <tr>
-    <td>soft-light</td>
-    <td>Darkens or lightens the colors, depending on the source color value. If
-        the source color is lighter than 0.5, the destination is lightened; if
-        it is darker than 0.5, the destination is darkened, as if burned in. The
-        degree of change is proportional to the difference between the source
-        color and 0.5. If the source equals 0.5 the destination is unchanged.
-        Compositing with pure black or white produces a distinctly darker or
-        lighter area, but never pure black or white. This is the SVG&nbsp;1.2
-        "soft-light" blend mode.</td>
-  </tr>
-
-  <tr>
-    <td>pegtop-light</td>
-    <td>Almost equivalent to '<code>Soft-Light</code>', but computed with a
-        single continuous mathematical formula rather than two conditionally
-        selected formulae. This avoids the subtle discontinuity that
-        '<code>Soft-Light</code>' can show at a source value of 0.5.</td>
-  </tr>
-
-  <tr>
-    <td>vivid-light</td>
-    <td>A modified '<code>Linear-Light</code>' (a combination of
-        '<code>Color-Dodge</code>' and '<code>Color-Burn</code>') designed to
-        preserve very strong primary and secondary colors in the image.</td>
-  </tr>
-
-  <tr>
-    <td>pin-light</td>
-    <td>Similar to '<code>Hard-Light</code>', but using sharp linear shadings,
-        to simulate the effect of a strong "pinhole" light source. It replaces
-        colors based on how light or dark the source is, which can remove
-        mid-tone detail.</td>
-  </tr>
-
-  </tbody>
-</table>
-</div>
-
-<p>These blend modes are selected the same way as any other method. For
-instance, to blend a texture into a photo with '<code>Soft-Light</code>'&hellip;</p>
-
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick photo.png texture.png -compose Soft-Light -composite result.png</samp></pre>
-
-<h2>Channel-Copying and Color (HSL) Methods</h2>
-
-<p>These methods do not blend the two images arithmetically. Instead they either
-transfer individual channels from the source to the destination, or transfer one
-component of the HSL color model (hue, saturation, or luminosity). The four HSL
-methods (<code>Hue</code>, <code>Saturate</code>, <code>Luminize</code>, and
-<code>Colorize</code>) correspond to the non-separable color blend modes of the
-SVG&nbsp;1.2 Compositing standard.</p>
-
-<div style="max-height:75svh; overflow-y:auto; overflow-x:hidden;">
-<table class="table table-sm table-hover table-striped">
-  <colgroup>
-    <col style="width:30%">
-    <col style="width:70%">
-  </colgroup>
-  <tbody>
-  <tr>
-    <th align="left">Method</th>
-    <th align="left">Description</th>
-  </tr>
-
-  <tr>
-    <td>copy</td>
-    <td>Equivalent to the Duff&ndash;Porter '<code>Src</code>' composition
-        method, but <em>without</em> clearing the parts of the destination image
-        that are not overlaid. Only the overlaid area is replaced.</td>
-  </tr>
-
-  <tr>
-    <td>copy-<em>&lt;channel&gt;</em></td>
-    <td>Copies the specified channel (<code>Red</code>, <code>Green</code>,
-        <code>Blue</code>, <code>Cyan</code>, <code>Magenta</code>,
-        <code>Yellow</code>, <code>Black</code>, or <code>Alpha</code>) from the
-        source image into the same channel of the destination image, leaving the
-        other channels untouched. If the requested channel does not exist in the
-        source image (which can only happen for '<code>Copy-Alpha</code>' or
-        '<code>Copy-Black</code>'), then the source is assumed to be a grayscale
-        image whose intensity supplies the values to be copied.
-        '<code>Copy-Alpha</code>' (formerly '<code>Copy-Opacity</code>') is the
-        classic way to apply an explicit transparency mask to an image.</td>
-  </tr>
-
-  <tr>
-    <td>hue</td>
-    <td>Replaces the hue of the destination with the hue of the source, while
-        keeping the destination's saturation and luminosity.</td>
-  </tr>
-
-  <tr>
-    <td>saturate</td>
-    <td>Replaces the saturation of the destination with the saturation of the
-        source, while keeping the destination's hue and luminosity.</td>
-  </tr>
-
-  <tr>
-    <td>luminize</td>
-    <td>Replaces the luminosity (brightness) of the destination with that of the
-        source, while keeping the destination's hue and saturation.</td>
-  </tr>
-
-  <tr>
-    <td>colorize</td>
-    <td>Replaces the hue and saturation of the destination with those of the
-        source, while keeping the destination's luminosity. It is the exact
-        complement of '<code>Luminize</code>' and is ideal for tinting a
-        grayscale image with a color.</td>
-  </tr>
-
-  </tbody>
-</table>
-</div>
-
-<p>For example, to tint a grayscale portrait with a solid color using
-'<code>Colorize</code>', which keeps the destination's luminosity but takes the
-hue and saturation from the source&hellip;</p>
-
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick portrait.png xc:steelblue -compose Colorize -composite tinted.png</samp></pre>
-
-<h2>Other Special-Purpose Methods</h2>
-
-<p>Also included are these special-purpose compose methods:</p>
-
-<div style="max-height:75svh; overflow-y:auto; overflow-x:hidden;">
-<table class="table table-sm table-hover table-striped">
-  <colgroup>
-    <col style="width:30%">
-    <col style="width:70%">
-  </colgroup>
-  <tbody>
-  <tr>
-    <th align="left">Method</th>
-    <th align="left">Description</th>
-  </tr>
-
-  <tr>
-    <td>no</td>
-    <td>A true "no operation". Used internally, and when layering images, to
-        indicate that no composition should be performed. The destination is
-        returned unchanged.</td>
-  </tr>
-
-  <tr>
-    <td>change-mask</td>
-    <td>Replaces any destination pixel that is similar to the corresponding
-        source pixel (as defined by the current <a
-        href="../command-line-options/index.html#fuzz">-fuzz</a> factor) with transparency.
-        This is useful for producing a minimal "difference" overlay, such as when
-        optimising an animation.</td>
-  </tr>
-
-  <tr>
-    <td>stereo</td>
-    <td>Creates a stereo anaglyph by taking the red channel from the source
-        image and the green and blue channels from the destination image, so the
-        combined result can be viewed with red/cyan 3D glasses.</td>
-  </tr>
-
-  </tbody>
-</table>
-</div>
-
-<h2>Composition Methods That Take Arguments</h2>
-
-<p>On top of the methods above are a few special ones that not only require the
-two images being merged, but also take some extra numerical arguments, which are
-tabled below.</p>
-
-<p>In the "<code>composite</code>" command these composition methods are usually
-selected using dedicated options that carry the arguments they need. Those
-option names are usually&mdash;but not always&mdash;the same as the compose
-'method' they use, and they replace the normal <a
-href="../command-line-options/index.html#compose">-compose</a> setting. For example&hellip;</p>
-
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><code>magick composite ... -blend 50x50 ...</code></pre>
-
-<p>The "<samp>magick</samp>" command can pass these extra arguments to its <a
-href="../command-line-options/index.html#composite">-composite</a> operator using the
-special <a href="../command-line-options/index.html#define">-define</a> attribute
-<code>compose:args</code>. This means you can make use of these augmented <a
-href="../command-line-options/index.html#compose">-compose</a> methods, though the argument
-and the method must each be set separately. For example&hellip;</p>
-
-<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick ... -compose blend -define compose:args=50,50 -composite ...</samp></pre>
-
-<p>The following is a table of these special 'argumented' compose methods, with
-a brief summary of what they do. For more detail see the equivalent
-"<code>composite</code>" command option.</p>
-
-<div style="max-height:75svh; overflow-y:auto; overflow-x:hidden;">
-<table class="table table-sm table-hover table-striped">
-  <colgroup>
-    <col style="width:30%">
-    <col style="width:70%">
-  </colgroup>
-  <tbody>
-  <tr>
-    <th align="left">Method</th>
-    <th align="left">Description</th>
-  </tr>
-
-  <tr>
-    <td>dissolve</td>
-    <td>Arguments:
-        <var>src_percent</var>[x<var>dst_percent</var>]
-    <br/>Equivalent to "<code>composite</code>" <a href="../command-line-options/index.html#dissolve">-dissolve</a>.
-    Dissolves the 'source' image by the percentage given before overlaying it
-        'over' the 'destination' image. If <var>src_percent</var> is greater than
-        100, it starts dissolving the destination image as well, so the
-        destination becomes fully transparent at a value of <code>200</code>. If
-        both percentages are given, each image is dissolved to the percentage
-        given.
-    </td>
-  </tr>
-
-  <tr>
-    <td>blend</td>
-    <td>Arguments:
-        <var>src_percent</var>[x<var>dst_percent</var>]
-    <br/>Equivalent to "<code>composite</code>" <a
-        href="../command-line-options/index.html#blend">-blend</a>.
-    Averages the images together ('plus') according to the percentages given and
-        each pixel's transparency. If only a single percentage is given, it sets
-        the weight of the 'source' image, while the 'destination' image is
-        weighted by the exact opposite amount. That is, <code>-blend 30</code>
-        merges 30% of the source with 70% of the destination, and is therefore
-        equivalent to <code>-blend 30x70</code>.
-    </td>
-  </tr>
-
-  <tr>
-    <td>mathematics</td>
-    <td>Arguments: <var>A, B, C, D</var>
-    <br/>Not available in "<code>composite</code>" at this time.
-    Merges the source and destination images according to the formula
-    <ul><code>A*Sc*Dc + B*Sc + C*Dc + D</code></ul>
-    where <code>Sc</code> and <code>Dc</code> are the source and destination
-        color values. This can generate a custom composition method that would
-        otherwise need the slow <a href="../command-line-options/index.html#fx">-fx</a> DIY
-        image operator. For example, setting <var>A=1</var> with the other
-        coefficients zero reproduces '<code>Multiply</code>'.
-    </td>
-  </tr>
-
-  <tr>
-    <td>modulate</td>
-    <td>Arguments:
-        <var>brightness</var>[x<var>saturation</var>]
-    <br/>Equivalent to "<code>composite</code>" <a href="../command-line-options/index.html#watermark">-watermark</a>.
-    Takes a grayscale image (with an alpha mask) and modifies the destination
-        image's brightness according to the source image's grayscale value and
-        the <var>brightness</var> percentage. The destination's color saturation
-        is scaled directly by the <var>saturation</var> percentage, which
-        defaults to 100 percent (no color change).
-    </td>
-  </tr>
-
-  <tr>
-    <td>displace</td>
-    <td>Arguments:
-        <var>X-scale</var>[x<var>Y-scale</var>][!][%]
-    <br/>Equivalent to "<code>composite</code>" <a href="../command-line-options/index.html#displace">-displace</a>.
-    With this method, the 'overlay' image (and optionally the 'mask' image) is
-        used as a relative displacement map, which shifts the lookup of the
-        destination pixel that is seen at each point of the overlaid area. It is
-        much like a 'lens' that distorts the background image behind it.
-    <br/><br/>
-        The X-scale is modulated by the red channel of the overlay image, while
-        the Y-scale is modulated by the green channel (if a mask image is given,
-        it is rolled into the green channel of the overlay). This separation lets
-        you modulate the X and Y lookups independently, allowing 2-dimensional
-        displacements rather than the 1-dimensional vectored displacement of a
-        single grayscale image.
-    <br/><br/>
-        If the overlay image contains transparency, it is used as a mask on the
-        result to remove 'invalid' pixels.
-    <br/><br/>
-        The '<code>%</code>' flag makes the displacement scale relative to the
-        size of the overlay image (100% = half the width/height of the image).
-        Using '<code>!</code>' switches the percentage arguments to refer to the
-        destination image size instead.
-    </td>
-  </tr>
-
-  <tr>
-    <td>distort</td>
-    <td>Arguments:
-        <var>X-scale</var>[x<var>Y-scale</var>[+<var>X-center</var>+<var>Y-center</var>]][!][%]
-    <br/>Not available in "<code>composite</code>" at this time.
-    Exactly as per '<code>Displace</code>' (above), but using absolute
-        coordinates relative to the center of the overlay (or to the center
-        given). This lets you generate absolute distortion maps, where 'black'
-        looks up the left/top edge and 'white' looks up the bottom/right edge of
-        the destination image, according to the scale given.
-    <br/><br/>
-        The '<code>!</code>' flag not only switches the percentage scaling to use
-        the destination image, but also references the center offset against the
-        destination. This means the overlay can look up a completely different
-        region of the destination image.
-    </td>
-  </tr>
-
-  <tr>
-    <td>blur</td>
-    <td>Arguments:
-        <var>Width</var>[x<var>Height</var>[+<var>Angle</var>][+<var>Angle2</var>]]
-    <br/>Equivalent to "<code>composite</code>" <a href="../command-line-options/index.html#blur-composite">-blur</a>.
-    A variable-blur mapping composition method, where each pixel in the overlaid
-        region is replaced with an Elliptical Weighted Average (EWA), using an
-        ellipse (typically a circle) of the given sigma size, scaled according
-        to the overlay (source) grayscale mapping.
-    <br/><br/>
-        As with '<code>Displace</code>' and '<code>Distort</code>', the red
-        channel modulates the width of the ellipse while the green channel
-        modulates its height. If a single Angle value is given, the ellipse is
-        rotated by that angle.
-    <br/><br/>
-        Normally the blue channel of the mapping overlay is ignored. However if a
-        second angle is given, the blue channel is taken to define a variable
-        angle for the ellipse, ranging from the first angle to the second. This
-        lets you generate radial blurs, a rough approximation of rotational blur,
-        or any mix of the two.
-    </td>
-  </tr>
-
-  <tr>
-    <td>seamless-blend</td>
-    <td>Arguments: <var>max-iterations</var>x<var>distortion</var>
-    <p>Seamlessly inserts the overlay image onto the background image. This
-        operator requires a mask. Set the maximum number of iterations and the
-        target distortion when seamlessly blending a foreground object onto a
-        background. The distortion is the RMSE between each iteration; a good
-        starting point is <code>300x0.0001</code>. Note that seamless blending
-        works most effectively when the HDRI feature is enabled.</p>
-    </td>
-  </tr>
-
-  <tr>
-    <td>saliency-blend</td>
-    <td>Arguments: <var>max-iterations</var>x<var>distortion</var>
-    <p>Merges the overlay image with the background image such that whichever
-        image is most salient (has the most detail) at a given pixel is the one
-        that shows in the result. This operator requires a mask. Set the maximum
-        number of iterations and the target distortion as for
-        '<code>Seamless-Blend</code>'; a good starting point is
-        <code>300x0.0001</code>. Note that this works most effectively when the
-        HDRI feature is enabled, and it is a little slower than seamless
-        blending.</p>
-    </td>
-  </tr>
-
-  </tbody>
-</table>
-</div>
-
-<p>To print a complete list of all the available compose operators supported by
-your particular build, use <a href="../command-line-options/index.html#list">-list
-compose</a>.</p>
-</div>
-
-        </div>
-        <div class="col-lg-3 col-12 ps-lg-4 border-start d-flex flex-column align-items-center align-items-lg-start">
-          <div class="container text-center my-3">
-            <a href="../image/wizard.png" rel="noopener noreferrer" target="_blank">
-              <img alt="ImageMagick Wizard" class="img-fluid img-thumbnail" height="351" loading="lazy" src="../image/wizard.jpg" width="264">
+  <!-- Hero Header Block -->
+  <header class="im-hero mt-5 pt-5">
+    <div class="container-xl pt-3">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+          <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-primary bg-opacity-20 text-primary border border-primary border-opacity-30 mb-3 fs-7">
+            <span class="badge bg-primary">v7.1.2-34</span>
+            <span class="small text-light">Latest Stable Release</span>
+          </div>
+          <h1 class="display-4 fw-bold mb-3 tracking-tight">Alpha Compositing</h1>
+          <p class="lead text-light opacity-75 mb-4 fs-5">Complete guide to ImageMagick's -compose operators: Porter–Duff alpha blending, mathematical, lighting, and SVG 1.2 blend modes, with CLI examples.</p>
+          <div class="d-flex flex-wrap gap-3">
+            <a href="../download/index.html" class="btn btn-primary btn-lg px-4 fw-semibold d-flex align-items-center gap-2 shadow">
+              <i class="bi bi-download"></i> Get ImageMagick
             </a>
-            <p class="mt-2"><iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border:0 !important; width:107px !important; height:35px !important;"></iframe></p>
+            <a href="../command-line-processing/index.html" class="btn btn-outline-light btn-lg px-4 fw-semibold d-flex align-items-center gap-2">
+              <i class="bi bi-terminal"></i> Documentation
+            </a>
           </div>
-          <div class="container text-center my-3">
-            <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745"
-              crossorigin="anonymous"></script>
-            <!-- Banner Ad -->
-            <ins class="adsbygoogle"
-              style="display:block"
-              data-ad-client="ca-pub-3129977114552745"
-              data-ad-slot="1083537442"
-              data-ad-format="auto"
-              data-full-width-responsive="true"></ins>
-            <script>
-              (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
+        </div>
+
+        <!-- Terminal Quickstart Preview -->
+        <div class="col-lg-5">
+          <div class="terminal-card">
+            <div class="terminal-header">
+              <div class="terminal-dot bg-danger"></div>
+              <div class="terminal-dot bg-warning"></div>
+              <div class="terminal-dot bg-success"></div>
+              <span class="small text-secondary font-mono ms-2">quickstart.sh</span>
+            </div>
+            <div class="p-3 text-light font-mono small">
+              <div class="text-secondary"># Install via your favorite Package Manager</div>
+              <div class="text-success">$ brew install imagemagick</div>
+              <div class="text-secondary mt-2"># Convert PNG to WebP with compression</div>
+              <div>$ magick input.png -quality 85 output.webp</div>
+              <div class="text-secondary mt-2"># Resize image maintaining aspect ratio</div>
+              <div>$ magick input.jpg -resize 800x600^ output.jpg</div>
+            </div>
           </div>
         </div>
       </div>
-      <a aria-label="About ImageMagick" class="btn btn-outline-warning mt-3" href="../index-2.html">About ImageMagick</a>
-    </main><!-- /.container -->
-    <footer class="text-center pt-5 my-5 text-body-secondary border-top">
-      <div class="container-fluid">
-        <a href="../security-policy/index.html">Security</a> •
-        <a href="../news/index.html">News</a>
-        &nbsp;
-        <a href="#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../image/wand.png"></a>
-        &nbsp;
-        <a href="../links/index.html">Related</a> •
-        <a href="../sitemap/index.html">Sitemap</a>
-        <br>
-        <a href="../support/index.html">Sponsor</a> •
-        <a href="../cite/index.html">Cite</a> •
-        <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-        <a href="https://github.com/ImageMagick/ImageMagick/discussions">Contact Us</a>
-        <br>
-        <a href="https://github.com/imagemagick/imagemagick" rel="noopener noreferrer" target="_blank" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false">
-            <title>GitHub</title>
-            <path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z" />
-          </svg></a> •
-        <a href="https://twitter.com/imagemagick" rel="noopener noreferrer" target="_blank" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 300 300" width="2%" height="2%" role="img" focusable="false">
-            <title>Twitter</title>
-            <path d="M178.57 127.15 290.27 0h-26.46l-97.03 110.38L89.34 0H0l117.13 166.93L0 300.25h26.46l102.4-116.59 81.8 116.59h89.34M36.01 19.54H76.66l187.13 262.13h-40.66" />
-          </svg></a>
-        <br>
-        <small>Copyright © 1999 ImageMagick Studio LLC</small>
-      </div>
-    </footer>
-    <div style="visibility: hidden;">
-      <div class="gcse-search"></div>
+    </div>
+  </header>
+
+  <!-- Main Body Content -->
+  <main class="py-5">
+    <div class="container-xl">
+      <div class="row g-5">
+        <!-- Main Column -->
+        <div class="col-lg-8">
+          <!-- Page Header & Quick Navigation -->
+<div class="mb-5 border-bottom pb-4">
+  <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+    <a href="#cli-examples" class="btn btn-sm btn-outline-primary rounded-pill px-3 d-inline-flex align-items-center gap-2">
+      <i class="bi bi-terminal-fill"></i> Overview
+    </a>
+    <a href="#duff-porter" class="btn btn-sm btn-outline-secondary rounded-pill px-3 d-inline-flex align-items-center gap-2">
+      <i class="bi bi-layers-fill"></i> Porter–Duff
+    </a>
+    <a href="#mathematical" class="btn btn-sm btn-outline-secondary rounded-pill px-3 d-inline-flex align-items-center gap-2">
+      <i class="bi bi-calculator-fill"></i> Mathematical
+    </a>
+    <a href="#lighting" class="btn btn-sm btn-outline-secondary rounded-pill px-3 d-inline-flex align-items-center gap-2">
+      <i class="bi bi-sun-fill"></i> Lighting
+    </a>
+    <a href="#channel-copying" class="btn btn-sm btn-outline-secondary rounded-pill px-3 d-inline-flex align-items-center gap-2">
+      <i class="bi bi-palette-fill"></i> HSL & Color
+    </a>
+    <a href="#argumented" class="btn btn-sm btn-outline-secondary rounded-pill px-3 d-inline-flex align-items-center gap-2">
+      <i class="bi bi-sliders"></i> Arguments
+    </a>
+  </div>
+  <p class="lead text-body-secondary mb-3">
+    This page describes the image composition methods that define how two images are merged together during operations combining a 'source' (overlay) image with a 'destination' (background) image. For the Command Line API, the method is normally selected with the <a href="../command-line-options/index.html#compose" class="text-decoration-none fw-semibold">-compose</a> setting, and applied by operators such as <a href="../command-line-options/index.html#composite" class="text-decoration-none">-composite</a>, <a href="../command-line-options/index.html#layers" class="text-decoration-none">-layers</a>, <a href="../command-line-options/index.html#flatten" class="text-decoration-none">-flatten</a>, <a href="../command-line-options/index.html#mosaic" class="text-decoration-none">-mosaic</a>, <a href="../command-line-options/index.html#draw" class="text-decoration-none">-draw</a>, and others.
+  </p>
+  
+  <div class="p-4 bg-body-tertiary border rounded-3 mb-4">
+    <p class="mb-2">
+      Most alpha-blending operators and lighting modes follow the W3C <a href="https://www.w3.org/TR/SVGCompositing/" target="_blank" class="text-decoration-none">SVG Compositing Specification</a>, extending SVG 1.1 and 1.2 with full Porter–Duff alpha operators. ImageMagick implements identical mathematical results to SVG, PDF, and modern graphics libraries.
+    </p>
+    <p class="mb-0 text-body-secondary small">
+      Composition terminology uses abstract values like <var>QuantumRange</var> and opacity ranging from <var>opaque</var> to <var>transparent</var>. Method names are case-insensitive and allow <code>_</code> or <code>-</code> separators (e.g., <code>Dst-Over</code> equals <code>dstover</code>).
+    </p>
+  </div>
+</div>
+<!-- Section: Porter-Duff Alpha Composition Methods -->
+<section id="duff-porter" class="mb-5">
+  <div class="d-flex align-items-center gap-2 mb-3">
+    <h2 class="h3 fw-bold mb-0">Porter–Duff Alpha Composition Methods</h2>
+    <a href="#duff-porter" class="text-body-tertiary text-decoration-none"><i class="bi bi-link-45deg fs-4"></i></a>
+  </div>
+  <p class="text-body-secondary mb-3">
+    The following twelve classical Porter–Duff operators defined by the SVG 1.2 standard merge two images purely according to transparency.
+  </p>
+  <div class="card im-card overflow-hidden shadow-sm mb-4">
+    <div class="table-responsive" style="max-height: 65vh;">
+      <table class="table table-hover table-striped align-middle mb-0">
+        <thead class="table-light sticky-top shadow-sm">
+          <tr>
+            <th scope="col" style="width: 30%;">Method</th>
+            <th scope="col" style="width: 70%;">Description</th>
+          </tr>
+        </thead>
+        <tbody class="font-mono small">
+          <tr>
+            <td><code class="fw-semibold">clear</code></td>
+            <td class="font-sans">Both color and alpha of the destination are cleared. Neither source nor destination is used as input (except meta-data). Result is fully transparent.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">src</code></td>
+            <td class="font-sans">The source is copied to the destination, completely replacing it. Un-overlaid areas are cleared to transparency.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">dst</code></td>
+            <td class="font-sans">The destination is left untouched. Source image is ignored (no-op for color data, useful for testing).</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">src-over</code></td>
+            <td class="font-sans">Source composited over destination. This is the default alpha-blending method when unspecified.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">dst-over</code></td>
+            <td class="font-sans">Destination composited over source. Places source <em>under</em> destination; ideal for backgrounds or drop shadows.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">src-in</code></td>
+            <td class="font-sans">Part of source inside destination shape replaces destination. Everything outside is cleared.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">dst-in</code></td>
+            <td class="font-sans">Part of destination inside source shape replaces destination. Convenient for alpha masks.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">src-out</code></td>
+            <td class="font-sans">Part of source outside destination shape replaces destination. Overlapping region cleared.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">dst-out</code></td>
+            <td class="font-sans">Part of destination outside source shape replaces destination ("punched out" hole).</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">src-atop</code></td>
+            <td class="font-sans">Part of source inside destination shape is composited onto destination, keeping destination shape/alpha.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">dst-atop</code></td>
+            <td class="font-sans">Part of destination inside source shape replaces destination. Result keeps source shape and destination colors.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">xor</code></td>
+            <td class="font-sans">Combines parts of source and destination outside their overlap. Overlapping area is cleared.</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
+  <p class="text-body-secondary small mb-3">
+    Shorthand notes: <code class="text-primary">Src-</code> prefixes can be omitted (e.g., <code>Over</code>, <code>In</code>, <code>Out</code>, <code>ATop</code>). Un-overlaid clearing behavior for <code>Clear</code>, <code>Src</code>, <code>Src-In</code>, <code>Dst-In</code>, <code>Src-Out</code>, and <code>Dst-ATop</code> can be disabled via <code class="text-primary">-define compose:outside-overlay=false</code>.
+  </p>
+  <!-- CLI Example 1 -->
+  <div class="terminal-card mb-3">
+    <div class="terminal-header d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-2">
+        <div class="terminal-dot bg-danger"></div>
+        <div class="terminal-dot bg-warning"></div>
+        <div class="terminal-dot bg-success"></div>
+        <span class="small text-secondary font-mono ms-2">overlay-rose.sh</span>
+      </div>
+      <button class="btn btn-sm text-secondary border-0 p-0" onclick="navigator.clipboard.writeText('https://imagemagick.org/compose/magick rose: label.png -gravity center -compose Over -composite result.png')" title="Copy Command">
+        <i class="bi bi-clipboard"></i>
+      </button>
+    </div>
+    <div class="p-3">
+      <pre class="mb-0 text-light font-mono"><code><span class="text-success">$</span> magick rose: label.png -gravity center -compose Over -composite result.png</code></pre>
+    </div>
+  </div>
+  <!-- CLI Example 2 -->
+  <div class="terminal-card mb-4">
+    <div class="terminal-header d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-2">
+        <div class="terminal-dot bg-danger"></div>
+        <div class="terminal-dot bg-warning"></div>
+        <div class="terminal-dot bg-success"></div>
+        <span class="small text-secondary font-mono ms-2">drop-shadow.sh</span>
+      </div>
+      <button class="btn btn-sm text-secondary border-0 p-0" onclick="navigator.clipboard.writeText('https://imagemagick.org/compose/magick label_white.png label_black.png -geometry +5+5 -compose Dst-Over -composite shadow.png')" title="Copy Command">
+        <i class="bi bi-clipboard"></i>
+      </button>
+    </div>
+    <div class="p-3">
+      <pre class="mb-0 text-light font-mono"><code><span class="text-success">$</span> magick label_white.png label_black.png -geometry +5+5 -compose Dst-Over -composite shadow.png</code></pre>
+    </div>
+  </div>
+</section>
+<!-- Section: Mathematical Composition Methods -->
+<section id="mathematical" class="mb-5">
+  <div class="d-flex align-items-center gap-2 mb-3">
+    <h2 class="h3 fw-bold mb-0">Mathematical Composition Methods</h2>
+    <a href="#mathematical" class="text-body-tertiary text-decoration-none"><i class="bi bi-link-45deg fs-4"></i></a>
+  </div>
+  <p class="text-body-secondary mb-3">
+    These methods combine color channels using arithmetic or comparison formulas rather than transparency alone. Includes SVG 1.2 separable blend modes like <code>Multiply</code>, <code>Screen</code>, <code>Darken</code>, <code>Lighten</code>, <code>Difference</code>, and <code>Exclusion</code>.
+  </p>
+  <div class="card im-card overflow-hidden shadow-sm mb-4">
+    <div class="table-responsive" style="max-height: 65vh;">
+      <table class="table table-hover table-striped align-middle mb-0">
+        <thead class="table-light sticky-top shadow-sm">
+          <tr>
+            <th scope="col" style="width: 30%;">Method</th>
+            <th scope="col" style="width: 70%;">Description</th>
+          </tr>
+        </thead>
+        <tbody class="font-mono small">
+          <tr>
+            <td><code class="fw-semibold">multiply</code></td>
+            <td class="font-sans">Source multiplied by destination. Result is at least as dark as inputs. Black produces black; white leaves color unchanged.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">divide</code></td>
+            <td class="font-sans">Divides pixel values of one input image by another channel by channel for normalization or contrast.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">screen</code></td>
+            <td class="font-sans">Complements multiplied, then complemented again. Result is at least as light as inputs (mathematical opposite of multiply).</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">bumpmap</code></td>
+            <td class="font-sans">Source intensity multiplied with destination color using single luminance to shade destination (great for embossed textures).</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">divide-dst</code></td>
+            <td class="font-sans">True mathematical division of destination by source (<var>Dc / Sc</var>). Equal colors yield white (1.0). Efficient built-in background removal.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">divide-src</code></td>
+            <td class="font-sans">Reverse of divide-dst: divides source by destination (<var>Sc / Dc</var>).</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">plus</code></td>
+            <td class="font-sans">Source added to destination with alpha channels added. Exceeding <var>QuantumRange</var> is clamped to white.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">add<br/><span class="text-muted">(modulus-add)</span></code></td>
+            <td class="font-sans">Like plus, but exceeding <var>QuantumRange</var> wraps around using modulus arithmetic. Transparent areas remain transparent.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">minus<br/><span class="text-muted">(minus-dst)</span></code></td>
+            <td class="font-sans">Subtracts source color from destination (<var>Dc - Sc</var>) with negative results clamped to black.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">minus-src</code></td>
+            <td class="font-sans">Reverse of minus-dst: subtracts destination from source (<var>Sc - Dc</var>).</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">subtract<br/><span class="text-muted">(modulus-subtract)</span></code></td>
+            <td class="font-sans">Subtracts source from destination, wrapping negative results with modulus arithmetic rather than clamping.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">difference</code></td>
+            <td class="font-sans">Absolute difference between colors. White inverts destination; black produces no change; identical colors produce black.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">exclusion</code></td>
+            <td class="font-sans">Similar to difference but lower in contrast.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">darken</code></td>
+            <td class="font-sans">Selects darker of destination and source channel-by-channel.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">lighten</code></td>
+            <td class="font-sans">Selects lighter of destination and source channel-by-channel.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">darken-intensity</code></td>
+            <td class="font-sans">Compares overall luminance rather than channels; keeps whole pixel that is darker, preserving hue.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">lighten-intensity</code></td>
+            <td class="font-sans">Compares overall luminance; keeps whole pixel that is lighter.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">negate</code></td>
+            <td class="font-sans">Opposite of difference; intermediate colors become brighter instead of darker.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">reflect</code></td>
+            <td class="font-sans">Related to color-dodge for adding shiny objects or bright light zones.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">freeze</code></td>
+            <td class="font-sans">Inverts base and blend colors, applies reflect, and inverts result to deepen shadows.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">stamp</code></td>
+            <td class="font-sans">Similar to average mode for relief/bump textures while retaining mid-tones.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">interpolate</code></td>
+            <td class="font-sans">Combines multiply and screen using smooth cosine interpolation (gentle S-curve).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <p class="text-body-secondary small mb-3">
+    Use <code class="text-primary">-define compose:sync=false</code> to apply math composition on individual channel bases (including alpha) without alpha composition interference.
+  </p>
+  <!-- CLI Example 3 -->
+  <div class="terminal-card mb-4">
+    <div class="terminal-header d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-2">
+        <div class="terminal-dot bg-danger"></div>
+        <div class="terminal-dot bg-warning"></div>
+        <div class="terminal-dot bg-success"></div>
+        <span class="small text-secondary font-mono ms-2">flatten-lighting.sh</span>
+      </div>
+      <button class="btn btn-sm text-secondary border-0 p-0" onclick="navigator.clipboard.writeText('https://imagemagick.org/compose/magick scan.png\\( +clone -blur 0x20 \\) -compose Divide_Src -composite flattened.png')" title="Copy Command">
+        <i class="bi bi-clipboard"></i>
+      </button>
+    </div>
+    <div class="p-3">
+      <pre class="mb-0 text-light font-mono"><code><span class="text-success">$</span> magick scan.png \( +clone -blur 0x20 \) -compose Divide_Src -composite flattened.png</code></pre>
+    </div>
+  </div>
+</section>
+<!-- Section: Lighting Composition Methods -->
+<section id="lighting" class="mb-5">
+  <div class="d-flex align-items-center gap-2 mb-3">
+    <h2 class="h3 fw-bold mb-0">Lighting Composition Methods</h2>
+    <a href="#lighting" class="text-body-tertiary text-decoration-none"><i class="bi bi-link-45deg fs-4"></i></a>
+  </div>
+  <p class="text-body-secondary mb-3">
+    Light, dodge, and burn blend modes standard to SVG 1.2 and popular image editors.
+  </p>
+  <div class="card im-card overflow-hidden shadow-sm mb-4">
+    <div class="table-responsive" style="max-height: 65vh;">
+      <table class="table table-hover table-striped align-middle mb-0">
+        <thead class="table-light sticky-top shadow-sm">
+          <tr>
+            <th scope="col" style="width: 30%;">Method</th>
+            <th scope="col" style="width: 70%;">Description</th>
+          </tr>
+        </thead>
+        <tbody class="font-mono small">
+          <tr>
+            <td><code class="fw-semibold">linear-dodge</code></td>
+            <td class="font-sans">Equivalent to plus (adds channels without adding alpha), using normal <var>Over</var> alpha blending.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">linear-burn</code></td>
+            <td class="font-sans">Additive counterpart to screen; subtracts one (full white) from result, darkening image.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">color-dodge</code></td>
+            <td class="font-sans">Brightens destination to reflect source by dividing destination by inverse source.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">color-burn</code></td>
+            <td class="font-sans">Darkens destination to reflect source (inverse of color-dodge).</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">overlay</code></td>
+            <td class="font-sans">Multiplies or screens colors based on destination color, preserving highlights and shadows.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">hard-light</code></td>
+            <td class="font-sans">Multiplies or screens based on source color value (<0.5 darkens like multiply, >0.5 lightens like screen).</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">hard-mix</code></td>
+            <td class="font-sans">Adds source and destination values then thresholds result to pure black or white per channel.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">linear-light</code></td>
+            <td class="font-sans">Like hard-light, but using linear-dodge and linear-burn for strong contrast impact.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">soft-burn</code></td>
+            <td class="font-sans">Combination of color-burn and inverse color-dodge; lightens base slightly while burning dark blend colors.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">soft-dodge</code></td>
+            <td class="font-sans">Combination of color-dodge and inverse color-burn; darkens base slightly while dodging bright blend colors.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">soft-light</code></td>
+            <td class="font-sans">SVG 1.2 soft-light mode; darkens or lightens depending on source value (<0.5 darkens, >0.5 lightens) without pure black/white.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">pegtop-light</code></td>
+            <td class="font-sans">Computed with a continuous mathematical formula to avoid soft-light's discontinuity at 0.5.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">vivid-light</code></td>
+            <td class="font-sans">Modified linear-light designed to preserve strong primary and secondary colors.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">pin-light</code></td>
+            <td class="font-sans">Simulates pinhole light source using sharp linear shadings.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- CLI Example 4 -->
+  <div class="terminal-card mb-4">
+    <div class="terminal-header d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-2">
+        <div class="terminal-dot bg-danger"></div>
+        <div class="terminal-dot bg-warning"></div>
+        <div class="terminal-dot bg-success"></div>
+        <span class="small text-secondary font-mono ms-2">blend-texture.sh</span>
+      </div>
+      <button class="btn btn-sm text-secondary border-0 p-0" onclick="navigator.clipboard.writeText('https://imagemagick.org/compose/magick photo.png texture.png -compose Soft-Light -composite result.png')" title="Copy Command">
+        <i class="bi bi-clipboard"></i>
+      </button>
+    </div>
+    <div class="p-3">
+      <pre class="mb-0 text-light font-mono"><code><span class="text-success">$</span> magick photo.png texture.png -compose Soft-Light -composite result.png</code></pre>
+    </div>
+  </div>
+</section>
+<!-- Section: Channel-Copying and Color (HSL) Methods -->
+<section id="channel-copying" class="mb-5">
+  <div class="d-flex align-items-center gap-2 mb-3">
+    <h2 class="h3 fw-bold mb-0">Channel-Copying & Color (HSL) Methods</h2>
+    <a href="#channel-copying" class="text-body-tertiary text-decoration-none"><i class="bi bi-link-45deg fs-4"></i></a>
+  </div>
+  <p class="text-body-secondary mb-3">
+    Transfer individual channels or HSL components (hue, saturation, luminosity) without arithmetical blending.
+  </p>
+  <div class="card im-card overflow-hidden shadow-sm mb-4">
+    <div class="table-responsive" style="max-height: 65vh;">
+      <table class="table table-hover table-striped align-middle mb-0">
+        <thead class="table-light sticky-top shadow-sm">
+          <tr>
+            <th scope="col" style="width: 30%;">Method</th>
+            <th scope="col" style="width: 70%;">Description</th>
+          </tr>
+        </thead>
+        <tbody class="font-mono small">
+          <tr>
+            <td><code class="fw-semibold">copy</code></td>
+            <td class="font-sans">Equivalent to Src composition without clearing un-overlaid destination parts.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">copy-&lt;channel&gt;</code></td>
+            <td class="font-sans">Copies specified channel (<code class="text-primary">Red</code>, <code class="text-primary">Green</code>, <code class="text-primary">Blue</code>, <code class="text-primary">Cyan</code>, <code class="text-primary">Magenta</code>, <code class="text-primary">Yellow</code>, <code class="text-primary">Black</code>, <code class="text-primary">Alpha</code>) from source to destination.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">hue</code></td>
+            <td class="font-sans">Replaces destination hue with source hue while keeping saturation and luminosity.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">saturate</code></td>
+            <td class="font-sans">Replaces destination saturation with source saturation while keeping hue and luminosity.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">luminize</code></td>
+            <td class="font-sans">Replaces destination luminosity with source luminosity while keeping hue and saturation.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">colorize</code></td>
+            <td class="font-sans">Replaces destination hue and saturation with source while keeping luminosity (ideal for tinting grayscale images).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- CLI Example 5 -->
+  <div class="terminal-card mb-4">
+    <div class="terminal-header d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-2">
+        <div class="terminal-dot bg-danger"></div>
+        <div class="terminal-dot bg-warning"></div>
+        <div class="terminal-dot bg-success"></div>
+        <span class="small text-secondary font-mono ms-2">colorize-portrait.sh</span>
+      </div>
+      <button class="btn btn-sm text-secondary border-0 p-0" onclick="navigator.clipboard.writeText('https://imagemagick.org/compose/magick portrait.png xc:steelblue -compose Colorize -composite tinted.png')" title="Copy Command">
+        <i class="bi bi-clipboard"></i>
+      </button>
+    </div>
+    <div class="p-3">
+      <pre class="mb-0 text-light font-mono"><code><span class="text-success">$</span> magick portrait.png xc:steelblue -compose Colorize -composite tinted.png</code></pre>
+    </div>
+  </div>
+</section>
+<!-- Section: Other Special-Purpose Methods -->
+<section id="special-purpose" class="mb-5">
+  <div class="d-flex align-items-center gap-2 mb-3">
+    <h2 class="h3 fw-bold mb-0">Other Special-Purpose Methods</h2>
+    <a href="#special-purpose" class="text-body-tertiary text-decoration-none"><i class="bi bi-link-45deg fs-4"></i></a>
+  </div>
+  <div class="card im-card overflow-hidden shadow-sm mb-4">
+    <div class="table-responsive" style="max-height: 65vh;">
+      <table class="table table-hover table-striped align-middle mb-0">
+        <thead class="table-light sticky-top shadow-sm">
+          <tr>
+            <th scope="col" style="width: 30%;">Method</th>
+            <th scope="col" style="width: 70%;">Description</th>
+          </tr>
+        </thead>
+        <tbody class="font-mono small">
+          <tr>
+            <td><code class="fw-semibold">no</code></td>
+            <td class="font-sans">True no-op indicating no composition should be performed.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">change-mask</code></td>
+            <td class="font-sans">Replaces destination pixels similar to source pixel (within <a href="../command-line-options/index.html#fuzz" class="text-decoration-none">-fuzz</a> factor) with transparency.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">stereo</code></td>
+            <td class="font-sans">Creates stereo anaglyph taking red channel from source and green/blue from destination.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+<!-- Section: Composition Methods That Take Arguments -->
+<section id="argumented" class="mb-5">
+  <div class="d-flex align-items-center gap-2 mb-3">
+    <h2 class="h3 fw-bold mb-0">Composition Methods That Take Arguments</h2>
+    <a href="#argumented" class="text-body-tertiary text-decoration-none"><i class="bi bi-link-45deg fs-4"></i></a>
+  </div>
+  <p class="text-body-secondary mb-3">
+    These methods require extra numerical arguments, passed via <code class="text-primary">-define compose:args=...</code> in the <samp>magick</samp> command.
+  </p>
+  <!-- CLI Example 6 -->
+  <div class="terminal-card mb-4">
+    <div class="terminal-header d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-2">
+        <div class="terminal-dot bg-danger"></div>
+        <div class="terminal-dot bg-warning"></div>
+        <div class="terminal-dot bg-success"></div>
+        <span class="small text-secondary font-mono ms-2">compose-args.sh</span>
+      </div>
+      <button class="btn btn-sm text-secondary border-0 p-0" onclick="navigator.clipboard.writeText('magick ... -compose blend -define compose:args=50,50 -composite ...')" title="Copy Command">
+        <i class="bi bi-clipboard"></i>
+      </button>
+    </div>
+    <div class="p-3">
+      <pre class="mb-0 text-light font-mono"><code><span class="text-success">$</span> magick ... -compose blend -define compose:args=50,50 -composite ...</code></pre>
+    </div>
+  </div>
+  <div class="card im-card overflow-hidden shadow-sm mb-4">
+    <div class="table-responsive" style="max-height: 65vh;">
+      <table class="table table-hover table-striped align-middle mb-0">
+        <thead class="table-light sticky-top shadow-sm">
+          <tr>
+            <th scope="col" style="width: 30%;">Method</th>
+            <th scope="col" style="width: 70%;">Description</th>
+          </tr>
+        </thead>
+        <tbody class="font-mono small">
+          <tr>
+            <td><code class="fw-semibold">dissolve</code></td>
+            <td class="font-sans">Arguments: <var>src_percent</var>[x<br><var>dst_percent</var>]. Dissolves source image by percentage before overlaying.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">blend</code></td>
+            <td class="font-sans">Arguments: <var>src_percent</var>[x<br><var>dst_percent</var>]. Averages images together according to percentages and transparency.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">mathematics</code></td>
+            <td class="font-sans">Arguments: <var>A, B, C, D</var>. Merges via formula <code class="text-primary">A*Sc*Dc + B*Sc + C*Dc + D</code>.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">modulate</code></td>
+            <td class="font-sans">Arguments: <var>brightness</var>[x<br><var>saturation</var>]. Takes grayscale image/mask to modify destination brightness/saturation.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">displace</code></td>
+            <td class="font-sans">Arguments: <var>X-scale</var>[x<br><var>Y-scale</var>][!][%]. Uses overlay as relative displacement map (lens distortion).</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">distort</code></td>
+            <td class="font-sans">Arguments: <var>X-scale</var>[x<br><var>Y-scale</var>[+<br><var>X-center</var>+<br><var>Y-center</var>]]][!][%]. Uses absolute coordinates relative to overlay center.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">blur</code></td>
+            <td class="font-sans">Arguments: <br><var>Width</var>[x<var>Height</var>[+<var>Angle</var>][+<var>Angle2</var>]]. Variable-blur mapping composition via EWA ellipse.</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">seamless-blend</code></td>
+            <td class="font-sans">Arguments: <var>max-iterations</var>x<br><var>distortion</var>. Seamlessly inserts overlay onto background using a mask (best with HDRI).</td>
+          </tr>
+          <tr>
+            <td><code class="fw-semibold">saliency-blend</code></td>
+            <td class="font-sans">Arguments: <var>max-iterations</var>x<br><var>distortion</var>. Merges images based on which has most detail at each pixel (requires mask).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <p class="text-body-secondary small">
+    To print a complete list of all available compose operators supported by your specific build, run <a href="../command-line-options/index.html#list" class="text-decoration-none fw-semibold">magick -list compose</a>.
+  </p>
+</section>
 
-  <!-- Javascript assets -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+        </div>
+
+        <!-- Right Sidebar -->
+        <aside class="col-lg-4">
+          <div class="sticky-top" style="top: 90px;">
+            <!-- Sponsor Card -->
+            <div class="card im-card mb-4 overflow-hidden border-0 bg-gradient bg-primary bg-opacity-10">
+              <div class="card-body p-4 text-center">
+                <img src="../image/wizard.jpg" alt="ImageMagick Wizard" class="rounded shadow mb-3 img-fluid" style="max-height: 200px;">
+                <h5 class="fw-bold">Support Open Source</h5>
+                <p class="small text-body-secondary mb-3">Help maintain and sustain ImageMagick development.</p>
+                <iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="114" class="border-0"></iframe>
+              </div>
+            </div>
+
+            <!-- Banner Ad Container -->
+            <div class="text-center p-2 mv-4 rounded border border-secondary-subtle bg-body-tertiary">
+              <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
+              <ins class="adsbygoogle"
+                   style="display:block"
+                   data-ad-client="ca-pub-3129977114552745"
+                   data-ad-slot="1083537442"
+                   data-ad-format="auto"
+                   data-full-width-responsive="true"></ins>
+              <script>
+                   (adsbygoogle = window.adsbygoogle || []).push({});
+              </script>
+            </div>
+
+            <!-- Quick Links Navigation -->
+            <div class="card im-card p-3 mb-4">
+              <h6 class="fw-bold text-uppercase fs-7 text-secondary mb-3">Resources</h6>
+              <ul class="nav flex-column gap-1 fs-6">
+                <li class="nav-item"><a href="../security-policy/index.html" class="nav-link p-2 rounded text-body-secondary"><i class="bi bi-shield-check me-2 text-success"></i> Security Policy</a></li>
+                <li class="nav-item"><a href="../license/index.html" class="nav-link p-2 rounded text-body-secondary"><i class="bi bi-file-earmark-text me-2 text-info"></i> Open Source License</a></li>
+                <li class="nav-item"><a href="../porting/index.html" class="nav-link p-2 rounded text-body-secondary"><i class="bi bi-signpost-split me-2 text-warning"></i> Porting v6 to v7</a></li>
+                <li class="nav-item"><a href="../formats/index.html" class="nav-link p-2 rounded text-body-secondary"><i class="bi bi-filetype-png me-2 text-danger"></i> Supported Formats</a></li>
+              </ul>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="im-footer py-5 mt-auto">
+    <div class="container-xl">
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-4">
+          <a class="navbar-brand im-brand mb-2 fs-5" href="../index.html">ImageMagick</a>
+          <p class="small text-secondary">Mastering Digital Image Alchemy. The open-source suite for image creation, conversion, and batch manipulation.</p>
+        </div>
+        <div class="col-6 col-md-3 col-lg-2">
+          <h6 class="text-light fw-bold mb-3">Navigation</h6>
+          <ul class="list-unstyled small d-flex flex-column gap-2">
+            <li><a href="../download/index.html">Download</a></li>
+            <li><a href="../command-line-tools/index.html">Tools</a></li>
+            <li><a href="../develop/index.html">APIs & Libraries</a></li>
+            <li><a href="../sitemap/index.html">Sitemap</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-md-3 col-lg-2">
+          <h6 class="text-light fw-bold mb-3">Community</h6>
+          <ul class="list-unstyled small d-flex flex-column gap-2">
+            <li><a href="https://github.com/ImageMagick/ImageMagick/discussions" target="_blank">Discussions</a></li>
+            <li><a href="https://github.com/ImageMagick/ImageMagick/issues" target="_blank">Report an Issue</a></li>
+            <li><a href="../support/index.html">Sponsor Us</a></li>
+            <li><a href="../cite/index.html">Cite ImageMagick</a></li>
+          </ul>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <h6 class="text-light fw-bold mb-3">Connect</h6>
+          <div class="d-flex gap-3 fs-5">
+            <a href="https://github.com/imagemagick/imagemagick" target="_blank" aria-label="GitHub"><i class="bi bi-github"></i></a>
+            <a href="https://x.com/imagemagick" target="_blank" aria-label="X/Twitter"><i class="bi bi-twitter-x"></i></a>
+          </div>
+          <p class="small text-secondary mt-3 mb-0">Copyright © 1999 ImageMagick Studio LLC</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function setTheme(theme) {
+      localStorage.setItem('theme', theme);
+      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const applied = theme === 'auto' ? (systemDark ? 'dark' : 'light') : theme;
+      document.documentElement.setAttribute('data-bs-theme', applied);
+    }
+  </script>
+  <div style="visibility: hidden;">
+    <div class="gcse-search"></div>
+  </div>
 </body>
-
 
 </html>
