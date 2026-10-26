@@ -2783,19 +2783,24 @@ static Image *ReadOnePNGImage(MngReadInfo *mng_info,
                       if (png_get_valid(ping, ping_info, PNG_INFO_bKGD))
                         background.index=ping_background->index;
 
-                      background.red=(png_uint_16)
-                        mng_info->global_plte[background.index].red;
+                      if (background.index >= mng_info->global_plte_length)
+                        png_error(ping,"bKGD index exceeds global PLTE");
+                      else
+                        {
+                          background.red=(png_uint_16)
+                            mng_info->global_plte[background.index].red;
 
-                      background.green=(png_uint_16)
-                        mng_info->global_plte[background.index].green;
+                          background.green=(png_uint_16)
+                            mng_info->global_plte[background.index].green;
 
-                      background.blue=(png_uint_16)
-                        mng_info->global_plte[background.index].blue;
+                          background.blue=(png_uint_16)
+                            mng_info->global_plte[background.index].blue;
 
-                      background.gray=(png_uint_16)
-                        mng_info->global_plte[background.index].green;
+                          background.gray=(png_uint_16)
+                            mng_info->global_plte[background.index].green;
 
-                      png_set_bKGD(ping,ping_info,&background);
+                          png_set_bKGD(ping,ping_info,&background);
+                       }
                     }
 #endif
                 }
