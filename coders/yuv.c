@@ -495,6 +495,8 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->number_scenes != 0)
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
+    if (image_info->interlace == PartitionInterlace)
+      break;
     if (interlace == NoInterlace)
       count=ReadBlob(image,(size_t) (2*quantum*image->columns),scanline);
     else
