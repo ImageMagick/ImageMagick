@@ -3089,9 +3089,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  int
-    datum;
-
   LinkedListInfo
     *stack;
 
@@ -3122,6 +3119,9 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned char
     *data,
     *p;
+
+  unsigned int
+    datum;
 
   unsigned short
     group,
