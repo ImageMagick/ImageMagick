@@ -1542,7 +1542,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
       image_info=AcquireImageInfo();
       (void) CloneString(&image_info->size,"64x64");
       (void) FormatLocaleFile(file,"    \"montageDirectory\": [");
-      for (p=image->directory; *p != '\0'; p++)
+      for (p=image->directory; *p != '\0'; )
       {
         q=p;
         while ((*q != '\xff') && (*q != '\0') &&
@@ -1550,6 +1550,8 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
           q++;
         (void) CopyMagickString(image_info->filename,p,(size_t) (q-p+1));
         p=q;
+        if (*p == '\xff')
+          p++;
         JSONFormatLocaleFile(file,"{\n       \"name\": %s",
           image_info->filename);
         handler=SetWarningHandler((WarningHandler) NULL);

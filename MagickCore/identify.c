@@ -1364,7 +1364,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       image_info=AcquireImageInfo();
       (void) CloneString(&image_info->size,"64x64");
       (void) FormatLocaleFile(file,"  Directory:\n");
-      for (d=image->directory; *d != '\0'; d++)
+      for (d=image->directory; *d != '\0'; )
       {
         q=d;
         while ((*q != '\xff') && (*q != '\0') &&
@@ -1372,6 +1372,8 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           q++;
         (void) CopyMagickString(image_info->filename,d,(size_t) (q-d+1));
         d=q;
+        if (*d == '\xff')
+          d++;
         (void) FormatLocaleFile(file,"    %s",image_info->filename);
         handler=SetWarningHandler((WarningHandler) NULL);
         tile=StrictReadImage(image_info,exception);
