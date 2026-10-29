@@ -2923,9 +2923,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                   (double) Dc));
                  break;
               }
-            S=(Sa > 0.0) ? (Sca/Sa) : 0.0;
-            D=(Da > 0.0) ? (Dca/Da) : 0.0;
-            pixel=(double) QuantumRange*RoundToUnity(fabs(S-D));
+            S=(Sa > 0.0) ? RoundToUnity(Sca/Sa) : 0.0;
+            D=(Da > 0.0) ? RoundToUnity(Dca/Da) : 0.0;
+            blend=fabs(S-D);
+            pixel=(double) QuantumRange*gamma*RoundToUnity(Sa*Da*blend+Sca*
+              (1.0-Da)+Dca*(1.0-Sa));
             break;
           }
           case DissolveCompositeOp:
@@ -3003,8 +3005,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             S=(Sa > 0.0) ? RoundToUnity(Sca/Sa) : 0.0;
             D=(Da > 0.0) ? RoundToUnity(Dca/Da) : 0.0;
             blend=RoundToUnity(S+D-2.0*S*D);
-            pixel=(double) QuantumRange*RoundToUnity((blend*Sa+D*(1.0-Sa))*
-              (Sa+Da-Sa*Da));
+            pixel=(double) QuantumRange*gamma*RoundToUnity(Sa*Da*blend+Sca*
+              (1.0-Da)+Dca*(1.0-Sa));
             break;
           }
           case FreezeCompositeOp:
@@ -3107,8 +3109,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             S=(Sa > 0.0) ? RoundToUnity(Sca/Sa) : 0.0;
             D=(Da > 0.0) ? RoundToUnity(Dca/Da) : 0.0;
             blend=RoundToUnity(S+D-1.0);
-            pixel=(double) QuantumRange*RoundToUnity(Sa*Da*blend+Sca*(1.0-Da)+
-              Dca*(1.0-Sa));
+            pixel=(double) QuantumRange*gamma*RoundToUnity(Sa*Da*blend+Sca*
+              (1.0-Da)+Dca*(1.0-Sa));
             break;
           }
           case LinearDodgeCompositeOp:
@@ -3485,8 +3487,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             S=(Sa > 0.0) ? RoundToUnity(Sca/Sa) : 0.0;
             D=(Da > 0.0) ? RoundToUnity(Dca/Da) : 0.0;
             blend=RoundToUnity(S+D-S*D);
-            pixel=(double) QuantumRange*RoundToUnity(Sa*Da*blend+Sca*(1.0-Da)+
-              Dca*(1.0-Sa));
+            pixel=(double) QuantumRange*gamma*RoundToUnity(Sa*Da*blend+Sca*
+              (1.0-Da)+Dca*(1.0-Sa));
             break;
           }
           case SoftBurnCompositeOp:
