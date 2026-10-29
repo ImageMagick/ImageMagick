@@ -13280,7 +13280,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
       */
       tile=0;
       GetPixelInfo(image,&pixel);
-      for (p=image->directory; *p != '\0'; p++)
+      for (p=image->directory; *p != '\0'; )
       {
         CacheView
           *image_view;
@@ -13291,6 +13291,8 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
           q++;
         (void) CopyMagickString(filename,p,(size_t) (q-p+1));
         p=q;
+        if (*p == '\xff')
+          p++;
         if (IsPathAccessible(filename) != MagickFalse)
           {
             tile++;
