@@ -63,6 +63,7 @@
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/pixel-private.h"
 #include "MagickCore/policy.h"
+#include "MagickCore/policy-private.h"
 #include "MagickCore/quantum.h"
 #include "MagickCore/random_.h"
 #include "MagickCore/registry.h"
@@ -127,7 +128,7 @@ static MagickBooleanType
   GetOneVirtualPixelFromCache(const Image *,const VirtualPixelMethod,
     const ssize_t,const ssize_t,Quantum *,ExceptionInfo *),
   OpenPixelCache(Image *,const MapMode,ExceptionInfo *),
-  OpenPixelCacheOnDisk(CacheInfo *,const MapMode),
+  OpenPixelCacheOnDisk(CacheInfo *,const MapMode,ExceptionInfo *),
   ReadPixelCachePixels(CacheInfo *magick_restrict,NexusInfo *magick_restrict,
     ExceptionInfo *),
   ReadPixelCacheMetacontent(CacheInfo *magick_restrict,
@@ -609,7 +610,8 @@ MagickPrivate void ClonePixelCacheMethods(Cache clone,const Cache cache)
 */
 
 static MagickBooleanType ClonePixelCacheOnDisk(
-  CacheInfo *magick_restrict cache_info,CacheInfo *magick_restrict clone_info)
+  CacheInfo *magick_restrict cache_info,CacheInfo *magick_restrict clone_info,
+  ExceptionInfo *exception)
 {
   MagickSizeType
     extent;
@@ -629,8 +631,8 @@ static MagickBooleanType ClonePixelCacheOnDisk(
   /*
     Clone pixel cache on disk with identical morphology.
   */
-  if ((OpenPixelCacheOnDisk(cache_info,ReadMode) == MagickFalse) ||
-      (OpenPixelCacheOnDisk(clone_info,IOMode) == MagickFalse))
+  if ((OpenPixelCacheOnDisk(cache_info,ReadMode,exception) == MagickFalse) ||
+      (OpenPixelCacheOnDisk(clone_info,IOMode,exception) == MagickFalse))
     return(MagickFalse);
   if ((lseek(cache_info->file,0,SEEK_SET) < 0) ||
       (lseek(clone_info->file,0,SEEK_SET) < 0))
@@ -777,7 +779,7 @@ static MagickBooleanType ClonePixelCacheRepository(
           return(MagickTrue);
         }
       if ((cache_info->type == DiskCache) && (clone_info->type == DiskCache))
-        return(ClonePixelCacheOnDisk(cache_info,clone_info));
+        return(ClonePixelCacheOnDisk(cache_info,clone_info,exception));
     }
   /*
     Mismatched pixel cache morphology.
@@ -3630,7 +3632,7 @@ static inline MagickBooleanType CacheOverflowSanityCheckGetSize(
 }
 
 static MagickBooleanType OpenPixelCacheOnDisk(CacheInfo *cache_info,
-  const MapMode mode)
+  const MapMode mode,ExceptionInfo *exception)
 {
   int
     file;
@@ -3647,24 +3649,49 @@ static MagickBooleanType OpenPixelCacheOnDisk(CacheInfo *cache_info,
     {
       case ReadMode:
       {
-        file=open_utf8(cache_info->cache_filename,O_RDONLY | O_CLOEXEC | O_BINARY,0);
+        if (IsPathAuthorized(ReadPolicyRights,cache_info->cache_filename) == MagickFalse)
+          {
+            errno=EPERM;
+            ThrowFileException(exception,OptionWarning,"NotAuthorized",
+              cache_info->cache_filename);
+            return(MagickFalse);
+          }
+        file=open_utf8(cache_info->cache_filename,O_RDONLY | O_CLOEXEC |
+          O_BINARY,0);
         break;
       }
       case WriteMode:
       {
-        file=open_utf8(cache_info->cache_filename,O_WRONLY | O_CLOEXEC | O_CREAT |
-          O_BINARY | O_EXCL,S_MODE);
+        if (IsPathAuthorized(WritePolicyRights,cache_info->cache_filename) == MagickFalse)
+          {
+            errno=EPERM;
+            ThrowFileException(exception,OptionWarning,"NotAuthorized",
+              cache_info->cache_filename);
+            return(MagickFalse);
+          }
+        file=open_utf8(cache_info->cache_filename,O_WRONLY | O_CLOEXEC |
+          O_CREAT | O_BINARY | O_EXCL,S_MODE);
         if (file == -1)
-          file=open_utf8(cache_info->cache_filename,O_WRONLY | O_CLOEXEC | O_BINARY,S_MODE);
+          file=open_utf8(cache_info->cache_filename,O_WRONLY | O_CLOEXEC |
+            O_BINARY,S_MODE);
         break;
       }
       case IOMode:
       default:
       {
-        file=open_utf8(cache_info->cache_filename,O_RDWR | O_CLOEXEC | O_CREAT | O_BINARY |
-          O_EXCL,S_MODE);
+        if ((IsPathAuthorized(ReadPolicyRights,cache_info->cache_filename) == MagickFalse) ||
+            (IsPathAuthorized(WritePolicyRights,cache_info->cache_filename) == MagickFalse))
+          {
+            errno=EPERM;
+            ThrowFileException(exception,OptionWarning,"NotAuthorized",
+              cache_info->cache_filename);
+            return(MagickFalse);
+          }
+        file=open_utf8(cache_info->cache_filename,O_RDWR | O_CLOEXEC |
+          O_CREAT | O_BINARY | O_EXCL,S_MODE);
         if (file == -1)
-          file=open_utf8(cache_info->cache_filename,O_RDWR | O_CLOEXEC | O_BINARY,S_MODE);
+          file=open_utf8(cache_info->cache_filename,O_RDWR | O_CLOEXEC |
+             O_BINARY,S_MODE);
         break;
       }
     }
@@ -4052,7 +4079,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
       (void) ClosePixelCacheOnDisk(cache_info);
       *cache_info->cache_filename='\0';
     }
-  if (OpenPixelCacheOnDisk(cache_info,mode) == MagickFalse)
+  if (OpenPixelCacheOnDisk(cache_info,mode,exception) == MagickFalse)
     {
       if ((source_info.storage_class != UndefinedClass) && (mode != ReadMode))
         RelinquishPixelCachePixels(&source_info);
@@ -4273,7 +4300,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
   (void) memcpy(clone_info->channel_map,cache_info->channel_map,
     MaxPixelChannels*sizeof(*cache_info->channel_map));
   clone_info->offset=(*offset);
-  status=OpenPixelCacheOnDisk(clone_info,WriteMode);
+  status=OpenPixelCacheOnDisk(clone_info,WriteMode,exception);
   if (status != MagickFalse)
     status=ClonePixelCacheRepository(clone_info,cache_info,exception);
   *offset=(*offset+(MagickOffsetType) cache_info->length+page_size-
@@ -4645,7 +4672,7 @@ static MagickBooleanType ReadPixelCacheMetacontent(
         Read meta content from disk.
       */
       LockSemaphoreInfo(cache_info->file_semaphore);
-      if (OpenPixelCacheOnDisk(cache_info,IOMode) == MagickFalse)
+      if (OpenPixelCacheOnDisk(cache_info,IOMode,exception) == MagickFalse)
         {
           ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
             cache_info->cache_filename);
@@ -4828,7 +4855,7 @@ static MagickBooleanType ReadPixelCachePixels(
         Read pixels from disk.
       */
       LockSemaphoreInfo(cache_info->file_semaphore);
-      if (OpenPixelCacheOnDisk(cache_info,IOMode) == MagickFalse)
+      if (OpenPixelCacheOnDisk(cache_info,IOMode,exception) == MagickFalse)
         {
           ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
             cache_info->cache_filename);
@@ -5859,7 +5886,7 @@ static MagickBooleanType WritePixelCacheMetacontent(CacheInfo *cache_info,
         Write associated pixels to disk.
       */
       LockSemaphoreInfo(cache_info->file_semaphore);
-      if (OpenPixelCacheOnDisk(cache_info,IOMode) == MagickFalse)
+      if (OpenPixelCacheOnDisk(cache_info,IOMode,exception) == MagickFalse)
         {
           ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
             cache_info->cache_filename);
@@ -6034,7 +6061,7 @@ static MagickBooleanType WritePixelCachePixels(
         Write pixels to disk.
       */
       LockSemaphoreInfo(cache_info->file_semaphore);
-      if (OpenPixelCacheOnDisk(cache_info,IOMode) == MagickFalse)
+      if (OpenPixelCacheOnDisk(cache_info,IOMode,exception) == MagickFalse)
         {
           ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
             cache_info->cache_filename);
