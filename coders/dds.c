@@ -2435,7 +2435,7 @@ static MagickBooleanType ReadUncompressedRGBPixels(Image *image,
   GetMaskShiftAndMaxval(g_mask,&g_shift,&g_max);
   GetMaskShiftAndMaxval(b_mask,&b_shift,&b_max);
 
-  is_rgb=IsBitMask(dds_info->pixelformat,0x000000ff,0x0000ff00,0x00ff0000,0x0000000) ? MagickTrue : MagickFalse;
+  is_rgb=IsBitMask(dds_info->pixelformat,0x000000ff,0x0000ff00,0x00ff0000,0x00000000) ? MagickTrue : MagickFalse;
   for (y = 0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
@@ -2674,7 +2674,7 @@ static MagickBooleanType ReadUncompressedRGBAPixels(Image *image,
   GetMaskShiftAndMaxval(g_mask,&g_shift,&g_max);
   GetMaskShiftAndMaxval(b_mask,&b_shift,&b_max);
 
-  is_rgba=IsBitMask(dds_info->pixelformat,0x000000ff,0x0000ff00,0x00ff0000,0xff00000) ? MagickTrue : MagickFalse;
+  is_rgba=IsBitMask(dds_info->pixelformat,0x000000ff,0x0000ff00,0x00ff0000,0xff000000) ? MagickTrue : MagickFalse;
   for (y = 0; y < (ssize_t) image->rows; y++)
   {
     q = QueueAuthenticPixels(image, 0, y, image->columns, 1,exception);
