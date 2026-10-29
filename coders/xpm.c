@@ -1113,8 +1113,12 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
       (void) FormatLocaleString(buffer,MagickPathExtent,
         "\"%.1024s c %.1024s\",\n",symbol,name);
     else
-      (void) FormatLocaleString(buffer,MagickPathExtent,
-        "\"%.1024s c %.1024s s %.1024s\",\n",symbol,name,symbolic);
+      {
+        char *sanitized_symbolic = SanitizeStringForIdentifier(symbolic);
+        (void) FormatLocaleString(buffer,MagickPathExtent,
+          "\"%.1024s c %.1024s s %.1024s\",\n",symbol,name,sanitized_symbolic);
+        sanitized_symbolic=DestroyString(sanitized_symbolic);
+      }
     (void) WriteBlobString(image,buffer);
   }
   /*

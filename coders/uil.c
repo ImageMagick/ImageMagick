@@ -294,8 +294,12 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image,
   symbol=AcquireString("");
   (void) WriteBlobString(image,"/* UIL */\n");
   GetPathComponent(image->filename,BasePath,basename);
-  (void) FormatLocaleString(buffer,MagickPathExtent,
-    "value\n  %s_ct : color_table(\n",basename);
+  {
+    char *sanitized_basename = SanitizeStringForIdentifier(basename);
+    (void) FormatLocaleString(buffer,MagickPathExtent,
+      "value\n  %s_ct : color_table(\n",sanitized_basename);
+    sanitized_basename=DestroyString(sanitized_basename);
+  }
   (void) WriteBlobString(image,buffer);
   GetPixelInfo(image,&pixel);
   for (i=0; i < (ssize_t) colors; i++)
@@ -340,8 +344,13 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image,
     Define UIL pixels.
   */
   GetPathComponent(image->filename,BasePath,basename);
-  (void) FormatLocaleString(buffer,MagickPathExtent,
-    "  %s_icon : icon(color_table = %s_ct,\n",basename,basename);
+  {
+    char *sanitized_basename = SanitizeStringForIdentifier(basename);
+    (void) FormatLocaleString(buffer,MagickPathExtent,
+      "  %s_icon : icon(color_table = %s_ct,\n",sanitized_basename,
+      sanitized_basename);
+    sanitized_basename=DestroyString(sanitized_basename);
+  }
   (void) WriteBlobString(image,buffer);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
