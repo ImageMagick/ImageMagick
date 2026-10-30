@@ -954,7 +954,7 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
     basename[MagickPathExtent],
     name[MagickPathExtent],
     symbol[MagickPathExtent],
-    *sanitized_filename;
+    *sanitized_value;
 
   const Quantum
     *p;
@@ -1066,10 +1066,10 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
   */
   (void) WriteBlobString(image,"/* XPM */\n");
   GetPathComponent(image->filename,BasePath,basename);
-  sanitized_filename=SanitizeStringForIdentifier(basename);
+  sanitized_value=SanitizeStringForIdentifier(basename);
   (void) FormatLocaleString(buffer,MagickPathExtent,
-    "static char *%.1024s[] = {\n",sanitized_filename);
-  sanitized_filename=DestroyString(sanitized_filename);
+    "static char *%.1024s[] = {\n",sanitized_value);
+  sanitized_value=DestroyString(sanitized_value);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"/* columns rows colors chars-per-pixel */\n");
   (void) FormatLocaleString(buffer,MagickPathExtent,
@@ -1114,10 +1114,10 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
         "\"%.1024s c %.1024s\",\n",symbol,name);
     else
       {
-        char *sanitized_symbolic = SanitizeStringForIdentifier(symbolic);
+        sanitized_value=SanitizeStringForIdentifier(symbolic);
         (void) FormatLocaleString(buffer,MagickPathExtent,
-          "\"%.1024s c %.1024s s %.1024s\",\n",symbol,name,sanitized_symbolic);
-        sanitized_symbolic=DestroyString(sanitized_symbolic);
+          "\"%.1024s c %.1024s s %.1024s\",\n",symbol,name,sanitized_value);
+        sanitized_value=DestroyString(sanitized_value);
       }
     (void) WriteBlobString(image,buffer);
   }
