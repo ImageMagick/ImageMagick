@@ -792,6 +792,34 @@ static MagickBooleanType IsPolicyCacheInstantiated(ExceptionInfo *exception)
 %
 */
 
+static MagickBooleanType IsPathPolicyMatch(const char *path,const char *pattern)
+{
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__)
+  char
+    *normalized_path,
+    *normalized_pattern,
+    *p;
+
+  MagickBooleanType
+    match;
+
+  normalized_path=AcquireString(path);
+  normalized_pattern=AcquireString(pattern);
+  for (p=normalized_path; *p != '\0'; p++)
+    if (*p == '\\')
+      *p='/';
+  for (p=normalized_pattern; *p != '\0'; p++)
+    if (*p == '\\')
+      *p='/';
+  match=GlobExpression(normalized_path,normalized_pattern,MagickFalse);
+  normalized_path=DestroyString(normalized_path);
+  normalized_pattern=DestroyString(normalized_pattern);
+  return(match);
+#else
+  return(GlobExpression(path,pattern,MagickFalse));
+#endif
+}
+
 MagickExport MagickBooleanType IsRightsAuthorizedByName(
   const PolicyDomain domain,const char *name,const PolicyRights rights,
   const char *pattern)
@@ -861,9 +889,9 @@ MagickExport MagickBooleanType IsRightsAuthorizedByName(
       continue;
     if ((name != (char *) NULL) && (LocaleCompare(name,policy->name) != 0))
       continue;
-    match=GlobExpression(pattern,policy->pattern,MagickFalse);
     if (policy->domain == PathPolicyDomain)
       {
+        match=IsPathPolicyMatch(pattern,policy->pattern);
         if (paths_provisioned == MagickFalse)
           {
             /*
@@ -891,19 +919,21 @@ MagickExport MagickBooleanType IsRightsAuthorizedByName(
           Match the given name against the directory and basename forms.
         */
         if ((canonical_directory != (char *) NULL) && (match == MagickFalse))
-          match=GlobExpression(canonical_directory,policy->pattern,MagickFalse);
+          match=IsPathPolicyMatch(canonical_directory,policy->pattern);
         if ((canonical_candidate != (char *) NULL) && (match == MagickFalse))
-          match=GlobExpression(canonical_candidate,policy->pattern,MagickFalse);
+          match=IsPathPolicyMatch(canonical_candidate,policy->pattern);
         /*
           Match the fully resolved path on its own.
         */
         if ((canonical_path != (char *) NULL) &&
-            (GlobExpression(canonical_path,policy->pattern,MagickFalse) != MagickFalse))
+            (IsPathPolicyMatch(canonical_path,policy->pattern) != MagickFalse))
           {
             resolved_matched_any=MagickTrue;
             resolved_rights=policy->rights;
           }
       }
+    else
+      match=GlobExpression(pattern,policy->pattern,MagickFalse);
     if (match == MagickFalse)
       continue;
     matched_any=MagickTrue;
