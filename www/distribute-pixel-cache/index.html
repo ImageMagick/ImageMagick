@@ -331,6 +331,15 @@
         <pre class="mb-0 font-monospace text-body-secondary"><code>&lt;policy domain="cache" name="shared-secret" value="<em>passphrase</em>" stealth="true"/&gt;</code></pre>
       </div>
     </div>
+
+  <p class="mt-3">
+     When the distributed pixel cache transmits image pixels, it secures the data through two primary mechanisms. First, it scrambles the pixel data, rendering it as random digital noise to anyone attempting to intercept or spy on the network. Second, it applies a tamper-proof cryptographic signature, ensuring the data originated from a trusted source and has not been altered or forged in transit. However, these built-in protection mechanisms are not cryptographically strong, meaning they remain vulnerable to sophisticated attacks and should not be relied upon for high-security environments. For truly secure communication across networks, you may need to implement dedicated cryptographic security measures such as encrypted tunnels or secure loopback configurations:
+    </p>
+
+    <ul class="text-body-secondary">
+      <li><strong>Restrict to Loopback:</strong> If distributed caching is only used across processes on the same machine, bind the server strictly to <code>127.0.0.1</code> to eliminate adjacent network visibility.</li>
+      <li><strong>Enforce Encrypted Tunnels:</strong> For multi-host deployments, never expose the plaintext TCP port directly. Route traffic through an encrypted, authenticated tunnel (such as WireGuard, IPsec, or an SSH port forward) to provide confidentiality and integrity at the network layer.</li>
+    </ul>
   </section>
 
   <!-- Usage Examples Section -->
