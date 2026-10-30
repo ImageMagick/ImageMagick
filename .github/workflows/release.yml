@@ -212,8 +212,9 @@ jobs:
       - name: Create SBOM
         shell: cmd
         env:
-          VERSION: ${{needs.version.outputs.version}}
-          TIMESTAMP: ${{needs.version.outputs.timestamp}}
+          MAGICK_COMMIT: ${{github.sha}}
+          MAGICK_TIMESTAMP: ${{needs.version.outputs.timestamp}}
+          MAGICK_VERSION: ${{needs.version.outputs.version}}
           FILENAME: ImageMagick-${{needs.version.outputs.version}}-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.architecture}}-${{matrix.typeName}}.cdx.json
         run: |
           python ImageMagick\.github\build\windows\create-sbom.py Configure\Installer\Inno\Artifacts\%FILENAME%
@@ -357,8 +358,9 @@ jobs:
       - name: Create SBOM
         shell: cmd
         env:
-          VERSION: ${{needs.version.outputs.version}}
-          TIMESTAMP: ${{needs.version.outputs.timestamp}}
+          MAGICK_COMMIT: ${{github.sha}}
+          MAGICK_TIMESTAMP: ${{needs.version.outputs.timestamp}}
+          MAGICK_VERSION: ${{needs.version.outputs.version}}
           FILENAME: ImageMagick-${{needs.version.outputs.version}}-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.architecture}}.cdx.json
         run: |
           python ImageMagick\.github\build\windows\create-sbom.py %FILENAME%
