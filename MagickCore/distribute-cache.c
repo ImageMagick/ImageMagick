@@ -140,14 +140,11 @@ static WSADATA
 #endif
 
 #if defined(MAGICKCORE_HAVE_DISTRIBUTE_CACHE)
-static char
-  *dpc_shared_secret = (char *) NULL;
-
 static SemaphoreInfo
   *dpc_semaphore = (SemaphoreInfo *) NULL;
 
-static int
-  ComputeHMACSHA256Mac(const void *,size_t,const void *,size_t,unsigned char *,size_t);
+static char
+  *dpc_shared_secret = (char *) NULL;
 
 static size_t
   dpc_clients = 0,
@@ -306,53 +303,6 @@ static inline MagickOffsetType dpc_receive_deadline(SOCKET_TYPE file,
   }
   return(offset);
 }
-
-static inline int mac_compare(const unsigned char *a,const unsigned char *b,
-  const size_t length)
-{
-  size_t
-    i;
-
-  volatile unsigned char
-    difference = 0;
-
-  /*
-    Compare in time independent of where (or whether) the buffers differ.
-  */
-  for (i=0; i < length; i++)
-    difference|=(unsigned char) (a[i] ^ b[i]);
-  return(difference == 0 ? 0 : -1);
-}
-
-static inline MagickOffsetType dpc_receive_mac(SOCKET_TYPE file,
-  const MagickSizeType length,unsigned char *magick_restrict message,
-  uint64_t session_key)
-{
-  MagickOffsetType
-    count;
-
-  unsigned char
-    expected_mac[32],
-    received_mac[32];
-
-  /*
-    Read back the MAC from the wire and the message.
-  */
-  if (length > (MagickSizeType) MAGICK_SSIZE_MAX)
-    return(-1);
-  count=dpc_receive(file,sizeof(received_mac),received_mac);
-  if (count != (MagickOffsetType) sizeof(received_mac))
-    return(-1);
-  count=dpc_receive(file,length,message);
-  if (count != (MagickOffsetType) length)
-    return(count);
-  if (ComputeHMACSHA256Mac(&session_key,sizeof(session_key),message,(size_t) length,expected_mac,sizeof(expected_mac)) != 0)
-    return(-1);  /* HMAC computation failed */
-  if (mac_compare(received_mac,expected_mac,sizeof(expected_mac)) != 0)
-    return(-1);  /* HMAC verification failed */
-  return(count);
-}
-
 #endif
 
 #if defined(MAGICKCORE_HAVE_WINSOCK2)
@@ -741,7 +691,7 @@ MagickPrivate DistributeCacheInfo *AcquireDistributeCacheInfo(
 %
 %    o mac: the mac is computed and returned in this buffer.
 %
-%    o mac_length: the mac length in bytes;  mac must be at least this length.
+%    o mac_length: the mac length in bytes .  mac must be at least this length.
 %
 */
 
@@ -770,17 +720,14 @@ static void TransformSHA256Hash(SHA256Hash *sha256_hash,const unsigned char data
 
   static const uint32_t K[64] =
   {
-    0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1,
-    0x923f82a4, 0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
-    0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174, 0xe49b69c1, 0xefbe4786,
-    0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
-    0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147,
-    0x06ca6351, 0x14292967, 0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13,
-    0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85, 0xa2bfe8a1, 0xa81a664b,
-    0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
-    0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a,
-    0x5b9cca4f, 0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
-    0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
+    0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+    0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+    0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+    0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+    0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+    0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+    0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+    0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
   };
 
   uint32_t
@@ -1052,31 +999,230 @@ static inline MagickOffsetType dpc_send(SOCKET_TYPE file,
 }
 #endif
 
+#define DPCMacLength  32
+#define DPCScratchExtent  16384  /* bytes; send-side encrypt buffer */
+
+static const char *GetDPCSharedSecret(void)
+{
+#if defined(MAGICKCORE_HAVE_DISTRIBUTE_CACHE)
+  /*
+    The server loads the secret at start-up; a client loads it on first use.
+  */
+  if (dpc_shared_secret == (char *) NULL)
+    {
+      if (dpc_semaphore == (SemaphoreInfo *) NULL)
+        ActivateSemaphoreInfo(&dpc_semaphore);
+      LockSemaphoreInfo(dpc_semaphore);
+      if (dpc_shared_secret == (char *) NULL)
+        dpc_shared_secret=GetPolicyValue("cache:shared-secret");
+      UnlockSemaphoreInfo(dpc_semaphore);
+    }
+  return(dpc_shared_secret);
+#else
+  return((const char *) NULL);
+#endif
+}
+
+static int DeriveDPCKey(const uint64_t session_key,const char label,
+  unsigned char key[DPCMacLength])
+{
+  const char
+    *shared_secret;
+
+  unsigned char
+    info[sizeof(session_key)+1];
+
+  /*
+    key = HMAC-SHA-256(shared secret, session key || label).  The session key
+    travels in the clear, so the shared secret is what keeps this private.
+  */
+  shared_secret=GetDPCSharedSecret();
+  if (shared_secret == (const char *) NULL)
+    return(-1);
+  (void) memcpy(info,&session_key,sizeof(session_key));
+  info[sizeof(session_key)]=(unsigned char) label;
+  return(ComputeHMACSHA256Mac(shared_secret,strlen(shared_secret),info,
+    sizeof(info),key,DPCMacLength));
+}
+
+static inline uint64_t LoadDPCWord(const unsigned char *p)
+{
+  return(((uint64_t) p[0]) | ((uint64_t) p[1] << 8) |
+    ((uint64_t) p[2] << 16) | ((uint64_t) p[3] << 24) |
+    ((uint64_t) p[4] << 32) | ((uint64_t) p[5] << 40) |
+    ((uint64_t) p[6] << 48) | ((uint64_t) p[7] << 56));
+}
+
+static void SplitMix64Keystream(const unsigned char *stream_key,
+  const unsigned char *mac,const MagickSizeType offset,unsigned char *data,
+  const size_t length)
+{
+  size_t
+    i;
+
+  uint64_t
+    block,
+    seed,
+    z;
+
+  /*
+    XOR data with the SplitMix64 keystream starting at byte 'offset'.
+  */
+  seed=LoadDPCWord(stream_key) ^ LoadDPCWord(mac);
+  block=(uint64_t) (offset >> 3);
+  z=0;
+  for (i=0; i < length; i++)
+  {
+    size_t
+      j = (size_t) ((offset+i) & 7);
+
+    if ((i == 0) || (j == 0))
+      {
+        block=(uint64_t) ((offset+i) >> 3);
+        z=seed+(block+1)*0x9e3779b97f4a7c15ULL;
+        z=(z ^ (z >> 30))*0xbf58476d1ce4e5b9ULL;
+        z=(z ^ (z >> 27))*0x94d049bb133111ebULL;
+        z^=z >> 31;
+      }
+    data[i]^=(unsigned char) (z >> (j*8));
+  }
+}
+
+static inline void WipeDPCKey(unsigned char *key,const size_t length)
+{
+  volatile unsigned char
+    *p = key;
+
+  size_t
+    i;
+
+  for (i=0; i < length; i++)
+    p[i]=0;
+}
+
+static inline int mac_compare(const unsigned char *a,const unsigned char *b,
+  const size_t length)
+{
+  size_t
+    i;
+
+  volatile unsigned char
+    difference = 0;
+
+  /*
+    Compare in time independent of where (or whether) the buffers differ.
+  */
+  for (i=0; i < length; i++)
+    difference|=(unsigned char) (a[i] ^ b[i]);
+  return(difference == 0 ? 0 : -1);
+}
+
 static inline MagickOffsetType dpc_send_mac(SOCKET_TYPE file,
   const MagickSizeType length,const void *magick_restrict message,
   uint64_t session_key)
 {
+  const unsigned char
+    *p = (const unsigned char *) message;
+
   MagickOffsetType
     status;
 
+  MagickSizeType
+    offset;
+
   unsigned char
-     mac[32];
+    mac[DPCMacLength],
+    mac_key[DPCMacLength],
+    scratch[DPCScratchExtent],
+    stream_key[DPCMacLength];
 
   /*
-    Compute HMAC-SHA-256 MAC of the message using the session key.
+    MAC the plaintext, then send MAC || (plaintext XOR keystream).
   */
   if (length > (MagickSizeType) MAGICK_SSIZE_MAX)
     return(-1);
-  if (ComputeHMACSHA256Mac(&session_key,sizeof(session_key),message,
-      (size_t) length,mac,sizeof(mac)) != 0)
-    return(-1);  /* HMAC computation failed */
-  /*
-    Push the MAC onto the wire then the actual message.
-  */
+  if ((DeriveDPCKey(session_key,'m',mac_key) != 0) ||
+      (DeriveDPCKey(session_key,'e',stream_key) != 0) ||
+      (ComputeHMACSHA256Mac(mac_key,sizeof(mac_key),message,(size_t) length,
+         mac,sizeof(mac)) != 0))
+    {
+      WipeDPCKey(mac_key,sizeof(mac_key));
+      WipeDPCKey(stream_key,sizeof(stream_key));
+      return(-1);  /* key derivation or HMAC computation failed */
+    }
+  WipeDPCKey(mac_key,sizeof(mac_key));
   status=dpc_send(file,sizeof(mac),mac);
   if (status != (MagickOffsetType) sizeof(mac))
+    {
+      WipeDPCKey(stream_key,sizeof(stream_key));
+      return(-1);
+    }
+  /*
+    Encrypt into a scratch buffer: the caller's buffer may be the live cache.
+  */
+  for (offset=0; offset < length; )
+  {
+    size_t
+      chunk = (size_t) MagickMin(length-offset,(MagickSizeType)
+        sizeof(scratch));
+
+    (void) memcpy(scratch,p+offset,chunk);
+    SplitMix64Keystream(stream_key,mac,offset,scratch,chunk);
+    status=dpc_send(file,(MagickSizeType) chunk,scratch);
+    if (status != (MagickOffsetType) chunk)
+      break;
+    offset+=(MagickSizeType) chunk;
+  }
+  WipeDPCKey(stream_key,sizeof(stream_key));
+  WipeDPCKey(scratch,sizeof(scratch));
+  if (offset != length)
     return(-1);
-  return(dpc_send(file,length,message));
+  return((MagickOffsetType) length);
+}
+
+static inline MagickOffsetType dpc_receive_mac(SOCKET_TYPE file,
+  const MagickSizeType length,unsigned char *magick_restrict message,
+  uint64_t session_key)
+{
+  MagickOffsetType
+    count;
+
+  unsigned char
+    expected_mac[DPCMacLength],
+    mac_key[DPCMacLength],
+    received_mac[DPCMacLength],
+    stream_key[DPCMacLength];
+
+  int
+    status;
+
+  /*
+    Read MAC || ciphertext, decrypt in place, then verify the MAC.
+  */
+  if (length > (MagickSizeType) MAGICK_SSIZE_MAX)
+    return(-1);
+  count=dpc_receive(file,sizeof(received_mac),received_mac);
+  if (count != (MagickOffsetType) sizeof(received_mac))
+    return(-1);
+  count=dpc_receive(file,length,message);
+  if (count != (MagickOffsetType) length)
+    return(count);
+  status=DeriveDPCKey(session_key,'e',stream_key);
+  if (status == 0)
+    {
+      SplitMix64Keystream(stream_key,received_mac,0,message,(size_t) length);
+      status=DeriveDPCKey(session_key,'m',mac_key);
+    }
+  if (status == 0)
+    status=ComputeHMACSHA256Mac(mac_key,sizeof(mac_key),message,
+      (size_t) length,expected_mac,sizeof(expected_mac));
+  WipeDPCKey(mac_key,sizeof(mac_key));
+  WipeDPCKey(stream_key,sizeof(stream_key));
+  if (status != 0)
+    return(-1);  /* key derivation or HMAC computation failed */
+  if (mac_compare(received_mac,expected_mac,sizeof(expected_mac)) != 0)
+    return(-1);  /* HMAC verification failed */
+  return(count);
 }
 
 #if !defined(MAGICKCORE_HAVE_DISTRIBUTE_CACHE)
@@ -2125,7 +2271,8 @@ MagickPrivate MagickOffsetType ReadDistributePixelCacheMetacontent(
   count=dpc_send(server_info->file,(MagickSizeType) (p-message),message);
   if (count != (MagickOffsetType) (p-message))
     return(-1);
-  return(dpc_receive_mac(server_info->file,length,metacontent,server_info->session_key));
+  return(dpc_receive_mac(server_info->file,length,metacontent,
+    server_info->session_key));
 }
 
 /*
@@ -2198,7 +2345,8 @@ MagickPrivate MagickOffsetType ReadDistributePixelCachePixels(
   count=dpc_send(server_info->file,(MagickSizeType) (p-message),message);
   if (count != (MagickOffsetType) (p-message))
     return(-1);
-  return(dpc_receive_mac(server_info->file,length,pixels,server_info->session_key));
+  return(dpc_receive_mac(server_info->file,length,pixels,
+    server_info->session_key));
 }
 
 /*
@@ -2327,7 +2475,8 @@ MagickPrivate MagickOffsetType WriteDistributePixelCacheMetacontent(
   count=dpc_send(server_info->file,(MagickSizeType) (p-message),message);
   if (count != (MagickOffsetType) (p-message))
     return(-1);
-  return(dpc_send_mac(server_info->file,length,metacontent,server_info->session_key));
+  return(dpc_send_mac(server_info->file,length,metacontent,
+    server_info->session_key));
 }
 
 /*
@@ -2401,5 +2550,6 @@ MagickPrivate MagickOffsetType WriteDistributePixelCachePixels(
   count=dpc_send(server_info->file,(MagickSizeType) (p-message),message);
   if (count != (MagickOffsetType) (p-message))
     return(-1);
-  return(dpc_send_mac(server_info->file,length,pixels,server_info->session_key));
+  return(dpc_send_mac(server_info->file,length,pixels,
+    server_info->session_key));
 }

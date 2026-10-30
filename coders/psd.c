@@ -805,11 +805,12 @@ static StringInfo *ParseImageResourceBlocks(PSDInfo *psd_info,Image *image,
       break;
     p=PushLongPixel(MSBEndian,p,&count);
     offset=(ssize_t) count;
-    if ((offset <= 0) || ((p+offset) > (blocks+length)) ||
+    if ((offset < 0) || ((p+offset) > (blocks+length)) ||
         (((size_t) (p-blocks)+(size_t) offset) > (size_t) length))
       {
-        (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
-          "Invalid PSD resource block offset","`%s'",image->filename);
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          CorruptImageError,"Invalid PSD resource block offset","`%s'",
+          image->filename);
         profile=DestroyStringInfo(profile);
         break;
       }
