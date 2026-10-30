@@ -80,6 +80,7 @@
 #if defined(MAGICKCORE_DPC_SUPPORT)
 #if defined(MAGICKCORE_HAVE_SOCKET) && defined(MAGICKCORE_THREAD_SUPPORT)
 #include <netinet/in.h>
+#include <netinet/tcp.h>
 #include <netdb.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -113,6 +114,21 @@
 #endif
 
 /*
+  Typedef declarations.
+*/
+typedef struct
+{
+  uint32_t
+    state[8];
+
+  uint64_t
+    count;
+
+  unsigned char
+    buffer[64];
+} SHA256Hash;
+
+/*
   Static declarations.
 */
 #ifdef MAGICKCORE_HAVE_WINSOCK2
@@ -124,11 +140,14 @@ static WSADATA
 #endif
 
 #if defined(MAGICKCORE_HAVE_DISTRIBUTE_CACHE)
+static char
+  *dpc_shared_secret = (char *) NULL;
+
 static SemaphoreInfo
   *dpc_semaphore = (SemaphoreInfo *) NULL;
 
-static char
-  *dpc_shared_secret = (char *) NULL;
+static int
+  ComputeHMACSHA256Mac(const void *,size_t,const void *,size_t,unsigned char *,size_t);
 
 static size_t
   dpc_clients = 0,
@@ -169,6 +188,18 @@ static inline MagickOffsetType dpc_receive(SOCKET_TYPE magick_unused(file),
   return(-1);
 }
 #else
+static void SetSocketNoDelay(SOCKET_TYPE file)
+{
+  int
+    one = 1;
+
+  /*
+    Disable Nagle.
+  */
+  (void) setsockopt(file,IPPROTO_TCP,TCP_NODELAY,(const char *) &one,
+    (socklen_t) sizeof(one));
+}
+
 static void SetSocketReceiveTimeout(SOCKET_TYPE file,double seconds)
 {
   /*
@@ -275,6 +306,53 @@ static inline MagickOffsetType dpc_receive_deadline(SOCKET_TYPE file,
   }
   return(offset);
 }
+
+static inline int mac_compare(const unsigned char *a,const unsigned char *b,
+  const size_t length)
+{
+  size_t
+    i;
+
+  volatile unsigned char
+    difference = 0;
+
+  /*
+    Compare in time independent of where (or whether) the buffers differ.
+  */
+  for (i=0; i < length; i++)
+    difference|=(unsigned char) (a[i] ^ b[i]);
+  return(difference == 0 ? 0 : -1);
+}
+
+static inline MagickOffsetType dpc_receive_mac(SOCKET_TYPE file,
+  const MagickSizeType length,unsigned char *magick_restrict message,
+  uint64_t session_key)
+{
+  MagickOffsetType
+    count;
+
+  unsigned char
+    expected_mac[32],
+    received_mac[32];
+
+  /*
+    Read back the MAC from the wire and the message.
+  */
+  if (length > (MagickSizeType) MAGICK_SSIZE_MAX)
+    return(-1);
+  count=dpc_receive(file,sizeof(received_mac),received_mac);
+  if (count != (MagickOffsetType) sizeof(received_mac))
+    return(-1);
+  count=dpc_receive(file,length,message);
+  if (count != (MagickOffsetType) length)
+    return(count);
+  if (ComputeHMACSHA256Mac(&session_key,sizeof(session_key),message,(size_t) length,expected_mac,sizeof(expected_mac)) != 0)
+    return(-1);  /* HMAC computation failed */
+  if (mac_compare(received_mac,expected_mac,sizeof(expected_mac)) != 0)
+    return(-1);  /* HMAC verification failed */
+  return(count);
+}
+
 #endif
 
 #if defined(MAGICKCORE_HAVE_WINSOCK2)
@@ -488,6 +566,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
       message=DestroyString(message);
       return(-1);
     }
+  SetSocketNoDelay(client_socket);
   /*
     Receive server nonce.
   */
@@ -636,6 +715,244 @@ MagickPrivate DistributeCacheInfo *AcquireDistributeCacheInfo(
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   C o m p u t e H M A C S H A 2 5 6 M a c                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ComputeHMACSHA256Mac() opens a pixel cache on a remote server.
+%
+%  The format of the ComputeHMACSHA256Mac method is:
+%
+%      int ComputeHMACSHA256Mac(const void *key,size_t key_length,
+%        const void *message,size_t message_length,unsigned char *mac,
+%        size_t mac_length)
+%
+%  A description of each parameter follows:
+%
+%    o key: the HMAC key.
+%
+%    o key_length: HMAC key length in bytes.
+%
+%    o message: the message.
+%
+%    o message_length: the message length in bytes.
+%
+%    o mac: the mac is computed and returned in this buffer.
+%
+%    o mac_length: the mac length in bytes;  mac must be at least this length.
+%
+*/
+
+static void InitializeSHA256Hash(SHA256Hash *sha256_hash)
+{
+  sha256_hash->count=0;
+  sha256_hash->state[0]=0x6a09e667;
+  sha256_hash->state[1]=0xbb67ae85;
+  sha256_hash->state[2]=0x3c6ef372;
+  sha256_hash->state[3]=0xa54ff53a;
+  sha256_hash->state[4]=0x510e527f;
+  sha256_hash->state[5]=0x9b05688c;
+  sha256_hash->state[6]=0x1f83d9ab;
+  sha256_hash->state[7]=0x5be0cd19;
+}
+
+static void TransformSHA256Hash(SHA256Hash *sha256_hash,const unsigned char data[])
+{
+#define EP0(x)  (ROTRIGHT(x,2) ^ ROTRIGHT(x,13) ^ ROTRIGHT(x,22))
+#define EP1(x)  (ROTRIGHT(x,6) ^ ROTRIGHT(x,11) ^ ROTRIGHT(x,25))
+#define CH(x,y,z)  (((x) & (y)) ^ (~(x) & (z)))
+#define MAJ(x,y,z)  (((x) & (y)) ^ ((x) & (z)) ^ ((y) & (z)))
+#define ROTRIGHT(a,b)  (((a) >> (b)) | ((a) << (32-(b))))
+#define SIG0(x)  (ROTRIGHT(x,7) ^ ROTRIGHT(x,18) ^ ((x) >> 3))
+#define SIG1(x)  (ROTRIGHT(x,17) ^ ROTRIGHT(x,19) ^ ((x) >> 10))
+
+  static const uint32_t K[64] =
+  {
+    0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1,
+    0x923f82a4, 0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
+    0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174, 0xe49b69c1, 0xefbe4786,
+    0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+    0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147,
+    0x06ca6351, 0x14292967, 0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13,
+    0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85, 0xa2bfe8a1, 0xa81a664b,
+    0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+    0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a,
+    0x5b9cca4f, 0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
+    0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
+  };
+
+  uint32_t
+    a,
+    b,
+    c,
+    d,
+    e,
+    f,
+    g,
+    h,
+    i,
+    j,
+    m[64];
+
+  j=0;
+  for (i=0; i < 16; i++, j+=4)
+    m[i]=((uint32_t) data[j] << 24) | ((uint32_t) data[j+1] << 16) |
+      ((uint32_t) data[j+2] << 8) | ((uint32_t) data[j+3]);
+  for ( ; i < 64; i++)
+    m[i]=SIG1(m[i-2])+m[i-7]+SIG0(m[i-15])+m[i-16];
+  a=sha256_hash->state[0];
+  b=sha256_hash->state[1];
+  c=sha256_hash->state[2];
+  d=sha256_hash->state[3];
+  e=sha256_hash->state[4];
+  f=sha256_hash->state[5];
+  g=sha256_hash->state[6];
+  h=sha256_hash->state[7];
+  for (i=0; i < 64; i++)
+  {
+    uint32_t
+      alpha = h+EP1(e)+CH(e,f,g)+K[i]+m[i],
+      beta = EP0(a)+MAJ(a,b,c);
+
+    h=g;
+    g=f;
+    f=e;
+    e=d+alpha;
+    d=c;
+    c=b;
+    b=a;
+    a=alpha+beta;
+  }
+  sha256_hash->state[0]+=a;
+  sha256_hash->state[1]+=b;
+  sha256_hash->state[2]+=c;
+  sha256_hash->state[3]+=d;
+  sha256_hash->state[4]+=e;
+  sha256_hash->state[5]+=f;
+  sha256_hash->state[6]+=g;
+  sha256_hash->state[7]+=h;
+}
+
+static void UpdateSHA256Hash(SHA256Hash *sha256_hash,const unsigned char *data,
+  const size_t data_length)
+{
+  size_t
+    i,
+    index = (size_t) ((sha256_hash->count/8) % 64);
+
+  sha256_hash->count+=(uint64_t) data_length*8;
+  for (i=0; i < data_length; i++)
+  {
+    sha256_hash->buffer[index++]=data[i];
+    if (index == 64)
+      {
+        TransformSHA256Hash(sha256_hash,sha256_hash->buffer);
+        index=0;
+      }
+  }
+}
+
+static void FinalizeSHA256Hash(SHA256Hash *sha256_hash,unsigned char hash[32])
+{
+  size_t
+     i,
+     index = (size_t) ((sha256_hash->count/8) % 64),
+     pad_length = (index < 56) ? (56-index) : (120-index);
+
+  uint64_t
+    bit_count = sha256_hash->count;  /* message length before padding */
+
+  unsigned char
+    pad[64];
+
+  pad[0]=0x80;
+  (void) memset(pad+1,0,pad_length-1);
+  UpdateSHA256Hash(sha256_hash,pad,pad_length);
+  for (i=0; i < 8; i++)
+    pad[i]=(unsigned char) (bit_count >> ((7-i)*8));
+  UpdateSHA256Hash(sha256_hash, pad, 8);
+  for (i=0; i < 32; i++)
+    hash[i]=(unsigned char) (sha256_hash->state[i/4] >> ((3-(i % 4))*8));
+}
+
+static void ComputeSHA256Hash(const unsigned char *data,size_t length,
+  unsigned char hash[32])
+{
+  SHA256Hash
+    sha256_hash;
+
+  /*
+    Hash a buffer in one shot.
+  */
+  InitializeSHA256Hash(&sha256_hash);
+  UpdateSHA256Hash(&sha256_hash,data,length);
+  FinalizeSHA256Hash(&sha256_hash,hash);
+}
+
+static int ComputeHMACSHA256Mac(const void *key,size_t key_length,const void *message,
+  size_t message_length,unsigned char *mac,size_t mac_length)
+{
+  SHA256Hash
+    sha256_hash;
+
+  size_t
+    i;
+
+  unsigned char
+    full_hash[32],
+    inner_hash[32],
+    inner_pad[64],
+    k_prime[64]={0},
+    outer_pad[64];
+
+  /*
+    If key is longer than 64 bytes, hash it down first.
+  */
+  if ((mac == (unsigned char *) NULL)  || (mac_length == 0))
+    return(-1);
+  if (((key == (const void *) NULL) && (key_length != 0)) ||
+      ((message == (const void *) NULL) && (message_length != 0)))
+    return(-1);
+  if (key_length > 64)
+    ComputeSHA256Hash(key,key_length,k_prime);
+  else
+    (void) memcpy(k_prime,key,key_length);
+  /*
+    Prepare inner pad and outer pad masks.
+  */
+  for (i=0; i < 64; i++)
+  {
+    inner_pad[i]=k_prime[i] ^ 0x36;
+    outer_pad[i]=k_prime[i] ^ 0x5c;
+  }
+  /*
+    Inner hash: SHA256(inner pad || message)
+  */
+  InitializeSHA256Hash(&sha256_hash);
+  UpdateSHA256Hash(&sha256_hash,inner_pad,64);
+  UpdateSHA256Hash(&sha256_hash,message,message_length);
+  FinalizeSHA256Hash(&sha256_hash,inner_hash);
+  /*
+    Outer hash: SHA256(outer pad || inner hash)
+  */
+  InitializeSHA256Hash(&sha256_hash);
+  UpdateSHA256Hash(&sha256_hash,outer_pad,64);
+  UpdateSHA256Hash(&sha256_hash,inner_hash,32);
+  FinalizeSHA256Hash(&sha256_hash,full_hash);
+  /*
+    Truncate or copy to destination buffer based on requested mac length.
+  */
+  (void) memcpy(mac,full_hash,(mac_length < 32) ? mac_length : 32);
+  return(0);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   D e s t r o y D i s t r i b u t e C a c h e I n f o                       %
 %                                                                             %
 %                                                                             %
@@ -734,6 +1051,33 @@ static inline MagickOffsetType dpc_send(SOCKET_TYPE file,
   return(i);
 }
 #endif
+
+static inline MagickOffsetType dpc_send_mac(SOCKET_TYPE file,
+  const MagickSizeType length,const void *magick_restrict message,
+  uint64_t session_key)
+{
+  MagickOffsetType
+    status;
+
+  unsigned char
+     mac[32];
+
+  /*
+    Compute HMAC-SHA-256 MAC of the message using the session key.
+  */
+  if (length > (MagickSizeType) MAGICK_SSIZE_MAX)
+    return(-1);
+  if (ComputeHMACSHA256Mac(&session_key,sizeof(session_key),message,
+      (size_t) length,mac,sizeof(mac)) != 0)
+    return(-1);  /* HMAC computation failed */
+  /*
+    Push the MAC onto the wire then the actual message.
+  */
+  status=dpc_send(file,sizeof(mac),mac);
+  if (status != (MagickOffsetType) sizeof(mac))
+    return(-1);
+  return(dpc_send(file,length,message));
+}
 
 #if !defined(MAGICKCORE_HAVE_DISTRIBUTE_CACHE)
 MagickExport void DistributePixelCacheServer(const int magick_unused(port),
@@ -909,7 +1253,7 @@ static MagickBooleanType ReadDistributeCacheMetacontent(SplayTreeInfo *registry,
   if (p == (const Quantum *) NULL)
     return(MagickFalse);
   metacontent=(const unsigned char *) GetVirtualMetacontent(image);
-  count=dpc_send(file,length,metacontent);
+  count=dpc_send_mac(file,length,metacontent,session_key);
   if (count != (MagickOffsetType) length)
     return(MagickFalse);
   return(MagickTrue);
@@ -972,7 +1316,7 @@ static MagickBooleanType ReadDistributeCachePixels(SplayTreeInfo *registry,
     exception);
   if (p == (const Quantum *) NULL)
     return(MagickFalse);
-  count=dpc_send(file,length,p);
+  count=dpc_send_mac(file,length,p,session_key);
   if (count != (MagickOffsetType) length)
     return(MagickFalse);
   return(MagickTrue);
@@ -1043,7 +1387,7 @@ static MagickBooleanType WriteDistributeCacheMetacontent(
   if (q == (Quantum *) NULL)
     return(MagickFalse);
   metacontent=(unsigned char *) GetAuthenticMetacontent(image);
-  count=dpc_receive(file,length,metacontent);
+  count=dpc_receive_mac(file,length,metacontent,session_key);
   if (count != (MagickOffsetType) length)
     return(MagickFalse);
   return(SyncAuthenticPixels(image,exception));
@@ -1106,7 +1450,7 @@ static MagickBooleanType WriteDistributeCachePixels(SplayTreeInfo *registry,
     exception);
   if (q == (Quantum *) NULL)
     return(MagickFalse);
-  count=dpc_receive(file,length,(unsigned char *) q);
+  count=dpc_receive_mac(file,length,(unsigned char *) q,session_key);
   if (count != (MagickOffsetType) length)
     return(MagickFalse);
   return(SyncAuthenticPixels(image,exception));
@@ -1467,6 +1811,7 @@ MagickExport void DistributePixelCacheServer(const int port,
         continue;
       }
     SetSocketReceiveTimeout(*client_socket_ptr,5.0);
+    SetSocketNoDelay(*client_socket_ptr);
     if (status == -1)
       {
         CLOSE_SOCKET(*client_socket_ptr);
@@ -1780,7 +2125,7 @@ MagickPrivate MagickOffsetType ReadDistributePixelCacheMetacontent(
   count=dpc_send(server_info->file,(MagickSizeType) (p-message),message);
   if (count != (MagickOffsetType) (p-message))
     return(-1);
-  return(dpc_receive(server_info->file,length,metacontent));
+  return(dpc_receive_mac(server_info->file,length,metacontent,server_info->session_key));
 }
 
 /*
@@ -1853,7 +2198,7 @@ MagickPrivate MagickOffsetType ReadDistributePixelCachePixels(
   count=dpc_send(server_info->file,(MagickSizeType) (p-message),message);
   if (count != (MagickOffsetType) (p-message))
     return(-1);
-  return(dpc_receive(server_info->file,length,pixels));
+  return(dpc_receive_mac(server_info->file,length,pixels,server_info->session_key));
 }
 
 /*
@@ -1982,7 +2327,7 @@ MagickPrivate MagickOffsetType WriteDistributePixelCacheMetacontent(
   count=dpc_send(server_info->file,(MagickSizeType) (p-message),message);
   if (count != (MagickOffsetType) (p-message))
     return(-1);
-  return(dpc_send(server_info->file,length,metacontent));
+  return(dpc_send_mac(server_info->file,length,metacontent,server_info->session_key));
 }
 
 /*
@@ -2056,5 +2401,5 @@ MagickPrivate MagickOffsetType WriteDistributePixelCachePixels(
   count=dpc_send(server_info->file,(MagickSizeType) (p-message),message);
   if (count != (MagickOffsetType) (p-message))
     return(-1);
-  return(dpc_send(server_info->file,length,pixels));
+  return(dpc_send_mac(server_info->file,length,pixels,server_info->session_key));
 }
