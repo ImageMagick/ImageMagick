@@ -1144,7 +1144,7 @@ MagickExport MagickBooleanType CopyImagePixels(Image *image,
             ((traits & UpdatePixelTrait) == 0) ||
             (source_traits == UndefinedPixelTrait))
           continue;
-        SetPixelChannel(image,channel,p[i],q);
+        SetPixelChannel(image,channel,GetPixelChannel(source_image,channel,p),q);
       }
       p+=(ptrdiff_t) GetPixelChannels(source_image);
       q+=(ptrdiff_t) GetPixelChannels(image);
