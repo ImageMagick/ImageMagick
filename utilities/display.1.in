@@ -61,6 +61,7 @@ Image Settings:
   \-seed value          seed a new sequence of pseudo-random numbers
   \-set property value  set an image property
   \-size geometry       width and height of image
+  \-strict              treat coder warnings as errors
   \-support factor      resize support: > 1.0 is blurry, < 1.0 is sharp
   \-texture filename    name of texture to tile onto the image background
   \-transparent-color color
