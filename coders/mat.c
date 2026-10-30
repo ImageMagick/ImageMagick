@@ -1506,7 +1506,7 @@ END_OF_READING:
     /*
       Rewind list, removing any empty images while rewinding.
     */
-    p=image;
+    p=GetLastImageInList(image);
     image=NULL;
     while (p != (Image *) NULL)
       {
