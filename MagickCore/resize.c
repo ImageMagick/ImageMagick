@@ -3416,6 +3416,135 @@ static MagickBooleanType CpuSupportsAvx2Fma(void)
 }
 #endif
 
+#if defined(magick_vectorize_avx2)
+/*
+  Four output rows of one RGB tap. The row addresses are written out because
+  a counted gather at this runtime stride is packed into scalar inserts, and
+  that packing is slower than scalar loads followed by a contiguous
+  multiply-add. The second loop is four independent accumulators. GCC,
+  Clang, and MinGW-w64 turn that loop into packed AVX2 under the target
+  attribute.
+*/
+static magick_always_inline void HorizontalFilterRGBTap(double acc[3][4],
+  const Quantum *magick_restrict p,const double weight,const ssize_t stride)
+{
+  Quantum
+    blue[4],
+    green[4],
+    red[4];
+
+  ssize_t
+    t;
+
+  red[0]=p[0];
+  green[0]=p[1];
+  blue[0]=p[2];
+  p+=stride;
+  red[1]=p[0];
+  green[1]=p[1];
+  blue[1]=p[2];
+  p+=stride;
+  red[2]=p[0];
+  green[2]=p[1];
+  blue[2]=p[2];
+  p+=stride;
+  red[3]=p[0];
+  green[3]=p[1];
+  blue[3]=p[2];
+  for (t=0; t < 4; t++)
+  {
+    acc[0][t]+=weight*(double) red[t];
+    acc[1][t]+=weight*(double) green[t];
+    acc[2][t]+=weight*(double) blue[t];
+  }
+}
+
+static magick_vectorize_avx2 void HorizontalFilterRGBAVX2(double acc[3][4],
+  const Quantum *magick_restrict p,
+  const ContributionInfo *magick_restrict contribution,const ssize_t n,
+  const ssize_t stride)
+{
+  ssize_t
+    j;
+
+  (void) memset(acc,0,sizeof(double)*3*4);
+  for (j=0; j < n; j++)
+    HorizontalFilterRGBTap(acc,p+3*j,contribution[j].weight,stride);
+}
+
+static MagickBooleanType IsHorizontalFilterRGB(const Image *image,
+  const Image *resize_image)
+{
+  ssize_t
+    i;
+
+  /*
+    The four-row kernel needs three filtered channels in both images and no
+    write mask.
+  */
+  if ((CpuSupportsAvx2Fma() == MagickFalse) ||
+      (GetPixelChannels(image) != 3) ||
+      (GetPixelChannels(resize_image) != 3) ||
+      (GetPixelWriteMaskTraits(resize_image) != UndefinedPixelTrait))
+    return(MagickFalse);
+  for (i=0; i < 3; i++)
+  {
+    PixelChannel
+      channel;
+
+    PixelTrait
+      resize_traits,
+      traits;
+
+    channel=GetPixelChannelChannel(image,i);
+    traits=GetPixelChannelTraits(image,channel);
+    resize_traits=GetPixelChannelTraits(resize_image,channel);
+    if ((traits == UndefinedPixelTrait) ||
+        (resize_traits == UndefinedPixelTrait) ||
+        ((resize_traits & CopyPixelTrait) != 0) ||
+        ((resize_traits & BlendPixelTrait) != 0))
+      return(MagickFalse);
+  }
+  return(MagickTrue);
+}
+
+static magick_vectorize_avx2 ssize_t HorizontalFilterRGBRows(
+  const Image *magick_restrict image,Image *magick_restrict resize_image,
+  const ContributionInfo *magick_restrict contribution,const ssize_t n,
+  const Quantum *magick_restrict p,Quantum *magick_restrict q)
+{
+  PixelChannel
+    channel[3];
+
+  ssize_t
+    c,
+    stride,
+    y;
+
+  /*
+    Filter groups of four rows and return the number of rows done.
+  */
+  for (c=0; c < 3; c++)
+    channel[c]=GetPixelChannelChannel(image,c);
+  stride=3*n;
+  for (y=0; (y+4) <= (ssize_t) resize_image->rows; y+=4)
+  {
+    double
+      acc[3][4];
+
+    ssize_t
+      t;
+
+    HorizontalFilterRGBAVX2(acc,p+y*stride,contribution,n,stride);
+    for (t=0; t < 4; t++)
+      for (c=0; c < 3; c++)
+        SetPixelChannel(resize_image,channel[c],ClampToQuantum(acc[c][t]),
+          q+3*(y+t));
+  }
+  return(y);
+}
+#endif
+
 static MagickBooleanType HorizontalFilter(
   const ResizeFilter *magick_restrict resize_filter,
   const Image *magick_restrict image,Image *magick_restrict resize_image,
@@ -3439,7 +3568,8 @@ static MagickBooleanType HorizontalFilter(
     support;
 
   MagickBooleanType
-    status;
+    status,
+    tile_rgb;
 
   ssize_t
     x;
@@ -3471,6 +3601,12 @@ static MagickBooleanType HorizontalFilter(
   scale=MagickSafeReciprocal(scale);
   image_view=AcquireVirtualCacheView(image,exception);
   resize_view=AcquireAuthenticCacheView(resize_image,exception);
+  tile_rgb=MagickFalse;
+#if defined(magick_vectorize_avx2)
+  tile_rgb=IsHorizontalFilterRGB(image,resize_image);
+#else
+  (void) tile_rgb;
+#endif
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(image,resize_image,resize_image->columns,1)
@@ -3554,7 +3690,15 @@ static MagickBooleanType HorizontalFilter(
       traits_map[c]=GetPixelChannelTraits(image,channel_map[c]);
       resize_traits_map[c]=GetPixelChannelTraits(resize_image,channel_map[c]);
     }
-    for (y=0; y < (ssize_t) resize_image->rows; y++)
+    y=0;
+#if defined(magick_vectorize_avx2)
+    if (tile_rgb != MagickFalse)
+      {
+        y=HorizontalFilterRGBRows(image,resize_image,contribution,n,p,q);
+        q+=(ptrdiff_t) y*resize_channels;
+      }
+#endif
+    for ( ; y < (ssize_t) resize_image->rows; y++)
     {
       ssize_t
         i,
