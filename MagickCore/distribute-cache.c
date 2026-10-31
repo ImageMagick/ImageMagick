@@ -104,10 +104,12 @@
   Define declarations.
 */
 #define DPCHostname  "127.0.0.1"
+#define DPCMacLength  32
 #define DPCMaxClientWorkers  128
 #define DPCMaxUnauthenticatedClientWorkers  16
 #define DPCPendingConnections  10
 #define DPCPort  6668
+#define DPCScratchExtent  16384  /* bytes; send-side encrypt buffer */
 #define DPCSessionKeyLength  16
 #ifndef MSG_NOSIGNAL
 #  define MSG_NOSIGNAL 0
@@ -708,7 +710,8 @@ static void InitializeSHA256Hash(SHA256Hash *sha256_hash)
   sha256_hash->state[7]=0x5be0cd19;
 }
 
-static void TransformSHA256Hash(SHA256Hash *sha256_hash,const unsigned char data[])
+static void TransformSHA256Hash(SHA256Hash *sha256_hash,
+  const unsigned char data[])
 {
 #define EP0(x)  (ROTRIGHT(x,2) ^ ROTRIGHT(x,13) ^ ROTRIGHT(x,22))
 #define EP1(x)  (ROTRIGHT(x,6) ^ ROTRIGHT(x,11) ^ ROTRIGHT(x,25))
@@ -720,14 +723,17 @@ static void TransformSHA256Hash(SHA256Hash *sha256_hash,const unsigned char data
 
   static const uint32_t K[64] =
   {
-    0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
-    0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
-    0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
-    0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
-    0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
-    0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
-    0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
-    0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
+    0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1,
+    0x923f82a4, 0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
+    0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174, 0xe49b69c1, 0xefbe4786,
+    0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+    0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147,
+    0x06ca6351, 0x14292967, 0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13,
+    0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85, 0xa2bfe8a1, 0xa81a664b,
+    0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+    0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a,
+    0x5b9cca4f, 0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
+    0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
   };
 
   uint32_t
@@ -838,8 +844,9 @@ static void ComputeSHA256Hash(const unsigned char *data,size_t length,
   FinalizeSHA256Hash(&sha256_hash,hash);
 }
 
-static int ComputeHMACSHA256Mac(const void *key,size_t key_length,const void *message,
-  size_t message_length,unsigned char *mac,size_t mac_length)
+static int ComputeHMACSHA256Mac(const void *key,size_t key_length,
+  const void *message,size_t message_length,unsigned char *mac,
+  size_t mac_length)
 {
   SHA256Hash
     sha256_hash;
@@ -999,9 +1006,6 @@ static inline MagickOffsetType dpc_send(SOCKET_TYPE file,
 }
 #endif
 
-#define DPCMacLength  32
-#define DPCScratchExtent  16384  /* bytes; send-side encrypt buffer */
-
 static const char *GetDPCSharedSecret(void)
 {
 #if defined(MAGICKCORE_HAVE_DISTRIBUTE_CACHE)
@@ -1143,8 +1147,7 @@ static inline MagickOffsetType dpc_send_mac(SOCKET_TYPE file,
     return(-1);
   if ((DeriveDPCKey(session_key,'m',mac_key) != 0) ||
       (DeriveDPCKey(session_key,'e',stream_key) != 0) ||
-      (ComputeHMACSHA256Mac(mac_key,sizeof(mac_key),message,(size_t) length,
-         mac,sizeof(mac)) != 0))
+      (ComputeHMACSHA256Mac(mac_key,sizeof(mac_key),message,(size_t) length, mac,sizeof(mac)) != 0))
     {
       WipeDPCKey(mac_key,sizeof(mac_key));
       WipeDPCKey(stream_key,sizeof(stream_key));
@@ -1627,7 +1630,8 @@ static void RelinquishDPCClient(const MagickBooleanType unauthenticated)
   UnlockSemaphoreInfo(dpc_semaphore);
 }
 
-static HANDLER_RETURN_TYPE DistributePixelCacheConnectionHandler(void *socket_arg)
+static HANDLER_RETURN_TYPE DistributePixelCacheConnectionHandler(
+  void *socket_arg)
 {
   ExceptionInfo
     *exception;
@@ -1967,8 +1971,8 @@ MagickExport void DistributePixelCacheServer(const int port,
         continue;
       }
 #if defined(MAGICKCORE_THREAD_SUPPORT)
-    status=pthread_create(&thread_id,&attributes,DistributePixelCacheConnectionHandler,
-      (void *) client_socket_ptr);
+    status=pthread_create(&thread_id,&attributes,
+      DistributePixelCacheConnectionHandler,(void *) client_socket_ptr);
     if (status != 0)
       {
         CLOSE_SOCKET(*client_socket_ptr);
@@ -1977,8 +1981,7 @@ MagickExport void DistributePixelCacheServer(const int port,
         continue;
       }
 #elif defined(_MSC_VER)
-    if (CreateThread(0,0,DistributePixelCacheConnectionHandler,(void*) client_socket_ptr,
-          0,&threadID) == (HANDLE) NULL)
+    if (CreateThread(0,0,DistributePixelCacheConnectionHandler,(void*) client_socket_ptr,0,&threadID) == (HANDLE) NULL)
       {
         CLOSE_SOCKET(*client_socket_ptr);
         RelinquishDPCClient(MagickTrue);
