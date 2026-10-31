@@ -706,7 +706,8 @@ jobs:
         env:
           VERSION: ${{needs.version.outputs.version}}
           SEMANTIC_VERSION: ${{needs.version.outputs.semantic_version}}
-        run: wingetcreate update --submit --replace --token ${{secrets.WINGET_TOKEN}} --urls "https://github.com/ImageMagick/ImageMagick/releases/download/$env:VERSION/ImageMagick.${{matrix.quantum}}${{matrix.hdri_flag}}.msixbundle" --version $env:SEMANTIC_VERSION "ImageMagick.${{matrix.quantum}}${{matrix.hdri_flag}}"
+          WINGET_CREATE_GITHUB_TOKEN: ${{secrets.WINGET_TOKEN}}
+        run: wingetcreate update --submit --replace --urls "https://github.com/ImageMagick/ImageMagick/releases/download/$env:VERSION/ImageMagick.${{matrix.quantum}}${{matrix.hdri_flag}}.msixbundle" --version $env:SEMANTIC_VERSION "ImageMagick.${{matrix.quantum}}${{matrix.hdri_flag}}"
 
   update_website:
     name: Update website
