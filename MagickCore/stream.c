@@ -1295,9 +1295,23 @@ static size_t WriteStreamImage(const Image *image,const void *pixels,
     Write a portion of the pixel row to the stream.
   */
   (void) StreamImagePixels(stream_info,image,stream_info->exception);
-  length=packet_size*extract_info.width;
-  count=WriteBlob(stream_info->stream,length,stream_info->pixels+(ssize_t)
-    packet_size*extract_info.x);
+  count=1;
+  if ((extract_info.x < (ssize_t) image->columns) &&
+      ((extract_info.x + (ssize_t) extract_info.width) > 0))
+    {
+      ssize_t x = extract_info.x;
+      size_t width = extract_info.width;
+      if (x < 0)
+        {
+          width+=x;
+          x=0;
+        }
+      if ((x+(ssize_t) width) > (ssize_t) image->columns)
+        width=(size_t) ((ssize_t) image->columns-x);
+      length=packet_size*width;
+      count=WriteBlob(stream_info->stream,length,stream_info->pixels+
+        packet_size*x);
+    }
   stream_info->y++;
   return(count == 0 ? 0 : columns);
 }

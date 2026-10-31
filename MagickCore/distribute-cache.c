@@ -870,7 +870,7 @@ static int ComputeHMACSHA256Mac(const void *key,size_t key_length,
       ((message == (const void *) NULL) && (message_length != 0)))
     return(-1);
   if (key_length > 64)
-    ComputeSHA256Hash(key,key_length,k_prime);
+    ComputeSHA256Hash((unsigned char *) key,key_length,k_prime);
   else
     (void) memcpy(k_prime,key,key_length);
   /*
@@ -886,7 +886,7 @@ static int ComputeHMACSHA256Mac(const void *key,size_t key_length,
   */
   InitializeSHA256Hash(&sha256_hash);
   UpdateSHA256Hash(&sha256_hash,inner_pad,64);
-  UpdateSHA256Hash(&sha256_hash,message,message_length);
+  UpdateSHA256Hash(&sha256_hash,(unsigned char *) message,message_length);
   FinalizeSHA256Hash(&sha256_hash,inner_hash);
   /*
     Outer hash: SHA256(outer pad || inner hash)
