@@ -413,12 +413,6 @@ jobs:
           name: ImageMagick-${{needs.version.outputs.version}}-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-x64.7z
           path: Configure\Installer\Msix\x64
 
-      - name: Download arm64 artifacts
-        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 #v8.0.2
-        with:
-          name: ImageMagick-${{needs.version.outputs.version}}-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-arm64.7z
-          path: Configure\Installer\Msix\arm64
-
       - name: Unzip artifacts
         shell: pwsh
         env:
@@ -426,8 +420,6 @@ jobs:
         run: |
           cd Configure\Installer\Msix\x64
           7z x "ImageMagick-$env:VERSION-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-x64.7z"
-          cd ../arm64
-          7z x "ImageMagick-$env:VERSION-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-arm64.7z"
 
       - name: Azure CLI login with federated credential
         uses: azure/login@a641126d1b8aa4d1fa005f4f92df94a3a4c4c906 #v3.1.0
