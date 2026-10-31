@@ -107,7 +107,7 @@
   <!-- Prevent access to Linux process and runtime information. -->
   <policy domain="path" rights="none" pattern="/proc/*"/>
 
-  <!-- Prevent access to Linux kernel and device nformation. -->
+  <!-- Prevent access to Linux kernel and device information. -->
   <policy domain="path" rights="none" pattern="/sys/*"/>
 
   <!-- Disable pipe-based I/O. -->
