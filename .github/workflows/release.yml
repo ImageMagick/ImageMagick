@@ -443,23 +443,12 @@ jobs:
           path: Configure\Installer\Msix\Artifacts\ImageMagick.${{matrix.quantum}}${{matrix.hdri_flag}}.msixbundle
 
   linux_app_image:
-    name: Linux AppImage ${{matrix.compiler}}
+    name: Linux AppImage
     container:
       image: ubuntu:22.04
     runs-on: ubuntu-24.04
     needs:
       - version
-
-    strategy:
-      matrix:
-        compiler: [ gcc, clang ]
-        include:
-          - compiler: gcc
-            cxx_compiler: g++
-            packages: gcc g++
-          - compiler: clang
-            cxx_compiler: clang++
-            packages: clang
 
     steps:
       - name: Install dependencies
@@ -467,7 +456,7 @@ jobs:
           set -e
           export DEBIAN_FRONTEND=noninteractive
           apt-get update -y
-          apt-get install -y autoconf curl file fuse git kmod squashfs-tools libbz2-dev libdjvulibre-dev libfontconfig-dev libfreetype6-dev libfribidi-dev libharfbuzz-dev libheif-dev liblcms-dev libopenexr-dev libopenjp2-7-dev libturbojpeg0-dev liblqr-dev libraqm-dev libtiff-dev libwebp-dev libx11-dev libxml2-dev liblzma-dev make software-properties-common wget ${{matrix.packages}}
+          apt-get install -y autoconf curl file fuse git kmod squashfs-tools libbz2-dev libdjvulibre-dev libfontconfig-dev libfreetype6-dev libfribidi-dev libharfbuzz-dev libheif-dev liblcms-dev libopenexr-dev libopenjp2-7-dev libturbojpeg0-dev liblqr-dev libraqm-dev libtiff-dev libwebp-dev libx11-dev libxml2-dev liblzma-dev make software-properties-common wget gcc g++
 
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
@@ -490,8 +479,8 @@ jobs:
       - name: Build ImageMagick
         env:
           CFLAGS: -Wno-deprecated-declarations -Wdeclaration-after-statement -Wno-error=unused-variable
-          CC: ${{matrix.compiler}}
-          CXX: ${{matrix.cxx_compiler}}
+          CC: gcc
+          CXX: g++
         run: |
           set -e
           ./configure --with-quantum-depth=16 --without-magick-plus-plus --without-perl --prefix=/usr
@@ -500,7 +489,7 @@ jobs:
 
       - name: Create ImageMagick AppImage
         env:
-          VERSION: ${{needs.version.outputs.version}}-${{matrix.compiler}}
+          VERSION: ${{needs.version.outputs.version}}
         run: |
           set -e
           mkdir -p /appdir/usr/share/applications/
@@ -523,7 +512,7 @@ jobs:
       - name: Upload ImageMagick AppImage
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 #v7.0.2
         with:
-          name: AppImage-${{matrix.compiler}}
+          name: AppImage
           path: artifacts
 
   source:
