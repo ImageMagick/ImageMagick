@@ -1803,12 +1803,17 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
             if (((*p != '\0') && (*p != '>')) ||
                 ((*p == '\0') && (terminal != '>')))
               {
-                if (l != 0)
-                  (void) DestroyXMLTreeAttributes(attributes);
-                (void) ThrowMagickException(exception,GetMagickModule(),
-                  OptionWarning,"ParseError","missing >");
-                utf8=DestroyString(utf8);
-                return(&root->root);
+                if ((LocaleNCompare(tag,"rdf:",4) != 0) &&
+                    (LocaleNCompare(tag,"x:xmpmeta",9) != 0))
+                  {
+                    if (l != 0)
+                      (void) DestroyXMLTreeAttributes(attributes);
+                    (void) ThrowMagickException(exception,GetMagickModule(),
+                      OptionWarning,"ParseError","missing >");
+                    utf8=DestroyString(utf8);
+                    return(&root->root);
+                  }
+                *p='>';
               }
             if ((ignore_depth != 0) || (IsSkipTag(tag) != MagickFalse))
               (void) DestroyXMLTreeAttributes(attributes);
