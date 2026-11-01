@@ -19,11 +19,13 @@ Name:           ImageMagick
 Epoch:          1
 Version:        %{Version}
 Release:        %{Patchlevel}
-Summary:        Use ImageMagick to create, edit, convert, and display raster image files.
+Summary:        ImageMagick is a powerful open-source software suite for creating, editing, converting, and manipulating images in over 200 formats.
 
 License:        ImageMagick
 URL:            https://imagemagick.org/
 Source0:        https://imagemagick.org/archive/releases/%{name}-%{Version}-%{Patchlevel}.tar.xz
+Source1:        https://imagemagick.org/archive/releases/%{name}-%{Version}-%{Patchlevel}.tar.xz.asc
+Source2:        ImageMagick.keyring
 
 BuildRequires:  pkgconfig(bzip2)
 BuildRequires:  pkgconfig(freetype2)
@@ -36,11 +38,9 @@ BuildRequires:  pkgconfig(zlib)
 BuildRequires:  perl-devel >= 5.8.1
 BuildRequires:  perl-generators
 %endif
-%if 0%{?rhel} && 0%{?rhel} < 8
-BuildRequires:  ghostscript-devel
-%else
 BuildRequires:  libgs-devel
-%endif
+# Used in configure to check device availability
+BuildRequires:  ghostscript
 BuildRequires:  pkgconfig(ddjvuapi)
 BuildRequires:  pkgconfig(libwmf)
 BuildRequires:  pkgconfig(jasper)
@@ -67,6 +67,9 @@ BuildRequires:  pkgconfig(raqm)
 BuildRequires:  pkgconfig(lqr-1)
 %endif
 BuildRequires:  pkgconfig(libraw) >= 0.14.8
+%if 0%{?fedora} >= 43
+BuildRequires:  pkgconfig(libuhdr) >= 1.3.0
+%endif
 BuildRequires:  pkgconfig(libzstd)
 BuildRequires:  pkgconfig(libzip) >= 1.0.0
 BuildRequires:  pkgconfig(pango) >= 1.28.1
@@ -244,6 +247,9 @@ export CFLAGS="%{optflags} -DIMPNG_SETJMP_IS_THREAD_SAFE"
         --with-raw \
 %if 0%{?fedora} || 0%{?rhel} > 8
         --with-lqr \
+%if 0%{?fedora} >= 43
+        --with-uhdr \
+%endif
 %endif
         --with-gvc \
         --with-raqm \
