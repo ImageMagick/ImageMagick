@@ -579,10 +579,11 @@ jobs:
           CFLAGS: -O3
           CXXFLAGS: -O3
           CPPFLAGS: -I/tmp/dependencies/include
-          LDFLAGS: -L/tmp/dependencies/lib -L/tmp/dependencies/lib/${{matrix.triplet}}
+          LDFLAGS: -L/tmp/dependencies/lib -L/tmp/dependencies/lib/${{matrix.triplet}} -static-libstdc++ -static-libgcc
           PKG_CONFIG_LIBDIR: /tmp/dependencies/lib/pkgconfig:/tmp/dependencies/lib/${{matrix.triplet}}/pkgconfig
           PKG_CONFIG: pkg-config --static
         run: |
+          cp "$(g++ -print-file-name=libstdc++.a)" /tmp/dependencies/lib/
           ./configure --prefix=/usr --disable-installed --disable-shared --enable-static --without-modules --without-magick-plus-plus --without-perl --without-x --with-rsvg --with-quantum-depth=${{matrix.quantum}} --enable-hdri=${{matrix.hdri}}
 
       - name: Build ImageMagick
@@ -620,7 +621,7 @@ jobs:
           if grep -q "not found" runtime-libraries.txt; then
             exit 1
           fi
-          if grep " => " runtime-libraries.txt | grep -Ev '^[[:space:]]*(libc|libm|libdl|libpthread|libresolv|librt|libstdc\+\+|libgcc_s|libgomp)\.so'; then
+          if grep " => " runtime-libraries.txt | grep -Ev '^[[:space:]]*(libc|libm|libdl|libpthread|libresolv|librt|libgomp)\.so'; then
             echo "Unexpected shared dependency in portable build"
             exit 1
           fi
