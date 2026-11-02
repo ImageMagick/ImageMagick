@@ -644,6 +644,152 @@ jobs:
           name: ImageMagick-${{needs.version.outputs.version}}-portable-Q${{matrix.quantum}}${{matrix.hdri_flag}}-linux-${{matrix.architecture}}
           path: artifacts
 
+  linux_musl_portable:
+    name: Linux musl portable Q${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.architecture}}
+    container:
+      image: alpine:3.21
+    runs-on: ubuntu-24.04
+    needs:
+      - changelog
+      - version
+
+    strategy:
+      fail-fast: false
+      matrix:
+        architecture: [ x64, arm64 ]
+        quantum: [ 16, 8 ]
+        hdri: [ yes, no ]
+        exclude:
+          - quantum: 8
+            hdri: yes
+        include:
+          - architecture: x64
+            cc: clang-18
+            cxx: clang++-18
+            configure_options: ''
+            link_options: ''
+            strip: strip
+            machine: Advanced Micro Devices X86-64
+            openmp_library: libomp.so
+            libc_library: libc.musl-x86_64.so.1
+          - architecture: arm64
+            cc: clang-18 --target=aarch64-alpine-linux-musl --sysroot=/usr/aarch64-alpine-linux-musl
+            cxx: clang++-18 --target=aarch64-alpine-linux-musl --sysroot=/usr/aarch64-alpine-linux-musl
+            configure_options: --host=aarch64-alpine-linux-musl
+            link_options: -L/usr/aarch64-alpine-linux-musl/usr/lib
+            strip: aarch64-alpine-linux-musl-strip
+            machine: AArch64
+            openmp_library: libomp.so
+            libc_library: libc.musl-aarch64.so.1
+          - hdri: yes
+            hdri_flag: -HDRI
+
+    env:
+      PACKAGE_NAME: ImageMagick-${{needs.version.outputs.version}}-portable-Q${{matrix.quantum}}${{matrix.hdri_flag}}-linux-musl-${{matrix.architecture}}
+
+    steps:
+      - name: Install dependencies
+        run: |
+          apk add --no-cache autoconf automake bash build-base ca-certificates clang18 curl git linux-headers openmp-dev pkgconf python3 tar unzip xz
+
+      - name: Install ARM64 cross compiler
+        if: matrix.architecture == 'arm64'
+        run: |
+          apk add --no-cache binutils-aarch64 clang18
+          apk add --root /usr/aarch64-alpine-linux-musl --arch aarch64 --initdb --no-scripts --no-cache \
+            --keys-dir /usr/share/apk/keys/aarch64 --repositories-file /etc/apk/repositories \
+            g++ linux-headers musl-dev openmp-dev
+
+      - name: Clone ImageMagick
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Download dependencies
+        run: |
+          bash .github/build/shared/download-dependencies.sh --dependencies-artifact linux-musl-${{matrix.architecture}}-static.zip
+
+      - name: Download ChangeLog.md
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 #v8.0.2
+        with:
+          name: ChangeLog
+
+      - name: Build ImageMagick
+        env:
+          CC: ${{matrix.cc}}
+          CXX: ${{matrix.cxx}}
+          CFLAGS: -O3
+          CXXFLAGS: -O3
+          CPPFLAGS: -I/tmp/dependencies/include
+          LDFLAGS: -L/tmp/dependencies/lib ${{matrix.link_options}} -static-libstdc++ -static-libgcc
+          PKG_CONFIG_LIBDIR: /tmp/dependencies/lib/pkgconfig
+          PKG_CONFIG: pkg-config --static
+        run: |
+          set -e
+          mkdir -p /tmp/dependencies
+          cp -a Artifacts/include Artifacts/lib /tmp/dependencies/
+          cp "$($CXX -print-file-name=libstdc++.a)" /tmp/dependencies/lib/
+          ./configure ${{matrix.configure_options}} --prefix=/usr --disable-installed --disable-shared --enable-static --without-modules --without-magick-plus-plus --without-perl --without-x --with-rsvg --with-quantum-depth=${{matrix.quantum}} --enable-hdri=${{matrix.hdri}}
+          make -j$(nproc)
+          make install DESTDIR="$GITHUB_WORKSPACE/portable"
+          ${{matrix.strip}} portable/usr/bin/magick
+
+      - name: Create portable archive
+        run: |
+          set -e
+          mkdir -p "$PACKAGE_NAME/bin" "$PACKAGE_NAME/etc" "$PACKAGE_NAME/share"
+          cp portable/usr/bin/magick "$PACKAGE_NAME/bin/"
+          for utility in compare composite conjure convert identify magick-script mogrify montage stream; do
+            ln -s magick "$PACKAGE_NAME/bin/$utility"
+          done
+          cp -a portable/usr/etc/ImageMagick-7 "$PACKAGE_NAME/etc/"
+          cp -a portable/usr/share/ImageMagick-7 "$PACKAGE_NAME/share/"
+          cp portable/usr/lib/ImageMagick-*/config-*/configure.xml "$PACKAGE_NAME/etc/ImageMagick-7/"
+          cp ChangeLog.md LICENSE "$PACKAGE_NAME/"
+          cp config/sRGB.icm "$PACKAGE_NAME/sRGB.icc"
+          mkdir -p artifacts
+          XZ_OPT="-9e" tar -cJf "artifacts/$PACKAGE_NAME.tar.xz" "$PACKAGE_NAME"
+
+      - name: Test portable archive
+        env:
+          ARCHITECTURE: ${{matrix.architecture}}
+          MACHINE: ${{matrix.machine}}
+          OPENMP_LIBRARY: ${{matrix.openmp_library}}
+          LIBC_LIBRARY: ${{matrix.libc_library}}
+        run: |
+          set -e
+          mkdir portable-test
+          tar -xJf "artifacts/$PACKAGE_NAME.tar.xz" -C portable-test
+          cd portable-test
+          magick="$PWD/$PACKAGE_NAME/bin/magick"
+          readelf -h "$magick" | grep -F "$MACHINE"
+          readelf -d "$magick" | tee runtime-libraries.txt
+          grep -F "Shared library: [$OPENMP_LIBRARY]" runtime-libraries.txt
+          if grep NEEDED runtime-libraries.txt | grep -Fv "Shared library: [$OPENMP_LIBRARY]" | grep -Fv "Shared library: [$LIBC_LIBRARY]"; then
+            echo "Unexpected shared dependency in portable build"
+            exit 1
+          fi
+          if [ "$ARCHITECTURE" = arm64 ]; then
+            exit 0
+          fi
+          "$magick" -version | tee version.txt
+          grep -F OpenMP version.txt
+          "$magick" -list policy | grep -F "$PWD/$PACKAGE_NAME/etc/ImageMagick-7/policy.xml"
+
+      - name: Create SBOM
+        env:
+          MAGICK_COMMIT: ${{github.sha}}
+          MAGICK_TIMESTAMP: ${{needs.version.outputs.timestamp}}
+          MAGICK_VERSION: ${{needs.version.outputs.version}}
+        run: |
+          python3 .github/build/shared/create-sbom.py "artifacts/$PACKAGE_NAME.cdx.json"
+
+      - name: Upload portable archive and SBOM
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 #v7.0.2
+        with:
+          name: ImageMagick-${{needs.version.outputs.version}}-portable-Q${{matrix.quantum}}${{matrix.hdri_flag}}-linux-musl-${{matrix.architecture}}
+          path: artifacts
+
   source:
     if: github.ref != 'refs/heads/portable' && github.head_ref != 'portable'
     name: Create source archive
@@ -723,6 +869,7 @@ jobs:
       - source
       - linux_app_image
       - linux_portable
+      - linux_musl_portable
       - windows_installer
       - windows_portable
       - windows_source
