@@ -3459,8 +3459,17 @@ static MagickBooleanType HorizontalFilter(
     for (y=0; y < (ssize_t) resize_image->rows; y++)
     {
       ssize_t
-        i;
+        i,
+        mask_offset;
 
+      /*
+        Initialize the destination write mask from the nearest source pixel.
+      */
+      mask_offset=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
+        (contribution[(ssize_t) (MagickMin(MagickMax(bisect,(double) start),
+        (double) stop-1.0)+0.5)-start].pixel-contribution[0].pixel);
+      SetPixelWriteMask(resize_image,GetPixelWriteMask(image,p+mask_offset*
+        (ssize_t) GetPixelChannels(image)),q);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         double
@@ -3674,8 +3683,17 @@ static MagickBooleanType VerticalFilter(
     for (x=0; x < (ssize_t) resize_image->columns; x++)
     {
       ssize_t
-        i;
+        i,
+        mask_offset;
 
+      /*
+        Initialize the destination write mask from the nearest source pixel.
+      */
+      mask_offset=(ssize_t) ((contribution[(ssize_t) (MagickMin(MagickMax(
+        bisect,(double) start),(double) stop-1.0)+0.5)-start].pixel-
+        contribution[0].pixel)*(ssize_t) image->columns+x);
+      SetPixelWriteMask(resize_image,GetPixelWriteMask(image,p+mask_offset*
+        (ssize_t) GetPixelChannels(image)),q);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         double
@@ -3848,6 +3866,8 @@ MagickExport Image *ResizeImage(const Image *image,const size_t columns,
   /*
     Resize image.
   */
+  filter_image->mask_trait=UpdatePixelTrait;
+  resize_image->mask_trait=UpdatePixelTrait;
   offset=0;
   if (x_factor > y_factor)
     {
@@ -3875,6 +3895,7 @@ MagickExport Image *ResizeImage(const Image *image,const size_t columns,
       resize_image=DestroyImage(resize_image);
       return((Image *) NULL);
     }
+  resize_image->mask_trait=image->mask_trait;
   resize_image->type=image->type;
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
 record_resize_transform:
