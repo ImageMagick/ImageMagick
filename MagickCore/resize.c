@@ -85,6 +85,11 @@
 #if defined(MAGICKCORE_LQR_DELEGATE)
 #include <lqr.h>
 #endif
+#if defined(_MSC_VER) && !defined(__clang__) && !defined(__GNUC__) && \
+    defined(_M_X64)
+#  include <intrin.h>
+#  include <immintrin.h>
+#endif
 
 /*
   Typedef declarations.
@@ -3336,6 +3341,81 @@ static ContributionInfo **AcquireContributionTLS(const size_t count)
   return(contribution);
 }
 
+/*
+  These attributes belong to the resize filters. magick_vectorize keeps the
+  translation unit's instruction set. magick_vectorize_avx2 selects AVX2 and
+  FMA and is called only after a runtime CPU check.
+
+  x86-64 GCC, Clang, and MinGW-w64 mark the clones with target("avx2,fma"), so
+  the rest of this file stays at the baseline instruction set. x86-64
+  MinGW-w64 defines __GNUC__ or __clang__ and __x86_64__; Arm64 MinGW-w64
+  does not. MSVC has no per-function target, so it compiles those same C
+  loops and selects them after a CPUID check. Every other compiler, and a CPU
+  without AVX2 or FMA, keeps the scalar loops.
+*/
+#if defined(__clang__) || (defined(__GNUC__) && (__GNUC__) > 4)
+#  define magick_always_inline  inline __attribute__((__always_inline__))
+#elif defined(_MSC_VER)
+#  define magick_always_inline  __forceinline
+#else
+#  define magick_always_inline  inline
+#endif
+#if !defined(__clang__) && (defined(__GNUC__) && (__GNUC__ > 4))
+#  define magick_vectorize \
+  __attribute__((noinline,optimize("O3","tree-vectorize")))
+#elif defined(__clang__)
+#  define magick_vectorize  __attribute__((noinline))
+#else
+#  define magick_vectorize
+#endif
+#if defined(__x86_64__) && defined(__clang__)
+#  define magick_vectorize_avx2 \
+  __attribute__((noinline,target("avx2,fma")))
+#elif defined(__x86_64__) && !defined(__clang__) && \
+    (defined(__GNUC__) && (__GNUC__ > 4))
+#  define magick_vectorize_avx2 \
+  __attribute__((noinline,optimize("O3","tree-vectorize"),target("avx2,fma")))
+#elif defined(_MSC_VER) && !defined(__clang__) && !defined(__GNUC__) && \
+    defined(_M_X64)
+#  define magick_vectorize_avx2  __declspec(noinline)
+#endif
+#if defined(magick_vectorize_avx2)
+static MagickBooleanType CpuSupportsAvx2Fma(void)
+{
+#if defined(_MSC_VER) && !defined(__clang__) && !defined(__GNUC__)
+  int
+    info[4];
+
+  unsigned long long
+    xcr0;
+
+  __cpuid(info,0);
+  if (info[0] < 7)
+    return(MagickFalse);
+  __cpuidex(info,1,0);
+  /*
+    OSXSAVE is ECX bit 27, AVX is bit 28, and FMA is bit 12. XCR0 bits 1 and 2
+    are the XMM and YMM state the operating system must save.
+  */
+  if (((info[2] & (1 << 27)) == 0) || ((info[2] & (1 << 28)) == 0) ||
+      ((info[2] & (1 << 12)) == 0))
+    return(MagickFalse);
+  xcr0=_xgetbv(0);
+  if ((xcr0 & 6) != 6)
+    return(MagickFalse);
+  __cpuidex(info,7,0);
+  if ((info[1] & (1 << 5)) == 0)
+    return(MagickFalse);
+  return(MagickTrue);
+#else
+  if ((__builtin_cpu_supports("avx2") != 0) &&
+      (__builtin_cpu_supports("fma") != 0))
+    return(MagickTrue);
+  return(MagickFalse);
+#endif
+}
+#endif
+
 static MagickBooleanType HorizontalFilter(
   const ResizeFilter *magick_restrict resize_filter,
   const Image *magick_restrict image,Image *magick_restrict resize_image,
@@ -3578,6 +3658,341 @@ static MagickBooleanType HorizontalFilter(
   return(status);
 }
 
+/*
+  Accumulate one filter tap across a tile of columns.
+
+  The RGB and RGBA kernels address every channel directly. The gathered
+  kernels take any other subset of filtered channels; the stride 3 and 4
+  variants let the compiler unroll the gather. VerticalFilterInfo selects one
+  kernel per call, and the AVX2 entry points only when the CPU supports AVX2
+  and FMA. A fused multiply-add and a separate multiply plus add can round to
+  adjacent quanta when the sum sits on a half-quantum boundary.
+*/
+#define VerticalFilterTile  16
+
+typedef void
+  (*VerticalFilterKernel)(double [MaxPixelChannels][VerticalFilterTile],
+    const Quantum *magick_restrict,const double,const ssize_t,const ssize_t,
+    const ssize_t *magick_restrict);
+
+typedef struct _VerticalFilterInfo
+{
+  VerticalFilterKernel
+    kernel;
+
+  PixelChannel
+    active_channel[MaxPixelChannels],
+    copy_channel[MaxPixelChannels];
+
+  ssize_t
+    active[MaxPixelChannels],
+    active_channels,
+    copy[MaxPixelChannels],
+    copy_channels;
+} VerticalFilterInfo;
+
+static magick_always_inline void VerticalFilterGatherTap(
+  double acc[MaxPixelChannels][VerticalFilterTile],
+  const Quantum *magick_restrict p,const double weight,const ssize_t stride,
+  const ssize_t active_channels,const ssize_t *magick_restrict active)
+{
+  ssize_t
+    a,
+    t;
+
+  for (a=0; a < active_channels; a++)
+  {
+    const Quantum
+      *magick_restrict r;
+
+    double
+      *magick_restrict sum;
+
+    Quantum
+      lane[VerticalFilterTile];
+
+    r=p+active[a];
+    sum=acc[a];
+    for (t=0; t < VerticalFilterTile; t++)
+      lane[t]=r[t*stride];
+    for (t=0; t < VerticalFilterTile; t++)
+      sum[t]+=weight*(double) lane[t];
+  }
+}
+
+static magick_always_inline void VerticalFilterRGBTap(
+  double acc[MaxPixelChannels][VerticalFilterTile],
+  const Quantum *magick_restrict p,const double weight)
+{
+  ssize_t
+    t;
+
+  for (t=0; t < VerticalFilterTile; t++)
+  {
+    acc[0][t]+=weight*(double) p[3*t];
+    acc[1][t]+=weight*(double) p[3*t+1];
+    acc[2][t]+=weight*(double) p[3*t+2];
+  }
+}
+
+static magick_always_inline void VerticalFilterRGBATap(
+  double acc[MaxPixelChannels][VerticalFilterTile],
+  const Quantum *magick_restrict p,const double weight)
+{
+  ssize_t
+    t;
+
+  for (t=0; t < VerticalFilterTile; t++)
+  {
+    acc[0][t]+=weight*(double) p[4*t];
+    acc[1][t]+=weight*(double) p[4*t+1];
+    acc[2][t]+=weight*(double) p[4*t+2];
+    acc[3][t]+=weight*(double) p[4*t+3];
+  }
+}
+
+static void VerticalFilterGather(
+  double acc[MaxPixelChannels][VerticalFilterTile],
+  const Quantum *magick_restrict p,const double weight,const ssize_t stride,
+  const ssize_t active_channels,const ssize_t *magick_restrict active)
+{
+  ssize_t
+    a,
+    t;
+
+  for (a=0; a < active_channels; a++)
+  {
+    const Quantum
+      *magick_restrict r;
+
+    double
+      *magick_restrict sum;
+
+    r=p+active[a];
+    sum=acc[a];
+    for (t=0; t < VerticalFilterTile; t++)
+      sum[t]+=weight*(double) r[t*stride];
+  }
+}
+
+static magick_vectorize void VerticalFilterGather3(
+  double acc[MaxPixelChannels][VerticalFilterTile],
+  const Quantum *magick_restrict p,const double weight,
+  const ssize_t magick_unused(stride),const ssize_t active_channels,
+  const ssize_t *magick_restrict active)
+{
+  magick_unreferenced(stride);
+  VerticalFilterGatherTap(acc,p,weight,3,active_channels,active);
+}
+
+static magick_vectorize void VerticalFilterGather4(
+  double acc[MaxPixelChannels][VerticalFilterTile],
+  const Quantum *magick_restrict p,const double weight,
+  const ssize_t magick_unused(stride),const ssize_t active_channels,
+  const ssize_t *magick_restrict active)
+{
+  magick_unreferenced(stride);
+  VerticalFilterGatherTap(acc,p,weight,4,active_channels,active);
+}
+
+static magick_vectorize void VerticalFilterRGB(
+  double acc[MaxPixelChannels][VerticalFilterTile],
+  const Quantum *magick_restrict p,const double weight,
+  const ssize_t magick_unused(stride),
+  const ssize_t magick_unused(active_channels),
+  const ssize_t *magick_restrict magick_unused(active))
+{
+  magick_unreferenced(stride);
+  magick_unreferenced(active_channels);
+  magick_unreferenced(active);
+  VerticalFilterRGBTap(acc,p,weight);
+}
+
+static magick_vectorize void VerticalFilterRGBA(
+  double acc[MaxPixelChannels][VerticalFilterTile],
+  const Quantum *magick_restrict p,const double weight,
+  const ssize_t magick_unused(stride),
+  const ssize_t magick_unused(active_channels),
+  const ssize_t *magick_restrict magick_unused(active))
+{
+  magick_unreferenced(stride);
+  magick_unreferenced(active_channels);
+  magick_unreferenced(active);
+  VerticalFilterRGBATap(acc,p,weight);
+}
+
+#if defined(magick_vectorize_avx2)
+static magick_vectorize_avx2 void VerticalFilterGather3AVX2(
+  double acc[MaxPixelChannels][VerticalFilterTile],
+  const Quantum *magick_restrict p,const double weight,
+  const ssize_t magick_unused(stride),const ssize_t active_channels,
+  const ssize_t *magick_restrict active)
+{
+  magick_unreferenced(stride);
+  VerticalFilterGatherTap(acc,p,weight,3,active_channels,active);
+}
+
+static magick_vectorize_avx2 void VerticalFilterGather4AVX2(
+  double acc[MaxPixelChannels][VerticalFilterTile],
+  const Quantum *magick_restrict p,const double weight,
+  const ssize_t magick_unused(stride),const ssize_t active_channels,
+  const ssize_t *magick_restrict active)
+{
+  magick_unreferenced(stride);
+  VerticalFilterGatherTap(acc,p,weight,4,active_channels,active);
+}
+
+static magick_vectorize_avx2 void VerticalFilterRGBAVX2(
+  double acc[MaxPixelChannels][VerticalFilterTile],
+  const Quantum *magick_restrict p,const double weight,
+  const ssize_t magick_unused(stride),
+  const ssize_t magick_unused(active_channels),
+  const ssize_t *magick_restrict magick_unused(active))
+{
+  magick_unreferenced(stride);
+  magick_unreferenced(active_channels);
+  magick_unreferenced(active);
+  VerticalFilterRGBTap(acc,p,weight);
+}
+
+static magick_vectorize_avx2 void VerticalFilterRGBAAVX2(
+  double acc[MaxPixelChannels][VerticalFilterTile],
+  const Quantum *magick_restrict p,const double weight,
+  const ssize_t magick_unused(stride),
+  const ssize_t magick_unused(active_channels),
+  const ssize_t *magick_restrict magick_unused(active))
+{
+  magick_unreferenced(stride);
+  magick_unreferenced(active_channels);
+  magick_unreferenced(active);
+  VerticalFilterRGBATap(acc,p,weight);
+}
+#endif
+
+static void GetVerticalFilterInfo(const Image *image,
+  const Image *resize_image,VerticalFilterInfo *info)
+{
+  ssize_t
+    channels,
+    i;
+
+  /*
+    Tile the rows when both images have the same number of channels and there
+    is no write mask. A blended channel needs the per-column loop. Copy channels
+    are taken from the nearest source pixel.
+  */
+  (void) memset(info,0,sizeof(*info));
+  channels=(ssize_t) GetPixelChannels(image);
+  if ((channels != (ssize_t) GetPixelChannels(resize_image)) ||
+      (GetPixelWriteMaskTraits(resize_image) != UndefinedPixelTrait))
+    return;
+  for (i=0; i < channels; i++)
+  {
+    PixelChannel
+      channel;
+
+    PixelTrait
+      resize_traits,
+      traits;
+
+    channel=GetPixelChannelChannel(image,i);
+    traits=GetPixelChannelTraits(image,channel);
+    resize_traits=GetPixelChannelTraits(resize_image,channel);
+    if ((traits == UndefinedPixelTrait) ||
+        (resize_traits == UndefinedPixelTrait))
+      continue;
+    if ((resize_traits & CopyPixelTrait) != 0)
+      {
+        info->copy_channel[info->copy_channels]=channel;
+        info->copy[info->copy_channels++]=i;
+        continue;
+      }
+    if ((resize_traits & BlendPixelTrait) != 0)
+      return;
+    info->active_channel[info->active_channels]=channel;
+    info->active[info->active_channels++]=i;
+  }
+  if (info->active_channels == 0)
+    return;
+  info->kernel=VerticalFilterGather;
+  if (channels == 3)
+    info->kernel=info->active_channels == 3 ? VerticalFilterRGB :
+      VerticalFilterGather3;
+  if (channels == 4)
+    info->kernel=info->active_channels == 4 ? VerticalFilterRGBA :
+      VerticalFilterGather4;
+#if defined(magick_vectorize_avx2)
+  if (((channels == 3) || (channels == 4)) &&
+      (CpuSupportsAvx2Fma() != MagickFalse))
+    {
+      if (channels == 3)
+        info->kernel=info->active_channels == 3 ? VerticalFilterRGBAVX2 :
+          VerticalFilterGather3AVX2;
+      else
+        info->kernel=info->active_channels == 4 ? VerticalFilterRGBAAVX2 :
+          VerticalFilterGather4AVX2;
+    }
+#endif
+}
+
+static ssize_t VerticalFilterTiles(const VerticalFilterInfo *info,
+  const Image *magick_restrict image,Image *magick_restrict resize_image,
+  const ContributionInfo *magick_restrict contribution,const ssize_t n,
+  const ssize_t nearest,const Quantum *magick_restrict p,
+  Quantum *magick_restrict q)
+{
+  ssize_t
+    channels,
+    x;
+
+  /*
+    Filter whole tiles of columns and return the number of columns done.
+  */
+  if (info->kernel == (VerticalFilterKernel) NULL)
+    return(0);
+  channels=(ssize_t) GetPixelChannels(image);
+  for (x=0; (x+VerticalFilterTile) <= (ssize_t) resize_image->columns;
+       x+=VerticalFilterTile)
+  {
+    double
+      acc[MaxPixelChannels][VerticalFilterTile];
+
+    ssize_t
+      a,
+      j,
+      t;
+
+    (void) memset(acc,0,sizeof(double)*(size_t) info->active_channels*
+      VerticalFilterTile);
+    for (j=0; j < n; j++)
+    {
+      const Quantum
+        *magick_restrict r;
+
+      r=p+((contribution[j].pixel-contribution[0].pixel)*(ssize_t)
+        image->columns+x)*channels;
+      if ((j+1) < n)
+        MagickCachePrefetch(r+(ssize_t) image->columns*channels,0,1);
+      info->kernel(acc,r,contribution[j].weight,channels,
+        info->active_channels,info->active);
+    }
+    for (t=0; t < VerticalFilterTile; t++)
+    {
+      Quantum
+        *magick_restrict s;
+
+      s=q+(x+t)*channels;
+      for (a=0; a < info->active_channels; a++)
+        SetPixelChannel(resize_image,info->active_channel[a],
+          ClampToQuantum(acc[a][t]),s);
+      for (a=0; a < info->copy_channels; a++)
+        SetPixelChannel(resize_image,info->copy_channel[a],p[(nearest*
+          (ssize_t) image->columns+x+t)*channels+info->copy[a]],s);
+    }
+  }
+  return(x);
+}
+
 static MagickBooleanType VerticalFilter(
   const ResizeFilter *magick_restrict resize_filter,
   const Image *magick_restrict image,Image *magick_restrict resize_image,
@@ -3603,6 +4018,9 @@ static MagickBooleanType VerticalFilter(
 
   ssize_t
     y;
+
+  VerticalFilterInfo
+    tile_info;
 
   /*
     Apply filter to resize vertically from image to resize image.
@@ -3631,6 +4049,7 @@ static MagickBooleanType VerticalFilter(
   scale=MagickSafeReciprocal(scale);
   image_view=AcquireVirtualCacheView(image,exception);
   resize_view=AcquireAuthenticCacheView(resize_image,exception);
+  GetVerticalFilterInfo(image,resize_image,&tile_info);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(image,resize_image,resize_image->rows,1)
@@ -3715,7 +4134,11 @@ static MagickBooleanType VerticalFilter(
       traits_map[c]=GetPixelChannelTraits(image,channel_map[c]);
       resize_traits_map[c]=GetPixelChannelTraits(resize_image,channel_map[c]);
     }
-    for (x=0; x < (ssize_t) resize_image->columns; x++)
+    x=VerticalFilterTiles(&tile_info,image,resize_image,contribution,n,
+      (ssize_t) (MagickMin(MagickMax(bisect,(double) start),(double) stop-1.0)+
+      0.5)-start,p,q);
+    q+=(ptrdiff_t) x*resize_channels;
+    for ( ; x < (ssize_t) resize_image->columns; x++)
     {
       ssize_t
         i,

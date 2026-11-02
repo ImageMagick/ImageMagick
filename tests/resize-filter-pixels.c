@@ -30,13 +30,17 @@
   Compare every Lanczos sample with the stored Q16 non-HDRI reference.
 
   Each filter tap is pixel += weight * sample in double, then ClampToQuantum
-  adds one half and truncates. A compiler may contract that into a fused
-  multiply-add, as GCC and Clang do on arm64, and a fused and a separate
-  multiply plus add can fall on opposite sides of the half-quantum
-  boundary. A filtered sample may therefore differ by one quantum. A copied
-  channel is never filtered and must match exactly: the alpha of the copy
-  case, the write mask of the mask case, and the channels outside the
-  channel mask of the red-only and cyan-only cases.
+  adds one half and truncates. The tiled kernels use fused multiply-adds on
+  CPUs with AVX2 and FMA, and a compiler may contract the scalar loops the
+  same way, as GCC and Clang do on arm64. A fused and a separate multiply
+  plus add can fall on opposite sides of the half-quantum boundary, so a
+  filtered sample may differ by one quantum. The 20x15 to 8x4 case leaves
+  fewer columns than one 16-column tile, so its vertical pass runs only the
+  scalar loop. The 40x30 cases run the four-channel kernel (CMYK), the
+  stride 3 and 4 gathers (red-only and cyan-only), and the generic gather
+  (gray). A copied channel is never filtered and must match exactly: the
+  alpha of the copy case, the write mask of the mask case, and the channels
+  outside the channel mask of the red-only and cyan-only cases.
 
   tests/validate.c cannot express this contract. It round-trips image
   formats and compares them with root-mean-square error, accepting a
