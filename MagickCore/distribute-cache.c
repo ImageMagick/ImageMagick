@@ -1049,49 +1049,6 @@ static int DeriveDPCKey(const uint64_t session_key,const char label,
     sizeof(info),key,DPCMacLength));
 }
 
-static inline uint64_t LoadDPCWord(const unsigned char *p)
-{
-  return(((uint64_t) p[0]) | ((uint64_t) p[1] << 8) |
-    ((uint64_t) p[2] << 16) | ((uint64_t) p[3] << 24) |
-    ((uint64_t) p[4] << 32) | ((uint64_t) p[5] << 40) |
-    ((uint64_t) p[6] << 48) | ((uint64_t) p[7] << 56));
-}
-
-static void SplitMix64Keystream(const unsigned char *stream_key,
-  const unsigned char *mac,const MagickSizeType offset,unsigned char *data,
-  const size_t length)
-{
-  size_t
-    i;
-
-  uint64_t
-    block,
-    seed,
-    z;
-
-  /*
-    XOR data with the SplitMix64 keystream starting at byte 'offset'.
-  */
-  seed=LoadDPCWord(stream_key) ^ LoadDPCWord(mac);
-  block=(uint64_t) (offset >> 3);
-  z=0;
-  for (i=0; i < length; i++)
-  {
-    size_t
-      j = (size_t) ((offset+i) & 7);
-
-    if ((i == 0) || (j == 0))
-      {
-        block=(uint64_t) ((offset+i) >> 3);
-        z=seed+(block+1)*0x9e3779b97f4a7c15ULL;
-        z=(z ^ (z >> 30))*0xbf58476d1ce4e5b9ULL;
-        z=(z ^ (z >> 27))*0x94d049bb133111ebULL;
-        z^=z >> 31;
-      }
-    data[i]^=(unsigned char) (z >> (j*8));
-  }
-}
-
 static inline void WipeDPCKey(unsigned char *key,const size_t length)
 {
   volatile unsigned char
@@ -1102,6 +1059,53 @@ static inline void WipeDPCKey(unsigned char *key,const size_t length)
 
   for (i=0; i < length; i++)
     p[i]=0;
+}
+
+static void DPCKeystream(const unsigned char *stream_key,
+  const unsigned char *mac,const MagickSizeType offset,unsigned char *data,
+  const size_t length)
+{
+  SHA256Hash
+    block_hash,
+    keyed_hash;
+
+  size_t
+    i,
+    k;
+
+  uint64_t
+    block;
+
+  unsigned char
+    counter[8],
+    keystream[32];
+
+  /*
+    XOR data with keystream block n = SHA-256(stream key || mac || n),
+  */
+  InitializeSHA256Hash(&keyed_hash);
+  UpdateSHA256Hash(&keyed_hash,stream_key,DPCMacLength);
+  UpdateSHA256Hash(&keyed_hash,mac,DPCMacLength);
+  (void) memset(keystream,0,sizeof(keystream));
+  for (i=0; i < length; i++)
+  {
+    size_t
+      j = (size_t) ((offset+i) & 31);
+
+    if ((i == 0) || (j == 0))
+      {
+        block=(uint64_t) ((offset+i) >> 5);
+        for (k=0; k < sizeof(counter); k++)
+          counter[k]=(unsigned char) (block >> (8*k));
+        block_hash=keyed_hash;
+        UpdateSHA256Hash(&block_hash,counter,sizeof(counter));
+        FinalizeSHA256Hash(&block_hash,keystream);
+      }
+    data[i]^=keystream[j];
+  }
+  WipeDPCKey(keystream,sizeof(keystream));
+  WipeDPCKey((unsigned char *) &block_hash,sizeof(block_hash));
+  WipeDPCKey((unsigned char *) &keyed_hash,sizeof(keyed_hash));
 }
 
 static inline int mac_compare(const unsigned char *a,const unsigned char *b,
@@ -1170,7 +1174,7 @@ static inline MagickOffsetType dpc_send_mac(SOCKET_TYPE file,
         sizeof(scratch));
 
     (void) memcpy(scratch,p+offset,chunk);
-    SplitMix64Keystream(stream_key,mac,offset,scratch,chunk);
+    DPCKeystream(stream_key,mac,offset,scratch,chunk);
     status=dpc_send(file,(MagickSizeType) chunk,scratch);
     if (status != (MagickOffsetType) chunk)
       break;
@@ -1213,7 +1217,7 @@ static inline MagickOffsetType dpc_receive_mac(SOCKET_TYPE file,
   status=DeriveDPCKey(session_key,'e',stream_key);
   if (status == 0)
     {
-      SplitMix64Keystream(stream_key,received_mac,0,message,(size_t) length);
+      DPCKeystream(stream_key,received_mac,0,message,(size_t) length);
       status=DeriveDPCKey(session_key,'m',mac_key);
     }
   if (status == 0)
