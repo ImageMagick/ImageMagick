@@ -1081,7 +1081,7 @@ static void DPCKeystream(const unsigned char *stream_key,
     keystream[32];
 
   /*
-    XOR data with keystream block n = SHA-256(stream key || mac || n),
+    XOR data with keystream block n = SHA-256(stream key || mac || n).
   */
   InitializeSHA256Hash(&keyed_hash);
   UpdateSHA256Hash(&keyed_hash,stream_key,DPCMacLength);
@@ -1151,7 +1151,7 @@ static inline MagickOffsetType dpc_send_mac(SOCKET_TYPE file,
     return(-1);
   if ((DeriveDPCKey(session_key,'m',mac_key) != 0) ||
       (DeriveDPCKey(session_key,'e',stream_key) != 0) ||
-      (ComputeHMACSHA256Mac(mac_key,sizeof(mac_key),message,(size_t) length, mac,sizeof(mac)) != 0))
+      (ComputeHMACSHA256Mac(mac_key,sizeof(mac_key),message,(size_t) length,mac,sizeof(mac)) != 0))
     {
       WipeDPCKey(mac_key,sizeof(mac_key));
       WipeDPCKey(stream_key,sizeof(stream_key));
