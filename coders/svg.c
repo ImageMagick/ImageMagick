@@ -3958,7 +3958,9 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
             active=MagickFalse;
           }
         (void) WriteBlobString(image,"<desc>");
-        (void) WriteBlobString(image,keyword+1);
+        escaped_token=EscapeSVGAttributeValue(keyword+1);
+        (void) WriteBlobString(image,escaped_token);
+        escaped_token=DestroyString(escaped_token);
         for ( ; (*q != '\n') && (*q != '\0'); q++)
           switch (*q)
           {
