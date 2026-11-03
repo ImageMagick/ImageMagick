@@ -3864,10 +3864,11 @@ MagickExport Image *ResizeImage(const Image *image,const size_t columns,
       return(DestroyImage(resize_image));
     }
   /*
-    Resize image.
+    Resize image. A new canvas has no pixels to protect, so do not clip these
+    rows against uninitialized cache memory.
   */
-  filter_image->mask_trait=UpdatePixelTrait;
-  resize_image->mask_trait=UpdatePixelTrait;
+  filter_image->mask_trait=UndefinedPixelTrait;
+  resize_image->mask_trait=UndefinedPixelTrait;
   offset=0;
   if (x_factor > y_factor)
     {
