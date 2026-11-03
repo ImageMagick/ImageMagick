@@ -333,7 +333,7 @@ am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(codersdir)" \
 	"$(DESTDIR)$(MagickWandincdir)" "$(DESTDIR)$(includedir)" \
 	"$(DESTDIR)$(magickppincdir)" "$(DESTDIR)$(magickpptopincdir)"
 am__EXEEXT_2 = tests/validate$(EXEEXT) tests/drawtest$(EXEEXT) \
-	tests/wandtest$(EXEEXT)
+	tests/wandtest$(EXEEXT) tests/resize-filter-pixels$(EXEEXT)
 am__EXEEXT_3 = Magick++/demo/analyze$(EXEEXT) \
 	Magick++/demo/button$(EXEEXT) Magick++/demo/demo$(EXEEXT) \
 	Magick++/demo/detrans$(EXEEXT) Magick++/demo/flip$(EXEEXT) \
@@ -2165,6 +2165,16 @@ tests_drawtest_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(tests_drawtest_LDFLAGS) $(LDFLAGS) -o \
 	$@
+am_tests_resize_filter_pixels_OBJECTS =  \
+	tests/resize_filter_pixels-resize-filter-pixels.$(OBJEXT)
+tests_resize_filter_pixels_OBJECTS =  \
+	$(am_tests_resize_filter_pixels_OBJECTS)
+tests_resize_filter_pixels_DEPENDENCIES = $(MAGICKCORE_LIBS) \
+	$(am__DEPENDENCIES_1)
+tests_resize_filter_pixels_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(AM_CFLAGS) $(CFLAGS) $(tests_resize_filter_pixels_LDFLAGS) \
+	$(LDFLAGS) -o $@
 am_tests_validate_OBJECTS = tests/validate-validate.$(OBJEXT)
 tests_validate_OBJECTS = $(am_tests_validate_OBJECTS)
 tests_validate_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS) \
@@ -2657,6 +2667,7 @@ am__depfiles_remade = ./$(DEPDIR)/dummy.Po \
 	filters/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-analyze.Plo \
 	filters/$(DEPDIR)/analyze_la-analyze.Plo \
 	tests/$(DEPDIR)/drawtest-drawtest.Po \
+	tests/$(DEPDIR)/resize_filter_pixels-resize-filter-pixels.Po \
 	tests/$(DEPDIR)/validate-validate.Po \
 	tests/$(DEPDIR)/wandtest-wandtest.Po \
 	utilities/$(DEPDIR)/magick.Po
@@ -2793,8 +2804,10 @@ SOURCES = $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_
 	$(Magick___tests_morphImages_SOURCES) \
 	$(Magick___tests_readWriteBlob_SOURCES) \
 	$(Magick___tests_readWriteImages_SOURCES) \
-	$(tests_drawtest_SOURCES) $(tests_validate_SOURCES) \
-	$(tests_wandtest_SOURCES) $(utilities_magick_SOURCES) \
+	$(tests_drawtest_SOURCES) \
+	$(tests_resize_filter_pixels_SOURCES) \
+	$(tests_validate_SOURCES) $(tests_wandtest_SOURCES) \
+	$(utilities_magick_SOURCES) \
 	$(nodist_EXTRA_utilities_magick_SOURCES)
 DIST_SOURCES = $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES) \
 	$(am__MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES_DIST) \
@@ -2891,8 +2904,10 @@ DIST_SOURCES = $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUF
 	$(Magick___tests_morphImages_SOURCES) \
 	$(Magick___tests_readWriteBlob_SOURCES) \
 	$(Magick___tests_readWriteImages_SOURCES) \
-	$(tests_drawtest_SOURCES) $(tests_validate_SOURCES) \
-	$(tests_wandtest_SOURCES) $(am__utilities_magick_SOURCES_DIST)
+	$(tests_drawtest_SOURCES) \
+	$(tests_resize_filter_pixels_SOURCES) \
+	$(tests_validate_SOURCES) $(tests_wandtest_SOURCES) \
+	$(am__utilities_magick_SOURCES_DIST)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -6255,7 +6270,8 @@ TESTS_CPPFLAGS = $(AM_CPPFLAGS)
 TESTS_CHECK_PGRMS = \
   tests/validate \
   tests/drawtest \
-  tests/wandtest
+  tests/wandtest \
+  tests/resize-filter-pixels
 
 tests_validate_SOURCES = tests/validate.c tests/validate.h
 tests_validate_CPPFLAGS = $(TESTS_CPPFLAGS)
@@ -6269,6 +6285,10 @@ tests_wandtest_SOURCES = tests/wandtest.c
 tests_wandtest_CPPFLAGS = $(TESTS_CPPFLAGS)
 tests_wandtest_LDFLAGS = $(LDFLAGS)
 tests_wandtest_LDADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
+tests_resize_filter_pixels_SOURCES = tests/resize-filter-pixels.c
+tests_resize_filter_pixels_CPPFLAGS = $(TESTS_CPPFLAGS)
+tests_resize_filter_pixels_LDFLAGS = $(LDFLAGS)
+tests_resize_filter_pixels_LDADD = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 TESTS_XFAIL_TESTS = 
 TESTS_TESTS = \
   tests/cli-colorspace.tap \
@@ -6295,6 +6315,7 @@ TESTS_TESTS = \
   tests/validate-montage.tap \
   tests/validate-stream.tap \
   tests/drawtest.tap \
+  tests/resize-filter-pixels.tap \
   tests/wandtest.tap
 
 TESTS_EXTRA_DIST = \
@@ -6308,10 +6329,12 @@ TESTS_EXTRA_DIST = \
   tests/input_gray.miff \
   tests/input_truecolor.miff \
   tests/sequence.miff \
+  tests/resize-filter-pixels.q16.txt \
   $(TESTS_TESTS)
 
 TESTS_CLEANFILES = \
-  tests/*_out.*
+  tests/*_out.* \
+  tests/resize-filter-pixels.out
 
 @WITH_PERL_TRUE@PERLMAGICK = PerlMagick
 @WITH_PERL_TRUE@PERLMAKEMAKER = $(PERLMAGICK)/Makefile.PL
@@ -8337,6 +8360,12 @@ tests/drawtest-drawtest.$(OBJEXT): tests/$(am__dirstamp) \
 tests/drawtest$(EXEEXT): $(tests_drawtest_OBJECTS) $(tests_drawtest_DEPENDENCIES) $(EXTRA_tests_drawtest_DEPENDENCIES) tests/$(am__dirstamp)
 	@rm -f tests/drawtest$(EXEEXT)
 	$(AM_V_CCLD)$(tests_drawtest_LINK) $(tests_drawtest_OBJECTS) $(tests_drawtest_LDADD) $(LIBS)
+tests/resize_filter_pixels-resize-filter-pixels.$(OBJEXT):  \
+	tests/$(am__dirstamp) tests/$(DEPDIR)/$(am__dirstamp)
+
+tests/resize-filter-pixels$(EXEEXT): $(tests_resize_filter_pixels_OBJECTS) $(tests_resize_filter_pixels_DEPENDENCIES) $(EXTRA_tests_resize_filter_pixels_DEPENDENCIES) tests/$(am__dirstamp)
+	@rm -f tests/resize-filter-pixels$(EXEEXT)
+	$(AM_V_CCLD)$(tests_resize_filter_pixels_LINK) $(tests_resize_filter_pixels_OBJECTS) $(tests_resize_filter_pixels_LDADD) $(LIBS)
 tests/validate-validate.$(OBJEXT): tests/$(am__dirstamp) \
 	tests/$(DEPDIR)/$(am__dirstamp)
 
@@ -8871,6 +8900,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@filters/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-analyze.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@filters/$(DEPDIR)/analyze_la-analyze.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/drawtest-drawtest.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/resize_filter_pixels-resize-filter-pixels.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/validate-validate.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/wandtest-wandtest.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@utilities/$(DEPDIR)/magick.Po@am__quote@ # am--include-marker
@@ -11796,6 +11826,20 @@ tests/drawtest-drawtest.obj: tests/drawtest.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_drawtest_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tests/drawtest-drawtest.obj `if test -f 'tests/drawtest.c'; then $(CYGPATH_W) 'tests/drawtest.c'; else $(CYGPATH_W) '$(srcdir)/tests/drawtest.c'; fi`
 
+tests/resize_filter_pixels-resize-filter-pixels.o: tests/resize-filter-pixels.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_resize_filter_pixels_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tests/resize_filter_pixels-resize-filter-pixels.o -MD -MP -MF tests/$(DEPDIR)/resize_filter_pixels-resize-filter-pixels.Tpo -c -o tests/resize_filter_pixels-resize-filter-pixels.o `test -f 'tests/resize-filter-pixels.c' || echo '$(srcdir)/'`tests/resize-filter-pixels.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/resize_filter_pixels-resize-filter-pixels.Tpo tests/$(DEPDIR)/resize_filter_pixels-resize-filter-pixels.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tests/resize-filter-pixels.c' object='tests/resize_filter_pixels-resize-filter-pixels.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_resize_filter_pixels_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tests/resize_filter_pixels-resize-filter-pixels.o `test -f 'tests/resize-filter-pixels.c' || echo '$(srcdir)/'`tests/resize-filter-pixels.c
+
+tests/resize_filter_pixels-resize-filter-pixels.obj: tests/resize-filter-pixels.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_resize_filter_pixels_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tests/resize_filter_pixels-resize-filter-pixels.obj -MD -MP -MF tests/$(DEPDIR)/resize_filter_pixels-resize-filter-pixels.Tpo -c -o tests/resize_filter_pixels-resize-filter-pixels.obj `if test -f 'tests/resize-filter-pixels.c'; then $(CYGPATH_W) 'tests/resize-filter-pixels.c'; else $(CYGPATH_W) '$(srcdir)/tests/resize-filter-pixels.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/resize_filter_pixels-resize-filter-pixels.Tpo tests/$(DEPDIR)/resize_filter_pixels-resize-filter-pixels.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tests/resize-filter-pixels.c' object='tests/resize_filter_pixels-resize-filter-pixels.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_resize_filter_pixels_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tests/resize_filter_pixels-resize-filter-pixels.obj `if test -f 'tests/resize-filter-pixels.c'; then $(CYGPATH_W) 'tests/resize-filter-pixels.c'; else $(CYGPATH_W) '$(srcdir)/tests/resize-filter-pixels.c'; fi`
+
 tests/validate-validate.o: tests/validate.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_validate_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tests/validate-validate.o -MD -MP -MF tests/$(DEPDIR)/validate-validate.Tpo -c -o tests/validate-validate.o `test -f 'tests/validate.c' || echo '$(srcdir)/'`tests/validate.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/validate-validate.Tpo tests/$(DEPDIR)/validate-validate.Po
@@ -13577,6 +13621,7 @@ distclean: distclean-am
 	-rm -f filters/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-analyze.Plo
 	-rm -f filters/$(DEPDIR)/analyze_la-analyze.Plo
 	-rm -f tests/$(DEPDIR)/drawtest-drawtest.Po
+	-rm -f tests/$(DEPDIR)/resize_filter_pixels-resize-filter-pixels.Po
 	-rm -f tests/$(DEPDIR)/validate-validate.Po
 	-rm -f tests/$(DEPDIR)/wandtest-wandtest.Po
 	-rm -f utilities/$(DEPDIR)/magick.Po
@@ -14089,6 +14134,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f filters/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-analyze.Plo
 	-rm -f filters/$(DEPDIR)/analyze_la-analyze.Plo
 	-rm -f tests/$(DEPDIR)/drawtest-drawtest.Po
+	-rm -f tests/$(DEPDIR)/resize_filter_pixels-resize-filter-pixels.Po
 	-rm -f tests/$(DEPDIR)/validate-validate.Po
 	-rm -f tests/$(DEPDIR)/wandtest-wandtest.Po
 	-rm -f utilities/$(DEPDIR)/magick.Po

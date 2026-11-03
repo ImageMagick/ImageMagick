@@ -18,7 +18,8 @@ TESTS_CPPFLAGS = $(AM_CPPFLAGS)
 TESTS_CHECK_PGRMS = \
   tests/validate \
   tests/drawtest \
-  tests/wandtest
+  tests/wandtest \
+  tests/resize-filter-pixels
 
 tests_validate_SOURCES  = tests/validate.c tests/validate.h
 tests_validate_CPPFLAGS = $(TESTS_CPPFLAGS)
@@ -34,6 +35,11 @@ tests_wandtest_SOURCES  = tests/wandtest.c
 tests_wandtest_CPPFLAGS = $(TESTS_CPPFLAGS)
 tests_wandtest_LDFLAGS  = $(LDFLAGS)
 tests_wandtest_LDADD    = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
+
+tests_resize_filter_pixels_SOURCES = tests/resize-filter-pixels.c
+tests_resize_filter_pixels_CPPFLAGS = $(TESTS_CPPFLAGS)
+tests_resize_filter_pixels_LDFLAGS = $(LDFLAGS)
+tests_resize_filter_pixels_LDADD = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 
 TESTS_XFAIL_TESTS = 
 
@@ -63,6 +69,7 @@ TESTS_TESTS = \
   tests/validate-montage.tap \
   tests/validate-stream.tap \
   tests/drawtest.tap \
+  tests/resize-filter-pixels.tap \
   tests/wandtest.tap
 
 TESTS_EXTRA_DIST = \
@@ -76,7 +83,9 @@ TESTS_EXTRA_DIST = \
   tests/input_gray.miff \
   tests/input_truecolor.miff \
   tests/sequence.miff \
+  tests/resize-filter-pixels.q16.txt \
   $(TESTS_TESTS)
 
 TESTS_CLEANFILES = \
-  tests/*_out.*
+  tests/*_out.* \
+  tests/resize-filter-pixels.out
