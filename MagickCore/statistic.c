@@ -2894,6 +2894,38 @@ static inline void InsertPixelList(const Quantum pixel,PixelList *pixel_list)
   AddNodePixelList(pixel_list,index);
 }
 
+static inline void RemovePixelList(const Quantum pixel,PixelList *pixel_list)
+{
+  SkipList
+    *p;
+
+  size_t
+    search;
+
+  ssize_t
+    level;
+
+  unsigned short
+    index;
+
+  /*
+    Remove one instance of the pixel, unlink its node when none remain.
+  */
+  index=ScaleQuantumToShort(pixel);
+  p=(&pixel_list->skip_list);
+  if (--p->nodes[index].count != 0)
+    return;
+  search=65536UL;
+  for (level=p->level; level >= 0; level--)
+  {
+    while (p->nodes[search].next[level] < index)
+      search=p->nodes[search].next[level];
+    if (p->nodes[search].next[level] == index)
+      p->nodes[search].next[level]=p->nodes[index].next[level];
+  }
+  p->nodes[index].signature=0;
+}
+
 static void ResetPixelList(PixelList *pixel_list)
 {
   int
@@ -2925,17 +2957,28 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
     *image_view,
     *statistic_view;
 
+  double
+    *magick_restrict columns;
+
   Image
     *statistic_image;
 
   MagickBooleanType
-    status;
+    status,
+    use_pixel_list,
+    use_sums;
 
   MagickOffsetType
     progress;
 
   PixelList
     **magick_restrict pixel_list;
+
+  size_t
+    number_columns,
+    number_threads,
+    window_height,
+    window_width;
 
   ssize_t
     center,
@@ -2960,8 +3003,29 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
       statistic_image=DestroyImage(statistic_image);
       return((Image *) NULL);
     }
-  pixel_list=AcquirePixelListTLS(MagickMax(width,1),MagickMax(height,1));
-  if (pixel_list == (PixelList **) NULL)
+  /*
+    The neighborhood slides along each row: the median, mode, and nonpeak
+    statistics update a skip-list one column at a time, the others combine
+    the sums or extrema of each column of the neighborhood.
+  */
+  window_width=MagickMax(width,1);
+  window_height=MagickMax(height,1);
+  number_columns=image->columns+window_width;
+  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
+  use_pixel_list=((type == MedianStatistic) || (type == ModeStatistic) ||
+    (type == NonpeakStatistic)) ? MagickTrue : MagickFalse;
+  use_sums=((use_pixel_list == MagickFalse) &&
+    (type != ContrastStatistic) && (type != GradientStatistic) &&
+    (type != MaximumStatistic) && (type != MinimumStatistic)) ? MagickTrue :
+    MagickFalse;
+  pixel_list=(PixelList **) NULL;
+  columns=(double *) NULL;
+  if (use_pixel_list != MagickFalse)
+    pixel_list=AcquirePixelListTLS(window_width,window_height);
+  else
+    columns=(double *) AcquireQuantumMemory(number_threads*number_columns,
+      4*sizeof(*columns));
+  if ((pixel_list == (PixelList **) NULL) && (columns == (double *) NULL))
     {
       statistic_image=DestroyImage(statistic_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
@@ -2969,9 +3033,8 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
   /*
     Make each pixel the min / max / median / mode / etc. of the neighborhood.
   */
-  center=(ssize_t) GetPixelChannels(image)*((ssize_t) image->columns+
-    MagickMax((ssize_t) width,1L))*(MagickMax((ssize_t) height,1)/2L)+(ssize_t)
-    GetPixelChannels(image)*(MagickMax((ssize_t) width,1L)/2L);
+  center=(ssize_t) GetPixelChannels(image)*((ssize_t) number_columns*
+    ((ssize_t) window_height/2L)+(ssize_t) window_width/2L);
   status=MagickTrue;
   progress=0;
   image_view=AcquireVirtualCacheView(image,exception);
@@ -2988,30 +3051,118 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
     const Quantum
       *magick_restrict p;
 
+    double
+      *magick_restrict maximums,
+      *magick_restrict minimums,
+      *magick_restrict squares,
+      *magick_restrict sums;
+
     Quantum
       *magick_restrict q;
 
     ssize_t
-      x;
+      i;
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) MagickMax(width,1)/2L),y-
-      (ssize_t) (MagickMax(height,1)/2L),image->columns+MagickMax(width,1),
-      MagickMax(height,1),exception);
+    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) window_width/2L),y-
+      (ssize_t) (window_height/2L),number_columns,window_height,exception);
     q=QueueCacheViewAuthenticPixels(statistic_view,0,y,statistic_image->columns,      1,exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
         status=MagickFalse;
         continue;
       }
-    for (x=0; x < (ssize_t) statistic_image->columns; x++)
+    sums=(double *) NULL;
+    squares=(double *) NULL;
+    minimums=(double *) NULL;
+    maximums=(double *) NULL;
+    if (columns != (double *) NULL)
+      {
+        sums=columns+4*(ssize_t) number_columns*id;
+        squares=sums+number_columns;
+        minimums=squares+number_columns;
+        maximums=minimums+number_columns;
+      }
+    for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
     {
       ssize_t
-        i;
+        u,
+        v,
+        x;
 
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      PixelChannel channel = GetPixelChannelChannel(image,i);
+      PixelTrait traits = GetPixelChannelTraits(image,channel);
+      PixelTrait statistic_traits=GetPixelChannelTraits(statistic_image,
+        channel);
+      if (((traits & UpdatePixelTrait) == 0) ||
+          ((statistic_traits & UpdatePixelTrait) == 0))
+        continue;
+      if ((statistic_traits & CopyPixelTrait) != 0)
+        {
+          for (x=0; x < (ssize_t) statistic_image->columns; x++)
+            SetPixelChannel(statistic_image,channel,p[center+(ssize_t)
+              GetPixelChannels(image)*x+i],q+(ssize_t)
+              GetPixelChannels(statistic_image)*x);
+          continue;
+        }
+      /*
+        Initialize the skip-list with the neighborhood of the first pixel, or
+        reduce each column of the neighborhoods of the row.
+      */
+      if (use_pixel_list != MagickFalse)
+        {
+          ResetPixelList(pixel_list[id]);
+          for (v=0; v < (ssize_t) window_height; v++)
+            for (u=0; u < (ssize_t) window_width; u++)
+              InsertPixelList(p[(ssize_t) GetPixelChannels(image)*(v*(ssize_t)
+                number_columns+u)+i],pixel_list[id]);
+        }
+      else
+        for (u=0; u < (ssize_t) number_columns; u++)
+        {
+          const Quantum
+            *magick_restrict pixels;
+
+          double
+            maximum,
+            minimum,
+            sum,
+            sum_squared;
+
+          pixels=p+(ssize_t) GetPixelChannels(image)*u+i;
+          if (use_sums != MagickFalse)
+            {
+              sum=0.0;
+              sum_squared=0.0;
+              for (v=0; v < (ssize_t) window_height; v++)
+              {
+                sum+=(double) pixels[0];
+                sum_squared+=(double) pixels[0]*(double) pixels[0];
+                pixels+=(ptrdiff_t) GetPixelChannels(image)*number_columns;
+              }
+              sums[u]=sum;
+              squares[u]=sum_squared;
+              continue;
+            }
+          minimum=(double) pixels[0];
+          maximum=(double) pixels[0];
+          for (v=0; v < (ssize_t) window_height; v++)
+          {
+            if ((double) pixels[0] < minimum)
+              minimum=(double) pixels[0];
+            if ((double) pixels[0] > maximum)
+              maximum=(double) pixels[0];
+            pixels+=(ptrdiff_t) GetPixelChannels(image)*number_columns;
+          }
+          minimums[u]=minimum;
+          maximums[u]=maximum;
+        }
+      for (x=0; x < (ssize_t) statistic_image->columns; x++)
       {
+        const Quantum
+          *magick_restrict pixels;
+
         double
           area,
           maximum,
@@ -3022,116 +3173,109 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
         Quantum
           pixel;
 
-        const Quantum
-          *magick_restrict pixels;
-
-        ssize_t
-          u;
-
-        ssize_t
-          v;
-
-        PixelChannel channel = GetPixelChannelChannel(image,i);
-        PixelTrait traits = GetPixelChannelTraits(image,channel);
-        PixelTrait statistic_traits=GetPixelChannelTraits(statistic_image,
-          channel);
-        if (((traits & UpdatePixelTrait) == 0) ||
-            ((statistic_traits & UpdatePixelTrait) == 0))
-          continue;
-        if (((statistic_traits & CopyPixelTrait) != 0) ||
-            (GetPixelWriteMask(image,p) <= (QuantumRange/2)))
+        pixels=p+(ssize_t) GetPixelChannels(image)*x;
+        if (GetPixelWriteMask(image,pixels) <= (QuantumRange/2))
+          SetPixelChannel(statistic_image,channel,pixels[center+i],q+
+            (ssize_t) GetPixelChannels(statistic_image)*x);
+        else
           {
-            SetPixelChannel(statistic_image,channel,p[center+i],q);
-            continue;
-          }
-        pixels=p;
-        area=0.0;
-        minimum=pixels[i];
-        maximum=pixels[i];
-        sum=0.0;
-        sum_squared=0.0;
-        ResetPixelList(pixel_list[id]);
-        for (v=0; v < (ssize_t) MagickMax(height,1); v++)
-        {
-          for (u=0; u < (ssize_t) MagickMax(width,1); u++)
-          {
-            if ((type == MedianStatistic) || (type == ModeStatistic) ||
-                (type == NonpeakStatistic))
+            area=(double) window_width*window_height;
+            minimum=0.0;
+            maximum=0.0;
+            sum=0.0;
+            sum_squared=0.0;
+            if (use_sums != MagickFalse)
+              for (u=x; u < (x+(ssize_t) window_width); u++)
               {
-                InsertPixelList(pixels[i],pixel_list[id]);
-                pixels+=(ptrdiff_t) GetPixelChannels(image);
-                continue;
+                sum+=sums[u];
+                sum_squared+=squares[u];
               }
-            area++;
-            if ((double) pixels[i] < minimum)
-              minimum=(double) pixels[i];
-            if ((double) pixels[i] > maximum)
-              maximum=(double) pixels[i];
-            sum+=(double) pixels[i];
-            sum_squared+=(double) pixels[i]*(double) pixels[i];
-            pixels+=(ptrdiff_t) GetPixelChannels(image);
+            else
+              if (use_pixel_list == MagickFalse)
+                {
+                  minimum=minimums[x];
+                  maximum=maximums[x];
+                  for (u=x+1; u < (x+(ssize_t) window_width); u++)
+                  {
+                    if (minimums[u] < minimum)
+                      minimum=minimums[u];
+                    if (maximums[u] > maximum)
+                      maximum=maximums[u];
+                  }
+                }
+            switch (type)
+            {
+              case ContrastStatistic:
+              {
+                pixel=ClampToQuantum(QuantumRange*MagickAbsoluteValue((maximum-
+                  minimum)*MagickSafeReciprocal(maximum+minimum)));
+                break;
+              }
+              case GradientStatistic:
+              {
+                pixel=ClampToQuantum(MagickAbsoluteValue(maximum-minimum));
+                break;
+              }
+              case MaximumStatistic:
+              {
+                pixel=ClampToQuantum(maximum);
+                break;
+              }
+              case MeanStatistic:
+              default:
+              {
+                pixel=ClampToQuantum(sum/area);
+                break;
+              }
+              case MedianStatistic:
+              {
+                GetMedianPixelList(pixel_list[id],&pixel);
+                break;
+              }
+              case MinimumStatistic:
+              {
+                pixel=ClampToQuantum(minimum);
+                break;
+              }
+              case ModeStatistic:
+              {
+                GetModePixelList(pixel_list[id],&pixel);
+                break;
+              }
+              case NonpeakStatistic:
+              {
+                GetNonpeakPixelList(pixel_list[id],&pixel);
+                break;
+              }
+              case RootMeanSquareStatistic:
+              {
+                pixel=ClampToQuantum(sqrt(sum_squared/area));
+                break;
+              }
+              case StandardDeviationStatistic:
+              {
+                pixel=ClampToQuantum(sqrt(sum_squared/area-(sum/area*sum/
+                  area)));
+                break;
+              }
+            }
+            SetPixelChannel(statistic_image,channel,pixel,q+(ssize_t)
+              GetPixelChannels(statistic_image)*x);
           }
-          pixels+=(ptrdiff_t) GetPixelChannels(image)*image->columns;
-        }
-        switch (type)
+        if ((use_pixel_list == MagickFalse) ||
+            ((x+1) >= (ssize_t) statistic_image->columns))
+          continue;
+        /*
+          Slide the skip-list neighborhood one column to the right.
+        */
+        for (v=0; v < (ssize_t) window_height; v++)
         {
-          case ContrastStatistic:
-          {
-            pixel=ClampToQuantum(QuantumRange*MagickAbsoluteValue((maximum-
-              minimum)*MagickSafeReciprocal(maximum+minimum)));
-            break;
-          }
-          case GradientStatistic:
-          {
-            pixel=ClampToQuantum(MagickAbsoluteValue(maximum-minimum));
-            break;
-          }
-          case MaximumStatistic:
-          {
-            pixel=ClampToQuantum(maximum);
-            break;
-          }
-          case MeanStatistic:
-          default:
-          {
-            pixel=ClampToQuantum(sum/area);
-            break;
-          }
-          case MedianStatistic:
-          {
-            GetMedianPixelList(pixel_list[id],&pixel);
-            break;
-          }
-          case MinimumStatistic:
-          {
-            pixel=ClampToQuantum(minimum);
-            break;
-          }
-          case ModeStatistic:
-          {
-            GetModePixelList(pixel_list[id],&pixel);
-            break;
-          }
-          case NonpeakStatistic:
-          {
-            GetNonpeakPixelList(pixel_list[id],&pixel);
-            break;
-          }
-          case RootMeanSquareStatistic:
-          {
-            pixel=ClampToQuantum(sqrt(sum_squared/area));
-            break;
-          }
-          case StandardDeviationStatistic:
-          {
-            pixel=ClampToQuantum(sqrt(sum_squared/area-(sum/area*sum/area)));
-            break;
-          }
+          InsertPixelList(pixels[(ssize_t) GetPixelChannels(image)*(v*
+            (ssize_t) number_columns+(ssize_t) window_width)+i],pixel_list[id]);
+          RemovePixelList(pixels[(ssize_t) GetPixelChannels(image)*v*
+            (ssize_t) number_columns+i],pixel_list[id]);
         }
-        SetPixelChannel(statistic_image,channel,pixel,q);
       }
-      p+=(ptrdiff_t) GetPixelChannels(image);
-      q+=(ptrdiff_t) GetPixelChannels(statistic_image);
     }
     if (SyncCacheViewAuthenticPixels(statistic_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -3151,7 +3295,10 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
   }
   statistic_view=DestroyCacheView(statistic_view);
   image_view=DestroyCacheView(image_view);
-  pixel_list=DestroyPixelListTLS(pixel_list);
+  if (columns != (double *) NULL)
+    columns=(double *) RelinquishMagickMemory(columns);
+  if (pixel_list != (PixelList **) NULL)
+    pixel_list=DestroyPixelListTLS(pixel_list);
   if (status == MagickFalse)
     statistic_image=DestroyImage(statistic_image);
   return(statistic_image);
