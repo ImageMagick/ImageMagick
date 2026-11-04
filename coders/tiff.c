@@ -4200,7 +4200,11 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       }
     if (compress_tag == COMPRESSION_CCITTFAX4)
       (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,(uint32) image->rows);
-    (void) SetQuantumEndian(image,quantum_info,LSBEndian);
+#if defined(WORDS_BIGENDIAN)
+    (void) SetQuantumEndian(image,quantum_info,MSBEndian);
+#else
+     (void) SetQuantumEndian(image,quantum_info,LSBEndian);
+#endif
     pixels=(unsigned char *) GetQuantumPixels(quantum_info);
     tiff_info.scanline=(unsigned char *) GetQuantumPixels(quantum_info);
     switch (photometric)
