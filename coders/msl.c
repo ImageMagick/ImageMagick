@@ -6905,6 +6905,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       if ((prop != (const char *) NULL)  &&
                           (LocaleCompare(prop,value) == 0))
                         {
+                          if (msl_info->image[j] == (Image *) NULL)
+                            break;
                           texture_image=CloneImage(msl_info->image[j],0,0,
                             MagickFalse,exception);
                           break;
