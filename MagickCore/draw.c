@@ -6764,6 +6764,29 @@ static MagickBooleanType TraceLine(PrimitiveInfo *primitive_info,
   return(MagickTrue);
 }
 
+static MagickBooleanType GetArcFlag(const char **path,MagickBooleanType *flag)
+{
+  const char
+    *p;
+
+  /*
+    An arc flag is a single 0 or 1 and need not be separated from the next
+    value, e.g. "a4 4 0 010 8".
+  */
+  p=(*path);
+  while (isspace((int) ((unsigned char) *p)) != 0)
+    p++;
+  if (*p == ',')
+    p++;
+  while (isspace((int) ((unsigned char) *p)) != 0)
+    p++;
+  if ((*p != '0') && (*p != '1'))
+    return(MagickFalse);
+  *flag=(*p == '1') ? MagickTrue : MagickFalse;
+  *path=p+1;
+  return(MagickTrue);
+}
+
 static ssize_t TracePath(MVGInfo *mvg_info,const char *path,
   ExceptionInfo *exception)
 {
@@ -6872,22 +6895,10 @@ static ssize_t TracePath(MVGInfo *mvg_info,const char *path,
           angle=GetDrawValue(token,&next_token);
           if (token == next_token)
             ThrowPointExpectedException(token,exception);
-          (void) GetNextToken(p,&p,MagickPathExtent,token);
-          if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
-            ThrowPointExpectedException(token,exception);
-          if (*token == ',')
-            (void) GetNextToken(p,&p,MagickPathExtent,token);
-          large_arc=StringToLong(token) != 0 ? MagickTrue : MagickFalse;
-          (void) GetNextToken(p,&p,MagickPathExtent,token);
-          if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
-            ThrowPointExpectedException(token,exception);
-          if (*token == ',')
-            (void) GetNextToken(p,&p,MagickPathExtent,token);
-          sweep=StringToLong(token) != 0 ? MagickTrue : MagickFalse;
-          if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
-            ThrowPointExpectedException(token,exception);
-          if (*token == ',')
-            (void) GetNextToken(p,&p,MagickPathExtent,token);
+          if (GetArcFlag(&p,&large_arc) == MagickFalse)
+            ThrowPointExpectedException(p,exception);
+          if (GetArcFlag(&p,&sweep) == MagickFalse)
+            ThrowPointExpectedException(p,exception);
           (void) GetNextToken(p,&p,MagickPathExtent,token);
           if (IsValidListChar((int) ((unsigned char) *token)) == MagickFalse)
             ThrowPointExpectedException(token,exception);
