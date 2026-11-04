@@ -3030,17 +3030,17 @@ static MagickBooleanType RenderMVGContent(Image *image,
             (void) GetNextToken(q,&q,extent,token);
             if (graphic_context[n]->clip_path != MagickFalse)
               break;
-            mvg_class=(const char *) GetValueFromSplayTree(macros,token);
-            if (mvg_class != (const char *) NULL)
-              {
-                (void) DrawPatternPath(image,draw_info,mvg_class,
-                  &graphic_context[n]->fill_pattern,exception);
-                break;
-              }
             (void) FormatLocaleString(pattern,MagickPathExtent,"%s",token);
             if (GetImageArtifact(image,pattern) != (const char *) NULL)
               {
                 (void) DrawPatternPath(image,draw_info,token,
+                  &graphic_context[n]->fill_pattern,exception);
+                break;
+              }
+            mvg_class=(const char *) GetValueFromSplayTree(macros,token);
+            if (mvg_class != (const char *) NULL)
+              {
+                (void) DrawPatternPath(image,draw_info,mvg_class,
                   &graphic_context[n]->fill_pattern,exception);
                 break;
               }
@@ -3803,17 +3803,17 @@ static MagickBooleanType RenderMVGContent(Image *image,
             (void) GetNextToken(q,&q,extent,token);
             if (graphic_context[n]->clip_path != MagickFalse)
               break;
-            mvg_class=(const char *) GetValueFromSplayTree(macros,token);
-            if (mvg_class != (const char *) NULL)
-              {
-                (void) DrawPatternPath(image,draw_info,mvg_class,
-                  &graphic_context[n]->stroke_pattern,exception);
-                break;
-              }
             (void) FormatLocaleString(pattern,MagickPathExtent,"%s",token);
             if (GetImageArtifact(image,pattern) != (const char *) NULL)
               {
                 (void) DrawPatternPath(image,draw_info,token,
+                  &graphic_context[n]->stroke_pattern,exception);
+                break;
+              }
+            mvg_class=(const char *) GetValueFromSplayTree(macros,token);
+            if (mvg_class != (const char *) NULL)
+              {
+                (void) DrawPatternPath(image,draw_info,mvg_class,
                   &graphic_context[n]->stroke_pattern,exception);
                 break;
               }
