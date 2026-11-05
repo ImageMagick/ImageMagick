@@ -144,6 +144,9 @@ static Quantum
     const size_t,ExceptionInfo *),
   *QueueAuthenticPixelsCache(Image *,const ssize_t,const ssize_t,const size_t,
     const size_t,ExceptionInfo *),
+  *QueueAuthenticPixelCacheNexusInternal(Image *,const ssize_t,const ssize_t,
+    const size_t,const size_t,const MagickBooleanType,NexusInfo **,
+    ExceptionInfo *),
   *SetPixelCacheNexusPixels(const CacheInfo *magick_restrict,const MapMode,
     const ssize_t,const ssize_t,const size_t,const size_t,
     const MagickBooleanType,NexusInfo *magick_restrict,ExceptionInfo *)
@@ -1410,12 +1413,13 @@ MagickPrivate Quantum *GetAuthenticPixelCacheNexus(Image *image,const ssize_t x,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  pixels=QueueAuthenticPixelCacheNexus(image,x,y,columns,rows,MagickTrue,
-    nexus_info,exception);
-  if (pixels == (Quantum *) NULL)
+  pixels=QueueAuthenticPixelCacheNexusInternal(image,x,y,columns,rows,
+    MagickTrue,&nexus_info,exception);
+  if ((pixels == (Quantum *) NULL) || (nexus_info == (NexusInfo *) NULL))
     return((Quantum *) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickCoreSignature);
+  assert(nexus_info->signature == MagickCoreSignature);
   if (nexus_info->authentic_pixel_cache != MagickFalse)
     return(pixels);
   if (ReadPixelCachePixels(cache_info,nexus_info,exception) == MagickFalse)
@@ -4347,12 +4351,40 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickPrivate Quantum *QueueAuthenticPixelCacheNexus(Image *image,
+
+static inline ssize_t GetPixelCacheNexusIndex(
+  const CacheInfo *magick_restrict cache_info,
+  const NexusInfo *magick_restrict nexus_info)
+{
+  const NexusInfo
+    *magick_restrict base;
+
+  size_t
+    number_nexus;
+
+  /*
+    Return the index of nexus_info within the nexus array owned by cache_info.
+  */
+  if ((cache_info == (const CacheInfo *) NULL) ||
+      (cache_info->nexus_info == (NexusInfo **) NULL) ||
+      (nexus_info == (const NexusInfo *) NULL))
+    return(-1);
+  base=(*cache_info->nexus_info);
+  number_nexus=2*cache_info->number_threads;
+  if ((nexus_info < base) || (nexus_info >= (base+number_nexus)))
+    return(-1);
+  if (cache_info->nexus_info[nexus_info-base] != nexus_info)
+    return(-1);
+  return((ssize_t) (nexus_info-base));
+}
+
+static Quantum *QueueAuthenticPixelCacheNexusInternal(Image *image,
   const ssize_t x,const ssize_t y,const size_t columns,const size_t rows,
-  const MagickBooleanType clone,NexusInfo *nexus_info,ExceptionInfo *exception)
+  const MagickBooleanType clone,NexusInfo **nexus_info,ExceptionInfo *exception)
 {
   CacheInfo
-    *magick_restrict cache_info;
+    *magick_restrict cache_info,
+    *magick_restrict source_info;
 
   MagickOffsetType
     offset;
@@ -4363,16 +4395,58 @@ MagickPrivate Quantum *QueueAuthenticPixelCacheNexus(Image *image,
   Quantum
     *magick_restrict pixels;
 
+  size_t
+    source_threads;
+
+  ssize_t
+    nexus_index;
+
   /*
     Validate pixel cache geometry.
   */
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   assert(image->cache != (Cache) NULL);
+  assert(nexus_info != (NexusInfo **) NULL);
+  source_info=(CacheInfo *) image->cache;
+  source_threads=source_info->number_threads;
+  nexus_index=GetPixelCacheNexusIndex(source_info,*nexus_info);
   cache_info=(CacheInfo *) GetImagePixelCache(image,clone,exception);
   if (cache_info == (Cache) NULL)
-    return((Quantum *) NULL);
+    {
+      if ((nexus_index >= 0) && ((CacheInfo *) image->cache != source_info))
+        *nexus_info=(NexusInfo *) NULL;  /* never hand back a stale nexus */
+      return((Quantum *) NULL);
+    }
   assert(cache_info->signature == MagickCoreSignature);
+  if ((nexus_index >= 0) && (cache_info != source_info))
+    {
+      NexusInfo
+        *magick_restrict live_nexus;
+
+      /*
+        The cache was replaced: resolve the nexus from the live cache.
+      */
+      live_nexus=(NexusInfo *) NULL;
+      if ((cache_info->nexus_info != (NexusInfo **) NULL) &&
+          (source_threads <= cache_info->number_threads))
+        {
+          if (nexus_index < (ssize_t) source_threads)
+            live_nexus=cache_info->nexus_info[nexus_index];
+          else
+            live_nexus=cache_info->nexus_info[nexus_index-(ssize_t)
+              source_threads]->virtual_nexus;
+        }
+      *nexus_info=live_nexus;
+      if (live_nexus == (NexusInfo *) NULL)
+        {
+          (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
+            "UnableToGetCacheNexus","`%s'",image->filename);
+          return((Quantum *) NULL);
+        }
+    }
+  if (*nexus_info == (NexusInfo *) NULL)
+    return((Quantum *) NULL);
   if ((columns == 0) || (rows == 0) ||
       (cache_info->columns == 0) || (cache_info->rows == 0) ||
       (x < 0) || (y < 0) ||
@@ -4404,8 +4478,16 @@ MagickPrivate Quantum *QueueAuthenticPixelCacheNexus(Image *image,
   pixels=SetPixelCacheNexusPixels(cache_info,WriteMode,x,y,columns,rows,
     ((image->channels & WriteMaskChannel) != 0) ||
     ((image->channels & CompositeMaskChannel) != 0) ? MagickTrue : MagickFalse,
-    nexus_info,exception);
+    *nexus_info,exception);
   return(pixels);
+}
+
+MagickPrivate Quantum *QueueAuthenticPixelCacheNexus(Image *image,
+  const ssize_t x,const ssize_t y,const size_t columns,const size_t rows,
+  const MagickBooleanType clone,NexusInfo *nexus_info,ExceptionInfo *exception)
+{
+  return(QueueAuthenticPixelCacheNexusInternal(image,x,y,columns,rows,clone,
+    &nexus_info,exception));
 }
 
 /*
