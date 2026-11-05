@@ -9,6 +9,7 @@ on:
     - configure
     - m4/version.m4
     - .github/build/windows/download-configure.sh
+    - .github/build/shared/create-portable.sh
     - .github/build/shared/create-sbom.py
     - .github/build/shared/download-dependencies.sh
     - .github/workflows/release.yml
@@ -16,6 +17,7 @@ on:
     branches:
     - main
     paths:
+    - .github/build/shared/create-portable.sh
     - .github/build/shared/create-sbom.py
     - .github/workflows/release.yml
 
@@ -593,19 +595,7 @@ jobs:
 
       - name: Create portable archive
         run: |
-          set -e
-          mkdir -p "$PACKAGE_NAME/bin" "$PACKAGE_NAME/etc" "$PACKAGE_NAME/share"
-          cp portable/usr/bin/magick "$PACKAGE_NAME/bin/"
-          for utility in compare composite conjure convert identify magick-script mogrify montage stream; do
-            ln -s magick "$PACKAGE_NAME/bin/$utility"
-          done
-          cp -a portable/usr/etc/ImageMagick-7 "$PACKAGE_NAME/etc/"
-          cp -a portable/usr/share/ImageMagick-7 "$PACKAGE_NAME/share/"
-          cp portable/usr/lib/ImageMagick-*/config-*/configure.xml "$PACKAGE_NAME/etc/ImageMagick-7/"
-          cp ChangeLog.md LICENSE "$PACKAGE_NAME/"
-          cp config/sRGB.icm "$PACKAGE_NAME/sRGB.icc"
-          mkdir -p artifacts
-          XZ_OPT="-9e" tar -cJf "artifacts/$PACKAGE_NAME.tar.xz" "$PACKAGE_NAME"
+          bash .github/build/shared/create-portable.sh
 
       - name: Create SBOM
         env:
@@ -704,19 +694,7 @@ jobs:
 
       - name: Create portable archive
         run: |
-          set -e
-          mkdir -p "$PACKAGE_NAME/bin" "$PACKAGE_NAME/etc" "$PACKAGE_NAME/share"
-          cp portable/usr/bin/magick "$PACKAGE_NAME/bin/"
-          for utility in compare composite conjure convert identify magick-script mogrify montage stream; do
-            ln -s magick "$PACKAGE_NAME/bin/$utility"
-          done
-          cp -a portable/usr/etc/ImageMagick-7 "$PACKAGE_NAME/etc/"
-          cp -a portable/usr/share/ImageMagick-7 "$PACKAGE_NAME/share/"
-          cp portable/usr/lib/ImageMagick-*/config-*/configure.xml "$PACKAGE_NAME/etc/ImageMagick-7/"
-          cp ChangeLog.md LICENSE "$PACKAGE_NAME/"
-          cp config/sRGB.icm "$PACKAGE_NAME/sRGB.icc"
-          mkdir -p artifacts
-          XZ_OPT="-9e" tar -cJf "artifacts/$PACKAGE_NAME.tar.xz" "$PACKAGE_NAME"
+          bash .github/build/shared/create-portable.sh
 
       - name: Create SBOM
         env:
@@ -799,20 +777,7 @@ jobs:
 
       - name: Create portable archive
         run: |
-          set -e
-          mkdir -p "$PACKAGE_NAME/bin" "$PACKAGE_NAME/etc" "$PACKAGE_NAME/share"
-          cp portable/usr/bin/magick "$PACKAGE_NAME/bin/"
-          codesign --force --sign - "$PACKAGE_NAME/bin/magick"
-          for utility in compare composite conjure convert identify magick-script mogrify montage stream; do
-            ln -s magick "$PACKAGE_NAME/bin/$utility"
-          done
-          cp -a portable/usr/etc/ImageMagick-7 "$PACKAGE_NAME/etc/"
-          cp -a portable/usr/share/ImageMagick-7 "$PACKAGE_NAME/share/"
-          cp portable/usr/lib/ImageMagick-*/config-*/configure.xml "$PACKAGE_NAME/etc/ImageMagick-7/"
-          cp ChangeLog.md LICENSE "$PACKAGE_NAME/"
-          cp config/sRGB.icm "$PACKAGE_NAME/sRGB.icc"
-          mkdir -p artifacts
-          COPYFILE_DISABLE=1 XZ_OPT="-9e" tar -cJf "artifacts/$PACKAGE_NAME.tar.xz" "$PACKAGE_NAME"
+          bash .github/build/shared/create-portable.sh
 
       - name: Create SBOM
         env:
