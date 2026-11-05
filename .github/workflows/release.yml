@@ -732,6 +732,102 @@ jobs:
           name: ImageMagick-${{needs.version.outputs.version}}-portable-Q${{matrix.quantum}}${{matrix.hdri_flag}}-linux-musl-${{matrix.architecture}}
           path: artifacts
 
+  macos_portable:
+    name: macOS portable Q${{matrix.quantum}}${{matrix.hdri_flag}}-arm64
+    runs-on: macos-15
+    needs:
+      - changelog
+      - version
+
+    strategy:
+      fail-fast: false
+      matrix:
+        quantum: [ 16, 8 ]
+        hdri: [ yes, no ]
+        exclude:
+          - quantum: 8
+            hdri: yes
+        include:
+          - hdri: yes
+            hdri_flag: -HDRI
+
+    env:
+      PACKAGE_NAME: ImageMagick-${{needs.version.outputs.version}}-portable-Q${{matrix.quantum}}${{matrix.hdri_flag}}-macos-arm64
+      HOMEBREW_NO_AUTO_UPDATE: 1
+
+    steps:
+      - name: Clone ImageMagick
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install dependencies
+        run: |
+          brew install autoconf automake libtool libomp pkgconf xz
+
+      - name: Download dependencies
+        run: |
+          bash .github/build/shared/download-dependencies.sh --dependencies-artifact macos-arm64-static.zip
+          mkdir -p /tmp/dependencies
+          mv Artifacts/include Artifacts/lib /tmp/dependencies/
+          rm /tmp/dependencies/lib/libintl.dylib
+
+      - name: Download ChangeLog.md
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 #v8.0.2
+        with:
+          name: ChangeLog
+
+      - name: Configure ImageMagick
+        env:
+          CC: clang
+          CXX: clang++
+          PKG_CONFIG_LIBDIR: /tmp/dependencies/lib/pkgconfig
+          PKG_CONFIG: pkg-config --static
+        run: |
+          openmp_prefix=$(brew --prefix libomp)
+          export CFLAGS="-O3"
+          export CXXFLAGS="$CFLAGS"
+          export CPPFLAGS="-I/tmp/dependencies/include -Xpreprocessor -fopenmp -I$openmp_prefix/include"
+          export LDFLAGS="-L/tmp/dependencies/lib -L$openmp_prefix/lib -Wl,-rpath,$openmp_prefix/lib"
+          export LIBS="-lomp"
+          ./configure --prefix=/usr --disable-installed --disable-shared --enable-static --without-modules --without-magick-plus-plus --without-perl --without-x --with-rsvg --with-quantum-depth=${{matrix.quantum}} --enable-hdri=${{matrix.hdri}}
+
+      - name: Build ImageMagick
+        run: |
+          make -j$(sysctl -n hw.logicalcpu)
+          make install DESTDIR="$GITHUB_WORKSPACE/portable"
+
+      - name: Create portable archive
+        run: |
+          set -e
+          mkdir -p "$PACKAGE_NAME/bin" "$PACKAGE_NAME/etc" "$PACKAGE_NAME/share"
+          cp portable/usr/bin/magick "$PACKAGE_NAME/bin/"
+          codesign --force --sign - "$PACKAGE_NAME/bin/magick"
+          for utility in compare composite conjure convert identify magick-script mogrify montage stream; do
+            ln -s magick "$PACKAGE_NAME/bin/$utility"
+          done
+          cp -a portable/usr/etc/ImageMagick-7 "$PACKAGE_NAME/etc/"
+          cp -a portable/usr/share/ImageMagick-7 "$PACKAGE_NAME/share/"
+          cp portable/usr/lib/ImageMagick-*/config-*/configure.xml "$PACKAGE_NAME/etc/ImageMagick-7/"
+          cp ChangeLog.md LICENSE "$PACKAGE_NAME/"
+          cp config/sRGB.icm "$PACKAGE_NAME/sRGB.icc"
+          mkdir -p artifacts
+          COPYFILE_DISABLE=1 XZ_OPT="-9e" tar -cJf "artifacts/$PACKAGE_NAME.tar.xz" "$PACKAGE_NAME"
+
+      - name: Create SBOM
+        env:
+          MAGICK_COMMIT: ${{github.sha}}
+          MAGICK_TIMESTAMP: ${{needs.version.outputs.timestamp}}
+          MAGICK_VERSION: ${{needs.version.outputs.version}}
+        run: |
+          python3 .github/build/shared/create-sbom.py "artifacts/$PACKAGE_NAME.cdx.json"
+
+      - name: Upload portable archive and SBOM
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 #v7.0.2
+        with:
+          name: ImageMagick-${{needs.version.outputs.version}}-portable-Q${{matrix.quantum}}${{matrix.hdri_flag}}-macos-arm64
+          path: artifacts
+
   source:
     name: Create source archive
     runs-on: ubuntu-24.04
@@ -811,6 +907,7 @@ jobs:
       - linux_app_image
       - linux_portable
       - linux_musl_portable
+      - macos_portable
       - windows_installer
       - windows_portable
       - windows_source
