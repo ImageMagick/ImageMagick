@@ -596,7 +596,6 @@ jobs:
           set -e
           mkdir -p "$PACKAGE_NAME/bin" "$PACKAGE_NAME/etc" "$PACKAGE_NAME/share"
           cp portable/usr/bin/magick "$PACKAGE_NAME/bin/"
-          strip "$PACKAGE_NAME/bin/magick"
           for utility in compare composite conjure convert identify magick-script mogrify montage stream; do
             ln -s magick "$PACKAGE_NAME/bin/$utility"
           done
@@ -646,13 +645,11 @@ jobs:
             cxx: clang++-18
             configure_options: ''
             link_options: ''
-            strip: strip
           - architecture: arm64
             cc: clang-18 --target=aarch64-alpine-linux-musl --sysroot=/usr/aarch64-alpine-linux-musl
             cxx: clang++-18 --target=aarch64-alpine-linux-musl --sysroot=/usr/aarch64-alpine-linux-musl
             configure_options: --host=aarch64-alpine-linux-musl
             link_options: -L/usr/aarch64-alpine-linux-musl/usr/lib
-            strip: aarch64-alpine-linux-musl-strip
           - hdri: yes
             hdri_flag: -HDRI
 
@@ -704,7 +701,6 @@ jobs:
           ./configure ${{matrix.configure_options}} --prefix=/usr --disable-installed --disable-shared --enable-static --without-modules --without-magick-plus-plus --without-perl --without-x --with-rsvg --with-quantum-depth=${{matrix.quantum}} --enable-hdri=${{matrix.hdri}}
           make -j$(nproc)
           make install DESTDIR="$GITHUB_WORKSPACE/portable"
-          ${{matrix.strip}} portable/usr/bin/magick
 
       - name: Create portable archive
         run: |
