@@ -2487,7 +2487,7 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
     default: break;
   }
   channel_similarity=(double *) RelinquishMagickMemory(channel_similarity);
-  if (fabs(*distortion) < MagickEpsilon)
+  if ((IsNaN(*distortion) != 0) || (fabs(*distortion) < MagickEpsilon))
     *distortion=0.0;
   (void) FormatImageProperty(image,"distortion","%.*g",GetMagickPrecision(),
     *distortion);
