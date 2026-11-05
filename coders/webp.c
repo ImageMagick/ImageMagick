@@ -1277,14 +1277,20 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
     if (status != MagickFalse)
       status=WriteWEBPImageProfile(image,&webp_data,exception);
     if (status != MagickFalse)
-      (void) WriteBlob(image,webp_data.size,webp_data.bytes);
+      {
+        if (WriteBlob(image,webp_data.size,webp_data.bytes) != (ssize_t) webp_data.size)
+          status=MagickFalse;
+      }
     WebPDataClear(&webp_data);
   }
 #else
   WebPMemoryWriterInit(&writer);
   status=WriteSingleWEBPImage(image_info,image,&configure,&writer,exception);
   if (status != MagickFalse)
-    (void) WriteBlob(image,writer.size,writer.mem);
+    {
+      if (WriteBlob(image, writer.size, writer.mem) != (ssize_t) writer.size)
+        status=MagickFalse;
+    }
   WebPMemoryWriterClear(&writer);
 #endif
   if (CloseBlob(image) == MagickFalse)
