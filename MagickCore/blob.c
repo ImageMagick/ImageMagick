@@ -2279,7 +2279,11 @@ MagickExport void ImageToCustomStream(const ImageInfo *image_info,Image *image,
       */
       (void) CloseBlob(image);
       *image->filename='\0';
-      (void) WriteImage(clone_info,image,exception);
+      if (WriteImage(clone_info,image,exception) == MagickFalse)
+        {
+          (void) ThrowMagickException(exception,GetMagickModule(),
+            BlobError,"UnableToWriteBlob","`%s'",image_info->filename);
+        }
     }
   else
     {
@@ -2331,8 +2335,13 @@ MagickExport void ImageToCustomStream(const ImageInfo *image_info,Image *image,
               {
                 count=(ssize_t) fread(blob,sizeof(*blob),MagickMaxBufferExtent,
                   clone_info->file);
-                (void) image_info->custom_stream->writer(blob,(size_t) count,
-                  image_info->custom_stream->data);
+                if (image_info->custom_stream->writer(blob,(size_t) count,
+                      image_info->custom_stream->data) != count)
+                  {
+                    (void) ThrowMagickException(exception,GetMagickModule(),
+                      BlobError,"UnableToWriteBlob","`%s'",image_info->filename);
+                    break;
+                  }
               }
             }
           (void) fclose(clone_info->file);
