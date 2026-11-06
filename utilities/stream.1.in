@@ -34,6 +34,7 @@ Image Settings:
   \-set attribute value set an image attribute
   \-size geometry       width and height of image
   \-storage-type type   pixel storage type
+  \-strict              treat coder warnings as errors
   \-synchronize         synchronize image to storage device
   \-taint               declare the image as modified
   \-transparent-color color
