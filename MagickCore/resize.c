@@ -3578,6 +3578,86 @@ static MagickBooleanType HorizontalFilter(
   return(status);
 }
 
+/*
+  VerticalFilter() reads each tap a full row apart, which keeps compilers from
+  vectorizing it.  Filter whole tiles of columns instead: each tap row of a
+  tile is contiguous, and is added to one sum per sample in the same order as
+  the per-column loop.
+*/
+#define VerticalFilterTile  16
+
+static inline void VerticalFilterTap(double *magick_restrict pixel,
+  const Quantum *magick_restrict r,const double alpha,const ssize_t samples)
+{
+  ssize_t
+    i;
+
+  for (i=0; i < samples; i++)
+    pixel[i]+=alpha*(double) r[i];
+}
+
+static ssize_t VerticalFilterTiles(const Image *magick_restrict image,
+  Image *magick_restrict resize_image,
+  const ContributionInfo *magick_restrict contribution,const ssize_t n,
+  const PixelChannel *magick_restrict channel_map,
+  const PixelTrait *magick_restrict traits_map,
+  const PixelTrait *magick_restrict resize_traits_map,
+  const Quantum *magick_restrict p,Quantum *magick_restrict q)
+{
+  const ssize_t
+    channels = (ssize_t) GetPixelChannels(image),
+    samples = VerticalFilterTile*channels;
+
+  ssize_t
+    x;
+
+  for (x=0; (x+VerticalFilterTile) <= (ssize_t) resize_image->columns;
+       x+=VerticalFilterTile)
+  {
+    double
+      pixel[VerticalFilterTile*MaxPixelChannels];
+
+    ssize_t
+      i,
+      j,
+      t;
+
+    (void) memset(pixel,0,(size_t) samples*sizeof(*pixel));
+    for (j=0; j < n; j++)
+    {
+      const Quantum
+        *magick_restrict r;
+
+      r=p+((contribution[j].pixel-contribution[0].pixel)*(ssize_t)
+        image->columns+x)*channels;
+      switch (channels)
+      {
+        case 1:
+          VerticalFilterTap(pixel,r,contribution[j].weight,
+            VerticalFilterTile);
+          break;
+        case 3:
+          VerticalFilterTap(pixel,r,contribution[j].weight,
+            3*VerticalFilterTile);
+          break;
+        case 4:
+          VerticalFilterTap(pixel,r,contribution[j].weight,
+            4*VerticalFilterTile);
+          break;
+        default:
+          VerticalFilterTap(pixel,r,contribution[j].weight,samples);
+      }
+    }
+    for (t=0; t < VerticalFilterTile; t++)
+      for (i=0; i < channels; i++)
+        if ((traits_map[i] != UndefinedPixelTrait) &&
+            (resize_traits_map[i] != UndefinedPixelTrait))
+          SetPixelChannel(resize_image,channel_map[i],ClampToQuantum(
+            pixel[t*channels+i]),q+(x+t)*channels);
+  }
+  return(x);
+}
+
 static MagickBooleanType VerticalFilter(
   const ResizeFilter *magick_restrict resize_filter,
   const Image *magick_restrict image,Image *magick_restrict resize_image,
@@ -3654,6 +3734,9 @@ static MagickBooleanType VerticalFilter(
       bisect,
       density;
 
+    MagickBooleanType
+      tile;
+
     PixelChannel
       channel_map[MaxPixelChannels+1];
 
@@ -3709,13 +3792,23 @@ static MagickBooleanType VerticalFilter(
         status=MagickFalse;
         continue;
       }
+    tile=((number_channels == resize_channels) &&
+      (GetPixelWriteMaskTraits(resize_image) == UndefinedPixelTrait)) ?
+      MagickTrue : MagickFalse;
     for (c=0; c < number_channels; c++)
     {
       channel_map[c]=GetPixelChannelChannel(image,c);
       traits_map[c]=GetPixelChannelTraits(image,channel_map[c]);
       resize_traits_map[c]=GetPixelChannelTraits(resize_image,channel_map[c]);
+      if ((resize_traits_map[c] & (CopyPixelTrait | BlendPixelTrait)) != 0)
+        tile=MagickFalse;
     }
-    for (x=0; x < (ssize_t) resize_image->columns; x++)
+    x=0;
+    if (tile != MagickFalse)
+      x=VerticalFilterTiles(image,resize_image,contribution,n,channel_map,
+        traits_map,resize_traits_map,p,q);
+    q+=(ptrdiff_t) x*resize_channels;
+    for ( ; x < (ssize_t) resize_image->columns; x++)
     {
       ssize_t
         i,
