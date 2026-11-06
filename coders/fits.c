@@ -277,6 +277,10 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   Quantum
     *q;
 
+  size_t
+   comment_extent = 0,
+   comment_offset = 0;
+
   ssize_t
     count,
     scene,
@@ -374,10 +378,40 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
           fits_info.scale=StringToDouble(p,(char **) NULL);
         if (LocaleCompare(keyword,"comment") == 0)
           {
+            size_t length = strlen(p);
             if (comment == (char *) NULL)
-              comment=ConstantString(p);
-            else
-              (void) ConcatenateString(&comment,p);
+              {
+                comment_extent=length+MagickPathExtent;
+                comment=(char *) AcquireQuantumMemory(comment_extent,
+                  sizeof(*comment));
+                if (comment != (char *) NULL)
+                  {
+                    (void) CopyMagickString(comment,p,comment_extent);
+                    comment_offset=length;
+                  }
+             }
+           else
+             {
+               if ((comment_offset+length) >= comment_extent)
+                 {
+                   char
+                     *new_comment;
+
+                   comment_extent=2*(comment_offset+length)+MagickPathExtent;
+                   new_comment=(char *) ResizeQuantumMemory(comment,
+                     comment_extent,sizeof(*comment));
+                   if (new_comment == (char *) NULL)
+                     comment=DestroyString(comment);
+                   else
+                     comment=new_comment;
+                 }
+               if (comment != (char *) NULL)
+                 {
+                   (void) CopyMagickString(comment+comment_offset,p,
+                     comment_extent-comment_offset);
+                   comment_offset+=length;
+                 }
+             }
           }
         if (LocaleCompare(keyword,"xendian") == 0)
           {
