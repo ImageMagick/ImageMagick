@@ -6213,7 +6213,7 @@ MagickExport ssize_t WriteBlobByte(Image *image,const unsigned char value)
 %  The format of the WriteBlobPadding method is:
 %
 %      ssize_t WriteBlobPadding(Image *image,const size_t length,
-%        const unsigned char value)
+%        const char value)
 %
 %  A description of each parameter follows.
 %
@@ -6225,7 +6225,7 @@ MagickExport ssize_t WriteBlobByte(Image *image,const unsigned char value)
 %
 */
 MagickExport ssize_t WriteBlobPadding(Image *image,const size_t length,
-  const unsigned char value)
+  const char value)
 {
   size_t
     extent;
