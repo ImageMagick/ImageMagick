@@ -486,8 +486,8 @@ static int ReadAnimatedWEBPImage(const ImageInfo *image_info,Image *image,
       break;
     image->page.width=canvas_width;
     image->page.height=canvas_height;
-    image->ticks_per_second=100;
-    image->delay=(size_t) round(iter.duration/10.0);
+    image->ticks_per_second=1000;
+    image->delay=(size_t) round(iter.duration);
     image->dispose=NoneDispose;
     if (iter.dispose_method == WEBP_MUX_DISPOSE_BACKGROUND)
       image->dispose=BackgroundDispose;
