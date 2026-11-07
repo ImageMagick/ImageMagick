@@ -1563,7 +1563,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
   if (profile != (StringInfo *) NULL)
     {
       if (GetStringInfoLength(profile) > 1048576)
-        ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
+        ThrowWriterException(ResourceLimitError,"ProfileSizeExceedsLimit");
       dpx.file.image_offset+=(unsigned int) GetStringInfoLength(profile);
       dpx.file.image_offset=(((dpx.file.image_offset+0x2000-1)/0x2000)*0x2000);
     }
@@ -1976,19 +1976,23 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
   if (value != (const char *) NULL)
     (void) CopyMagickString(dpx.user.id,value,sizeof(dpx.user.id));
   offset+=WriteBlob(image,sizeof(dpx.user.id),(unsigned char *) dpx.user.id);
+  if (offset != (MagickOffsetType) (dpx.file.generic_size+
+      dpx.file.industry_size+sizeof(dpx.user.id)))
+    ThrowWriterException(BlobError,"UnableToWriteBlob");
   if (profile != (StringInfo *) NULL)
-    offset+=WriteBlob(image,GetStringInfoLength(profile),
-      GetStringInfoDatum(profile));
-  if (offset < (MagickOffsetType) dpx.image.image_element[0].data_offset)
-  {
-    extent=(size_t) ((MagickOffsetType)
-      dpx.image.image_element[0].data_offset-offset);
-    count=WriteBlobPadding(image,extent,'\0');
-    if (count != (ssize_t) extent)
-      ThrowFileException(exception,FileOpenError,"UnableToWriteFile",
-        image->filename);
-    offset+=count;
-  }
+    {
+      extent=GetStringInfoLength(profile);
+      count=WriteBlob(image,extent,GetStringInfoDatum(profile));
+      if (count != (ssize_t) extent)
+        ThrowWriterException(BlobError,"UnableToWriteBlob");
+      offset+=count;
+    }
+  extent=(size_t) ((MagickOffsetType)
+    dpx.image.image_element[0].data_offset-offset);
+  count=WriteBlobPadding(image,extent,'\0');
+  if (count != (ssize_t) extent)
+    ThrowWriterException(BlobError,"UnableToWriteBlob");
+  offset+=count;
   /*
     Convert pixel packets to DPX raster image.
   */
