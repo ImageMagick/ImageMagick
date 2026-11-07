@@ -6193,6 +6193,74 @@ MagickExport ssize_t WriteBlobByte(Image *image,const unsigned char value)
   }
   return(count);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   W r i t e B l o b P a d d i n g                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  WriteBlobPadding() writes length copies of a byte value to a blob.  It
+%  returns the number of bytes written, stopping on a short or failed write.
+%  Lengths greater than MAGICK_SSIZE_MAX return zero and set errno to EOVERFLOW.
+%
+%  The format of the WriteBlobPadding method is:
+%
+%      ssize_t WriteBlobPadding(Image *image,const size_t length,
+%        const unsigned char value)
+%
+%  A description of each parameter follows.
+%
+%    o image: the image.
+%
+%    o length: the number of bytes to write.
+%
+%    o value: the byte value to repeat.
+%
+*/
+MagickExport ssize_t WriteBlobPadding(Image *image,const size_t length,
+  const unsigned char value)
+{
+  size_t
+    extent;
+
+  ssize_t
+    count,
+    total;
+
+  unsigned char
+    padding[1024];
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  assert(image->blob != (BlobInfo *) NULL);
+  assert(image->blob->type != UndefinedStream);
+  if (length == 0)
+    return(0);
+  if (length > (size_t) MAGICK_SSIZE_MAX)
+    {
+      errno=EOVERFLOW;
+      return(0);
+    }
+  (void) memset(padding,value,sizeof(padding));
+  total=0;
+  while ((size_t) total < length)
+  {
+    extent=MagickMin(sizeof(padding),length-(size_t) total);
+    count=WriteBlob(image,extent,padding);
+    if (count <= 0)
+      break;
+    total+=count;
+    if (count != (ssize_t) extent)
+      break;
+  }
+  return(total);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

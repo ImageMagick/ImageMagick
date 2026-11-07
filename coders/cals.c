@@ -403,9 +403,6 @@ ModuleExport void UnregisterCALSImage(void)
 
 static ssize_t WriteCALSRecord(Image *image,const char *data)
 {
-  char
-    pad[128];
-
   const char
     *p;
 
@@ -426,8 +423,7 @@ static ssize_t WriteCALSRecord(Image *image,const char *data)
   if (i < 128)
     {
       i=128-i;
-      (void) memset(pad,' ',(size_t) i);
-      count=WriteBlob(image,(size_t) i,(const unsigned char *) pad);
+      count=WriteBlobPadding(image,(size_t) i,' ');
     }
   return(count);
 }

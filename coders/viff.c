@@ -1088,8 +1088,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
     (void) WriteBlobMSBLong(image,(unsigned int) viff_info.map_enable);
     (void) WriteBlobMSBLong(image,(unsigned int) viff_info.maps_per_cycle);
     (void) WriteBlobMSBLong(image,(unsigned int) viff_info.color_space_model);
-    for (i=0; i < 420; i++)
-      (void) WriteBlobByte(image,'\0');
+    (void) WriteBlobPadding(image,420,'\0');
     /*
       Convert MIFF to VIFF raster pixels.
     */

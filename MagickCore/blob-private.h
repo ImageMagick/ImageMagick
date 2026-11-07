@@ -126,6 +126,7 @@ extern MagickExport ssize_t
   WriteBlobMSBLong(Image *,const unsigned int),
   WriteBlobMSBShort(Image *,const unsigned short),
   WriteBlobMSBSignedShort(Image *,const signed short),
+  WriteBlobPadding(Image *,const size_t,const unsigned char),
   WriteBlobString(Image *,const char *);
 
 extern MagickExport unsigned int

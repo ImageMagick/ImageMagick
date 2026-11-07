@@ -1979,15 +1979,14 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
   if (profile != (StringInfo *) NULL)
     offset+=WriteBlob(image,GetStringInfoLength(profile),
       GetStringInfoDatum(profile));
-  while (offset < (MagickOffsetType) dpx.image.image_element[0].data_offset)
+  if (offset < (MagickOffsetType) dpx.image.image_element[0].data_offset)
   {
-    count=WriteBlobByte(image,0x00);
-    if (count != 1)
-      {
-        ThrowFileException(exception,FileOpenError,"UnableToWriteFile",
-          image->filename);
-        break;
-      }
+    extent=(size_t) ((MagickOffsetType)
+      dpx.image.image_element[0].data_offset-offset);
+    count=WriteBlobPadding(image,extent,'\0');
+    if (count != (ssize_t) extent)
+      ThrowFileException(exception,FileOpenError,"UnableToWriteFile",
+        image->filename);
     offset+=count;
   }
   /*

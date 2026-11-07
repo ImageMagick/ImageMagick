@@ -1393,8 +1393,7 @@ static MagickBooleanType WriteASEImage(const ImageInfo *image_info,
   (void) WriteBlobByte(image,0);
   (void) WriteBlobLSBShort(image,1);
   (void) WriteBlobLSBShort(image,1);
-  for (i=0; i < 46; i++)
-    (void) WriteBlobLSBShort(image,0);  /* grid x/y/width/height + reserved[84] */
+  (void) WriteBlobPadding(image,92,'\0');  /* grid x/y/width/height + reserved[84] */
   pixel_count=image->columns*image->rows;
   pixels=(uint8_t *) AcquireQuantumMemory(pixel_count,bytes_per_pixel);
   if (pixels == (uint8_t *) NULL)

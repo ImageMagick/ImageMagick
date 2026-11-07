@@ -701,9 +701,6 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
     offset,
     scene;
 
-  MagickSizeType
-    cc;
-
   PixelInfo
     transpix;
 
@@ -1018,8 +1015,7 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     /* padding to 4 byte word */
-    for (cc=(GetBlobSize(image)) % 4; cc > 0; cc--)
-      (void) WriteBlobByte(image,0);
+    (void) WriteBlobPadding(image,(size_t) (GetBlobSize(image) % 4),'\0');
     /* write nextDepthOffset and return to end of image */
     offset=SeekBlob(image,currentOffset+10,SEEK_SET);
     nextDepthOffset=(size_t) (((MagickOffsetType) GetBlobSize(image)-

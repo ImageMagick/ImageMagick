@@ -1777,8 +1777,7 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image,
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         break;
     } while (z-- >= 2);
-    while (padding-- > 0)
-      (void) WriteBlobByte(image,0);
+    (void) WriteBlobPadding(image,padding,'\0');
     quantum_info=DestroyQuantumInfo(quantum_info);
     if (GetNextImageInList(image) == (Image *) NULL)
       break;

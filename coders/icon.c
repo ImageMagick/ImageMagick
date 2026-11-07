@@ -1514,8 +1514,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
           }
           if (bit != 0)
             (void) WriteBlobByte(image,(unsigned char) (byte << (8-bit)));
-          for (i=0; i < (ssize_t) scanline_pad; i++)
-            (void) WriteBlobByte(image,(unsigned char) 0);
+          (void) WriteBlobPadding(image,scanline_pad,'\0');
         }
       }
     if (GetNextImageInList(frame) == (Image *) NULL)

@@ -3427,8 +3427,7 @@ static size_t WritePascalString(Image *image,const char *value,size_t padding)
     length;
 
   ssize_t
-    count,
-    i;
+    count;
 
   /*
     Max length is 255.
@@ -3445,8 +3444,7 @@ static size_t WritePascalString(Image *image,const char *value,size_t padding)
   length++;
   if ((length % padding) == 0)
     return((size_t) count);
-  for (i=0; i < (ssize_t) (padding-(length % padding)); i++)
-    count+=WriteBlobByte(image,0);
+  count+=WriteBlobPadding(image,padding-(length % padding),'\0');
   return((size_t) count);
 }
 
@@ -3979,8 +3977,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
     psd_info.version=2;
   (void) WriteBlob(image,4,(const unsigned char *) "8BPS");
   (void) WriteBlobMSBShort(image,psd_info.version);  /* version */
-  for (i=1; i <= 6; i++)
-    (void) WriteBlobByte(image, 0);  /* 6 bytes of reserved */
+  (void) WriteBlobPadding(image,6,'\0');  /* 6 bytes of reserved */
   if ((GetImageProfile(image,"icc") == (StringInfo *) NULL) &&
       (SetImageGray(image,exception) != MagickFalse))
     num_channels=1;
@@ -4050,18 +4047,15 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
       for (i=0; i < (ssize_t) image->colors; i++)
         (void) WriteBlobByte(image,ScaleQuantumToChar(ClampToQuantum(
           image->colormap[i].red)));
-      for ( ; i < 256; i++)
-        (void) WriteBlobByte(image,0);
+      (void) WriteBlobPadding(image,256-image->colors,'\0');
       for (i=0; i < (ssize_t) image->colors; i++)
         (void) WriteBlobByte(image,ScaleQuantumToChar(ClampToQuantum(
           image->colormap[i].green)));
-      for ( ; i < 256; i++)
-        (void) WriteBlobByte(image,0);
+      (void) WriteBlobPadding(image,256-image->colors,'\0');
       for (i=0; i < (ssize_t) image->colors; i++)
         (void) WriteBlobByte(image,ScaleQuantumToChar(ClampToQuantum(
           image->colormap[i].blue)));
-      for ( ; i < 256; i++)
-        (void) WriteBlobByte(image,0);
+      (void) WriteBlobPadding(image,256-image->colors,'\0');
     }
   /*
     Image resource block.

@@ -1037,8 +1037,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
     (void) WriteBlobByte(image,pcx_info.planes);
     (void) WriteBlobLSBShort(image,pcx_info.bytes_per_line);
     (void) WriteBlobLSBShort(image,pcx_info.palette_info);
-    for (i=0; i < 58; i++)
-      (void) WriteBlobByte(image,'\0');
+    (void) WriteBlobPadding(image,58,'\0');
     length=(size_t) pcx_info.bytes_per_line;
     pixel_info=AcquireVirtualMemory(length,pcx_info.planes*sizeof(*pixels));
     if (pixel_info == (MemoryInfo *) NULL)
