@@ -1177,6 +1177,7 @@ static Image *ReadASEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (index >= (ssize_t) frame_image->colors)
               index=0;
             SetPixelIndex(frame_image,(Quantum) index,q);
+            SetPixelViaPixelInfo(frame_image,frame_image->colormap+index,q);
             p++;
             q+=GetPixelChannels(frame_image);
           }
