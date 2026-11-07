@@ -1421,6 +1421,7 @@ extern "C" {
 #define WriteBlobMSBShort  PrependMagickMethod(WriteBlobMSBShort)
 #define WriteBlobMSBSignedShort  PrependMagickMethod(WriteBlobMSBSignedShort)
 #define WriteBlob  PrependMagickMethod(WriteBlob)
+#define WriteBlobPadding  PrependMagickMethod(WriteBlobPadding)
 #define WriteBlobShort  PrependMagickMethod(WriteBlobShort)
 #define WriteBlobSignedLong  PrependMagickMethod(WriteBlobSignedLong)
 #define WriteBlobString  PrependMagickMethod(WriteBlobString)
