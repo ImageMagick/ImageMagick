@@ -924,15 +924,17 @@ static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,
       y;
 
     GetPixelInfo(image,&pixel);
-    for (y=0; (y < (long) image->rows) && (status != MagickFalse); y++)
+    for (y=0; y < (long) image->rows; y++)
     {
+      if (status == MagickFalse)
+        break;
       p=GetVirtualPixels(image,0,y,image->columns,1,exception);
       if (p == (const Quantum *) NULL)
         {
           status=MagickFalse;
           break;
         }
-      for (x=0; (x < (long) image->columns) && (status != MagickFalse); x++)
+      for (x=0; x < (long) image->columns; x++)
       {
         const char
           *pFmt;
@@ -944,12 +946,16 @@ static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,
           fltHexFmt,
           hexFmt;
 
+        if (status == MagickFalse)
+          break;
         valMult=1.0;
         hexFmt=MagickFalse;
         fltHexFmt=MagickFalse;
         pFmt=sFmt;
-        while ((*pFmt != '\0') && (status != MagickFalse))
+        while (*pFmt != '\0')
         {
+          if (status == MagickFalse)
+            break;
           if (*pFmt == chEsc)
           {
             pFmt++;
@@ -1015,8 +1021,7 @@ static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,
                   }
                 /* Output all "-channel" channels. */
                 sSep[0]=sSep[1]='\0';
-                for (i=0; (i < (ssize_t) GetPixelChannels (image)) &&
-                     (status != MagickFalse); i++)
+                for (i=0; i < (ssize_t) GetPixelChannels (image); i++)
                 {
                   PixelChannel
                     channel;
@@ -1024,6 +1029,8 @@ static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,
                   PixelTrait
                     traits;
 
+                  if (status == MagickFalse)
+                    break;
                   channel=GetPixelChannelChannel(image,i);
                   traits=GetPixelChannelTraits(image,channel);
                   if ((traits & UpdatePixelTrait) != UpdatePixelTrait)

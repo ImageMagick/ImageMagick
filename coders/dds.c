@@ -4064,9 +4064,12 @@ static MagickBooleanType WriteFourCC(Image *image, const size_t compression,
     *p;
 
   status=MagickTrue;
-  for (y=0; (y < (ssize_t) image->rows) && (status != MagickFalse); y+=4)
+  for (y=0; y < (ssize_t) image->rows; y+=4)
   {
-    for (x=0; (x < (ssize_t) image->columns) && (status != MagickFalse); x+=4)
+    if (status == MagickFalse)
+      break;
+
+    for (x=0; x < (ssize_t) image->columns; x+=4)
     {
       MagickBooleanType
         match;
@@ -4091,6 +4094,8 @@ static MagickBooleanType WriteFourCC(Image *image, const size_t compression,
       unsigned char
         alpha;
 
+      if (status == MagickFalse)
+        break;
       if ((size_t) (x+(ssize_t) columns) >= image->columns)
         columns = (size_t) ((ssize_t) image->columns-x);
 
