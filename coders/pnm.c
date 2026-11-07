@@ -2282,7 +2282,10 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
             GrayQuantum,pixels,exception);
           count=WriteBlob(image,extent,pixels);
           if (count != (ssize_t) extent)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
           if (image->previous == (Image *) NULL)
             {
               status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -2400,7 +2403,10 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
           }
           count=WriteBlob(image,extent,pixels);
           if (count != (ssize_t) extent)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
           if (image->previous == (Image *) NULL)
             {
               status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -2503,7 +2509,10 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
           }
           count=WriteBlob(image,extent,pixels);
           if (count != (ssize_t) extent)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
           if (image->previous == (Image *) NULL)
             {
               status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -2752,7 +2761,10 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
           }
           count=WriteBlob(image,extent,pixels);
           if (count != (ssize_t) extent)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
           if (image->previous == (Image *) NULL)
             {
               status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -2791,7 +2803,12 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
             break;
           extent=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             quantum_type,pixels,exception);
-          (void) WriteBlob(image,extent,pixels);
+          count=WriteBlob(image,extent,pixels);
+          if (count != (ssize_t) extent)
+            {
+              status=MagickFalse;
+              break;
+            }
           if (image->previous == (Image *) NULL)
             {
               status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -2830,7 +2847,12 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
             break;
           extent=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             quantum_type,pixels,exception);
-          (void) WriteBlob(image,extent,pixels);
+          count=WriteBlob(image,extent,pixels);
+          if (count != (ssize_t) extent)
+            {
+              status=MagickFalse;
+              break;
+            }
           if (image->previous == (Image *) NULL)
             {
               status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -2845,6 +2867,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
       default:
         break;
     }
+    if (status == MagickFalse)
+      break;
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

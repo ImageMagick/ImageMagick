@@ -558,8 +558,12 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
     packet[length++]=(unsigned char) (datum & 0xff); \
     if (length == 255) \
       { \
-        (void) WriteBlobByte(image,(unsigned char) length); \
-        (void) WriteBlob(image,length,packet); \
+        if ((WriteBlobByte(image,(unsigned char) length) != 1) || \
+            (WriteBlob(image,length,packet) != (ssize_t) length)) \
+          { \
+            status=MagickFalse; \
+            break; \
+          } \
         length=0; \
       } \
     datum>>=8; \
@@ -574,6 +578,9 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
         max_code=MaxCode(number_bits); \
     } \
 }
+
+  MagickBooleanType
+    status;
 
   Quantum
     index;
@@ -628,6 +635,8 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
         hash_prefix=(short *) RelinquishMagickMemory(hash_prefix);
       if (hash_suffix != (unsigned char *) NULL)
         hash_suffix=(unsigned char *) RelinquishMagickMemory(hash_suffix);
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       return(MagickFalse);
     }
   /*
@@ -645,6 +654,7 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
   length=0;
   datum=0;
   bits=0;
+  status=MagickTrue;
   GIFOutputCode(clear_code);
   /*
     Encode pixels.
@@ -660,6 +670,8 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
     ssize_t
       x;
 
+    if (status == MagickFalse)
+      break;
     p=GetVirtualPixels(image,0,offset,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
@@ -670,6 +682,8 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
       }
     for (x=(ssize_t) (y == 0 ? 1 : 0); x < (ssize_t) image->columns; x++)
     {
+      if (status == MagickFalse)
+        break;
       /*
         Probe hash table.
       */
@@ -711,6 +725,8 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
             continue;
         }
       GIFOutputCode(waiting_code);
+      if (status == MagickFalse)
+        break;
       if (free_code < MaxGIFTable)
         {
           hash_code[k]=(short) free_code++;
@@ -780,9 +796,11 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
   /*
     Flush out the buffered code.
   */
-  GIFOutputCode(waiting_code);
-  GIFOutputCode(end_of_information_code);
-  if (bits > 0)
+  if (status != MagickFalse)
+      GIFOutputCode(waiting_code);
+  if (status != MagickFalse)
+      GIFOutputCode(end_of_information_code);
+  if ((status != MagickFalse) && (bits > 0))
     {
       /*
         Add a character to current packet.  Maximum packet size is 255.
@@ -790,18 +808,20 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
       packet[length++]=(unsigned char) (datum & 0xff);
       if (length == 255)
         {
-          (void) WriteBlobByte(image,(unsigned char) length);
-          (void) WriteBlob(image,length,packet);
+          if ((WriteBlobByte(image,(unsigned char) length) != 1) ||
+              (WriteBlob(image,length,packet) != (ssize_t) length))
+            status=MagickFalse;
           length=0;
         }
     }
   /*
     Flush accumulated data.
   */
-  if (length > 0)
+  if ((status != MagickFalse) && (length > 0))
     {
-      (void) WriteBlobByte(image,(unsigned char) length);
-      (void) WriteBlob(image,length,packet);
+      if ((WriteBlobByte(image,(unsigned char) length) != 1) ||
+          (WriteBlob(image,length,packet) != (ssize_t) length))
+        status=MagickFalse;
     }
   /*
     Free encoder memory.
@@ -810,7 +830,7 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
   hash_prefix=(short *) RelinquishMagickMemory(hash_prefix);
   hash_code=(short *) RelinquishMagickMemory(hash_code);
   packet=(unsigned char *) RelinquishMagickMemory(packet);
-  return(MagickTrue);
+  return(status);
 }
 
 /*
@@ -1937,7 +1957,8 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
           global_colormap);
         colormap=(unsigned char *) RelinquishMagickMemory(colormap);
         write_info=DestroyImageInfo(write_info);
-        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+        (void) CloseBlob(image);
+        return(MagickFalse);
       }
     (void) WriteBlobByte(image,(unsigned char) 0x00);
     if (GetNextImageInList(image) == (Image *) NULL)

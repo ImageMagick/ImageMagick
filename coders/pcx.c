@@ -1104,7 +1104,10 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
             }
           }
           if (PCXWritePixels(&pcx_info,pixels,image) == MagickFalse)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
           if (image->previous == (Image *) NULL)
             {
               status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -1129,7 +1132,10 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
               p+=(ptrdiff_t) GetPixelChannels(image);
             }
             if (PCXWritePixels(&pcx_info,pixels,image) == MagickFalse)
-              break;
+              {
+                status=MagickFalse;
+                break;
+              }
             if (image->previous == (Image *) NULL)
               {
                 status=SetImageProgress(image,SaveImageTag,(MagickOffsetType)
@@ -1176,7 +1182,10 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
                   *q++=bit << (8-byte);
               }
               if (PCXWritePixels(&pcx_info,pixels,image) == MagickFalse)
-                break;
+                {
+                  status=MagickFalse;
+                  break;
+                }
               if (image->previous == (Image *) NULL)
                 {
                   status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -1220,7 +1229,10 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
               if (bit != 0)
                 *q++=byte << (8-bit);
               if (PCXWritePixels(&pcx_info,pixels,image) == MagickFalse)
-                break;
+                {
+                  status=MagickFalse;
+                  break;
+                }
               if (image->previous == (Image *) NULL)
                 {
                   status=SetImageProgress(image,SaveImageTag,(MagickOffsetType)
@@ -1236,6 +1248,8 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
     pixel_info=RelinquishVirtualMemory(pixel_info);
     pcx_colormap=(unsigned char *) RelinquishMagickMemory(pcx_colormap);
     if (page_table == (MagickOffsetType *) NULL)
+      break;
+    if (status == MagickFalse)
       break;
     if (GetNextImageInList(image) == (Image *) NULL)
       break;

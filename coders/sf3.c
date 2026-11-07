@@ -759,8 +759,13 @@ static MagickBooleanType WriteSF3Image(const ImageInfo *image_info,Image *image,
         checksum=crc32(checksum,pixels,length);
         count=WriteBlob(image,length,pixels);
         if (count != (ssize_t) length)
-          break;
+          {
+            status=MagickFalse;
+            break;
+          }
       }
+    if (status == MagickFalse)
+      break;
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
@@ -772,10 +777,11 @@ static MagickBooleanType WriteSF3Image(const ImageInfo *image_info,Image *image,
     Finish up.
    */
   quantum_info=DestroyQuantumInfo(quantum_info);
-  if(IsBlobSeekable(image)){
-    (void) SeekBlob(image,11,SEEK_SET);
-    (void) WriteBlobLSBLong(image,checksum  ^ 0xFFFFFFFF);
-  }
+  if (IsBlobSeekable(image))
+    {
+      (void) SeekBlob(image,11,SEEK_SET);
+      (void) WriteBlobLSBLong(image,checksum  ^ 0xFFFFFFFF);
+    }
   if (CloseBlob(image) == MagickFalse)
     status=MagickFalse;
   return(status);

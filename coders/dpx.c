@@ -2068,15 +2068,16 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
       break;
     count=WriteBlob(image,extent,pixels);
     if (count != (ssize_t) extent)
-      break;
+      {
+        status=MagickFalse;
+        break;
+      }
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
       image->rows);
     if (status == MagickFalse)
       break;
   }
   quantum_info=DestroyQuantumInfo(quantum_info);
-  if (y < (ssize_t) image->rows)
-    ThrowWriterException(CorruptImageError,"UnableToWriteImageData");
   if (CloseBlob(image) == MagickFalse)
     status=MagickFalse;
   return(status);
