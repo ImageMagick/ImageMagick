@@ -3866,8 +3866,8 @@ static void ComputeWeightedCovariance(const size_t count,
   }
 }
 
-static void WriteAlphas(Image *image, const ssize_t *alphas, size_t min5,
-  size_t max5, size_t min7, size_t max7)
+static MagickBooleanType WriteAlphas(Image *image, const ssize_t *alphas,
+  size_t min5, size_t max5, size_t min7, size_t max7)
 {
   size_t
     err5,
@@ -3879,7 +3879,9 @@ static void WriteAlphas(Image *image, const ssize_t *alphas, size_t min5,
 
   unsigned char
     indices5[16],
-    indices7[16];
+    indices7[16],
+    pixels[8],
+    *q;
 
   FixRange(min5,max5,5);
   err5 = CompressAlpha(min5,max5,5,alphas,indices5);
@@ -3907,8 +3909,9 @@ static void WriteAlphas(Image *image, const ssize_t *alphas, size_t min5,
     max5 = min7;
   }
   
-  (void) WriteBlobByte(image,(unsigned char) min5);
-  (void) WriteBlobByte(image,(unsigned char) max5);
+  q=pixels;
+  *q++=(unsigned char) min5;
+  *q++=(unsigned char) max5;
   
   for(i=0; i < 2; i++)
   {
@@ -3924,12 +3927,14 @@ static void WriteAlphas(Image *image, const ssize_t *alphas, size_t min5,
     for (j=0; j < 3; j++)
     {
       size_t byte = (value >> 8*j) & 0xff;
-      (void) WriteBlobByte(image,(unsigned char) byte);
+      *q++=(unsigned char) byte;
     }
   }
+  return(WriteBlob(image,sizeof(pixels),pixels) == (ssize_t) sizeof(pixels) ?
+    MagickTrue : MagickFalse);
 }
 
-static void WriteIndices(Image *image, const DDSVector3 start,
+static MagickBooleanType WriteIndices(Image *image, const DDSVector3 start,
   const DDSVector3 end, unsigned char *indices)
 {
   ssize_t
@@ -3940,7 +3945,9 @@ static void WriteIndices(Image *image, const DDSVector3 start,
     b;
 
   unsigned char
-    remapped[16];
+    remapped[16],
+    pixels[8],
+    *q;
 
   const unsigned char
     *ind;
@@ -3961,20 +3968,23 @@ static void WriteIndices(Image *image, const DDSVector3 start,
   if( a < b )
     Swap(a,b);
 
-  (void) WriteBlobByte(image,(unsigned char) (a & 0xff));
-  (void) WriteBlobByte(image,(unsigned char) (a >> 8));
-  (void) WriteBlobByte(image,(unsigned char) (b & 0xff));
-  (void) WriteBlobByte(image,(unsigned char) (b >> 8));
+  q=pixels;
+  *q++=(unsigned char) (a & 0xff);
+  *q++=(unsigned char) (a >> 8);
+  *q++=(unsigned char) (b & 0xff);
+  *q++=(unsigned char) (b >> 8);
 
   for (i=0; i<4; i++)
   {
      ind = remapped + 4*i;
-     (void) WriteBlobByte(image,ind[0] | (ind[1] << 2) | (ind[2] << 4) |
+     *q++=(unsigned char) (ind[0] | (ind[1] << 2) | (ind[2] << 4) |
        (ind[3] << 6));
   }
+  return(WriteBlob(image,sizeof(pixels),pixels) == (ssize_t) sizeof(pixels) ?
+    MagickTrue : MagickFalse);
 }
 
-static void WriteCompressed(Image *image, const size_t count,
+static MagickBooleanType WriteCompressed(Image *image, const size_t count,
   DDSVector4 *points, const ssize_t *map, const MagickBooleanType clusterFit)
 {
   float
@@ -4003,10 +4013,11 @@ static void WriteCompressed(Image *image, const size_t count,
   else
     CompressClusterFit(count,points,map,principle,metric,&start,&end,indices);
 
-  WriteIndices(image,start,end,indices);
+  return(WriteIndices(image,start,end,indices));
 }
 
-static void WriteSingleColorFit(Image *image, const DDSVector4 *points,
+static MagickBooleanType WriteSingleColorFit(Image *image,
+  const DDSVector4 *points,
   const ssize_t *map)
 {
   DDSVector3
@@ -4032,13 +4043,16 @@ static void WriteSingleColorFit(Image *image, const DDSVector4 *points,
   for (i=0; i< 16; i++)
     indexes[i]=index;
   RemapIndices(map,indexes,indices);
-  WriteIndices(image,start,end,indices);
+  return(WriteIndices(image,start,end,indices));
 }
 
-static void WriteFourCC(Image *image, const size_t compression,
+static MagickBooleanType WriteFourCC(Image *image, const size_t compression,
   const MagickBooleanType clusterFit, const MagickBooleanType weightByAlpha,
   ExceptionInfo *exception)
 {
+  MagickBooleanType
+    status;
+
   ssize_t
     bx,
     by,
@@ -4049,9 +4063,10 @@ static void WriteFourCC(Image *image, const size_t compression,
   const Quantum
     *p;
 
-  for (y=0; y < (ssize_t) image->rows; y+=4)
+  status=MagickTrue;
+  for (y=0; (y < (ssize_t) image->rows) && (status != MagickFalse); y+=4)
   {
-    for (x=0; x < (ssize_t) image->columns; x+=4)
+    for (x=0; (x < (ssize_t) image->columns) && (status != MagickFalse); x+=4)
     {
       MagickBooleanType
         match;
@@ -4084,7 +4099,10 @@ static void WriteFourCC(Image *image, const size_t compression,
 
       p=GetVirtualPixels(image,x,y,columns,rows,exception);
       if (p == (const Quantum *) NULL)
-        break;
+        {
+          status=MagickFalse;
+          break;
+        }
 
       for (i=0; i<16; i++)
       {
@@ -4152,53 +4170,85 @@ static void WriteFourCC(Image *image, const size_t compression,
         points[i].w=sqrtf(points[i].w);
 
       if (compression == FOURCC_DXT5)
-        WriteAlphas(image,alphas,min5,max5,min7,max7);
+        status=WriteAlphas(image,alphas,min5,max5,min7,max7);
 
-      if (count == 1)
-        WriteSingleColorFit(image,points,map);
-      else
-        WriteCompressed(image,count,points,map,clusterFit);
+      if (status != MagickFalse)
+        {
+          if (count == 1)
+            status=WriteSingleColorFit(image,points,map);
+          else
+            status=WriteCompressed(image,count,points,map,clusterFit);
+        }
     }
   }
+  return(status);
 }
 
-static void WriteUncompressed(Image *image, ExceptionInfo *exception)
+static MagickBooleanType WriteUncompressed(Image *image,
+  ExceptionInfo *exception)
 {
   const Quantum
     *p;
 
-  ssize_t
-    x;
+  MagickBooleanType
+    status;
+
+  size_t
+    channels,
+    length;
 
   ssize_t
+    x,
     y;
 
+  unsigned char
+    *pixels,
+    *q;
+
+  channels=image->alpha_trait != UndefinedPixelTrait ? 4 : 3;
+  if (image->columns > (size_t) MAGICK_SSIZE_MAX/channels)
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      image->filename);
+  length=image->columns*channels;
+  pixels=(unsigned char *) AcquireQuantumMemory(image->columns,
+    channels*sizeof(*pixels));
+  if (pixels == (unsigned char *) NULL)
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      image->filename);
+  status=MagickTrue;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
 
+    q=pixels;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelBlue(image,p)));
-      (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelGreen(image,p)));
-      (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelRed(image,p)));
+      *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
+      *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
+      *q++=ScaleQuantumToChar(GetPixelRed(image,p));
       if (image->alpha_trait != UndefinedPixelTrait)
-        (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelAlpha(image,p)));
+        *q++=ScaleQuantumToChar(GetPixelAlpha(image,p));
       p+=(ptrdiff_t) GetPixelChannels(image);
     }
+    if (WriteBlob(image,length,pixels) != (ssize_t) length)
+      {
+        status=MagickFalse;
+        break;
+      }
   }
+  pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+  return(status);
 }
 
-static void WriteImageData(Image *image, const size_t pixelFormat,
+static MagickBooleanType WriteImageData(Image *image, const size_t pixelFormat,
   const size_t compression,const MagickBooleanType clusterFit,
   const MagickBooleanType weightByAlpha, ExceptionInfo *exception)
 {
   if (pixelFormat == DDPF_FOURCC)
-    WriteFourCC(image,compression,clusterFit,weightByAlpha,exception);
-  else
-    WriteUncompressed(image,exception);
+    return(WriteFourCC(image,compression,clusterFit,weightByAlpha,exception));
+  return(WriteUncompressed(image,exception));
 }
 
 static MagickBooleanType WriteMipmaps(Image *image,const ImageInfo *image_info,
@@ -4256,7 +4306,7 @@ static MagickBooleanType WriteMipmaps(Image *image,const ImageInfo *image_info,
     DestroyBlob(mipmap_image);
     mipmap_image->blob=ReferenceBlob(image->blob);
 
-    WriteImageData(mipmap_image,pixelFormat,compression,weightByAlpha,
+    status=WriteImageData(mipmap_image,pixelFormat,compression,weightByAlpha,
       clusterFit,exception);
 
     if (fromlist == MagickFalse)
@@ -4270,6 +4320,9 @@ static MagickBooleanType WriteMipmaps(Image *image,const ImageInfo *image_info,
             resize_image=mipmap_image;
           }
       }
+
+    if (status == MagickFalse)
+      break;
 
     columns=DIV2(columns);
     rows=DIV2(rows);
@@ -4489,11 +4542,11 @@ static MagickBooleanType WriteDDSImage(const ImageInfo *image_info,
     WriteDDSInfo(image,pixelFormat,compression,mipmaps);
   else
     mipmaps=0;
-  WriteImageData(image,pixelFormat,compression,clusterFit,weightByAlpha,
+  status=WriteImageData(image,pixelFormat,compression,clusterFit,weightByAlpha,
     exception);
-  if ((mipmaps > 0) && (WriteMipmaps(image,image_info,pixelFormat,compression,
-       mipmaps,fromlist,clusterFit,weightByAlpha,exception) == MagickFalse))
-    return(MagickFalse);
+  if ((status != MagickFalse) && (mipmaps > 0))
+    status=WriteMipmaps(image,image_info,pixelFormat,compression,mipmaps,
+      fromlist,clusterFit,weightByAlpha,exception);
   if (CloseBlob(image) == MagickFalse)
     status=MagickFalse;
   return(status);
