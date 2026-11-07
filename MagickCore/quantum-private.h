@@ -347,6 +347,8 @@ static inline QuantumAny ScaleQuantumToAny(const Quantum quantum,
   const QuantumAny range)
 {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
+  if (((double) range*quantum/QuantumRange) >= 18446744073709551615.0)
+    return((QuantumAny) MagickULLConstant(18446744073709551615));
   return((QuantumAny) ((double) range*quantum/QuantumRange));
 #else
   if ((IsNaN(quantum) != 0) || (quantum <= 0.0f))

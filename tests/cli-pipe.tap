@@ -18,7 +18,7 @@
 #
 . ./common.shi
 . ${srcdir}/tests/common.shi
-echo "1..26"
+echo "1..27"
 
 ${MAGICK} pnm:- null:   < ${SRCDIR}/rose.pnm && echo "ok" || echo "not ok"
 ${MAGICK} pnm:- info:   < ${SRCDIR}/rose.pnm && echo "ok" || echo "not ok"
@@ -160,5 +160,14 @@ if [ "X$roundtrip" = 'Xgray(255)|gray(0)' ]; then
   echo "ok 26 - one-bit PAM writer round trip"
 else
   echo "not ok 26 - one-bit PAM writer round trip: $roundtrip"
+fi
+
+# A full-range sample exported at 64 bits per sample must stay full range.
+sample=`LC_ALL=C ${MAGICK} -size 1x1 xc:white -depth 64 GRAY:- 2>/dev/null |
+  od -An -tx1 | tr -d ' \n'`
+if [ "X$sample" = 'Xffffffffffffffff' ]; then
+  echo "ok 27 - 64-bit raw export of a full-range sample"
+else
+  echo "not ok 27 - 64-bit raw export of a full-range sample: $sample"
 fi
 :
