@@ -123,17 +123,14 @@
   <!-- Disable all loadable image filters. -->
   <policy domain="filter" rights="none" pattern="*"/>
 
-  <!-- ============================================================= -->
-  <!-- High-Risk Module Restrictions                                  -->
-  <!-- ============================================================= -->
+  <!--
+    Restrict high-risk coders.
 
-  <!-- Disable the Magick Vector Graphics interpreter. -->
-  <policy domain="module" rights="none" pattern="MVG"/>
-
-  <!-- Disable the Magick Scripting Language interpreter. -->
-  <policy domain="module" rights="none" pattern="MSL"/>
-
-  <!-- Disable URL, HTTP, HTTPS, and related network access support. -->
-  <policy domain="module" rights="none" pattern="URL"/>
+    Certain modules are denied, whereas, read access is denied while write
+    access remains permitted for others.  This allows ImageMagick to generate
+    these formats without accepting potentially untrusted input through them.
+  -->
+  <policy domain="module" rights="none" pattern="{MSL,URL,VIDEO}"/>
+  <policy domain="coder" rights="write" pattern="{MVG,PDF,PS,SVG,TXT,XPS}"/>
 
 </policymap>

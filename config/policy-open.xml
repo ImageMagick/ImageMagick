@@ -174,20 +174,16 @@
   <!-- Disable pipe execution. -->
   <!-- <policy domain="path" rights="none" pattern="|*"/> -->
 
-  <!-- ================================================================== -->
-  <!-- Module Restrictions                                                 -->
-  <!-- ================================================================== -->
-
   <!--
-    Disable reading of higher-risk formats while still permitting writes.
+    Restrict high-risk coders.
 
-    Common candidates include:
-      MSL, MVG, PDF, PS, SVG, TXT, URL, and XPS
-
-    Review carefully before enabling.
+    Certain modules are denied, whereas, read access is denied while write
+    access remains permitted for others.  This allows ImageMagick to generate
+    these formats without accepting potentially untrusted input through them.
   -->
-  <!-- <policy domain="module" rights="write"
-             pattern="{MSL,MVG,PDF,PS,SVG,TXT,URL,XPS}"/> -->
+  <!-- <policy domain="module" rights="none" pattern="{MSL,URL,VIDEO}"/> -->
+  <!-- <policy domain="coder" rights="write"
+          pattern="{MVG,PDF,PS,SVG,TXT,XPS}"/> -->
 
   <!-- ================================================================== -->
   <!-- System Policies                                                     -->

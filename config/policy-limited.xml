@@ -118,12 +118,12 @@
   <!--
     Restrict high-risk coders.
 
-    Read access is denied while write access remains permitted.
-    This allows ImageMagick to generate these formats without accepting
-    potentially untrusted input through them.
+    Certain modules are denied, whereas, read access is denied while write
+    access remains permitted for others.  This allows ImageMagick to generate
+    these formats without accepting potentially untrusted input through them.
   -->
-  <policy domain="module" rights="write"
-          pattern="{MSL,MVG,PDF,PS,SVG,TXT,URL,XPS}"/>
+  <policy domain="module" rights="none" pattern="{MSL,URL,VIDEO}"/>
+  <policy domain="coder" rights="write" pattern="{MVG,PDF,PS,SVG,TXT,XPS}"/>
 
   <!-- Optional: overwrite temporary files and buffers before deletion. -->
   <!-- <policy domain="system" name="shred" value="1"/> -->
