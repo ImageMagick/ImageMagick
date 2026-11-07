@@ -829,8 +829,10 @@ static MagickBooleanType PCXWritePixels(PCXInfo *pcx_info,
   {
     if (pcx_info->encoding == 0)
       {
-        for (x=0; x < (ssize_t) pcx_info->bytes_per_line; x++)
-          (void) WriteBlobByte(image,(unsigned char) (*q++));
+        if (WriteBlob(image,(size_t) pcx_info->bytes_per_line,q) !=
+            (ssize_t) pcx_info->bytes_per_line)
+          return(MagickFalse);
+        q+=pcx_info->bytes_per_line;
       }
     else
       {
@@ -847,18 +849,22 @@ static MagickBooleanType PCXWritePixels(PCXInfo *pcx_info,
           if ((count > 1) || ((previous & 0xc0) == 0xc0))
             {
               count|=0xc0;
-              (void) WriteBlobByte(image,(unsigned char) count);
+              if (WriteBlobByte(image,(unsigned char) count) != 1)
+                return(MagickFalse);
             }
-          (void) WriteBlobByte(image,previous);
+          if (WriteBlobByte(image,previous) != 1)
+            return(MagickFalse);
           previous=packet;
           count=1;
         }
         if ((count > 1) || ((previous & 0xc0) == 0xc0))
           {
             count|=0xc0;
-            (void) WriteBlobByte(image,(unsigned char) count);
+            if (WriteBlobByte(image,(unsigned char) count) != 1)
+              return(MagickFalse);
           }
-        (void) WriteBlobByte(image,previous);
+        if (WriteBlobByte(image,previous) != 1)
+          return(MagickFalse);
       }
   }
   return (MagickTrue);
