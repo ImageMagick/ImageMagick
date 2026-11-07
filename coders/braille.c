@@ -209,11 +209,16 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
     polarity;
 
   size_t
-    cell_height = 4;
+    cell_height = 4,
+    row_extent;
 
   ssize_t
     x,
     y;
+
+  unsigned char
+    *pixels,
+    *q;
 
   /*
     Open output image file.
@@ -248,6 +253,16 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
+  row_extent=image->columns/2+image->columns % 2;
+  if (row_extent > ((size_t) MAGICK_SSIZE_MAX-1)/(unicode != 0 ? 3 : 1))
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+  if (unicode != 0)
+    row_extent*=3;
+  if (iso_11548_1 == 0)
+    row_extent++;
+  pixels=(unsigned char *) AcquireQuantumMemory(row_extent,sizeof(*pixels));
+  if (pixels == (unsigned char *) NULL)
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   if (iso_11548_1 == 0)
     {
       value=GetImageProperty(image,"label",exception);
@@ -294,6 +309,7 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
     p=GetVirtualPixels(image,0,y,image->columns,cell_height,exception);
     if (p == (const Quantum *) NULL)
       break;
+    q=pixels;
     for (x=0; x < (ssize_t) image->columns; x+=2)
     {
       MagickBooleanType
@@ -326,16 +342,12 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
         }
       if (unicode != 0)
         {
-          unsigned char
-            utf8[3];
-
           /*
             Unicode text.
           */
-          utf8[0]=(unsigned char) (0xe0 | ((0x28 >> 4) & 0x0f));
-          utf8[1]=0x80| ((0x28 << 2) & 0x3f) | (cell >> 6);
-          utf8[2]=0x80| (cell & 0x3f);
-          (void) WriteBlob(image,3,utf8);
+          *q++=(unsigned char) (0xe0 | ((0x28 >> 4) & 0x0f));
+          *q++=0x80| ((0x28 << 2) & 0x3f) | (cell >> 6);
+          *q++=0x80| (cell & 0x3f);
         }
       else
         if (iso_11548_1 != 0)
@@ -343,7 +355,7 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
             /*
               ISO/TR 11548-1 binary.
             */
-            (void) WriteBlobByte(image,cell);
+            *q++=cell;
           }
         else
           {
@@ -363,16 +375,22 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
             /*
               BRF.
             */
-            (void) WriteBlobByte(image,iso_to_brf[cell]);
+            *q++=iso_to_brf[cell];
           }
     }
     if (iso_11548_1 == 0)
-      (void) WriteBlobByte(image,'\n');
+      *q++='\n';
+    if (WriteBlob(image,row_extent,pixels) != (ssize_t) row_extent)
+      {
+        status=MagickFalse;
+        break;
+      }
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
       image->rows);
     if (status == MagickFalse)
       break;
   }
+  pixels=(unsigned char *) RelinquishMagickMemory(pixels);
   if (CloseBlob(image) == MagickFalse)
     status=MagickFalse;
   return(status);
