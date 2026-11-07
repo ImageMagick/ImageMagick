@@ -272,7 +272,7 @@ MagickExport void Ascii85Initialize(Image *image)
   image->ascii85->offset=0;
 }
 
-MagickExport void Ascii85Flush(Image *image)
+static MagickBooleanType Ascii85FlushInternal(Image *image)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
@@ -285,19 +285,33 @@ MagickExport void Ascii85Flush(Image *image)
       image->ascii85->buffer[image->ascii85->offset+1]='\0';
       image->ascii85->buffer[image->ascii85->offset+2]='\0';
       Ascii85Tuple(image->ascii85,image->ascii85->buffer);
-      (void) WriteBlob(image,(size_t) image->ascii85->offset+1,
+      if (WriteBlob(image,(size_t) image->ascii85->offset+1,
         (const unsigned char *) (*image->ascii85->tuple == 'z' ? "!!!!" :
-        image->ascii85->tuple));
+        image->ascii85->tuple)) != (ssize_t) (image->ascii85->offset+1))
+        return(MagickFalse);
     }
-  (void) WriteBlobByte(image,'~');
-  (void) WriteBlobByte(image,'>');
-  (void) WriteBlobByte(image,'\n');
+  if (WriteBlobByte(image,'~') != 1)
+    return(MagickFalse);
+  if (WriteBlobByte(image,'>') != 1)
+    return(MagickFalse);
+  if (WriteBlobByte(image,'\n') != 1)
+    return(MagickFalse);
+  return(MagickTrue);
 }
 
-MagickExport void Ascii85Encode(Image *image,const unsigned char code)
+MagickExport void Ascii85Flush(Image *image)
+{
+  (void) Ascii85FlushInternal(image);
+}
+
+static MagickBooleanType Ascii85EncodeInternal(Image *image,
+  const unsigned char code)
 {
   char
     *q;
+
+  MagickBooleanType
+    status;
 
   unsigned char
     *p;
@@ -311,7 +325,8 @@ MagickExport void Ascii85Encode(Image *image,const unsigned char code)
   image->ascii85->buffer[image->ascii85->offset]=code;
   image->ascii85->offset++;
   if (image->ascii85->offset < 4)
-    return;
+    return(MagickTrue);
+  status=MagickTrue;
   p=image->ascii85->buffer;
   for (n=image->ascii85->offset; n >= 4; n-=4)
   {
@@ -321,10 +336,18 @@ MagickExport void Ascii85Encode(Image *image,const unsigned char code)
       image->ascii85->line_break--;
       if ((image->ascii85->line_break < 0) && (*q != '%'))
         {
-          (void) WriteBlobByte(image,'\n');
+          if (WriteBlobByte(image,'\n') != 1)
+            {
+              status=MagickFalse;
+              break;
+            }
           image->ascii85->line_break=2*MaxLineExtent;
         }
-      (void) WriteBlobByte(image,(unsigned char) *q);
+      if (WriteBlobByte(image,(unsigned char) *q) != 1)
+        {
+          status=MagickFalse;
+          break;
+        }
     }
     p+=(ptrdiff_t) 8;
   }
@@ -332,6 +355,12 @@ MagickExport void Ascii85Encode(Image *image,const unsigned char code)
   p-=(ptrdiff_t)4;
   for (n=0; n < 4; n++)
     image->ascii85->buffer[n]=(*p++);
+  return(status);
+}
+
+MagickExport void Ascii85Encode(Image *image,const unsigned char code)
+{
+  (void) Ascii85EncodeInternal(image,code);
 }
 
 /*
@@ -673,6 +702,8 @@ MagickExport MagickBooleanType HuffmanEncodeImage(const ImageInfo *image_info,
   mask=one << (entry->length-1);  \
   while (mask != 0)  \
   {  \
+    if (status == MagickFalse)  \
+      break;  \
     OutputBit(((entry->code & mask) != 0 ? 1 : 0));  \
     mask>>=1;  \
   }  \
@@ -685,12 +716,15 @@ DisableMSCWarning(4127) \
     byte=byte | bit;  \
 RestoreMSCWarning \
   bit>>=1;  \
-  if ((int) (bit & 0xff) == 0)   \
+  if ((status != MagickFalse) && ((int) (bit & 0xff) == 0))   \
     {  \
       if (LocaleCompare(image_info->magick,"FAX") == 0) \
-        (void) WriteBlobByte(image,(unsigned char) byte);  \
+        {  \
+          if (WriteBlobByte(image,(unsigned char) byte) != 1)  \
+            status=MagickFalse;  \
+        }  \
       else \
-        Ascii85Encode(image,byte); \
+        status=Ascii85EncodeInternal(image,byte); \
       byte='\0';  \
       bit=(unsigned char) 0x80;  \
     }  \
@@ -707,7 +741,7 @@ RestoreMSCWarning \
     *huffman_image;
 
   MagickBooleanType
-    proceed;
+    status;
 
   ssize_t
     i,
@@ -745,6 +779,7 @@ RestoreMSCWarning \
   assert(inject_image != (Image *) NULL);
   assert(inject_image->signature == MagickCoreSignature);
   one=1;
+  status=MagickTrue;
   width=inject_image->columns;
   if (LocaleCompare(image_info->magick,"FAX") == 0)
     width=(size_t) MagickMax(inject_image->columns,1728);
@@ -780,6 +815,8 @@ RestoreMSCWarning \
   q=scanline;
   for (y=0; y < (ssize_t) huffman_image->rows; y++)
   {
+    if (status == MagickFalse)
+      break;
     p=GetVirtualPixels(huffman_image,0,y,huffman_image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
@@ -795,6 +832,8 @@ RestoreMSCWarning \
     q=scanline;
     for (n=(ssize_t) width; n > 0; )
     {
+      if (status == MagickFalse)
+        break;
       /*
         Output white run.
       */
@@ -836,18 +875,22 @@ RestoreMSCWarning \
           HuffmanOutputCode(entry);
         }
     }
+    if (status == MagickFalse)
+      break;
     /*
       End of line.
     */
     for (k=0; k < 11; k++)
       OutputBit(0);
     OutputBit(1);
+    if (status == MagickFalse)
+      break;
     q=scanline;
     if (GetPreviousImageInList(huffman_image) == (Image *) NULL)
       {
-        proceed=SetImageProgress(huffman_image,LoadImageTag,
+        status=SetImageProgress(huffman_image,LoadImageTag,
           (MagickOffsetType) y,huffman_image->rows);
-        if (proceed == MagickFalse)
+        if (status == MagickFalse)
           break;
       }
   }
@@ -856,6 +899,8 @@ RestoreMSCWarning \
   */
   for (i=0; i < 6; i++)
   {
+    if (status == MagickFalse)
+      break;
     for (k=0; k < 11; k++)
       OutputBit(0);
     OutputBit(1);
@@ -863,18 +908,22 @@ RestoreMSCWarning \
   /*
     Flush bits.
   */
-  if (((int) bit != 0x80) != 0)
+  if ((status != MagickFalse) && (((int) bit != 0x80) != 0))
     {
       if (LocaleCompare(image_info->magick,"FAX") == 0)
-        (void) WriteBlobByte(image,byte);
+        {
+          if (WriteBlobByte(image,byte) != 1)
+            status=MagickFalse;
+        }
       else
-        Ascii85Encode(image,byte);
+        status=Ascii85EncodeInternal(image,byte);
     }
-  if (LocaleCompare(image_info->magick,"FAX") != 0)
-    Ascii85Flush(image);
+  if ((status != MagickFalse) &&
+      (LocaleCompare(image_info->magick,"FAX") != 0))
+    status=Ascii85FlushInternal(image);
   huffman_image=DestroyImage(huffman_image);
   scanline=(unsigned char *) RelinquishMagickMemory(scanline);
-  return(MagickTrue);
+  return(status);
 }
 
 /*
