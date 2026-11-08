@@ -769,7 +769,10 @@ static MagickBooleanType WriteHDRImage(const ImageInfo *image_info,Image *image,
         pixel[3]=(unsigned char) (image->columns & 0xff);
         count=WriteBlob(image,4*sizeof(*pixel),pixel);
         if (count != (ssize_t) (4*sizeof(*pixel)))
-          break;
+          {
+            status=MagickFalse;
+            break;
+          }
       }
     i=0;
     for (x=0; x < (ssize_t) image->columns; x++)
@@ -829,8 +832,13 @@ static MagickBooleanType WriteHDRImage(const ImageInfo *image_info,Image *image,
       {
         count=WriteBlob(image,4*image->columns*sizeof(*pixels),pixels);
         if (count != (ssize_t) (4*image->columns*sizeof(*pixels)))
-          break;
+          {
+            status=MagickFalse;
+            break;
+          }
       }
+    if (status == MagickFalse)
+      break;
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
       image->rows);
     if (status == MagickFalse)

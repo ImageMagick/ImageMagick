@@ -2659,7 +2659,13 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
     if (image->debug != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "  Pixels:  %u bytes",bmp_info.image_size);
-    (void) WriteBlob(image,(size_t) bmp_info.image_size,pixels);
+    if (WriteBlob(image,(size_t) bmp_info.image_size,pixels) !=
+        (ssize_t) bmp_info.image_size)
+      {
+        pixel_info=RelinquishVirtualMemory(pixel_info);
+        status=MagickFalse;
+        break;
+      }
     if (profile != (StringInfo *) NULL)
       {
         if (image->debug != MagickFalse)
@@ -2671,6 +2677,8 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
           (void) WriteBlob(image,(size_t) profile_size_pad,"\0\0\0");
       }
     pixel_info=RelinquishVirtualMemory(pixel_info);
+    if (status == MagickFalse)
+      break;
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

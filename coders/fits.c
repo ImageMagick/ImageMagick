@@ -855,7 +855,10 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
               pixels);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
           status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
             image->rows);
           if (status == MagickFalse)
@@ -881,12 +884,17 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
               pixels);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
           status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
             image->rows);
           if (status == MagickFalse)
             break;
         }
+        if (status == MagickFalse)
+          break;
         length=GetQuantumExtent(image,quantum_info,GreenQuantum);
         for (y=(ssize_t) image->rows-1; y >= 0; y--)
         {
@@ -904,12 +912,17 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
               pixels);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
           status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
             image->rows);
           if (status == MagickFalse)
             break;
         }
+        if (status == MagickFalse)
+          break;
         length=GetQuantumExtent(image,quantum_info,BlueQuantum);
         for (y=(ssize_t) image->rows-1; y >= 0; y--)
         {
@@ -927,7 +940,10 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
               pixels);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
           status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
             image->rows);
           if (status == MagickFalse)
@@ -935,6 +951,8 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
         }
       }
     quantum_info=DestroyQuantumInfo(quantum_info);
+    if (status == MagickFalse)
+      break;
     length=(size_t) (FITSBlocksize-TellBlob(image) % FITSBlocksize);
     if (length != FITSBlocksize)
       {

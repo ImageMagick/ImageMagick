@@ -602,9 +602,9 @@ static MagickBooleanType WriteRAWImage(const ImageInfo *image_info,Image *image,
         }
     }
     quantum_info=DestroyQuantumInfo(quantum_info);
-    if (GetNextImageInList(image) == (Image *) NULL)
-      break;
     if (status == MagickFalse)
+      break;
+    if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
     status=SetImageProgress(image,SaveImagesTag,scene++,number_scenes);

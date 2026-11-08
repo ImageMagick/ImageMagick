@@ -803,6 +803,31 @@ ModuleExport void UnregisterFTXTImage(void)
 {
   (void) UnregisterMagickInfo("FTXT");
 }
+
+static MagickBooleanType WriteFTXTString(Image *image,const char *text,
+  unsigned char *pixels,size_t *extent)
+{
+  size_t
+    count,
+    length;
+
+  count=strlen(text);
+  while (count != 0)
+  {
+    length=MagickMin(count,MaxTextExtent-*extent);
+    (void) memcpy(pixels+*extent,text,length);
+    *extent+=length;
+    text+=length;
+    count-=length;
+    if (*extent == MaxTextExtent)
+      {
+        if (WriteBlob(image,*extent,pixels) != (ssize_t) *extent)
+          return(MagickFalse);
+        *extent=0;
+      }
+  }
+  return(MagickTrue);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -858,6 +883,12 @@ static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,
   PixelInfo
     pixel;
 
+  size_t
+    extent;
+
+  unsigned char
+    *pixels;
+
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
   assert(image != (Image *) NULL);
@@ -881,6 +912,10 @@ static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,
     chSep=sChSep[0];
   sSuff[0]='\0';
   sSuff[1]='\0';
+  pixels=(unsigned char *) AcquireQuantumMemory(MaxTextExtent,sizeof(*pixels));
+  if (pixels == (unsigned char *) NULL)
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+  extent=0;
 
   do
   {
@@ -891,8 +926,14 @@ static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,
     GetPixelInfo(image,&pixel);
     for (y=0; y < (long) image->rows; y++)
     {
+      if (status == MagickFalse)
+        break;
       p=GetVirtualPixels(image,0,y,image->columns,1,exception);
-      if (!p) break;
+      if (p == (const Quantum *) NULL)
+        {
+          status=MagickFalse;
+          break;
+        }
       for (x=0; x < (long) image->columns; x++)
       {
         const char
@@ -905,12 +946,16 @@ static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,
           fltHexFmt,
           hexFmt;
 
+        if (status == MagickFalse)
+          break;
         valMult=1.0;
         hexFmt=MagickFalse;
         fltHexFmt=MagickFalse;
         pFmt=sFmt;
-        while (*pFmt)
+        while (*pFmt != '\0')
         {
+          if (status == MagickFalse)
+            break;
           if (*pFmt == chEsc)
           {
             pFmt++;
@@ -919,24 +964,24 @@ static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,
               case 'x':
               {
                 FormatLocaleString(buffer,MaxTextExtent,"%li",x);
-                WriteBlobString(image,buffer);
+                status=WriteFTXTString(image,buffer,pixels,&extent);
                 break;
               }
               case 'y':
               {
                 FormatLocaleString (buffer,MaxTextExtent,"%li",y);
-                WriteBlobString(image,buffer);
+                status=WriteFTXTString(image,buffer,pixels,&extent);
                 break;
               }
               case 'n':
               {
-                WriteBlobString(image,"\n");
+                status=WriteFTXTString(image,"\n",pixels,&extent);
                 break;
               }
               case chEsc:
               {
                 FormatLocaleString(buffer,MaxTextExtent,"%c%c",chEsc,chEsc);
-                WriteBlobString(image,buffer);
+                status=WriteFTXTString(image,buffer,pixels,&extent);
                 break;
               }
               case 'c':
@@ -984,6 +1029,8 @@ static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,
                   PixelTrait
                     traits;
 
+                  if (status == MagickFalse)
+                    break;
                   channel=GetPixelChannelChannel(image,i);
                   traits=GetPixelChannelTraits(image,channel);
                   if ((traits & UpdatePixelTrait) != UpdatePixelTrait)
@@ -997,7 +1044,7 @@ static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,
                   else
                     FormatLocaleString(buffer,MaxTextExtent,"%s%.*g%s",sSep,
                       precision,(double) (p[i]*valMult),sSuff);
-                  WriteBlobString(image,buffer);
+                  status=WriteFTXTString(image,buffer,pixels,&extent);
                   sSep[0]=chSep;
                 }
                 break;
@@ -1011,7 +1058,7 @@ static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,
               {
                 GetPixelInfoPixel(image,p,&pixel);
                 GetColorTuple(&pixel,MagickFalse,buffer);
-                WriteBlobString(image,buffer);
+                status=WriteFTXTString(image,buffer,pixels,&extent);
                 break;
               }
               case 'H':
@@ -1024,7 +1071,7 @@ static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,
                 if (pixel.depth > 32)
                   pixel.depth=32;
                 GetColorTuple(&pixel,MagickTrue,buffer);
-                WriteBlobString(image,buffer);
+                status=WriteFTXTString(image,buffer,pixels,&extent);
                 break;
               }
               default:
@@ -1036,14 +1083,20 @@ static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,
               /* Not an escape char. */
               buffer[0]=*pFmt;
               buffer[1]='\0';
-              (void) WriteBlobString(image,buffer);
+              status=WriteFTXTString(image,buffer,pixels,&extent);
             }
           if (*pFmt)
             pFmt++;
         }
         p+=(ptrdiff_t) GetPixelChannels(image);
       }
-      if ((image->previous == (Image *) NULL) &&
+      if ((status != MagickFalse) && (extent != 0))
+        {
+          if (WriteBlob(image,extent,pixels) != (ssize_t) extent)
+            status=MagickFalse;
+          extent=0;
+        }
+      if ((status != MagickFalse) && (image->previous == (Image *) NULL) &&
           (image->progress_monitor != (MagickProgressMonitor) NULL) &&
           (QuantumTick(y,image->rows) != MagickFalse))
         {
@@ -1053,7 +1106,9 @@ static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,
             break;
         }
     }
-    if (GetNextImageInList(image) == (Image *) NULL)
+    if (status == MagickFalse)
+      break;
+    if (GetNextImageInList(image) == (Image*)NULL)
       break;
     image=SyncNextImageInList(image);
     status=SetImageProgress(image,SaveImagesTag,scene,
@@ -1062,6 +1117,7 @@ static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,
       break;
     scene++;
   } while (image_info->adjoin != MagickFalse);
+  pixels=(unsigned char *) RelinquishMagickMemory(pixels);
   if (CloseBlob(image) == MagickFalse)
     status=MagickFalse;
   return(status);

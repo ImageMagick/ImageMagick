@@ -395,6 +395,8 @@ static MagickBooleanType WriteFAXImage(const ImageInfo *image_info,Image *image,
     if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
       (void) TransformImageColorspace(image,sRGBColorspace,exception);
     status=HuffmanEncodeImage(write_info,image,image,exception);
+    if (status == MagickFalse)
+      break;
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

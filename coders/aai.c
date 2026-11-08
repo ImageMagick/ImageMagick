@@ -401,7 +401,10 @@ static MagickBooleanType WriteAAIImage(const ImageInfo *image_info,Image *image,
       }
       count=WriteBlob(image,(size_t) (q-pixels),pixels);
       if (count != (ssize_t) (q-pixels))
-        break;
+        {
+          status=MagickFalse;
+          break;
+        }
       if (image->previous == (Image *) NULL)
         {
           status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -411,6 +414,8 @@ static MagickBooleanType WriteAAIImage(const ImageInfo *image_info,Image *image,
         }
     }
     pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+    if (status == MagickFalse)
+      break;
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

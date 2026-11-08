@@ -1742,7 +1742,8 @@ typedef struct
     pixels[256];
 } WPGRLEInfo;
 
-static void WPGFlushRLE(WPGRLEInfo *rle_info,Image *image,unsigned char n)
+static MagickBooleanType WPGFlushRLE(WPGRLEInfo *rle_info,Image *image,
+  unsigned char n)
 {
   if (n > rle_info->offset)
     n=(unsigned char) rle_info->offset;
@@ -1750,17 +1751,20 @@ static void WPGFlushRLE(WPGRLEInfo *rle_info,Image *image,unsigned char n)
     n=0x7F;
   if (n > 0)
     {
-      (void) WriteBlobByte(image,n);
-      (void) WriteBlob(image,n,rle_info->pixels);
+      if (WriteBlobByte(image,n) != 1)
+        return(MagickFalse);
+      if (WriteBlob(image,n,rle_info->pixels) != (ssize_t) n)
+        return(MagickFalse);
       rle_info->offset-=n;
       if (rle_info->offset > 0)
         (void) memmove(rle_info->pixels,rle_info->pixels+n,n);
       else
         rle_info->count=0;
     }
+  return(MagickTrue);
 }
 
-static void WPGAddRLEByte(WPGRLEInfo *rle_info,Image *image,
+static MagickBooleanType WPGAddRLEByte(WPGRLEInfo *rle_info,Image *image,
   const unsigned char byte)
 {
   rle_info->pixels[rle_info->offset++]=byte;
@@ -1772,11 +1776,13 @@ static void WPGAddRLEByte(WPGRLEInfo *rle_info,Image *image,
           if (rle_info->count >= 1)
             {
               rle_info->count++;
-              WPGFlushRLE(rle_info,image,(unsigned char) (rle_info->offset-
-                (ssize_t) rle_info->count-1));
-              (void) WriteBlobByte(image,(unsigned char) (
-                rle_info->count | 0x80));
-              (void) WriteBlobByte(image,rle_info->pixels[0]);
+              if (WPGFlushRLE(rle_info,image,(unsigned char) (rle_info->offset-
+                  (ssize_t) rle_info->count-1)) == MagickFalse)
+                return(MagickFalse);
+              if (WriteBlobByte(image,(unsigned char) (rle_info->count | 0x80)) != 1)
+                return(MagickFalse);
+              if (WriteBlobByte(image,rle_info->pixels[0]) != 1)
+                return(MagickFalse);
               rle_info->offset=1;
               rle_info->pixels[0]=byte;
             }
@@ -1786,41 +1792,43 @@ static void WPGAddRLEByte(WPGRLEInfo *rle_info,Image *image,
         rle_info->count++;
   }
   if ((rle_info->offset-(ssize_t) rle_info->count) > 0x7E)
-    {
-      WPGFlushRLE(rle_info,image,0x7F);
-      return;
-    }
+    return(WPGFlushRLE(rle_info,image,0x7F));
   if ((rle_info->offset > 0x7E) && (rle_info->count >= 1))
-     {
-       WPGFlushRLE(rle_info,image,(unsigned char) (rle_info->offset-
-         (ssize_t) rle_info->count-1));
-       return;
-     }
+    return(WPGFlushRLE(rle_info,image,(unsigned char) (rle_info->offset-
+      (ssize_t) rle_info->count-1)));
+  return(MagickTrue);
 }
 
-static void WPGFlush(WPGRLEInfo *rle_info,Image *image)
+static MagickBooleanType WPGFlush(WPGRLEInfo *rle_info,Image *image)
 {
   if (rle_info->count > 1)
     {
-      WPGAddRLEByte(rle_info,image,rle_info->pixels[rle_info->offset-1] ^ 0xFF);
+      if (WPGAddRLEByte(rle_info,image,rle_info->pixels[rle_info->offset-1] ^
+          0xFF) == MagickFalse)
+        return(MagickFalse);
       rle_info->offset=0;
     }
   else
     {
-      WPGFlushRLE(rle_info,image,0x7F);
-      WPGFlushRLE(rle_info,image,0x7F);
+      if (WPGFlushRLE(rle_info,image,0x7F) == MagickFalse)
+        return(MagickFalse);
+      if (WPGFlushRLE(rle_info,image,0x7F) == MagickFalse)
+        return(MagickFalse);
       rle_info->count=0;
     }
+  return(MagickTrue);
 }
 
-static void WPGAddRLEBlock(WPGRLEInfo *rle_info,Image *image,
+static MagickBooleanType WPGAddRLEBlock(WPGRLEInfo *rle_info,Image *image,
   const unsigned char *pixels,unsigned short extent)
 {
   while (extent-- > 0)
   {
-    WPGAddRLEByte(rle_info,image,*pixels);
+    if (WPGAddRLEByte(rle_info,image,*pixels) == MagickFalse)
+      return(MagickFalse);
     pixels++;
   }
+  return(WPGFlush(rle_info,image));
 }
 
 static void WPGInitializeRLE(WPGRLEInfo *rle_info)
@@ -1973,23 +1981,25 @@ static MagickBooleanType WriteWPGImage(const ImageInfo *image_info,Image *image,
       image->depth == 1 ? GrayQuantum : IndexQuantum,pixels,exception);
     if (length == 0)
       break;
-    WPGAddRLEBlock(&rle_info,image,pixels,(unsigned short) length);
-    WPGFlush(&rle_info,image);
+    status=WPGAddRLEBlock(&rle_info,image,pixels,(unsigned short) length);
+    if (status == MagickFalse)
+      break;
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
       image->rows);
     if (status == MagickFalse)
       break;
   }
   quantum_info=DestroyQuantumInfo(quantum_info);
-  current_offset=TellBlob(image);
-  (void) WriteBlobByte(image,0x10);
-  (void) WriteBlobByte(image,0);
-  (void) SeekBlob(image,offset,SEEK_SET);
-  offset=current_offset-offset-4;
-  (void) WriteBlobLSBShort(image,(unsigned short) (0x8000 | (offset >> 16)));
-  (void) WriteBlobLSBShort(image,offset & 0xffff);
-  if (y < (ssize_t) image->rows)
-    ThrowWriterException(CorruptImageError,"UnableToWriteImageData");
+  if (status != MagickFalse)
+    {
+      current_offset=TellBlob(image);
+      (void) WriteBlobByte(image,0x10);
+      (void) WriteBlobByte(image,0);
+      (void) SeekBlob(image,offset,SEEK_SET);
+      offset=current_offset-offset-4;
+      (void) WriteBlobLSBShort(image,(unsigned short) (0x8000 | (offset >> 16)));
+      (void) WriteBlobLSBShort(image,offset & 0xffff);
+    }
   if (CloseBlob(image) == MagickFalse)
     status=MagickFalse;
   return(status);

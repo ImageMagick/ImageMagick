@@ -1181,7 +1181,10 @@ static MagickBooleanType WriteBGRImage(const ImageInfo *image_info,Image *image,
             quantum_type,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
           if (image->previous == (Image *) NULL)
             {
               status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -1209,24 +1212,36 @@ static MagickBooleanType WriteBGRImage(const ImageInfo *image_info,Image *image,
             BlueQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
           length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             GreenQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
           length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             RedQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
           if (quantum_type == BGRAQuantum)
             {
               length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
                 AlphaQuantum,pixels,exception);
               count=WriteBlob(image,length,pixels);
               if (count != (ssize_t) length)
-                break;
+                {
+                  status=MagickFalse;
+                  break;
+                }
             }
           if (image->previous == (Image *) NULL)
             {
@@ -1255,7 +1270,10 @@ static MagickBooleanType WriteBGRImage(const ImageInfo *image_info,Image *image,
             RedQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
         }
         if (image->previous == (Image *) NULL)
           {
@@ -1275,7 +1293,10 @@ static MagickBooleanType WriteBGRImage(const ImageInfo *image_info,Image *image,
             GreenQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
         }
         if (image->previous == (Image *) NULL)
           {
@@ -1295,7 +1316,10 @@ static MagickBooleanType WriteBGRImage(const ImageInfo *image_info,Image *image,
             BlueQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
         }
         if (image->previous == (Image *) NULL)
           {
@@ -1317,7 +1341,10 @@ static MagickBooleanType WriteBGRImage(const ImageInfo *image_info,Image *image,
                 AlphaQuantum,pixels,exception);
               count=WriteBlob(image,length,pixels);
               if (count != (ssize_t) length)
-              break;
+                {
+                  status=MagickFalse;
+                  break;
+                }
             }
             if (image->previous == (Image *) NULL)
               {
@@ -1362,7 +1389,10 @@ static MagickBooleanType WriteBGRImage(const ImageInfo *image_info,Image *image,
             BlueQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
         }
         if (image->previous == (Image *) NULL)
           {
@@ -1392,7 +1422,10 @@ static MagickBooleanType WriteBGRImage(const ImageInfo *image_info,Image *image,
             GreenQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
         }
         if (image->previous == (Image *) NULL)
           {
@@ -1422,7 +1455,10 @@ static MagickBooleanType WriteBGRImage(const ImageInfo *image_info,Image *image,
             RedQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
         }
         if (image->previous == (Image *) NULL)
           {
@@ -1455,7 +1491,10 @@ static MagickBooleanType WriteBGRImage(const ImageInfo *image_info,Image *image,
                 AlphaQuantum,pixels,exception);
               count=WriteBlob(image,length,pixels);
               if (count != (ssize_t) length)
-                break;
+                {
+                  status=MagickFalse;
+                  break;
+                }
             }
             if (image->previous == (Image *) NULL)
               {
@@ -1477,6 +1516,8 @@ static MagickBooleanType WriteBGRImage(const ImageInfo *image_info,Image *image,
       }
     }
     quantum_info=DestroyQuantumInfo(quantum_info);
+    if (status == MagickFalse)
+      break;
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

@@ -1103,7 +1103,6 @@ static MagickBooleanType MagickCommandUsage(void)
       "  -stroke color        graphic primitive stroke color\n"
       "  -strokewidth value   graphic primitive stroke width\n"
       "  -style type          render text with this font style\n"
-      "  -support factor      resize support: > 1.0 is blurry, < 1.0 is sharp\n"
       "  -synchronize         synchronize image to storage device\n"
       "  -taint               declare the image as modified\n"
       "  -texture filename    name of texture to tile onto the image background\n"
