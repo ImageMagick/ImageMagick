@@ -513,10 +513,10 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image,
 
   MagickBooleanType
     status;
-  
+
   MagickOffsetType
     scene;
-  
+
   const Quantum
     *p;
 
@@ -528,11 +528,11 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image,
 
   ssize_t
     y;
-  
+
   unsigned char
     *pixels;
- 
-   /*
+
+  /*
     Open output image file.
   */
   assert(image_info != (const ImageInfo *) NULL);
@@ -547,158 +547,164 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image,
   if (status == MagickFalse)
     return(status);
   scene=0;
-  
+
   quantum_info=AcquireQuantumInfo(image_info,image);
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   if ((quantum_info->format == UndefinedQuantumFormat) &&
       (IsHighDynamicRangeImage(image,exception) != MagickFalse))
     SetQuantumFormat(image,quantum_info,FloatingPointQuantumFormat);
-  switch(quantum_info->depth){
-  case 8: 
-    ipl_info.byteType = 0;
-    break;
-  case 16:
-    if(quantum_info->format == SignedQuantumFormat){
-      ipl_info.byteType = 2;
-    }
-    else{
-      ipl_info.byteType = 1;
-    }
-    break;
-  case 32:
-    if(quantum_info->format == FloatingPointQuantumFormat){
-      ipl_info.byteType = 3;
-    }
-    else{
-      ipl_info.byteType = 4;
-    }
-    break;
-  case 64:
-    ipl_info.byteType = 10;
-    break;
-  default: 
-    ipl_info.byteType = 2; 
-    break;
-    
+  switch (quantum_info->depth)
+  {
+    case 8:
+      ipl_info.byteType=0;
+      break;
+
+    case 16:
+      if (quantum_info->format == SignedQuantumFormat)
+        ipl_info.byteType=2;
+      else
+        ipl_info.byteType=1;
+      break;
+
+    case 32:
+      if (quantum_info->format == FloatingPointQuantumFormat)
+        ipl_info.byteType=3;
+      else
+        ipl_info.byteType=4;
+      break;
+
+    case 64:
+      ipl_info.byteType=10;
+      break;
+
+    default:
+      ipl_info.byteType=2;
+      break;
   }
   number_scenes=GetImageListLength(image);
-  ipl_info.z = (unsigned int) number_scenes;
+  ipl_info.z=(unsigned int) number_scenes;
   /* There is no current method for detecting whether we have T or Z stacks */
-  ipl_info.time = 1;
-  ipl_info.width = (unsigned int) image->columns;
-  ipl_info.height = (unsigned int) image->rows;
+  ipl_info.time=1;
+  ipl_info.width=(unsigned int) image->columns;
+  ipl_info.height=(unsigned int) image->rows;
   if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
-      (void) TransformImageColorspace(image,sRGBColorspace,exception);
-  if(IssRGBCompatibleColorspace(image->colorspace) != MagickFalse) { ipl_info.colors = 3; }
-  else{ ipl_info.colors = 1; }
-  
-  ipl_info.size = (unsigned int) (28 + 
+    (void) TransformImageColorspace(image,sRGBColorspace,exception);
+  if (IssRGBCompatibleColorspace(image->colorspace) != MagickFalse)
+    ipl_info.colors=3;
+  else
+    ipl_info.colors=1;
+
+  ipl_info.size=(unsigned int) (28+
     ((image->depth)/8)*ipl_info.height*ipl_info.width*ipl_info.colors*ipl_info.z);
-  
-  /* Ok!  Calculations are done.  Lets write this puppy down! */
-  
+
   /*
     Write IPL header.
   */
-  /* Shockingly (maybe not if you have used IPLab),  IPLab itself CANNOT read MSBEndian
-  files!   The reader above can, but they cannot.  For compatability reasons, I will leave
-  the code in here, but it is all but useless if you want to use IPLab. */
+  /*
+    Shockingly (maybe not if you have used IPLab), IPLab itself CANNOT read
+    MSBEndian files! The reader above can, but they cannot. For compatability
+    reasons, I will leave the code in here, but it is all but useless if you want
+    to use IPLab.
+  */
 
-  if(image_info->endian == MSBEndian)
-    (void) WriteBlob(image, 4, (const unsigned char *) "mmmm");
-  else{
-    image->endian = LSBEndian;
-    (void) WriteBlob(image, 4, (const unsigned char *) "iiii");
-  }
-  (void) WriteBlobLong(image, 4);
-  (void) WriteBlob(image, 4, (const unsigned char *) "100f");
-  (void) WriteBlob(image, 4, (const unsigned char *) "data");
-  (void) WriteBlobLong(image, ipl_info.size);
-  (void) WriteBlobLong(image, ipl_info.width); 
-  (void) WriteBlobLong(image, ipl_info.height);
-  (void) WriteBlobLong(image, ipl_info.colors);
-  if(image_info->adjoin == MagickFalse)
-  (void) WriteBlobLong(image, 1);
+  if (image_info->endian == MSBEndian)
+    (void) WriteBlob(image,4,(const unsigned char *) "mmmm");
   else
-  (void) WriteBlobLong(image, ipl_info.z);
-  (void) WriteBlobLong(image, ipl_info.time);
-  (void) WriteBlobLong(image, ipl_info.byteType);
-  
-  do
     {
-      /*
-  Convert MIFF to IPL raster pixels.
-      */
-      if (SetQuantumExtent(image,quantum_info) == MagickFalse)
-        {
-          (void) ThrowMagickException(exception,GetMagickModule(),
-            CorruptImageError,"AnErrorHasOccurredWritingToFile","`%s'",
-            image->filename);
-          break;
-        }
-      pixels=(unsigned char *) GetQuantumPixels(quantum_info);
-  if(ipl_info.colors == 1){
-  /* Red frame */
-  for(y = 0; y < (ssize_t) ipl_info.height; y++){
-    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
-    if (p == (const Quantum *) NULL)
-      break;
-    (void) ExportQuantumPixels(image,(CacheView *) NULL, quantum_info,
-      GrayQuantum, pixels,exception);
-    (void) WriteBlob(image, image->columns*image->depth/8, pixels);
-  }
-
-}
-  if(ipl_info.colors == 3){
-  /* Red frame */
-  for(y = 0; y < (ssize_t) ipl_info.height; y++){
-    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
-    if (p == (const Quantum *) NULL)
-      break;
-    (void) ExportQuantumPixels(image,(CacheView *) NULL, quantum_info,
-      RedQuantum, pixels,exception);
-    (void) WriteBlob(image, image->columns*image->depth/8, pixels);
-  }
-
-    /* Green frame */
-    for(y = 0; y < (ssize_t) ipl_info.height; y++){
-      p=GetVirtualPixels(image,0,y,image->columns,1,exception);
-      if (p == (const Quantum *) NULL)
-        break;
-      (void) ExportQuantumPixels(image,(CacheView *) NULL, quantum_info,
-        GreenQuantum, pixels,exception);
-      (void) WriteBlob(image, image->columns*image->depth/8, pixels);
+      image->endian=LSBEndian;
+      (void) WriteBlob(image,4,(const unsigned char *) "iiii");
     }
-    /* Blue frame */
-    for(y = 0; y < (ssize_t) ipl_info.height; y++){
-      p=GetVirtualPixels(image,0,y,image->columns,1,exception);
-      if (p == (const Quantum *) NULL)
+  (void) WriteBlobLong(image,4);
+  (void) WriteBlob(image,4,(const unsigned char *) "100f");
+  (void) WriteBlob(image,4,(const unsigned char *) "data");
+  (void) WriteBlobLong(image,ipl_info.size);
+  (void) WriteBlobLong(image,ipl_info.width);
+  (void) WriteBlobLong(image,ipl_info.height);
+  (void) WriteBlobLong(image,ipl_info.colors);
+  if (image_info->adjoin == MagickFalse)
+    (void) WriteBlobLong(image,1);
+  else
+    (void) WriteBlobLong(image,ipl_info.z);
+  (void) WriteBlobLong(image,ipl_info.time);
+  (void) WriteBlobLong(image,ipl_info.byteType);
+
+  do
+  {
+    /*
+      Convert MIFF to IPL raster pixels.
+    */
+    if (SetQuantumExtent(image,quantum_info) == MagickFalse)
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          CorruptImageError,"AnErrorHasOccurredWritingToFile","`%s'",
+          image->filename);
         break;
-      (void) ExportQuantumPixels(image,(CacheView *) NULL, quantum_info,
-        BlueQuantum, pixels,exception);
-      (void) WriteBlob(image, image->columns*image->depth/8, pixels);
-      if (image->previous == (Image *) NULL)
+      }
+    pixels=(unsigned char *) GetQuantumPixels(quantum_info);
+    if (ipl_info.colors == 1)
+      {
+        /* Red frame */
+        for (y=0; y < (ssize_t) ipl_info.height; y++)
         {
-          status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
-          if (status == MagickFalse)
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+          if (p == (const Quantum *) NULL)
             break;
+          (void) ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+            GrayQuantum,pixels,exception);
+          (void) WriteBlob(image,image->columns*image->depth/8,pixels);
         }
-    }
-  }
-  if (GetNextImageInList(image) == (Image *) NULL)
-    break;
-      image=SyncNextImageInList(image);
-      status=SetImageProgress(image,SaveImagesTag,scene++,number_scenes);
-      if (status == MagickFalse)
-        break;
-    }while (image_info->adjoin != MagickFalse);
-
+      }
+    if (ipl_info.colors == 3)
+      {
+        /* Red frame */
+        for (y=0; y < (ssize_t) ipl_info.height; y++)
+        {
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+          if (p == (const Quantum *) NULL)
+            break;
+          (void) ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+            RedQuantum,pixels,exception);
+          (void) WriteBlob(image,image->columns*image->depth/8,pixels);
+        }
+        /* Green frame */
+        for (y=0; y < (ssize_t) ipl_info.height; y++)
+        {
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+          if (p == (const Quantum *) NULL)
+            break;
+          (void) ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+            GreenQuantum,pixels,exception);
+          (void) WriteBlob(image,image->columns*image->depth/8,pixels);
+        }
+        /* Blue frame */
+        for (y=0; y < (ssize_t) ipl_info.height; y++)
+        {
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+          if (p == (const Quantum *) NULL)
+            break;
+          (void) ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+            BlueQuantum,pixels,exception);
+          (void) WriteBlob(image,image->columns*image->depth/8,pixels);
+          if (image->previous == (Image *) NULL)
+            {
+              status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+                image->rows);
+              if (status == MagickFalse)
+                break;
+            }
+        }
+      }
+    if (GetNextImageInList(image) == (Image *) NULL)
+      break;
+    image=SyncNextImageInList(image);
+    status=SetImageProgress(image,SaveImagesTag,scene++,number_scenes);
+    if (status == MagickFalse)
+      break;
+  } while (image_info->adjoin != MagickFalse);
   quantum_info=DestroyQuantumInfo(quantum_info);
-  (void) WriteBlob(image, 4, (const unsigned char *) "fini");
-  (void) WriteBlobLong(image, 0);
-
-CloseBlob(image);
-return(MagickTrue);
+  (void) WriteBlob(image,4,(const unsigned char *) "fini");
+  (void) WriteBlobLong(image,0);
+  CloseBlob(image);
+  return(MagickTrue);
 }
