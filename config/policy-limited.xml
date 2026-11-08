@@ -31,7 +31,7 @@
     * Blocking potentially dangerous path access methods such as indirect
       reads (@files) and pipes.
     * Preventing access to sensitive filesystem locations.
-    * Restricting high-risk coders that have historically been involved in
+    * Restricting embedded scripting coders that have historically been involved in
       external content processing, scripting, or complex parsers.
     * Limiting large allocation requests that could otherwise lead to
       excessive memory consumption.
@@ -116,7 +116,7 @@
   <policy domain="path" rights="none" pattern="|*"/>
 
   <!--
-    Restrict high-risk coders.
+    Restrict embedded scripting coders.
 
     Certain modules are denied, whereas, read access is denied while write
     access remains permitted for others.  This allows ImageMagick to generate

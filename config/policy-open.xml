@@ -175,7 +175,7 @@
   <!-- <policy domain="path" rights="none" pattern="|*"/> -->
 
   <!--
-    Restrict high-risk coders.
+    Restrict embedded scripting coders.
 
     Certain modules are denied, whereas, read access is denied while write
     access remains permitted for others.  This allows ImageMagick to generate

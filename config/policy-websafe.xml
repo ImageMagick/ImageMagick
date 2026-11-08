@@ -32,7 +32,7 @@
     * Prevent indirect file reads via @filename expansion.
     * Prevent use of stdin/stdout and file descriptor paths.
     * Disable all delegates and loadable filters.
-    * Disable selected high-risk modules that provide scripting, vector
+    * Disable selected embedded scripting modules that provide scripting, vector
       graphics processing, or URL access.
 
   This policy does not restrict ImageMagick to a specific image format
@@ -124,7 +124,7 @@
   <policy domain="filter" rights="none" pattern="*"/>
 
   <!--
-    Restrict high-risk coders.
+    Restrict embedded scripting coders.
 
     Certain modules are denied, whereas, read access is denied while write
     access remains permitted for others.  This allows ImageMagick to generate
