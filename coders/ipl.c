@@ -505,6 +505,42 @@ ModuleExport void UnregisterIPLImage(void)
 %    o exception: return any errors or warnings in this structure.
 %
 */
+static MagickBooleanType WriteIPLFrame(Image *image,QuantumInfo *quantum_info,
+  const QuantumType quantum_type,const size_t rows,ExceptionInfo *exception)
+{
+  const Quantum
+    *p;
+
+  size_t
+    length;
+
+  ssize_t
+    y;
+
+  unsigned char
+    *pixels;
+
+  pixels=(unsigned char *) GetQuantumPixels(quantum_info);
+  for (y=0; y < (ssize_t) rows; y++)
+  {
+    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+    if (p == (const Quantum *) NULL)
+      break;
+    (void) ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+      quantum_type,pixels,exception);
+    length=image->columns*image->depth/8;
+    if (WriteBlob(image,length,pixels) != (ssize_t) length)
+      return(MagickFalse);
+    if ((quantum_type == BlueQuantum) && (image->previous == (Image *) NULL))
+      {
+        if (SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+            image->rows) == MagickFalse)
+          return(MagickFalse);
+      }
+  }
+  return(MagickTrue);
+}
+
 static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
@@ -517,20 +553,11 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image,
   MagickOffsetType
     scene;
 
-  const Quantum
-    *p;
-
   QuantumInfo
     *quantum_info;
 
   size_t
     number_scenes;
-
-  ssize_t
-    y;
-
-  unsigned char
-    *pixels;
 
   /*
     Open output image file.
@@ -641,59 +668,30 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image,
           image->filename);
         break;
       }
-    pixels=(unsigned char *) GetQuantumPixels(quantum_info);
     if (ipl_info.colors == 1)
       {
-        /* Red frame */
-        for (y=0; y < (ssize_t) ipl_info.height; y++)
-        {
-          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
-          if (p == (const Quantum *) NULL)
-            break;
-          (void) ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            GrayQuantum,pixels,exception);
-          (void) WriteBlob(image,image->columns*image->depth/8,pixels);
-        }
+        status=WriteIPLFrame(image,quantum_info,GrayQuantum,ipl_info.height,
+          exception);
+        if (status == MagickFalse)
+          break;
       }
     if (ipl_info.colors == 3)
       {
         /* Red frame */
-        for (y=0; y < (ssize_t) ipl_info.height; y++)
-        {
-          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
-          if (p == (const Quantum *) NULL)
-            break;
-          (void) ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            RedQuantum,pixels,exception);
-          (void) WriteBlob(image,image->columns*image->depth/8,pixels);
-        }
+        status=WriteIPLFrame(image,quantum_info,RedQuantum,ipl_info.height,
+          exception);
+        if (status == MagickFalse)
+          break;
         /* Green frame */
-        for (y=0; y < (ssize_t) ipl_info.height; y++)
-        {
-          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
-          if (p == (const Quantum *) NULL)
-            break;
-          (void) ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            GreenQuantum,pixels,exception);
-          (void) WriteBlob(image,image->columns*image->depth/8,pixels);
-        }
+        status=WriteIPLFrame(image,quantum_info,GreenQuantum,ipl_info.height,
+          exception);
+        if (status == MagickFalse)
+          break;
         /* Blue frame */
-        for (y=0; y < (ssize_t) ipl_info.height; y++)
-        {
-          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
-          if (p == (const Quantum *) NULL)
-            break;
-          (void) ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-            BlueQuantum,pixels,exception);
-          (void) WriteBlob(image,image->columns*image->depth/8,pixels);
-          if (image->previous == (Image *) NULL)
-            {
-              status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-                image->rows);
-              if (status == MagickFalse)
-                break;
-            }
-        }
+        status=WriteIPLFrame(image,quantum_info,BlueQuantum,ipl_info.height,
+          exception);
+        if (status == MagickFalse)
+          break;
       }
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
@@ -703,8 +701,12 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image,
       break;
   } while (image_info->adjoin != MagickFalse);
   quantum_info=DestroyQuantumInfo(quantum_info);
-  (void) WriteBlob(image,4,(const unsigned char *) "fini");
-  (void) WriteBlobLong(image,0);
-  CloseBlob(image);
-  return(MagickTrue);
+  if (status != MagickFalse)
+    {
+      (void) WriteBlob(image,4,(const unsigned char *) "fini");
+      (void) WriteBlobLong(image,0);
+    }
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  return(status);
 }
