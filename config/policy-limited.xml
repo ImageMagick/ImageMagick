@@ -31,8 +31,8 @@
     * Blocking potentially dangerous path access methods such as indirect
       reads (@files) and pipes.
     * Preventing access to sensitive filesystem locations.
-    * Restricting embedded scripting coders that have historically been involved in
-      external content processing, scripting, or complex parsers.
+    * Restricting embedded scripting coders that have historically been
+      involved in external content processing, scripting, or complex parsers.
     * Limiting large allocation requests that could otherwise lead to
       excessive memory consumption.
 
