@@ -34,10 +34,10 @@
 
   This policy implements a restrictive security posture suitable for processing
   untrusted images. It limits resource consumption, disables delegates and
-  filters, restricts filesystem access, blocks indirect reads and pipes, and
-  prevents reading several historically embedded scripting formats while continuing to
-  permit writing them when required. Review and adjust these settings to meet
-  your organization's operational and security requirements.
+  filters, restricts filesystem access, blocks indirect reads and pipes,
+  and prevents reading several historically embedded scripting formats while
+  continuing to permit writing them when required. Review and adjust these
+  settings to meet your organization's operational and security requirements.
 -->
 
 <policymap>
