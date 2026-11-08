@@ -18,7 +18,7 @@
 #
 . ./common.shi
 . ${srcdir}/tests/common.shi
-echo "1..27"
+echo "1..28"
 
 ${MAGICK} pnm:- null:   < ${SRCDIR}/rose.pnm && echo "ok" || echo "not ok"
 ${MAGICK} pnm:- info:   < ${SRCDIR}/rose.pnm && echo "ok" || echo "not ok"
@@ -169,5 +169,22 @@ if [ "X$sample" = 'Xffffffffffffffff' ]; then
   echo "ok 27 - 64-bit raw export of a full-range sample"
 else
   echo "not ok 27 - 64-bit raw export of a full-range sample: $sample"
+fi
+
+# An indexed Aseprite cel must decode to its palette colors.
+colors=`{ printf '\000\000\000\000\245\340\001\000\002\000\001\000\010\000'
+  dd if=/dev/zero bs=114 count=1 2>/dev/null
+  printf '\000\000\000\000\372\361\002\000\000\000\000\000\000\000\000\000'
+  printf '\054\000\000\000\031\040\003\000\000\000\000\000\000\000\002\000'
+  printf '\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\377'
+  printf '\000\000\377\000\000\377\000\000\000\000\377\377'
+  printf '\034\000\000\000\005\040\000\000\000\000\000\000\377\000\000\000'
+  printf '\000\000\000\000\000\000\002\000\001\000\001\002'; } |
+  LC_ALL=C ${MAGICK} ASE:- -format '%[pixel:p{0,0}]|%[pixel:p{1,0}]' \
+    info:- 2>/dev/null`
+if [ "X$colors" = 'Xsrgba(255,0,0,1)|srgba(0,0,255,1)' ]; then
+  echo "ok 28 - indexed ASE cel decodes to palette colors"
+else
+  echo "not ok 28 - indexed ASE cel decodes to palette colors: $colors"
 fi
 :
