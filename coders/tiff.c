@@ -747,6 +747,9 @@ static void TIFFSetImageProperties(TIFF *tiff,Image *image,const char *tag,
   int
     unique_file;
 
+  MagickSizeType
+    extent;
+
   /*
     Set EXIF or GPS image properties.
   */
@@ -762,6 +765,16 @@ static void TIFFSetImageProperties(TIFF *tiff,Image *image,const char *tag,
       return;
     }
   TIFFPrintDirectory(tiff,file,0);
+  (void) fseek(file,0,SEEK_END);
+  extent=(MagickSizeType) ftell(file);
+  if (AcquireMagickResource(DiskResource,extent) == MagickFalse)
+    {
+      (void) fclose(file);
+      (void) RelinquishUniqueFileResource(filename);
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",filename);
+      return;
+    }
   (void) fseek(file,0,SEEK_SET);
   while (fgets(buffer,(int) sizeof(buffer),file) != NULL)
   {
@@ -782,6 +795,7 @@ static void TIFFSetImageProperties(TIFF *tiff,Image *image,const char *tag,
   }
   (void) fclose(file);
   (void) RelinquishUniqueFileResource(filename);
+  RelinquishMagickResource(DiskResource,extent);
 }
 
 static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
