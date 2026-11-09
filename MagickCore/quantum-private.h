@@ -352,12 +352,9 @@ static inline QuantumAny ScaleQuantumToAny(const Quantum quantum,
 #if defined(MAGICKCORE_HDRI_SUPPORT)
   if ((IsNaN(quantum) != 0) || (quantum <= 0.0f))
     return((QuantumAny) 0UL);
-  if (quantum >= (Quantum) QuantumRange)
-    return(range);
-#else
-  if (quantum >= (Quantum) QuantumRange)
-    return(range);
 #endif
+  if (quantum >= (Quantum) QuantumRange)
+    return(range);
   value=(double) range*(double) quantum/(double) QuantumRange;
 #if defined(MAGICKCORE_HDRI_SUPPORT)
   value+=0.5;
