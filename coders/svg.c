@@ -2745,6 +2745,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
             "image Over %g,%g %g,%g \"%s\"\n",svg_info->bounds.x,
             svg_info->bounds.y,svg_info->bounds.width,svg_info->bounds.height,
             svg_info->url);
+          svg_info->url=DestroyString(svg_info->url);
           (void) FormatLocaleFile(svg_info->file,"pop graphic-context\n");
           break;
         }
