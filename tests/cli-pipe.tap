@@ -18,7 +18,7 @@
 #
 . ./common.shi
 . ${srcdir}/tests/common.shi
-echo "1..28"
+echo "1..29"
 
 ${MAGICK} pnm:- null:   < ${SRCDIR}/rose.pnm && echo "ok" || echo "not ok"
 ${MAGICK} pnm:- info:   < ${SRCDIR}/rose.pnm && echo "ok" || echo "not ok"
@@ -186,5 +186,14 @@ if [ "X$colors" = 'Xsrgba(255,0,0,1)|srgba(0,0,255,1)' ]; then
   echo "ok 28 - indexed ASE cel decodes to palette colors"
 else
   echo "not ok 28 - indexed ASE cel decodes to palette colors: $colors"
+fi
+
+# Reducing the depth must keep a mid-range sample at its level.
+sample=`LC_ALL=C ${MAGICK} -size 1x1 xc:'#404040' -depth 8 GRAY:- 2>/dev/null |
+  od -An -tx1 | tr -d ' \n'`
+if [ "X$sample" = 'X40' ]; then
+  echo "ok 29 - depth reduction of a mid-range sample"
+else
+  echo "not ok 29 - depth reduction of a mid-range sample: $sample"
 fi
 :
