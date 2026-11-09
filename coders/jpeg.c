@@ -1736,7 +1736,12 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
           (scale_factor > (jpeg_info->output_height/geometry_info.sigma)))
         scale_factor=jpeg_info->output_height/geometry_info.sigma;
 #if defined(LIBJPEG_TURBO_VERSION_NUMBER) || (JPEG_LIB_VERSION >= 70)
-      jpeg_info->scale_num=(unsigned int) (8.0/scale_factor+0.5);
+      /*
+        Use the smallest scaling factor (M/8) that is not smaller than the
+        size hint.
+      */
+      jpeg_info->scale_num=(unsigned int) ceil(MagickMin(8.0/scale_factor,
+        16.0)-MagickEpsilon);
       if (jpeg_info->scale_num > 16U)
         jpeg_info->scale_num=16U;
       if (jpeg_info->scale_num < 1U)
