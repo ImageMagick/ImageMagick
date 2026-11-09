@@ -409,14 +409,16 @@ static void ReadLibRawProfiles(Image *image,const libraw_data_t *raw_info,
   StringInfo
     *profile;
 
-  if (raw_info->color.profile != NULL)
+  if ((raw_info->color.profile != NULL) &&
+      ((MagickOffsetType) raw_info->color.profile_length <= GetBlobSize(image)))
     {
       profile=BlobToProfileStringInfo("icc",raw_info->color.profile,
         raw_info->color.profile_length,exception);
       (void) SetImageProfilePrivate(image,profile,exception);
     }
 #if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,18)
-  if (raw_info->idata.xmpdata != NULL)
+  if ((raw_info->idata.xmpdata != NULL) &&
+      ((MagickOffsetType) raw_info->idata.xmplen <= GetBlobSize(image)))
     {
       profile=BlobToProfileStringInfo("xmp",raw_info->idata.xmpdata,
         raw_info->idata.xmplen,exception);
