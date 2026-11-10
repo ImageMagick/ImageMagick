@@ -426,12 +426,11 @@ MagickExport Image *ConsolidateCMYKImages(const Image *images,
 
   Image
     *cmyk_image,
-    *cmyk_images;
+    *cmyk_images,
+    *p_image;
 
   ssize_t
-    j;
-
-  ssize_t
+    j,
     y;
 
   /*
@@ -444,46 +443,80 @@ MagickExport Image *ConsolidateCMYKImages(const Image *images,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   cmyk_images=NewImageList();
-  for (j=0; j < (ssize_t) GetImageListLength(images); j+=4)
+  p_image=GetFirstImageInList(images);
+  for (j=0; j < (ssize_t) GetImageListLength(p_image); j+=4)
   {
+    const Image
+      *plane_images[4],
+      *q_image = p_image;
+
     ssize_t
       i;
 
-    assert(images != (Image *) NULL);
-    cmyk_image=CloneImage(images,0,0,MagickTrue,
-      exception);
+    /*
+      Gather and validate the next 4 planes.
+    */
+    for (i=0; i < 4; i++)
+    {
+      if (q_image == (const Image *) NULL)
+        break;
+      plane_images[i]=q_image;
+      q_image=GetNextImageInList(q_image);
+    }
+    if (i < 4)
+      {
+        ThrowMagickException(exception,GetMagickModule(),OptionError,
+          "ImagesAreNotTheSameSize","`%s'",p_image->filename);
+        break;
+      }
+    if ((plane_images[1]->columns != plane_images[0]->columns) ||
+        (plane_images[1]->rows != plane_images[0]->rows) ||
+        (plane_images[2]->columns != plane_images[0]->columns) ||
+        (plane_images[2]->rows != plane_images[0]->rows) ||
+        (plane_images[3]->columns != plane_images[0]->columns) ||
+        (plane_images[3]->rows != plane_images[0]->rows))
+      {
+        ThrowMagickException(exception,GetMagickModule(),OptionError,
+          "ImagesAreNotTheSameSize","`%s'",p_image->filename);
+        break;
+      }
+    cmyk_image=CloneImage(plane_images[0],0,0,MagickTrue,exception);
     if (cmyk_image == (Image *) NULL)
       break;
     if (SetImageStorageClass(cmyk_image,DirectClass,exception) == MagickFalse)
-      break;
+      {
+        cmyk_image=DestroyImage(cmyk_image);
+        break;
+      }
     (void) SetImageColorspace(cmyk_image,CMYKColorspace,exception);
+    cmyk_view=AcquireAuthenticCacheView(cmyk_image,exception);
     for (i=0; i < 4; i++)
     {
-      image_view=AcquireVirtualCacheView(images,exception);
-      cmyk_view=AcquireAuthenticCacheView(cmyk_image,exception);
-      for (y=0; y < (ssize_t) images->rows; y++)
+      image_view=AcquireVirtualCacheView(plane_images[i],exception);
+      for (y=0; y < (ssize_t) plane_images[i]->rows; y++)
       {
         const Quantum
           *magick_restrict p;
 
-        ssize_t
-          x;
-
         Quantum
           *magick_restrict q;
 
-        p=GetCacheViewVirtualPixels(image_view,0,y,images->columns,1,exception);
+        ssize_t
+          x;
+
+        p=GetCacheViewVirtualPixels(image_view,0,y,plane_images[i]->columns,1,
+          exception);
         q=QueueCacheViewAuthenticPixels(cmyk_view,0,y,cmyk_image->columns,1,
           exception);
         if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
           break;
-        for (x=0; x < (ssize_t) images->columns; x++)
+        for (x=0; x < (ssize_t) plane_images[i]->columns; x++)
         {
           Quantum
             pixel;
 
           pixel=ClampToQuantum((double) QuantumRange-
-            GetPixelIntensity(images,p));
+            GetPixelIntensity(plane_images[i],p));
           switch (i)
           {
             case 0: SetPixelCyan(cmyk_image,pixel,q);  break;
@@ -492,20 +525,25 @@ MagickExport Image *ConsolidateCMYKImages(const Image *images,
             case 3: SetPixelBlack(cmyk_image,pixel,q);  break;
             default: break;
           }
-          p+=(ptrdiff_t) GetPixelChannels(images);
+          p+=(ptrdiff_t) GetPixelChannels(plane_images[i]);
           q+=(ptrdiff_t) GetPixelChannels(cmyk_image);
         }
-        if (SyncCacheViewAuthenticPixels(cmyk_view,exception) == MagickFalse)
-          break;
       }
-      cmyk_view=DestroyCacheView(cmyk_view);
       image_view=DestroyCacheView(image_view);
-      images=GetNextImageInList(images);
-      if (images == (Image *) NULL)
-        break;
     }
+    if (SyncCacheViewAuthenticPixels(cmyk_view,exception) == MagickFalse)
+      {
+        cmyk_view=DestroyCacheView(cmyk_view);
+        cmyk_image=DestroyImage(cmyk_image);
+        break;
+      }
+    cmyk_view=DestroyCacheView(cmyk_view);
     AppendImageToList(&cmyk_images,cmyk_image);
+    for (i=0; (i < 4) && (p_image != (Image *) NULL); i++)
+      p_image=GetNextImageInList(p_image);
   }
+  if (j < (ssize_t) GetImageListLength(images))
+    cmyk_images=DestroyImageList(cmyk_images);
   return(cmyk_images);
 }
 
