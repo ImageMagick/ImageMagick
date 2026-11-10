@@ -931,12 +931,18 @@ static MagickBooleanType ReadHEICSequenceFrames(const ImageInfo *image_info,
     has_alpha=heif_image_has_channel(heif_image,heif_channel_Alpha);
     number_channels=has_alpha != 0 ? 4 : 3;
     for (c=0; c < number_channels; c++)
-      {
-        bits_per_pixel[c]=heif_image_get_bits_per_pixel_range(heif_image,
-          channels[c]);
-        if ((bits_per_pixel[c] <= 0) || (bits_per_pixel[c] > 16))
-          break;
-      }
+    {
+      int plane_width = heif_image_get_width(heif_image,channels[c]);
+      int plane_height = heif_image_get_height(heif_image,channels[c]);
+      if ((plane_width <= 0) || (plane_height <= 0) ||
+          ((size_t) plane_width < image->columns) ||
+          ((size_t) plane_height < image->rows))
+        break;
+      bits_per_pixel[c]=heif_image_get_bits_per_pixel_range(heif_image,
+        channels[c]);
+      if ((bits_per_pixel[c] <= 0) || (bits_per_pixel[c] > 16))
+        break;
+     }
     if (c != number_channels)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),
