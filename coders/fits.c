@@ -458,8 +458,12 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         comment=DestroyString(comment);
       }
     if (EOFBlob(image) != MagickFalse)
-      ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
-        image->filename);
+      {
+        ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+          image->filename);
+        status=MagickFalse;
+        break;
+      }
     number_pixels=((MagickSizeType) fits_info.columns*fits_info.rows);
     if ((fits_info.simple == MagickFalse) || (fits_info.number_axes < 1) ||
         (fits_info.number_axes > 4) || (number_pixels == 0) ||
@@ -540,6 +544,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         {
           ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
             image->filename);
+          status=MagickFalse;
           break;
         }
       /*
@@ -575,6 +580,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       {
         ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
           image->filename);
+        status=MagickFalse;
         break;
       }
     /*

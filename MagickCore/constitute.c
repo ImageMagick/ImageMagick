@@ -805,12 +805,15 @@ static Image *ReadImageInternal(const ImageInfo *image_info,
       read_info=DestroyImageInfo(read_info);
       return(image);
     }
-  if (exception->severity >= ErrorException)
-    (void) LogMagickEvent(ExceptionEvent,GetMagickModule(),
-      "Coder (%s) generated an image despite an error (%d), "
-      "notify the developers",image->magick,exception->severity);
   if (IsBlobTemporary(image) != MagickFalse)
     (void) RelinquishUniqueFileResource(read_info->filename);
+  if (exception->severity >= ErrorException)
+    {
+      (void) LogMagickEvent(ExceptionEvent,GetMagickModule(),
+        "Coder (%s) generated an image despite an error (%d), "
+        "notify the developers",image->magick,exception->severity);
+      return(DestroyImageList(image));
+    }
   if (read_info->ping != MagickFalse)
     {
       for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))

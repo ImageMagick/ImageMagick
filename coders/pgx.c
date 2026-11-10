@@ -236,8 +236,11 @@ static Image *ReadPGXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   SetQuantumImageType(image,GrayQuantum);
   quantum_info=DestroyQuantumInfo(quantum_info);
   if (EOFBlob(image) != MagickFalse)
-    ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
-      image->filename);
+    {
+      ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+        image->filename);
+      status=MagickFalse;
+    }
   if (CloseBlob(image) == MagickFalse)
     status=MagickFalse;
   if (status == MagickFalse)
