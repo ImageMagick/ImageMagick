@@ -1250,6 +1250,11 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             if (colormap == (unsigned char *) NULL)
               ThrowMIFFException(ResourceLimitError,"MemoryAllocationFailed");
             count=ReadBlob(image,packet_size*image->colors,colormap);
+            if (count != (ssize_t) (packet_size*image->colors))
+              {
+                colormap=(unsigned char *) RelinquishMagickMemory(colormap);
+                ThrowMIFFException(CorruptImageError,"UnexpectedEndOfFile");
+              }
             p=colormap;
             switch (image->depth)
             {
