@@ -562,6 +562,7 @@ static void ImportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
                 SetPixelBlue(image,ScaleAnyToQuantum((QuantumAny) (pixel >> 4),
                   range),q);
                 q+=(ptrdiff_t) GetPixelChannels(image);
+                p+=(ptrdiff_t) quantum_info->pad;
                 break;
               }
             }
@@ -586,10 +587,10 @@ static void ImportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
                 SetPixelBlue(image,ScaleAnyToQuantum((QuantumAny) (pixel >> 4),
                   range),q);
                 q+=(ptrdiff_t) GetPixelChannels(image);
+                p+=(ptrdiff_t) quantum_info->pad;
                 break;
               }
             }
-            p+=(ptrdiff_t) quantum_info->pad;
           }
           for (bit=0; bit < (ssize_t) (3*number_pixels % 2); bit++)
           {
@@ -614,10 +615,10 @@ static void ImportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
                 SetPixelBlue(image,ScaleAnyToQuantum((QuantumAny) (pixel >> 4),
                   range),q);
                 q+=(ptrdiff_t) GetPixelChannels(image);
+                p+=(ptrdiff_t) quantum_info->pad;
                 break;
               }
             }
-            p+=(ptrdiff_t) quantum_info->pad;
           }
           if (bit != 0)
             p++;
@@ -3543,6 +3544,7 @@ static void ImportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
                 SetPixelBlue(image,ScaleAnyToQuantum((QuantumAny) (pixel >> 4),
                   range),q);
                 q+=(ptrdiff_t) GetPixelChannels(image);
+                p+=(ptrdiff_t) quantum_info->pad;
                 break;
               }
             }
@@ -3567,10 +3569,10 @@ static void ImportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
                 SetPixelBlue(image,ScaleAnyToQuantum((QuantumAny) (pixel >> 4),
                   range),q);
                 q+=(ptrdiff_t) GetPixelChannels(image);
+                p+=(ptrdiff_t) quantum_info->pad;
                 break;
               }
             }
-            p+=(ptrdiff_t) quantum_info->pad;
           }
           for (bit=0; bit < (ssize_t) (3*number_pixels % 2); bit++)
           {
@@ -3595,10 +3597,10 @@ static void ImportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
                 SetPixelBlue(image,ScaleAnyToQuantum((QuantumAny) (pixel >> 4),
                   range),q);
                 q+=(ptrdiff_t) GetPixelChannels(image);
+                p+=(ptrdiff_t) quantum_info->pad;
                 break;
               }
             }
-            p+=(ptrdiff_t) quantum_info->pad;
           }
           if (bit != 0)
             p++;
