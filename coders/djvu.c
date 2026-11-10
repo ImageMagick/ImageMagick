@@ -318,7 +318,7 @@ process_message(ddjvu_message_t *message)
  * DjVu advertised readiness to provide bitmap: So get it!
  * we use the RGB format!
  */
-static void
+static MagickBooleanType
 get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, ExceptionInfo *exception ) {
   ddjvu_format_t
     *format;
@@ -350,7 +350,7 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
 
         q = (unsigned char *) AcquireQuantumMemory(image->rows,stride);
         if (q == (unsigned char *) NULL)
-          return;
+          return(MagickFalse);
 
         format = ddjvu_format_create(
                 (type == DDJVU_PAGETYPE_BITONAL)?DDJVU_FORMAT_LSBTOMSB : DDJVU_FORMAT_RGB24,
@@ -371,13 +371,18 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
         ddjvu_format_set_row_order(format, 1);
         ddjvu_format_set_y_direction(format, 1);
 
-        (void) ddjvu_page_render(page,
+        if (ddjvu_page_render(page,
                                     DDJVU_RENDER_COLOR, /* ddjvu_render_mode_t */
                                     &rect,
                                     &rect,     /* mmc: ?? */
                                     format,
                                     (size_t) stride, /* ?? */
-                                    (char*)q);
+                                    (char*)q) == 0)
+          {
+            ddjvu_format_release(format);
+            q=(unsigned char *) RelinquishMagickMemory(q);
+            return(MagickFalse);
+          }
         ddjvu_format_release(format);
 
 
@@ -446,7 +451,8 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
                               (void) SyncAuthenticPixels(image,exception);
                         }
         }
-        q=(unsigned char *) RelinquishMagickMemory(q);
+  q=(unsigned char *) RelinquishMagickMemory(q);
+  return(MagickTrue);
 }
 
 
@@ -671,8 +677,14 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
             status=SetImageExtent(image,image->columns,image->rows,exception);
             if (status == MagickFalse)
               return(DestroyImageList(image));
-            get_page_image(lc, lc->page, 0, 0, image->columns, image->rows,
+            status=get_page_image(lc,lc->page,0,0,image->columns,image->rows,
               exception);
+            if (status == MagickFalse)
+              {
+                ddjvu_page_release(lc->page);
+                lc->page = NULL;
+                ThrowReaderException(CorruptImageError,"CorruptImage");
+              }
           }
 #else
         int i;
