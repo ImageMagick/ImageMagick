@@ -1715,7 +1715,7 @@ static void SanitizeFilenameProperty(const char *source,char *destination,
   p=destination;
   for (q=source; *q != '\0' && (size_t) (p-destination) < (destination_size-1); q++)
   {
-    if ((*q == '/') || (*q == '\\'))
+    if ((*q == '/') || (*q == '\\') || (*q == ':'))
       *p++='_';
     else
       if ((*q == '.') && (*(q+1) == '.') && ((*(q+2) == '/') ||
