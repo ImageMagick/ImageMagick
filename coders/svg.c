@@ -1171,7 +1171,7 @@ static void SVGProcessStyleElement(SVGInfo *svg_info,const xmlChar *name,
           }
         if (LocaleCompare(keyword,"stroke-dasharray") == 0)
           {
-            (void) FormatLocaleFile(svg_info->file,"stroke-dasharray %s\n",
+            (void) FormatLocaleFile(svg_info->file,"stroke-dasharray \"%s\"\n",
               value);
             break;
           }
@@ -2209,7 +2209,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
             }
           if (LocaleCompare(keyword,"stroke-dasharray") == 0)
             {
-              (void) FormatLocaleFile(svg_info->file,"stroke-dasharray %s\n",
+              (void) FormatLocaleFile(svg_info->file,"stroke-dasharray \"%s\"\n",
                 value);
               break;
             }

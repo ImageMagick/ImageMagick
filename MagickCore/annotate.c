@@ -1642,8 +1642,8 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   /*
     Initialize Truetype library.
   */
-  if ((draw_info->font != (char *) NULL) && (*draw_info->font == '@') &&
-      (IsRightsAuthorized(PathPolicyDomain,ReadPolicyRights,draw_info->font) == MagickFalse))
+  if ((draw_info->font != (char *) NULL) &&
+      (IsRightsAuthorized(PathPolicyDomain,ReadPolicyRights,*draw_info->font == '@' ? draw_info->font+1 : draw_info->font) == MagickFalse))
     ThrowPolicyException(draw_info->font,MagickFalse);
   memory=FreetypeAcquireMemoryManager();
   if (memory == (FT_Memory) NULL)
