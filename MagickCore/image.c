@@ -1662,42 +1662,6 @@ MagickExport VirtualPixelMethod GetImageVirtualPixelMethod(const Image *image)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static inline MagickBooleanType IsValidFormatSpecifier(const char *start,
-  const char *end)
-{
-  char
-    specifier = end[-1];
-
-  size_t
-    length = (size_t) (end-start);
-
-  /*
-    Is this a valid format specifier?
-  */
-  if ((specifier != 'd') && (specifier != 'x') && (specifier != 'o'))
-    return(MagickFalse);
-  if ((length == 1) && (*start == specifier))
-    return(MagickTrue);
-  if (length >= 2)
-    {
-      size_t
-        i = 0;
-
-      if (*start == '0')
-        {
-          if ((length >= 3) && (start[1] == '0'))
-            return(MagickFalse);
-          i=1;
-        }
-      for ( ; i < (length-1); i++)
-        if (isdigit((int) ((unsigned char) start[i])) == 0)
-          return(MagickFalse);
-      return(MagickTrue);
-    }
-  return(MagickFalse);
-}
-
 MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
   Image *image,const char *format,int value,char *filename,
   ExceptionInfo *exception)

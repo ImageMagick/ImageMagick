@@ -19,8 +19,96 @@
 #include "MagickCore/delegate.h"
 #include "MagickCore/delegate-private.h"
 #include "MagickCore/exception-private.h"
+#include "MagickCore/image-private.h"
 #include "MagickCore/profile-private.h"
 #include "coders/bytebuffer-private.h"
+
+static inline size_t AppendImageFilenameScene(const char *format,int value,
+  char *filename)
+{
+  char
+    *p = filename,
+    pattern[MagickPathExtent];
+
+  const char
+    *cursor = format;
+
+  assert(format != (const char *) NULL);
+  assert(filename != (char *) NULL);
+  while ((*cursor != '\0') && ((p-filename) < ((ssize_t) MagickPathExtent-1)))
+  {
+    const char
+      *specifier_start,
+      *start;
+
+    if (*cursor != '%')
+      {
+        *p++=(*cursor++);
+        continue;
+      }
+    start=cursor++;  /* Skip '%' */
+    if (*cursor == '%')
+      {
+        *p++='%';
+        cursor++;
+        continue;
+      }
+    specifier_start=cursor;
+    while (isdigit((int) ((unsigned char) *cursor)) != 0)
+      cursor++;
+    if ((*cursor == 'd') || (*cursor == 'o') || (*cursor == 'x'))
+      {
+        const char
+          *specifier_end = cursor+1;
+
+        if (IsValidFormatSpecifier(specifier_start,specifier_end) != MagickFalse)
+          {
+            char
+              format_specifier[MagickPathExtent];
+
+            size_t
+              length = (size_t) (cursor-specifier_start),
+              pattern_length;
+
+            ssize_t
+              count;
+
+            (void) snprintf(format_specifier,sizeof(format_specifier),
+              "%%%.*s%c",(int) length,specifier_start,*cursor);
+            count=FormatLocaleString(pattern,sizeof(pattern),format_specifier,
+              value);
+            pattern_length=strlen(pattern);
+            if ((count <= 0) || ((size_t) count != pattern_length))
+              return(0);
+            if ((p-filename+(ssize_t) pattern_length) >= MagickPathExtent)
+              return(0);
+            (void) CopyMagickString(p,pattern,(size_t) (MagickPathExtent-
+              (p-filename)));
+            p+=pattern_length;
+            cursor++;
+            continue;
+          }
+        else
+          {
+            /*
+              Invalid specifier — treat as literal.
+            */
+            cursor=start;
+            *p++=(*cursor++);
+            continue;
+          }
+      }
+    /*
+      Invalid or unsupported specifier — treat as literal.
+    */
+    cursor=start;
+    if ((p-filename+1) >= MagickPathExtent)
+      return(0);
+    *p++=(*cursor++);
+  }
+  *p='\0';
+  return(strlen(filename));
+}
 
 #if defined(MAGICKCORE_GS_DELEGATE) || defined(MAGICKCORE_WINDOWS_SUPPORT)
 static int MagickDLLCall GhostscriptDelegateMessage(void *handle,
