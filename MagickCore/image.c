@@ -1826,17 +1826,17 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
       }
     if (*cursor == '[')
       {
+        char
+          sanitized_option[MagickPathExtent];
+
         const char
           *end = strchr(cursor,']'),
           *option = (const char *) NULL;
-    
+
         size_t
           extent,
           option_length;
 
-        char
-          sanitized_option[MagickPathExtent];
-    
         if (end == (const char *) NULL)
           continue;
         extent=(size_t) (end-cursor-1);
