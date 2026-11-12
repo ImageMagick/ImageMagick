@@ -3203,7 +3203,7 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
   blur_center.x=(double) (image->columns-1)/2.0;
   blur_center.y=(double) (image->rows-1)/2.0;
   blur_radius=hypot(blur_center.x,blur_center.y);
-  n=(size_t) fabs(4.0*DegreesToRadians(angle)*sqrt((double) blur_radius)+2UL);
+  n=(size_t) fabs(4.0*DegreesToRadians(angle)*sqrt((double) blur_radius))+2UL;
   theta=DegreesToRadians(angle)/(double) (n-1);
   cos_theta=(double *) AcquireQuantumMemory((size_t) n,sizeof(*cos_theta));
   sin_theta=(double *) AcquireQuantumMemory((size_t) n,sizeof(*sin_theta));
@@ -3277,11 +3277,10 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
       else
         {
           step=(size_t) (blur_radius/radius);
+          if (step >= n)
+            step=n-1;
           if (step == 0)
             step=1;
-          else
-            if (step >= n)
-              step=n-1;
         }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
