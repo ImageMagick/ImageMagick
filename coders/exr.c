@@ -283,6 +283,9 @@ static MagickBooleanType InitializeEXRChannels(Image *image,
     return(status);
   if ((decoder.channel_count == 1) && (pixel_channels[0] == IndexPixelChannel))
     image->colorspace=GRAYColorspace;
+  if ((*pixel_size == 0) || (columns > ((size_t) INT32_MAX/(*pixel_size))))
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      image->filename);
   *data=(uint8_t *) AcquireQuantumMemory(*pixel_size,pixel_count);
   if (*data == (uint8_t*)NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
