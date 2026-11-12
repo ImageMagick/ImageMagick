@@ -138,4 +138,7 @@
   <policy domain="system" name="max-profile-size" value="16MiB"/>
   <policy domain="system" name="max-profile-count" value="16"/>
 
+  <!-- Treat filenames with percent signs (%) as plain text rather than
+       formatting placeholders. -->
+  <policy domain="system" name="filename:literal" value="true"/>
 </policymap>

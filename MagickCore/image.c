@@ -82,6 +82,7 @@
 #include "MagickCore/option.h"
 #include "MagickCore/paint.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/policy.h"
 #include "MagickCore/profile.h"
 #include "MagickCore/property.h"
 #include "MagickCore/quantize.h"
@@ -1697,45 +1698,6 @@ static inline MagickBooleanType IsValidFormatSpecifier(const char *start,
   return(MagickFalse);
 }
 
-static void SanitizeFilenameProperty(const char *source,char *destination,
-  const size_t destination_size)
-{
-  char
-    *p;
-
-  const char
-    *q;
-
-  if (source == (const char *) NULL)
-    {
-      if (destination_size > 0)
-        destination[0]='\0';
-      return;
-    }
-  p=destination;
-  for (q=source; *q != '\0' && (size_t) (p-destination) < (destination_size-1); q++)
-  {
-    if ((*q == '/') || (*q == '\\') || (*q == ':'))
-      *p++='_';
-    else
-      if ((*q == '.') && (*(q+1) == '.') && ((*(q+2) == '/') ||
-          (*(q+2) == '\\') || (*(q+2) == '\0')))
-        {
-          if ((size_t) (p-destination) < (destination_size-2))
-            {
-              *p++='_';
-              *p++='_';
-            }
-          else
-            *p++='_';
-          q++;
-        }
-      else
-        *p++=(*q);
-  }
-  *p='\0';
-}
-
 MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
   Image *image,const char *format,int value,char *filename,
   ExceptionInfo *exception)
@@ -1750,8 +1712,10 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
 
   assert(format != (const char *) NULL);
   assert(filename != (char *) NULL);
-  literal=(char *) GetImageRegistry(StringRegistryType,"filename:literal",
-    exception);
+  literal=GetPolicyValue("system:filename:literal");
+  if (literal == (char *) NULL)
+    literal=(char *) GetImageRegistry(StringRegistryType,"filename:literal",
+      exception);
   if (IsStringTrue(literal) != MagickFalse)
     {
       if (literal != (char *) NULL)
@@ -1826,9 +1790,6 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
       }
     if (*cursor == '[')
       {
-        char
-          sanitized_option[MagickPathExtent];
-
         const char
           *end = strchr(cursor,']'),
           *option = (const char *) NULL;
@@ -1855,9 +1816,6 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
           option=GetImageOption(image_info,pattern);
         if (option == (const char *) NULL)
           continue;
-        SanitizeFilenameProperty(option,sanitized_option,
-          sizeof(sanitized_option));
-        option=sanitized_option;
         option_length=strlen(option);
         if ((p-filename+(ssize_t) option_length) >= MagickPathExtent)
           return(0);

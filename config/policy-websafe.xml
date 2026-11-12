@@ -133,4 +133,7 @@
   <policy domain="module" rights="none" pattern="{MSL,URL,VIDEO}"/>
   <policy domain="coder" rights="write" pattern="{MVG,PDF,PS,SVG,TXT,XPS}"/>
 
+  <!-- Treat filenames with percent signs (%) as plain text rather than
+       formatting placeholders. -->
+  <policy domain="system" name="filename:literal" value="true"/>
 </policymap>

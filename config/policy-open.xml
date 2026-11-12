@@ -218,4 +218,7 @@
              rights="none"
              pattern="substitute-entities"/> -->
 
+  <!-- Treat filenames with percent signs (%) as plain text rather than
+       formatting placeholders. -->
+  <!-- <policy domain="system" name="filename:literal" value="true"/> -->
 </policymap>

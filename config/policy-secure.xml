@@ -142,4 +142,7 @@
   <policy domain="system" name="symlink"
           rights="none" pattern="follow"/>
 
+  <!-- Treat filenames with percent signs (%) as plain text rather than
+       formatting placeholders. -->
+  <policy domain="system" name="filename:literal" value="true"/>
 </policymap>
