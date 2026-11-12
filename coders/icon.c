@@ -1098,7 +1098,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
       frame=image;
       do
       {
-        if ((image->columns > 512L) || (image->rows > 512L))
+        if ((frame->columns > 512L) || (frame->rows > 512L))
           ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
         scene++;
         frame=SyncNextImageInList(frame);
@@ -1247,7 +1247,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
               }
           }
         bytes_per_line=(((frame->columns*bits_per_pixel)+31U) &
-          ~31U) >> 3;
+          ~((size_t) 31U)) >> 3;
         width=(ssize_t) frame->columns;
         height=(ssize_t) frame->rows;
         planes=1;
@@ -1255,7 +1255,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         size=40;
         size+=(4*number_colors);
         size+=image_size;
-        size+=(size_t) ((((width+31U) & ~31U) >> 3)*height);
+        size+=(((frame->columns+31U) & ~((size_t) 31U)) >> 3)*frame->rows;
         x_pixels=0;
         y_pixels=0;
         switch (frame->units)
@@ -1490,7 +1490,8 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         /*
           Write matte mask.
         */
-        scanline_pad=(((frame->columns+31U) & ~31U)-frame->columns) >> 3;
+        scanline_pad=(((frame->columns+31U) & ~((size_t) 31U))-
+          frame->columns) >> 3;
         for (y=((ssize_t) frame->rows - 1); y >= 0; y--)
         {
           unsigned char
