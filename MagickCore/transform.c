@@ -1883,7 +1883,7 @@ MagickExport Image *SpliceImage(const Image *image,
   #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(image,splice_image,(size_t) splice_geometry.y,2)
 #endif
-  for (y=0; y < (ssize_t) splice_geometry.y; y++)
+  for (y=0; y < MagickMin(splice_geometry.y,(ssize_t) splice_image->rows); y++)
   {
     const Quantum
       *magick_restrict p;
@@ -1902,6 +1902,9 @@ MagickExport Image *SpliceImage(const Image *image,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp critical (SpliceImage)
+#endif
         status=MagickFalse;
         continue;
       }
@@ -1952,7 +1955,12 @@ MagickExport Image *SpliceImage(const Image *image,
       q+=(ptrdiff_t) GetPixelChannels(splice_image);
     }
     if (SyncCacheViewAuthenticPixels(splice_view,exception) == MagickFalse)
-      status=MagickFalse;
+      {
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp critical (SpliceImage)
+#endif
+        status=MagickFalse;
+      }
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
         MagickBooleanType
@@ -1965,7 +1973,12 @@ MagickExport Image *SpliceImage(const Image *image,
         proceed=SetImageProgress(image,SpliceImageTag,progress,
           splice_image->rows);
         if (proceed == MagickFalse)
-          status=MagickFalse;
+          {
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+            #pragma omp critical (SpliceImage)
+#endif
+            status=MagickFalse;
+          }
       }
   }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -1993,6 +2006,9 @@ MagickExport Image *SpliceImage(const Image *image,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp critical (SpliceImage)
+#endif
         status=MagickFalse;
         continue;
       }
@@ -2043,7 +2059,12 @@ MagickExport Image *SpliceImage(const Image *image,
       q+=(ptrdiff_t) GetPixelChannels(splice_image);
     }
     if (SyncCacheViewAuthenticPixels(splice_view,exception) == MagickFalse)
-      status=MagickFalse;
+      {
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp critical (SpliceImage)
+#endif
+        status=MagickFalse;
+      }
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
         MagickBooleanType
@@ -2056,7 +2077,12 @@ MagickExport Image *SpliceImage(const Image *image,
         proceed=SetImageProgress(image,SpliceImageTag,progress,
           splice_image->rows);
         if (proceed == MagickFalse)
-          status=MagickFalse;
+          {
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+            #pragma omp critical (SpliceImage)
+#endif
+            status=MagickFalse;
+          }
       }
   }
   splice_view=DestroyCacheView(splice_view);
