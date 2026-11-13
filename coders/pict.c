@@ -806,7 +806,8 @@ static MagickBooleanType ReadPixmap(Image *image,PICTPixmap *pixmap)
   pixmap->reserved=ReadBlobMSBLong(image);
   if ((EOFBlob(image) != MagickFalse) || (pixmap->bits_per_pixel <= 0) ||
       (pixmap->bits_per_pixel > 32) || (pixmap->component_count <= 0) ||
-      (pixmap->component_count > 4) || (pixmap->component_size <= 0))
+      (pixmap->component_count > 4) || (pixmap->component_size <= 0) ||
+      (pixmap->component_size > 32))
     return(MagickFalse);
   return(MagickTrue);
 }
