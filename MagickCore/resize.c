@@ -3578,6 +3578,22 @@ static MagickBooleanType HorizontalFilter(
   return(status);
 }
 
+/*
+  VerticalFilter() filters a tile of adjacent columns per tap row, so each
+  tap row is read contiguously rather than a full row apart per sample.
+*/
+#define VerticalFilterTile  16
+
+static inline void VerticalFilterTap(double *magick_restrict pixel,
+  const Quantum *magick_restrict r,const double alpha,const ssize_t samples)
+{
+  ssize_t
+    i;
+
+  for (i=0; i < samples; i++)
+    pixel[i]+=alpha*(double) r[i];
+}
+
 static MagickBooleanType VerticalFilter(
   const ResizeFilter *magick_restrict resize_filter,
   const Image *magick_restrict image,Image *magick_restrict resize_image,
@@ -3654,6 +3670,9 @@ static MagickBooleanType VerticalFilter(
       bisect,
       density;
 
+    MagickBooleanType
+      blend;
+
     PixelChannel
       channel_map[MaxPixelChannels+1];
 
@@ -3667,6 +3686,7 @@ static MagickBooleanType VerticalFilter(
     ssize_t
       c,
       n,
+      nearest,
       start,
       stop,
       x;
@@ -3709,91 +3729,106 @@ static MagickBooleanType VerticalFilter(
         status=MagickFalse;
         continue;
       }
+    blend=MagickFalse;
     for (c=0; c < number_channels; c++)
     {
       channel_map[c]=GetPixelChannelChannel(image,c);
       traits_map[c]=GetPixelChannelTraits(image,channel_map[c]);
       resize_traits_map[c]=GetPixelChannelTraits(resize_image,channel_map[c]);
+      if ((resize_traits_map[c] & BlendPixelTrait) != 0)
+        blend=MagickTrue;
     }
-    for (x=0; x < (ssize_t) resize_image->columns; x++)
+    nearest=(ssize_t) (MagickMin(MagickMax(bisect,(double) start),(double)
+      stop-1.0)+0.5)-start;
+    for (x=0; x < (ssize_t) resize_image->columns; x+=VerticalFilterTile)
     {
+      double
+        alpha,
+        gamma[VerticalFilterTile],
+        pixel[VerticalFilterTile*MaxPixelChannels];
+
       ssize_t
         i,
-        mask_offset;
+        j,
+        t,
+        tile;
 
       /*
-        Initialize the destination write mask from the nearest source pixel.
+        Accumulate each tap row of the tile into one sum per sample.
       */
-      mask_offset=(ssize_t) ((contribution[(ssize_t) (MagickMin(MagickMax(
-        bisect,(double) start),(double) stop-1.0)+0.5)-start].pixel-
-        contribution[0].pixel)*(ssize_t) image->columns+x);
-      SetPixelWriteMask(resize_image,GetPixelWriteMask(image,p+mask_offset*
-        number_channels),q);
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      tile=MagickMin(VerticalFilterTile,(ssize_t) resize_image->columns-x);
+      (void) memset(pixel,0,(size_t) (tile*number_channels)*sizeof(*pixel));
+      (void) memset(gamma,0,sizeof(gamma));
+      for (j=0; j < n; j++)
       {
-        double
-          alpha,
-          gamma,
-          pixel;
+        const Quantum
+          *magick_restrict r;
 
-        PixelChannel
-          channel;
-
-        PixelTrait
-          resize_traits,
-          traits;
-
-        ssize_t
-          j,
-          k;
-
-        channel=channel_map[i];
-        traits=traits_map[i];
-        resize_traits=resize_traits_map[i];
-        if ((traits == UndefinedPixelTrait) ||
-            (resize_traits == UndefinedPixelTrait))
-          continue;
-        if (((resize_traits & CopyPixelTrait) != 0) ||
-            (GetPixelWriteMask(resize_image,q) <= (QuantumRange/2)))
-          {
-            j=(ssize_t) (MagickMin(MagickMax(bisect,(double) start),(double)
-              stop-1.0)+0.5);
-            k=(ssize_t) ((contribution[j-start].pixel-contribution[0].pixel)*
-              (ssize_t) image->columns+x);
-            SetPixelChannel(resize_image,channel,p[k*(ssize_t)
-              number_channels+i],q);
-            continue;
-          }
-        pixel=0.0;
-        if ((resize_traits & BlendPixelTrait) == 0)
+        r=p+((contribution[j].pixel-contribution[0].pixel)*(ssize_t)
+          image->columns+x)*number_channels;
+        if (blend == MagickFalse)
           {
             /*
-              No alpha blending.
+              The compiler vectorizes the tap only for a constant tile width.
             */
-            for (j=0; j < n; j++)
-            {
-              k=(ssize_t) ((contribution[j].pixel-contribution[0].pixel)*
-                (ssize_t) image->columns+x);
-              alpha=contribution[j].weight;
-              pixel+=alpha*(double) p[k*number_channels+i];
-            }
-            SetPixelChannel(resize_image,channel,ClampToQuantum(pixel),q);
+            if (tile == VerticalFilterTile)
+              VerticalFilterTap(pixel,r,contribution[j].weight,
+                VerticalFilterTile*number_channels);
+            else
+              VerticalFilterTap(pixel,r,contribution[j].weight,tile*
+                number_channels);
             continue;
           }
-        gamma=0.0;
-        for (j=0; j < n; j++)
+        for (t=0; t < tile; t++)
         {
-          k=(ssize_t) ((contribution[j].pixel-contribution[0].pixel)*
-            (ssize_t) image->columns+x);
           alpha=contribution[j].weight*QuantumScale*(double)
-            GetPixelAlpha(image,p+k*number_channels);
-          pixel+=alpha*(double) p[k*number_channels+i];
-          gamma+=alpha;
+            GetPixelAlpha(image,r+t*number_channels);
+          gamma[t]+=alpha;
+          for (i=0; i < number_channels; i++)
+            pixel[t*number_channels+i]+=((resize_traits_map[i] &
+              BlendPixelTrait) != 0 ? alpha : contribution[j].weight)*
+              (double) r[t*number_channels+i];
         }
-        gamma=MagickSafeReciprocal(gamma);
-        SetPixelChannel(resize_image,channel,ClampToQuantum(gamma*pixel),q);
       }
-      q+=(ptrdiff_t) resize_channels;
+      for (t=0; t < tile; t++)
+      {
+        const Quantum
+          *magick_restrict s;
+
+        Quantum
+          *magick_restrict d;
+
+        /*
+          Initialize the destination write mask from the nearest source pixel.
+        */
+        s=p+(nearest*(ssize_t) image->columns+x+t)*number_channels;
+        d=q+(x+t)*resize_channels;
+        SetPixelWriteMask(resize_image,GetPixelWriteMask(image,s),d);
+        for (i=0; i < number_channels; i++)
+        {
+          PixelTrait
+            resize_traits;
+
+          resize_traits=resize_traits_map[i];
+          if ((traits_map[i] == UndefinedPixelTrait) ||
+              (resize_traits == UndefinedPixelTrait))
+            continue;
+          if (((resize_traits & CopyPixelTrait) != 0) ||
+              (GetPixelWriteMask(resize_image,d) <= (QuantumRange/2)))
+            {
+              SetPixelChannel(resize_image,channel_map[i],s[i],d);
+              continue;
+            }
+          if ((resize_traits & BlendPixelTrait) == 0)
+            {
+              SetPixelChannel(resize_image,channel_map[i],ClampToQuantum(
+                pixel[t*number_channels+i]),d);
+              continue;
+            }
+          SetPixelChannel(resize_image,channel_map[i],ClampToQuantum(
+            MagickSafeReciprocal(gamma[t])*pixel[t*number_channels+i]),d);
+        }
+      }
     }
     if (SyncCacheViewAuthenticPixels(resize_view,exception) == MagickFalse)
       status=MagickFalse;
