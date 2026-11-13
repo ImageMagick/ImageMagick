@@ -4106,7 +4106,10 @@ WandExport MagickBooleanType DrawPopPattern(DrawingWand *wand)
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->image == (Image *) NULL)
-    ThrowDrawException(WandError,"ContainsNoImages",wand->name);
+    {
+      ThrowDrawException(WandError,"ContainsNoImages",wand->name);
+      return(MagickFalse);
+    }
   if (wand->pattern_id == (const char *) NULL)
     {
       ThrowDrawException(DrawWarning,"NotCurrentlyPushingPatternDefinition",
@@ -4348,7 +4351,10 @@ WandExport MagickBooleanType DrawRender(DrawingWand *wand)
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"MVG:\n'%s'\n",wand->mvg);
   if (wand->image == (Image *) NULL)
-    ThrowDrawException(WandError,"ContainsNoImages",wand->name);
+    {
+      ThrowDrawException(WandError,"ContainsNoImages",wand->name);
+      return(MagickFalse);
+    }
   status=DrawImage(wand->image,CurrentContext,wand->exception);
   CurrentContext->primitive=(char *) NULL;
   return(status);
@@ -4600,7 +4606,10 @@ WandExport MagickBooleanType DrawSetClipPath(DrawingWand *wand,
       (void) CloneString(&CurrentContext->clip_mask,clip_mask);
 #if DRAW_BINARY_IMPLEMENTATION
       if (wand->image == (Image *) NULL)
-        ThrowDrawException(WandError,"ContainsNoImages",wand->name);
+        {
+          ThrowDrawException(WandError,"ContainsNoImages",wand->name);
+          return(MagickFalse);
+        }
       (void) DrawClipPath(wand->image,CurrentContext,CurrentContext->clip_mask,
         wand->exception);
 #endif
@@ -4963,7 +4972,10 @@ WandExport MagickBooleanType DrawSetFillPatternURL(DrawingWand *wand,
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",fill_url);
   if (wand->image == (Image *) NULL)
-    ThrowDrawException(WandError,"ContainsNoImages",wand->name);
+    {
+      ThrowDrawException(WandError,"ContainsNoImages",wand->name);
+      return(MagickFalse);
+    }
   assert(fill_url != (const char *) NULL);
   if (*fill_url != '#')
     {
@@ -5406,10 +5418,16 @@ WandExport MagickBooleanType DrawSetStrokePatternURL(DrawingWand *wand,
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->image == (Image *) NULL)
-    ThrowDrawException(WandError,"ContainsNoImages",wand->name);
+    {
+      ThrowDrawException(WandError,"ContainsNoImages",wand->name);
+      return(MagickFalse);
+    }
   assert(stroke_url != NULL);
   if (stroke_url[0] != '#')
-    ThrowDrawException(DrawError,"NotARelativeURL",stroke_url);
+    {
+      ThrowDrawException(DrawError,"NotARelativeURL",stroke_url);
+      return(MagickFalse);
+    }
   (void) FormatLocaleString(pattern,MagickPathExtent,"%s",stroke_url+1);
   if (GetImageArtifact(wand->image,pattern) == (const char *) NULL)
     {
@@ -6884,7 +6902,10 @@ WandExport MagickBooleanType PopDrawingWand(DrawingWand *wand)
   */
 #if DRAW_BINARY_IMPLEMENTATION
   if (wand->image == (Image *) NULL)
-    ThrowDrawException(WandError,"ContainsNoImages",wand->name);
+    {
+      ThrowDrawException(WandError,"ContainsNoImages",wand->name);
+      return(MagickFalse);
+    }
   if (CurrentContext->clip_mask != (char *) NULL)
     if (LocaleCompare(CurrentContext->clip_mask,
         wand->graphic_context[wand->index-1]->clip_mask) != 0)
