@@ -721,7 +721,8 @@ static const Quantum *GetVirtualPixelStream(const Image *image,
     number_pixels;
 
   size_t
-    length;
+    length,
+    packet_size;
 
   magick_unreferenced(virtual_pixel_method);
 
@@ -746,12 +747,16 @@ static const Quantum *GetVirtualPixelStream(const Image *image,
   /*
     Pixels are stored in a temporary buffer until they are synced to the cache.
   */
+  packet_size=MagickMax(cache_info->number_channels,1)*sizeof(Quantum);
+  if ((HeapOverflowCheckAdd(packet_size,cache_info->metacontent_extent) != MagickFalse) ||
+      (HeapOverflowSanityCheckGetSize(columns,rows,&length) != MagickFalse) ||
+      (HeapOverflowSanityCheckGetSize(length,packet_size+cache_info->metacontent_extent,&length) != MagickFalse))
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      return((Quantum *) NULL);
+    }
   number_pixels=(MagickSizeType) columns*rows;
-  length=(size_t) number_pixels*cache_info->number_channels*sizeof(Quantum);
-  if (cache_info->number_channels == 0)
-    length=(size_t) number_pixels*sizeof(Quantum);
-  if (cache_info->metacontent_extent != 0)
-    length+=(size_t) number_pixels*cache_info->metacontent_extent;
   if (cache_info->pixels == (Quantum *) NULL)
     {
       cache_info->length=length;
@@ -898,7 +903,8 @@ static Quantum *QueueAuthenticPixelsStream(Image *image,const ssize_t x,
     number_pixels;
 
   size_t
-    length;
+    length,
+    packet_size;
 
   StreamHandler
     stream_handler;
@@ -947,12 +953,18 @@ static Quantum *QueueAuthenticPixelsStream(Image *image,const ssize_t x,
   */
   cache_info->columns=columns;
   cache_info->rows=rows;
+  packet_size=MagickMax(cache_info->number_channels,1)*sizeof(Quantum);
+  if ((HeapOverflowCheckAdd(packet_size,cache_info->metacontent_extent) !=
+       MagickFalse) ||
+      (HeapOverflowSanityCheckGetSize(columns,rows,&length) != MagickFalse) ||
+      (HeapOverflowSanityCheckGetSize(length,
+        packet_size+cache_info->metacontent_extent,&length) != MagickFalse))
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      return((Quantum *) NULL);
+    }
   number_pixels=(MagickSizeType) columns*rows;
-  length=(size_t) number_pixels*cache_info->number_channels*sizeof(Quantum);
-  if (cache_info->number_channels == 0)
-    length=(size_t) number_pixels*sizeof(Quantum);
-  if (cache_info->metacontent_extent != 0)
-    length+=(size_t) number_pixels*cache_info->metacontent_extent;
   if (cache_info->pixels == (Quantum *) NULL)
     {
       cache_info->length=length;
