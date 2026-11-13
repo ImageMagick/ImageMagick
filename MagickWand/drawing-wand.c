@@ -5552,7 +5552,7 @@ WandExport MagickBooleanType DrawSetStrokeDashArray(DrawingWand *wand,
   update=MagickFalse;
   q=CurrentContext->dash_pattern;
   if (q != (const double *) NULL)
-    while (fabs(*q++) < MagickEpsilon)
+    while (fabs(*q++) >= MagickEpsilon)
       n_old++;
   if ((n_old == 0) && (n_new == 0))
     update=MagickFalse;
