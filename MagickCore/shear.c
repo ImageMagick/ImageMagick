@@ -1276,14 +1276,14 @@ static MagickBooleanType XShearImage(Image *image,const double degrees,
         /*
           Transfer pixels right-to-left.
         */
+        if (step > (ssize_t) image->columns-x_offset-(ssize_t) width)
+          break;
         p+=(ptrdiff_t) width*GetPixelChannels(image);
         q=p+step*(ssize_t) GetPixelChannels(image);
         for (i=0; i < (ssize_t) width; i++)
         {
           p-=(ptrdiff_t)GetPixelChannels(image);
           q-=GetPixelChannels(image);
-          if ((size_t) (x_offset+(ssize_t) width+step-i) > image->columns)
-            continue;
           GetPixelInfoPixel(image,p,&source);
           CompositePixelInfoAreaBlend(&pixel,(double) pixel.alpha,
             &source,(double) GetPixelAlpha(image,p),area,&destination);
@@ -1492,14 +1492,14 @@ static MagickBooleanType YShearImage(Image *image,const double degrees,
         /*
           Transfer pixels bottom-to-top.
         */
+        if (step > (ssize_t) image->rows-y_offset-(ssize_t) height)
+          break;
         p+=(ptrdiff_t) height*GetPixelChannels(image);
         q=p+step*(ssize_t) GetPixelChannels(image);
         for (i=0; i < (ssize_t) height; i++)
         {
           p-=(ptrdiff_t)GetPixelChannels(image);
           q-=GetPixelChannels(image);
-          if ((size_t) (y_offset+(ssize_t) height+step-i) > image->rows)
-            continue;
           GetPixelInfoPixel(image,p,&source);
           CompositePixelInfoAreaBlend(&pixel,(double) pixel.alpha,
             &source,(double) GetPixelAlpha(image,p),area,
@@ -1778,8 +1778,7 @@ MagickExport Image *ShearRotateImage(const Image *image,const double degrees,
   bounds.height=CastDoubleToSizeT(fabs((double) bounds.width*shear.y)+height+0.5);
   shear_width=CastDoubleToSizeT(fabs((double) bounds.height*shear.x)+
     bounds.width+0.5);
-  bounds.x=CastDoubleToSsizeT(floor((double) ((shear_width > bounds.width) ?
-    width : bounds.width-shear_width+2)/2.0+0.5));
+  bounds.x=CastDoubleToSsizeT(floor(((double) shear_width-width+2)/2.0+0.5));
   bounds.y=CastDoubleToSsizeT(floor(((double) bounds.height-height+2)/2.0+0.5));
   /*
     Surround image with a border.
