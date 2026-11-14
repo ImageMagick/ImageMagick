@@ -723,7 +723,7 @@ static PixelWand ***AcquirePixelsTLS(const size_t number_wands)
   ssize_t
     i;
 
-  number_threads=GetOpenMPMaximumThreads();
+  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   pixel_wands=(PixelWand ***) AcquireQuantumMemory(number_threads,
     sizeof(*pixel_wands));
   if (pixel_wands == (PixelWand ***) NULL)
