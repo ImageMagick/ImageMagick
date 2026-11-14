@@ -624,10 +624,6 @@ static Image *ASHLARImage(ImageInfo *image_info,Image *image,
   value=GetImageOption(image_info,"label");
   extent.width=0;
   extent.height=0;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic) shared(status,extent) \
-    magick_number_threads(image,image,n,1)
-#endif
   for (i=0; i < n; i++)
   {
     Image
@@ -676,16 +672,11 @@ static Image *ASHLARImage(ImageInfo *image_info,Image *image,
             draw_info=DestroyDrawInfo(draw_info);
           }
       }
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp critical
-#endif
-    {
-      if (((ssize_t) tiles[i].width+tiles[i].x) > (ssize_t) extent.width)
-        extent.width=(size_t) ((ssize_t) tiles[i].width+tiles[i].x);
-      if (((ssize_t) tiles[i].height+tiles[i].y+geometry.y+2) > (ssize_t) extent.height)
-        extent.height=(size_t) ((ssize_t) tiles[i].height+tiles[i].y+
-          geometry.y+2);
-    }
+    if (((ssize_t) tiles[i].width+tiles[i].x) > (ssize_t) extent.width)
+      extent.width=(size_t) ((ssize_t) tiles[i].width+tiles[i].x);
+    if (((ssize_t) tiles[i].height+tiles[i].y+geometry.y+2) > (ssize_t) extent.height)
+      extent.height=(size_t) ((ssize_t) tiles[i].height+tiles[i].y+
+        geometry.y+2);
     tile_image=DestroyImage(tile_image);
   }
   if (image_info->extract != (char *) NULL)
