@@ -2593,7 +2593,10 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
               green=EncodePixelGamma(green);
               blue=EncodePixelGamma(blue);
             }
-          intensity=0.298839*red+0.586811*green+0.114350*blue;
+          if ((red == green) && (green == blue))
+            intensity=red;
+          else
+            intensity=0.298839*red+0.586811*green+0.114350*blue;
           break;
         }
         case Rec601LuminancePixelIntensityMethod:
@@ -2604,7 +2607,10 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
               green=DecodePixelGamma(green);
               blue=DecodePixelGamma(blue);
             }
-          intensity=0.298839*red+0.586811*green+0.114350*blue;
+          if ((red == green) && (green == blue))
+            intensity=red;
+          else
+            intensity=0.298839*red+0.586811*green+0.114350*blue;
           break;
         }
         case Rec709LumaPixelIntensityMethod:
@@ -2616,7 +2622,10 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
               green=EncodePixelGamma(green);
               blue=EncodePixelGamma(blue);
             }
-          intensity=0.212656*red+0.715158*green+0.072186*blue;
+          if ((red == green) && (green == blue))
+            intensity=red;
+          else
+            intensity=0.212656*red+0.715158*green+0.072186*blue;
           break;
         }
         case Rec709LuminancePixelIntensityMethod:
@@ -2627,7 +2636,10 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
               green=DecodePixelGamma(green);
               blue=DecodePixelGamma(blue);
             }
-          intensity=0.212656*red+0.715158*green+0.072186*blue;
+          if ((red == green) && (green == blue))
+            intensity=red;
+          else
+            intensity=0.212656*red+0.715158*green+0.072186*blue;
           break;
         }
         case RMSPixelIntensityMethod:

@@ -18,7 +18,7 @@
 #
 . ./common.shi
 . ${srcdir}/tests/common.shi
-echo "1..29"
+echo "1..33"
 
 ${MAGICK} pnm:- null:   < ${SRCDIR}/rose.pnm && echo "ok" || echo "not ok"
 ${MAGICK} pnm:- info:   < ${SRCDIR}/rose.pnm && echo "ok" || echo "not ok"
@@ -196,4 +196,22 @@ if [ "X$sample" = 'X40' ]; then
 else
   echo "not ok 29 - depth reduction of a mid-range sample: $sample"
 fi
+
+# Luma and luminance grayscale methods must preserve full-range neutral samples.
+test_number=30
+for method in Rec601Luma Rec601Luminance Rec709Luma Rec709Luminance; do
+  case "$method" in
+    *Luminance) colorspace="-set colorspace RGB" ;;
+    *) colorspace="" ;;
+  esac
+  sample=`LC_ALL=C ${MAGICK} -size 1x1 xc:white $colorspace \
+    -grayscale "$method" -depth 64 GRAY:- 2>/dev/null |
+    od -An -tx1 | tr -d ' \n'`
+  if [ "X$sample" = 'Xffffffffffffffff' ]; then
+    echo "ok $test_number - $method preserves a full-range neutral sample"
+  else
+    echo "not ok $test_number - $method preserves a full-range neutral sample: $sample"
+  fi
+  test_number=$((test_number+1))
+done
 :
