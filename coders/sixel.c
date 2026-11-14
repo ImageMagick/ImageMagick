@@ -627,7 +627,7 @@ static MagickBooleanType sixel_decode(Image *image,unsigned char *p,
                       for (y = position_y + i; y < position_y + i + n; ++y)
                       {
                         offset=(imsx*y+position_x);
-                        if ((offset < 0) || ((offset+repeat_count) >= (imsx*imsy)))
+                        if ((offset < 0) || ((offset+repeat_count) > (imsx*imsy)))
                           {
                             imbuf=(sixel_pixel_t *)
                               RelinquishMagickMemory(imbuf);
@@ -1193,15 +1193,18 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,
     {
       (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
         "InsufficientImageDataInFile","`%s'",image->filename);
+      status=MagickFalse;
       goto cleanup;
     }
-  if (SetImageExtent(image,width,height,exception) == MagickFalse)
+  status=SetImageExtent(image,width,height,exception);
+  if (status == MagickFalse)
     goto cleanup;
   /*
     Allocate colormap.
   */
   image->colors = ncolors;
-  if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
+  status=AcquireImageColormap(image,image->colors,exception);
+  if (status == MagickFalse)
     goto cleanup;
   /*
     Load palette into image->colormap and detect transparency.
@@ -1264,6 +1267,8 @@ cleanup:
   if (sixel_data != NULL)
     sixel_data = (unsigned char *) RelinquishMagickMemory(sixel_data);
 
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   return(image);
 }
 
