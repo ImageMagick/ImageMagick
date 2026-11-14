@@ -977,9 +977,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           MagickRealType
             gray;
 
-          gray=0.212656*DecodePixelGamma(GetPixelRed(image,q))+0.715158*
-            DecodePixelGamma(GetPixelGreen(image,q))+0.072186*
-            DecodePixelGamma(GetPixelBlue(image,q));
+          gray=GetPixelLuminance(image,q);
           SetPixelGray(image,ClampToQuantum(gray),q);
           q+=(ptrdiff_t) GetPixelChannels(image);
         }
@@ -1035,8 +1033,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           MagickRealType
             gray;
 
-          gray=0.212656*(double) GetPixelRed(image,q)+0.715158*(double)
-            GetPixelGreen(image,q)+0.072186*(double) GetPixelBlue(image,q);
+          gray=GetPixelLuma(image,q);
           SetPixelGray(image,ClampToQuantum(gray),q);
           q+=(ptrdiff_t) GetPixelChannels(image);
         }
