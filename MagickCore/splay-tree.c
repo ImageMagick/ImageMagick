@@ -133,6 +133,18 @@ static NodeInfo *DetachRootFromSplayTree(SplayTreeInfo *splay_tree)
   node=splay_tree->root;
   left=node->left;
   right=node->right;
+  if (splay_tree->next == node->key)
+    {
+      NodeInfo
+        *successor;
+
+      successor=right;
+      if (successor != (NodeInfo *) NULL)
+        while (successor->left != (NodeInfo *) NULL)
+          successor=successor->left;
+      splay_tree->next=successor != (NodeInfo *) NULL ?
+        successor->key : (void *) NULL;
+    }
   splay_tree->root=right;
   if (left != (NodeInfo *) NULL)
     {
