@@ -1658,7 +1658,7 @@ static inline ssize_t WriteBlobStream(Image *image,const size_t length,
   if (extent >= blob_info->extent)
     {
       extent+=blob_info->quantum+length;
-      if (blob_info->quantum <= (SIZE_MAX >> 1))
+      if (blob_info->quantum <= (MAGICK_SIZE_MAX >> 1))
         blob_info->quantum<<=1;
       if (SetBlobExtent(image,extent) == MagickFalse)
         return(0);
@@ -2211,7 +2211,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,
               status=WriteImage(blob_info,image,exception);
               (void) fclose(blob_info->file);
               if (status != MagickFalse)
-                blob=FileToBlob(unique,SIZE_MAX,length,exception);
+                blob=FileToBlob(unique,MAGICK_SIZE_MAX,length,exception);
             }
           (void) RelinquishUniqueFileResource(unique);
         }
@@ -2626,7 +2626,7 @@ MagickExport void *ImagesToBlob(const ImageInfo *image_info,Image *images,
               status=WriteImages(blob_info,images,filename,exception);
               (void) fclose(blob_info->file);
               if (status != MagickFalse)
-                blob=FileToBlob(unique,SIZE_MAX,length,exception);
+                blob=FileToBlob(unique,MAGICK_SIZE_MAX,length,exception);
             }
           (void) RelinquishUniqueFileResource(unique);
         }
