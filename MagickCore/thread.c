@@ -72,7 +72,8 @@ typedef struct _MagickThreadValue
 %
 %  The format of the CreateMagickThreadKey method is:
 %
-%      MagickThreadKey CreateMagickThreadKey(MagickThreadKey *key)
+%      MagickBooleanType CreateMagickThreadKey(MagickThreadKey *key,
+%        void (*destructor)(void *))
 %
 %  A description of each parameter follows:
 %
@@ -84,6 +85,8 @@ typedef struct _MagickThreadValue
 MagickExport MagickBooleanType CreateMagickThreadKey(MagickThreadKey *key,
   void (*destructor)(void *))
 {
+  if (key == (MagickThreadKey *) NULL)
+    return(MagickFalse);
 #if defined(MAGICKCORE_THREAD_SUPPORT)
   return(pthread_key_create(key,destructor) == 0 ? MagickTrue : MagickFalse);
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
@@ -100,14 +103,18 @@ MagickExport MagickBooleanType CreateMagickThreadKey(MagickThreadKey *key,
     if (*keys != (MagickThreadValue *) NULL)
       {
         (*keys)->number_threads=GetOpenMPMaximumThreads();
+        if ((*keys)->number_threads == 0)
+          (*keys)->number_threads=1;
         (*keys)->values=(void **) AcquireQuantumMemory((*keys)->number_threads,
           sizeof(void *));
         if ((*keys)->values == (void **) NULL)
           *keys=(MagickThreadValue *) RelinquishMagickMemory(*keys);
         else
-          (void) memset((*keys)->values,0,(*keys)->number_threads*
-            sizeof(void *));
-        (*keys)->destructor=destructor;
+          {
+            (void) memset((*keys)->values,0,(*keys)->number_threads*
+              sizeof(void *));
+            (*keys)->destructor=destructor;
+          }
       }
     return((*keys != (MagickThreadValue *) NULL) ? MagickTrue : MagickFalse);
   }
@@ -141,6 +148,8 @@ MagickExport MagickBooleanType DeleteMagickThreadKey(MagickThreadKey key)
 #if defined(MAGICKCORE_THREAD_SUPPORT)
   return(pthread_key_delete(key) == 0 ? MagickTrue : MagickFalse);
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
+  if (key == TLS_OUT_OF_INDEXES)
+    return(MagickFalse);
   return(TlsFree(key) != 0 ? MagickTrue : MagickFalse);
 #else
   {
@@ -151,13 +160,19 @@ MagickExport MagickBooleanType DeleteMagickThreadKey(MagickThreadKey key)
       i;
 
     keys=(MagickThreadValue *) key;
-    for (i=0; i < (ssize_t) keys->number_threads; i++)
-      if ((keys->destructor != (void *) NULL) &&
-          (keys->values[i] != (void *) NULL))
-        {
-          keys->destructor(keys->values[i]);
-          keys->values[i]=(void *) NULL;
-        }
+    if (keys == (MagickThreadValue *) NULL)
+      return(MagickFalse);
+    if (keys->values != (void **) NULL)
+      {
+        for (i=0; i < (ssize_t) keys->number_threads; i++)
+          if ((keys->destructor != (void *) NULL) &&
+              (keys->values[i] != (void *) NULL))
+            {
+              keys->destructor(keys->values[i]);
+              keys->values[i]=(void *) NULL;
+            }
+        keys->values=(void **) RelinquishMagickMemory(keys->values);
+      }
     keys=(MagickThreadValue *) RelinquishMagickMemory(keys);
   }
   return(MagickTrue);
@@ -192,14 +207,25 @@ MagickExport void *GetMagickThreadValue(MagickThreadKey key)
 #if defined(MAGICKCORE_THREAD_SUPPORT)
   return(pthread_getspecific(key));
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
+  if (key == TLS_OUT_OF_INDEXES)
+    return((void *) NULL);
   return(TlsGetValue(key));
 #else
   {
     MagickThreadValue
       *keys;
 
+    size_t
+      thread_id;
+
     keys=(MagickThreadValue *) key;
-    return(keys->values[GetOpenMPThreadId()]);
+    if ((keys == (MagickThreadValue *) NULL) ||
+        (keys->values == (void **) NULL))
+      return((void *) NULL);
+    thread_id=(size_t) GetOpenMPThreadId();
+    if (thread_id >= keys->number_threads)
+      return((void *) NULL);
+    return(keys->values[thread_id]);
   }
 #endif
 }
@@ -236,14 +262,25 @@ MagickExport MagickBooleanType SetMagickThreadValue(MagickThreadKey key,
 #if defined(MAGICKCORE_THREAD_SUPPORT)
   return(pthread_setspecific(key,value) == 0 ? MagickTrue : MagickFalse);
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
+  if (key == TLS_OUT_OF_INDEXES)
+    return(MagickFalse);
   return(TlsSetValue(key,(void *) value) != 0 ? MagickTrue : MagickFalse);
 #else
   {
     MagickThreadValue
       *keys;
 
+    size_t
+      thread_id;
+
     keys=(MagickThreadValue *) key;
-    keys->values[GetOpenMPThreadId()]=(void *) value;
+    if ((keys == (MagickThreadValue *) NULL) ||
+        (keys->values == (void **) NULL))
+      return(MagickFalse);
+    thread_id=(size_t) GetOpenMPThreadId();
+    if (thread_id >= keys->number_threads)
+      return(MagickFalse);
+    keys->values[thread_id]=(void *) value;
   }
   return(MagickTrue);
 #endif
