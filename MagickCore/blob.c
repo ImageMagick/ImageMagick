@@ -1658,7 +1658,8 @@ static inline ssize_t WriteBlobStream(Image *image,const size_t length,
   if (extent >= blob_info->extent)
     {
       extent+=blob_info->quantum+length;
-      blob_info->quantum<<=1;
+      if (blob_info->quantum <= (SIZE_MAX >> 1))
+        blob_info->quantum<<=1;
       if (SetBlobExtent(image,extent) == MagickFalse)
         return(0);
     }
@@ -1675,6 +1676,9 @@ MagickExport MagickBooleanType FileToImage(Image *image,const char *filename,
 {
   int
     file;
+
+  MagickBooleanType
+    status;
 
   size_t
     length,
@@ -1710,36 +1714,55 @@ MagickExport MagickBooleanType FileToImage(Image *image,const char *filename,
       return(MagickFalse);
     }
   if (IsPathAuthorized(ReadPolicyRights,filename) == MagickFalse)
-    ThrowPolicyException(filename,MagickFalse);
+    {
+      if (LocaleCompare(filename,"-") != 0)
+        (void) close_utf8(file);
+      ThrowPolicyException(filename,MagickFalse);
+    }
   quantum=(size_t) MagickMaxBufferExtent;
   if ((fstat(file,&file_stats) == 0) && (file_stats.st_size > 0))
     quantum=(size_t) MagickMin(file_stats.st_size,MagickMaxBufferExtent);
   blob=(unsigned char *) AcquireQuantumMemory(quantum,sizeof(*blob));
   if (blob == (unsigned char *) NULL)
     {
-      file=close_utf8(file);
+      if (LocaleCompare(filename,"-") != 0)
+        (void) close_utf8(file);
       ThrowFileException(exception,ResourceLimitError,"MemoryAllocationFailed",
         filename);
       return(MagickFalse);
     }
+  status=MagickTrue;
   for ( ; ; )
   {
     count=MagickRead(file,blob,quantum);
     if (count <= 0)
-      break;
+      {
+        if (count < 0)
+          {
+            ThrowFileException(exception,BlobError,"UnableToReadBlob",filename);
+            status=MagickFalse;
+          }
+        break;
+      }
     length=(size_t) count;
     count=WriteBlobStream(image,length,blob);
     if (count != (ssize_t) length)
       {
         ThrowFileException(exception,BlobError,"UnableToWriteBlob",filename);
+        status=MagickFalse;
         break;
       }
   }
-  file=close_utf8(file);
-  if (file == -1)
-    ThrowFileException(exception,BlobError,"UnableToWriteBlob",filename);
+  if (LocaleCompare(filename,"-") != 0)
+    {
+      if (close_utf8(file) == -1)
+        {
+          ThrowFileException(exception,BlobError,"UnableToWriteBlob",filename);
+          status=MagickFalse;
+        }
+    }
   blob=(unsigned char *) RelinquishMagickMemory(blob);
-  return(MagickTrue);
+  return(status);
 }
 
 /*
@@ -2822,9 +2845,6 @@ MagickExport MagickBooleanType InjectImageBlob(const ImageInfo *image_info,
   unsigned char
     *buffer;
 
-  /*
-    Write inject image to a temporary file.
-  */
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
   assert(image != (Image *) NULL);
@@ -2840,6 +2860,11 @@ MagickExport MagickBooleanType InjectImageBlob(const ImageInfo *image_info,
     unique_file=fdopen(file,"wb");
   if ((file == -1) || (unique_file == (FILE *) NULL))
     {
+      if (file != -1)
+        {
+          (void) close_utf8(file);
+          (void) RelinquishUniqueFileResource(filename);
+        }
       (void) CopyMagickString(image->filename,filename,MagickPathExtent);
       ThrowFileException(exception,FileOpenError,"UnableToCreateTemporaryFile",
         image->filename);
@@ -2867,9 +2892,6 @@ MagickExport MagickBooleanType InjectImageBlob(const ImageInfo *image_info,
       (void) RelinquishUniqueFileResource(filename);
       return(MagickFalse);
     }
-  /*
-    Inject into image stream.
-  */
   file=open_utf8(filename,O_RDONLY | O_CLOEXEC | O_BINARY,0);
   if (file == -1)
     {
@@ -2884,26 +2906,38 @@ MagickExport MagickBooleanType InjectImageBlob(const ImageInfo *image_info,
   buffer=(unsigned char *) AcquireQuantumMemory(quantum,sizeof(*buffer));
   if (buffer == (unsigned char *) NULL)
     {
+      (void) close_utf8(file);
       (void) RelinquishUniqueFileResource(filename);
-      file=close_utf8(file);
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         image->filename);
     }
+  status=MagickTrue;
   for ( ; ; )
   {
-    ssize_t count = read(file,buffer,quantum);
-    if (count <= 0)
+    ssize_t
+      count;
+
+    count=read(file,buffer,quantum);
+    if (count < 0)
       {
-        count=0;
-        if (errno != EINTR)
-          break;
+        if (errno == EINTR)
+          continue;
+        status=MagickFalse;
+        break;
       }
-    status=WriteBlobStream(image,(size_t) count,buffer) == count ? MagickTrue :
-      MagickFalse;
+    if (count == 0)
+      break;
+    if (WriteBlobStream(image,(size_t) count,buffer) != count)
+      {
+        status=MagickFalse;
+        break;
+      }
   }
-  file=close_utf8(file);
-  if (file == -1)
-    ThrowFileException(exception,FileOpenError,"UnableToWriteBlob",filename);
+  if (close_utf8(file) == -1)
+    {
+      ThrowFileException(exception,FileOpenError,"UnableToWriteBlob",filename);
+      status=MagickFalse;
+    }
   (void) RelinquishUniqueFileResource(filename);
   buffer=(unsigned char *) RelinquishMagickMemory(buffer);
   return(status);
@@ -5090,9 +5124,8 @@ MagickExport char *ReadBlobString(Image *image,char *string)
   */
   if ((string[i] == '\r') || (string[i] == '\n'))
     string[i]='\0';
-  if (i >= 1)
-    if ((string[i-1] == '\r') || (string[i-1] == '\n'))
-      string[i-1]='\0';
+  while ((i > 0) && ((string[i-1] == '\r') || (string[i-1] == '\n')))
+    string[--i]='\0';
   if ((*string == '\0') && (blob_info->eof != MagickFalse))
     return((char *) NULL);
   return(string);
