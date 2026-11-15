@@ -86,8 +86,11 @@
 */
 MagickExport double ExpandAffine(const AffineMatrix *affine)
 {
+  const double
+    determinant = affine->sx*affine->sy-affine->rx*affine->ry;
+
   assert(affine != (const AffineMatrix *) NULL);
-  return(sqrt(fabs(affine->sx*affine->sy-affine->rx*affine->ry)));
+  return(sqrt(fabs(determinant)));
 }
 
 /*
@@ -152,7 +155,7 @@ MagickPrivate double GenerateDifferentialNoise(RandomInfo *random_info,
         gamma,
         tau;
 
-      if (fabs(alpha) < MagickEpsilon)
+      if (alpha <= MagickEpsilon)
         alpha=1.0;
       beta=GetPseudoRandomValue(random_info);
       gamma=sqrt(-2.0*log(alpha));
