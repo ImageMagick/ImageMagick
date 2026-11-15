@@ -432,7 +432,20 @@ static void ImportPixelChannel(const Image *image,QuantumInfo *quantum_info,
           }
           break;
         }
-      magick_fallthrough;
+      else
+        {
+          MagickSizeType
+            pixel;
+
+          for (x=0; x < (ssize_t) number_pixels; x++)
+          {
+            p=PushLongLongPixel(quantum_info->endian,p,&pixel);
+            *q=ScaleLongLongToQuantum(pixel);
+            p+=(ptrdiff_t) quantum_info->pad;
+            q+=(ptrdiff_t) GetPixelChannels(image);
+          }
+          break;
+        }
     }
     default:
     {

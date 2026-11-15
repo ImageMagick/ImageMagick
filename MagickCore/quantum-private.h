@@ -229,6 +229,18 @@ static inline unsigned char *PopLongPixel(const EndianType endian,
   return(pixels);
 }
 
+static inline unsigned char *PopLongLongPixel(const EndianType endian,
+  const MagickSizeType pixel,unsigned char *magick_restrict pixels)
+{
+  if (endian == LSBEndian)
+    {
+      pixels=PopLongPixel(endian,(unsigned int) pixel,pixels);
+      return(PopLongPixel(endian,(unsigned int) (pixel >> 32),pixels));
+    }
+  pixels=PopLongPixel(endian,(unsigned int) (pixel >> 32),pixels);
+  return(PopLongPixel(endian,(unsigned int) pixel,pixels));
+}
+
 static inline unsigned char *PopShortPixel(const EndianType endian,
   const unsigned short pixel,unsigned char *magick_restrict pixels)
 {
@@ -276,6 +288,28 @@ static inline const unsigned char *PushLongPixel(const EndianType endian,
   quantum|=((unsigned int) *pixels++ << 8);
   quantum|=((unsigned int) *pixels++);
   *pixel=quantum;
+  return(pixels);
+}
+
+static inline const unsigned char *PushLongLongPixel(const EndianType endian,
+  const unsigned char *magick_restrict pixels,
+  MagickSizeType *magick_restrict pixel)
+{
+  unsigned int
+    high,
+    low;
+
+  if (endian == LSBEndian)
+    {
+      pixels=PushLongPixel(endian,pixels,&low);
+      pixels=PushLongPixel(endian,pixels,&high);
+    }
+  else
+    {
+      pixels=PushLongPixel(endian,pixels,&high);
+      pixels=PushLongPixel(endian,pixels,&low);
+    }
+  *pixel=((MagickSizeType) high << 32) | (MagickSizeType) low;
   return(pixels);
 }
 

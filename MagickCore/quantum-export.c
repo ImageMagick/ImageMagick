@@ -417,7 +417,13 @@ static void ExportPixelChannel(const Image *image,QuantumInfo *quantum_info,
           }
           break;
         }
-      magick_fallthrough;
+      for (x=0; x < (ssize_t) number_pixels; x++)
+      {
+        q=PopLongLongPixel(quantum_info->endian,ScaleQuantumToLongLong(*p),q);
+        p+=(ptrdiff_t) GetPixelChannels(image);
+        q+=(ptrdiff_t) quantum_info->pad;
+      }
+      break;
     }
     default:
     {
