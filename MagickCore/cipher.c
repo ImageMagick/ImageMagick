@@ -13,7 +13,6 @@
 %                                                                             %
 %                             Software Design                                 %
 %                                  Cristy                                     %
-%                               March  2003                                   %
 %                                                                             %
 %                                                                             %
 %  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
@@ -344,9 +343,6 @@ static void FinalizeRoundKey(const unsigned int *ciphertext,
     for (j=0; j < 4; j++)
       *p++=(unsigned char) ((value >> (8*j)) & 0xff);
   }
-  /*
-    Reset registers.
-  */
   value=0;
 }
 
@@ -371,9 +367,6 @@ static void InitializeRoundKey(const unsigned char *ciphertext,
       value|=((unsigned int) *p++ << (8*j));
     plaintext[i]=key[i] ^ value;
   }
-  /*
-    Reset registers.
-  */
   value=0;
 }
 
@@ -467,9 +460,6 @@ static void EncipherAESBlock(AESInfo *aes_info,const unsigned char *plaintext,
   InitializeRoundKey(plaintext,aes_info->encipher_key,text);
   for (i=1; i < aes_info->rounds; i++)
   {
-    /*
-      Linear mixing step: cause diffusion of the bits over multiple rounds.
-    */
     for (j=0; j < 4; j++)
       key[j]=D[text[j] & 0xff] ^
         RotateLeft(D[(text[map[1][j]] >> 8) & 0xff] ^
@@ -484,9 +474,6 @@ static void EncipherAESBlock(AESInfo *aes_info,const unsigned char *plaintext,
     key[i]=ByteSubTransform(alpha,SBox);
   }
   FinalizeRoundKey(key,aes_info->encipher_key+4*aes_info->rounds,ciphertext);
-  /*
-    Reset registers.
-  */
   alpha=0;
   (void) ResetMagickMemory(key,0,sizeof(key));
   (void) ResetMagickMemory(text,0,sizeof(text));
@@ -505,26 +492,9 @@ static void EncipherAESBlock(AESInfo *aes_info,const unsigned char *plaintext,
 %
 %  PasskeyDecipherImage() converts cipher pixels to plain pixels.
 %
-%  The format of the PasskeyDecipherImage method is:
-%
-%      MagickBooleanType PasskeyDecipherImage(Image *image,
-%        const StringInfo *passkey,ExceptionInfo *exception)
-%      MagickBooleanType DecipherImage(Image *image,const char *passphrase,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o passphrase: decipher cipher pixels with this passphrase.
-%
-%    o passkey: decrypt cipher pixels with this passkey.
-%
-%    o exception: return any errors or warnings in this structure.
-%
 */
 
-static inline void IncrementCipherNonce(const size_t length,
+static inline MagickBooleanType IncrementCipherNonce(const size_t length,
   unsigned char *nonce)
 {
   ssize_t
@@ -534,9 +504,9 @@ static inline void IncrementCipherNonce(const size_t length,
   {
     nonce[i]++;
     if (nonce[i] != 0)
-      return;
+      return(MagickTrue);
   }
-  ThrowFatalException(ResourceLimitFatalError,"Sequence wrap error");
+  return(MagickFalse);
 }
 
 MagickExport MagickBooleanType DecipherImage(Image *image,
@@ -605,9 +575,6 @@ MagickExport MagickBooleanType PasskeyDecipherImage(Image *image,
     output_block[AESBlocksize],
     *pixels;
 
-  /*
-    Generate decipher key and nonce.
-  */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   assert(exception != (ExceptionInfo *) NULL);
@@ -616,6 +583,7 @@ MagickExport MagickBooleanType PasskeyDecipherImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (passkey == (const StringInfo *) NULL)
     return(MagickTrue);
+
   aes_info=AcquireAESInfo();
   key=CloneStringInfo(passkey);
   if (key == (StringInfo *) NULL)
@@ -647,9 +615,7 @@ MagickExport MagickBooleanType PasskeyDecipherImage(Image *image,
   (void) memcpy(input_block,digest,MagickMin(AESBlocksize,
     GetSignatureDigestsize(signature_info))*sizeof(*input_block));
   signature_info=DestroySignatureInfo(signature_info);
-  /*
-    Convert cipher pixels to plain pixels.
-  */
+
   quantum_info=AcquireQuantumInfo((const ImageInfo *) NULL,image);
   if (quantum_info == (QuantumInfo *) NULL)
     {
@@ -679,7 +645,13 @@ MagickExport MagickBooleanType PasskeyDecipherImage(Image *image,
     {
       (void) memcpy(output_block,input_block,AESBlocksize*
         sizeof(*output_block));
-      IncrementCipherNonce(AESBlocksize,input_block);
+      if (IncrementCipherNonce(AESBlocksize,input_block) == MagickFalse)
+        {
+          image_view=DestroyCacheView(image_view);
+          quantum_info=DestroyQuantumInfo(quantum_info);
+          aes_info=DestroyAESInfo(aes_info);
+          ThrowBinaryException(ResourceLimitError,"SequenceWrapError",image->filename);
+        }
       EncipherAESBlock(aes_info,output_block,output_block);
       for (i=0; i < AESBlocksize; i++)
         p[i]^=output_block[i];
@@ -707,9 +679,7 @@ MagickExport MagickBooleanType PasskeyDecipherImage(Image *image,
   (void) DeleteImageProperty(image,"cipher:mode");
   (void) DeleteImageProperty(image,"cipher:nonce");
   image->taint=MagickFalse;
-  /*
-    Free resources.
-  */
+
   quantum_info=DestroyQuantumInfo(quantum_info);
   aes_info=DestroyAESInfo(aes_info);
   (void) ResetMagickMemory(input_block,0,sizeof(input_block));
@@ -729,23 +699,6 @@ MagickExport MagickBooleanType PasskeyDecipherImage(Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  PasskeyEncipherImage() converts pixels to cipher-pixels.
-%
-%  The format of the PasskeyEncipherImage method is:
-%
-%      MagickBooleanType PasskeyEncipherImage(Image *image,
-%        const StringInfo *passkey,ExceptionInfo *exception)
-%      MagickBooleanType EncipherImage(Image *image,const char *passphrase,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o passphrase: encipher pixels with this passphrase.
-%
-%    o passkey: decrypt cipher pixels with this passkey.
-%
-%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -818,9 +771,6 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
     output_block[AESBlocksize],
     *pixels;
 
-  /*
-    Generate encipher key and nonce.
-  */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   assert(exception != (ExceptionInfo *) NULL);
@@ -831,6 +781,7 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
     return(MagickTrue);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
+
   aes_info=AcquireAESInfo();
   key=CloneStringInfo(passkey);
   if (key == (StringInfo *) NULL)
@@ -862,14 +813,13 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
   (void) SetImageProperty(image,"cipher:mode","CTR",exception);
   (void) SetImageProperty(image,"cipher:nonce",signature,exception);
   signature=DestroyString(signature);
+
   (void) memset(input_block,0,sizeof(input_block));
   digest=GetStringInfoDatum(GetSignatureDigest(signature_info));
   (void) memcpy(input_block,digest,MagickMin(AESBlocksize,
     GetSignatureDigestsize(signature_info))*sizeof(*input_block));
   signature_info=DestroySignatureInfo(signature_info);
-  /*
-    Convert plain pixels to cipher pixels.
-  */
+
   quantum_info=AcquireQuantumInfo((const ImageInfo *) NULL,image);
   if (quantum_info == (QuantumInfo *) NULL)
     {
@@ -899,7 +849,13 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
     {
       (void) memcpy(output_block,input_block,AESBlocksize*
         sizeof(*output_block));
-      IncrementCipherNonce(AESBlocksize,input_block);
+      if (IncrementCipherNonce(AESBlocksize,input_block) == MagickFalse)
+        {
+          image_view=DestroyCacheView(image_view);
+          quantum_info=DestroyQuantumInfo(quantum_info);
+          aes_info=DestroyAESInfo(aes_info);
+          ThrowBinaryException(ResourceLimitError,"SequenceWrapError",image->filename);
+        }
       EncipherAESBlock(aes_info,output_block,output_block);
       for (i=0; i < AESBlocksize; i++)
         p[i]^=output_block[i];
@@ -924,9 +880,7 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
   }
   image_view=DestroyCacheView(image_view);
   image->taint=MagickFalse;
-  /*
-    Free resources.
-  */
+
   quantum_info=DestroyQuantumInfo(quantum_info);
   aes_info=DestroyAESInfo(aes_info);
   (void) ResetMagickMemory(input_block,0,sizeof(input_block));
@@ -945,19 +899,7 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetAESKey() sets the key for the AES cipher.  The key length is specified
-%  in bits.  Valid values are 128, 192, or 256 requiring a key buffer length
-%  in bytes of 16, 24, and 32 respectively.
-%
-%  The format of the SetAESKey method is:
-%
-%      void SetAESKey(AESInfo *aes_info,const StringInfo *key)
-%
-%  A description of each parameter follows:
-%
-%    o aes_info: the cipher context.
-%
-%    o key: the key.
+%  SetAESKey() sets the key for the AES cipher.
 %
 */
 
@@ -998,10 +940,8 @@ static inline unsigned int RotateRight(const unsigned int x)
 static void SetAESKey(AESInfo *aes_info,const StringInfo *key)
 {
   ssize_t
-    i;
-
-  ssize_t
     bytes,
+    i,
     n;
 
   unsigned char
@@ -1011,9 +951,6 @@ static void SetAESKey(AESInfo *aes_info,const StringInfo *key)
     alpha,
     beta;
 
-  /*
-    Determine the number of rounds based on the number of bits in key.
-  */
   assert(aes_info != (AESInfo *) NULL);
   assert(aes_info->signature == MagickCoreSignature);
   assert(key != (StringInfo *) NULL);
@@ -1032,9 +969,7 @@ static void SetAESKey(AESInfo *aes_info,const StringInfo *key)
         n=6;
         aes_info->rounds=12;
       }
-  /*
-    Generate crypt key.
-  */
+
   datum=GetStringInfoDatum(aes_info->key);
   (void) memset(datum,0,GetStringInfoLength(aes_info->key));
   (void) memcpy(datum,GetStringInfoDatum(key),MagickMin(
@@ -1059,9 +994,6 @@ static void SetAESKey(AESInfo *aes_info,const StringInfo *key)
         alpha=ByteSubTransform(alpha,SBox);
     aes_info->encipher_key[i]=aes_info->encipher_key[i-n] ^ alpha;
   }
-  /*
-    Generate decipher key (in reverse order).
-  */
   for (i=0; i < 4; i++)
   {
     aes_info->decipher_key[i]=aes_info->encipher_key[i];
@@ -1069,9 +1001,6 @@ static void SetAESKey(AESInfo *aes_info,const StringInfo *key)
   }
   for (i=4; i < (bytes-4); i+=4)
     InverseAddRoundKey(aes_info->encipher_key+i,aes_info->decipher_key+i);
-  /*
-    Reset registers.
-  */
   datum=GetStringInfoDatum(aes_info->key);
   (void) memset(datum,0,GetStringInfoLength(aes_info->key));
   alpha=0;
@@ -1080,37 +1009,8 @@ static void SetAESKey(AESInfo *aes_info,const StringInfo *key)
 #else
 
 /*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%     P a s s k e y D e c i p h e r I m a g e                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  PasskeyDecipherImage() converts cipher pixels to plain pixels.
-%
-%  The format of the PasskeyDecipherImage method is:
-%
-%      MagickBooleanType PasskeyDecipherImage(Image *image,
-%        const StringInfo *passkey,ExceptionInfo *exception)
-%      MagickBooleanType DecipherImage(Image *image,const char *passphrase,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o passphrase: decipher cipher pixels with this passphrase.
-%
-%    o passkey: decrypt cipher pixels with this passkey.
-%
-%    o exception: return any errors or warnings in this structure.
-%
+  Disabled cipher support fallback stubs.
 */
-
 MagickExport MagickBooleanType DecipherImage(Image *image,
   const char *passphrase,ExceptionInfo *exception)
 {
@@ -1136,36 +1036,6 @@ MagickExport MagickBooleanType PasskeyDecipherImage(Image *image,
   (void) passkey;
   ThrowBinaryException(ImageError,"CipherSupportNotEnabled",image->filename);
 }
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%     P a s s k e y E n c i p h e r I m a g e                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  PasskeyEncipherImage() converts pixels to cipher-pixels.
-%
-%  The format of the PasskeyEncipherImage method is:
-%
-%      MagickBooleanType PasskeyEncipherImage(Image *image,
-%        const StringInfo *passkey,ExceptionInfo *exception)
-%      MagickBooleanType EncipherImage(Image *image,const char *passphrase,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o passphrase: decipher cipher pixels with this passphrase.
-%
-%    o passkey: decrypt cipher pixels with this passkey.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
 
 MagickExport MagickBooleanType EncipherImage(Image *image,
   const char *passphrase,ExceptionInfo *exception)
