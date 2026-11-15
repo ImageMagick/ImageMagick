@@ -201,39 +201,55 @@ static inline const unsigned char *PushQuantumFloat24Pixel(
   const QuantumInfo *quantum_info,const unsigned char *magick_restrict pixels,
   float *pixel)
 {
-  unsigned char
-    quantum[4];
+  union
+  {
+    unsigned int
+      fixed_point;
 
+    float
+      single_precision;
+  } map;
+
+  unsigned int
+    exponent,
+    significand,
+    sign_bit,
+    value;
+
+  value=0U;
   if (quantum_info->endian == LSBEndian)
     {
-      quantum[0]=(*pixels++);
-      quantum[1]=(*pixels++);
-      quantum[2]=(*pixels++);
+      value=(unsigned int) *pixels++;
+      value|=(unsigned int) *pixels++ << 8;
+      value|=(unsigned int) *pixels++ << 16;
     }
   else
     {
-      quantum[2]=(*pixels++);
-      quantum[1]=(*pixels++);
-      quantum[0]=(*pixels++);
+      value=(unsigned int) *pixels++ << 16;
+      value|=(unsigned int) *pixels++ << 8;
+      value|=(unsigned int) *pixels++;
     }
-  if ((quantum[0] | quantum[1] | quantum[2]) == 0U)
-    quantum[3]=0;
-  else
+  sign_bit=(value & 0x00800000U) << 8;
+  exponent=(value >> 16) & 0x7fU;
+  significand=value & 0xffffU;
+  if (exponent == 0U)
     {
-      unsigned char
-        exponent,
-        sign_bit;
-
-      sign_bit=(quantum[2] & 0x80);
-      exponent=(quantum[2] & 0x7F);
-      if (exponent != 0)
-        exponent=exponent-63+127;
-      quantum[3]=sign_bit | (exponent >> 1);
-      quantum[2]=((exponent & 1) << 7) | ((quantum[1] & 0xFE) >> 1);
-      quantum[1]=((quantum[1] & 0x01) << 7) | ((quantum[0] & 0xFE) >> 1);
-      quantum[0]=(quantum[0] & 0x01) << 7;
+      if (significand != 0U)
+        {
+          exponent=65U;
+          while ((significand & 0x10000U) == 0U)
+          {
+            significand<<=1;
+            exponent--;
+          }
+          significand&=0xffffU;
+        }
     }
-  *pixel=ScaleFloatPixel(quantum_info,quantum);
+  else
+    exponent=exponent == 127U ? 255U : exponent+64U;
+  map.fixed_point=sign_bit | (exponent << 23) | (significand << 7);
+  *pixel=ScaleFloatPixel(quantum_info,(const unsigned char *)
+    &map.single_precision);
   return(pixels);
 }
 
