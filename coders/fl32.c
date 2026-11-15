@@ -218,7 +218,7 @@ static Image *ReadFL32Image(const ImageInfo *image_info,
     default:
     {
       image->number_meta_channels=image->number_channels-3;
-      quantum_type=RGBQuantum;
+      quantum_type=MultispectralQuantum;
       break;
     }
   }
