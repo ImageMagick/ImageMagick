@@ -801,6 +801,14 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
 #endif
   fftw_r2c_plan=fftw_plan_dft_r2c_2d((int) fourier_info->width,
     (int) fourier_info->height,source_pixels,forward_pixels,FFTW_ESTIMATE);
+  if (fftw_r2c_plan == (fftw_plan) NULL)
+    {
+      forward_info=RelinquishVirtualMemory(forward_info);
+      source_info=RelinquishVirtualMemory(source_info);
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      return(MagickFalse);
+    }
   fftw_execute_dft_r2c(fftw_r2c_plan,source_pixels,forward_pixels);
   fftw_destroy_plan(fftw_r2c_plan);
   source_info=(MemoryInfo *) RelinquishVirtualMemory(source_info);
@@ -891,7 +899,7 @@ static MagickBooleanType ForwardFourierTransformChannel(const Image *image,
     {
       if (phase_info != (MemoryInfo *) NULL)
         phase_info=RelinquishVirtualMemory(phase_info);
-      if (magnitude_info == (MemoryInfo *) NULL)
+      if (magnitude_info != (MemoryInfo *) NULL)
         magnitude_info=RelinquishVirtualMemory(magnitude_info);
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
@@ -1362,7 +1370,7 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
     }
   source_pixels=(double *) GetVirtualMemoryBlob(source_info);
   value=GetImageArtifact(image,"fourier:normalize");
-  if (LocaleCompare(value,"inverse") == 0)
+  if ((value != (const char *) NULL) && (LocaleCompare(value,"inverse") == 0))
     {
       double
         gamma;
@@ -1390,6 +1398,13 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
 #endif
   fftw_c2r_plan=fftw_plan_dft_c2r_2d((int) fourier_info->width,
     (int) fourier_info->height,fourier_pixels,source_pixels,FFTW_ESTIMATE);
+  if (fftw_c2r_plan == (fftw_plan) NULL)
+    {
+      source_info=RelinquishVirtualMemory(source_info);
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      return(MagickFalse);
+    }
   fftw_execute_dft_c2r(fftw_c2r_plan,fourier_pixels,source_pixels);
   fftw_destroy_plan(fftw_c2r_plan);
   i=0L;
