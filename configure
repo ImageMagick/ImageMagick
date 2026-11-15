@@ -5306,7 +5306,7 @@ MAGICK_PATCHLEVEL_VERSION=36
 
 MAGICK_VERSION=7.1.2-36
 
-MAGICK_GIT_REVISION=8d240f762:20261108
+MAGICK_GIT_REVISION=64330ffff:20261115
 
 
 # Substitute library versioning
@@ -5340,7 +5340,7 @@ PACKAGE_LIB_VERSION=0x712
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,2,36
 
-PACKAGE_RELEASE_DATE=2026-11-08
+PACKAGE_RELEASE_DATE=2026-11-15
 
 
 # Ensure that make can run correctly
@@ -25964,6 +25964,12 @@ ac_fn_c_check_header_compile "$LINENO" "stdarg.h" "ac_cv_header_stdarg_h" "$ac_i
 if test "x$ac_cv_header_stdarg_h" = xyes
 then :
   printf '%s\n' "#define HAVE_STDARG_H 1" >>confdefs.h
+
+fi
+ac_fn_c_check_header_compile "$LINENO" "stdatomic.h" "ac_cv_header_stdatomic_h" "$ac_includes_default"
+if test "x$ac_cv_header_stdatomic_h" = xyes
+then :
+  printf '%s\n' "#define HAVE_STDATOMIC_H 1" >>confdefs.h
 
 fi
 ac_fn_c_check_header_compile "$LINENO" "stddef.h" "ac_cv_header_stddef_h" "$ac_includes_default"

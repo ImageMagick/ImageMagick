@@ -485,6 +485,9 @@
 /* Define to 1 if you have the <stdarg.h> header file. */
 #undef HAVE_STDARG_H
 
+/* Define to 1 if you have the <stdatomic.h> header file. */
+#undef HAVE_STDATOMIC_H
+
 /* Define to 1 if stdbool.h conforms to C99. */
 #undef HAVE_STDBOOL_H
 
