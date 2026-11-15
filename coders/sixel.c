@@ -1239,7 +1239,10 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,
   {
     Quantum *q = GetAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
-      break;
+      {
+        status=MagickFalse;
+        break;
+      }
     for (x = 0; x < (ssize_t) image->columns; x++)
     {
       Quantum index = (Quantum) pixels[y*(ssize_t) image->columns + x];
@@ -1255,7 +1258,8 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,
         }
       q+=GetPixelChannels(image);
     }
-    if (SyncAuthenticPixels(image,exception) == MagickFalse)
+    status=SyncAuthenticPixels(image,exception);
+    if (status == MagickFalse)
       break;
   }
 
