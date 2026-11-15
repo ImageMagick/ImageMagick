@@ -3013,7 +3013,7 @@ static Image *SIMDivideImage(const Image *numerator_image,
     if (status == MagickFalse)
       continue;
     p=GetCacheViewVirtualPixels(denominator_view,0,y,
-      denominator_image->columns,1,exception);
+      divide_image->columns,1,exception);
     q=GetCacheViewAuthenticPixels(numerator_view,0,y,divide_image->columns,1,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
@@ -3262,6 +3262,7 @@ static MagickBooleanType SIMMaximaImage(const Image *image,double *maxima,
     status = MagickTrue;
 
   MaximaInfo
+    initial_maxima,
     maxima_info = { -MagickMaximumValue, 0, 0 };
 
   ssize_t
@@ -3275,6 +3276,7 @@ static MagickBooleanType SIMMaximaImage(const Image *image,double *maxima,
     exception);
   if (q != (const Quantum *) NULL)
     maxima_info.maxima=IsNaN((double) q[0]) != 0 ? 0.0 : (double) q[0];
+  initial_maxima=maxima_info;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(maxima_info,status) \
     magick_number_threads(image,image,image->rows,1)
@@ -3285,7 +3287,7 @@ static MagickBooleanType SIMMaximaImage(const Image *image,double *maxima,
       *magick_restrict p;
 
     MaximaInfo
-      channel_maxima = { -MagickMaximumValue, 0, 0 };
+      channel_maxima;
 
     ssize_t
       x;
@@ -3298,7 +3300,7 @@ static MagickBooleanType SIMMaximaImage(const Image *image,double *maxima,
         status=MagickFalse;
         continue;
       }
-    channel_maxima=maxima_info;
+    channel_maxima=initial_maxima;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       ssize_t
@@ -3361,6 +3363,7 @@ static MagickBooleanType SIMMinimaImage(const Image *image,double *minima,
     status = MagickTrue;
 
   MinimaInfo
+    initial_minima,
     minima_info = { MagickMaximumValue, 0, 0 };
 
   ssize_t
@@ -3374,6 +3377,7 @@ static MagickBooleanType SIMMinimaImage(const Image *image,double *minima,
     exception);
   if (q != (const Quantum *) NULL)
     minima_info.minima=IsNaN((double) q[0]) != 0 ? 0.0 : (double) q[0];
+  initial_minima=minima_info;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(minima_info,status) \
     magick_number_threads(image,image,image->rows,1)
@@ -3384,7 +3388,7 @@ static MagickBooleanType SIMMinimaImage(const Image *image,double *minima,
       *magick_restrict p;
 
     MinimaInfo
-      channel_minima = { MagickMaximumValue, 0, 0 };
+      channel_minima;
 
     ssize_t
       x;
@@ -3397,7 +3401,7 @@ static MagickBooleanType SIMMinimaImage(const Image *image,double *minima,
         status=MagickFalse;
         continue;
       }
-    channel_minima=minima_info;
+    channel_minima=initial_minima;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       ssize_t
@@ -3680,7 +3684,8 @@ static Image *SIMSubtractImageMean(const Image *alpha_image,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(beta_view,0,y,beta_image->columns,1,exception);
+    p=GetCacheViewVirtualPixels(beta_view,0,y,subtract_image->columns,1,
+      exception);
     q=GetCacheViewAuthenticPixels(image_view,0,y,subtract_image->columns,1,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
@@ -3836,7 +3841,7 @@ static Image *SIMVarianceImage(Image *alpha_image,const Image *beta_image,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(beta_view,0,y,beta_image->columns,1,
+    p=GetCacheViewVirtualPixels(beta_view,0,y,variance_image->columns,1,
       exception);
     q=GetCacheViewAuthenticPixels(image_view,0,y,variance_image->columns,1,
       exception);
@@ -4608,7 +4613,10 @@ static double GetSimilarityMetric(const Image *image,
   channel_similarity=(double *) AcquireQuantumMemory(length,
     sizeof(*channel_similarity));
   if (channel_similarity == (double *) NULL)
-    return(NAN);
+    {
+      similarity_image=DestroyImage(similarity_image);
+      return(NAN);
+    }
   (void) memset(channel_similarity,0,length*sizeof(*channel_similarity));
   switch (metric)
   {
