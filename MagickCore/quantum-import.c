@@ -1375,10 +1375,13 @@ static void ImportCbYCrYQuantum(const Image *image,QuantumInfo *quantum_info,
 
           n=0;
           quantum=0;
-          for (x=0; x < ((ssize_t) number_pixels-3); x+=4)
+          (void) memset(cbcr,0,sizeof(cbcr));
+          for (x=0; x < (ssize_t) number_pixels; x+=2)
           {
             for (i=0; i < 4; i++)
             {
+              if ((i > 1) && ((x+1) >= (ssize_t) number_pixels))
+                break;
               switch (n % 3)
               {
                 case 0:
@@ -1409,6 +1412,8 @@ static void ImportCbYCrYQuantum(const Image *image,QuantumInfo *quantum_info,
             SetPixelGreen(image,cbcr[0],q);
             SetPixelBlue(image,cbcr[2],q);
             q+=(ptrdiff_t) GetPixelChannels(image);
+            if ((x+1) >= (ssize_t) number_pixels)
+              break;
             SetPixelRed(image,cbcr[3],q);
             SetPixelGreen(image,cbcr[0],q);
             SetPixelBlue(image,cbcr[2],q);
