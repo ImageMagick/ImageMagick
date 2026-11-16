@@ -432,7 +432,7 @@ static void ImportPixelChannel(const Image *image,QuantumInfo *quantum_info,
           }
           break;
         }
-      else
+      if (quantum_info->depth == 64)
         {
           MagickSizeType
             pixel;
@@ -446,6 +446,7 @@ static void ImportPixelChannel(const Image *image,QuantumInfo *quantum_info,
           }
           break;
         }
+      magick_fallthrough;
     }
     default:
     {
