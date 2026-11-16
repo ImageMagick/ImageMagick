@@ -386,8 +386,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(DelegateError,"UnableToDecodeImageFile");
     }
   jp2_codestream_info=opj_get_cstr_info(jp2_codec);
-  if (AcquireMagickResource(ListLengthResource,(MagickSizeType)
-       jp2_codestream_info->m_default_tile_info.numlayers) == MagickFalse)
+  if (AcquireMagickResource(ListLengthResource,(MagickSizeType) jp2_codestream_info->m_default_tile_info.numlayers) == MagickFalse)
     {
       opj_destroy_cstr_info(&jp2_codestream_info);
       opj_stream_destroy(jp2_stream);
