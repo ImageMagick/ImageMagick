@@ -17,6 +17,9 @@ jobs:
     name: Linux Q${{matrix.quantum}}-x64 hdri=${{matrix.hdri}} (${{matrix.modules}})
     runs-on: ubuntu-24.04
 
+    env:
+      CODEQL_OVERLAY_DATABASE_MODE: none
+
     permissions:
       contents: read
       security-events: write
@@ -51,6 +54,8 @@ jobs:
         uses: github/codeql-action/init@33d7b85da1a04171e211befe2c739303b9a4c066 #v4.39.3
         with:
           languages: c-cpp
+          build-mode: manual
+          trap-caching: false
 
       - name: Build ImageMagick
         run: |
