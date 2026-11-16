@@ -25,6 +25,9 @@
 #include "MagickCore/gem.h"
 #include "MagickCore/image.h"
 #include "MagickCore/memory_.h"
+#include <errno.h>
+#include <math.h>
+#include <string.h>
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -126,6 +129,8 @@ static inline PixelChannel GetPixelChannelChannel(
 static inline ssize_t GetPixelChannelOffset(const Image *magick_restrict image,
   const PixelChannel channel)
 {
+  if ((size_t) channel >= MaxPixelChannels)
+    return(-1);
   return(image->channel_map[channel].offset);
 }
 
@@ -138,9 +143,9 @@ static inline PixelTrait GetPixelChannelTraits(
 }
 
 static inline size_t GetPixelChannels(const Image *magick_restrict image)
-{ 
+{
   return(image->number_channels);
-} 
+}
 
 static inline Quantum GetPixelCompositeMask(
   const Image *magick_restrict image,const Quantum *magick_restrict pixel)
@@ -443,7 +448,7 @@ static inline PixelTrait GetPixelRedTraits(const Image *magick_restrict image)
 static inline void GetPixelInfoPixel(const Image *magick_restrict image,
   const Quantum *magick_restrict pixel,PixelInfo *magick_restrict pixel_info)
 {
-  (void) ResetMagickMemory(pixel_info,0,sizeof(*pixel_info));
+  (void) memset(pixel_info,0,sizeof(*pixel_info));
   pixel_info->storage_class=DirectClass;
   pixel_info->colorspace=sRGBColorspace;
   pixel_info->depth=MAGICKCORE_QUANTUM_DEPTH;
@@ -571,9 +576,11 @@ static inline MagickBooleanType IsPixelEquivalent(
     beta,
     color;
 
-  color=(MagickRealType) p[image->channel_map[AlphaPixelChannel].offset];
-  alpha=image->alpha_trait == UndefinedPixelTrait ? (MagickRealType)
-    OpaqueAlpha : color;
+  if ((image->alpha_trait == UndefinedPixelTrait) ||
+      (image->channel_map[AlphaPixelChannel].traits == UndefinedPixelTrait))
+    alpha=(MagickRealType) OpaqueAlpha;  /* never read a nonexistent channel */
+  else
+    alpha=(MagickRealType) p[image->channel_map[AlphaPixelChannel].offset];
   beta=q->alpha_trait == UndefinedPixelTrait ? (MagickRealType) OpaqueAlpha :
     q->alpha;
   if (AbsolutePixelValue(alpha-beta) >= MagickEpsilon)
@@ -688,7 +695,7 @@ static inline MagickBooleanType IsPixelInfoMonochrome(
     green_blue,
     red_green;
 
-  if ((AbsolutePixelValue(pixel_info->red) >= MagickEpsilon) ||
+  if ((AbsolutePixelValue(pixel_info->red) >= MagickEpsilon) &&
       (AbsolutePixelValue(pixel_info->red-(MagickRealType) QuantumRange) >= MagickEpsilon))
     return(MagickFalse);
   red_green=pixel_info->red-pixel_info->green;
@@ -1003,23 +1010,23 @@ static inline void SetPixelYTraits(Image *image,const PixelTrait traits)
 }
 
 static inline size_t GetImageChannels(const Image *image)
-{ 
+{
   ssize_t
     i;
 
   size_t
     channels;
-  
+
   channels=0;
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-  {   
+  {
     PixelChannel channel = GetPixelChannelChannel(image,i);
     PixelTrait traits = GetPixelChannelTraits(image,channel);
     if ((traits & UpdatePixelTrait) != 0)
       channels++;
-  }   
+  }
   return(channels == 0 ? (size_t) 1 : channels);
-} 
+}
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
