@@ -1788,6 +1788,7 @@ MagickExport Image *SpliceImage(const Image *image,
 
   ssize_t
     columns,
+    rows,
     y;
 
   /*
@@ -1877,13 +1878,14 @@ MagickExport Image *SpliceImage(const Image *image,
   status=MagickTrue;
   progress=0;
   columns=MagickMin(splice_geometry.x,(ssize_t) splice_image->columns);
+  rows=MagickMin(splice_geometry.y,(ssize_t) splice_image->rows);
   image_view=AcquireVirtualCacheView(image,exception);
   splice_view=AcquireAuthenticCacheView(splice_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    magick_number_threads(image,splice_image,(size_t) splice_geometry.y,2)
+    magick_number_threads(image,splice_image,rows,2)
 #endif
-  for (y=0; y < MagickMin(splice_geometry.y,(ssize_t) splice_image->rows); y++)
+  for (y=0; y < rows; y++)
   {
     const Quantum
       *magick_restrict p;
