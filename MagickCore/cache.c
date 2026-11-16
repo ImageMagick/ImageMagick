@@ -724,6 +724,8 @@ static inline int GetCacheNumberThreads(const CacheInfo *source,
   if (((source->type != MemoryCache) && (source->type != MapCache)) ||
       ((destination->type != MemoryCache) && (destination->type != MapCache)))
     number_threads=MagickMin(number_threads,4);
+  if (number_threads == 0)
+    number_threads=1;
   return((int) number_threads);
 }
 #endif
@@ -4541,6 +4543,8 @@ static Quantum *QueueAuthenticPixelCacheNexusInternal(Image *image,
   if (offset < 0)
     return((Quantum *) NULL);
   number_pixels=(MagickSizeType) cache_info->columns*cache_info->rows;
+  if (((MagickSizeType) rows-1) > ((MagickSizeType) MAGICK_SSIZE_MAX/cache_info->columns))
+    return((Quantum *) NULL);  /* (rows-1)*columns might overflow */
   offset+=((MagickOffsetType) rows-1)*(MagickOffsetType) cache_info->columns;
   if (IsOffsetOverflow(offset,(MagickOffsetType) columns-1) == MagickFalse)
     return((Quantum *) NULL);
@@ -4977,6 +4981,8 @@ static MagickBooleanType ReadPixelCachePixels(
 
   if (nexus_info->authentic_pixel_cache != MagickFalse)
     return(MagickTrue);
+  if (cache_info->columns == 0)
+    return(MagickFalse);
   if (IsValidPixelOffset(nexus_info->region.y,cache_info->columns) == MagickFalse)
     return(MagickFalse);
   offset=nexus_info->region.y*(MagickOffsetType) cache_info->columns;
