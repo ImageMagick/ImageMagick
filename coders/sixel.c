@@ -1258,6 +1258,8 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,
         }
       q+=GetPixelChannels(image);
     }
+    if (status == MagickFalse)
+      break;
     status=SyncAuthenticPixels(image,exception);
     if (status == MagickFalse)
       break;
