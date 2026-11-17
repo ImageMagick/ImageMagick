@@ -748,7 +748,6 @@ jobs:
           bash .github/build/shared/download-dependencies.sh --dependencies-artifact macos-arm64-static.zip
           mkdir -p /tmp/dependencies
           mv Artifacts/include Artifacts/lib /tmp/dependencies/
-          rm /tmp/dependencies/lib/libintl.dylib
 
       - name: Download ChangeLog.md
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 #v8.0.2

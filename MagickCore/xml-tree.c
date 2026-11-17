@@ -1062,14 +1062,19 @@ static char *ParseEntities(char *xml,char **entities,int state,
     */
     if ((state != 'c') && (strncmp(xml,"&#",2) == 0))
       {
+        long
+          codepoint;
+
         /*
           Character reference.
         */
         if (xml[2] != 'x')
-          c=(int) strtol(xml+2,&entity,10);  /* base 10 */
+          codepoint=strtol(xml+2,&entity,10);  /* base 10 */
         else
-          c=(int) strtol(xml+3,&entity,16);  /* base 16 */
-        if ((c == 0) || (*entity != ';'))
+          codepoint=strtol(xml+3,&entity,16);  /* base 16 */
+        if ((codepoint <= 0) || (codepoint > 0x10ffff) ||
+            ((codepoint >= 0xd800) && (codepoint <= 0xdfff)) ||
+            (*entity != ';'))
           {
             /*
               Not a character reference.
@@ -1077,6 +1082,7 @@ static char *ParseEntities(char *xml,char **entities,int state,
             xml++;
             continue;
           }
+        c=(int) codepoint;
         if (c < 0x80)
           *(xml++)=(char) c;
         else
@@ -2457,7 +2463,8 @@ static char *XMLTreeTagToXML(XMLTreeInfo *xml_info,char **source,size_t *length,
     j+=3;
   }
   *length+=(size_t) FormatLocaleString(*source+(*length),*extent,
-    *xml_info->content ? ">" : "/>");
+    (*xml_info->content || (xml_info->child != (XMLTreeInfo *) NULL)) ?
+    ">" : "/>");
   if (xml_info->child != (XMLTreeInfo *) NULL)
     *source=XMLTreeTagToXML(xml_info->child,source,length,extent,0,attributes);
   else
@@ -2470,7 +2477,8 @@ static char *XMLTreeTagToXML(XMLTreeInfo *xml_info,char **source,size_t *length,
       if (*source == (char *) NULL)
         return((char *) NULL);
     }
-  if (*xml_info->content != '\0')
+  if ((*xml_info->content != '\0') ||
+      (xml_info->child != (XMLTreeInfo *) NULL))
     *length+=(size_t) FormatLocaleString(*source+(*length),*extent,"</%s>",
       xml_info->tag);
   while ((offset < xml_info->offset) && (content[offset] != '\0'))

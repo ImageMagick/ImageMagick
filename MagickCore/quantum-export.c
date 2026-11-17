@@ -172,6 +172,84 @@ static inline unsigned char *PopQuantumFloatPixel(QuantumInfo *quantum_info,
   return(pixels);
 }
 
+static inline unsigned char *PopQuantumFloat24Pixel(QuantumInfo *quantum_info,
+  const float pixel,unsigned char *magick_restrict pixels)
+{
+  union
+  {
+    unsigned int
+      fixed_point;
+
+    float
+      single_precision;
+  } map;
+
+  double
+    scaled_pixel;
+
+  unsigned int
+    exponent,
+    significand,
+    sign_bit,
+    value;
+
+  scaled_pixel=(double) pixel*quantum_info->state.inverse_scale;
+  if (quantum_info->minimum != 0.0)
+    scaled_pixel+=quantum_info->minimum;
+  map.single_precision=(float) scaled_pixel;
+  sign_bit=(map.fixed_point >> 8) & 0x00800000U;
+  exponent=(map.fixed_point >> 23) & 0xffU;
+  significand=map.fixed_point & 0x007fffffU;
+  /*
+    One sign bit, seven exponent bits (bias 63), and sixteen fraction bits.
+  */
+  if (exponent == 255U)
+    {
+      value=0x007f0000U | (significand >> 7);
+      if ((significand != 0U) && ((value & 0xffffU) == 0U))
+        value|=1U;
+    }
+  else
+    if (exponent <= 64U)
+      {
+        value=0U;
+        if (exponent >= 48U)
+          {
+            unsigned int
+              shift;
+
+            significand|=0x00800000U;
+            shift=72U-exponent;
+            value=(significand+((1U << (shift-1))-1U)+
+              ((significand >> shift) & 1U)) >> shift;
+          }
+      }
+    else
+      {
+        exponent-=64U;
+        significand=(significand+0x3fU+((significand >> 7) & 1U)) >> 7;
+        if (significand == 0x10000U)
+          {
+            significand=0U;
+            exponent++;
+          }
+        value=exponent >= 127U ? 0x007f0000U :
+          (exponent << 16) | significand;
+      }
+  value|=sign_bit;
+  if (quantum_info->endian == LSBEndian)
+    {
+      *pixels++=(unsigned char) value;
+      *pixels++=(unsigned char) (value >> 8);
+      *pixels++=(unsigned char) (value >> 16);
+      return(pixels);
+    }
+  *pixels++=(unsigned char) (value >> 16);
+  *pixels++=(unsigned char) (value >> 8);
+  *pixels++=(unsigned char) value;
+  return(pixels);
+}
+
 static inline unsigned char *PopQuantumPixel(QuantumInfo *quantum_info,
   const QuantumAny pixel,unsigned char *magick_restrict pixels)
 {
@@ -313,6 +391,20 @@ static void ExportPixelChannel(const Image *image,QuantumInfo *quantum_info,
       }
       break;
     }
+    case 24:
+    {
+      if (quantum_info->format == FloatingPointQuantumFormat)
+        {
+          for (x=0; x < (ssize_t) number_pixels; x++)
+          {
+            q=PopQuantumFloat24Pixel(quantum_info,(float) *p,q);
+            p+=(ptrdiff_t) GetPixelChannels(image);
+            q+=(ptrdiff_t) quantum_info->pad;
+          }
+          break;
+        }
+      magick_fallthrough;
+    }
     case 64:
     {
       if (quantum_info->format == FloatingPointQuantumFormat)
@@ -325,7 +417,13 @@ static void ExportPixelChannel(const Image *image,QuantumInfo *quantum_info,
           }
           break;
         }
-      magick_fallthrough;
+      for (x=0; x < (ssize_t) number_pixels; x++)
+      {
+        q=PopLongLongPixel(quantum_info->endian,ScaleQuantumToLongLong(*p),q);
+        p+=(ptrdiff_t) GetPixelChannels(image);
+        q+=(ptrdiff_t) quantum_info->pad;
+      }
+      break;
     }
     default:
     {
