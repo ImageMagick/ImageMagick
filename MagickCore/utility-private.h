@@ -18,6 +18,7 @@
 #ifndef MAGICKCORE_UTILITY_PRIVATE_H
 #define MAGICKCORE_UTILITY_PRIVATE_H
 
+#include <errno.h>
 #include "MagickCore/memory_.h"
 #include "MagickCore/nt-base.h"
 #include "MagickCore/nt-base-private.h"
@@ -33,6 +34,8 @@ extern "C" {
 #endif
 
 #define MagickPathTemplate "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"  /* min 6 X's */
+
+#define MagickMaxIOChunk  ((size_t) 0x7ffff000)
 
 extern MagickPrivate char
   **GetPathComponents(const char *,size_t *),
@@ -52,7 +55,10 @@ extern MagickPrivate void
 static inline int access_utf8(const char *path,int mode)
 {
   if (path == (const char *) NULL)
-    return(-1);
+    {
+      errno=EINVAL;
+      return(-1);
+    }
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
   return(access(path,mode));
 #else
@@ -68,6 +74,11 @@ static inline int access_utf8(const char *path,int mode)
 
 static inline FILE *fopen_utf8(const char *path,const char *mode)
 {
+  if ((path == (const char *) NULL) || (mode == (const char *) NULL))
+    {
+      errno=EINVAL;
+      return((FILE *) NULL);
+    }
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
   return(fopen(path,mode));
 #else
@@ -77,29 +88,61 @@ static inline FILE *fopen_utf8(const char *path,const char *mode)
 
 static inline MagickBooleanType is_symlink_utf8(const char *path)
 {
+  if (path == (const char *) NULL)
+    return(MagickFalse);
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
 #if defined(MAGICKCORE_POSIX_SUPPORT)
-  struct stat
-    status;
+  {
+    struct stat
+      status;
 
-  if (lstat(path,&status) == -1)
-    return(MagickFalse);
-  return(S_ISLNK(status.st_mode) != 0 ? MagickTrue : MagickFalse);
+    if (lstat(path,&status) == -1)
+      return(MagickFalse);
+    return(S_ISLNK(status.st_mode) != 0 ? MagickTrue : MagickFalse);
+  }
 #else
   return(MagickFalse);
 #endif
 #else
- return(NTIsSymlinkWide(path));
+  return(NTIsSymlinkWide(path));
 #endif
 }
 
 static inline ssize_t MagickRead(int fd,void *buffer,size_t extent)
 {
-  unsigned char *p = (unsigned char *) buffer;
-  size_t offset = 0;
+  unsigned char
+    *p;
+
+  size_t
+    offset;
+
+  /*
+    Read exactly `extent` bytes unless EOF or an error occurs.
+  */
+  if ((buffer == (void *) NULL) && (extent != 0))
+    {
+      errno=EINVAL;
+      return(-1);
+    }
+  if (extent > (size_t) MAGICK_SSIZE_MAX)
+    {
+      errno=EINVAL;  /* return value could not be represented as ssize_t */
+      return(-1);
+    }
+  p=(unsigned char *) buffer;
+  offset=0;
   while (offset < extent)
   {
-    ssize_t count = read(fd,p+offset,extent-offset);
+    size_t
+      chunk;
+
+    ssize_t
+      count;
+
+    chunk=extent-offset;
+    if (chunk > MagickMaxIOChunk)
+      chunk=MagickMaxIOChunk;
+    count=read(fd,p+offset,chunk);
     if (count < 0)
       {
         if (errno == EINTR)
@@ -116,26 +159,63 @@ static inline ssize_t MagickRead(int fd,void *buffer,size_t extent)
 static inline int MagickReadDirectory(DIR *directory,struct dirent *entry,
   struct dirent **result)
 {
+  /*
+    Returns the next directory entry via *result.
+  */
   (void) entry;
+  if ((directory == (DIR *) NULL) || (result == (struct dirent **) NULL))
+    return(EINVAL);
   errno=0;
   *result=readdir(directory);
-  return(errno);
+  return(*result != (struct dirent *) NULL ? 0 : errno);
 }
 
 static inline ssize_t MagickWrite(int fd,const void *buffer,size_t extent)
 {
-  const unsigned char *p = (const unsigned char *) buffer;
-  size_t offset = 0;
-  while (offset < extent)
-  {
-    ssize_t count = write(fd,p+offset,extent-offset);
-    if (count < 0) {
-      if (errno == EINTR)
-        continue;
+  const unsigned char
+    *p;
+
+  size_t
+    offset;
+
+  /*
+    Write exactly `extent` bytes unless an error occurs.
+  */
+  if ((buffer == (const void *) NULL) && (extent != 0))
+    {
+      errno=EINVAL;
       return(-1);
     }
+  if (extent > (size_t) MAGICK_SSIZE_MAX)
+    {
+      errno=EINVAL;
+      return(-1);
+    }
+  p=(const unsigned char *) buffer;
+  offset=0;
+  while (offset < extent)
+  {
+    size_t
+      chunk;
+
+    ssize_t
+      count;
+
+    chunk=extent-offset;
+    if (chunk > MagickMaxIOChunk)
+      chunk=MagickMaxIOChunk;
+    count=write(fd,p+offset,chunk);
+    if (count < 0)
+      {
+        if (errno == EINTR)
+          continue;
+        return(-1);
+      }
     if (count == 0)
-      break;
+      {
+        errno=EIO;  /* no progress and no error: avoid a silent short write */
+        break;
+      }
     offset+=(size_t) count;
   }
   return((ssize_t) offset);
@@ -143,6 +223,11 @@ static inline ssize_t MagickWrite(int fd,const void *buffer,size_t extent)
 
 static inline int open_utf8(const char *path,int flags,mode_t mode)
 {
+  if (path == (const char *) NULL)
+    {
+      errno=EINVAL;
+      return(-1);
+    }
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
   return(open(path,flags,mode));
 #else
@@ -152,6 +237,14 @@ static inline int open_utf8(const char *path,int flags,mode_t mode)
 
 static inline FILE *popen_utf8(const char *command,const char *type)
 {
+  /*
+    Caution: `command` is interpreted by the shell.
+  */
+  if ((command == (const char *) NULL) || (type == (const char *) NULL))
+    {
+      errno=EINVAL;
+      return((FILE *) NULL);
+    }
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
   return(popen(command,type));
 #else
@@ -161,11 +254,18 @@ static inline FILE *popen_utf8(const char *command,const char *type)
 
 static inline char *realpath_utf8(const char *path)
 {
+  /*
+    The returned string is owned by the caller.
+  */
+  if (path == (const char *) NULL)
+    {
+      errno=EINVAL;
+      return((char *) NULL);
+    }
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
 #if defined(MAGICKCORE_HAVE_REALPATH)
   /*
-    This does not work for non-existing files so we should fine another way
-    to do this in the future. This is only a possible issue when writing files.
+    This does not work for non-existing files.
   */
   return(realpath(path,(char *) NULL));
 #else
@@ -178,6 +278,11 @@ static inline char *realpath_utf8(const char *path)
 
 static inline int remove_utf8(const char *path)
 {
+  if (path == (const char *) NULL)
+    {
+      errno=EINVAL;
+      return(-1);
+    }
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
   return(unlink(path));
 #else
@@ -187,6 +292,11 @@ static inline int remove_utf8(const char *path)
 
 static inline int rename_utf8(const char *source,const char *destination)
 {
+  if ((source == (const char *) NULL) || (destination == (const char *) NULL))
+    {
+      errno=EINVAL;
+      return(-1);
+    }
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
   return(rename(source,destination));
 #else
@@ -199,29 +309,35 @@ static inline int set_file_timestamp(const char *path,struct stat *attributes)
   int
     status;
 
+  if ((path == (const char *) NULL) || (attributes == (struct stat *) NULL))
+    {
+      errno=EINVAL;
+      return(-1);
+    }
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
 #if defined(MAGICKCORE_HAVE_UTIMENSAT)
+  {
+    struct timespec
+      timestamp[2];
+
 #if defined(__APPLE__) || defined(__NetBSD__)
-#define st_atim st_atimespec
-#define st_ctim st_ctimespec
-#define st_mtim st_mtimespec
-#endif
-
-  struct timespec
-    timestamp[2];
-
-  timestamp[0].tv_sec=attributes->st_atim.tv_sec;
-  timestamp[0].tv_nsec=attributes->st_atim.tv_nsec;
-  timestamp[1].tv_sec=attributes->st_mtim.tv_sec;
-  timestamp[1].tv_nsec=attributes->st_mtim.tv_nsec;
-  status=utimensat(AT_FDCWD,path,timestamp,0);
+    timestamp[0]=attributes->st_atimespec;
+    timestamp[1]=attributes->st_mtimespec;
 #else
-  struct utimbuf
-    timestamp;
+    timestamp[0]=attributes->st_atim;
+    timestamp[1]=attributes->st_mtim;
+#endif
+    status=utimensat(AT_FDCWD,path,timestamp,0);
+  }
+#else
+  {
+    struct utimbuf
+      timestamp;
 
-  timestamp.actime=attributes->st_atime;
-  timestamp.modtime=attributes->st_mtime;
-  status=utime(path,&timestamp);
+    timestamp.actime=attributes->st_atime;
+    timestamp.modtime=attributes->st_mtime;
+    status=utime(path,&timestamp);
+  }
 #endif
 #else
   status=NTSetFileTimestamp(path,attributes);
@@ -231,6 +347,11 @@ static inline int set_file_timestamp(const char *path,struct stat *attributes)
 
 static inline int stat_utf8(const char *path,struct stat *attributes)
 {
+  if ((path == (const char *) NULL) || (attributes == (struct stat *) NULL))
+    {
+      errno=EINVAL;
+      return(-1);
+    }
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
   return(stat(path,attributes));
 #else

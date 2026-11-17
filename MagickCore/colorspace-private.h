@@ -29,6 +29,78 @@
 #define CIEEpsilon  (216.0/24389.0)
 #define CIEK  (24389.0/27.0)
 
+#define Jzazbz_b  (1.15)  /* https://observablehq.com/@jrus/jzazbz */
+#define Jzazbz_g  (0.66)  /* refactored by N. Robidoux */
+#define Jzazbz_c1  (3424.0/4096.0)
+#define Jzazbz_c2  (2413.0/128.0)
+#define Jzazbz_c3  (2392.0/128.0)
+#define Jzazbz_n  (2610.0/16384.0)
+#define Jzazbz_p  (1.7*2523.0/32.0)
+#define Jzazbz_d  (-0.56)
+#define Jzazbz_d0  (1.6295499532821566e-11)
+#define Jzazbz_LX  (0.41478972)
+#define Jzazbz_LY  (0.579999)
+#define Jzazbz_LZ  (0.0146480)
+#define Jzazbz_MX  (-0.2015100)
+#define Jzazbz_MY  (1.120649)
+#define Jzazbz_MZ  (0.0531008)
+#define Jzazbz_SX  (-0.0166008)
+#define Jzazbz_SY  (0.264800)
+#define Jzazbz_SZ  (0.6684799)
+#define Jzazbz_aL  (3.52400)
+#define Jzazbz_aM  (-4.066708)
+#define Jzazbz_aS  (0.542708)
+#define Jzazbz_bL  (0.199076)
+#define Jzazbz_bM  (1.096799)
+#define Jzazbz_bS  (-1.295875)
+#define Jzazbz_Ca  (0.138605043271539)
+#define Jzazbz_Cb  (0.0580473161561189)
+#define Jzazbz_Sa  (-0.0960192420263189)
+#define Jzazbz_Sb  (-0.811891896056039)
+#define Jzazbz_XL  (1.92422643578761)
+#define Jzazbz_XM  (-1.00479231259537)
+#define Jzazbz_XS  (0.037651404030618)
+#define Jzazbz_YL  (0.350316762094999)
+#define Jzazbz_YM  (0.726481193931655)
+#define Jzazbz_YS  (-0.065384422948085)
+#define Jzazbz_ZL  (-0.0909828109828476)
+#define Jzazbz_ZM  (-0.312728290523074)
+#define Jzazbz_ZS  (1.52276656130526)
+#define mJzazbz_c3  (-2392.0/128.0)
+#define Oklab_la  (0.3963377774)
+#define Oklab_lb  (0.2158037573)
+#define Oklab_ma  (-0.1055613458)
+#define Oklab_mb  (-0.0638541728)
+#define Oklab_sa  (-0.0894841775)
+#define Oklab_sb  (-1.2914855480)
+#define Oklab_Rl  (4.0767416621)
+#define Oklab_Rm  (-3.3077115913)
+#define Oklab_Rs  (0.2309699292)
+#define Oklab_Gl  (-1.2684380046)
+#define Oklab_Gm  (2.6097574011)
+#define Oklab_Gs  (-0.3413193965)
+#define Oklab_Bl  (-0.0041960863)
+#define Oklab_Bm  (-0.7034186147)
+#define Oklab_Bs  (1.7076147010)
+#define Oklab_lR  (0.4122214708)
+#define Oklab_lG  (0.5363325363)
+#define Oklab_lB  (0.0514459929)
+#define Oklab_mR  (0.2119034982)
+#define Oklab_mG  (0.6806995451)
+#define Oklab_mB  (0.1073969566)
+#define Oklab_sR  (0.0883024619)
+#define Oklab_sG  (0.2817188376)
+#define Oklab_sB  (0.6299787005)
+#define Oklab_Ll  (0.2104542553)
+#define Oklab_Lm  (0.7936177850)
+#define Oklab_Ls  (-0.0040720468)
+#define Oklab_al  (1.9779984951)
+#define Oklab_am  (-2.4285922050)
+#define Oklab_as  (0.4505937099)
+#define Oklab_bl  (0.0259040371)
+#define Oklab_bm  (0.7827717662)
+#define Oklab_bs  (-0.8086757660)
+
 static const PrimaryInfo
   illuminant_tristimulus[] =
   {
@@ -133,7 +205,7 @@ static inline void ConvertCMYKToRGB(PixelInfo *pixel)
 static inline void ConvertCMYToRGB(const double cyan,const double magenta,
   const double yellow,double *red,double *green,double *blue)
 {
-	*red=(double) QuantumRange*(1.0-cyan);
+  *red=(double) QuantumRange*(1.0-cyan);
   *green=(double) QuantumRange*(1.0-magenta);
   *blue=(double) QuantumRange*(1.0-yellow);
 }
@@ -156,7 +228,7 @@ static inline void ConvertHCLToRGB(const double hue,const double chroma,
   assert(red != (double *) NULL);
   assert(green != (double *) NULL);
   assert(blue != (double *) NULL);
-  h=6.0*hue;
+  h=6.0*(hue-floor(hue));
   c=chroma;
   x=c*(1.0-fabs(fmod(h,2.0)-1.0));
   r=0.0;
@@ -222,7 +294,7 @@ static inline void ConvertHCLpToRGB(const double hue,const double chroma,
   assert(red != (double *) NULL);
   assert(green != (double *) NULL);
   assert(blue != (double *) NULL);
-  h=6.0*hue;
+  h=6.0*(hue-floor(hue));
   c=chroma;
   x=c*(1.0-fabs(fmod(h,2.0)-1.0));
   r=0.0;
@@ -722,7 +794,6 @@ static inline void ConvertProPhotoToXYZ(const double red,const double green,
   r=QuantumScale*DecodePixelGamma((double) QuantumRange*red);
   g=QuantumScale*DecodePixelGamma((double) QuantumRange*green);
   b=QuantumScale*DecodePixelGamma((double) QuantumRange*blue);
-  *X=0.4865709486482162*r+0.26566769316909306*g+0.1982172852343625*b;
   *X=0.7977604896723027*r+0.13518583717574031*g+0.03134934958152480000*b;
   *Y=0.2880711282292934*r+0.71184321781010140*g+0.00008565396060525902*b;
   *Z=0.0000000000000000*r+0.00000000000000000*g+0.82510460251046010000*b;
@@ -832,7 +903,7 @@ static inline void ConvertRGBToHCLp(const double red,const double green,
     max;
 
   /*
-    Convert RGB to HCL colorspace.
+    Convert RGB to HCLp colorspace.
   */
   assert(hue != (double *) NULL);
   assert(chroma != (double *) NULL);
@@ -1102,7 +1173,7 @@ static inline void ConvertXYZToLCHab(const double X,const double Y,
     b;
 
   ConvertXYZToLab(X,Y,Z,illuminant,luma,&a,&b);
-  *chroma=hypot(a-0.5,b-0.5)/1.0+0.5;
+  *chroma=hypot(a-0.5,b-0.5)+0.5;
   *hue=180.0*atan2(b-0.5,a-0.5)/MagickPI/360.0;
   if (*hue < 0.0)
     *hue+=1.0;
@@ -1266,31 +1337,6 @@ static inline void ConvertRGBToxyY(const double red,const double green,
 static inline void ConvertXYZToJzazbz(const double X,const double Y,
   const double Z,const double white_luminance,double *Jz,double *az,double *bz)
 {
-#define Jzazbz_b  (1.15)  /* https://observablehq.com/@jrus/jzazbz */
-#define Jzazbz_g  (0.66)  /* refactored by N. Robidoux */
-#define Jzazbz_c1  (3424.0/4096.0)
-#define Jzazbz_c2  (2413.0/128.0)
-#define Jzazbz_c3  (2392.0/128.0)
-#define Jzazbz_n  (2610.0/16384.0)
-#define Jzazbz_p  (1.7*2523.0/32.0)
-#define Jzazbz_d  (-0.56)
-#define Jzazbz_d0  (1.6295499532821566e-11)
-#define Jzazbz_LX  (0.41478972)
-#define Jzazbz_LY  (0.579999)
-#define Jzazbz_LZ  (0.0146480)
-#define Jzazbz_MX  (-0.2015100)
-#define Jzazbz_MY  (1.120649)
-#define Jzazbz_MZ  (0.0531008)
-#define Jzazbz_SX  (-0.0166008)
-#define Jzazbz_SY  (0.264800)
-#define Jzazbz_SZ  (0.6684799)
-#define Jzazbz_aL  (3.52400)
-#define Jzazbz_aM  (-4.066708)
-#define Jzazbz_aS  (0.542708)
-#define Jzazbz_bL  (0.199076)
-#define Jzazbz_bM  (1.096799)
-#define Jzazbz_bS  (-1.295875)
-
   double
     a,
     b,
@@ -1363,28 +1409,13 @@ static inline void ConvertRGBToJzazbz(const double red,const double green,
     Y,
     Z;
 
-  ConvertRGBToXYZ(red,blue,green,&X,&Y,&Z);
+  ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
   ConvertXYZToJzazbz(X,Y,Z,white_luminance,Jz,az,bz);
 }
 
 static inline void ConvertJzazbzToXYZ(const double Jz,const double az,
   const double bz,const double white_luminance,double *X,double *Y,double *Z)
 {
-#define Jzazbz_Ca  (0.138605043271539)
-#define Jzazbz_Cb  (0.0580473161561189)
-#define Jzazbz_Sa  (-0.0960192420263189)
-#define Jzazbz_Sb  (-0.811891896056039)
-#define Jzazbz_XL  (1.92422643578761)
-#define Jzazbz_XM  (-1.00479231259537)
-#define Jzazbz_XS  (0.037651404030618)
-#define Jzazbz_YL  (0.350316762094999)
-#define Jzazbz_YM  (0.726481193931655)
-#define Jzazbz_YS  (-0.065384422948085)
-#define Jzazbz_ZL  (-0.0909828109828476)
-#define Jzazbz_ZM  (-0.312728290523074)
-#define Jzazbz_ZS  (1.52276656130526)
-#define mJzazbz_c3  (-2392.0/128.0)
-
   double
     azz,
     bzz,
@@ -1466,28 +1497,12 @@ static inline void ConvertJzazbzToRGB(const double Jz,const double az,
     Z;
 
   ConvertJzazbzToXYZ(Jz,az,bz,white_luminance,&X,&Y,&Z);
-  ConvertXYZToRGB(X,Y,Z,red,blue,green);
+  ConvertXYZToRGB(X,Y,Z,red,green,blue);
 }
 
 static inline void ConvertOklabToRGB(const double L,const double a,
   const double b,double *red,double *green,double *blue)
 {
-#define Oklab_la  (0.3963377774)
-#define Oklab_lb  (0.2158037573)
-#define Oklab_ma  (-0.1055613458)
-#define Oklab_mb  (-0.0638541728)
-#define Oklab_sa  (-0.0894841775)
-#define Oklab_sb  (-1.2914855480)
-#define Oklab_Rl  (4.0767416621)
-#define Oklab_Rm  (-3.3077115913)
-#define Oklab_Rs  (0.2309699292)
-#define Oklab_Gl  (-1.2684380046)
-#define Oklab_Gm  (2.6097574011)
-#define Oklab_Gs  (-0.3413193965)
-#define Oklab_Bl  (-0.0041960863)
-#define Oklab_Bm  (-0.7034186147)
-#define Oklab_Bs  (1.7076147010)
-
   double
     aa,
     B,
@@ -1561,25 +1576,6 @@ static inline void ConvertOklchToRGB(const double L,const double C,
 static inline void ConvertRGBToOklab(const double red,const double green,
   const double blue,double *L,double *a,double *b)
 {
-#define Oklab_lR  (0.4122214708)
-#define Oklab_lG  (0.5363325363)
-#define Oklab_lB  (0.0514459929)
-#define Oklab_mR  (0.2119034982)
-#define Oklab_mG  (0.6806995451)
-#define Oklab_mB  (0.1073969566)
-#define Oklab_sR  (0.0883024619)
-#define Oklab_sG  (0.2817188376)
-#define Oklab_sB  (0.6299787005)
-#define Oklab_Ll  (0.2104542553)
-#define Oklab_Lm  (0.7936177850)
-#define Oklab_Ls  (-0.0040720468)
-#define Oklab_al  (1.9779984951)
-#define Oklab_am  (-2.4285922050)
-#define Oklab_as  (0.4505937099)
-#define Oklab_bl  (0.0259040371)
-#define Oklab_bm  (0.7827717662)
-#define Oklab_bs  (-0.8086757660)
-
   double
     B,
     G,
@@ -1720,6 +1716,10 @@ static inline void ConvertRGBToCMYK(PixelInfo *pixel)
       (fabs((double) green) < MagickEpsilon) &&
       (fabs((double) blue) < MagickEpsilon))
     {
+      pixel->colorspace=CMYKColorspace;
+      pixel->red=0.0;
+      pixel->green=0.0;
+      pixel->blue=0.0;
       pixel->black=(MagickRealType) QuantumRange;
       return;
     }

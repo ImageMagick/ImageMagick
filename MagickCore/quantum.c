@@ -333,14 +333,17 @@ MagickExport size_t GetQuantumExtent(const Image *image,
     case CbYCrYQuantum: channels=4; break;
     default: break;
   }
-  if (quantum_info->pack == MagickFalse)
+  if (image->columns == 1)
     {
-      if ((image->columns == 1) && (quantum_type == GrayQuantum) &&
-          (quantum_info->depth == 10))
+      if ((quantum_type == GrayQuantum) && (quantum_info->depth == 10) &&
+          (quantum_info->pack == MagickFalse))
         return(4+quantum_info->pad);
-      return((size_t) (channels*image->columns*((quantum_info->depth+7)/8))+
-        (quantum_info->pad*image->columns));
+      if (quantum_type == CbYCrYQuantum)
+        channels=6;
     }
+  if (quantum_info->pack == MagickFalse)
+    return((size_t) (channels*image->columns*((quantum_info->depth+7)/8))+
+      (quantum_info->pad*image->columns));
   return((size_t) ((channels*image->columns*quantum_info->depth+7)/8)+
     (quantum_info->pad*image->columns));
 }

@@ -98,13 +98,10 @@ struct SemaphoreInfo
 MagickExport void ActivateSemaphoreInfo(SemaphoreInfo **semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo **) NULL);
+  LockMagickMutex();
   if (*semaphore_info == (SemaphoreInfo *) NULL)
-    {
-      LockMagickMutex();
-      if (*semaphore_info == (SemaphoreInfo *) NULL)
-        *semaphore_info=AcquireSemaphoreInfo();
-      UnlockMagickMutex();
-    }
+    *semaphore_info=AcquireSemaphoreInfo();
+  UnlockMagickMutex();
 }
 
 /*
@@ -154,7 +151,7 @@ static void *AcquireSemaphoreMemory(const size_t count,const size_t quantum)
   if (posix_memalign(&memory,alignment,extent) != 0)
     memory=NULL;
 #elif defined(MAGICKCORE_HAVE__ALIGNED_MALLOC)
-   memory=_aligned_malloc(extent,alignment);
+  memory=_aligned_malloc(extent,alignment);
 #else
   {
     void
@@ -224,7 +221,7 @@ MagickExport SemaphoreInfo *AcquireSemaphoreInfo(void)
       }
 #if defined(MAGICKCORE_DEBUG)
 #if defined(PTHREAD_MUTEX_ERRORCHECK)
-    status=pthread_mutex_settype(&mutex_info,PTHREAD_MUTEX_ERRORCHECK);
+    status=pthread_mutexattr_settype(&mutex_info,PTHREAD_MUTEX_ERRORCHECK);
     if (status != 0)
       {
         errno=status;
@@ -256,7 +253,6 @@ MagickExport SemaphoreInfo *AcquireSemaphoreInfo(void)
     status=InitializeCriticalSectionAndSpinCount(&semaphore_info->mutex,0x0400);
     if (status == 0)
       {
-        errno=status;
         perror("unable to initialize critical section");
         _exit(1);
       }
@@ -351,29 +347,32 @@ MagickExport void LockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 MagickExport void RelinquishSemaphoreInfo(SemaphoreInfo **semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo **) NULL);
-  assert((*semaphore_info) != (SemaphoreInfo *) NULL);
-  assert((*semaphore_info)->signature == MagickCoreSignature);
   LockMagickMutex();
+  if (*semaphore_info != (SemaphoreInfo *) NULL)
+    {
+      assert((*semaphore_info)->signature == MagickCoreSignature);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  omp_destroy_lock((omp_lock_t *) &(*semaphore_info)->mutex);
+      omp_destroy_lock((omp_lock_t *) &(*semaphore_info)->mutex);
 #elif defined(MAGICKCORE_THREAD_SUPPORT)
-  {
-    int
-      status;
-
-    status=pthread_mutex_destroy(&(*semaphore_info)->mutex);
-    if (status != 0)
       {
-        errno=status;
-        perror("unable to destroy mutex");
-        _exit(1);
+        int
+          status;
+
+        status=pthread_mutex_destroy(&(*semaphore_info)->mutex);
+        if (status != 0)
+          {
+            errno=status;
+            perror("unable to destroy mutex");
+            _exit(1);
+          }
       }
-  }
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
-  DeleteCriticalSection(&(*semaphore_info)->mutex);
+      DeleteCriticalSection(&(*semaphore_info)->mutex);
 #endif
-  (*semaphore_info)->signature=(~MagickCoreSignature);
-  *semaphore_info=(SemaphoreInfo *) RelinquishSemaphoreMemory(*semaphore_info);
+      (*semaphore_info)->signature=(~MagickCoreSignature);
+      *semaphore_info=(SemaphoreInfo *) RelinquishSemaphoreMemory(
+        *semaphore_info);
+    }
   UnlockMagickMutex();
 }
 

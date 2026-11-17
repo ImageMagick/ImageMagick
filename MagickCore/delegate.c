@@ -415,7 +415,8 @@ MagickExport int ExternalDelegateCommand(const MagickBooleanType asynchronous,
   arguments=StringToArgv(command,&number_arguments);
   if (arguments == (char **) NULL)
     return(status);
-  if (*arguments[1] == '\0')
+  if ((number_arguments <= 1) || (arguments[1] == (char *) NULL) ||
+      (*arguments[1] == '\0'))
     {
       for (i=0; i < (ssize_t) number_arguments; i++)
         arguments[i]=DestroyString(arguments[i]);
@@ -456,6 +457,9 @@ MagickExport int ExternalDelegateCommand(const MagickBooleanType asynchronous,
 #if defined(MAGICKCORE_HAVE_POPEN)
   if ((asynchronous == MagickFalse) && (message !=  (char *) NULL))
     {
+      char
+        buffer[MagickPathExtent];
+
       FILE
         *file;
 
@@ -467,9 +471,21 @@ MagickExport int ExternalDelegateCommand(const MagickBooleanType asynchronous,
           size_t
             offset = 0;
 
-          while ((offset < MagickPathExtent) &&
-                 (fgets(message+offset,(int) (MagickPathExtent-offset),file) != NULL))
-            offset+=strlen(message);
+          while (fgets(buffer,(int) sizeof(buffer),file) != NULL)
+          {
+            size_t
+              length,
+              count;
+
+            length=strlen(buffer);
+            count=MagickMin(length,MagickPathExtent-offset-1);
+            if (count != 0)
+              {
+                (void) memcpy(message+offset,buffer,count);
+                offset+=count;
+                message[offset]='\0';
+              }
+          }
           status=pclose(file);
         }
     }
@@ -1698,8 +1714,8 @@ static MagickBooleanType CopyDelegateFile(const char *source,
     return(MagickTrue);
   if (IsPathAuthorized(WritePolicyRights,destination) == MagickFalse)
     ThrowPolicyException(source,MagickFalse);
-  destination_file=open_utf8(destination,O_WRONLY | O_CLOEXEC | O_BINARY | O_CREAT |
-    O_NOFOLLOW,S_MODE);
+  destination_file=open_utf8(destination,O_WRONLY | O_CLOEXEC | O_BINARY |
+    O_CREAT | O_NOFOLLOW | (overwrite != MagickFalse ? O_TRUNC : 0),S_MODE);
   if (destination_file == -1)
     return(MagickFalse);
   if (IsPathAuthorized(WritePolicyRights,destination) == MagickFalse)
@@ -1727,12 +1743,31 @@ static MagickBooleanType CopyDelegateFile(const char *source,
     }
   while ((count=read(source_file,buffer,quantum)) > 0)
   {
-    ssize_t written = write(destination_file,buffer,(size_t) count);
-    if (written != count)
-      {
-        status=MagickFalse;
-        break;
-      }
+    ssize_t
+      offset = 0;
+
+    while (offset < count)
+    {
+      ssize_t
+        written;
+
+      written=write(destination_file,buffer+offset,(size_t) (count-offset));
+      if (written < 0)
+        {
+          if (errno == EINTR)
+            continue;
+          status=MagickFalse;
+          break;
+        }
+      if (written == 0)
+        {
+          status=MagickFalse;
+          break;
+        }
+      offset+=written;
+    }
+    if (status == MagickFalse)
+      break;
   }
   if (count < 0)
     status=MagickFalse;
