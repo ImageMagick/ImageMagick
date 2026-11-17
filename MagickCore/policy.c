@@ -190,6 +190,8 @@ static LinkedListInfo *AcquirePolicyCache(const char *filename,
     Load external policy map.
   */
   cache=NewLinkedList(0);
+  if (cache == (LinkedListInfo *) NULL)
+    return((LinkedListInfo *) NULL);
   status=MagickTrue;
 #if MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
   magick_unreferenced(filename);
@@ -255,6 +257,7 @@ static LinkedListInfo *AcquirePolicyCache(const char *filename,
     status=AppendValueToLinkedList(cache,policy_info);
     if (status == MagickFalse)
       {
+        policy_info=(PolicyInfo *) RelinquishMagickMemory(policy_info);
         (void) ThrowMagickException(exception,GetMagickModule(),
           ResourceLimitError,"MemoryAllocationFailed","`%s'",
           p->name == (char *) NULL ? "" : p->name);
@@ -308,58 +311,69 @@ static PolicyInfo *GetPolicyInfo(const char *name,ExceptionInfo *exception)
   if (IsPolicyCacheInstantiated(exception) == MagickFalse)
     return((PolicyInfo *) NULL);
   /*
-    Strip names of whitespace.
+    Strip names of whitespace in O(n) single pass.
   */
   *policyname='\0';
   if (name != (const char *) NULL)
-    (void) CopyMagickString(policyname,name,MagickPathExtent);
-  for (q=policyname; *q != '\0'; q++)
-  {
-    if (isspace((int) ((unsigned char) *q)) == 0)
-      continue;
-    (void) CopyMagickString(q,q+1,MagickPathExtent);
-    q--;
-  }
+    {
+      const char
+        *src;
+
+      char
+        *dst;
+
+      dst=policyname;
+      for (src=name; (*src != '\0') && ((dst-policyname) < (MagickPathExtent-1)); src++)
+      {
+        if (isspace((int) ((unsigned char) *src)) == 0)
+          *dst++=(*src);
+      }
+      *dst='\0';
+    }
   /*
     Strip domain from policy name (e.g. resource:map).
   */
   domain=UndefinedPolicyDomain;
   for (q=policyname; *q != '\0'; q++)
   {
+    ssize_t
+      parsed_domain;
+
     if (*q != ':')
       continue;
     *q='\0';
-    domain=(PolicyDomain) ParseCommandOption(MagickPolicyDomainOptions,
+    parsed_domain=ParseCommandOption(MagickPolicyDomainOptions,
       MagickTrue,policyname);
-    (void) CopyMagickString(policyname,q+1,MagickPathExtent);
+    if (parsed_domain >= 0)
+      domain=(PolicyDomain) parsed_domain;
+    (void) memmove(policyname,q+1,strlen(q+1)+1);
     break;
   }
   /*
-    Search for policy tag.
+    Search for policy tag (last matching policy wins).
   */
   policy=(PolicyInfo *) NULL;
   LockSemaphoreInfo(policy_semaphore);
-  ResetLinkedListIterator(policy_cache);
   p=GetHeadElementInLinkedList(policy_cache);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     {
-      UnlockSemaphoreInfo(policy_semaphore);
       if (p != (ElementInfo *) NULL)
         policy=(PolicyInfo *) p->value;
+      UnlockSemaphoreInfo(policy_semaphore);
       return(policy);
     }
   while (p != (ElementInfo *) NULL)
   {
-    policy=(PolicyInfo *) p->value;
-    if ((domain == UndefinedPolicyDomain) || (policy->domain == domain))
-      if (LocaleCompare(policyname,policy->name) == 0)
-        break;
+    PolicyInfo
+      *candidate;
+
+    candidate=(PolicyInfo *) p->value;
+    if ((candidate->name != (char *) NULL) &&
+        ((domain == UndefinedPolicyDomain) || (candidate->domain == domain)) &&
+        (LocaleCompare(policyname,candidate->name) == 0))
+      policy=candidate;
     p=p->next;
   }
-  if (p == (ElementInfo *) NULL)
-    policy=(PolicyInfo *) NULL;
-  else
-    (void) SetHeadElementInLinkedList(policy_cache,p);
   UnlockSemaphoreInfo(policy_semaphore);
   return(policy);
 }
@@ -400,6 +414,9 @@ MagickExport const PolicyInfo **GetPolicyInfoList(const char *pattern,
   ElementInfo
     *p;
 
+  size_t
+    capacity;
+
   ssize_t
     i;
 
@@ -410,19 +427,24 @@ MagickExport const PolicyInfo **GetPolicyInfoList(const char *pattern,
   *number_policies=0;
   if (IsPolicyCacheInstantiated(exception) == MagickFalse)
     return((const PolicyInfo **) NULL);
-  policies=(const PolicyInfo **) AcquireQuantumMemory((size_t)
-    GetNumberOfElementsInLinkedList(policy_cache)+1UL,sizeof(*policies));
-  if (policies == (const PolicyInfo **) NULL)
-    return((const PolicyInfo **) NULL);
   LockSemaphoreInfo(policy_semaphore);
+  capacity=(size_t) GetNumberOfElementsInLinkedList(policy_cache)+1UL;
+  policies=(const PolicyInfo **) AcquireQuantumMemory(capacity,
+    sizeof(*policies));
+  if (policies == (const PolicyInfo **) NULL)
+    {
+      UnlockSemaphoreInfo(policy_semaphore);
+      return((const PolicyInfo **) NULL);
+    }
   p=GetHeadElementInLinkedList(policy_cache);
-  for (i=0; p != (ElementInfo *) NULL; )
+  for (i=0; (p != (ElementInfo *) NULL) && ((size_t) i < (capacity-1UL)); )
   {
     const PolicyInfo
       *policy;
 
     policy=(const PolicyInfo *) p->value;
     if ((policy->stealth == MagickFalse) &&
+        (policy->name != (char *) NULL) &&
         (GlobExpression(policy->name,pattern,MagickFalse) != MagickFalse))
       policies[i++]=policy;
     p=p->next;
@@ -476,7 +498,6 @@ static char *AcquirePolicyString(const char *source,const size_t pad)
   if (source != (char *) NULL)
     length+=strlen(source);
   destination=(char *) NULL;
-  /* AcquireMagickMemory needs to be used here to avoid an omp deadlock */
   if (~length >= pad)
     destination=(char *) AcquireMagickMemory((length+pad)*sizeof(*destination));
   if (destination == (char *) NULL)
@@ -496,6 +517,9 @@ MagickExport char **GetPolicyList(const char *pattern,size_t *number_policies,
   const ElementInfo
     *p;
 
+  size_t
+    capacity;
+
   ssize_t
     i;
 
@@ -506,19 +530,23 @@ MagickExport char **GetPolicyList(const char *pattern,size_t *number_policies,
   *number_policies=0;
   if (IsPolicyCacheInstantiated(exception) == MagickFalse)
     return((char **) NULL);
-  policies=(char **) AcquireQuantumMemory((size_t)
-    GetNumberOfElementsInLinkedList(policy_cache)+1UL,sizeof(*policies));
-  if (policies == (char **) NULL)
-    return((char **) NULL);
   LockSemaphoreInfo(policy_semaphore);
+  capacity=(size_t) GetNumberOfElementsInLinkedList(policy_cache)+1UL;
+  policies=(char **) AcquireQuantumMemory(capacity,sizeof(*policies));
+  if (policies == (char **) NULL)
+    {
+      UnlockSemaphoreInfo(policy_semaphore);
+      return((char **) NULL);
+    }
   p=GetHeadElementInLinkedList(policy_cache);
-  for (i=0; p != (ElementInfo *) NULL; )
+  for (i=0; (p != (ElementInfo *) NULL) && ((size_t) i < (capacity-1UL)); )
   {
     const PolicyInfo
       *policy;
 
     policy=(const PolicyInfo *) p->value;
     if ((policy->stealth == MagickFalse) &&
+        (policy->name != (char *) NULL) &&
         (GlobExpression(policy->name,pattern,MagickFalse) != MagickFalse))
       policies[i++]=AcquirePolicyString(policy->name,1);
     p=p->next;
@@ -556,8 +584,8 @@ MagickExport char **GetPolicyList(const char *pattern,size_t *number_policies,
 */
 MagickExport char *GetPolicyValue(const char *name)
 {
-  const char
-    *value;
+  char
+    *result;
 
   const PolicyInfo
     *policy_info;
@@ -573,10 +601,13 @@ MagickExport char *GetPolicyValue(const char *name)
   exception=DestroyExceptionInfo(exception);
   if (policy_info == (PolicyInfo *) NULL)
     return((char *) NULL);
-  value=policy_info->value;
-  if ((value == (const char *) NULL) || (*value == '\0'))
-    return((char *) NULL);
-  return(AcquirePolicyString(value,1));
+  result=(char *) NULL;
+  LockSemaphoreInfo(policy_semaphore);
+  if ((policy_info->value != (const char *) NULL) &&
+      (*policy_info->value != '\0'))
+    result=AcquirePolicyString(policy_info->value,1);
+  UnlockSemaphoreInfo(policy_semaphore);
+  return(result);
 }
 
 /*
@@ -636,7 +667,7 @@ static inline MagickBooleanType IsPathContainsSymlink(const char *path)
         Path starts with a directory separator, include it.
       */
       if ((offset+1) >= (ssize_t) sizeof(partial))
-        return(MagickFalse);
+        return(MagickTrue);
       partial[offset++]=(*DirectorySeparator);
       p++;
       partial[offset]='\0';
@@ -650,16 +681,19 @@ static inline MagickBooleanType IsPathContainsSymlink(const char *path)
       i = 0;
 
     /*
-      Copy next component into a temporary buffer.
+      Copy next component into a temporary buffer; fail closed if oversized.
     */
-    while ((*p != '\0') && (IsPolicyPathSeparator(*p) == MagickFalse) &&
-           ((i+1) < (ssize_t) sizeof(component)))
+    while ((*p != '\0') && (IsPolicyPathSeparator(*p) == MagickFalse))
+    {
+      if ((i+1) >= (ssize_t) sizeof(component))
+        return(MagickTrue);
       component[i++]=(*p++);
+    }
     component[i]='\0';
     if (i == 0)
       {
         /*
-          skip repeated separators.
+          Skip repeated separators.
         */
         if (IsPolicyPathSeparator(*p) != MagickFalse)
           p++;
@@ -671,16 +705,16 @@ static inline MagickBooleanType IsPathContainsSymlink(const char *path)
           Append separator if needed.
         */
         if ((offset+1) >= (ssize_t) sizeof(partial))
-          return MagickFalse;
+          return(MagickTrue);
         partial[offset++]=(*DirectorySeparator);
         partial[offset]='\0';
       }
     /*
-      Append component.
+      Append component; fail closed on buffer overflow.
     */
     if ((offset+i) >= (ssize_t) sizeof(partial))
-      return(MagickFalse);
-    (void) memcpy(partial+offset,component,i);
+      return(MagickTrue);
+    (void) memcpy(partial+offset,component,(size_t) i);
     offset+=i;
     partial[offset]='\0';
     if (*p != '\0')
@@ -703,12 +737,15 @@ static inline MagickBooleanType IsPathContainsSymlink(const char *path)
 MagickExport MagickBooleanType IsPathAuthorized(const PolicyRights rights,
   const char *path)
 {
-  MagickBooleanType symlink_follow_allowed = IsRightsAuthorizedByName(
+  MagickBooleanType
+    status,
+    symlink_follow_allowed;
+
+  if (path == (const char *) NULL)
+    return(MagickFalse);
+  symlink_follow_allowed=IsRightsAuthorizedByName(
     SystemPolicyDomain,"symlink",rights,"follow");
-  MagickBooleanType status =
-    ((IsRightsAuthorized(PathPolicyDomain,rights,path) != MagickFalse) &&
-    ((symlink_follow_allowed != MagickFalse) ||
-     (is_symlink_utf8(path) == MagickFalse))) ? MagickTrue : MagickFalse;
+  status=IsRightsAuthorized(PathPolicyDomain,rights,path);
   if ((status != MagickFalse) && (symlink_follow_allowed == MagickFalse))
     {
       if ((is_symlink_utf8(path) != MagickFalse) ||
@@ -772,7 +809,7 @@ static MagickBooleanType IsPolicyCacheInstantiated(ExceptionInfo *exception)
 %  IsRightsAuthorized() returns MagickTrue if the policy authorizes the
 %  requested rights for the specified domain.
 %
-%  Policy evaluation uses a “last match wins” model.  Be careful when adding
+%  Policy evaluation uses a "last match wins" model.  Be careful when adding
 %  new rules: any later policy can override earlier denies or allows. Place
 %  broad deny rules first, followed by specific exceptions, and review
 %  ordering to avoid accidental authorization.
@@ -803,6 +840,8 @@ static MagickBooleanType IsPathPolicyMatch(const char *path,const char *pattern)
   MagickBooleanType
     match;
 
+  if ((path == (const char *) NULL) || (pattern == (const char *) NULL))
+    return(MagickFalse);
   normalized_path=AcquireString(path);
   normalized_pattern=AcquireString(pattern);
   for (p=normalized_path; *p != '\0'; p++)
@@ -816,6 +855,8 @@ static MagickBooleanType IsPathPolicyMatch(const char *path,const char *pattern)
   normalized_pattern=DestroyString(normalized_pattern);
   return(match);
 #else
+  if ((path == (const char *) NULL) || (pattern == (const char *) NULL))
+    return(MagickFalse);
   return(GlobExpression(path,pattern,MagickFalse));
 #endif
 }
@@ -867,6 +908,37 @@ MagickExport MagickBooleanType IsRightsAuthorizedByName(
           "  authorized: false (security policies could not be loaded)");
       return(MagickFalse);
     }
+  if (pattern == (const char *) NULL)
+    {
+      if ((GetLogEventMask() & PolicyEvent) != 0)
+        (void) LogMagickEvent(PolicyEvent,GetMagickModule(),
+          "  authorized: false (pattern is null)");
+      return(MagickFalse);
+    }
+  /*
+    Pre-provision canonical paths outside the policy semaphore lock to avoid
+    blocking concurrent policy checks on filesystem I/O (realpath).
+  */
+  if (domain == PathPolicyDomain)
+    {
+      paths_provisioned=MagickTrue;
+      GetPathComponent(pattern,HeadPath,directory);
+      GetPathComponent(pattern,TailPath,filename);
+      canonical_directory=realpath_utf8(directory);
+      if ((canonical_directory != (char *) NULL) && (*filename != '\0'))
+        {
+          size_t
+            length;
+
+          length=strlen(canonical_directory)+strlen(filename)+2;
+          canonical_candidate=(char *) AcquireCriticalMemory(length*
+            sizeof(*canonical_candidate));
+          if (canonical_candidate != (char *) NULL)
+            (void) FormatLocaleString(canonical_candidate,length,"%s%s%s",
+              canonical_directory,DirectorySeparator,filename);
+        }
+      canonical_path=realpath_utf8(pattern);
+    }
   /*
     Evaluate policies in order; the last matching policy wins.  A path is
     evaluated twice: once by the name it was given (lexical, canonical
@@ -875,7 +947,6 @@ MagickExport MagickBooleanType IsRightsAuthorizedByName(
     link inside an allowed directory cannot reach a target the policy denies.
   */
   LockSemaphoreInfo(policy_semaphore);
-  ResetLinkedListIterator(policy_cache);
   p=GetHeadElementInLinkedList(policy_cache);
   for ( ; p != (ElementInfo *) NULL; p=p->next)
   {
@@ -885,39 +956,17 @@ MagickExport MagickBooleanType IsRightsAuthorizedByName(
     MagickBooleanType
       match = MagickFalse;
 
-    if (policy->domain != domain)
+    if ((policy->domain != domain) || (policy->pattern == (char *) NULL))
       continue;
-    if ((name != (char *) NULL) && (LocaleCompare(name,policy->name) != 0))
+    if ((name != (char *) NULL) && ((policy->name == (char *) NULL) ||
+         (LocaleCompare(name,policy->name) != 0)))
       continue;
     if (policy->domain == PathPolicyDomain)
       {
-        match=IsPathPolicyMatch(pattern,policy->pattern);
-        if (paths_provisioned == MagickFalse)
-          {
-            /*
-              Generate directory, basename, and canonical path.
-            */
-            paths_provisioned=MagickTrue;
-            GetPathComponent(pattern,HeadPath,directory);
-            GetPathComponent(pattern,TailPath,filename);
-            canonical_directory=realpath_utf8(directory);
-            if ((canonical_directory != (char *) NULL) && (*filename != '\0'))
-              {
-                size_t
-                  length;
-
-                length=strlen(canonical_directory)+strlen(filename)+2;
-                canonical_candidate=(char *) AcquireCriticalMemory(length*
-                  sizeof(*canonical_candidate));
-                if (canonical_candidate != (char *) NULL)
-                  (void) FormatLocaleString(canonical_candidate,length,"%s%s%s",
-                    canonical_directory,DirectorySeparator,filename);
-              }
-            canonical_path=realpath_utf8(pattern);
-          }
         /*
           Match the given name against the directory and basename forms.
         */
+        match=IsPathPolicyMatch(pattern,policy->pattern);
         if ((canonical_directory != (char *) NULL) && (match == MagickFalse))
           match=IsPathPolicyMatch(canonical_directory,policy->pattern);
         if ((canonical_candidate != (char *) NULL) && (match == MagickFalse))
@@ -1163,7 +1212,7 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *cache,
   */
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
     "Loading policy file \"%s\" ...",filename);
-  if (policy == (char *) NULL)
+  if ((cache == (LinkedListInfo *) NULL) || (policy == (char *) NULL))
     return(MagickFalse);
   status=MagickTrue;
   policy_info=(PolicyInfo *) NULL;
@@ -1204,7 +1253,7 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *cache,
         /*
           Include element.
         */
-        while (((*token != '/') && (*(token+1) != '>')) && (*q != '\0'))
+        while (((*token != '/') || (*(token+1) != '>')) && (*q != '\0'))
         {
           (void) CopyMagickString(keyword,token,MagickPathExtent);
           (void) GetNextToken(q,&q,extent,token);
@@ -1214,8 +1263,13 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *cache,
           if (LocaleCompare(keyword,"file") == 0)
             {
               if (depth >= MagickMaxRecursionDepth)
-                (void) ThrowMagickException(exception,GetMagickModule(),
-                  ConfigureError,"IncludeElementNestedTooDeeply","`%s'",token);
+                {
+                  (void) ThrowMagickException(exception,GetMagickModule(),
+                    ConfigureError,"IncludeElementNestedTooDeeply","`%s'",
+                    token);
+                  status=MagickFalse;
+                  break;
+                }
               else
                 {
                   char
@@ -1226,7 +1280,7 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *cache,
                   if (*path != '\0')
                     (void) ConcatenateMagickString(path,DirectorySeparator,
                       MagickPathExtent);
-                  if (*token == *DirectorySeparator)
+                  if (IsPolicyPathSeparator(*token) != MagickFalse)
                     (void) CopyMagickString(path,token,MagickPathExtent);
                   else
                     (void) ConcatenateMagickString(path,token,MagickPathExtent);
@@ -1249,8 +1303,10 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *cache,
     if (LocaleCompare(keyword,"<policy") == 0)
       {
         /*
-          Policy element.
+          Policy element (replace any unclosed prior element to prevent leak).
         */
+        if (policy_info != (PolicyInfo *) NULL)
+          policy_info=(PolicyInfo *) DestroyPolicyElement(policy_info);
         policy_info=(PolicyInfo *) AcquireCriticalMemory(sizeof(*policy_info));
         (void) memset(policy_info,0,sizeof(*policy_info));
         policy_info->path=AcquirePolicyString(filename,1);
@@ -1265,9 +1321,12 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *cache,
       {
         status=AppendValueToLinkedList(cache,policy_info);
         if (status == MagickFalse)
-          (void) ThrowMagickException(exception,GetMagickModule(),
-            ResourceLimitError,"MemoryAllocationFailed","`%s'",
-            policy_info->name);
+          {
+            (void) ThrowMagickException(exception,GetMagickModule(),
+              ResourceLimitError,"MemoryAllocationFailed","`%s'",
+              policy_info->name == (char *) NULL ? "" : policy_info->name);
+            policy_info=(PolicyInfo *) DestroyPolicyElement(policy_info);
+          }
         policy_info=(PolicyInfo *) NULL;
         continue;
       }
@@ -1283,8 +1342,19 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *cache,
       {
         if (LocaleCompare((char *) keyword,"domain") == 0)
           {
-            policy_info->domain=(PolicyDomain) ParseCommandOption(
-              MagickPolicyDomainOptions,MagickTrue,token);
+            ssize_t
+              parsed_domain;
+
+            parsed_domain=ParseCommandOption(MagickPolicyDomainOptions,
+              MagickTrue,token);
+            if (parsed_domain < 0)
+              {
+                (void) ThrowMagickException(exception,GetMagickModule(),
+                  ConfigureError,"UnrecognizedPolicyDomain","`%s'",token);
+                status=MagickFalse;
+              }
+            else
+              policy_info->domain=(PolicyDomain) parsed_domain;
             break;
           }
         break;
@@ -1294,6 +1364,8 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *cache,
       {
         if (LocaleCompare((char *) keyword,"name") == 0)
           {
+            if (policy_info->name != (char *) NULL)
+              policy_info->name=DestroyString(policy_info->name);
             policy_info->name=AcquirePolicyString(token,1);
             break;
           }
@@ -1304,6 +1376,8 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *cache,
       {
         if (LocaleCompare((char *) keyword,"pattern") == 0)
           {
+            if (policy_info->pattern != (char *) NULL)
+              policy_info->pattern=DestroyString(policy_info->pattern);
             policy_info->pattern=AcquirePolicyString(token,1);
             break;
           }
@@ -1314,8 +1388,19 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *cache,
       {
         if (LocaleCompare((char *) keyword,"rights") == 0)
           {
-            policy_info->rights=(PolicyRights) ParseCommandOption(
-              MagickPolicyRightsOptions,MagickTrue,token);
+            ssize_t
+              parsed_rights;
+
+            parsed_rights=ParseCommandOption(MagickPolicyRightsOptions,
+              MagickTrue,token);
+            if (parsed_rights < 0)
+              {
+                (void) ThrowMagickException(exception,GetMagickModule(),
+                  ConfigureError,"UnrecognizedPolicyRights","`%s'",token);
+                status=MagickFalse;
+              }
+            else
+              policy_info->rights=(PolicyRights) parsed_rights;
             break;
           }
         break;
@@ -1335,6 +1420,8 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *cache,
       {
         if (LocaleCompare((char *) keyword,"value") == 0)
           {
+            if (policy_info->value != (char *) NULL)
+              policy_info->value=DestroyString(policy_info->value);
             policy_info->value=AcquirePolicyString(token,1);
             break;
           }
@@ -1343,6 +1430,8 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *cache,
       default:
         break;
     }
+    if (status == MagickFalse)
+      break;
   }
   if (policy_info != (PolicyInfo *) NULL)
     (void) DestroyPolicyElement(policy_info);
@@ -1416,7 +1505,7 @@ MagickPrivate void PolicyComponentTerminus(void)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  SetMagickSecurityPolicy() sets or restricts the ImageMagick security policy.
-%  It returns MagickFalse if the policy the policy does not parse.
+%  It returns MagickFalse if the policy does not parse.
 %
 %  The format of the SetMagickSecurityPolicy method is:
 %
@@ -1439,10 +1528,10 @@ static MagickBooleanType ValidateSecurityPolicy(const char *policy,
     document;
 
   /*
-    Parse security policy.
+    Parse security policy (disable network and entity expansion for XXE safety).
   */
   document=xmlReadMemory(policy,(int) strlen(policy),url,NULL,
-    XML_PARSE_NOERROR | XML_PARSE_NOWARNING);
+    XML_PARSE_NOERROR | XML_PARSE_NOWARNING | XML_PARSE_NONET);
   if (document == (xmlDocPtr) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ConfigureError,
@@ -1478,16 +1567,24 @@ MagickExport MagickBooleanType SetMagickSecurityPolicy(const char *policy,
     return(MagickFalse);
   if (ValidateSecurityPolicy(policy,PolicyFilename,exception) == MagickFalse)
     return(MagickFalse);
+  if (IsPolicyCacheInstantiated(exception) == MagickFalse)
+    return(MagickFalse);
+  /*
+    Parse and synchronize user policies in a single pass before committing
+    them to the live policy_cache.
+  */
+  user_policies=NewLinkedList(0);
+  if (user_policies == (LinkedListInfo *) NULL)
+    return(MagickFalse);
+  status=LoadPolicyCache(user_policies,policy,"[user-policy]",0,exception);
+  if (status == MagickFalse)
+    {
+      user_policies=DestroyLinkedList(user_policies,DestroyPolicyElement);
+      return(MagickFalse);
+    }
   LockSemaphoreInfo(policy_semaphore);
   status=LoadPolicyCache(policy_cache,policy,"[user-policy]",0,exception);
   UnlockSemaphoreInfo(policy_semaphore);
-  if (status == MagickFalse)
-    return(status);
-  /*
-    Synchronize user policies.
-  */
-  user_policies=NewLinkedList(0);
-  status=LoadPolicyCache(user_policies,policy,"[user-policy]",0,exception);
   if (status == MagickFalse)
     {
       user_policies=DestroyLinkedList(user_policies,DestroyPolicyElement);

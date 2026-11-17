@@ -18,12 +18,21 @@
 #ifndef MAGICKCORE_STRING_PRIVATE_H
 #define MAGICKCORE_STRING_PRIVATE_H
 
+#include <ctype.h>
+#include <limits.h>
+#include <stdarg.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "MagickCore/locale_.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
+
+#define MagickOffsetTypeMax  ((MagickOffsetType) (MagickULLConstant(~0) >> 1))
+#define MagickOffsetTypeMin  (-MagickOffsetTypeMax-1)
 
 static inline int MagickSscanf(const char *buffer,const char *format,...)
 {
@@ -80,38 +89,39 @@ static inline float StringToFloat(const char *magick_restrict string,
 static inline const char *StringLocateSubstring(const char *haystack,
   const char *needle)
 {
+  if ((haystack == (const char *) NULL) || (needle == (const char *) NULL))
+    return((const char *) NULL);
 #if defined(MAGICKCORE_HAVE_STRCASESTR)
   return(strcasestr(haystack,needle));
 #else
   {
     size_t
-      length_needle,
-      length_haystack;
+      i,
+      length_haystack,
+      length_needle;
 
-    size_t
-      i;
-
-    if (!haystack || !needle)
-      return(NULL);
     length_needle=strlen(needle);
-    length_haystack=strlen(haystack)-length_needle+1;
-    for (i=0; i < length_haystack; i++)
+    if (length_needle == 0)
+      return(haystack);
+    length_haystack=strlen(haystack);
+    /*
+      Guard against size_t underflow when needle is longer than haystack.
+    */
+    if (length_needle > length_haystack)
+      return((const char *) NULL);
+    for (i=0; i <= (length_haystack-length_needle); i++)
     {
       size_t
         j;
 
       for (j=0; j < length_needle; j++)
-      {
-        unsigned char c1 = (unsigned char) haystack[i+j];
-        unsigned char c2 = (unsigned char) needle[j];
-        if (toupper((int) c1) != toupper((int) c2))
-          goto next;
-      }
-      return((char *) haystack+i);
-      next:
-       ;
+        if (toupper((int) ((unsigned char) haystack[i+j])) !=
+            toupper((int) ((unsigned char) needle[j])))
+          break;
+      if (j == length_needle)
+        return(haystack+i);
     }
-    return((char *) NULL);
+    return((const char *) NULL);
   }
 #endif
 }
@@ -133,9 +143,22 @@ static inline double StringToDoubleInterval(const char *string,
 
 static inline int StringToInteger(const char *magick_restrict value)
 {
+  long
+    result;
+
   if (value == (const char *) NULL)
     return(0);
-  return((int) strtol(value,(char **) NULL,10));
+  result=strtol(value,(char **) NULL,10);
+#if LONG_MAX > INT_MAX
+  /*
+    Clamp rather than silently truncate when long is wider than int.
+  */
+  if (result > (long) INT_MAX)
+    return(INT_MAX);
+  if (result < (long) INT_MIN)
+    return(INT_MIN);
+#endif
+  return((int) result);
 }
 
 static inline long StringToLong(const char *magick_restrict value)
@@ -152,8 +175,12 @@ static inline MagickOffsetType StringToMagickOffsetType(const char *string,
     value;
 
   value=SiPrefixToDoubleInterval(string,interval);
-  if (value >= (double) MagickULLConstant(~0))
-    return((MagickOffsetType) MagickULLConstant(~0));
+  if (value != value)  /* NaN */
+    return(0);
+  if (value >= (double) MagickOffsetTypeMax)
+    return(MagickOffsetTypeMax);
+  if (value <= (double) MagickOffsetTypeMin)
+    return(MagickOffsetTypeMin);
   return((MagickOffsetType) value);
 }
 
@@ -164,6 +191,8 @@ static inline MagickSizeType StringToMagickSizeType(const char *string,
     value;
 
   value=SiPrefixToDoubleInterval(string,interval);
+  if (!(value > 0.0))  /* negative, zero, or NaN */
+    return(0);
   if (value >= (double) MagickULLConstant(~0))
     return(MagickULLConstant(~0));
   return((MagickSizeType) value);
@@ -175,8 +204,13 @@ static inline size_t StringToSizeType(const char *string,const double interval)
     value;
 
   value=SiPrefixToDoubleInterval(string,interval);
-  if (value >= (double) MagickULLConstant(~0))
-    return(~0UL);
+  if (!(value > 0.0))  /* negative, zero, or NaN */
+    return(0);
+  /*
+    Compare against SIZE_MAX.
+  */
+  if (value >= (double) SIZE_MAX)
+    return((size_t) SIZE_MAX);
   return((size_t) value);
 }
 

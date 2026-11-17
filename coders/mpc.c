@@ -638,6 +638,14 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   {
                     if (profiles == (LinkedListInfo *) NULL)
                       profiles=NewLinkedList(0);
+                    if (GetNumberOfElementsInLinkedList(profiles) >= GetMaxProfileCount())              
+                      {
+                        options=DestroyString(options);
+                        profiles=DestroyLinkedList(profiles,
+                          RelinquishMagickMemory);
+                        ThrowReaderException(ResourceLimitError,
+                          "TooManyProfiles");
+                      }
                     (void) AppendValueToLinkedList(profiles,
                       AcquireString(options));
                     break;

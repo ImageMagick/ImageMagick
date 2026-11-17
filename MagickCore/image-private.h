@@ -63,6 +63,16 @@ extern "C" {
 #define UndefinedCompressionQuality  0UL
 #define UndefinedTicksPerSecond  100L
 
+#if !defined(MAGICK_INT_MAX)
+#define MAGICK_INT_MAX  (INT_MAX)
+#endif
+#if !defined(MAGICK_INT_MIN)
+#define MAGICK_INT_MIN  (INT_MIN)
+#endif
+#if !defined(IsNaN)
+#define IsNaN(a)  ((a) != (a))
+#endif
+
 static inline int CastDoubleToInt(const double x)
 {
   double
@@ -74,12 +84,12 @@ static inline int CastDoubleToInt(const double x)
       return(0);
     }
   value=(x < 0.0) ? ceil(x) : floor(x);
-  if (value < 0.0)
+  if (value < ((double) MAGICK_INT_MIN))
     {
       errno=ERANGE;
-      return(0);
+      return(MAGICK_INT_MIN);
     }
-  if (value >= ((double) MAGICK_INT_MAX))
+  if (value > ((double) MAGICK_INT_MAX))
     {
       errno=ERANGE;
       return(MAGICK_INT_MAX);
@@ -175,7 +185,7 @@ static inline unsigned char CastDoubleToUChar(const double x)
       errno=ERANGE;
       return(0);
     }
-  if (value >= ((double) MAGICK_UCHAR_MAX))
+  if (value > ((double) MAGICK_UCHAR_MAX))
     {
       errno=ERANGE;
       return(MAGICK_UCHAR_MAX);
@@ -199,7 +209,7 @@ static inline unsigned int CastDoubleToUInt(const double x)
       errno=ERANGE;
       return(0);
     }
-  if (value >= ((double) MAGICK_UINT_MAX))
+  if (value > ((double) MAGICK_UINT_MAX))
     {
       errno=ERANGE;
       return(MAGICK_UINT_MAX);
@@ -223,7 +233,7 @@ static inline unsigned short CastDoubleToUShort(const double x)
       errno=ERANGE;
       return(0);
     }
-  if (value >= ((double) MAGICK_USHORT_MAX))
+  if (value > ((double) MAGICK_USHORT_MAX))
     {
       errno=ERANGE;
       return(MAGICK_USHORT_MAX);
@@ -240,14 +250,19 @@ static inline MagickBooleanType IsValidFormatSpecifier(const char *start,
   const char *end)
 {
   char
-    specifier = end[-1];
+    specifier;
 
   size_t
-    length = (size_t) (end-start);
+    length;
 
   /*
     Is this a valid format specifier?
   */
+  if ((start == (const char *) NULL) || (end == (const char *) NULL) ||
+      (end <= start))
+    return(MagickFalse);
+  specifier=end[-1];
+  length=(size_t) (end-start);
   if ((specifier != 'd') && (specifier != 'x') && (specifier != 'o'))
     return(MagickFalse);
   if ((length == 1) && (*start == specifier))
@@ -271,7 +286,6 @@ static inline MagickBooleanType IsValidFormatSpecifier(const char *start,
   return(MagickFalse);
 }
 
-
 static inline double RadiansToDegrees(const double radians)
 {
   return((double) (180.0*radians/MagickPI));
@@ -279,12 +293,12 @@ static inline double RadiansToDegrees(const double radians)
 
 static inline unsigned char ScaleColor5to8(const unsigned int color)
 {
-  return((unsigned char) (((color) << 3) | ((color) >> 2)));
+  return((unsigned char) ((((color) & 0x1f) << 3) | (((color) & 0x1f) >> 2)));
 }
 
 static inline unsigned char ScaleColor6to8(const unsigned int color)
 {
-  return((unsigned char) (((color) << 2) | ((color) >> 4)));
+  return((unsigned char) ((((color) & 0x3f) << 2) | (((color) & 0x3f) >> 4)));
 }
 
 static inline unsigned int ScaleColor8to5(const unsigned char color)
