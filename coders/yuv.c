@@ -495,6 +495,8 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->number_scenes != 0)
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
+    if (image_info->interlace == PartitionInterlace)
+      break;
     if (interlace == NoInterlace)
       count=ReadBlob(image,(size_t) (2*quantum*image->columns),scanline);
     else
@@ -725,6 +727,7 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
       (size_t) ((ssize_t) height/vertical_factor),TriangleFilter,exception);
     if (chroma_image == (Image *) NULL)
       {
+        yuv_image=DestroyImage(yuv_image);
         (void) CloseBlob(image);
         return(MagickFalse);
       }
@@ -899,6 +902,8 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);
+  if (chroma_image != (Image *) NULL)
+    chroma_image=DestroyImage(chroma_image);
   if (CloseBlob(image) == MagickFalse)
     status=MagickFalse;
   return(status);

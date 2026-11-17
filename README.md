@@ -1,4 +1,4 @@
-# ImageMagick 
+# ImageMagick
 
 [![Build Status](https://github.com/ImageMagick/ImageMagick/workflows/main/badge.svg)](https://github.com/ImageMagick/ImageMagick/actions)
 [![Fuzzing Status](https://oss-fuzz-build-logs.storage.googleapis.com/badges/imagemagick.svg)](https://issues.oss-fuzz.com/issues?q=%22project%20ImageMagick%22)
@@ -69,7 +69,7 @@ Here are just a few [examples](https://imagemagick.org/script/examples.php) of w
 * [Transparency](https://imagemagick.org/Usage/masking/): render portions of an image invisible.
 * [Virtual pixel support](https://imagemagick.org/script/architecture.php#virtual-pixels): convenient access to pixels outside the image region.
 
-[Examples of ImageMagick Usage](https://imagemagick.org/Usage/), demonstrates how to use the software from the [command line](https://imagemagick.org/script/command-line-processing.php) to achieve various effects. There are also several scripts available on the website called [Fred's ImageMagick Scripts](https://www.fmwconcepts.com/imagemagick/), which can be used to apply geometric transforms, blur and sharpen images, remove noise, and perform other operations. Additionally, there is a tool called [Magick.NET](https://github.com/dlemstra/Magick.NET) that allows users to access the functionality of ImageMagick without having to install the software on their own systems. Finally, the website also includes a [Cookbook](https://im.snibgo.com/) with tips and examples for using ImageMagick on Windows systems.
+[Examples of ImageMagick Usage](https://usage.imagemagick.org/), demonstrates how to use the software from the [command line](https://imagemagick.org/script/command-line-processing.php) to achieve various effects. There are also several scripts available on the website called [Fred's ImageMagick Scripts](https://www.fmwconcepts.com/imagemagick/), which can be used to apply geometric transforms, blur and sharpen images, remove noise, and perform other operations. Additionally, there is a tool called [Magick.NET](https://github.com/dlemstra/Magick.NET) that allows users to access the functionality of ImageMagick without having to install the software on their own systems. Finally, the website also includes a [Cookbook](https://im.snibgo.com/) with tips and examples for using ImageMagick on Windows systems.
 
 ## News
 

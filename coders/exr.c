@@ -178,7 +178,7 @@ static void EXRError(exr_const_context_t ctxt,exr_result_t magick_unused(code),
     CoderError,"CorruptImage","`%s'",msg);
 }
 
-static MagickBooleanType InitializeEXRChannels(Image *image,exr_context_t ctxt,
+static MagickBooleanType InitializeEXRChannels(Image *image,
   exr_decode_pipeline_t decoder,size_t pixel_count,size_t columns,
   PixelChannel *pixel_channels,size_t *pixel_size,uint8_t **data,
   ExceptionInfo *exception)
@@ -283,17 +283,17 @@ static MagickBooleanType InitializeEXRChannels(Image *image,exr_context_t ctxt,
     return(status);
   if ((decoder.channel_count == 1) && (pixel_channels[0] == IndexPixelChannel))
     image->colorspace=GRAYColorspace;
+  if ((*pixel_size == 0) || (columns > ((size_t) INT32_MAX/(*pixel_size))))
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      image->filename);
   *data=(uint8_t *) AcquireQuantumMemory(*pixel_size,pixel_count);
   if (*data == (uint8_t*)NULL)
-    {
-      exr_decoding_destroy(ctxt, &decoder);
-      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-        image->filename);
-    }
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      image->filename);
   memset(*data,0,*pixel_size*pixel_count);
   p=*data;
   channel=decoder.channels;
-  for (c = 0; c < decoder.channel_count; ++c)
+  for (c=0; c < decoder.channel_count; c++)
   {
     channel->decode_to_ptr=p;
     channel->user_pixel_stride=(int32_t) *pixel_size;
@@ -387,7 +387,7 @@ static MagickBooleanType ReadEXRScanlineImage(exr_context_t ctxt,int part_index,
   if (result != EXR_ERR_SUCCESS)
     ThrowBinaryException(CorruptImageError,"CorruptImage",image->filename);
   pixel_count=(size_t) scans_per_chunk*image->columns;
-  status=InitializeEXRChannels(image,ctxt,decoder,pixel_count,image->columns,
+  status=InitializeEXRChannels(image,decoder,pixel_count,image->columns,
     pixel_channels,&pixel_size,&data,exception);
   if (status == MagickFalse)
     {
@@ -498,7 +498,7 @@ static MagickBooleanType ReadEXRTiledImage(exr_context_t ctxt,int part_index,
       return(MagickFalse);
     }
   pixel_count=(size_t)tile_width*tile_height;
-  status=InitializeEXRChannels(image,ctxt,decoder,pixel_count,tile_width,
+  status=InitializeEXRChannels(image,decoder,pixel_count,tile_width,
     pixel_channels,&pixel_size,&data,exception);
   if (status == MagickFalse)
     {
@@ -670,17 +670,24 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
   switch (storage_type)
   {
     case EXR_STORAGE_SCANLINE:
-    case EXR_STORAGE_DEEP_SCANLINE:
       status=ReadEXRScanlineImage(ctxt,part_index,data_window,image,exception);
       break;
+    case EXR_STORAGE_DEEP_SCANLINE:
+      (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
+        "ImageTypeNotSupported","`%s'",image->filename);
+      status=MagickFalse;
+      break;
     case EXR_STORAGE_TILED:
-    case EXR_STORAGE_DEEP_TILED:
       status=ReadEXRTiledImage(ctxt,part_index,image,exception);
       break;
+    case EXR_STORAGE_DEEP_TILED:
+      (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
+        "ImageTypeNotSupported","`%s'",image->filename);
+      status=MagickFalse;
+      break;
     default:
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        CorruptImageError,"Unsupported storage type","`%d'",
-        (int) storage_type);
+      (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+        "Unsupported storage type","`%d'",(int) storage_type);
       status=MagickFalse;
       break;
   }

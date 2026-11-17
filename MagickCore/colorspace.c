@@ -74,6 +74,10 @@
   Define declarations.
 */
 #define MaximumLogarithmicColorspace  1024.0
+#define DisplayGamma  (1.0/1.7)
+#define FilmGamma  0.6
+#define ReferenceBlack  95.0
+#define ReferenceWhite  685.0
 
 /*
   Typedef declarations.
@@ -97,6 +101,96 @@ static MagickBooleanType
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   C o n f o r m P i x e l I n f o C o l o r s p a c e                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ConformPixelInfoColorspace() ensures the pixel conforms with the colorspace
+%  of the image. A pixel that is sRGB compatible or CMYK is left as is.
+%
+%  The format of the ConformPixelInfoColorspace method is:
+%
+%      void ConformPixelInfoColorspace(const Image *image,PixelInfo *pixel,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o pixel: the pixel info.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickPrivate void ConformPixelInfoColorspace(const Image *image,
+  PixelInfo *pixel,ExceptionInfo *exception)
+{
+  const char
+    *value;
+
+  double
+    blue,
+    green,
+    red,
+    white_luminance = 10000.0;
+
+  IlluminantType
+    illuminant = D65Illuminant;
+
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  assert(pixel != (PixelInfo *) NULL);
+  if ((pixel->colorspace == image->colorspace) ||
+      (pixel->colorspace == CMYKColorspace) ||
+      (IssRGBCompatibleColorspace(pixel->colorspace) != MagickFalse))
+    return;
+  value=GetImageArtifact(image,"color:illuminant");
+  if (value != (const char *) NULL)
+    {
+      ssize_t
+        illuminant_type;
+
+      illuminant_type=ParseCommandOption(MagickIlluminantOptions,MagickFalse,
+        value);
+      if (illuminant_type < 0)
+        illuminant=UndefinedIlluminant;
+      else
+        illuminant=(IlluminantType) illuminant_type;
+    }
+  value=GetImageProperty(image,"white-luminance",exception);
+  if (value != (const char *) NULL)
+    white_luminance=StringToDouble(value,(char **) NULL);
+  ConvertGenericToRGB(pixel->colorspace,QuantumScale*pixel->red,
+    QuantumScale*pixel->green,QuantumScale*pixel->blue,white_luminance,
+    illuminant,&red,&green,&blue);
+  pixel->colorspace=sRGBColorspace;
+  if ((image->colorspace != CMYKColorspace) &&
+      (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse))
+    {
+      double
+        X,
+        Y,
+        Z;
+
+      ConvertRGBToGeneric(image->colorspace,red,green,blue,white_luminance,
+        illuminant,&X,&Y,&Z);
+      red=(double) QuantumRange*X;
+      green=(double) QuantumRange*Y;
+      blue=(double) QuantumRange*Z;
+      pixel->colorspace=image->colorspace;
+    }
+  pixel->red=(MagickRealType) ClampToQuantum(red);
+  pixel->green=(MagickRealType) ClampToQuantum(green);
+  pixel->blue=(MagickRealType) ClampToQuantum(blue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   C o n v e r t G e n e r i c T o R G B                                     %
 %                                                                             %
 %                                                                             %
@@ -106,13 +200,15 @@ static MagickBooleanType
 %  ConvertGenericToRGB() transforms a generic pixel (X, Y, Z) to a (red,
 %  green, blue) triple.
 %
-%  The format of the ConvertGenericToRGBImage method is:
+%  The format of the ConvertGenericToRGB method is:
 %
-%      void ConvertHSLToRGB(const double hue,const double saturation,
-%        const double lightness,const double white_luminance,
-%        const double illuminant,double *red,double *green,double *blue)
+%      void ConvertGenericToRGB(const ColorspaceType colorspace,const double X,
+%        const double Y,const double Z,const double white_luminance,
+%        const IlluminantType illuminant,double *R,double *G,double *B)
 %
 %  A description of each parameter follows:
+%
+%    o colorspace: the source colorspace.
 %
 %    o X, Y, Z: A double value representing a component of a generic color
 %      space.
@@ -121,7 +217,8 @@ static MagickBooleanType
 %
 %    o illuminant: illuminant, typically D65.
 %
-%    o red, green, blue: A pointer to a pixel component of type Quantum.
+%    o R, G, B: A pointer to a double value representing a component of the
+%      sRGB colorspace, scaled to [0..QuantumRange].
 %
 */
 MagickPrivate void ConvertGenericToRGB(const ColorspaceType colorspace,
@@ -137,13 +234,7 @@ MagickPrivate void ConvertGenericToRGB(const ColorspaceType colorspace,
     }
     case CAT02LMSColorspace:
     {
-      double
-        L,
-        M,
-        S;
-
-      ConvertXYZToCAT02LMS(X,Y,Z,&L,&M,&S);
-      ConvertCAT02LMSToRGB(L,M,S,R,G,B);
+      ConvertCAT02LMSToRGB(X,Y,Z,R,G,B);
       break;
     }
     case CMYColorspace:
@@ -397,13 +488,16 @@ MagickExport void ConvertHSLToRGB(const double hue,const double saturation,
 %
 %  The format of the ConvertRGBToGeneric method is:
 %
-%      void ConvertRGBToGeneric(const double red,const double green,
-%        const double blue,double *hue,double *saturation,double *lightness)
+%      void ConvertRGBToGeneric(const ColorspaceType colorspace,const double R,
+%        const double G,const double B,const double white_luminance,
+%        const IlluminantType illuminant,double *X,double *Y,double *Z)
 %
 %  A description of each parameter follows:
 %
-%    o red, green, blue: A Quantum value representing the red, green, and
-%      blue component of a pixel..
+%    o colorspace: the target colorspace.
+%
+%    o R, G, B: A Quantum value representing the red, green, and blue
+%      component of a pixel.
 %
 %    o white_luminance: white luminance.
 %
@@ -426,13 +520,7 @@ MagickPrivate void ConvertRGBToGeneric(const ColorspaceType colorspace,
     }
     case CAT02LMSColorspace:
     {
-      double
-        L,
-        M,
-        S;
-
-      ConvertRGBToCAT02LMS(R,G,B,&L,&M,&S);
-      ConvertCAT02LMSToXYZ(L,M,S,X,Y,Z);
+      ConvertRGBToCAT02LMS(R,G,B,X,Y,Z);
       break;
     }
     case CMYColorspace:
@@ -689,7 +777,7 @@ MagickExport ColorspaceType GetImageColorspaceType(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   colorspace=image->colorspace;
   type=IdentifyImageType(image,exception);
-  if (IsGrayImageType(type))
+  if (IsGrayImageType(type) != MagickFalse)
     colorspace=GRAYColorspace;
   return(colorspace);
 }
@@ -724,6 +812,52 @@ MagickExport ColorspaceType GetImageColorspaceType(const Image *image,
 %   o exception: return any errors or warnings in this structure.
 %
 */
+
+static double GetLogProperty(const Image *image,const char *key,
+  const double default_value,ExceptionInfo *exception)
+{
+  const char
+    *value;
+
+  double
+    result;
+
+  value=GetImageProperty(image,key,exception);
+  if (value == (const char *) NULL)
+    return(default_value);
+  result=StringToDouble(value,(char **) NULL);
+  if (isfinite(result) == 0)
+    return(default_value);
+  return(result);
+}
+
+static void GetLogParameters(const Image *image,double *density,
+  double *film_gamma,double *gamma,double *reference_black,
+  double *reference_white,ExceptionInfo *exception)
+{
+  double
+    value;
+
+  /*
+    Read the Log colorspace parameters shared by both transform directions.
+  */
+  *density=DisplayGamma;
+  *gamma=DisplayGamma;
+  value=GetLogProperty(image,"gamma",0.0,exception);
+  if (value != 0.0)
+    *gamma=MagickSafeReciprocal(value);
+  *film_gamma=GetLogProperty(image,"film-gamma",FilmGamma,exception);
+  *reference_black=GetLogProperty(image,"reference-black",ReferenceBlack,
+    exception);
+  *reference_white=GetLogProperty(image,"reference-white",ReferenceWhite,
+    exception);
+  *reference_black=MagickMax(0.0,MagickMin(*reference_black,
+    MaximumLogarithmicColorspace));
+  *reference_white=MagickMax(0.0,MagickMin(*reference_white,
+    MaximumLogarithmicColorspace));
+  if (*reference_black > *reference_white)
+    *reference_black=*reference_white;
+}
 static MagickBooleanType sRGBTransformImage(Image *image,
   const ColorspaceType colorspace,ExceptionInfo *exception)
 {
@@ -887,9 +1021,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           MagickRealType
             gray;
 
-          gray=0.212656*DecodePixelGamma(GetPixelRed(image,q))+0.715158*
-            DecodePixelGamma(GetPixelGreen(image,q))+0.072186*
-            DecodePixelGamma(GetPixelBlue(image,q));
+          gray=GetPixelLuminance(image,q);
           SetPixelGray(image,ClampToQuantum(gray),q);
           q+=(ptrdiff_t) GetPixelChannels(image);
         }
@@ -945,8 +1077,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           MagickRealType
             gray;
 
-          gray=0.212656*(double) GetPixelRed(image,q)+0.715158*(double)
-            GetPixelGreen(image,q)+0.072186*(double) GetPixelBlue(image,q);
+          gray=GetPixelLuma(image,q);
           SetPixelGray(image,ClampToQuantum(gray),q);
           q+=(ptrdiff_t) GetPixelChannels(image);
         }
@@ -1059,14 +1190,6 @@ static MagickBooleanType sRGBTransformImage(Image *image,
     }
     case LogColorspace:
     {
-#define DisplayGamma  (1.0/1.7)
-#define FilmGamma  0.6
-#define ReferenceBlack  95.0
-#define ReferenceWhite  685.0
-
-      const char
-        *value;
-
       double
         black,
         density,
@@ -1081,23 +1204,15 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       /*
         Transform RGB to Log colorspace.
       */
-      density=DisplayGamma;
-      gamma=DisplayGamma;
-      value=GetImageProperty(image,"gamma",exception);
-      if (value != (const char *) NULL)
-        gamma=MagickSafeReciprocal(StringToDouble(value,(char **) NULL));
-      film_gamma=FilmGamma;
-      value=GetImageProperty(image,"film-gamma",exception);
-      if (value != (const char *) NULL)
-        film_gamma=StringToDouble(value,(char **) NULL);
-      reference_black=ReferenceBlack;
-      value=GetImageProperty(image,"reference-black",exception);
-      if (value != (const char *) NULL)
-        reference_black=StringToDouble(value,(char **) NULL);
-      reference_white=ReferenceWhite;
-      value=GetImageProperty(image,"reference-white",exception);
-      if (value != (const char *) NULL)
-        reference_white=StringToDouble(value,(char **) NULL);
+      if (image->storage_class == PseudoClass)
+        {
+          if (SyncImage(image,exception) == MagickFalse)
+            return(MagickFalse);
+          if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
+            return(MagickFalse);
+        }
+      GetLogParameters(image,&density,&film_gamma,&gamma,&reference_black,
+        &reference_white,exception);
       logmap=(Quantum *) AcquireQuantumMemory((size_t) MaxMap+1UL,
         sizeof(*logmap));
       if (logmap == (Quantum *) NULL)
@@ -2237,7 +2352,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
     case GRAYColorspace:
     {
       /*
-        Transform linear GRAY to sRGB colorspace.
+        Transform GRAY to sRGB colorspace.
       */
       if (image->storage_class == PseudoClass)
         {
@@ -2395,9 +2510,6 @@ static MagickBooleanType TransformsRGBImage(Image *image,
     }
     case LogColorspace:
     {
-      const char
-        *value;
-
       double
         black,
         density,
@@ -2412,29 +2524,8 @@ static MagickBooleanType TransformsRGBImage(Image *image,
       /*
         Transform Log to sRGB colorspace.
       */
-      density=DisplayGamma;
-      gamma=DisplayGamma;
-      value=GetImageProperty(image,"gamma",exception);
-      if (value != (const char *) NULL)
-        gamma=MagickSafeReciprocal(StringToDouble(value,(char **) NULL));
-      film_gamma=FilmGamma;
-      value=GetImageProperty(image,"film-gamma",exception);
-      if (value != (const char *) NULL)
-        film_gamma=StringToDouble(value,(char **) NULL);
-      reference_black=ReferenceBlack;
-      value=GetImageProperty(image,"reference-black",exception);
-      if (value != (const char *) NULL)
-        reference_black=StringToDouble(value,(char **) NULL);
-      if (reference_black > MaximumLogarithmicColorspace)
-        reference_black=MaximumLogarithmicColorspace;
-      reference_white=ReferenceWhite;
-      value=GetImageProperty(image,"reference-white",exception);
-      if (value != (const char *) NULL)
-        reference_white=StringToDouble(value,(char **) NULL);
-      if (reference_white > MaximumLogarithmicColorspace)
-        reference_white=MaximumLogarithmicColorspace;
-      if (reference_black > reference_white)
-        reference_black=reference_white;
+      GetLogParameters(image,&density,&film_gamma,&gamma,&reference_black,
+        &reference_white,exception);
       logmap=(Quantum *) AcquireQuantumMemory((size_t) MaxMap+1UL,
         sizeof(*logmap));
       if (logmap == (Quantum *) NULL)
@@ -2442,9 +2533,11 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           image->filename);
       black=pow(10.0,(reference_black-reference_white)*(gamma/density)*0.002*
         MagickSafeReciprocal(film_gamma));
-      for (i=0; i <= (ssize_t) (reference_black*MaxMap/MaximumLogarithmicColorspace); i++)
+      for (i=0; i <= (ssize_t) (reference_black*MaxMap/
+           MaximumLogarithmicColorspace); i++)
         logmap[i]=(Quantum) 0;
-      for ( ; i < (ssize_t) (reference_white*MaxMap/MaximumLogarithmicColorspace); i++)
+      for ( ; i < (ssize_t) (reference_white*MaxMap/
+           MaximumLogarithmicColorspace); i++)
         logmap[i]=ClampToQuantum((double) QuantumRange/(1.0-black)*
           (pow(10.0,(MaximumLogarithmicColorspace*i/MaxMap-reference_white)*
           (gamma/density)*0.002*MagickSafeReciprocal(film_gamma))-black));
@@ -2846,7 +2939,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static) shared(status) \
-        magick_number_threads(image,image,image->rows,1)
+        magick_number_threads(image,image,image->colors,1)
 #endif
       for (i=0; i < (ssize_t) image->colors; i++)
       {

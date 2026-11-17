@@ -107,7 +107,8 @@ typedef enum
   MagickCLIOptions,
   MagickIlluminantOptions,
   MagickWordBreakOptions,
-  MagickPagesizeOptions
+  MagickPagesizeOptions,
+  MagickShuffleOptions
 } CommandOption;
 
 typedef enum

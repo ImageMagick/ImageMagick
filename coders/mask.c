@@ -158,6 +158,7 @@ ModuleExport size_t RegisterMASKImage(void)
   entry=AcquireMagickInfo("MASK","MASK","Image Clip Mask");
   entry->decoder=(DecodeImageHandler *) ReadMASKImage;
   entry->encoder=(EncodeImageHandler *) WriteMASKImage;
+  entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

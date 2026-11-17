@@ -1969,7 +1969,10 @@ MagickExport MagickBooleanType OrderedDitherImage(Image *image,
     if (fabs(levels[i]) >= 1)
       levels[i]-=1.0;
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
-    return(MagickFalse);
+    {
+      map=DestroyThresholdMap(map);
+      return(MagickFalse);
+    }
   status=MagickTrue;
   progress=0;
   image_view=AcquireAuthenticCacheView(image,exception);

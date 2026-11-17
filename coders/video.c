@@ -42,6 +42,7 @@
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
 #include "MagickCore/constitute.h"
+#include "MagickCore/constitute-private.h"
 #include "MagickCore/delegate.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
@@ -270,7 +271,7 @@ static Image *ReadVIDEOImage(const ImageInfo *image_info,
             MagickPathExtent);
           (void) CopyMagickString(read_info->filename,read_info->unique,
             MagickPathExtent);
-          images=ReadImage(read_info,exception);
+          images=ReadImageWithoutPostProcessing(read_info,exception);
         }
       else
         if (*message != '\0')
@@ -515,11 +516,11 @@ static MagickBooleanType CopyDelegateFile(const char *source,
 #endif
     }
   else
-    destination_file=open_utf8(destination,O_WRONLY | O_BINARY | O_CREAT |
+    destination_file=open_utf8(destination,O_WRONLY | O_CLOEXEC | O_BINARY | O_CREAT |
       O_TRUNC,S_MODE);
   if (destination_file == -1)
     return(MagickFalse);
-  source_file=open_utf8(source,O_RDONLY | O_BINARY,0);
+  source_file=open_utf8(source,O_RDONLY | O_CLOEXEC | O_BINARY,0);
   if (source_file == -1)
     {
       if (strcmp(destination,"-") != 0)

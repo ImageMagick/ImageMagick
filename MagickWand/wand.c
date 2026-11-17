@@ -50,9 +50,6 @@
 static SplayTreeInfo
   *wand_ids = (SplayTreeInfo *) NULL;
 
-static MagickBooleanType
-  instantiate_wand = MagickFalse;
-
 static SemaphoreInfo
   *wand_semaphore = (SemaphoreInfo *) NULL;
 
@@ -91,7 +88,6 @@ WandExport size_t AcquireWandId(void)
   wand_id=id++;
   (void) AddValueToSplayTree(wand_ids,(const void *) wand_id,(const void *)
     wand_id);
-  instantiate_wand=MagickTrue;
   UnlockSemaphoreInfo(wand_semaphore);
   return((size_t) wand_id);
 }
@@ -123,7 +119,6 @@ WandExport void DestroyWandIds(void)
   LockSemaphoreInfo(wand_semaphore);
   if (wand_ids != (SplayTreeInfo *) NULL)
     wand_ids=DestroySplayTree(wand_ids);
-  instantiate_wand=MagickFalse;
   UnlockSemaphoreInfo(wand_semaphore);
   RelinquishSemaphoreInfo(&wand_semaphore);
 }

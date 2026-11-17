@@ -44,6 +44,7 @@
 #include "MagickCore/blob-private.h"
 #include "MagickCore/client.h"
 #include "MagickCore/constitute.h"
+#include "MagickCore/constitute-private.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/image.h"
@@ -56,6 +57,7 @@
 #include "MagickCore/option.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/quantum-private.h"
+#include "MagickCore/semaphore.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/module.h"
@@ -66,6 +68,9 @@
 #include <gvc.h>
 static GVC_t
   *graphic_context = (GVC_t *) NULL;
+
+static SemaphoreInfo
+  *dot_semaphore = (SemaphoreInfo *) NULL;
 #endif
 
 #if defined(MAGICKCORE_GVC_DELEGATE)
@@ -136,6 +141,7 @@ static Image *ReadDOTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) AcquireUniqueFilename(read_info->filename);
   (void) FormatLocaleString(command,MagickPathExtent,"-Tsvg -o%s %s",
     read_info->filename,image_info->filename);
+  LockSemaphoreInfo(dot_semaphore);
 #if !defined(WITH_CGRAPH)
   graph=agread(GetBlobFileHandle(image));
 #else
@@ -143,6 +149,7 @@ static Image *ReadDOTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
   if (graph == (graph_t *) NULL)
     {
+      UnlockSemaphoreInfo(dot_semaphore);
       (void) RelinquishUniqueFileResource(read_info->filename);
       read_info=DestroyImageInfo(read_info);
       return(DestroyImageList(image));
@@ -155,12 +162,13 @@ static Image *ReadDOTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   gvRenderFilename(graphic_context,graph,(char *) "svg",read_info->filename);
   gvFreeLayout(graphic_context,graph);
   agclose(graph);
+  UnlockSemaphoreInfo(dot_semaphore);
   image=DestroyImageList(image);
   /*
     Read SVG graph.
   */
   (void) CopyMagickString(read_info->magick,"SVG",MagickPathExtent);
-  image=ReadImage(read_info,exception);
+  image=ReadImageWithoutPostProcessing(read_info,exception);
   (void) RelinquishUniqueFileResource(read_info->filename);
   read_info=DestroyImageInfo(read_info);
   if (image == (Image *) NULL)
@@ -210,6 +218,7 @@ ModuleExport size_t RegisterDOTImage(void)
   entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
 #if defined(MAGICKCORE_GVC_DELEGATE)
+  dot_semaphore=AcquireSemaphoreInfo();
   graphic_context=gvContext();
 #endif
   return(MagickImageCoderSignature);
@@ -244,5 +253,7 @@ ModuleExport void UnregisterDOTImage(void)
       gvFreeContext(graphic_context);
       graphic_context=(GVC_t *) NULL;
     }
+  if (dot_semaphore != (SemaphoreInfo *) NULL)
+    RelinquishSemaphoreInfo(&dot_semaphore);
 #endif
 }

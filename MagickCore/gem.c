@@ -86,8 +86,12 @@
 */
 MagickExport double ExpandAffine(const AffineMatrix *affine)
 {
+  double
+    determinant;
+
   assert(affine != (const AffineMatrix *) NULL);
-  return(sqrt(fabs(affine->sx*affine->sy-affine->rx*affine->ry)));
+  determinant=affine->sx*affine->sy-affine->rx*affine->ry;
+  return(sqrt(fabs(determinant)));
 }
 
 /*
@@ -152,7 +156,7 @@ MagickPrivate double GenerateDifferentialNoise(RandomInfo *random_info,
         gamma,
         tau;
 
-      if (fabs(alpha) < MagickEpsilon)
+      if (alpha <= MagickEpsilon)
         alpha=1.0;
       beta=GetPseudoRandomValue(random_info);
       gamma=sqrt(-2.0*log(alpha));
@@ -178,7 +182,7 @@ MagickPrivate double GenerateDifferentialNoise(RandomInfo *random_info,
       if (alpha <= 0.5)
         {
           if (alpha <= MagickEpsilon)
-            noise=(double) (pixel-QuantumRange);
+            noise=(double) pixel-(double) QuantumRange;
           else
             noise=(double) pixel+(double) QuantumRange*SigmaLaplacian*
               log(2.0*alpha)+0.5;
@@ -186,7 +190,7 @@ MagickPrivate double GenerateDifferentialNoise(RandomInfo *random_info,
         }
       beta=1.0-alpha;
       if (beta <= (0.5*MagickEpsilon))
-        noise=(double) (pixel+QuantumRange);
+        noise=(double) pixel+(double) QuantumRange;
       else
         noise=(double) pixel-(double) QuantumRange*SigmaLaplacian*
           log(2.0*beta)+0.5;
@@ -226,6 +230,14 @@ MagickPrivate double GenerateDifferentialNoise(RandomInfo *random_info,
     }
   }
   return(noise);
+#undef SigmaUniform
+#undef SigmaGaussian
+#undef SigmaImpulse
+#undef SigmaLaplacian
+#undef SigmaMultiplicativeGaussian
+#undef SigmaPoisson
+#undef SigmaRandom
+#undef TauGaussian
 }
 
 /*
@@ -239,14 +251,16 @@ MagickPrivate double GenerateDifferentialNoise(RandomInfo *random_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetOptimalKernelWidth() computes the optimal kernel radius for a convolution
-%  filter.  Start with the minimum value of 3 pixels and walk out until we drop
-%  below the threshold of one pixel numerical accuracy.
+%  GetOptimalKernelWidth1D() and GetOptimalKernelWidth2D() compute the optimal
+%  kernel width for a 1D or 2D Gaussian convolution filter.  Start with the
+%  minimum value of 3 pixels and walk out until we drop below the threshold of
+%  one pixel numerical accuracy.  GetOptimalKernelWidth() is the 1D variant.
 %
-%  The format of the GetOptimalKernelWidth method is:
+%  The format of the GetOptimalKernelWidth methods is:
 %
-%      size_t GetOptimalKernelWidth(const double radius,
-%        const double sigma)
+%      size_t GetOptimalKernelWidth1D(const double radius,const double sigma)
+%      size_t GetOptimalKernelWidth2D(const double radius,const double sigma)
+%      size_t GetOptimalKernelWidth(const double radius,const double sigma)
 %
 %  A description of each parameter follows:
 %
@@ -259,89 +273,72 @@ MagickPrivate double GenerateDifferentialNoise(RandomInfo *random_info,
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
 */
-MagickPrivate size_t GetOptimalKernelWidth1D(const double radius,
-  const double sigma)
+
+static size_t GetGaussianKernelWidth(const double radius,const double sigma,
+  const MagickBooleanType two_dimensional)
 {
+#define MaxOptimalKernelWidth  65535UL
+
   double
     alpha,
-    beta,
     gamma,
-    normalize,
+    sum,
+    term,
     value;
 
   size_t
     width;
 
-  ssize_t
-    i,
-    j;
- 
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
+  if (isnan(radius) || isnan(sigma))
+    return(3UL);
   if (radius > MagickEpsilon)
-    return((size_t) (2.0*ceil(radius)+1.0));
+    {
+      const double
+        limit = (double) ((MaxOptimalKernelWidth-1UL)/2UL);
+
+      return((size_t) (2.0*MagickMin(ceil(radius),limit)+1.0));
+    }
   gamma=fabs(sigma);
   if (gamma <= MagickEpsilon)
     return(3UL);
+  if (isinf(gamma))
+    return(3UL);
   alpha=MagickSafeReciprocal(2.0*gamma*gamma);
-  beta=(double) MagickSafeReciprocal((double) MagickSQ2PI*gamma);
-  for (width=5; ; )
+  /*
+    The Gaussian is separable.
+  */
+  sum=1.0+2.0*exp(-alpha);
+  for (width=5; ; width+=2)
   {
-    normalize=0.0;
-    j=(ssize_t) (width-1)/2;
-    for (i=(-j); i <= j; i++)
-      normalize+=exp(-((double) (i*i))*alpha)*beta;
-    value=exp(-((double) (j*j))*alpha)*beta/normalize;
+    const double
+      j = (double) ((width-1)/2);
+
+    term=exp(-(j*j)*alpha);
+    sum+=2.0*term;
+    value=two_dimensional != MagickFalse ? term/(sum*sum) : term/sum;
     if ((value < QuantumScale) || (value < MagickEpsilon))
       break;
-    width+=2;
+    if (width >= MaxOptimalKernelWidth)
+      return(MaxOptimalKernelWidth);
   }
   return((size_t) (width-2));
+}
+
+MagickPrivate size_t GetOptimalKernelWidth1D(const double radius,
+  const double sigma)
+{
+  return(GetGaussianKernelWidth(radius,sigma,MagickFalse));
 }
 
 MagickPrivate size_t GetOptimalKernelWidth2D(const double radius,
   const double sigma)
 {
-  double
-    alpha,
-    beta,
-    gamma,
-    normalize,
-    value;
-
-  size_t
-    width;
-
-  ssize_t
-    j,
-    u,
-    v;
-
-  if (IsEventLogging() != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  if (radius > MagickEpsilon)
-    return((size_t) (2.0*ceil(radius)+1.0));
-  gamma=fabs(sigma);
-  if (gamma <= MagickEpsilon)
-    return(3UL);
-  alpha=MagickSafeReciprocal(2.0*gamma*gamma);
-  beta=(double) MagickSafeReciprocal((double) Magick2PI*gamma*gamma);
-  for (width=5; ; )
-  {
-    normalize=0.0;
-    j=(ssize_t) (width-1)/2;
-    for (v=(-j); v <= j; v++)
-      for (u=(-j); u <= j; u++)
-        normalize+=exp(-((double) (u*u+v*v))*alpha)*beta;
-    value=exp(-((double) (j*j))*alpha)*beta/normalize;
-    if ((value < QuantumScale) || (value < MagickEpsilon))
-      break;
-    width+=2;
-  }
-  return((size_t) (width-2));
+  return(GetGaussianKernelWidth(radius,sigma,MagickTrue));
 }
 
-MagickPrivate size_t  GetOptimalKernelWidth(const double radius,
+MagickPrivate size_t GetOptimalKernelWidth(const double radius,
   const double sigma)
 {
   return(GetOptimalKernelWidth1D(radius,sigma));

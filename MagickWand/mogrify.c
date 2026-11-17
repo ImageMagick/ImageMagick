@@ -859,6 +859,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               break;
             (void) ColorDecisionListImage(*image,color_correction_collection,
               exception);
+            color_correction_collection=DestroyString(color_correction_collection);
             break;
           }
         if (LocaleCompare("channel",option+1) == 0)
@@ -3904,28 +3905,79 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
         if ((LocaleCompare(image->filename,"-") != 0) &&
             (IsPathWritable(image->filename) != MagickFalse))
           {
+            int
+              file = -1;
+
+            RandomInfo
+              *random_info;
+
             /*
-              Rename image file as backup.
+              Generate a temporary filename to write the new image to.
             */
+            random_info=AcquireRandomInfo();
             (void) CopyMagickString(backup_filename,image->filename,
               MagickPathExtent);
-            for (j=0; j < 6; j++)
+            for (j=0; j < TMP_MAX; j++)
             {
-              (void) ConcatenateMagickString(backup_filename,"~",
-                MagickPathExtent);
-              if (IsPathAccessible(backup_filename) == MagickFalse)
+              StringInfo
+                *key_info;
+
+              unsigned char
+                *key_bytes;
+
+              key_info=GetRandomKey(random_info,4);
+              if (key_info == (StringInfo *) NULL)
+                break;
+              key_bytes=GetStringInfoDatum(key_info);
+              (void) FormatLocaleString(backup_filename,MagickPathExtent,
+                "%s-%02x%02x%02x%02x~",image->filename,key_bytes[0],
+                key_bytes[1],key_bytes[2],key_bytes[3]);
+              key_info=DestroyStringInfo(key_info);
+              file=open_utf8(backup_filename,O_RDWR | O_CLOEXEC | O_CREAT |                     O_EXCL | O_BINARY | O_NOFOLLOW,S_MODE);
+              if ((file >= 0) || (errno != EEXIST))
                 break;
             }
-            if ((IsPathAccessible(backup_filename) != MagickFalse) ||
-                (rename_utf8(image->filename,backup_filename) != 0))
+            random_info=DestroyRandomInfo(random_info);
+            if (file < 0)
               *backup_filename='\0';
+            else
+              file=close_utf8(file)-1;
           }
         /*
           Write transmogrified image to disk.
         */
         image_info->synchronize=MagickTrue;
-        status&=(MagickStatusType) WriteImages(image_info,image,image->filename,
-          exception);
+        {
+          Image *clone_image = CloneImageList(image,exception);
+          if (clone_image != (Image *) NULL)
+            {
+              char
+                output_filename[MagickPathExtent];
+
+              *output_filename='\0';
+              if (*backup_filename != '\0')
+                {
+                  const char
+                    *output_format;
+
+                  if (*clone_image->magick == '\0')
+                    (void) CopyMagickString(clone_image->magick,
+                      image_info->magick,MaxTextExtent);
+                  output_format=(format != (char *) NULL) ? format :
+                    clone_image->magick;
+                  if ((*magic != '\0') || (*output_format == '\0'))
+                    (void) CopyMagickString(output_filename,backup_filename,
+                      MagickPathExtent);
+                  else
+                    (void) FormatLocaleString(output_filename,MagickPathExtent,
+                      "%s:%s",output_format,backup_filename);
+                }
+              status&=(MagickStatusType) WriteImages(image_info,clone_image,
+                (*output_filename != '\0') ? output_filename :
+                clone_image->filename,exception);
+              clone_image=DestroyImageList(clone_image);
+            }
+        }
         if (status != MagickFalse)
           {
             {
@@ -3938,11 +3990,14 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
                 (void) set_file_timestamp(image->filename,&properties);
             }
             if (*backup_filename != '\0')
-              (void) remove_utf8(backup_filename);
+              {
+                if (rename_utf8(backup_filename,image->filename) != 0)
+                  status=MagickFalse;
+              }
           }
         else
           if (*backup_filename != '\0')
-            (void) rename_utf8(backup_filename,image->filename);
+            (void) remove_utf8(backup_filename);
         RemoveAllImageStack();
         continue;
       }
@@ -8791,17 +8846,28 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
           }
         if (LocaleCompare("process",option+1) == 0)
           {
+#define DestroyArguments(arguments,number_arguments) \
+          do \
+          { \
+            ssize_t j = 0; \
+            for ( ; j < (ssize_t) (number_arguments); j++) \
+              (arguments)[j]=DestroyString((arguments)[j]); \
+            (arguments)=(char **) RelinquishMagickMemory(arguments); \
+          } while (0)
+
             char
               **arguments;
 
             int
-              j,
               number_arguments;
 
             (void) SyncImagesSettings(mogrify_info,*images,exception);
             arguments=StringToArgv(argv[i+1],&number_arguments);
             if ((arguments == (char **) NULL) || (number_arguments == 1))
-              break;
+              {
+                DestroyArguments(arguments,number_arguments);
+                break;
+              }
             if ((argc > 1) && (strchr(arguments[1],'=') != (char *) NULL))
               {
                 char
@@ -8831,7 +8897,10 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                   token=(char *) AcquireQuantumMemory(length+MagickPathExtent,
                     sizeof(*token));
                 if (token == (char *) NULL)
-                  break;
+                  {
+                    DestroyArguments(arguments,number_arguments);
+                    break;
+                  }
                 next=0;
                 argument=argv[i+1];
                 token_info=AcquireTokenInfo();
@@ -8848,14 +8917,13 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                       exception);
                   }
                 token=DestroyString(token);
+                DestroyArguments(arguments,number_arguments);
                 break;
               }
             (void) SubstituteString(&arguments[1],"-","");
             (void) InvokeDynamicImageFilter(arguments[1],&(*images),
               number_arguments-2,(const char **) arguments+2,exception);
-            for (j=0; j < number_arguments; j++)
-              arguments[j]=DestroyString(arguments[j]);
-            arguments=(char **) RelinquishMagickMemory(arguments);
+            DestroyArguments(arguments,number_arguments);
             break;
           }
         break;
@@ -8871,6 +8939,17 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
       }
       case 's':
       {
+        if (LocaleCompare("shuffle",option+1) == 0)
+          {
+            ShuffleMode
+              shuffle_type;
+
+            (void) SyncImagesSettings(mogrify_info,*images,exception);
+            shuffle_type=(ShuffleMode) ParseCommandOption(
+              MagickShuffleOptions,MagickFalse,argv[i+1]);
+            (void) ShuffleImages(&(*images),shuffle_type,exception);
+            break;
+          }
         if (LocaleCompare("smush",option+1) == 0)
           {
             Image

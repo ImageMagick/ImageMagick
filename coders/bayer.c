@@ -231,11 +231,13 @@ ModuleExport size_t RegisterBAYERImage(void)
   entry->decoder=(DecodeImageHandler *) ReadBAYERImage;
   entry->encoder=(EncodeImageHandler *) WriteBAYERImage;
   entry->flags|=CoderRawSupportFlag | CoderEndianSupportFlag;
+  entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("BAYER","BAYERA","Raw mosaiced and alpha samples");
   entry->decoder=(DecodeImageHandler *) ReadBAYERImage;
   entry->encoder=(EncodeImageHandler *) WriteBAYERImage;
   entry->flags|=CoderRawSupportFlag | CoderEndianSupportFlag;
+  entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

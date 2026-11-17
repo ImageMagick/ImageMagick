@@ -1966,6 +1966,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             break;
           (void) ColorDecisionListImage(_image,color_correction_collection,
             _exception);
+          color_correction_collection=DestroyString(color_correction_collection);
           break;
         }
       if (LocaleCompare("channel",option+1) == 0)
@@ -4284,20 +4285,20 @@ static MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
     }
     case 'f':
     {
-      if (LocaleCompare("fft",option+1) == 0)
+      if (LocaleCompare("fft",option+1) == 0) 
         {
           new_images=ForwardFourierTransformImage(_images,IsNormalOp,
            _exception);
           break;
-        }
+        } 
       if (LocaleCompare("flatten",option+1) == 0)
         {
           /* REDIRECTED to use -layers flatten instead */
           (void) CLIListOperatorImages(cli_wand,"-layers",option+1,NULL);
           break;
-        }
+        }   
       if (LocaleCompare("fx",option+1) == 0)
-        {
+        {       
           new_images=FxImage(_images,arg1,_exception);
           break;
         }
@@ -4592,17 +4593,27 @@ static MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
         }
       if (LocaleCompare("process",option+1) == 0)
         {
-          /* FUTURE: better parsing using ScriptToken() from string ??? */
+#define DestroyArguments(arguments,number_arguments) \
+          do \
+          { \
+            ssize_t j = 0; \
+            for ( ; j < (ssize_t) (number_arguments); j++) \
+              (arguments)[j]=DestroyString((arguments)[j]); \
+            (arguments)=(char **) RelinquishMagickMemory(arguments); \
+          } while (0)
+
           char
             **arguments;
 
           int
-            j,
             number_arguments;
 
           arguments=StringToArgv(arg1,&number_arguments);
           if ((arguments == (char **) NULL) || (number_arguments == 1))
-            break;
+            {
+              DestroyArguments(arguments,number_arguments);
+              break;
+            }
           if (strchr(arguments[1],'=') != (char *) NULL)
             {
               char
@@ -4633,7 +4644,10 @@ static MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
                 token=(char *) AcquireQuantumMemory(length+MagickPathExtent,
                   sizeof(*token));
               if (token == (char *) NULL)
-                break;
+                {
+                  DestroyArguments(arguments,number_arguments);
+                  break;
+                }
               next=0;
               p=arg1;
               token_info=AcquireTokenInfo();
@@ -4650,14 +4664,13 @@ static MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
                     _exception);
                 }
               token=DestroyString(token);
+              DestroyArguments(arguments,number_arguments);
               break;
             }
           (void) SubstituteString(&arguments[1],"-","");
           (void) InvokeDynamicImageFilter(arguments[1],&_images,
             number_arguments-2,(const char **) arguments+2,_exception);
-          for (j=0; j < number_arguments; j++)
-            arguments[j]=DestroyString(arguments[j]);
-          arguments=(char **) RelinquishMagickMemory(arguments);
+          DestroyArguments(arguments,number_arguments);
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
@@ -4678,6 +4691,15 @@ static MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
     }
     case 's':
     {
+      if (LocaleCompare("shuffle",option+1) == 0)
+        {
+          parse=ParseCommandOption(MagickShuffleOptions,MagickFalse,arg1);
+          if ( parse < 0 )
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedShuffleMode",
+              option,arg1);
+          (void) ShuffleImages(&_images,(ShuffleMode) parse,_exception);
+          break;
+        }
       if (LocaleCompare("smush",option+1) == 0)
         {
           /* FUTURE: this option needs more work to make better */
@@ -4710,6 +4732,8 @@ static MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
 
           base_image=GetImageFromList(_images,0);
           compare_image=GetImageFromList(_images,1);
+          if (compare_image == (Image *) NULL)
+            CLIWandExceptArgBreak(OptionError,"NoSuchImage",option,arg1);
 
           /* Comparison Metric */
           metric=UndefinedErrorMetric;
@@ -5153,7 +5177,11 @@ static void CLINoImageOperator(MagickCLI *cli_wand,const char *option,
           }
         /* Set Artifacts/Properties/Attributes all images (required) */
         if ( _images == (Image *) NULL )
-          CLIWandExceptArgBreak(OptionWarning,"NoImageForProperty",option,arg1);
+          {
+            if (profile != (StringInfo *) NULL)
+              profile=DestroyStringInfo(profile);
+            CLIWandExceptArgBreak(OptionWarning,"NoImageForProperty",option,arg1);
+          }
 
         MagickResetIterator(&cli_wand->wand);
         while (MagickNextImage(&cli_wand->wand) != MagickFalse)
@@ -5168,8 +5196,12 @@ static void CLINoImageOperator(MagickCLI *cli_wand,const char *option,
                 arg2=InterpretImageProperties(_image_info,_images,arg2n,
                   _exception);
                 if (arg2 == (char *) NULL)
-                  CLIWandExceptionBreak(OptionWarning,
-                       "InterpretPropertyFailure",option);
+                  {
+                    if (profile != (StringInfo *) NULL)
+                      profile=DestroyStringInfo(profile);
+                    CLIWandExceptionBreak(OptionWarning,
+                      "InterpretPropertyFailure",option);
+                  }
               }
             if (LocaleNCompare(arg1,"artifact:",9) == 0)
               (void) SetImageArtifact(_images,arg1+9,arg2);

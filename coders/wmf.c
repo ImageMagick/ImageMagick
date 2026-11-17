@@ -44,6 +44,7 @@
 #include "MagickCore/color.h"
 #include "MagickCore/color-private.h"
 #include "MagickCore/constitute.h"
+#include "MagickCore/constitute-private.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/image.h"
@@ -226,7 +227,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   SetImageInfoBlob(read_info,(void *) NULL,0);
   (void) FormatLocaleString(read_info->filename,MagickPathExtent,"eps:%s",
     filename);
-  image=ReadImage(read_info,exception);
+  image=ReadImageWithoutPostProcessing(read_info,exception);
   read_info=DestroyImageInfo(read_info);
   if (image != (Image *) NULL)
     {

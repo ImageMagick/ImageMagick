@@ -179,8 +179,7 @@ static Image *ReadFLIFImage(const ImageInfo *image_info,
     }
   image_count=flif_decoder_num_images(flifdec);
   if (AcquireMagickResource(ListLengthResource,image_count) == MagickFalse)
-    ThrowFileException(exception,ResourceLimitError,"ListLengthExceedsLimit",
-      image->filename);
+    ThrowReaderException(ResourceLimitError,"ListLengthExceedsLimit");
   flifimage=flif_decoder_get_image(flifdec,0);
   length=sizeof(unsigned short)*4*flif_image_get_width(flifimage);
   pixels=(unsigned short *) AcquireQuantumMemory(1,length);
@@ -512,8 +511,9 @@ static MagickBooleanType WriteFLIFImage(const ImageInfo *image_info,
           flif_image_write_row_RGBA8(flifimage,(uint32_t) y,pixels,length);
         }
     }
-    flif_image_set_frame_delay(flifimage,(uint32_t) (image->delay*100/
-      image->ticks_per_second));
+    if (image->ticks_per_second != 0)
+     flif_image_set_frame_delay(flifimage,(uint32_t) (100*image->delay/
+       image->ticks_per_second));
     flif_encoder_add_image(flifenc,flifimage);
     if (GetNextImageInList(image) == (Image *) NULL)
       break;

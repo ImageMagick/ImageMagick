@@ -17,6 +17,9 @@ jobs:
     name: Linux Q${{matrix.quantum}}-x64 hdri=${{matrix.hdri}} (${{matrix.modules}})
     runs-on: ubuntu-24.04
 
+    env:
+      CODEQL_OVERLAY_DATABASE_MODE: none
+
     permissions:
       contents: read
       security-events: write
@@ -48,16 +51,18 @@ jobs:
           echo "" > config.status
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@f205ea1c3313d32999d8d6a48b4f6530d4437b38 #v4.37.4
+        uses: github/codeql-action/init@33d7b85da1a04171e211befe2c739303b9a4c066 #v4.39.3
         with:
           languages: c-cpp
+          build-mode: manual
+          trap-caching: false
 
       - name: Build ImageMagick
         run: |
           make
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@f205ea1c3313d32999d8d6a48b4f6530d4437b38 #v4.37.4
+        uses: github/codeql-action/analyze@33d7b85da1a04171e211befe2c739303b9a4c066 #v4.39.3
 
   actions:
     name: CodeQL analysis (GitHub Actions)
@@ -73,9 +78,9 @@ jobs:
           persist-credentials: false
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@f205ea1c3313d32999d8d6a48b4f6530d4437b38 #v4.37.4
+        uses: github/codeql-action/init@33d7b85da1a04171e211befe2c739303b9a4c066 #v4.39.3
         with:
           languages: actions
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@f205ea1c3313d32999d8d6a48b4f6530d4437b38 #v4.37.4
+        uses: github/codeql-action/analyze@33d7b85da1a04171e211befe2c739303b9a4c066 #v4.39.3

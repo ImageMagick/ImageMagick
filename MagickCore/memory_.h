@@ -20,6 +20,16 @@
 
 #include <errno.h>
 
+#ifdef _WIN64
+#  if !defined(SSIZE_MAX)
+#    define SSIZE_MAX LLONG_MAX
+#  endif
+#else
+#  if !defined(SSIZE_MAX)
+#    define SSIZE_MAX LONG_MAX
+#  endif
+#endif
+
 #define MAGICK_INT_MAX  (INT_MAX)
 #define MAGICK_PTRDIFF_MAX  (PTRDIFF_MAX)
 #define MAGICK_PTRDIFF_MIN  (-PTRDIFF_MAX-1)

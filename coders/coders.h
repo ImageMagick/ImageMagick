@@ -21,6 +21,7 @@
 */
 #include "coders/aai.h"
 #include "coders/art.h"
+#include "coders/ase.h"
 #include "coders/ashlar.h"
 #include "coders/avs.h"
 #include "coders/bayer.h"
@@ -38,12 +39,16 @@
 #include "coders/cmyk.h"
 #include "coders/cube.h"
 #include "coders/cut.h"
+#include "coders/c2pa.h"
 #include "coders/dcm.h"
 #include "coders/dds.h"
 #include "coders/debug.h"
 #include "coders/dib.h"
 #if defined(MAGICKCORE_DJVU_DELEGATE)
   #include "coders/djvu.h"
+#endif
+#if defined(MAGICKCORE_DMR_DELEGATE)
+  #include "coders/dmr.h"
 #endif
 #include "coders/dng.h"
 #if defined(MAGICKCORE_GVC_DELEGATE)
@@ -181,6 +186,7 @@
 #include "coders/video.h"
 #include "coders/viff.h"
 #include "coders/vips.h"
+#include "coders/wbinfo.h"
 #include "coders/wbmp.h"
 #if defined(MAGICKCORE_WEBP_DELEGATE)
   #include "coders/webp.h"

@@ -1179,10 +1179,19 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
       similarity_image=SimilarityImage(image,reconstruct_image,metric,
         similarity_threshold,&offset,&similarity_metric,exception);
       if (similarity_image == (Image *) NULL)
-        return(MagickFalse);
-      if (similarity_metric >= dissimilarity_threshold)
-        (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
-          "ImagesTooDissimilar","`%s'",image->filename);
+        {
+          DestroyCompare();
+          return(MagickFalse);
+        }
+      if (((metric == NormalizedCrossCorrelationErrorMetric) ||
+           (metric == DotProductCorrelationErrorMetric) ||
+           (metric == PhaseCorrelationErrorMetric) ||
+           (metric == PeakSignalToNoiseRatioErrorMetric) ||
+           (metric == StructuralSimilarityErrorMetric)) ?
+          (similarity_metric < dissimilarity_threshold) :
+          (similarity_metric >= dissimilarity_threshold))
+       (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
+         "ImagesTooDissimilar","`%s'",image->filename);
     }
   if (similarity_image == (Image *) NULL)
     difference_image=CompareImages(image,reconstruct_image,metric,&distortion,
@@ -1316,8 +1325,25 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
     default:
       break;
   }
-  if (fabs(distortion) > CompareEpsilon)
-    similar=MagickFalse;
+  switch (metric)
+  {
+    case DotProductCorrelationErrorMetric:
+    case PhaseCorrelationErrorMetric:
+    case NormalizedCrossCorrelationErrorMetric:
+    case PeakSignalToNoiseRatioErrorMetric:
+    case StructuralSimilarityErrorMetric:
+    {
+      if (fabs(distortion) < (1.0-CompareEpsilon))
+        similar=MagickFalse;
+      break;
+    }
+    default:
+    {
+      if (fabs(distortion) > CompareEpsilon)
+        similar=MagickFalse;
+      break;
+    }
+  }
   if (difference_image == (Image *) NULL)
     status=0;
   else
@@ -1397,8 +1423,9 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
                   if (image->alpha_trait != UndefinedPixelTrait)
                     (void) FormatLocaleFile(stderr,"    alpha: %.*g (%.*g)\n",
                       GetMagickPrecision(),scale*
-                      channel_distortion[AlphaPixelChannel],GetMagickPrecision(),
-                      normal_scale*channel_distortion[AlphaPixelChannel]);
+                      channel_distortion[AlphaPixelChannel],
+                      GetMagickPrecision(),normal_scale*
+                      channel_distortion[AlphaPixelChannel]);
                   break;
                 }
                 case CMYKColorspace:
@@ -1446,7 +1473,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
               }
               (void) FormatLocaleFile(stderr,"    all: %.*g (%.*g)\n",
                 GetMagickPrecision(),scale*channel_distortion[MaxPixelChannels],
-                GetMagickPrecision(),normal_scale*channel_distortion[MaxPixelChannels]);
+                GetMagickPrecision(),normal_scale*
+                channel_distortion[MaxPixelChannels]);
               break;
             }
             case DotProductCorrelationErrorMetric:

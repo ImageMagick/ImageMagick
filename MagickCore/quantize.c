@@ -214,6 +214,8 @@
 #else
 #define CacheShift  3
 #endif
+#define CacheBlockShift  9
+#define CacheBlocks  ((size_t) 1UL << (4*(8-CacheShift)-CacheBlockShift))
 #define ErrorQueueLength  16
 #define ErrorRelativeWeight  MagickSafeReciprocal(16)
 #define MaxQNodes  266817
@@ -296,11 +298,8 @@ typedef struct _QCubeInfo
   QNodes
     *node_queue;
 
-  MemoryInfo
-    *memory_info;
-
   ssize_t
-    *cache;
+    **cache;
 
   DoublePixelPacket
     error[ErrorQueueLength];
@@ -1356,6 +1355,9 @@ static void DestroyQCubeInfo(QCubeInfo *cube_info)
   QNodes
     *nodes;
 
+  ssize_t
+    i;
+
   /*
     Release color cube tree storage.
   */
@@ -1368,8 +1370,14 @@ static void DestroyQCubeInfo(QCubeInfo *cube_info)
       cube_info->node_queue);
     cube_info->node_queue=nodes;
   } while (cube_info->node_queue != (QNodes *) NULL);
-  if (cube_info->memory_info != (MemoryInfo *) NULL)
-    cube_info->memory_info=RelinquishVirtualMemory(cube_info->memory_info);
+  if (cube_info->cache != (ssize_t **) NULL)
+    {
+      for (i=0; i < (ssize_t) CacheBlocks; i++)
+        if (cube_info->cache[i] != (ssize_t *) NULL)
+          cube_info->cache[i]=(ssize_t *) RelinquishMagickMemory(
+            cube_info->cache[i]);
+      cube_info->cache=(ssize_t **) RelinquishMagickMemory(cube_info->cache);
+    }
   cube_info->quantize_info=DestroyQuantizeInfo(cube_info->quantize_info);
   cube_info=(QCubeInfo *) RelinquishMagickMemory(cube_info);
 }
@@ -1498,6 +1506,29 @@ static inline ssize_t CacheOffset(QCubeInfo *cube_info,
   return(offset);
 }
 
+static inline ssize_t *GetCacheEntry(QCubeInfo *cube_info,
+  const DoublePixelPacket *pixel)
+{
+  ssize_t
+    **block,
+    offset;
+
+  /*
+    Cache blocks are allocated on first use, -1 marks an entry not set yet.
+  */
+  offset=CacheOffset(cube_info,pixel);
+  block=cube_info->cache+(offset >> CacheBlockShift);
+  if (*block == (ssize_t *) NULL)
+    {
+      *block=(ssize_t *) AcquireQuantumMemory((size_t) 1UL << CacheBlockShift,
+        sizeof(**block));
+      if (*block == (ssize_t *) NULL)
+        return((ssize_t *) NULL);
+      (void) memset(*block,(-1),sizeof(**block) << CacheBlockShift);
+    }
+  return(*block+(offset & ((1L << CacheBlockShift)-1)));
+}
+
 static MagickBooleanType FloydSteinbergDither(Image *image,QCubeInfo *cube_info,
   ExceptionInfo *exception)
 {
@@ -1564,7 +1595,7 @@ static MagickBooleanType FloydSteinbergDither(Image *image,QCubeInfo *cube_info,
         pixel;
 
       ssize_t
-        i;
+        *entry;
 
       ssize_t
         u;
@@ -1609,8 +1640,8 @@ static MagickBooleanType FloydSteinbergDither(Image *image,QCubeInfo *cube_info,
       pixel.blue=(double) ClampPixel(pixel.blue);
       if (cube.associate_alpha != MagickFalse)
         pixel.alpha=(double) ClampPixel(pixel.alpha);
-      i=CacheOffset(&cube,&pixel);
-      if (cube.cache[i] < 0)
+      entry=GetCacheEntry(&cube,&pixel);
+      if ((entry == (ssize_t *) NULL) || (*entry < 0))
         {
           QNodeInfo
             *node_info;
@@ -1636,12 +1667,13 @@ static MagickBooleanType FloydSteinbergDither(Image *image,QCubeInfo *cube_info,
           cube.distance=(double) (4.0*((double) QuantumRange+1.0)*((double)
             QuantumRange+1.0)+1.0);
           ClosestColor(image,&cube,node_info->parent);
-          cube.cache[i]=(ssize_t) cube.color_number;
+          if (entry != (ssize_t *) NULL)
+            *entry=(ssize_t) cube.color_number;
         }
       /*
         Assign pixel to closest colormap entry.
       */
-      index=(size_t) cube.cache[i];
+      index=(entry != (ssize_t *) NULL) ? (size_t) *entry : cube.color_number;
       if (image->storage_class == PseudoClass)
         SetPixelIndex(image,(Quantum) index,q+u*(ssize_t)
           GetPixelChannels(image));
@@ -1711,6 +1743,7 @@ static MagickBooleanType RiemersmaDither(Image *image,CacheView *image_view,
         *magick_restrict q;
 
       ssize_t
+        *entry,
         i;
 
       /*
@@ -1737,8 +1770,8 @@ static MagickBooleanType RiemersmaDither(Image *image,CacheView *image_view,
       pixel.blue=(double) ClampPixel(pixel.blue);
       if (cube_info->associate_alpha != MagickFalse)
         pixel.alpha=(double) ClampPixel(pixel.alpha);
-      i=CacheOffset(cube_info,&pixel);
-      if (p->cache[i] < 0)
+      entry=GetCacheEntry(p,&pixel);
+      if ((entry == (ssize_t *) NULL) || (*entry < 0))
         {
           QNodeInfo
             *node_info;
@@ -1764,12 +1797,13 @@ static MagickBooleanType RiemersmaDither(Image *image,CacheView *image_view,
           p->distance=(double) (4.0*((double) QuantumRange+1.0)*((double)
             QuantumRange+1.0)+1.0);
           ClosestColor(image,p,node_info->parent);
-          p->cache[i]=(ssize_t) p->color_number;
+          if (entry != (ssize_t *) NULL)
+            *entry=(ssize_t) p->color_number;
         }
       /*
         Assign pixel to closest colormap entry.
       */
-      index=(size_t) p->cache[i];
+      index=(entry != (ssize_t *) NULL) ? (size_t) *entry : p->color_number;
       if (image->storage_class == PseudoClass)
         SetPixelIndex(image,(Quantum) index,q);
       if (cube_info->quantize_info->measure_error == MagickFalse)
@@ -2061,9 +2095,6 @@ static QCubeInfo *GetQCubeInfo(const QuantizeInfo *quantize_info,
   QCubeInfo
     *cube_info;
 
-  size_t
-    length;
-
   ssize_t
     i;
 
@@ -2093,15 +2124,11 @@ static QCubeInfo *GetQCubeInfo(const QuantizeInfo *quantize_info,
   /*
     Initialize dither resources.
   */
-  length=(size_t) (1UL << (4*(8-CacheShift)));
-  cube_info->memory_info=AcquireVirtualMemory(length,sizeof(*cube_info->cache));
-  if (cube_info->memory_info == (MemoryInfo *) NULL)
+  cube_info->cache=(ssize_t **) AcquireQuantumMemory(CacheBlocks,
+    sizeof(*cube_info->cache));
+  if (cube_info->cache == (ssize_t **) NULL)
     return((QCubeInfo *) NULL);
-  cube_info->cache=(ssize_t *) GetVirtualMemoryBlob(cube_info->memory_info);
-  /*
-    Initialize color cache.
-  */
-  (void) memset(cube_info->cache,(-1),sizeof(*cube_info->cache)*length);
+  (void) memset(cube_info->cache,0,CacheBlocks*sizeof(*cube_info->cache));
   /*
     Distribute weights along a curve of exponential decay.
   */

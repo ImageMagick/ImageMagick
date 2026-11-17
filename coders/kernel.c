@@ -156,12 +156,21 @@ static MagickBooleanType WriteKERNELImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
   char
-    buffer[MagickPathExtent];
+    buffer[64],
+    *q,
+    *row;
+
+  int
+    precision;
 
   MagickBooleanType
     status;
 
+  size_t
+    length;
+
   ssize_t
+    count,
     y;
  
   /*
@@ -183,12 +192,17 @@ static MagickBooleanType WriteKERNELImage(const ImageInfo *image_info,
   */
   if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
-  (void) FormatLocaleString(buffer,MagickPathExtent,"%gx%g:",(double)
+  (void) FormatLocaleString(buffer,sizeof(buffer),"%gx%g:",(double)
     image->columns,(double) image->rows);
   (void) WriteBlobString(image,buffer);
   /*
     Convert MIFF to KERNEL raster pixels.
   */
+  precision=MagickMin(GetMagickPrecision(),17);
+  length=(size_t) precision+10;
+  row=(char *) AcquireQuantumMemory(image->columns+1,length);
+  if (row == (char *) NULL)
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     const Quantum
@@ -200,21 +214,28 @@ static MagickBooleanType WriteKERNELImage(const ImageInfo *image_info,
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
+    q=row;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((x != 0) || (y != 0))
-        (void) WriteBlobString(image,",");
+        *q++=',';
       if (((image->alpha_trait != BlendPixelTrait) != 0) &&
           (GetPixelAlpha(image,p) < OpaqueAlpha/2))
-        (void) WriteBlobString(image,"-");
+        *q++='-';
       else
         {
-          (void) FormatLocaleString(buffer,MagickPathExtent,"%.*g",
-            GetMagickPrecision(),QuantumScale*GetPixelIntensity(image,p));
-          (void) WriteBlobString(image,buffer);
+          (void) FormatLocaleString(q,length,"%.*g",
+            precision,QuantumScale*GetPixelIntensity(image,p));
+          q+=strlen(q);
         }
       p+=(ptrdiff_t) GetPixelChannels(image);
     }
+    count=WriteBlob(image,(size_t) (q-row),(const unsigned char *) row);
+    if (count != (ssize_t) (q-row))
+      {
+        status=MagickFalse;
+        break;
+      }
     if (image->previous == (Image *) NULL)
       {
         status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -223,7 +244,9 @@ static MagickBooleanType WriteKERNELImage(const ImageInfo *image_info,
           break;
       }
   }
-  (void) WriteBlobString(image,"\n");
+  row=(char *) RelinquishMagickMemory(row);
+  if (status != MagickFalse)
+    (void) WriteBlobString(image,"\n");
   if (CloseBlob(image) == MagickFalse)
     status=MagickFalse;
   return(status);

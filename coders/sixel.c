@@ -1241,6 +1241,7 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,
     {
       Quantum index = (Quantum) pixels[y*(ssize_t) image->columns + x];
       SetPixelIndex(image,index,q);
+      SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
       if (has_alpha != MagickFalse)
         {
           /*

@@ -634,7 +634,7 @@ static double *GenerateCoefficients(const Image *image,
         coefficients to 4 (S, R, Tx, Ty) with Sy=Sx and Ry = -Rx so that one has
         only scale, rotation and translation. No skew.
       */
-      if (((number_arguments % cp_size) != 0) || (number_arguments < cp_size))
+      if (((number_arguments % cp_size) != 0) || (number_arguments < (2*cp_size)))
         {
           (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
             "InvalidArgument", "%s : 'require at least %.17g CPs'",
@@ -3191,10 +3191,14 @@ MagickExport Image *SparseColorImage(const Image *image,
 
   sparse_image=CloneImage(image,0,0,MagickTrue,exception);
   if (sparse_image == (Image *) NULL)
-    return((Image *) NULL);
+    {
+      coeff=(double *) RelinquishMagickMemory(coeff);
+      return((Image *) NULL);
+    }
   if (SetImageStorageClass(sparse_image,DirectClass,exception) == MagickFalse)
     { /* if image is ColorMapped - change it to DirectClass */
       sparse_image=DestroyImage(sparse_image);
+      coeff=(double *) RelinquishMagickMemory(coeff);
       return((Image *) NULL);
     }
   if (IsGrayColorspace(sparse_image->colorspace) != MagickFalse)

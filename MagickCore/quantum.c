@@ -323,14 +323,24 @@ MagickExport size_t GetQuantumExtent(const Image *image,
     case RGBAQuantum: channels=4; break;
     case RGBOQuantum: channels=4; break;
     case BGRAQuantum: channels=4; break;
+    case BGROQuantum: channels=4; break;
     case CMYKQuantum: channels=4; break;
     case CMYKAQuantum: channels=5; break;
+    case CMYKOQuantum: channels=5; break;
     case MultispectralQuantum: channels=GetImageChannels(image); break;
     case CbYCrAQuantum: channels=4; break;
     case CbYCrQuantum: channels=3; break;
     case CbYCrYQuantum: channels=4; break;
     default: break;
   }
+  if (image->columns == 1)
+    {
+      if ((quantum_type == GrayQuantum) && (quantum_info->depth == 10) &&
+          (quantum_info->pack == MagickFalse))
+        return(4+quantum_info->pad);
+      if (quantum_type == CbYCrYQuantum)
+        channels=6;
+    }
   if (quantum_info->pack == MagickFalse)
     return((size_t) (channels*image->columns*((quantum_info->depth+7)/8))+
       (quantum_info->pad*image->columns));

@@ -297,7 +297,7 @@ static int ReadSingleWEBPImage(const ImageInfo *image_info,Image *image,
     }
   if (webp_status != VP8_STATUS_OK)
     return(webp_status);
-  if (IsWEBPImageLossless((unsigned char *) stream,length) != MagickFalse)
+  if (IsWEBPImageLossless((const unsigned char *) stream,length) != MagickFalse)
     image->quality=100;
   if (image_info->ping != MagickFalse)
     return(webp_status);
@@ -486,8 +486,8 @@ static int ReadAnimatedWEBPImage(const ImageInfo *image_info,Image *image,
       break;
     image->page.width=canvas_width;
     image->page.height=canvas_height;
-    image->ticks_per_second=100;
-    image->delay=(size_t) round(iter.duration/10.0);
+    image->ticks_per_second=1000;
+    image->delay=(size_t) round(iter.duration);
     image->dispose=NoneDispose;
     if (iter.dispose_method == WEBP_MUX_DISPOSE_BACKGROUND)
       image->dispose=BackgroundDispose;
@@ -991,10 +991,11 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
     if (memory_info != (MemoryInfo *) NULL)
       (void) AppendValueToLinkedList(memory_info_list,memory_info);
     WebPPictureFree(&picture);
-    effective_delta=(size_t) (frame->delay*1000*MagickSafeReciprocal(
-      (double) frame->ticks_per_second));
+    effective_delta=(size_t) CastDoubleToSizeT((double) frame->delay*1000.0*
+      MagickSafeReciprocal((double) frame->ticks_per_second));
     if (effective_delta < 10)
-      effective_delta=100; /* Consistent with gif2webp */
+      effective_delta=(image->delay == 0) && (image->previous != NULL) ? 
+        (image->previous->delay*1000/image->ticks_per_second) : 100;
     frame_timestamp+=effective_delta;
     frame=GetNextImageInList(frame);
   }
@@ -1276,14 +1277,20 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
     if (status != MagickFalse)
       status=WriteWEBPImageProfile(image,&webp_data,exception);
     if (status != MagickFalse)
-      (void) WriteBlob(image,webp_data.size,webp_data.bytes);
+      {
+        if (WriteBlob(image,webp_data.size,webp_data.bytes) != (ssize_t) webp_data.size)
+          status=MagickFalse;
+      }
     WebPDataClear(&webp_data);
   }
 #else
   WebPMemoryWriterInit(&writer);
   status=WriteSingleWEBPImage(image_info,image,&configure,&writer,exception);
   if (status != MagickFalse)
-    (void) WriteBlob(image,writer.size,writer.mem);
+    {
+      if (WriteBlob(image, writer.size, writer.mem) != (ssize_t) writer.size)
+        status=MagickFalse;
+    }
   WebPMemoryWriterClear(&writer);
 #endif
   if (CloseBlob(image) == MagickFalse)

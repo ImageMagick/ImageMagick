@@ -193,7 +193,10 @@ static Image *ReadMACImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
               if (q == (Quantum *) NULL)
-                break;
+                {
+                  status=MagickFalse;
+                  break;
+                }
               p=pixels;
               bit=0;
               byte=0;
@@ -209,12 +212,17 @@ static Image *ReadMACImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 q+=(ptrdiff_t) GetPixelChannels(image);
               }
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
-                break;
+                {
+                  status=MagickFalse;
+                  break;
+                }
               offset=0;
               p=pixels;
               y++;
             }
         }
+        if (status == MagickFalse)
+          break;
         continue;
       }
     count++;
@@ -228,7 +236,10 @@ static Image *ReadMACImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (Quantum *) NULL)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
           p=pixels;
           bit=0;
           byte=0;
@@ -244,12 +255,17 @@ static Image *ReadMACImage(const ImageInfo *image_info,ExceptionInfo *exception)
             q+=(ptrdiff_t) GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
           offset=0;
           p=pixels;
           y++;
         }
     }
+    if (status == MagickFalse)
+      break;
   }
   pixels=(unsigned char *) RelinquishMagickMemory(pixels);
   (void) SyncImage(image,exception);

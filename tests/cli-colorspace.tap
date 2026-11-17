@@ -23,7 +23,7 @@ if [ "X$depth" = "X255" ]; then
   echo "ok"
   exit 0
 fi
-echo "1..19"
+echo "1..28"
 
 # how to generate a one pixel (average rose) color and output its values
 in="rose: -scale 1x1"    # a one pixel image of the average color.
@@ -117,4 +117,41 @@ test_color YIQ   sRGB && echo "ok" || echo "not ok"
 test_color YUV   sRGB && echo "ok" || echo "not ok"
 test_color YCbCr sRGB && echo "ok" || echo "not ok"
 test_color OHTA  sRGB && echo "ok" || echo "not ok"
+
+# ----------------
+
+#
+# Colors given in a non-RGB colorspace
+#
+# Expected values come from LCH -> XYZ (D65) -> sRGB
+#
+test_color_to_srgb() {
+  color=`eval ${MAGICK} "$1" -colorspace sRGB "$out"`
+
+  if [ "X$color" = "X$2" ]; then
+    return 0
+  fi
+  error=true
+  return 1
+}
+
+test_color_to_srgb "xc:'lchab(70,30,0)'" \
+  223,151,172 && echo "ok" || echo "not ok"
+test_color_to_srgb "xc:'lchab(60,50,120)'" \
+  125,155,64  && echo "ok" || echo "not ok"
+test_color_to_srgb "xc:'lchab(60,30,270)'" \
+  108,147,197 && echo "ok" || echo "not ok"
+test_color_to_srgb "xc:'lchab(65,30,-30)'" \
+  192,142,185 && echo "ok" || echo "not ok"
+test_color_to_srgb "xc:'lchuv(65,20,20)'" \
+  181,151,147 && echo "ok" || echo "not ok"
+
+test_color_to_srgb "xc:white -fill 'lchab(55,30,130)' -opaque white" \
+  112,140,91  && echo "ok" || echo "not ok"
+test_color_to_srgb "xc:white -fill 'lchuv(55,45,130)' -opaque white" \
+  85,145,90   && echo "ok" || echo "not ok"
+test_color_to_srgb "xc:white -fill 'lab(60,40,0)' -opaque white" \
+  209,116,146 && echo "ok" || echo "not ok"
+test_color_to_srgb "xc:black +level-colors 'lchab(70,30,0),white'" \
+  223,151,172 && echo "ok" || echo "not ok"
 :

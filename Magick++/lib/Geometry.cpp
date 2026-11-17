@@ -12,12 +12,6 @@
 #define MAGICK_PLUSPLUS_IMPLEMENTATION 1
 
 #include "Magick++/Include.h"
-#include <string>
-#include <ctype.h> // for isdigit
-#if !defined(MAGICKCORE_WINDOWS_SUPPORT)
-#include <strings.h>
-#endif
-
 #include "Magick++/Geometry.h"
 #include "Magick++/Exception.h"
 

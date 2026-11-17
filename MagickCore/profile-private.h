@@ -27,6 +27,9 @@ extern "C" {
 extern MagickExport MagickBooleanType
   SetImageProfilePrivate(Image *,StringInfo *,ExceptionInfo *);
 
+extern MagickExport size_t
+  GetMaxProfileCount(void);
+
 extern MagickExport StringInfo
   *AcquireProfileStringInfo(const char *,const size_t length,ExceptionInfo *),
   *BlobToProfileStringInfo(const char *,const void *blob,const size_t length,

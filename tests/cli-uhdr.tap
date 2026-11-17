@@ -1,0 +1,437 @@
+#!/bin/sh
+#
+#  Copyright 1999 ImageMagick Studio LLC, a non-profit organization
+#  dedicated to making software imaging solutions freely available.
+#
+#  You may not use this file except in compliance with the License.  You may
+#  obtain a copy of the License at
+#
+#    https://imagemagick.org/license/
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+#  Regression tests for Ultra HDR metadata preservation.
+#
+. ./common.shi
+. ${srcdir}/tests/common.shi
+
+raw_source=cli-uhdr-offset-raw.jpg
+source=cli-uhdr-offset-source.jpg
+output=cli-uhdr-offset-output.jpg
+transformed_output=cli-uhdr-offset-transformed.jpg
+locale_output=cli-uhdr-offset-locale.jpg
+jpeg_probe=cli-uhdr-jpeg-probe.jpg
+whitespace_output=cli-uhdr-offset-whitespace.jpg
+invalid_output=cli-uhdr-offset-invalid.jpg
+commented_source=cli-uhdr-commented.jpg
+comment_roundtrip=cli-uhdr-comment-roundtrip.jpg
+comment_linear=cli-uhdr-comment-roundtrip-linear.miff
+crop_sequential=cli-uhdr-crop-replay-sequential.jpg
+crop_direct=cli-uhdr-crop-replay-direct.jpg
+crop_sequential_linear=cli-uhdr-crop-replay-sequential-linear.miff
+crop_direct_linear=cli-uhdr-crop-replay-direct-linear.miff
+quality35_output=cli-uhdr-quality35.jpg
+quality85_output=cli-uhdr-quality85.jpg
+quality35_base=cli-uhdr-quality35-base.miff
+quality85_base=cli-uhdr-quality85-base.miff
+quality35_linear=cli-uhdr-quality35-linear.miff
+quality85_linear=cli-uhdr-quality85-linear.miff
+reduced_seed=cli-uhdr-crop-replay-reduced-seed.jpg
+reduced_source=cli-uhdr-crop-replay-reduced.jpg
+reduced_sequential=cli-uhdr-crop-replay-reduced-sequential.jpg
+reduced_direct=cli-uhdr-crop-replay-reduced-direct.jpg
+reduced_sequential_linear=cli-uhdr-crop-replay-reduced-sequential-linear.miff
+reduced_direct_linear=cli-uhdr-crop-replay-reduced-direct-linear.miff
+reduced_phase_sequential=cli-uhdr-crop-replay-reduced-phase-sequential.jpg
+reduced_phase_direct=cli-uhdr-crop-replay-reduced-phase-direct.jpg
+reduced_phase_sequential_linear=cli-uhdr-crop-replay-reduced-phase-sequential-linear.miff
+reduced_phase_direct_linear=cli-uhdr-crop-replay-reduced-phase-direct-linear.miff
+iptc_fixture=${SRCDIR}/cli-uhdr-iptc.jpg
+iptc_source=cli-uhdr-iptc-source.iptc
+iptc_output=cli-uhdr-iptc-output.iptc
+capacity_min=1.00000012
+capacity_max=2.00000024
+expected_offsets='1.00000001e-07,1.00000001e-07,1.00000001e-07 1.00000001e-07,1.00000001e-07,1.00000001e-07'
+source_comment='comments-local-baseline
+comments-local-second-line'
+
+cleanup()
+{
+  rm -f "$raw_source" "$source" "$output" "$transformed_output" \
+    "$locale_output" "$jpeg_probe" "$whitespace_output" "$invalid_output" \
+    "$iptc_source" "$iptc_output"
+  rm -f "$commented_source" "$comment_roundtrip" \
+    "$comment_linear" "$crop_sequential" "$crop_direct" \
+    "$crop_sequential_linear" "$crop_direct_linear" "$reduced_seed" \
+    "$reduced_source" "$reduced_sequential" "$reduced_direct" \
+    "$reduced_sequential_linear" "$reduced_direct_linear" \
+    "$reduced_phase_sequential" "$reduced_phase_direct" \
+    "$reduced_phase_sequential_linear" "$reduced_phase_direct_linear" \
+    "$quality35_output" "$quality85_output" \
+    "$quality35_base" "$quality85_base" "$quality35_linear" \
+    "$quality85_linear"
+}
+
+check_value()
+{
+  description=$1
+  actual=$2
+  expected=$3
+
+  if [ "X$actual" = "X$expected" ]; then
+    echo "ok - $description"
+  else
+    echo "not ok - $description"
+    echo "# expected '$expected', got '$actual'"
+  fi
+}
+
+cleanup
+if ! ${MAGICK} -list configure 2>/dev/null | awk '
+    $1 == "DELEGATES" {
+      for (i=2; i <= NF; i++)
+        if ($i == "uhdr")
+          found=1
+    }
+    END { exit(found ? 0 : 1) }
+  '; then
+  echo "1..0 # SKIP UHDR coder unavailable"
+  cleanup
+  exit 0
+fi
+jpeg_format=
+if ${MAGICK} "${SRCDIR}/rose.pnm" "$jpeg_probe" >/dev/null 2>&1; then
+  jpeg_format=`${IDENTIFY} -quiet -format '%m' "$jpeg_probe" 2>/dev/null`
+fi
+if [ "X$jpeg_format" != "XJPEG" ]; then
+  echo "1..0 # SKIP JPEG coder unavailable"
+  cleanup
+  exit 0
+fi
+
+echo "1..20"
+if ! ${MAGICK} \( "${SRCDIR}/rose.pnm" -depth 8 \) \
+    \( "${SRCDIR}/rose.pnm" -depth 16 \) \
+    -define uhdr:hdr-color-transfer=linear "UHDR:$raw_source" \
+    >/dev/null 2>&1; then
+  echo "Bail out! unable to create UHDR test image"
+  cleanup
+  exit 0
+fi
+if ! ${MAGICK} "UHDR:$raw_source" \
+    -set hdrgm:OffsetSDR '0.0000001,0.0000001,0.0000001' \
+    -set hdrgm:OffsetHDR '0.0000001,0.0000001,0.0000001' \
+    "UHDR:$source" >/dev/null 2>&1; then
+  echo "Bail out! unable to create UHDR metadata fixture"
+  cleanup
+  exit 0
+fi
+if ! ${MAGICK} "UHDR:$source" -set comment "$source_comment" \
+    "UHDR:$commented_source" >/dev/null 2>&1; then
+  echo "Bail out! unable to create UHDR comment fixture"
+  cleanup
+  exit 0
+fi
+# Enlarge only the base while retaining the original 35x23 map profile.
+if ! ${MAGICK} \( "${SRCDIR}/rose.pnm" -depth 8 -resize 50% \) \
+    \( "${SRCDIR}/rose.pnm" -depth 16 -resize 50% \) \
+    -define uhdr:hdr-color-transfer=linear "UHDR:$reduced_seed" \
+    >/dev/null 2>&1 ||
+   ! ${MAGICK} "UHDR:$reduced_seed" -resize 200% \
+    -set hdrgm:BaseWidth 70 -set hdrgm:BaseHeight 46 \
+    -set hdrgm:Transform '' "UHDR:$reduced_source" >/dev/null 2>&1; then
+  echo "Bail out! unable to create reduced-map UHDR fixture"
+  cleanup
+  exit 0
+fi
+
+if ${MAGICK} -define jpeg:detect-uhdr=false "$iptc_fixture" \
+    "IPTC:$iptc_source" >/dev/null 2>&1 && [ -s "$iptc_source" ] && \
+    ${MAGICK} "$iptc_fixture" "IPTC:$iptc_output" >/dev/null 2>&1 && \
+    cmp -s "$iptc_source" "$iptc_output"; then
+  echo "ok - IPTC profile survives automatic UHDR read"
+else
+  echo "not ok - IPTC profile survives automatic UHDR read"
+fi
+hdrgm=`${IDENTIFY} -quiet -format '%[jpeg:hdrgm]' "$iptc_fixture" 2>/dev/null`
+check_value "IPTC fixture uses automatic UHDR routing" "$hdrgm" true
+
+if ${MAGICK} "UHDR:$source" \
+    -set hdrgm:OffsetSDR ' 0.0000001 , 0.0000001 , 0.0000001 ' \
+    -set hdrgm:OffsetHDR ' 0.0000001 , 0.0000001 , 0.0000001 ' \
+    -set hdrgm:HDRCapacityMin " $capacity_min " \
+    -set hdrgm:HDRCapacityMax " $capacity_max " \
+    "UHDR:$whitespace_output" >/dev/null 2>&1; then
+  whitespace_metadata=`${IDENTIFY} -quiet -format \
+    '%[hdrgm:OffsetSDR] %[hdrgm:OffsetHDR] %[hdrgm:HDRCapacityMin] %[hdrgm:HDRCapacityMax]' \
+    "UHDR:$whitespace_output" 2>/dev/null`
+else
+  whitespace_metadata=
+fi
+check_value "metadata permits surrounding whitespace" "$whitespace_metadata" \
+  "$expected_offsets $capacity_min $capacity_max"
+
+printf 'sentinel' > "$invalid_output"
+if ${MAGICK} "UHDR:$source" -set hdrgm:OffsetSDR '0.1,invalid,0.3' \
+    "UHDR:$invalid_output" >/dev/null 2>&1; then
+  echo "not ok - malformed vector metadata is rejected"
+else
+  content=`cat "$invalid_output" 2>/dev/null`
+  check_value "malformed vector metadata is rejected without truncating output" \
+    "$content" sentinel
+fi
+printf 'sentinel' > "$invalid_output"
+if ${MAGICK} "UHDR:$source" -set hdrgm:HDRCapacityMax '2junk' \
+    "UHDR:$invalid_output" >/dev/null 2>&1; then
+  echo "not ok - malformed scalar metadata is rejected"
+else
+  content=`cat "$invalid_output" 2>/dev/null`
+  check_value "malformed scalar metadata is rejected without truncating output" \
+    "$content" sentinel
+fi
+
+source_offsets=`${IDENTIFY} -quiet -format \
+  '%[hdrgm:OffsetSDR] %[hdrgm:OffsetHDR]' "UHDR:$source" 2>/dev/null`
+if ${MAGICK} "UHDR:$source" \
+    -set hdrgm:HDRCapacityMin "$capacity_min" \
+    -set hdrgm:HDRCapacityMax "$capacity_max" \
+    "UHDR:$output" >/dev/null 2>&1; then
+  output_offsets=`${IDENTIFY} -quiet -format \
+    '%[hdrgm:OffsetSDR] %[hdrgm:OffsetHDR]' "UHDR:$output" 2>/dev/null`
+  output_capacity=`${IDENTIFY} -quiet -format \
+    '%[hdrgm:HDRCapacityMin] %[hdrgm:HDRCapacityMax]' \
+    "UHDR:$output" 2>/dev/null`
+else
+  output_offsets=
+  output_capacity=
+fi
+
+if ${MAGICK} "UHDR:$source" \
+    -set hdrgm:HDRCapacityMin "$capacity_min" \
+    -set hdrgm:HDRCapacityMax "$capacity_max" -resize 50% \
+    "UHDR:$transformed_output" >/dev/null 2>&1; then
+  transformed_offsets=`${IDENTIFY} -quiet -format \
+    '%[hdrgm:OffsetSDR] %[hdrgm:OffsetHDR]' \
+    "UHDR:$transformed_output" 2>/dev/null`
+  transformed_capacity=`${IDENTIFY} -quiet -format \
+    '%[hdrgm:HDRCapacityMin] %[hdrgm:HDRCapacityMax]' \
+    "UHDR:$transformed_output" 2>/dev/null`
+else
+  transformed_offsets=
+  transformed_capacity=
+fi
+
+offsets_nonzero=`echo "$source_offsets" | awk -F '[, ]+' \
+  '{ result=(NF == 6); for (i=1; i <= NF; i++) if (($i+0) == 0 || \
+     ($i+0) >= 0.000001 || ($i+0) <= -0.000001) result=0; print result }'`
+if [ "X$offsets_nonzero" = "X1" ]; then
+  echo "ok - small nonzero offsets are retained as properties"
+else
+  echo "not ok - small nonzero offsets are retained as properties"
+  echo "# got '$source_offsets'"
+fi
+check_value "source uses controlled offset values" "$source_offsets" \
+  "$expected_offsets"
+offsets_nonzero=`echo "$output_offsets" | awk -F '[, ]+' \
+  '{ result=(NF == 6); for (i=1; i <= NF; i++) if (($i+0) == 0 || \
+     ($i+0) >= 0.000001 || ($i+0) <= -0.000001) result=0; print result }'`
+if [ "X$offsets_nonzero" = "X1" ]; then
+  echo "ok - small nonzero offsets survive a read/write cycle"
+else
+  echo "not ok - small nonzero offsets survive a read/write cycle"
+  echo "# got '$output_offsets'"
+fi
+check_value "offset values are unchanged" "$output_offsets" \
+  "$source_offsets"
+check_value "capacity values retain float precision" "$output_capacity" \
+  "$capacity_min $capacity_max"
+check_value "offset values survive a geometry transform" \
+  "$transformed_offsets" "$source_offsets"
+check_value "capacity values survive a geometry transform" \
+  "$transformed_capacity" "$capacity_min $capacity_max"
+
+if ${MAGICK} "UHDR:$source" -quality 85 \
+    -define uhdr:gainmap-quality=35 -resize 50% \
+    "UHDR:$quality35_output" >/dev/null 2>&1 &&
+   ${MAGICK} "UHDR:$source" -quality 85 \
+    -resize 50% \
+    "UHDR:$quality85_output" >/dev/null 2>&1 &&
+   ${MAGICK} -define jpeg:detect-uhdr=false "$quality35_output" \
+    "$quality35_base" >/dev/null 2>&1 &&
+   ${MAGICK} -define jpeg:detect-uhdr=false "$quality85_output" \
+    "$quality85_base" >/dev/null 2>&1 &&
+   ${MAGICK} -define uhdr:output-color-transfer=linear \
+    "UHDR:$quality35_output" "$quality35_linear" >/dev/null 2>&1 &&
+   ${MAGICK} -define uhdr:output-color-transfer=linear \
+    "UHDR:$quality85_output" "$quality85_linear" >/dev/null 2>&1; then
+  quality_base_metric=`${MAGICK} compare -metric AE "$quality35_base" \
+    "$quality85_base" null: 2>&1`
+  quality_base_status=$?
+  quality_hdr_metric=`${MAGICK} compare -metric AE "$quality35_linear" \
+    "$quality85_linear" null: 2>&1`
+  quality_hdr_status=$?
+  if [ "$quality_base_status" = "0" ]; then
+    echo "ok - gain-map quality leaves primary pixels unchanged"
+  else
+    echo "not ok - gain-map quality leaves primary pixels unchanged"
+    echo "# compare result '$quality_base_metric' (status $quality_base_status)"
+  fi
+  if [ "$quality_hdr_status" = "1" ]; then
+    echo "ok - gain-map quality changes HDR pixels"
+  else
+    echo "not ok - gain-map quality changes HDR pixels"
+    echo "# compare result '$quality_hdr_metric' (status $quality_hdr_status)"
+  fi
+else
+  echo "not ok - gain-map quality leaves primary pixels unchanged"
+  echo "# unable to create or decode gain-map quality outputs"
+  echo "not ok - gain-map quality changes HDR pixels"
+  echo "# unable to create or decode gain-map quality outputs"
+fi
+
+comment_status=0
+comment_value=`${IDENTIFY} -quiet -format '%[comment]' "$commented_source" \
+  2>/dev/null` || comment_status=$?
+if [ "$comment_status" = "0" ] && [ "X$comment_value" = "X$source_comment" ]; then
+  echo "ok - automatic UHDR JPEG read preserves the base comment"
+else
+  echo "not ok - automatic UHDR JPEG read preserves the base comment"
+  echo "# expected '$source_comment', got '$comment_value' (status $comment_status)"
+fi
+
+roundtrip_status=0
+if ${MAGICK} "$commented_source" "$comment_roundtrip" >/dev/null 2>&1; then
+  base_comment_status=0
+  base_comment=`${MAGICK} -define jpeg:detect-uhdr=false "$comment_roundtrip" \
+    -format '%[comment]' info: 2>/dev/null` || base_comment_status=$?
+  decode_status=0
+  ${MAGICK} -define uhdr:output-color-transfer=linear \
+    "UHDR:$comment_roundtrip" "$comment_linear" >/dev/null 2>&1 || \
+    decode_status=$?
+  profile_status=0
+  profile_decode=`${IDENTIFY} -quiet -format '%m|%[profiles]' \
+    "UHDR:$comment_roundtrip" 2>/dev/null` || profile_status=$?
+  profile_ok=0
+  case "$profile_decode" in
+    UHDR\|*hdrgm*) profile_ok=1 ;;
+  esac
+  if [ "$base_comment_status" = "0" ] && \
+      [ "X$base_comment" = "X$source_comment" ] && \
+      [ "$decode_status" = "0" ] && [ "$profile_status" = "0" ] && \
+      [ "$profile_ok" = "1" ]; then
+    echo "ok - automatic UHDR roundtrip preserves comment and HDR decode"
+  else
+    echo "not ok - automatic UHDR roundtrip preserves comment and HDR decode"
+    echo "# expected '$source_comment', got '$base_comment' (comment status $base_comment_status, decode status $decode_status, profile status $profile_status, profile '$profile_decode')"
+  fi
+else
+  roundtrip_status=$?
+  echo "not ok - automatic UHDR roundtrip preserves comment and HDR decode"
+  echo "# UHDR write failed (status $roundtrip_status)"
+fi
+
+if ${MAGICK} "UHDR:$source" -crop 40x30+6+4 +repage \
+    -crop 20x16+3+2 +repage -quality 85 "UHDR:$crop_sequential" \
+    >/dev/null 2>&1 &&
+   ${MAGICK} "UHDR:$source" -crop 20x16+9+6 +repage -quality 85 \
+    "UHDR:$crop_direct" >/dev/null 2>&1 &&
+   ${MAGICK} -define uhdr:output-color-transfer=linear \
+    "UHDR:$crop_sequential" "$crop_sequential_linear" >/dev/null 2>&1 &&
+   ${MAGICK} -define uhdr:output-color-transfer=linear \
+    "UHDR:$crop_direct" "$crop_direct_linear" >/dev/null 2>&1; then
+  crop_metric=`${MAGICK} compare -metric AE "$crop_sequential_linear" \
+    "$crop_direct_linear" null: 2>&1`
+  crop_status=$?
+  crop_value=`echo "$crop_metric" | awk '{print $1}'`
+  if [ "$crop_status" = "0" ] && [ "X$crop_value" = "X0" ]; then
+    echo "ok - repeated UHDR crops match direct crop"
+  else
+    echo "not ok - repeated UHDR crops match direct crop"
+    echo "# expected zero absolute error, got '$crop_metric'"
+  fi
+else
+  echo "not ok - repeated UHDR crops match direct crop"
+  echo "# unable to create or decode crop replay outputs"
+fi
+
+if ${MAGICK} "UHDR:$reduced_source" -crop 40x30+1+3 +repage \
+    -crop 19x15+3+1 +repage -quality 85 "UHDR:$reduced_sequential" \
+    >/dev/null 2>&1 &&
+   ${MAGICK} "UHDR:$reduced_source" -crop 19x15+4+4 +repage \
+    -quality 85 "UHDR:$reduced_direct" >/dev/null 2>&1 &&
+   ${MAGICK} -define uhdr:output-color-transfer=linear \
+    "UHDR:$reduced_sequential" "$reduced_sequential_linear" >/dev/null 2>&1 &&
+   ${MAGICK} -define uhdr:output-color-transfer=linear \
+    "UHDR:$reduced_direct" "$reduced_direct_linear" >/dev/null 2>&1; then
+  crop_metric=`${MAGICK} compare -metric AE "$reduced_sequential_linear" \
+    "$reduced_direct_linear" null: 2>&1`
+  crop_status=$?
+  crop_value=`echo "$crop_metric" | awk '{print $1}'`
+  if [ "$crop_status" = "0" ] && [ "X$crop_value" = "X0" ]; then
+    echo "ok - repeated reduced-map crops match direct HDR pixels"
+  else
+    echo "not ok - repeated reduced-map crops match direct HDR pixels"
+    echo "# expected zero absolute error, got '$crop_metric'"
+  fi
+else
+  echo "not ok - repeated reduced-map crops match direct HDR pixels"
+  echo "# unable to create or decode reduced-map crop replay outputs"
+fi
+
+if ${MAGICK} "UHDR:$reduced_source" -crop 40x30+5+3 +repage \
+    -rotate 90 -crop 15x13+3+5 +repage -quality 85 \
+    "UHDR:$reduced_phase_sequential" >/dev/null 2>&1 &&
+   ${MAGICK} "UHDR:$reduced_source" -crop 13x15+10+15 +repage \
+    -rotate 90 -quality 85 "UHDR:$reduced_phase_direct" >/dev/null 2>&1 &&
+   ${MAGICK} -define uhdr:output-color-transfer=linear \
+    "UHDR:$reduced_phase_sequential" "$reduced_phase_sequential_linear" \
+    >/dev/null 2>&1 &&
+   ${MAGICK} -define uhdr:output-color-transfer=linear \
+    "UHDR:$reduced_phase_direct" "$reduced_phase_direct_linear" \
+    >/dev/null 2>&1; then
+  crop_metric=`${MAGICK} compare -metric AE \
+    "$reduced_phase_sequential_linear" "$reduced_phase_direct_linear" \
+    null: 2>&1`
+  crop_status=$?
+  crop_value=`echo "$crop_metric" | awk '{print $1}'`
+  if [ "$crop_status" = "0" ] && [ "X$crop_value" = "X0" ]; then
+    echo "ok - reduced-map crop and rotate replay matches direct geometry"
+  else
+    echo "not ok - reduced-map crop and rotate replay matches direct geometry"
+    echo "# expected zero absolute error, got '$crop_metric'"
+  fi
+else
+  echo "not ok - reduced-map crop and rotate replay matches direct geometry"
+  echo "# unable to create or decode reduced-map crop and rotate outputs"
+fi
+
+comma_locale=
+for candidate in de_DE.UTF-8 fr_FR.UTF-8 nl_NL.UTF-8; do
+  decimal_point=`LC_ALL=$candidate locale decimal_point 2>/dev/null`
+  if [ "X$decimal_point" = "X," ]; then
+    comma_locale=$candidate
+    break
+  fi
+done
+if [ -n "$comma_locale" ]; then
+  if LC_ALL=$comma_locale ${MAGICK} "UHDR:$source" \
+      -set hdrgm:HDRCapacityMin "$capacity_min" \
+      -set hdrgm:HDRCapacityMax "$capacity_max" \
+      "UHDR:$locale_output" >/dev/null 2>&1; then
+    locale_metadata=`${IDENTIFY} -quiet -format \
+      '%[hdrgm:OffsetSDR] %[hdrgm:OffsetHDR] %[hdrgm:HDRCapacityMin] %[hdrgm:HDRCapacityMax]' \
+      "UHDR:$locale_output" 2>/dev/null`
+  else
+    locale_metadata=
+  fi
+  check_value "metadata parsing is locale independent" "$locale_metadata" \
+    "$source_offsets $capacity_min $capacity_max"
+else
+  echo "ok - metadata parsing is locale independent # SKIP comma locale unavailable"
+fi
+cleanup
+:

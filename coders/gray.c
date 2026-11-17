@@ -681,6 +681,8 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
     if (image_info->number_scenes != 0)
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
+    if (image_info->interlace == PartitionInterlace)
+      break;
     if (count == (ssize_t) length)
       {
         /*
@@ -887,7 +889,10 @@ static MagickBooleanType WriteGRAYImage(const ImageInfo *image_info,
             quantum_type,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
           if (image->previous == (Image *) NULL)
             {
               status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -915,14 +920,20 @@ static MagickBooleanType WriteGRAYImage(const ImageInfo *image_info,
             GrayQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
           if (quantum_type == GrayAlphaQuantum)
             {
               length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
                 AlphaQuantum,pixels,exception);
               count=WriteBlob(image,length,pixels);
               if (count != (ssize_t) length)
-                break;
+                {
+                  status=MagickFalse;
+                  break;
+                }
             }
           if (image->previous == (Image *) NULL)
             {
@@ -951,7 +962,10 @@ static MagickBooleanType WriteGRAYImage(const ImageInfo *image_info,
             GrayQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
         }
         if (image->previous == (Image *) NULL)
           {
@@ -973,7 +987,10 @@ static MagickBooleanType WriteGRAYImage(const ImageInfo *image_info,
                 AlphaQuantum,pixels,exception);
               count=WriteBlob(image,length,pixels);
               if (count != (ssize_t) length)
-              break;
+                {
+                  status=MagickFalse;
+                  break;
+                }
             }
             if (image->previous == (Image *) NULL)
               {
@@ -1018,7 +1035,10 @@ static MagickBooleanType WriteGRAYImage(const ImageInfo *image_info,
             RedQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
         }
         if (image->previous == (Image *) NULL)
           {
@@ -1051,7 +1071,10 @@ static MagickBooleanType WriteGRAYImage(const ImageInfo *image_info,
                 AlphaQuantum,pixels,exception);
               count=WriteBlob(image,length,pixels);
               if (count != (ssize_t) length)
-                break;
+                {
+                  status=MagickFalse;
+                  break;
+                }
             }
             if (image->previous == (Image *) NULL)
               {
@@ -1073,6 +1096,8 @@ static MagickBooleanType WriteGRAYImage(const ImageInfo *image_info,
       }
     }
     quantum_info=DestroyQuantumInfo(quantum_info);
+    if (status == MagickFalse)
+      break;
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

@@ -1158,6 +1158,9 @@ MagickExport Image *MorphImages(const Image *image,const size_t number_frames,
 {
 #define MorphImageTag  "Morph/Image"
 
+  const Image
+    *next;
+
   double
     alpha,
     beta;
@@ -1172,13 +1175,8 @@ MagickExport Image *MorphImages(const Image *image,const size_t number_frames,
   MagickOffsetType
     scene;
 
-  const Image
-    *next;
-
   ssize_t
-    n;
-
-  ssize_t
+    n,
     y;
 
   /*
@@ -1248,6 +1246,7 @@ MagickExport Image *MorphImages(const Image *image,const size_t number_frames,
       if (status == MagickFalse)
         {
           morph_image=DestroyImage(morph_image);
+          morph_images=DestroyImageList(morph_images);
           return((Image *) NULL);
         }
       AppendImageToList(&morph_images,morph_image);
@@ -1295,9 +1294,9 @@ MagickExport Image *MorphImages(const Image *image,const size_t number_frames,
           ssize_t
             i;
 
-          for (i=0; i < (ssize_t) GetPixelChannels(morph_image); i++)
+          for (i=0; i < (ssize_t) GetPixelChannels(morph_images); i++)
           {
-            PixelChannel channel = GetPixelChannelChannel(morph_image,i);
+            PixelChannel channel = GetPixelChannelChannel(morph_images,i);
             PixelTrait traits = GetPixelChannelTraits(morph_image,channel);
             PixelTrait morph_traits=GetPixelChannelTraits(morph_images,channel);
             if ((traits == UndefinedPixelTrait) ||
@@ -1305,11 +1304,13 @@ MagickExport Image *MorphImages(const Image *image,const size_t number_frames,
               continue;
             if ((morph_traits & CopyPixelTrait) != 0)
               {
-                SetPixelChannel(morph_image,channel,p[i],q);
+                SetPixelChannel(morph_images,channel,GetPixelChannel(
+                  morph_image,channel,p),q);
                 continue;
               }
-            SetPixelChannel(morph_image,channel,ClampToQuantum(alpha*(double)
-              GetPixelChannel(morph_images,channel,q)+beta*(double) p[i]),q);
+            SetPixelChannel(morph_images,channel,ClampToQuantum(alpha*(double)
+              GetPixelChannel(morph_images,channel,q)+beta*(double)
+              GetPixelChannel(morph_image,channel,p)),q);
           }
           p+=(ptrdiff_t) GetPixelChannels(morph_image);
           q+=(ptrdiff_t) GetPixelChannels(morph_images);
@@ -1758,8 +1759,7 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
               (void) FormatLocaleString(geometry,MagickPathExtent,"+0+%.17g",
                 metrics.ascent);
               if (annotate_info->gravity == UndefinedGravity)
-                (void) CloneString(&annotate_info->geometry,AcquireString(
-                  geometry));
+                (void) CloneString(&annotate_info->geometry,geometry);
               (void) AnnotateImage(caption_image,annotate_info,exception);
               height+=caption_image->rows;
             }
@@ -3571,7 +3571,10 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
       return((Image *) NULL);
     }
   if (AcquireMagickResource(WidthResource,4*image->columns) == MagickFalse)
-    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+    {
+      noise_image=DestroyImage(noise_image);
+      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   pixels_info=AcquireVirtualMemory(4*image->columns,image->rows*
     sizeof(*pixels));
   kernel=(float *) AcquireQuantumMemory(MagickMax(image->rows,image->columns)+1,
@@ -3582,6 +3585,7 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
         kernel=(float *) RelinquishMagickMemory(kernel);
       if (pixels_info != (MemoryInfo *) NULL)
         pixels_info=RelinquishVirtualMemory(pixels_info);
+      noise_image=DestroyImage(noise_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
   pixels=(float *) GetVirtualMemoryBlob(pixels_info);

@@ -116,6 +116,8 @@ MAGICKCORE_CODER_SRCS = \
 	coders/aai.h \
 	coders/art.c \
 	coders/art.h \
+	coders/ase.c \
+	coders/ase.h \
 	coders/ashlar.c \
 	coders/ashlar.h \
 	coders/avs.c \
@@ -149,6 +151,8 @@ MAGICKCORE_CODER_SRCS = \
 	coders/cube.h \
 	coders/cut.c \
 	coders/cut.h \
+	coders/c2pa.c \
+	coders/c2pa.h \
 	coders/dcm.c \
 	coders/dcm.h \
 	coders/dds.c \
@@ -158,6 +162,7 @@ MAGICKCORE_CODER_SRCS = \
 	coders/dib.c \
 	coders/dib.h \
 	coders/djvu.h \
+	coders/dmr.h \
 	coders/dng.c \
 	coders/dng.h \
 	coders/dot.c \
@@ -359,6 +364,8 @@ MAGICKCORE_CODER_SRCS = \
 	coders/viff.h \
 	coders/vips.c \
 	coders/vips.h \
+	coders/wbinfo.c \
+	coders/wbinfo.h \
 	coders/wbmp.c \
 	coders/wbmp.h \
 	coders/webp.h \
@@ -405,6 +412,7 @@ MAGICKCORE_CODER_SRCS = \
 CODERS_NOINST_HDRS = \
 	coders/aai.h \
 	coders/art.h \
+	coders/ase.h \
 	coders/ashlar.h \
 	coders/avs.h \
 	coders/bayer.h \
@@ -424,11 +432,13 @@ CODERS_NOINST_HDRS = \
 	coders/coders-private.h \
 	coders/cube.h \
 	coders/cut.h \
+	coders/c2pa.h \
 	coders/dcm.h \
 	coders/dds.h \
 	coders/debug.h \
 	coders/dib.h \
 	coders/djvu.h \
+	coders/dmr.h \
 	coders/dng.h \
 	coders/dot.h \
 	coders/dps.h \
@@ -537,6 +547,7 @@ CODERS_NOINST_HDRS = \
 	coders/video.h \
 	coders/viff.h \
 	coders/vips.h \
+	coders/wbinfo.h \
 	coders/wbmp.h \
 	coders/webp.h \
 	coders/wmf.h \
@@ -556,6 +567,7 @@ if WITH_MODULES
 coders_LTLIBRARIES = \
 	coders/aai.la \
 	coders/art.la \
+	coders/ase.la \
 	coders/ashlar.la \
 	coders/avs.la \
 	coders/bayer.la \
@@ -570,6 +582,7 @@ coders_LTLIBRARIES = \
 	coders/cmyk.la \
 	coders/cube.la \
 	coders/cut.la \
+	coders/c2pa.la \
 	coders/dcm.la \
 	coders/dds.la \
 	coders/debug.la \
@@ -665,6 +678,7 @@ coders_LTLIBRARIES = \
 	coders/video.la \
 	coders/viff.la \
 	coders/vips.la \
+	coders/wbinfo.la \
 	coders/wbmp.la \
 	coders/wpg.la \
 	coders/xbm.la \
@@ -708,6 +722,12 @@ coders_art_la_SOURCES      = coders/art.c
 coders_art_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
 coders_art_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_art_la_LIBADD       = $(MAGICKCORE_LIBS)
+
+# ASE coder module
+coders_ase_la_SOURCES      = coders/ase.c
+coders_ase_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
+coders_ase_la_LDFLAGS      = $(MODULECOMMONFLAGS)
+coders_ase_la_LIBADD       = $(MAGICKCORE_LIBS) $(ZLIB_LIBS)
 
 # ASHLAR coder module
 coders_ashlar_la_SOURCES   = coders/ashlar.c
@@ -798,6 +818,12 @@ coders_cut_la_SOURCES      = coders/cut.c
 coders_cut_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
 coders_cut_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_cut_la_LIBADD       = $(MAGICKCORE_LIBS)
+
+# C2PA coder module
+coders_c2pa_la_SOURCES     = coders/c2pa.c
+coders_c2pa_la_CPPFLAGS    = $(MAGICK_CODER_CPPFLAGS)
+coders_c2pa_la_LDFLAGS     = $(MODULECOMMONFLAGS)
+coders_c2pa_la_LIBADD      = $(MAGICKCORE_LIBS)
 
 # DCM coder module
 coders_dcm_la_SOURCES      = coders/dcm.c
@@ -1416,6 +1442,10 @@ coders_uhdr_la_SOURCES     = coders/uhdr.c
 coders_uhdr_la_CPPFLAGS    = $(MAGICK_CODER_CPPFLAGS)
 coders_uhdr_la_LDFLAGS     = $(MODULECOMMONFLAGS)
 coders_uhdr_la_LIBADD      = $(MAGICKCORE_LIBS) $(UHDR_LIBS) $(MATH_LIBS)
+coders_uhdr_la_LINK        = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
+  $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
+  $(AM_CFLAGS) $(CFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) \
+  $(coders_uhdr_la_LDFLAGS) $(LDFLAGS) -o $@
 
 # UIL coder module
 coders_uil_la_SOURCES      = coders/uil.c
@@ -1467,6 +1497,12 @@ coders_vips_la_SOURCES     = coders/vips.c
 coders_vips_la_CPPFLAGS    = $(MAGICK_CODER_CPPFLAGS)
 coders_vips_la_LDFLAGS     = $(MODULECOMMONFLAGS)
 coders_vips_la_LIBADD      = $(MAGICKCORE_LIBS) $(MATH_LIBS)
+
+# WBINFO coder module
+coders_wbinfo_la_SOURCES   = coders/wbinfo.c
+coders_wbinfo_la_CPPFLAGS  = $(MAGICK_CODER_CPPFLAGS)
+coders_wbinfo_la_LDFLAGS   = $(MODULECOMMONFLAGS)
+coders_wbinfo_la_LIBADD    = $(MAGICKCORE_LIBS) $(ZLIB_LIBS)
 
 # WBMP coder module
 coders_wbmp_la_SOURCES     = coders/wbmp.c

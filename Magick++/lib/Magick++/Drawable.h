@@ -540,6 +540,7 @@ public:
   DrawablePopClipPath ( void )
     : _dummy(0)
     {
+      (void) _dummy;
     }
 
   /*virtual*/ ~DrawablePopClipPath ( void );
@@ -1316,6 +1317,7 @@ public:
   DrawablePopGraphicContext ( void )
     : _dummy(0)
     {
+      (void) _dummy;
     }
 
   /*virtual*/ ~DrawablePopGraphicContext ( void );
@@ -1337,6 +1339,7 @@ public:
   DrawablePushGraphicContext ( void )
     : _dummy(0)
     {
+      (void) _dummy;
     }
 
   /*virtual*/ ~DrawablePushGraphicContext ( void );
@@ -1358,6 +1361,7 @@ public:
   DrawablePopPattern ( void )
     : _dummy(0)
     {
+      (void) _dummy;
     }
 
   /*virtual*/ ~DrawablePopPattern ( void );
@@ -2520,6 +2524,7 @@ public:
   PathClosePath ( void )
     : _dummy(0)
     {
+      (void) _dummy;
     }
 
   /*virtual*/ ~PathClosePath ( void );

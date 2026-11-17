@@ -872,8 +872,12 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (LocaleCompare(image_info->magick,"PCDS") == 0)
     (void) SetImageColorspace(image,sRGBColorspace,exception);
   if (image_info->scene != 0)
-    for (i=0; i < (ssize_t) image_info->scene; i++)
-      AppendImageToList(&image,CloneImage(image,0,0,MagickTrue,exception));
+    {
+      if (AcquireMagickResource(ListLengthResource,image_info->scene) == MagickFalse)
+        ThrowPCDException(ResourceLimitError,"ListLengthExceedsLimit");
+      for (i=0; i < (ssize_t) image_info->scene; i++)
+        AppendImageToList(&image,CloneImage(image,0,0,MagickTrue,exception));
+    }
   if (status == MagickFalse)
     return(image=DestroyImageList(image));
   return(GetFirstImageInList(image));
@@ -1000,7 +1004,6 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
     *q;
 
   ssize_t
-    i,
     x;
 
   ssize_t
@@ -1102,8 +1105,7 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
     if (status == MagickFalse)
       break;
   }
-  for (i=0; i < 0x800; i++)
-    (void) WriteBlobByte(image,'\0');
+  (void) WriteBlobPadding(image,0x800,'\0');
   downsample_image=DestroyImage(downsample_image);
   tile_image=DestroyImage(tile_image);
   return(MagickTrue);
@@ -1117,9 +1119,6 @@ static MagickBooleanType WritePCDImage(const ImageInfo *image_info,Image *image,
 
   MagickBooleanType
     status;
-
-  ssize_t
-    i;
 
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
@@ -1158,36 +1157,24 @@ static MagickBooleanType WritePCDImage(const ImageInfo *image_info,Image *image,
   /*
     Write PCD image header.
   */
-  for (i=0; i < 32; i++)
-    (void) WriteBlobByte(pcd_image,0xff);
-  for (i=0; i < 4; i++)
-    (void) WriteBlobByte(pcd_image,0x0e);
-  for (i=0; i < 8; i++)
-    (void) WriteBlobByte(pcd_image,'\0');
-  for (i=0; i < 4; i++)
-    (void) WriteBlobByte(pcd_image,0x01);
-  for (i=0; i < 4; i++)
-    (void) WriteBlobByte(pcd_image,0x05);
-  for (i=0; i < 8; i++)
-    (void) WriteBlobByte(pcd_image,'\0');
-  for (i=0; i < 4; i++)
-    (void) WriteBlobByte(pcd_image,0x0A);
-  for (i=0; i < 36; i++)
-    (void) WriteBlobByte(pcd_image,'\0');
-  for (i=0; i < 4; i++)
-    (void) WriteBlobByte(pcd_image,0x01);
-  for (i=0; i < 1944; i++)
-    (void) WriteBlobByte(pcd_image,'\0');
+  (void) WriteBlobPadding(pcd_image,32,'\xff');
+  (void) WriteBlobPadding(pcd_image,4,'\x0e');
+  (void) WriteBlobPadding(pcd_image,8,'\0');
+  (void) WriteBlobPadding(pcd_image,4,'\x01');
+  (void) WriteBlobPadding(pcd_image,4,'\x05');
+  (void) WriteBlobPadding(pcd_image,8,'\0');
+  (void) WriteBlobPadding(pcd_image,4,'\x0a');
+  (void) WriteBlobPadding(pcd_image,36,'\0');
+  (void) WriteBlobPadding(pcd_image,4,'\x01');
+  (void) WriteBlobPadding(pcd_image,1944,'\0');
   (void) WriteBlob(pcd_image,7,(const unsigned char *) "PCD_IPI");
   (void) WriteBlobByte(pcd_image,0x06);
-  for (i=0; i < 1530; i++)
-    (void) WriteBlobByte(pcd_image,'\0');
+  (void) WriteBlobPadding(pcd_image,1530,'\0');
   if (image->columns < image->rows)
     (void) WriteBlobByte(pcd_image,'\1');
   else
     (void) WriteBlobByte(pcd_image,'\0');
-  for (i=0; i < (3*0x800-1539); i++)
-    (void) WriteBlobByte(pcd_image,'\0');
+  (void) WriteBlobPadding(pcd_image,3*0x800-1539,'\0');
   /*
     Write PCD tiles.
   */

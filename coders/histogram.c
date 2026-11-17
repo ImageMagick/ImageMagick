@@ -107,6 +107,7 @@ ModuleExport size_t RegisterHISTOGRAMImage(void)
   entry->encoder=(EncodeImageHandler *) WriteHISTOGRAMImage;
   entry->flags^=CoderAdjoinFlag;
   entry->format_type=ImplicitFormatType;
+  entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

@@ -82,6 +82,7 @@
 #include "MagickCore/option.h"
 #include "MagickCore/paint.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/policy.h"
 #include "MagickCore/profile.h"
 #include "MagickCore/property.h"
 #include "MagickCore/quantize.h"
@@ -908,18 +909,20 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
     scale_x=(double) columns/(double) image->columns;
   if (image->rows != 0)
     scale_y=(double) rows/(double) image->rows;
-  clone_image->page.width=(size_t) CastDoubleToSsizeT(floor(scale_x*
-    image->page.width+0.5));
-  clone_image->page.height=(size_t) CastDoubleToSsizeT(floor(scale_y*
-    image->page.height+0.5));
+  clone_image->page.width=(size_t) CastDoubleToSsizeT(floor((double) scale_x*
+    (double) image->page.width+0.5));
+  clone_image->page.height=(size_t) CastDoubleToSsizeT(floor((double) scale_y*
+    (double) image->page.height+0.5));
   if (MagickAbsoluteValue(scale_x-scale_y) < 2.0)
     scale_x=scale_y=MagickMin(scale_x,scale_y);
-  clone_image->page.x=CastDoubleToSsizeT(ceil(scale_x*image->page.x-0.5));
-  clone_image->tile_offset.x=CastDoubleToSsizeT(ceil(scale_x*
-    image->tile_offset.x-0.5));
-  clone_image->page.y=CastDoubleToSsizeT(ceil(scale_y*image->page.y-0.5));
-  clone_image->tile_offset.y=CastDoubleToSsizeT(ceil(scale_y*
-    image->tile_offset.y-0.5));
+  clone_image->page.x=CastDoubleToSsizeT(ceil((double) scale_x*
+    (double) image->page.x-0.5));
+  clone_image->tile_offset.x=CastDoubleToSsizeT(ceil((double) scale_x*
+    (double) image->tile_offset.x-0.5));
+  clone_image->page.y=CastDoubleToSsizeT(ceil((double) scale_y*(double)
+    (double) image->page.y-0.5));
+  clone_image->tile_offset.y=CastDoubleToSsizeT(ceil((double) scale_y*
+    (double) image->tile_offset.y-0.5));
   clone_image->cache=ClonePixelCache(image->cache);
   if (SetImageExtent(clone_image,columns,rows,exception) == MagickFalse)
     clone_image=DestroyImage(clone_image);
@@ -1021,6 +1024,7 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
     MagickPathExtent);
   clone_info->channel=image_info->channel;
   (void) CloneImageOptions(clone_info,image_info);
+  clone_info->coder_depth=image_info->coder_depth;
   clone_info->debug=image_info->debug;
   clone_info->signature=image_info->signature;
   return(clone_info);
@@ -1141,7 +1145,7 @@ MagickExport MagickBooleanType CopyImagePixels(Image *image,
             ((traits & UpdatePixelTrait) == 0) ||
             (source_traits == UndefinedPixelTrait))
           continue;
-        SetPixelChannel(image,channel,p[i],q);
+        SetPixelChannel(image,channel,GetPixelChannel(source_image,channel,p),q);
       }
       p+=(ptrdiff_t) GetPixelChannels(source_image);
       q+=(ptrdiff_t) GetPixelChannels(image);
@@ -1384,6 +1388,7 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   GetPixelInfoRGBA(BorderColorRGBA,&image_info->border_color);
   GetPixelInfoRGBA(MatteColorRGBA,&image_info->matte_color);
   GetPixelInfoRGBA(TransparentColorRGBA,&image_info->transparent_color);
+  image_info->coder_depth=0;
   image_info->debug=(GetLogEventMask() & ImageEvent) != 0 ? MagickTrue :
     MagickFalse;
   image_info->signature=MagickCoreSignature;
@@ -1657,42 +1662,6 @@ MagickExport VirtualPixelMethod GetImageVirtualPixelMethod(const Image *image)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static inline MagickBooleanType IsValidFormatSpecifier(const char *start,
-  const char *end)
-{
-  char
-    specifier = end[-1];
-
-  size_t
-    length = (size_t) (end-start);
-
-  /*
-    Is this a valid format specifier?
-  */
-  if ((specifier != 'd') && (specifier != 'x') && (specifier != 'o'))
-    return(MagickFalse);
-  if ((length == 1) && (*start == specifier))
-    return(MagickTrue);
-  if (length >= 2)
-    {
-      size_t
-        i = 0;
-
-      if (*start == '0')
-        {
-          if ((length >= 3) && (start[1] == '0'))
-            return(MagickFalse);
-          i=1;
-        }
-      for ( ; i < (length-1); i++)
-        if (isdigit((int) ((unsigned char) start[i])) == 0)
-          return(MagickFalse);
-      return(MagickTrue);
-    }
-  return(MagickFalse);
-}
-
 MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
   Image *image,const char *format,int value,char *filename,
   ExceptionInfo *exception)
@@ -1707,8 +1676,10 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
 
   assert(format != (const char *) NULL);
   assert(filename != (char *) NULL);
-  literal=(char *) GetImageRegistry(StringRegistryType,"filename:literal",
-    exception);
+  literal=GetPolicyValue("system:filename:literal");
+  if (literal == (char *) NULL)
+    literal=(char *) GetImageRegistry(StringRegistryType,"filename:literal",
+      exception);
   if (IsStringTrue(literal) != MagickFalse)
     {
       if (literal != (char *) NULL)
@@ -1763,7 +1734,7 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
             pattern_length=strlen(pattern);
             if ((count <= 0) || ((size_t) count != pattern_length))
               return(0);
-            if ((p-filename+pattern_length) >= MagickPathExtent)
+            if ((p-filename+(ssize_t) pattern_length) >= MagickPathExtent)
               return(0);
             (void) CopyMagickString(p,pattern,(size_t) (MagickPathExtent-
               (p-filename)));
@@ -1810,10 +1781,10 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
         if (option == (const char *) NULL)
           continue;
         option_length=strlen(option);
-        if ((p-filename+option_length) >= MagickPathExtent)
+        if ((p-filename+(ssize_t) option_length) >= MagickPathExtent)
           return(0);
-        (void) CopyMagickString(p,option,(size_t) (MagickPathExtent-
-          (p-filename)));
+        (void) CopyMagickString(p,option,(size_t) (MagickPathExtent-(p-
+          filename)));
         p+=option_length;
         cursor=end+1;
         continue;

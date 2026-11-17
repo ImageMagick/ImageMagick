@@ -726,8 +726,7 @@ static MagickBooleanType WriteVIPSImage(const ImageInfo *image_info,
   /*
     Legacy, offsets, future.
   */
-  for (y=0; y < 24; y++)
-    (void) WriteBlobByte(image,0);
+  (void) WriteBlobPadding(image,24,'\0');
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);

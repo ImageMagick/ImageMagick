@@ -114,6 +114,7 @@ static MagickBooleanType MontageUsage(void)
       "  -resize geometry     resize the image\n"
       "  -rotate degrees      apply Paeth rotation to the image\n"
       "  -scale geometry      scale the image\n"
+      "  -shuffle strategy    reorders the sequence of images\n"
       "  -strip               strip image of all profiles and comments\n"
       "  -transform           affine transform image\n"
       "  -transpose           flip image vertically and rotate 90 degrees\n"
@@ -1551,6 +1552,23 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             i++;
             if ((i == (ssize_t) argc) || (IsGeometry(argv[i]) == MagickFalse))
               ThrowMontageException(OptionError,"MissingArgument",option);
+            break;
+          }
+        if (LocaleCompare("shuffle",option+1) == 0)
+          {
+            ssize_t
+              mode;
+
+            mode=UndefinedShuffle;
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMontageException(OptionError,"MissingArgument",option);
+            mode=ParseCommandOption(MagickShuffleOptions,MagickFalse,argv[i]);
+            if (mode < 0)
+              ThrowMontageException(OptionError,"UnrecognizedImageShuffle",
+                argv[i]);
             break;
           }
         if (LocaleCompare("size",option+1) == 0)

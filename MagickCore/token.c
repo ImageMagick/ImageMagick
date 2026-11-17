@@ -356,7 +356,7 @@ static MagickBooleanType GlobExpression_(const char *magick_restrict expression,
   const char *magick_restrict pattern,const MagickBooleanType case_insensitive,
   const size_t depth)
 {
-  if (depth > MagickMaxRecursionDepth)
+  if (depth >= MagickMaxRecursionDepth)
     {
       errno=EOVERFLOW;
       return(MagickFalse);

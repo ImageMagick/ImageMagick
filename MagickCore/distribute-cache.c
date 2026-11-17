@@ -80,6 +80,7 @@
 #if defined(MAGICKCORE_DPC_SUPPORT)
 #if defined(MAGICKCORE_HAVE_SOCKET) && defined(MAGICKCORE_THREAD_SUPPORT)
 #include <netinet/in.h>
+#include <netinet/tcp.h>
 #include <netdb.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -103,14 +104,31 @@
   Define declarations.
 */
 #define DPCHostname  "127.0.0.1"
+#define DPCMacLength  32
 #define DPCMaxClientWorkers  128
 #define DPCMaxUnauthenticatedClientWorkers  16
 #define DPCPendingConnections  10
 #define DPCPort  6668
+#define DPCScratchExtent  16384  /* bytes; send-side encrypt buffer */
 #define DPCSessionKeyLength  16
 #ifndef MSG_NOSIGNAL
 #  define MSG_NOSIGNAL 0
 #endif
+
+/*
+  Typedef declarations.
+*/
+typedef struct
+{
+  uint32_t
+    state[8];
+
+  uint64_t
+    count;
+
+  unsigned char
+    buffer[64];
+} SHA256Hash;
 
 /*
   Static declarations.
@@ -126,6 +144,9 @@ static WSADATA
 #if defined(MAGICKCORE_HAVE_DISTRIBUTE_CACHE)
 static SemaphoreInfo
   *dpc_semaphore = (SemaphoreInfo *) NULL;
+
+static char
+  *dpc_shared_secret = (char *) NULL;
 
 static size_t
   dpc_clients = 0,
@@ -156,7 +177,7 @@ static size_t
 */
 
 #if !defined(MAGICKCORE_HAVE_DISTRIBUTE_CACHE)
-static inline MagickOffsetType dpc_read(SOCKET_TYPE magick_unused(file),
+static inline MagickOffsetType dpc_receive(SOCKET_TYPE magick_unused(file),
   const MagickSizeType magick_unused(length),
   unsigned char *magick_restrict magick_unused(message))
 {
@@ -166,24 +187,120 @@ static inline MagickOffsetType dpc_read(SOCKET_TYPE magick_unused(file),
   return(-1);
 }
 #else
-static inline MagickOffsetType dpc_read(SOCKET_TYPE file,
+static void SetSocketNoDelay(SOCKET_TYPE file)
+{
+  int
+    one = 1;
+
+  /*
+    Disable Nagle.
+  */
+  (void) setsockopt(file,IPPROTO_TCP,TCP_NODELAY,(const char *) &one,
+    (socklen_t) sizeof(one));
+}
+
+static void SetSocketReceiveTimeout(SOCKET_TYPE file,double seconds)
+{
+  /*
+    Set a receive timeout.
+  */
+#if defined(MAGICKCORE_HAVE_WINSOCK2)
+  {
+    DWORD timeout = (DWORD) (seconds*1000.0);
+    (void) setsockopt(file,SOL_SOCKET,SO_RCVTIMEO,
+      (const char *) &timeout,sizeof(timeout));
+  }
+#else
+  {
+    struct timeval tv;
+    tv.tv_sec=(int) seconds;
+    tv.tv_usec=(int) ((seconds-(double) tv.tv_sec)*1000000.0);
+    (void) setsockopt(file,SOL_SOCKET,SO_RCVTIMEO,&tv,sizeof(tv));
+  }
+#endif
+}
+
+static inline MagickOffsetType dpc_receive(SOCKET_TYPE file,
   const MagickSizeType length,unsigned char *magick_restrict message)
 {
   MagickOffsetType offset = 0;
   while (offset < (MagickOffsetType) length)
   {
-    MagickSizeType remaining = length-(MagickSizeType) offset;
-    ssize_t count = recv(file,(char *) message+offset,(LENGTH_TYPE)
-      MagickMin(remaining,(MagickSizeType) MagickMaxBufferExtent),0);
+    MagickSizeType chunk = MagickMin(length-offset,(MagickSizeType)
+      MagickMaxBufferExtent);
+    ssize_t count = recv(file,(char *) message+offset,(LENGTH_TYPE) chunk,0);
     if (count > 0)
       offset+=(MagickOffsetType) count;
     else
       if (count == 0)
-        break;
+        return(0);
       else
         {
-          if (errno != EINTR)
-            break;
+#ifdef MAGICKCORE_HAVE_WINSOCK2
+          int wsa_err = WSAGetLastError();
+          if ((wsa_err == WSAEINTR) || (wsa_err == WSAEWOULDBLOCK))
+            continue;
+          if (wsa_err == WSAECONNRESET)
+            return(-2);
+#else
+          if ((errno == EINTR) || (errno == EAGAIN) || (errno == EWOULDBLOCK))
+            continue;
+          if (errno == ECONNRESET)
+            return(-2);
+#endif
+          return(-1);
+        }
+  }
+  return(offset);
+}
+
+static inline MagickOffsetType dpc_receive_deadline(SOCKET_TYPE file,
+  MagickSizeType length,unsigned char *message,double deadline)
+{
+  /*
+    Enforce an absolute deadline for authentication and command reads.
+  */
+  MagickOffsetType offset = 0;
+  while (offset < (MagickOffsetType) length)
+  {
+    double
+      now = (double) time((time_t *) NULL),
+      remaining = deadline-now;
+
+    MagickSizeType
+      chunk;
+
+    ssize_t
+      count;
+
+    if (now >= deadline)
+      return(-1);
+    if (remaining < 0.001)
+      remaining=0.001;
+    SetSocketReceiveTimeout(file,remaining);
+    chunk=MagickMin(length-offset,(MagickSizeType) MagickMaxBufferExtent);
+    count=recv(file,(char *) message+offset,(LENGTH_TYPE) chunk,0);
+    if (count > 0)
+      offset+=(MagickOffsetType) count;
+    else
+      if (count == 0)
+        return(0);
+      else
+        {
+#ifdef MAGICKCORE_HAVE_WINSOCK2
+          int wsa_err = WSAGetLastError();
+          if ((wsa_err == WSAEINTR) || (wsa_err == WSAEWOULDBLOCK))
+            continue;
+          if (wsa_err == WSAECONNRESET)
+            return(-2);
+          return(-1);
+#else
+          if ((errno == EINTR) || (errno == EAGAIN) || (errno == EWOULDBLOCK))
+            continue;
+          if (errno == ECONNRESET)
+            return(-2);
+          return(-1);
+#endif
         }
   }
   return(offset);
@@ -314,7 +431,7 @@ static inline void DeriveSIPKeyFromSecret(const char *shared_secret,
   for (i=0; i < length; i++)
   {
     uint8_t
-      b = shared_secret[i];
+      b = (uint8_t) shared_secret[i];
 
     k0^=b;
     k0*=0x100000001b3ULL;
@@ -401,6 +518,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
       message=DestroyString(message);
       return(-1);
     }
+  SetSocketNoDelay(client_socket);
   /*
     Receive server nonce.
   */
@@ -418,7 +536,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
     Compute keyed hash(shared_secret,nonce).
   */
   shared_secret=GetPolicyValue("cache:shared-secret");
-  if (shared_secret == (char*) NULL)
+  if (shared_secret == (const char *) NULL)
     {
       CLOSE_SOCKET(client_socket);
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
@@ -500,7 +618,7 @@ static char *GetHostname(int *port,ExceptionInfo *exception)
   if (hostlist[2] == (char *) NULL)
     *port=DPCPort;
   else
-    *port=StringToLong(hostlist[2]);
+    *port=(int) StringToLong(hostlist[2]);
   for (i=0; i < (ssize_t) argc; i++)
     hostlist[i]=DestroyString(hostlist[i]);
   hostlist=(char **) RelinquishMagickMemory(hostlist);
@@ -542,6 +660,246 @@ MagickPrivate DistributeCacheInfo *AcquireDistributeCacheInfo(
     }
   hostname=DestroyString(hostname);
   return(server_info);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   C o m p u t e H M A C S H A 2 5 6 M a c                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ComputeHMACSHA256Mac() opens a pixel cache on a remote server.
+%
+%  The format of the ComputeHMACSHA256Mac method is:
+%
+%      int ComputeHMACSHA256Mac(const void *key,size_t key_length,
+%        const void *message,size_t message_length,unsigned char *mac,
+%        size_t mac_length)
+%
+%  A description of each parameter follows:
+%
+%    o key: the HMAC key.
+%
+%    o key_length: HMAC key length in bytes.
+%
+%    o message: the message.
+%
+%    o message_length: the message length in bytes.
+%
+%    o mac: the mac is computed and returned in this buffer.
+%
+%    o mac_length: the mac length in bytes .  mac must be at least this length.
+%
+*/
+
+static void InitializeSHA256Hash(SHA256Hash *sha256_hash)
+{
+  sha256_hash->count=0;
+  sha256_hash->state[0]=0x6a09e667;
+  sha256_hash->state[1]=0xbb67ae85;
+  sha256_hash->state[2]=0x3c6ef372;
+  sha256_hash->state[3]=0xa54ff53a;
+  sha256_hash->state[4]=0x510e527f;
+  sha256_hash->state[5]=0x9b05688c;
+  sha256_hash->state[6]=0x1f83d9ab;
+  sha256_hash->state[7]=0x5be0cd19;
+}
+
+static void TransformSHA256Hash(SHA256Hash *sha256_hash,
+  const unsigned char data[])
+{
+#define EP0(x)  (ROTRIGHT(x,2) ^ ROTRIGHT(x,13) ^ ROTRIGHT(x,22))
+#define EP1(x)  (ROTRIGHT(x,6) ^ ROTRIGHT(x,11) ^ ROTRIGHT(x,25))
+#define CH(x,y,z)  (((x) & (y)) ^ (~(x) & (z)))
+#define MAJ(x,y,z)  (((x) & (y)) ^ ((x) & (z)) ^ ((y) & (z)))
+#define ROTRIGHT(a,b)  (((a) >> (b)) | ((a) << (32-(b))))
+#define SIG0(x)  (ROTRIGHT(x,7) ^ ROTRIGHT(x,18) ^ ((x) >> 3))
+#define SIG1(x)  (ROTRIGHT(x,17) ^ ROTRIGHT(x,19) ^ ((x) >> 10))
+
+  static const uint32_t K[64] =
+  {
+    0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1,
+    0x923f82a4, 0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
+    0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174, 0xe49b69c1, 0xefbe4786,
+    0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+    0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147,
+    0x06ca6351, 0x14292967, 0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13,
+    0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85, 0xa2bfe8a1, 0xa81a664b,
+    0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+    0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a,
+    0x5b9cca4f, 0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
+    0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
+  };
+
+  uint32_t
+    a,
+    b,
+    c,
+    d,
+    e,
+    f,
+    g,
+    h,
+    i,
+    j,
+    m[64];
+
+  j=0;
+  for (i=0; i < 16; i++, j+=4)
+    m[i]=((uint32_t) data[j] << 24) | ((uint32_t) data[j+1] << 16) |
+      ((uint32_t) data[j+2] << 8) | ((uint32_t) data[j+3]);
+  for ( ; i < 64; i++)
+    m[i]=SIG1(m[i-2])+m[i-7]+SIG0(m[i-15])+m[i-16];
+  a=sha256_hash->state[0];
+  b=sha256_hash->state[1];
+  c=sha256_hash->state[2];
+  d=sha256_hash->state[3];
+  e=sha256_hash->state[4];
+  f=sha256_hash->state[5];
+  g=sha256_hash->state[6];
+  h=sha256_hash->state[7];
+  for (i=0; i < 64; i++)
+  {
+    uint32_t
+      alpha = h+EP1(e)+CH(e,f,g)+K[i]+m[i],
+      beta = EP0(a)+MAJ(a,b,c);
+
+    h=g;
+    g=f;
+    f=e;
+    e=d+alpha;
+    d=c;
+    c=b;
+    b=a;
+    a=alpha+beta;
+  }
+  sha256_hash->state[0]+=a;
+  sha256_hash->state[1]+=b;
+  sha256_hash->state[2]+=c;
+  sha256_hash->state[3]+=d;
+  sha256_hash->state[4]+=e;
+  sha256_hash->state[5]+=f;
+  sha256_hash->state[6]+=g;
+  sha256_hash->state[7]+=h;
+}
+
+static void UpdateSHA256Hash(SHA256Hash *sha256_hash,const unsigned char *data,
+  const size_t data_length)
+{
+  size_t
+    i,
+    index = (size_t) ((sha256_hash->count/8) % 64);
+
+  sha256_hash->count+=(uint64_t) data_length*8;
+  for (i=0; i < data_length; i++)
+  {
+    sha256_hash->buffer[index++]=data[i];
+    if (index == 64)
+      {
+        TransformSHA256Hash(sha256_hash,sha256_hash->buffer);
+        index=0;
+      }
+  }
+}
+
+static void FinalizeSHA256Hash(SHA256Hash *sha256_hash,unsigned char hash[32])
+{
+  size_t
+     i,
+     index = (size_t) ((sha256_hash->count/8) % 64),
+     pad_length = (index < 56) ? (56-index) : (120-index);
+
+  uint64_t
+    bit_count = sha256_hash->count;  /* message length before padding */
+
+  unsigned char
+    pad[64];
+
+  pad[0]=0x80;
+  (void) memset(pad+1,0,pad_length-1);
+  UpdateSHA256Hash(sha256_hash,pad,pad_length);
+  for (i=0; i < 8; i++)
+    pad[i]=(unsigned char) (bit_count >> ((7-i)*8));
+  UpdateSHA256Hash(sha256_hash, pad, 8);
+  for (i=0; i < 32; i++)
+    hash[i]=(unsigned char) (sha256_hash->state[i/4] >> ((3-(i % 4))*8));
+}
+
+static void ComputeSHA256Hash(const unsigned char *data,size_t length,
+  unsigned char hash[32])
+{
+  SHA256Hash
+    sha256_hash;
+
+  /*
+    Hash a buffer in one shot.
+  */
+  InitializeSHA256Hash(&sha256_hash);
+  UpdateSHA256Hash(&sha256_hash,data,length);
+  FinalizeSHA256Hash(&sha256_hash,hash);
+}
+
+static int ComputeHMACSHA256Mac(const void *key,size_t key_length,
+  const void *message,size_t message_length,unsigned char *mac,
+  size_t mac_length)
+{
+  SHA256Hash
+    sha256_hash;
+
+  size_t
+    i;
+
+  unsigned char
+    full_hash[32],
+    inner_hash[32],
+    inner_pad[64],
+    k_prime[64]={0},
+    outer_pad[64];
+
+  /*
+    If key is longer than 64 bytes, hash it down first.
+  */
+  if ((mac == (unsigned char *) NULL)  || (mac_length == 0))
+    return(-1);
+  if (((key == (const void *) NULL) && (key_length != 0)) ||
+      ((message == (const void *) NULL) && (message_length != 0)))
+    return(-1);
+  if (key_length > 64)
+    ComputeSHA256Hash((unsigned char *) key,key_length,k_prime);
+  else
+    (void) memcpy(k_prime,key,key_length);
+  /*
+    Prepare inner pad and outer pad masks.
+  */
+  for (i=0; i < 64; i++)
+  {
+    inner_pad[i]=k_prime[i] ^ 0x36;
+    outer_pad[i]=k_prime[i] ^ 0x5c;
+  }
+  /*
+    Inner hash: SHA256(inner pad || message)
+  */
+  InitializeSHA256Hash(&sha256_hash);
+  UpdateSHA256Hash(&sha256_hash,inner_pad,64);
+  UpdateSHA256Hash(&sha256_hash,(unsigned char *) message,message_length);
+  FinalizeSHA256Hash(&sha256_hash,inner_hash);
+  /*
+    Outer hash: SHA256(outer pad || inner hash)
+  */
+  InitializeSHA256Hash(&sha256_hash);
+  UpdateSHA256Hash(&sha256_hash,outer_pad,64);
+  UpdateSHA256Hash(&sha256_hash,inner_hash,32);
+  FinalizeSHA256Hash(&sha256_hash,full_hash);
+  /*
+    Truncate or copy to destination buffer based on requested mac length.
+  */
+  (void) memcpy(mac,full_hash,(mac_length < 32) ? mac_length : 32);
+  return(0);
 }
 
 /*
@@ -634,7 +992,7 @@ static inline MagickOffsetType dpc_send(SOCKET_TYPE file,
   count=0;
   for (i=0; i < (MagickOffsetType) length; i+=count)
   {
-    count=(ssize_t) send(file,(char *) message+i,(LENGTH_TYPE) MagickMin(
+    count=(ssize_t) send(file,(const char *) message+i,(LENGTH_TYPE) MagickMin(
       length-(MagickSizeType) i,(MagickSizeType) MagickMaxBufferExtent),
       MSG_NOSIGNAL);
     if (count <= 0)
@@ -647,6 +1005,232 @@ static inline MagickOffsetType dpc_send(SOCKET_TYPE file,
   return(i);
 }
 #endif
+
+static const char *GetDPCSharedSecret(void)
+{
+#if defined(MAGICKCORE_HAVE_DISTRIBUTE_CACHE)
+  /*
+    The server loads the secret at start-up; a client loads it on first use.
+  */
+  if (dpc_shared_secret == (char *) NULL)
+    {
+      if (dpc_semaphore == (SemaphoreInfo *) NULL)
+        ActivateSemaphoreInfo(&dpc_semaphore);
+      LockSemaphoreInfo(dpc_semaphore);
+      if (dpc_shared_secret == (char *) NULL)
+        dpc_shared_secret=GetPolicyValue("cache:shared-secret");
+      UnlockSemaphoreInfo(dpc_semaphore);
+    }
+  return(dpc_shared_secret);
+#else
+  return((const char *) NULL);
+#endif
+}
+
+static int DeriveDPCKey(const uint64_t session_key,const char label,
+  unsigned char key[DPCMacLength])
+{
+  const char
+    *shared_secret;
+
+  unsigned char
+    info[sizeof(session_key)+1];
+
+  /*
+    key = HMAC-SHA-256(shared secret, session key || label).  The session key
+    travels in the clear, so the shared secret is what keeps this private.
+  */
+  shared_secret=GetDPCSharedSecret();
+  if (shared_secret == (const char *) NULL)
+    return(-1);
+  (void) memcpy(info,&session_key,sizeof(session_key));
+  info[sizeof(session_key)]=(unsigned char) label;
+  return(ComputeHMACSHA256Mac(shared_secret,strlen(shared_secret),info,
+    sizeof(info),key,DPCMacLength));
+}
+
+static inline void WipeDPCKey(unsigned char *key,const size_t length)
+{
+  volatile unsigned char
+    *p = key;
+
+  size_t
+    i;
+
+  for (i=0; i < length; i++)
+    p[i]=0;
+}
+
+static void DPCKeystream(const unsigned char *stream_key,
+  const unsigned char *mac,const MagickSizeType offset,unsigned char *data,
+  const size_t length)
+{
+  SHA256Hash
+    block_hash,
+    keyed_hash;
+
+  size_t
+    i,
+    k;
+
+  uint64_t
+    block;
+
+  unsigned char
+    counter[8],
+    keystream[32];
+
+  /*
+    XOR data with keystream block n = SHA-256(stream key || mac || n).
+  */
+  InitializeSHA256Hash(&keyed_hash);
+  UpdateSHA256Hash(&keyed_hash,stream_key,DPCMacLength);
+  UpdateSHA256Hash(&keyed_hash,mac,DPCMacLength);
+  (void) memset(keystream,0,sizeof(keystream));
+  for (i=0; i < length; i++)
+  {
+    size_t
+      j = (size_t) ((offset+i) & 31);
+
+    if ((i == 0) || (j == 0))
+      {
+        block=(uint64_t) ((offset+i) >> 5);
+        for (k=0; k < sizeof(counter); k++)
+          counter[k]=(unsigned char) (block >> (8*k));
+        block_hash=keyed_hash;
+        UpdateSHA256Hash(&block_hash,counter,sizeof(counter));
+        FinalizeSHA256Hash(&block_hash,keystream);
+      }
+    data[i]^=keystream[j];
+  }
+  WipeDPCKey(keystream,sizeof(keystream));
+  WipeDPCKey((unsigned char *) &block_hash,sizeof(block_hash));
+  WipeDPCKey((unsigned char *) &keyed_hash,sizeof(keyed_hash));
+}
+
+static inline int mac_compare(const unsigned char *a,const unsigned char *b,
+  const size_t length)
+{
+  size_t
+    i;
+
+  volatile unsigned char
+    difference = 0;
+
+  /*
+    Compare in time independent of where (or whether) the buffers differ.
+  */
+  for (i=0; i < length; i++)
+    difference|=(unsigned char) (a[i] ^ b[i]);
+  return(difference == 0 ? 0 : -1);
+}
+
+static inline MagickOffsetType dpc_send_mac(SOCKET_TYPE file,
+  const MagickSizeType length,const void *magick_restrict message,
+  uint64_t session_key)
+{
+  const unsigned char
+    *p = (const unsigned char *) message;
+
+  MagickOffsetType
+    status;
+
+  MagickSizeType
+    offset;
+
+  unsigned char
+    mac[DPCMacLength],
+    mac_key[DPCMacLength],
+    scratch[DPCScratchExtent],
+    stream_key[DPCMacLength];
+
+  /*
+    MAC the plaintext, then send MAC || (plaintext XOR keystream).
+  */
+  if (length > (MagickSizeType) MAGICK_SSIZE_MAX)
+    return(-1);
+  if ((DeriveDPCKey(session_key,'m',mac_key) != 0) ||
+      (DeriveDPCKey(session_key,'e',stream_key) != 0) ||
+      (ComputeHMACSHA256Mac(mac_key,sizeof(mac_key),message,(size_t) length,mac,sizeof(mac)) != 0))
+    {
+      WipeDPCKey(mac_key,sizeof(mac_key));
+      WipeDPCKey(stream_key,sizeof(stream_key));
+      return(-1);  /* key derivation or HMAC computation failed */
+    }
+  WipeDPCKey(mac_key,sizeof(mac_key));
+  status=dpc_send(file,sizeof(mac),mac);
+  if (status != (MagickOffsetType) sizeof(mac))
+    {
+      WipeDPCKey(stream_key,sizeof(stream_key));
+      return(-1);
+    }
+  /*
+    Encrypt into a scratch buffer: the caller's buffer may be the live cache.
+  */
+  for (offset=0; offset < length; )
+  {
+    size_t
+      chunk = (size_t) MagickMin(length-offset,(MagickSizeType)
+        sizeof(scratch));
+
+    (void) memcpy(scratch,p+offset,chunk);
+    DPCKeystream(stream_key,mac,offset,scratch,chunk);
+    status=dpc_send(file,(MagickSizeType) chunk,scratch);
+    if (status != (MagickOffsetType) chunk)
+      break;
+    offset+=(MagickSizeType) chunk;
+  }
+  WipeDPCKey(stream_key,sizeof(stream_key));
+  WipeDPCKey(scratch,sizeof(scratch));
+  if (offset != length)
+    return(-1);
+  return((MagickOffsetType) length);
+}
+
+static inline MagickOffsetType dpc_receive_mac(SOCKET_TYPE file,
+  const MagickSizeType length,unsigned char *magick_restrict message,
+  uint64_t session_key)
+{
+  MagickOffsetType
+    count;
+
+  unsigned char
+    expected_mac[DPCMacLength],
+    mac_key[DPCMacLength],
+    received_mac[DPCMacLength],
+    stream_key[DPCMacLength];
+
+  int
+    status;
+
+  /*
+    Read MAC || ciphertext, decrypt in place, then verify the MAC.
+  */
+  if (length > (MagickSizeType) MAGICK_SSIZE_MAX)
+    return(-1);
+  count=dpc_receive(file,sizeof(received_mac),received_mac);
+  if (count != (MagickOffsetType) sizeof(received_mac))
+    return(-1);
+  count=dpc_receive(file,length,message);
+  if (count != (MagickOffsetType) length)
+    return(count);
+  status=DeriveDPCKey(session_key,'e',stream_key);
+  if (status == 0)
+    {
+      DPCKeystream(stream_key,received_mac,0,message,(size_t) length);
+      status=DeriveDPCKey(session_key,'m',mac_key);
+    }
+  if (status == 0)
+    status=ComputeHMACSHA256Mac(mac_key,sizeof(mac_key),message,
+      (size_t) length,expected_mac,sizeof(expected_mac));
+  WipeDPCKey(mac_key,sizeof(mac_key));
+  WipeDPCKey(stream_key,sizeof(stream_key));
+  if (status != 0)
+    return(-1);  /* key derivation or HMAC computation failed */
+  if (mac_compare(received_mac,expected_mac,sizeof(expected_mac)) != 0)
+    return(-1);  /* HMAC verification failed */
+  return(count);
+}
 
 #if !defined(MAGICKCORE_HAVE_DISTRIBUTE_CACHE)
 MagickExport void DistributePixelCacheServer(const int magick_unused(port),
@@ -701,7 +1285,7 @@ static MagickBooleanType OpenDistributeCache(SplayTreeInfo *registry,
     sizeof(image->alpha_trait)+sizeof(image->channels)+sizeof(image->columns)+
     sizeof(image->rows)+sizeof(image->number_channels)+MaxPixelChannels*
     sizeof(*image->channel_map)+sizeof(image->metacontent_extent);
-  count=dpc_read(file,length,message);
+  count=dpc_receive(file,length,message);
   if (count != (MagickOffsetType) length)
     {
       image=DestroyImage(image);
@@ -800,7 +1384,7 @@ static MagickBooleanType ReadDistributeCacheMetacontent(SplayTreeInfo *registry,
     return(MagickFalse);
   length=sizeof(region.width)+sizeof(region.height)+sizeof(region.x)+
     sizeof(region.y)+sizeof(length);
-  count=dpc_read(file,length,message);
+  count=dpc_receive(file,length,message);
   if (count != (MagickOffsetType) length)
     return(MagickFalse);
   q=message;
@@ -822,7 +1406,7 @@ static MagickBooleanType ReadDistributeCacheMetacontent(SplayTreeInfo *registry,
   if (p == (const Quantum *) NULL)
     return(MagickFalse);
   metacontent=(const unsigned char *) GetVirtualMetacontent(image);
-  count=dpc_send(file,length,metacontent);
+  count=dpc_send_mac(file,length,metacontent,session_key);
   if (count != (MagickOffsetType) length)
     return(MagickFalse);
   return(MagickTrue);
@@ -864,7 +1448,7 @@ static MagickBooleanType ReadDistributeCachePixels(SplayTreeInfo *registry,
     return(MagickFalse);
   length=sizeof(region.width)+sizeof(region.height)+sizeof(region.x)+
     sizeof(region.y)+sizeof(length);
-  count=dpc_read(file,length,message);
+  count=dpc_receive(file,length,message);
   if (count != (MagickOffsetType) length)
     return(MagickFalse);
   q=message;
@@ -885,7 +1469,7 @@ static MagickBooleanType ReadDistributeCachePixels(SplayTreeInfo *registry,
     exception);
   if (p == (const Quantum *) NULL)
     return(MagickFalse);
-  count=dpc_send(file,length,p);
+  count=dpc_send_mac(file,length,p,session_key);
   if (count != (MagickOffsetType) length)
     return(MagickFalse);
   return(MagickTrue);
@@ -934,7 +1518,7 @@ static MagickBooleanType WriteDistributeCacheMetacontent(
     return(MagickFalse);
   length=sizeof(region.width)+sizeof(region.height)+sizeof(region.x)+
     sizeof(region.y)+sizeof(length);
-  count=dpc_read(file,length,message);
+  count=dpc_receive(file,length,message);
   if (count != (MagickOffsetType) length)
     return(MagickFalse);
   p=message;
@@ -956,7 +1540,7 @@ static MagickBooleanType WriteDistributeCacheMetacontent(
   if (q == (Quantum *) NULL)
     return(MagickFalse);
   metacontent=(unsigned char *) GetAuthenticMetacontent(image);
-  count=dpc_read(file,length,metacontent);
+  count=dpc_receive_mac(file,length,metacontent,session_key);
   if (count != (MagickOffsetType) length)
     return(MagickFalse);
   return(SyncAuthenticPixels(image,exception));
@@ -998,7 +1582,7 @@ static MagickBooleanType WriteDistributeCachePixels(SplayTreeInfo *registry,
     return(MagickFalse);
   length=sizeof(region.width)+sizeof(region.height)+sizeof(region.x)+
     sizeof(region.y)+sizeof(length);
-  count=dpc_read(file,length,message);
+  count=dpc_receive(file,length,message);
   if (count != (MagickOffsetType) length)
     return(MagickFalse);
   p=message;
@@ -1019,7 +1603,7 @@ static MagickBooleanType WriteDistributeCachePixels(SplayTreeInfo *registry,
     exception);
   if (q == (Quantum *) NULL)
     return(MagickFalse);
-  count=dpc_read(file,length,(unsigned char *) q);
+  count=dpc_receive_mac(file,length,(unsigned char *) q,session_key);
   if (count != (MagickOffsetType) length)
     return(MagickFalse);
   return(SyncAuthenticPixels(image,exception));
@@ -1050,11 +1634,9 @@ static void RelinquishDPCClient(const MagickBooleanType unauthenticated)
   UnlockSemaphoreInfo(dpc_semaphore);
 }
 
-static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket_arg)
+static HANDLER_RETURN_TYPE DistributePixelCacheConnectionHandler(
+  void *socket_arg)
 {
-  char
-    *shared_secret;
-
   ExceptionInfo
     *exception;
 
@@ -1086,14 +1668,8 @@ static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket_arg)
     command,
     nonce[DPCSessionKeyLength];
 
-  /*
-    Load shared secret.
-  */
   client_socket=(*client_socket_ptr);
   client_socket_ptr=(SOCKET_TYPE *) RelinquishMagickMemory(client_socket_ptr);
-  shared_secret=GetPolicyValue("cache:shared-secret");
-  if (shared_secret == NULL)
-    ThrowFatalException(CacheFatalError,"shared secret required");
   /*
     Generate random nonce.
   */
@@ -1105,8 +1681,7 @@ static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket_arg)
   /*
     Derive session key.
   */
-  session_key=GenerateSessionKey(shared_secret,nonce,sizeof(nonce));
-  shared_secret=DestroyString(shared_secret);
+  session_key=GenerateSessionKey(dpc_shared_secret,nonce,sizeof(nonce));
   /*
     Send nonce to client.
   */
@@ -1120,7 +1695,8 @@ static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket_arg)
   /*
     Receive client's keyed hash.
   */
-  count=dpc_read(client_socket,sizeof(key),(unsigned char *) &key);
+  count=dpc_receive_deadline(client_socket,sizeof(key),(unsigned char *) &key,
+    (double) time((time_t *) NULL)+5.0);
   if ((count != (MagickOffsetType) sizeof(key)) || (key != session_key))
     {
       CLOSE_SOCKET(client_socket);
@@ -1140,10 +1716,12 @@ static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket_arg)
     /*
       Each command must echo the authenticated session key.
     */
-    count=dpc_read(client_socket,1,(unsigned char *) &command);
+    count=dpc_receive_deadline(client_socket,1,(unsigned char *) &command,
+      (double) time((time_t *) NULL)+5.0);
     if (count <= 0)
       break;
-    count=dpc_read(client_socket,sizeof(key),(unsigned char *) &key);
+    count=dpc_receive_deadline(client_socket,sizeof(key),(unsigned char *) &key,
+      (double) time((time_t *) NULL)+5.0);
     if ((count != (MagickOffsetType) sizeof(key)) || (key != session_key))
       break;
     switch (command)
@@ -1310,6 +1888,9 @@ MagickExport void DistributePixelCacheServer(const int port,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
   magick_unreferenced(exception);
+  dpc_shared_secret=GetPolicyValue("cache:shared-secret");
+  if (dpc_shared_secret == (char *) NULL)
+    ThrowFatalException(CacheFatalError,"no shared secret");
 #if defined(MAGICKCORE_HAVE_WINSOCK2)
   InitializeWinsock2(MagickFalse);
 #endif
@@ -1320,7 +1901,7 @@ MagickExport void DistributePixelCacheServer(const int port,
   FormatLocaleString(service,MagickPathExtent,"%d",port);
   status=getaddrinfo(NULL,service,&hint,&result);
   if (status != 0)
-    ThrowFatalException(CacheFatalError, "UnableToListen");
+    ThrowFatalException(CacheFatalError,"UnableToListen");
   server_socket=(SOCKET_TYPE) 0;
   for (p=result; p != NULL; p=p->ai_next)
   {
@@ -1333,24 +1914,12 @@ MagickExport void DistributePixelCacheServer(const int port,
       continue;
     status=setsockopt(server_socket,SOL_SOCKET,SO_REUSEADDR,(char *) &one,
       (socklen_t) sizeof(one));
-    if (status != -1)
-      {
-#if defined(MAGICKCORE_HAVE_WINSOCK2)
-        DWORD timeout = 5000; // ms
-        status=setsockopt(server_socket,SOL_SOCKET,SO_RCVTIMEO,(const char *)
-          &timeout,sizeof(timeout));
-#else
-        struct timeval tv;
-        tv.tv_sec=5;
-        tv.tv_usec=0;
-        status=setsockopt(server_socket,SOL_SOCKET,SO_RCVTIMEO,&tv,sizeof(tv));
-#endif
-      }
     if (status == -1)
       {
         CLOSE_SOCKET(server_socket);
         continue;
       }
+    SetSocketReceiveTimeout(server_socket,5.0);
     status=bind(server_socket,p->ai_addr,(socklen_t) p->ai_addrlen);
     if (status == -1)
       {
@@ -1395,25 +1964,8 @@ MagickExport void DistributePixelCacheServer(const int port,
           client_socket_ptr);
         continue;
       }
-#if defined(MAGICKCORE_HAVE_WINSOCK2)
-    {
-      DWORD
-        timeout = 5000;
-
-      status=setsockopt(*client_socket_ptr,SOL_SOCKET,SO_RCVTIMEO,
-        (const char *) &timeout,sizeof(timeout));
-    }
-#else
-    {
-      struct timeval
-        tv;
-
-      tv.tv_sec=5;
-      tv.tv_usec=0;
-      status=setsockopt(*client_socket_ptr,SOL_SOCKET,SO_RCVTIMEO,&tv,
-        sizeof(tv));
-    }
-#endif
+    SetSocketReceiveTimeout(*client_socket_ptr,5.0);
+    SetSocketNoDelay(*client_socket_ptr);
     if (status == -1)
       {
         CLOSE_SOCKET(*client_socket_ptr);
@@ -1423,8 +1975,8 @@ MagickExport void DistributePixelCacheServer(const int port,
         continue;
       }
 #if defined(MAGICKCORE_THREAD_SUPPORT)
-    status=pthread_create(&thread_id,&attributes,DistributePixelCacheClient,
-      (void *) client_socket_ptr);
+    status=pthread_create(&thread_id,&attributes,
+      DistributePixelCacheConnectionHandler,(void *) client_socket_ptr);
     if (status != 0)
       {
         CLOSE_SOCKET(*client_socket_ptr);
@@ -1433,7 +1985,7 @@ MagickExport void DistributePixelCacheServer(const int port,
         continue;
       }
 #elif defined(_MSC_VER)
-    if (CreateThread(0,0,DistributePixelCacheClient,(void*) client_socket_ptr,0,&threadID) == (HANDLE) NULL)
+    if (CreateThread(0,0,DistributePixelCacheConnectionHandler,(void*) client_socket_ptr,0,&threadID) == (HANDLE) NULL)
       {
         CLOSE_SOCKET(*client_socket_ptr);
         RelinquishDPCClient(MagickTrue);
@@ -1476,6 +2028,8 @@ MagickPrivate void DistributeCacheTerminus(void)
   RelinquishSemaphoreInfo(&winsock_semaphore);
 #endif
 #if defined(MAGICKCORE_HAVE_DISTRIBUTE_CACHE)
+  if (dpc_shared_secret != (char *) NULL)
+    dpc_shared_secret=DestroyString(dpc_shared_secret);
   if (dpc_semaphore != (SemaphoreInfo *) NULL)
     RelinquishSemaphoreInfo(&dpc_semaphore);
 #endif
@@ -1648,7 +2202,7 @@ MagickPrivate MagickBooleanType OpenDistributePixelCache(
   if (count != (MagickOffsetType) (p-message))
     return(MagickFalse);
   status=MagickFalse;
-  count=dpc_read(server_info->file,sizeof(status),(unsigned char *) &status);
+  count=dpc_receive(server_info->file,sizeof(status),(unsigned char *) &status);
   if (count != (MagickOffsetType) sizeof(status))
     return(MagickFalse);
   return(status);
@@ -1724,7 +2278,8 @@ MagickPrivate MagickOffsetType ReadDistributePixelCacheMetacontent(
   count=dpc_send(server_info->file,(MagickSizeType) (p-message),message);
   if (count != (MagickOffsetType) (p-message))
     return(-1);
-  return(dpc_read(server_info->file,length,metacontent));
+  return(dpc_receive_mac(server_info->file,length,metacontent,
+    server_info->session_key));
 }
 
 /*
@@ -1797,7 +2352,8 @@ MagickPrivate MagickOffsetType ReadDistributePixelCachePixels(
   count=dpc_send(server_info->file,(MagickSizeType) (p-message),message);
   if (count != (MagickOffsetType) (p-message))
     return(-1);
-  return(dpc_read(server_info->file,length,pixels));
+  return(dpc_receive_mac(server_info->file,length,pixels,
+    server_info->session_key));
 }
 
 /*
@@ -1850,7 +2406,7 @@ MagickPrivate MagickBooleanType RelinquishDistributePixelCache(
   if (count != (MagickOffsetType) (p-message))
     return(MagickFalse);
   status=MagickFalse;
-  count=dpc_read(server_info->file,sizeof(status),(unsigned char *) &status);
+  count=dpc_receive(server_info->file,sizeof(status),(unsigned char *) &status);
   if (count != (MagickOffsetType) sizeof(status))
     return(MagickFalse);
   return(status);
@@ -1926,7 +2482,8 @@ MagickPrivate MagickOffsetType WriteDistributePixelCacheMetacontent(
   count=dpc_send(server_info->file,(MagickSizeType) (p-message),message);
   if (count != (MagickOffsetType) (p-message))
     return(-1);
-  return(dpc_send(server_info->file,length,metacontent));
+  return(dpc_send_mac(server_info->file,length,metacontent,
+    server_info->session_key));
 }
 
 /*
@@ -2000,5 +2557,6 @@ MagickPrivate MagickOffsetType WriteDistributePixelCachePixels(
   count=dpc_send(server_info->file,(MagickSizeType) (p-message),message);
   if (count != (MagickOffsetType) (p-message))
     return(-1);
-  return(dpc_send(server_info->file,length,pixels));
+  return(dpc_send_mac(server_info->file,length,pixels,
+    server_info->session_key));
 }

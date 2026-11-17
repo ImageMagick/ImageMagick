@@ -335,7 +335,7 @@ static ChannelStatistics *GetLocationStatistics(const Image *image,
   channel_statistics=(ChannelStatistics *) AcquireQuantumMemory(
     MaxPixelChannels+1,sizeof(*channel_statistics));
   if (channel_statistics == (ChannelStatistics *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+    return((ChannelStatistics *) NULL);
   (void) memset(channel_statistics,0,(MaxPixelChannels+1)*
     sizeof(*channel_statistics));
   for (i=0; i <= (ssize_t) MaxPixelChannels; i++)
@@ -644,9 +644,9 @@ static ssize_t PrintChannelMoments(FILE *file,const PixelChannel channel,
   n+=FormatLocaleFile(file,"        ellipseIntensity: %.*g\n",
     GetMagickPrecision(),channel_moments[channel].ellipse_intensity);
   for (i=0; i < 7; i++)
-    n+=FormatLocaleFile(file,"        I%.17g: %.*g\n",i+1.0,
+    n+=FormatLocaleFile(file,"        I%.17g: %.*g\n",(double) i+1.0,
       GetMagickPrecision(),channel_moments[channel].invariant[i]);
-  n+=FormatLocaleFile(file,"        I%.17g: %.*g\n",i+1.0,
+  n+=FormatLocaleFile(file,"        I%.17g: %.*g\n",(double) i+1.0,
     GetMagickPrecision(),channel_moments[channel].invariant[i]);
   (void) FormatLocaleFile(file,"      ");
   if (separator != MagickFalse)
@@ -1511,7 +1511,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
       image_info=AcquireImageInfo();
       (void) CloneString(&image_info->size,"64x64");
       (void) FormatLocaleFile(file,"    montageDirectory: ");
-      for (p=image->directory; *p != '\0'; p++)
+      for (p=image->directory; *p != '\0'; )
       {
         q=p;
         while ((*q != '\xff') && (*q != '\0') &&
@@ -1519,6 +1519,8 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
           q++;
         (void) CopyMagickString(image_info->filename,p,(size_t) (q-p+1));
         p=q;
+        if (*p == '\xff')
+          p++;
         YAMLFormatLocaleFile(file,"\n       - name: %s",
           image_info->filename);
         handler=SetWarningHandler((WarningHandler) NULL);
@@ -1718,7 +1720,12 @@ static MagickBooleanType WriteYAMLImage(const ImageInfo *image_info,
     return(status);
   file=GetBlobFileHandle(image);
   if (file == (FILE *) NULL)
-    file=stdout;
+    {
+      (void) CloseBlob(image);
+      (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
+        "CoderDoesNotSupportThisStreamType","`%s'",image->filename);
+      return(MagickFalse);
+    }
   scene=0;
   number_scenes=GetImageListLength(image);
   do

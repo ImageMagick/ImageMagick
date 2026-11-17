@@ -1772,6 +1772,7 @@ MagickPrivate void ResetMagickPrecision(void)
 %  A negative value forces the precision to reset to a default value according
 %  to the environment variable "MAGICK_PRECISION", the current 'policy'
 %  configuration setting, or the default value of '6', in that order.
+%  Nonpositive configuration values use the default precision.
 %
 %  The format of the SetMagickPrecision method is:
 %
@@ -1808,6 +1809,8 @@ MagickExport int SetMagickPrecision(const int precision)
       if (limit != (char *) NULL)
         {
           magick_precision=StringToInteger(limit);
+          if (magick_precision <= 0)
+            magick_precision=MagickPrecision;
           limit=DestroyString(limit);
         }
     }

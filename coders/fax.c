@@ -47,6 +47,7 @@
 #include "MagickCore/colorspace.h"
 #include "MagickCore/colorspace-private.h"
 #include "MagickCore/constitute.h"
+#include "MagickCore/constitute-private.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/compress.h"
@@ -168,7 +169,7 @@ static Image* FaxReadG4(Image *image,const ImageInfo *image_info,
   (void) FormatLocaleString(read_info->filename,MagickPathExtent,"group4:%s",
     filename);
   read_info->orientation=TopLeftOrientation;
-  image=ReadImage(read_info,exception);
+  image=ReadImageWithoutPostProcessing(read_info,exception);
   if (image != (Image *) NULL)
     {
       (void) CopyMagickString(image->filename,image_info->filename,
@@ -394,6 +395,8 @@ static MagickBooleanType WriteFAXImage(const ImageInfo *image_info,Image *image,
     if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
       (void) TransformImageColorspace(image,sRGBColorspace,exception);
     status=HuffmanEncodeImage(write_info,image,image,exception);
+    if (status == MagickFalse)
+      break;
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

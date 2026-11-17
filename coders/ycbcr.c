@@ -938,6 +938,8 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
     if (image_info->number_scenes != 0)
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
+    if (image_info->interlace == PartitionInterlace)
+      break;
     if (count == (ssize_t) length)
       {
         /*

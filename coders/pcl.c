@@ -50,6 +50,7 @@
 #include "MagickCore/colorspace.h"
 #include "MagickCore/colorspace-private.h"
 #include "MagickCore/constitute.h"
+#include "MagickCore/constitute-private.h"
 #include "MagickCore/delegate.h"
 #include "MagickCore/draw.h"
 #include "MagickCore/exception.h"
@@ -374,7 +375,7 @@ static Image *ReadPCLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       read_info=DestroyImageInfo(read_info);
       ThrowReaderException(DelegateError,"PCLDelegateFailed");
     }
-  image=ReadImage(read_info,exception);
+  image=ReadImageWithoutPostProcessing(read_info,exception);
   (void) RelinquishUniqueFileResource(read_info->filename);
   (void) RelinquishUniqueFileResource(input_filename);
   read_info=DestroyImageInfo(read_info);

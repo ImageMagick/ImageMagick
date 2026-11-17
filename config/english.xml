@@ -83,6 +83,12 @@
     </cache>
     <coder>
       <error>
+        <message name="CoderDoesNotSupportThisStreamType">
+          coder does not support this stream tyype
+        </message>
+        <message name="CoderNestedTooDeeply">
+          coder nested too deeply
+        </message>
         <message name="ColormapTypeNotSupported">
           colormap type not supported
         </message>
@@ -709,6 +715,9 @@
         <message name="MissingOutputFilename">
           missing output filename
         </message>
+        <message name="MustSpecifyImageManifest">
+          must specify an image manifest
+        </message>
         <message name="MustSpecifyAnImageName">
           must specify an image name
         </message>
@@ -1059,6 +1068,9 @@
           <message name="PixelCacheAllocationFailed">
             pixel cache allocation failed
           </message>
+          <message name="ProfileSizeExceedsLimit">
+            profile size exceeds limit
+          </message>
           <message name="TimeLimitExceeded">
             time limit exceeded
           </message>
@@ -1149,9 +1161,6 @@
         <warning>
           <message name="MemoryAllocationFailed">
             memory allocation failed
-          </message>
-          <message name="ProfileSizeExceedsLimit">
-            profile size exceeds limit
           </message>
         </warning>
       </limit>

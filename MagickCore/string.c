@@ -42,6 +42,7 @@
 #include "MagickCore/studio.h"
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
+#include "MagickCore/client.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/image-private.h"
@@ -464,7 +465,7 @@ MagickExport MagickBooleanType ConcatenateString(
     source_length;
 
   assert(destination != (char **) NULL);
-  if (source == (const char *) NULL)
+  if ((source == (const char *) NULL) || (*source == '\0'))
     return(MagickTrue);
   if (*destination == (char *) NULL)
     {
@@ -483,8 +484,7 @@ MagickExport MagickBooleanType ConcatenateString(
     OverAllocateMemory(length+MagickPathExtent),sizeof(**destination));
   if (*destination == (char *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"UnableToConcatenateString");
-  if (source_length != 0)
-    (void) memcpy((*destination)+destination_length,source,source_length);
+  (void) memcpy((*destination)+destination_length,source,source_length);
   (*destination)[length]='\0';
   return(MagickTrue);
 }
@@ -589,7 +589,7 @@ MagickExport StringInfo *ConfigureFileToStringInfo(const char *filename)
     *map;
 
   assert(filename != (const char *) NULL);
-  file=open_utf8(filename,O_RDONLY | O_BINARY,0);
+  file=open_utf8(filename,O_RDONLY | O_CLOEXEC | O_BINARY,0);
   if (file == -1)
     return((StringInfo *) NULL);
   offset=(MagickOffsetType) lseek(file,0,SEEK_END);
@@ -1582,6 +1582,53 @@ MagickExport void ResetStringInfo(StringInfo *string_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   S a n i t i z e S t r i n g F o r I d e n t i f i e r                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SanitizeStringForIdentifier() returns a new string suitable for use as a C
+%  identifier.  Invalid characters are replaced with underscores.  An empty
+%  source string becomes a single underscore.
+%
+%  Free the sanitized string with DestroyString().
+%
+%  The format of the SanitizeStringForIdentifier method is:
+%
+%      char *SanitizeStringForIdentifier(const char *source)
+%
+%  A description of each parameter follows:
+%
+%    o source: A character string.
+%
+*/
+MagickExport char *SanitizeStringForIdentifier(const char *source)
+{
+  char
+    *p,
+    *sanitize_source;
+
+  static const char
+    letters[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_",
+    digits[] = "0123456789";
+
+  assert(source != (const char *) NULL);
+  sanitize_source=AcquireString(*source == '\0' ? "_" : source);
+  if (strchr(letters,(int) ((unsigned char) *sanitize_source)) == (char *) NULL)
+    *sanitize_source='_';
+  for (p=sanitize_source+1; *p != '\0'; p++)
+    if ((strchr(letters,(int) ((unsigned char) *p)) == (char *) NULL) &&
+        (strchr(digits,(int) ((unsigned char) *p)) == (char *) NULL))
+      *p='_';
+  return(sanitize_source);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   S a n t i z e S t r i n g                                                 %
 %                                                                             %
 %                                                                             %
@@ -2044,60 +2091,151 @@ MagickExport char **StringToArgv(const char *text,int *argc)
     **argv;
 
   const char
-    *p,
-    *q;
+    *p = text;
 
   ssize_t
     i;
 
-  *argc=0;
-  if (text == (char *) NULL)
-    return((char **) NULL);
   /*
     Determine the number of arguments.
   */
-  for (p=text; *p != '\0'; )
+  *argc=0;
+  if (text == (const char *) NULL)
+    return((char **) NULL);
+  while (*p != '\0')
   {
-    while (isspace((int) ((unsigned char) *p)) != 0)
+    /*
+      Skip whitespace and backtick delimiters.
+    */
+    while ((isspace((int) ((unsigned char) *p)) != 0) || (*p == '`'))
       p++;
     if (*p == '\0')
       break;
     (*argc)++;
-    if (*p == '"')
-      for (p++; (*p != '"') && (*p != '\0'); p++) ;
-    if (*p == '\'')
-      for (p++; (*p != '\'') && (*p != '\0'); p++) ;
-    while ((isspace((int) ((unsigned char) *p)) == 0) && (*p != '\0'))
+    /*
+      Shell operators are returned as individual arguments.
+    */
+    if ((*p == '&') && (*(p+1) == '&'))
+      {
+        p+=2;
+        continue;
+      }
+    if ((*p == '|') && (*(p+1) == '|'))
+      {
+        p+=2;
+        continue;
+      }
+    if ((*p == ';') || (*p == '&') || (*p == '|'))
+      {
+        p++;
+        continue;
+      }
+    /*
+      Consume one argument.
+    */
+    while ((*p != '\0') &&
+           (isspace((int) ((unsigned char) *p)) == 0) &&
+           (*p != '`') && (*p != ';') && (*p != '&') && (*p != '|'))
+    {
+      if (*p == '\\')
+        {
+          p++;  /* Skip the escape character */
+          if (*p != '\0')
+            p++;  /* Skip the escaped character */
+          continue;
+        }
+      if ((*p == '"') || (*p == '\''))
+        {
+          const char quote = (*p++);
+          while ((*p != quote) && (*p != '\0'))
+          {
+            if ((quote == '"') && (*p == '\\'))
+              {
+                p++;
+                if (*p != '\0')
+                  p++;
+                continue;
+              }
+            p++;
+          }
+        if (*p == quote)
+          p++;
+        continue;
+      }
       p++;
+    }
   }
+  /*
+    Instantiate argv.
+  */
   (*argc)++;
   argv=(char **) AcquireQuantumMemory((size_t) *argc+1UL,sizeof(*argv));
   if (argv == (char **) NULL)
     ThrowFatalException(ResourceLimitFatalError,"UnableToConvertStringToARGV");
   /*
-    Convert string to an ASCII list.
+    Convert the string to an ASCII argument list.
   */
-  argv[0]=AcquireString("magick");
+  argv[0]=AcquireString(GetClientName());
   p=text;
   for (i=1; i < (ssize_t) *argc; i++)
   {
-    while (isspace((int) ((unsigned char) *p)) != 0)
+    const char
+      *q;
+
+    size_t
+      length = 0;
+
+    /*
+      Skip whitespace and backtick delimiters.
+    */
+    while ((isspace((int) ((unsigned char) *p)) != 0) || (*p == '`'))
       p++;
     q=p;
-    if (*q == '"')
-      {
-        p++;
-        for (q++; (*q != '"') && (*q != '\0'); q++) ;
-      }
+    if ((*q == '&') && (*(q+1) == '&'))
+      q+=2;
     else
-      if (*q == '\'')
-        {
-          p++;
-          for (q++; (*q != '\'') && (*q != '\0'); q++) ;
-        }
+      if ((*q == '|') && (*(q+1) == '|'))
+        q+=2;
       else
-        while ((isspace((int) ((unsigned char) *q)) == 0) && (*q != '\0'))
+        if ((*q == ';') || (*q == '&') || (*q == '|'))
           q++;
+        else
+          {
+            while ((*q != '\0') &&
+                   (isspace((int) ((unsigned char) *q)) == 0) &&
+                   (*q != '`') && (*q != ';') && (*q != '&') && (*q != '|'))
+            {
+              if (*q == '\\')
+                {
+                  q++;
+                  if (*q != '\0')
+                    q++;
+                  continue;
+                }
+              if ((*q == '"') || (*q == '\''))
+                {
+                  const char quote = (*q++);
+                  while ((*q != quote) && (*q != '\0'))
+                  {
+                    if ((quote == '"') && (*q == '\\'))
+                      {
+                        q++;
+                        if (*q != '\0')
+                          q++;
+                        continue;
+                      }
+                    q++;
+                  }
+                  if (*q == quote)
+                    q++;
+                  continue;
+                }
+              q++;
+            }
+          }
+    /*
+      Allocate buffer matching at least the raw substring size + safety padding.
+    */
     argv[i]=(char *) AcquireQuantumMemory((size_t) (q-p)+MagickPathExtent,
       sizeof(**argv));
     if (argv[i] == (char *) NULL)
@@ -2108,11 +2246,47 @@ MagickExport char **StringToArgv(const char *text,int *argc)
         ThrowFatalException(ResourceLimitFatalError,
           "UnableToConvertStringToARGV");
       }
-    (void) memcpy(argv[i],p,(size_t) (q-p));
-    argv[i][q-p]='\0';
-    p=q;
-    while ((isspace((int) ((unsigned char) *p)) == 0) && (*p != '\0'))
-      p++;
+    /*
+      Copy data while unescaping and stripping quotes incrementally.
+    */
+    if (((p != q) && ((*p == ';') || (*p == '&') || (*p == '|'))))
+      {
+        while (p < q)
+          argv[i][length++]=(*p++);
+      }
+    else
+      {
+        while (p < q)
+        {
+          if (*p == '\\')
+            {
+              p++;  /* Skip '\\' */
+              if (p < q)
+                argv[i][length++]=(*p++);
+              continue;
+            }
+          if ((*p == '"') || (*p == '\''))
+            {
+              const char quote = *p++; /* Skip open quote */
+              while ((p < q) && (*p != quote))
+              {
+                if ((quote == '"') && (*p == '\\'))
+                  {
+                    p++;  /* Skip inner '\\' */
+                    if (p < q)
+                      argv[i][length++]=(*p++);
+                    continue;
+                  }
+                argv[i][length++]=(*p++);
+              }
+            if ((p < q) && (*p == quote))
+              p++;  /* Skip close quote */
+            continue;
+          }
+          argv[i][length++]=(*p++);
+        }
+      }
+    argv[i][length]='\0';
   }
   argv[i]=(char *) NULL;
   return(argv);
@@ -2385,7 +2559,7 @@ MagickExport char **StringToStrings(const char *text,size_t *count)
       textlist=(char **) AcquireQuantumMemory((size_t) lines+1UL,
         sizeof(*textlist));
       if (textlist == (char **) NULL)
-        ThrowFatalException(ResourceLimitFatalError,"UnableToConvertText");
+        return((char **) NULL);
       p=text;
       for (i=0; i < (ssize_t) lines; i++)
       {
@@ -2395,7 +2569,15 @@ MagickExport char **StringToStrings(const char *text,size_t *count)
         textlist[i]=(char *) AcquireQuantumMemory((size_t) (q-p)+1,
           sizeof(**textlist));
         if (textlist[i] == (char *) NULL)
-          ThrowFatalException(ResourceLimitFatalError,"UnableToConvertText");
+          {
+            ssize_t
+              j;
+
+            for (j=0; j < i; j++)
+              textlist[j]=DestroyString(textlist[j]);
+            textlist=(char **) RelinquishMagickMemory(textlist);
+            return((char **) NULL);
+          }
         (void) memcpy(textlist[i],p,(size_t) (q-p));
         textlist[i][q-p]='\0';
         if (*q == '\r')
@@ -2421,7 +2603,7 @@ MagickExport char **StringToStrings(const char *text,size_t *count)
       textlist=(char **) AcquireQuantumMemory((size_t) lines+1UL,
         sizeof(*textlist));
       if (textlist == (char **) NULL)
-        ThrowFatalException(ResourceLimitFatalError,"UnableToConvertText");
+        return((char **) NULL);
       p=text;
       for (i=0; i < (ssize_t) lines; i++)
       {
@@ -2431,7 +2613,12 @@ MagickExport char **StringToStrings(const char *text,size_t *count)
         textlist[i]=(char *) AcquireQuantumMemory(2UL*MagickPathExtent,
           sizeof(**textlist));
         if (textlist[i] == (char *) NULL)
-          ThrowFatalException(ResourceLimitFatalError,"UnableToConvertText");
+          {
+            for (j=0; j < i; j++)
+              textlist[j]=DestroyString(textlist[j]);
+            textlist=(char **) RelinquishMagickMemory(textlist);
+            return((char **) NULL);
+          }
         (void) FormatLocaleString(textlist[i],MagickPathExtent,"0x%08lx: ",
           (long) (CharsPerLine*i));
         q=textlist[i]+strlen(textlist[i]);
@@ -2461,10 +2648,22 @@ MagickExport char **StringToStrings(const char *text,size_t *count)
           p++;
         }
         *q='\0';
-        textlist[i]=(char *) ResizeQuantumMemory(textlist[i],(size_t) (q-
-          textlist[i]+1),sizeof(**textlist));
-        if (textlist[i] == (char *) NULL)
-          ThrowFatalException(ResourceLimitFatalError,"UnableToConvertText");
+        {
+          char
+            *resized;
+
+          resized=(char *) ResizeQuantumMemory(textlist[i],(size_t) (q-
+            textlist[i]+1),sizeof(**textlist));
+          if (resized == (char *) NULL)
+            {
+              textlist[i]=(char *) NULL;
+              for (j=0; j < i; j++)
+                textlist[j]=DestroyString(textlist[j]);
+              textlist=(char **) RelinquishMagickMemory(textlist);
+              return((char **) NULL);
+            }
+          textlist[i]=resized;
+        }
       }
     }
   if (count != (size_t *) NULL)

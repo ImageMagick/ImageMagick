@@ -149,7 +149,11 @@ static ChannelStatistics *GetLocationStatistics(const Image *image,
   channel_statistics=(ChannelStatistics *) AcquireQuantumMemory(
     MaxPixelChannels+1,sizeof(*channel_statistics));
   if (channel_statistics == (ChannelStatistics *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      return(channel_statistics);
+    }
   (void) memset(channel_statistics,0,(MaxPixelChannels+1)*
     sizeof(*channel_statistics));
   for (i=0; i <= (ssize_t) MaxPixelChannels; i++)
@@ -1360,7 +1364,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       image_info=AcquireImageInfo();
       (void) CloneString(&image_info->size,"64x64");
       (void) FormatLocaleFile(file,"  Directory:\n");
-      for (d=image->directory; *d != '\0'; d++)
+      for (d=image->directory; *d != '\0'; )
       {
         q=d;
         while ((*q != '\xff') && (*q != '\0') &&
@@ -1368,6 +1372,8 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           q++;
         (void) CopyMagickString(image_info->filename,d,(size_t) (q-d+1));
         d=q;
+        if (*d == '\xff')
+          d++;
         (void) FormatLocaleFile(file,"    %s",image_info->filename);
         handler=SetWarningHandler((WarningHandler) NULL);
         tile=StrictReadImage(image_info,exception);

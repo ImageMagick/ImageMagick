@@ -98,7 +98,6 @@ static const char
   *convert_options[] =
   {
     "",
-    "-affine 1,0,0.785,1,0,0 -transform",
     "-alpha set",
     "-black-threshold 20%",
     "-blur 0x0.5",
@@ -130,11 +129,16 @@ static const char
     "-crop 17x9+10+10",
     "-crop 60x70+10+10",
     "-cycle 200",
+#if MAGICKCORE_QUANTUM_DEPTH == 8
+    "-threshold 50% "
+#endif
+    "-define connected-components:area-threshold=16 -connected-components 8",
     "-density 75x75 -resample 50x50",
     "-depth 7",
     "-depth 16",
     "-depth 32",
     "-despeckle",
+    "+distort AffineProjection '1,0,0.785,1,0,0'",
     "-draw \"affine 1,0,0.785,1,0,0\"",
     "-draw \"rectangle 20,10 80,50\"",
     "-edge 0x1",

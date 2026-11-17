@@ -1060,6 +1060,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
     scanline_pad;
 
   ssize_t
+    count,
     i,
     x,
     y;
@@ -1097,7 +1098,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
       frame=image;
       do
       {
-        if ((image->columns > 512L) || (image->rows > 512L))
+        if ((frame->columns > 512L) || (frame->rows > 512L))
           ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
         scene++;
         frame=SyncNextImageInList(frame);
@@ -1196,8 +1197,10 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         directory->icons[scene]->bits_per_pixel=32;
         directory->icons[scene]->size=(size_t) length;
         directory->icons[scene]->offset=(size_t) TellBlob(image);
-        (void) WriteBlob(image,(size_t) length,png);
+        count=WriteBlob(image,(size_t) length,png);
         png=(unsigned char *) RelinquishMagickMemory(png);
+        if (count != (ssize_t) length)
+          ThrowICONWriterException(BlobError,"UnableToWriteBlob");
       }
     else
       {
@@ -1244,7 +1247,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
               }
           }
         bytes_per_line=(((frame->columns*bits_per_pixel)+31U) &
-          ~31U) >> 3;
+          ~((size_t) 31U)) >> 3;
         width=(ssize_t) frame->columns;
         height=(ssize_t) frame->rows;
         planes=1;
@@ -1252,7 +1255,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         size=40;
         size+=(4*number_colors);
         size+=image_size;
-        size+=(size_t) ((((width+31U) & ~31U) >> 3)*height);
+        size+=(((frame->columns+31U) & ~((size_t) 31U)) >> 3)*frame->rows;
         x_pixels=0;
         y_pixels=0;
         switch (frame->units)
@@ -1480,12 +1483,15 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
             icon_colormap=(unsigned char *) RelinquishMagickMemory(
               icon_colormap);
           }
-        (void) WriteBlob(image,image_size,pixels);
+        count=WriteBlob(image,image_size,pixels);
         pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+        if (count != (ssize_t) image_size)
+          ThrowICONWriterException(BlobError,"UnableToWriteBlob");
         /*
           Write matte mask.
         */
-        scanline_pad=(((frame->columns+31U) & ~31U)-frame->columns) >> 3;
+        scanline_pad=(((frame->columns+31U) & ~((size_t) 31U))-
+          frame->columns) >> 3;
         for (y=((ssize_t) frame->rows - 1); y >= 0; y--)
         {
           unsigned char
@@ -1514,8 +1520,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
           }
           if (bit != 0)
             (void) WriteBlobByte(image,(unsigned char) (byte << (8-bit)));
-          for (i=0; i < (ssize_t) scanline_pad; i++)
-            (void) WriteBlobByte(image,(unsigned char) 0);
+          (void) WriteBlobPadding(image,scanline_pad,'\0');
         }
       }
     if (GetNextImageInList(frame) == (Image *) NULL)

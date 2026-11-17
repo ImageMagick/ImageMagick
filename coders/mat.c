@@ -484,7 +484,8 @@ static void RelinquishZIPMemory(voidpf context,voidpf memory)
 
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
 /** This procedure decompreses an image block for a new MATLAB format. */
-static Image *decompress_block(Image *orig, unsigned int *Size, ImageInfo *clone_info, ExceptionInfo *exception)
+static Image *decompress_block(Image *orig,unsigned int *Size,
+  ImageInfo *clone_info,ExceptionInfo *exception)
 {
 
 Image *image2;
@@ -498,26 +499,32 @@ int file;
 MagickBooleanType status;
 int zip_status;
 ssize_t total_size = 0;
+size_t compressed_total = 0;
+static const size_t MAX_ABSOLUTE_SIZE = 512UL * 1024UL * 1024UL; /* 512 MB */
+static const size_t MAX_EXPANSION_RATIO = 64; /* 64x expansion allowed */
 
-  if(clone_info==NULL) return NULL;
-  if(clone_info->file)    /* Close file opened from previous transaction. */
-  {
-    fclose(clone_info->file);
-    clone_info->file = NULL;
-    (void) remove_utf8(clone_info->filename);
-  }
-
-  cache_block = AcquireQuantumMemory((size_t)(*Size < MagickMinBufferExtent) ? *Size: MagickMinBufferExtent,sizeof(unsigned char *));
-  if(cache_block==NULL) return NULL;
-  decompress_block = AcquireQuantumMemory((size_t)(4096),sizeof(unsigned char *));
-  if(decompress_block==NULL)
-  {
-    RelinquishMagickMemory(cache_block);
+  if (clone_info == NULL)
     return NULL;
-  }
+  if (clone_info->file)    /* Close file opened from previous transaction. */
+    {
+      fclose(clone_info->file);
+      clone_info->file = NULL;
+      (void) remove_utf8(clone_info->filename);
+    }
 
+  cache_block=AcquireQuantumMemory((size_t) (*Size < MagickMinBufferExtent) ?
+    *Size: MagickMinBufferExtent,sizeof(unsigned char *));
+  if (cache_block == NULL)
+    return NULL;
+  decompress_block=AcquireQuantumMemory((size_t) (4096),
+    sizeof(unsigned char *));
+  if (decompress_block == NULL)
+    {
+      RelinquishMagickMemory(cache_block);
+      return NULL;
+    }
   mat_file=0;
-  file = AcquireUniqueFileResource(clone_info->filename);
+  file=AcquireUniqueFileResource(clone_info->filename);
   if (file != -1)
     mat_file = fdopen(file,"ab+");
   if(!mat_file)
@@ -531,8 +538,8 @@ ssize_t total_size = 0;
   (void) memset(&zip_info,0,sizeof(zip_info));
   zip_info.zalloc=AcquireZIPMemory;
   zip_info.zfree=RelinquishZIPMemory;
-  zip_info.opaque = (voidpf) NULL;
-  zip_status = inflateInit(&zip_info);
+  zip_info.opaque=(voidpf) NULL;
+  zip_status=inflateInit(&zip_info);
   if (zip_status != Z_OK)
     {
       RelinquishMagickMemory(cache_block);
@@ -541,37 +548,50 @@ ssize_t total_size = 0;
         "UnableToUncompressImage","`%s'",clone_info->filename);
       (void) fclose(mat_file);
       RelinquishUniqueFileResource(clone_info->filename);
-      return NULL;
+      return(NULL);
     }
-  /* zip_info.next_out = 8*4;*/
-
-  zip_info.avail_in = 0;
-  zip_info.total_out = 0;
-  while(*Size>0 && !EOFBlob(orig))
+  zip_info.avail_in=0;
+  zip_info.total_out=0;
+  while ((*Size > 0) && (EOFBlob(orig) == 0))
   {
-    magick_size = ReadBlob(orig, (*Size < MagickMinBufferExtent) ? *Size : MagickMinBufferExtent, (unsigned char *) cache_block);
+    magick_size=ReadBlob(orig,(*Size < MagickMinBufferExtent) ? *Size :
+      MagickMinBufferExtent,(unsigned char *) cache_block);
     if (magick_size == 0)
       break;
-    zip_info.next_in = (Bytef *) cache_block;
-    zip_info.avail_in = (uInt) magick_size;
-
-    while(zip_info.avail_in>0)
+    zip_info.next_in=(Bytef *) cache_block;
+    zip_info.avail_in=(uInt) magick_size;
+    compressed_total+=magick_size;
+    while (zip_info.avail_in > 0)
     {
-      zip_info.avail_out = 4096;
-      zip_info.next_out = (Bytef *) decompress_block;
-      zip_status = inflate(&zip_info,Z_NO_FLUSH);
+      size_t chunk_size = 0;
+      zip_info.avail_out=4096;
+      zip_info.next_out=(Bytef *) decompress_block;
+      zip_status=inflate(&zip_info,Z_NO_FLUSH);
       if ((zip_status != Z_OK) && (zip_status != Z_STREAM_END))
         break;
-      extent=fwrite(decompress_block,1,4096-zip_info.avail_out,mat_file);
-      (void) extent;
-      total_size += 4096-zip_info.avail_out;
-
-      if(zip_status == Z_STREAM_END) goto DblBreak;
+      chunk_size=4096-zip_info.avail_out;
+      extent=fwrite(decompress_block,1,chunk_size,mat_file);
+      if (extent != chunk_size)
+        {
+          zip_status=Z_DATA_ERROR;
+          break;
+        }
+      total_size+=chunk_size;
+      if (compressed_total > 0)
+        {
+          if ((total_size > (ssize_t) MAX_ABSOLUTE_SIZE) ||
+              (total_size > (ssize_t) (compressed_total*MAX_EXPANSION_RATIO)))
+            {
+              zip_status=Z_DATA_ERROR;
+              break;
+            }
+        }
+      if (zip_status == Z_STREAM_END)
+        goto DblBreak;
     }
     if ((zip_status != Z_OK) && (zip_status != Z_STREAM_END))
       break;
-
-    *Size -= (unsigned int) magick_size;
+    *Size-=(unsigned int) magick_size;
   }
 DblBreak:
 
@@ -597,8 +617,7 @@ EraseFile:
     RelinquishUniqueFileResource(clone_info->filename);
     return NULL;
   }
-
-  return image2;
+  return(image2);
 }
 #endif
 
@@ -1218,7 +1237,9 @@ RestoreMSCWarning
     image->colors = (size_t) GetQuantumRange(image->depth);
     if (image->columns == 0 || image->rows == 0)
       goto MATLAB_KO;
-    if((size_t)ldblk*MATLAB_HDR.SizeY > MATLAB_HDR.ObjectSize)
+    if ((ldblk < 0) ||
+         ((size_t) ldblk > ((size_t) ~0)/MATLAB_HDR.SizeY) ||
+         (((size_t) ldblk*MATLAB_HDR.SizeY) > MATLAB_HDR.ObjectSize))
       goto MATLAB_KO;
     /* Image is gray when no complex flag is set and 2D Matrix */
     if ((MATLAB_HDR.DimFlag == 8) &&
@@ -1242,7 +1263,13 @@ RestoreMSCWarning
     }
     if ((image->columns > GetBlobSize(image)) ||
         (image->rows > GetBlobSize(image)))
-      ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+      {
+        if (clone_info != (ImageInfo *) NULL)
+          clone_info=DestroyImageInfo(clone_info);
+        if ((image != image2) && (image2 != (Image *) NULL))
+          image2=DestroyImage(image2);
+        ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+      }
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
       {
@@ -1479,7 +1506,7 @@ END_OF_READING:
     /*
       Rewind list, removing any empty images while rewinding.
     */
-    p=image;
+    p=GetLastImageInList(image);
     image=NULL;
     while (p != (Image *) NULL)
       {
@@ -1750,8 +1777,7 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image,
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         break;
     } while (z-- >= 2);
-    while (padding-- > 0)
-      (void) WriteBlobByte(image,0);
+    (void) WriteBlobPadding(image,padding,'\0');
     quantum_info=DestroyQuantumInfo(quantum_info);
     if (GetNextImageInList(image) == (Image *) NULL)
       break;

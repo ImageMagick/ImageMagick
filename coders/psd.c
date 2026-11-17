@@ -765,7 +765,7 @@ static MagickBooleanType NegateCMYK(Image *image,ExceptionInfo *exception)
 }
 
 static StringInfo *ParseImageResourceBlocks(PSDInfo *psd_info,Image *image,
-  const unsigned char *blocks,size_t length)
+  const unsigned char *blocks,size_t length,ExceptionInfo *exception)
 {
   const unsigned char
     *p;
@@ -805,8 +805,15 @@ static StringInfo *ParseImageResourceBlocks(PSDInfo *psd_info,Image *image,
       break;
     p=PushLongPixel(MSBEndian,p,&count);
     offset=(ssize_t) count;
-    if (((p+offset) < blocks) || ((p+offset) > (blocks+length)))
-      break;
+    if ((offset < 0) || ((p+offset) > (blocks+length)) ||
+        (((size_t) (p-blocks)+(size_t) offset) > (size_t) length))
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          CorruptImageError,"Invalid PSD resource block offset","`%s'",
+          image->filename);
+        profile=DestroyStringInfo(profile);
+        break;
+      }
     switch (id)
     {
       case 0x03ed:
@@ -2023,6 +2030,13 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
     layer_info[i].page.x=left;
     layer_info[i].page.width=(size_t) (right-left);
     layer_info[i].page.height=(size_t) (bottom-top);
+    if ((layer_info[i].page.width > 300000) ||
+        (layer_info[i].page.height > 300000))
+      {
+        layer_info=DestroyLayerInfo(layer_info,number_layers);
+        ThrowBinaryException(ImageError,"WidthOrHeightExceedsLimit",
+          image->filename);
+      }
     layer_info[i].channels=ReadBlobShort(image);
     if (layer_info[i].channels > (unsigned short) MaxPSDChannels)
       {
@@ -2457,10 +2471,10 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   psd_info.columns=ReadBlobMSBLong(image);
   if ((psd_info.version == 1) && ((psd_info.rows > 30000) ||
       (psd_info.columns > 30000)))
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    ThrowReaderException(ImageError,"WidthOrHeightExceedsLimit");
   if ((psd_info.version == 2) && ((psd_info.rows > 300000) ||
       (psd_info.columns > 300000)))
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    ThrowReaderException(ImageError,"WidthOrHeightExceedsLimit");
   psd_info.depth=ReadBlobMSBShort(image);
   if ((psd_info.depth != 1) && (psd_info.depth != 8) &&
       (psd_info.depth != 16) && (psd_info.depth != 32))
@@ -2611,7 +2625,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           blocks=(unsigned char *) RelinquishMagickMemory(blocks);
           ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         }
-      profile=ParseImageResourceBlocks(&psd_info,image,blocks,(size_t) length);
+      profile=ParseImageResourceBlocks(&psd_info,image,blocks,(size_t) length,exception);
       blocks=(unsigned char *) RelinquishMagickMemory(blocks);
     }
   /*
@@ -3413,8 +3427,7 @@ static size_t WritePascalString(Image *image,const char *value,size_t padding)
     length;
 
   ssize_t
-    count,
-    i;
+    count;
 
   /*
     Max length is 255.
@@ -3431,8 +3444,7 @@ static size_t WritePascalString(Image *image,const char *value,size_t padding)
   length++;
   if ((length % padding) == 0)
     return((size_t) count);
-  for (i=0; i < (ssize_t) (padding-(length % padding)); i++)
-    count+=WriteBlobByte(image,0);
+  count+=WriteBlobPadding(image,padding-(length % padding),'\0');
   return((size_t) count);
 }
 
@@ -3965,8 +3977,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
     psd_info.version=2;
   (void) WriteBlob(image,4,(const unsigned char *) "8BPS");
   (void) WriteBlobMSBShort(image,psd_info.version);  /* version */
-  for (i=1; i <= 6; i++)
-    (void) WriteBlobByte(image, 0);  /* 6 bytes of reserved */
+  (void) WriteBlobPadding(image,6,'\0');  /* 6 bytes of reserved */
   if ((GetImageProfile(image,"icc") == (StringInfo *) NULL) &&
       (SetImageGray(image,exception) != MagickFalse))
     num_channels=1;
@@ -4036,18 +4047,15 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
       for (i=0; i < (ssize_t) image->colors; i++)
         (void) WriteBlobByte(image,ScaleQuantumToChar(ClampToQuantum(
           image->colormap[i].red)));
-      for ( ; i < 256; i++)
-        (void) WriteBlobByte(image,0);
+      (void) WriteBlobPadding(image,256-image->colors,'\0');
       for (i=0; i < (ssize_t) image->colors; i++)
         (void) WriteBlobByte(image,ScaleQuantumToChar(ClampToQuantum(
           image->colormap[i].green)));
-      for ( ; i < 256; i++)
-        (void) WriteBlobByte(image,0);
+      (void) WriteBlobPadding(image,256-image->colors,'\0');
       for (i=0; i < (ssize_t) image->colors; i++)
         (void) WriteBlobByte(image,ScaleQuantumToChar(ClampToQuantum(
           image->colormap[i].blue)));
-      for ( ; i < 256; i++)
-        (void) WriteBlobByte(image,0);
+      (void) WriteBlobPadding(image,256-image->colors,'\0');
     }
   /*
     Image resource block.

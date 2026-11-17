@@ -1,0 +1,39 @@
+#!/bin/sh
+#
+#  Copyright 1999 ImageMagick Studio LLC, a non-profit organization
+#  dedicated to making software imaging solutions freely available.
+#
+#  You may not use this file except in compliance with the License.  You may
+#  obtain a copy of the License at
+#
+#    https://imagemagick.org/license/
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+#  Regression tests for PCX coder.
+#
+. ./common.shi
+. ${srcdir}/tests/common.shi
+echo "1..3"
+
+# PCX left/top coordinates should round-trip as page offsets.
+page=`${MAGICK} -size 3x2 xc:red -set page 3x2+10+29 pcx_out.pcx && \
+  ${MAGICK} pcx_out.pcx -format '%X,%Y %wx%h' info:-`
+[ "X$page" = "X+10,+29 3x2" ] && echo "ok" || echo "not ok"
+
+# The largest representable endpoint should be retained.
+page=`${MAGICK} -size 1x1 xc:red -set page 1x1+65535+65535 \
+  pcx_boundary_out.pcx && ${MAGICK} pcx_boundary_out.pcx \
+  -format '%X,%Y %wx%h' info:-`
+[ "X$page" = "X+65535,+65535 1x1" ] && echo "ok" || echo "not ok"
+
+# Origins that would overflow right/bottom fall back without corrupting size.
+page=`${MAGICK} -size 2x2 xc:red -set page 2x2+65535+65535 \
+  pcx_overflow_out.pcx && ${MAGICK} pcx_overflow_out.pcx \
+  -format '%X,%Y %wx%h' info:-`
+[ "X$page" = "X+0,+0 2x2" ] && echo "ok" || echo "not ok"
+:

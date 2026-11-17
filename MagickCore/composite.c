@@ -1089,6 +1089,8 @@ static MagickBooleanType CompositeOverImage(Image *image,
             /*
               Set alpha channel.
             */
+            if ((traits & UpdatePixelTrait) == 0)
+              continue;
             pixel=(double) QuantumRange*alpha;
             q[i]=clamp != MagickFalse ? ClampPixel(pixel) :
               ClampToQuantum(pixel);
@@ -1105,7 +1107,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
             /*
               Copy channel.
             */
-            q[i]=ClampToQuantum(Sc);
+            q[i]=ClampToQuantum(Dc);
             continue;
           }
         /*
@@ -1590,7 +1592,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               channel);
             PixelTrait traits = GetPixelChannelTraits(image,channel);
             if ((source_traits == UndefinedPixelTrait) ||
-                (traits == UndefinedPixelTrait))
+                (traits == UndefinedPixelTrait) ||
+                ((traits & UpdatePixelTrait) == 0))
               continue;
             SetPixelChannel(image,channel,p[i],q);
           }
@@ -2920,9 +2923,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                   (double) Dc));
                  break;
               }
-            S=(Sa > 0.0) ? (Sca/Sa) : 0.0;
-            D=(Da > 0.0) ? (Dca/Da) : 0.0;
-            pixel=(double) QuantumRange*RoundToUnity(fabs(S-D));
+            S=(Sa > 0.0) ? RoundToUnity(Sca/Sa) : 0.0;
+            D=(Da > 0.0) ? RoundToUnity(Dca/Da) : 0.0;
+            blend=fabs(S-D);
+            pixel=(double) QuantumRange*gamma*RoundToUnity(Sa*Da*blend+Sca*
+              (1.0-Da)+Dca*(1.0-Sa));
             break;
           }
           case DissolveCompositeOp:
@@ -2939,7 +2944,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               blend=1.0;
             else
               blend=RoundToUnity(D/S);
-            pixel=(double) QuantumRange*RoundToUnity(Sca*(1.0-Da)+Dca*(1.0-Sa)+
+            pixel=(double) QuantumRange*gamma*RoundToUnity(Sca*(1.0-Da)+Dca*(1.0-Sa)+
               Sa*Da*blend);
             break;
           }
@@ -2954,9 +2959,9 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 break;
               }
             if (fabs(Dca) < MagickEpsilon)
-              pixel=(double) QuantumRange*(Sca+(1.0-Sa));
+              pixel=(double) QuantumRange*gamma*(Sca+(1.0-Sa));
             else
-              pixel=(double) QuantumRange*(Sca/Dca+Sca*(1.0-Da)+Dca*(1.0-Sa));
+              pixel=(double) QuantumRange*gamma*(Sca/Dca+Sca*(1.0-Da)+Dca*(1.0-Sa));
             break;
           }
           case DivideSrcCompositeOp:
@@ -2970,9 +2975,9 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 break;
               }
             if (fabs(Dca) < MagickEpsilon)
-              pixel=(double) QuantumRange*(Dca+(1.0-Da));
+              pixel=(double) QuantumRange*gamma*(Dca+(1.0-Da));
             else
-              pixel=(double) QuantumRange*(Dca/Sca+Dca*(1.0-Sa)+Sca*(1.0-Da));
+              pixel=(double) QuantumRange*gamma*(Dca/Sca+Dca*(1.0-Sa)+Sca*(1.0-Da));
             break;
           }
           case DstAtopCompositeOp:
@@ -3000,8 +3005,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             S=(Sa > 0.0) ? RoundToUnity(Sca/Sa) : 0.0;
             D=(Da > 0.0) ? RoundToUnity(Dca/Da) : 0.0;
             blend=RoundToUnity(S+D-2.0*S*D);
-            pixel=(double) QuantumRange*RoundToUnity((blend*Sa+D*(1.0-Sa))*
-              (Sa+Da-Sa*Da));
+            pixel=(double) QuantumRange*gamma*RoundToUnity(Sa*Da*blend+Sca*
+              (1.0-Da)+Dca*(1.0-Sa));
             break;
           }
           case FreezeCompositeOp:
@@ -3104,8 +3109,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             S=(Sa > 0.0) ? RoundToUnity(Sca/Sa) : 0.0;
             D=(Da > 0.0) ? RoundToUnity(Dca/Da) : 0.0;
             blend=RoundToUnity(S+D-1.0);
-            pixel=(double) QuantumRange*RoundToUnity(Sa*Da*blend+Sca*(1.0-Da)+
-              Dca*(1.0-Sa));
+            pixel=(double) QuantumRange*gamma*RoundToUnity(Sa*Da*blend+Sca*
+              (1.0-Da)+Dca*(1.0-Sa));
             break;
           }
           case LinearDodgeCompositeOp:
@@ -3289,7 +3294,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 pixel=(double) QuantumRange*Sc*Dc;
                 break;
               }
-            pixel=(double) QuantumRange*(Sca*Dca+Sca*(1.0-Da)+Dca*(1.0-Sa));
+            pixel=(double) QuantumRange*gamma*(Sca*Dca+Sca*(1.0-Da)+Dca*(1.0-Sa));
             break;
           }
           case NegateCompositeOp:
@@ -3482,8 +3487,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             S=(Sa > 0.0) ? RoundToUnity(Sca/Sa) : 0.0;
             D=(Da > 0.0) ? RoundToUnity(Dca/Da) : 0.0;
             blend=RoundToUnity(S+D-S*D);
-            pixel=(double) QuantumRange*RoundToUnity(Sa*Da*blend+Sca*(1.0-Da)+
-              Dca*(1.0-Sa));
+            pixel=(double) QuantumRange*gamma*RoundToUnity(Sa*Da*blend+Sca*
+              (1.0-Da)+Dca*(1.0-Sa));
             break;
           }
           case SoftBurnCompositeOp:

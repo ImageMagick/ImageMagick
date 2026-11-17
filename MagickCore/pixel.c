@@ -215,6 +215,7 @@ MagickExport void ConformPixelInfo(Image *image,const PixelInfo *source,
   assert(image->signature == MagickCoreSignature);
   assert(destination != (const PixelInfo *) NULL);
   *destination=(*source);
+  ConformPixelInfoColorspace(image,destination,exception);
   if (image->colorspace == CMYKColorspace)
     {
       if (IssRGBCompatibleColorspace(destination->colorspace) != MagickFalse)
@@ -4279,7 +4280,10 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,const ssize_t x,
     }
   }
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
-    return(MagickFalse);
+    {
+      quantum_map=(QuantumType *) RelinquishMagickMemory(quantum_map);
+      return(MagickFalse);
+    }
   /*
     Transfer the pixels from the pixel data to the image.
   */

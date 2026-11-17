@@ -1115,7 +1115,7 @@ static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
 static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
-    magick[14];
+    magick[15];
 
   Image
     *image;
@@ -1158,10 +1158,11 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  count=ReadBlob(image,sizeof(magick),(unsigned char *) magick);
-  if ((count != sizeof(magick)) ||
+  count=ReadBlob(image,sizeof(magick)-1,(unsigned char *) magick);
+  if ((count != sizeof(magick)-1) ||
       (LocaleNCompare((char *) magick,"gimp xcf",8) != 0))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  magick[sizeof(magick)-1]='\0';
   (void) memset(&doc_info,0,sizeof(XCFDocInfo));
   doc_info.version=StringToUnsignedLong(magick+10);
   doc_info.width=ReadBlobMSBLong(image);

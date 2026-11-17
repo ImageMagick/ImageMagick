@@ -63,7 +63,7 @@ static inline void XTextViewHelp(Display *display,
   if (help_list == (char **) NULL)
     return;
   XTextViewWidget(display,resource_info,windows,mono,title,(const char **)
-    help_list);
+    ((void *) help_list));
   for (i=0; help_list[i] != (char *) NULL; i++)
     help_list[i]=DestroyString(help_list[i]);
   help_list=(char **) RelinquishMagickMemory(help_list);

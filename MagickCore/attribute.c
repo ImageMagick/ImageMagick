@@ -550,7 +550,9 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
     }
   }
   image_view=DestroyCacheView(image_view);
-  if ((bounds.width == 0) || (bounds.height == 0))
+  if ((bounds.width == 0) || (bounds.height == 0) ||
+      (bounds.x > (ssize_t) bounds.width) ||
+      (bounds.y > (ssize_t) bounds.height))
     (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
       "GeometryDoesNotContainImage","`%s'",image->filename);
   else
@@ -798,10 +800,23 @@ MagickExport PointInfo *GetImageConvexHull(const Image *image,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   *number_vertices=0;
+  if (HeapOverflowSanityCheck(image->columns,image->rows*sizeof(*vertices)) != MagickFalse)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      return((PointInfo *) NULL);
+    }
   vertices_info=AcquireVirtualMemory(image->columns,image->rows*
     sizeof(*vertices));
-  monotone_info=AcquireVirtualMemory(2*image->columns,2*
-    image->rows*sizeof(*monotone_chain));
+  if (HeapOverflowSanityCheck(2*image->columns,2*image->rows*sizeof(*monotone_chain)) != MagickFalse)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      vertices_info=RelinquishVirtualMemory(vertices_info);
+      return((PointInfo *) NULL);
+    }
+  monotone_info=AcquireVirtualMemory(2*image->columns,2*image->rows*
+    sizeof(*monotone_chain));
   if ((vertices_info == (MemoryInfo *) NULL) ||
       (monotone_info == (MemoryInfo *) NULL))
     {
@@ -1300,6 +1315,13 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
         caliper_info.p=p;
         caliper_info.q=q;
         caliper_info.v=v;
+      }
+    if ((caliper_info.p < 0) || (caliper_info.q < 0) || (caliper_info.v < 0))
+      {
+        vertices=(PointInfo *) RelinquishMagickMemory(vertices);
+        bounding_box=(PointInfo *) RelinquishMagickMemory(bounding_box);
+        *number_vertices=0;
+        return((PointInfo *) NULL);
       }
   }
   /*

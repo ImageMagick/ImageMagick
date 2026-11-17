@@ -64,6 +64,7 @@
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
 #include "MagickCore/xml-tree.h"
+#include "MagickCore/xml-tree-private.h"
 #if defined(MAGICKCORE_FONTCONFIG_DELEGATE)
 # include "fontconfig/fontconfig.h"
 #if (FC_VERSION < 20209)
@@ -1079,7 +1080,7 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *cache,const char *xml,
   const char
     *q;
 
-  MagickStatusType
+  MagickBooleanType
     status;
 
   size_t
@@ -1114,26 +1115,29 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *cache,const char *xml,
     /*
       Interpret XML.
     */
+    if (SkipXMLComment(&q) == MagickFalse)
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          ConfigureError,"UnterminatedComment","`%s'",filename);
+        status=MagickFalse;
+        break;
+      }
     (void) GetNextToken(q,&q,extent,token);
     if (*token == '\0')
       break;
     (void) CopyMagickString(keyword,token,MagickPathExtent);
     if (LocaleNCompare(keyword,"<!DOCTYPE",9) == 0)
       {
-        /*
-          Doctype element.
-        */
-        while ((LocaleNCompare(q,"]>",2) != 0) && (*q != '\0'))
-          (void) GetNextToken(q,&q,extent,token);
-        continue;
-      }
-    if (LocaleNCompare(keyword,"<!--",4) == 0)
-      {
-        /*
-          Comment element.
-        */
-        while ((LocaleNCompare(q,"->",2) != 0) && (*q != '\0'))
-          (void) GetNextToken(q,&q,extent,token);
+        if (SkipXMLDocType(&q) == MagickFalse)
+          {
+            /*
+              Detect unterminated DOCTYPE.
+            */
+            (void) ThrowMagickException(exception,GetMagickModule(),
+              ConfigureError,"UnterminatedDOCTYPE","`%s'",filename);
+            status=MagickFalse;
+            break;
+          }
         continue;
       }
     if (LocaleCompare(keyword,"<include") == 0)
@@ -1150,7 +1154,7 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *cache,const char *xml,
           (void) GetNextToken(q,&q,extent,token);
           if (LocaleCompare(keyword,"file") == 0)
             {
-              if (depth > MagickMaxRecursionDepth)
+              if (depth >= MagickMaxRecursionDepth)
                 (void) ThrowMagickException(exception,GetMagickModule(),
                   ConfigureError,"IncludeNodeNestedTooDeeply","`%s'",token);
               else
@@ -1176,13 +1180,17 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *cache,const char *xml,
                   sans_exception=DestroyExceptionInfo(sans_exception);
                   if (file_xml != (char *) NULL)
                     {
-                      status&=(MagickStatusType) LoadTypeCache(cache,file_xml,
-                        path,depth+1,exception);
+                      if (LoadTypeCache(cache,file_xml,path,depth+1,exception) == MagickFalse)
+                        status=MagickFalse;
                       file_xml=(char *) RelinquishMagickMemory(file_xml);
+                      if (status == MagickFalse)
+                        break;
                     }
                 }
             }
         }
+        if (status == MagickFalse)
+          break;
         continue;
       }
     if (LocaleCompare(keyword,"<type") == 0)
@@ -1330,7 +1338,7 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *cache,const char *xml,
     }
   }
   token=(char *) RelinquishMagickMemory(token);
-  return(status != 0 ? MagickTrue : MagickFalse);
+  return(status);
 }
 
 /*

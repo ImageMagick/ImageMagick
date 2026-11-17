@@ -334,7 +334,7 @@ static ChannelStatistics *GetLocationStatistics(const Image *image,
   channel_statistics=(ChannelStatistics *) AcquireQuantumMemory(
     MaxPixelChannels+1,sizeof(*channel_statistics));
   if (channel_statistics == (ChannelStatistics *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+    return((ChannelStatistics *) NULL);
   (void) memset(channel_statistics,0,(MaxPixelChannels+1)*
     sizeof(*channel_statistics));
   for (i=0; i <= (ssize_t) MaxPixelChannels; i++)
@@ -1542,7 +1542,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
       image_info=AcquireImageInfo();
       (void) CloneString(&image_info->size,"64x64");
       (void) FormatLocaleFile(file,"    \"montageDirectory\": [");
-      for (p=image->directory; *p != '\0'; p++)
+      for (p=image->directory; *p != '\0'; )
       {
         q=p;
         while ((*q != '\xff') && (*q != '\0') &&
@@ -1550,6 +1550,8 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
           q++;
         (void) CopyMagickString(image_info->filename,p,(size_t) (q-p+1));
         p=q;
+        if (*p == '\xff')
+          p++;
         JSONFormatLocaleFile(file,"{\n       \"name\": %s",
           image_info->filename);
         handler=SetWarningHandler((WarningHandler) NULL);
@@ -1751,7 +1753,12 @@ static MagickBooleanType WriteJSONImage(const ImageInfo *image_info,
     return(status);
   file=GetBlobFileHandle(image);
   if (file == (FILE *) NULL)
-    file=stdout;
+    {
+      (void) CloseBlob(image);
+      (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
+        "CoderDoesNotSupportThisStreamType","`%s'",image->filename);
+      return(MagickFalse);
+    }
   scene=0;
   number_scenes=GetImageListLength(image);
   do

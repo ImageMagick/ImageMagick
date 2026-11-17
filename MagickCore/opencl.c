@@ -88,6 +88,7 @@
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
+#include "MagickCore/xml-tree-private.h"
 
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
 #if defined(MAGICKCORE_LTDL_DELEGATE)
@@ -795,26 +796,16 @@ static void LoadOpenCLDeviceBenchmark(MagickCLEnv clEnv,const char *xml)
     /*
       Interpret XML.
     */
+    if (SkipXMLComment(&q) == MagickFalse)
+      break;
     (void) GetNextToken(q,&q,extent,token);
     if (*token == '\0')
       break;
     (void) CopyMagickString(keyword,token,MagickPathExtent);
     if (LocaleNCompare(keyword,"<!DOCTYPE",9) == 0)
       {
-        /*
-          Doctype element.
-        */
-        while ((LocaleNCompare(q,"]>",2) != 0) && (*q != '\0'))
-          (void) GetNextToken(q,&q,extent,token);
-        continue;
-      }
-    if (LocaleNCompare(keyword,"<!--",4) == 0)
-      {
-        /*
-          Comment element.
-        */
-        while ((LocaleNCompare(q,"->",2) != 0) && (*q != '\0'))
-          (void) GetNextToken(q,&q,extent,token);
+        if (SkipXMLDocType(&q) == MagickFalse)
+          break;
         continue;
       }
     if (LocaleCompare(keyword,"<device") == 0)
@@ -1690,7 +1681,10 @@ static MagickBooleanType RegisterCacheEvent(MagickCLCacheInfo info,
     info->events=(cl_event *) ResizeQuantumMemory(info->events,
       ++info->event_count,sizeof(*info->events));
   if (info->events == (cl_event *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+    {
+      UnlockSemaphoreInfo(info->events_semaphore);
+      return(MagickFalse);
+    }
   info->events[info->event_count-1]=event;
   UnlockSemaphoreInfo(info->events_semaphore);
   return(MagickTrue);
@@ -2785,7 +2779,13 @@ MagickPrivate MagickBooleanType RecordProfileData(MagickCLDevice device,
       device->profile_records=(KernelProfileRecord *) ResizeQuantumMemory(
         device->profile_records,(i+2),sizeof(*device->profile_records));
       if (device->profile_records == (KernelProfileRecord *) NULL)
-        ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+        {
+          UnlockSemaphoreInfo(device->lock);
+          profile_record=(KernelProfileRecord) RelinquishMagickMemory(
+            profile_record);
+          name=DestroyString(name);
+          return(MagickFalse);
+        }
       device->profile_records[i]=profile_record;
       device->profile_records[i+1]=(KernelProfileRecord) NULL;
     }

@@ -223,16 +223,26 @@ WandExport ScriptTokenInfo *AcquireScriptTokenInfo(const char *filename)
     token_info->opened=MagickFalse;
   }
   else if (LocaleNCompare(filename,"fd:",3) == 0 ) {
-    token_info->stream=fdopen(StringToLong(filename+3),"r");
+    token_info->stream=fdopen(StringToLong(filename+3),"rb");
     token_info->opened=MagickFalse;
   }
   else {
-    token_info->stream=fopen_utf8(filename, "r");
+    int fd = open_utf8(filename,O_RDONLY | O_CLOEXEC | O_NOFOLLOW,0);
+    if (fd != -1)
+      token_info->stream=fdopen(fd,"r");
+    if (token_info->stream != (FILE *) NULL)
+      token_info->opened=MagickTrue;
+    else
+      fd=close_utf8(fd)-1;
   }
-  if ( token_info->stream == (FILE *) NULL ) {
-    token_info=(ScriptTokenInfo *) RelinquishMagickMemory(token_info);
-    return(token_info);
-  }
+  if ((token_info->stream != (FILE *) NULL) &&
+      (IsPathAuthorized(ReadPolicyRights,filename) != MagickFalse))
+    token_info->opened=MagickTrue;
+  else
+    {
+      token_info=(ScriptTokenInfo *) RelinquishMagickMemory(token_info);
+      return(token_info);
+    }
 
   token_info->curr_line=1;
   token_info->length=INITAL_TOKEN_LENGTH;

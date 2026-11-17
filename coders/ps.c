@@ -50,6 +50,7 @@
 #include "MagickCore/colorspace.h"
 #include "MagickCore/colorspace-private.h"
 #include "MagickCore/constitute.h"
+#include "MagickCore/constitute-private.h"
 #include "MagickCore/delegate.h"
 #include "MagickCore/delegate-private.h"
 #include "MagickCore/draw.h"
@@ -440,8 +441,8 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,PSInfo *ps_info,
         */
         if (SkipMagickByteBufferUntilNewline(&buffer) != MagickFalse)
           {
-            ps_info->icc_profile=AcquireProfileStringInfo("icc",MagickPathExtent,
-              exception);
+            ps_info->icc_profile=AcquireProfileStringInfo("icc",
+              MagickPathExtent,exception);
             if (ps_info->icc_profile != (StringInfo*) NULL)
               {
                 datum=GetStringInfoDatum(ps_info->icc_profile);
@@ -454,7 +455,7 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,PSInfo *ps_info,
                     }
                   datum[i]=(unsigned char) c;
                 }
-                SetStringInfoLength(ps_info->icc_profile,(size_t) i+1);
+                SetStringInfoLength(ps_info->icc_profile,(size_t) i);
               }
           }
         continue;
@@ -483,7 +484,7 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,PSInfo *ps_info,
           {
             ps_info->photoshop_profile=AcquireProfileStringInfo("8bim",
               length+1U,exception);
-            if (ps_info->icc_profile != (StringInfo*) NULL)
+            if (ps_info->photoshop_profile != (StringInfo*) NULL)
               {
                 q=GetStringInfoDatum(ps_info->photoshop_profile);
                 while (extent > 0)
@@ -813,7 +814,6 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) CopyMagickString(filename,read_info->filename,MagickPathExtent);
   (void) AcquireUniqueFilename(filename);
   (void) RelinquishUniqueFileResource(filename);
-  (void) ConcatenateMagickString(filename,"%d",MagickPathExtent);
   (void) FormatLocaleString(command,MagickPathExtent,
     GetDelegateCommands(delegate_info),
     read_info->antialias != MagickFalse ? 4 : 1,
@@ -824,8 +824,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   *message='\0';
   status=InvokeGhostscriptDelegate(read_info->verbose,command,message,
     exception);
-  (void) InterpretImageFilename(image_info,image,filename,1,
-    read_info->filename,exception);
+  (void) AppendImageFilenameScene(filename,1,read_info->filename);
   if ((status == MagickFalse) ||
       (IsGhostscriptRendered(read_info->filename) == MagickFalse))
     {
@@ -839,8 +838,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (status == MagickFalse)
     for (i=1; ; i++)
     {
-      (void) InterpretImageFilename(image_info,image,filename,(int) i,
-        read_info->filename,exception);
+      (void) AppendImageFilenameScene(filename,(int) i,read_info->filename);
       if (IsGhostscriptRendered(read_info->filename) == MagickFalse)
         break;
       (void) RelinquishUniqueFileResource(read_info->filename);
@@ -848,13 +846,12 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   else
     for (i=1; ; i++)
     {
-      (void) InterpretImageFilename(image_info,image,filename,(int) i,
-        read_info->filename,exception);
+      (void) AppendImageFilenameScene(filename,(int) i,read_info->filename);
       if (IsGhostscriptRendered(read_info->filename) == MagickFalse)
         break;
       read_info->blob=NULL;
       read_info->length=0;
-      next=ReadImage(read_info,exception);
+      next=ReadImageWithoutPostProcessing(read_info,exception);
       (void) RelinquishUniqueFileResource(read_info->filename);
       if (next == (Image *) NULL)
         break;
@@ -897,6 +894,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Add place holder images to meet the subimage specification requirement.
       */
+      if (AcquireMagickResource(ListLengthResource,image_info->scene) == MagickFalse)
+        ThrowReaderException(ResourceLimitError,"ListLengthExceedsLimit");
       for (i=0; i < (ssize_t) image_info->scene; i++)
       {
         clone_image=CloneImage(postscript_image,1,1,MagickTrue,exception);
@@ -1854,8 +1853,12 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
       {
         for (i=0; labels[i] != (char *) NULL; i++)
         {
-          (void) FormatLocaleString(buffer,MagickPathExtent,"%s \n",
-            labels[i]);
+          char
+            *escape;
+
+          escape=EscapeParenthesis(labels[i],510,exception);
+          (void) FormatLocaleString(buffer,MagickPathExtent,"%s \n",escape);
+          escape=DestroyString(escape);
           (void) WriteBlobString(image,buffer);
           labels[i]=DestroyString(labels[i]);
         }

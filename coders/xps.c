@@ -50,6 +50,7 @@
 #include "MagickCore/colorspace.h"
 #include "MagickCore/colorspace-private.h"
 #include "MagickCore/constitute.h"
+#include "MagickCore/constitute-private.h"
 #include "MagickCore/delegate.h"
 #include "MagickCore/delegate-private.h"
 #include "MagickCore/draw.h"
@@ -302,7 +303,6 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   (void) AcquireUniqueFilename(read_info->filename);
   (void) RelinquishUniqueFileResource(read_info->filename);
-  (void) ConcatenateMagickString(read_info->filename,"%d",MagickPathExtent);
   (void) CopyMagickString(filename,read_info->filename,MagickPathExtent);
   (void) FormatLocaleString(command,MagickPathExtent,
     GetDelegateCommands(delegate_info),
@@ -319,13 +319,12 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (status == MagickFalse)
     for (i=1; ; i++)
     {
-      (void) InterpretImageFilename(image_info,image,filename,(int) i,
-        read_info->filename,exception);
+      (void) AppendImageFilenameScene(filename,(int) i,read_info->filename);
       if (IsGhostscriptRendered(read_info->filename) == MagickFalse)
         break;
       read_info->blob=NULL;
       read_info->length=0;
-      next=ReadImage(read_info,exception);
+      next=ReadImageWithoutPostProcessing(read_info,exception);
       (void) RelinquishUniqueFileResource(read_info->filename);
       if (next == (Image *) NULL)
         break;
@@ -361,6 +360,8 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Add place holder images to meet the subimage specification requirement.
       */
+      if (AcquireMagickResource(ListLengthResource,image_info->scene) == MagickFalse)
+        ThrowReaderException(ResourceLimitError,"ListLengthExceedsLimit");
       for (i=0; i < (ssize_t) image_info->scene; i++)
       {
         clone_image=CloneImage(postscript_image,1,1,MagickTrue,exception);

@@ -698,32 +698,102 @@ static MagickBooleanType ReadHEICImageHandle(const ImageInfo *image_info,
 }
 
 #if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,20,0)
+static MagickBooleanType IsHEICPrimaryImagePreferred(const ImageInfo *image_info,
+  struct heif_context *heif_context,const unsigned char *magic,const size_t length)
+{
+  heif_item_id
+    primary_image_id;
+
+  struct heif_error
+    error;
+
+  heif_brand2
+    major_brand;
+
+  if (IsStringTrue(GetImageOption(image_info,"heic:primary-image")) != MagickFalse)
+    return(MagickTrue);
+  major_brand=heif_read_main_brand(magic,(int) length);
+  if ((major_brand != heif_brand2_avif) &&
+      (major_brand != heif_brand2_heic) &&
+      (major_brand != heif_brand2_heix) &&
+      (major_brand != heif_brand2_mif1))
+    return(MagickFalse);
+  error=heif_context_get_primary_image_ID(heif_context,&primary_image_id);
+  return(error.code == heif_error_Ok ? MagickTrue : MagickFalse);
+}
+
+static MagickBooleanType GetHEICSequenceTrack(Image *image,
+  struct heif_context *heif_context,heif_track **sequence_track,
+  ExceptionInfo *exception)
+{
+  int
+    i,
+    number_tracks;
+
+  uint32_t
+    *track_ids;
+
+  *sequence_track=(heif_track *) NULL;
+  number_tracks=heif_context_number_of_sequence_tracks(heif_context);
+  if (AcquireMagickResource(ListLengthResource,(MagickSizeType) number_tracks) == MagickFalse)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"ListLengthExceedsLimit","`%s'",image->filename);
+      return(MagickFalse);
+    }
+  track_ids=(uint32_t *) AcquireQuantumMemory((size_t) number_tracks,sizeof(*track_ids));
+  if (track_ids == (uint32_t *) NULL)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      return(MagickFalse);
+    }
+  heif_context_get_track_ids(heif_context,track_ids);
+  for (i=0; i < number_tracks; i++)
+  {
+    heif_track
+      *track;
+
+    track=heif_context_get_track(heif_context,track_ids[i]);
+    if (track == (heif_track *) NULL)
+      {
+        track_ids=(uint32_t *) RelinquishMagickMemory(track_ids);
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          CorruptImageError,"ImageTypeNotSupported","`%s'",image->filename);
+        return(MagickFalse);
+      }
+    if (heif_track_get_track_handler_type(track) == heif_track_type_image_sequence)
+      {
+        *sequence_track=track;
+        break;
+      }
+    heif_track_release(track);
+  }
+  track_ids=(uint32_t *) RelinquishMagickMemory(track_ids);
+  return(MagickTrue);
+}
+
 static MagickBooleanType ReadHEICSequenceFrames(const ImageInfo *image_info,
-  Image *image,struct heif_context *heif_context,ExceptionInfo *exception)
+  Image *image,heif_track *track,ExceptionInfo *exception)
 {
   const uint8_t
-    *p,
-    *pixels;
+    *pixels[4];
 
-  enum heif_channel
-    channel;
-
-  enum heif_chroma
-    chroma;
-
-  heif_track
-    *track;
+  const enum heif_channel
+    channels[4] = { heif_channel_R, heif_channel_G, heif_channel_B,
+      heif_channel_Alpha };
 
   int
-    bits_per_pixel,
+    bits_per_pixel[4],
     has_alpha = 0,
-    shift,
-    stride = 0;
+    stride[4];
 
   MagickBooleanType
     status;
 
   size_t
+    c,
+    number_channels,
     scene;
 
   struct heif_decoding_options
@@ -742,12 +812,6 @@ static MagickBooleanType ReadHEICSequenceFrames(const ImageInfo *image_info,
   uint32_t
     timescale;
 
-  /*
-    Get the first visual track from the sequence.
-  */
-  track=heif_context_get_track(heif_context,0);
-  if (track == (heif_track *) NULL)
-    return(MagickFalse);
   error=heif_track_get_image_resolution(track,&track_width,&track_height);
   if (error.code != heif_error_Ok)
     {
@@ -768,19 +832,6 @@ static MagickBooleanType ReadHEICSequenceFrames(const ImageInfo *image_info,
   if (has_alpha != 0)
     image->alpha_trait=BlendPixelTrait;
 #endif
-  image->depth=8;
-  if (image->alpha_trait != UndefinedPixelTrait)
-    {
-      chroma=heif_chroma_interleaved_RGBA;
-      if (image->depth > 8)
-        chroma=heif_chroma_interleaved_RRGGBBAA_LE;
-    }
-  else
-    {
-      chroma=heif_chroma_interleaved_RGB;
-      if (image->depth > 8)
-        chroma=heif_chroma_interleaved_RRGGBB_LE;
-    }
   scene=0;
   status=MagickTrue;
   for ( ; ; )
@@ -800,8 +851,9 @@ static MagickBooleanType ReadHEICSequenceFrames(const ImageInfo *image_info,
         break;
       }
     heif_image=(struct heif_image *) NULL;
+    
     error=heif_track_decode_next_image(track,&heif_image,heif_colorspace_RGB,
-      chroma,decode_options);
+      heif_chroma_444,decode_options);
     if (error.code == heif_error_End_of_sequence)
       break;
     if (error.code != heif_error_Ok)
@@ -812,6 +864,7 @@ static MagickBooleanType ReadHEICSequenceFrames(const ImageInfo *image_info,
         status=MagickFalse;
         break;
       }
+
     /*
       Allocate next image for frames beyond the first.
     */
@@ -827,6 +880,42 @@ static MagickBooleanType ReadHEICSequenceFrames(const ImageInfo *image_info,
         image=SyncNextImageInList(image);
       }
     image->scene=scene;
+    {
+      size_t
+        profile_size;
+
+      /*
+        Extract raw color profile from each decoded frame if available.
+      */
+      profile_size=heif_image_get_raw_color_profile_size(heif_image);
+      if (profile_size > 0)
+        {
+          unsigned char
+            *color_profile;
+
+          color_profile=(unsigned char *) AcquireQuantumMemory(1,profile_size);
+          if (color_profile != (unsigned char *) NULL)
+            {
+              struct heif_error
+                profile_error;
+
+              profile_error=heif_image_get_raw_color_profile(heif_image,
+                color_profile);
+              if (IsHEIFSuccess(image,&profile_error,exception) != MagickFalse)
+                {
+                  StringInfo
+                    *profile;
+
+                  profile=BlobToProfileStringInfo("icc",color_profile,
+                    profile_size,exception);
+                  (void) SetImageProfilePrivate(image,profile,exception);
+                }
+              color_profile=(unsigned char *) RelinquishMagickMemory(
+                color_profile);
+            }
+        }
+    }
+
     /*
       Set frame timing: convert track timescale ticks to ticks_per_second.
     */
@@ -837,12 +926,33 @@ static MagickBooleanType ReadHEICSequenceFrames(const ImageInfo *image_info,
     /*
       Set image dimensions from the decoded frame.
     */
-    channel=heif_channel_interleaved;
-    image->columns=(size_t) heif_image_get_width(heif_image,channel);
-    image->rows=(size_t) heif_image_get_height(heif_image,channel);
-    bits_per_pixel=heif_image_get_bits_per_pixel_range(heif_image,channel);
-    if (bits_per_pixel > 0)
-      image->depth=(size_t) bits_per_pixel;
+    image->columns=(size_t) heif_image_get_width(heif_image,heif_channel_R);
+    image->rows=(size_t) heif_image_get_height(heif_image,heif_channel_R);
+    has_alpha=heif_image_has_channel(heif_image,heif_channel_Alpha);
+    number_channels=has_alpha != 0 ? 4 : 3;
+    for (c=0; c < number_channels; c++)
+    {
+      int plane_width = heif_image_get_width(heif_image,channels[c]);
+      int plane_height = heif_image_get_height(heif_image,channels[c]);
+      if ((plane_width <= 0) || (plane_height <= 0) ||
+          ((size_t) plane_width < image->columns) ||
+          ((size_t) plane_height < image->rows))
+        break;
+      bits_per_pixel[c]=heif_image_get_bits_per_pixel_range(heif_image,
+        channels[c]);
+      if ((bits_per_pixel[c] <= 0) || (bits_per_pixel[c] > 16))
+        break;
+     }
+    if (c != number_channels)
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          CorruptImageError,"ImproperImageHeader","`%s'",image->filename);
+        heif_image_release(heif_image);
+        status=MagickFalse;
+        break;
+      }
+    image->depth=(size_t) bits_per_pixel[0];
+    image->alpha_trait=UndefinedPixelTrait;
     if (has_alpha != 0)
       {
         image->alpha_trait=BlendPixelTrait;
@@ -864,17 +974,26 @@ static MagickBooleanType ReadHEICSequenceFrames(const ImageInfo *image_info,
         heif_image_release(heif_image);
         break;
       }
-    pixels=heif_image_get_plane_readonly(heif_image,channel,&stride);
-    if (pixels == (const uint8_t *) NULL)
+    for (c=0; c < number_channels; c++)
       {
+        pixels[c]=heif_image_get_plane_readonly(heif_image,channels[c],
+          &stride[c]);
+        if (pixels[c] == (const uint8_t *) NULL)
+          break;
+      }
+    if (c != number_channels)
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          CorruptImageError,"ImproperImageHeader","`%s'",image->filename);
         heif_image_release(heif_image);
         status=MagickFalse;
         break;
       }
-    shift=(int) (16-image->depth);
-    if (image->depth <= 8)
-      for (y=0; y < (ssize_t) image->rows; y++)
+    for (y=0; y < (ssize_t) image->rows; y++)
       {
+        const uint8_t
+          *p[4];
+
         Quantum
           *q;
 
@@ -883,53 +1002,51 @@ static MagickBooleanType ReadHEICSequenceFrames(const ImageInfo *image_info,
 
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
         if (q == (Quantum *) NULL)
-          break;
-        p=pixels+(y*stride);
+          {
+            status=MagickFalse;
+            break;
+          }
+        for (c=0; c < number_channels; c++)
+          p[c]=pixels[c]+y*stride[c];
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          SetPixelRed(image,ScaleCharToQuantum((unsigned char) *(p++)),q);
-          SetPixelGreen(image,ScaleCharToQuantum((unsigned char) *(p++)),q);
-          SetPixelBlue(image,ScaleCharToQuantum((unsigned char) *(p++)),q);
-          if (image->alpha_trait != UndefinedPixelTrait)
-            SetPixelAlpha(image,ScaleCharToQuantum((unsigned char) *(p++)),q);
-          q+=(ptrdiff_t) GetPixelChannels(image);
-        }
-        if (SyncAuthenticPixels(image,exception) == MagickFalse)
-          break;
-      }
-    else
-      for (y=0; y < (ssize_t) image->rows; y++)
-      {
-        Quantum
-          *q;
+          Quantum
+            values[4];
 
-        ssize_t
-          x;
-
-        q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-        if (q == (Quantum *) NULL)
-          break;
-        p=pixels+(y*stride);
-        for (x=0; x < (ssize_t) image->columns; x++)
-        {
-          unsigned short pixel = (((unsigned short) *(p+1) << 8) |
-            (*(p+0))) << shift; p+=(ptrdiff_t) 2;
-          SetPixelRed(image,ScaleShortToQuantum(pixel),q);
-          pixel=(((unsigned short) *(p+1) << 8) | (*(p+0))) << shift; p+=(ptrdiff_t) 2;
-          SetPixelGreen(image,ScaleShortToQuantum(pixel),q);
-          pixel=(((unsigned short) *(p+1) << 8) | (*(p+0))) << shift; p+=(ptrdiff_t) 2;
-          SetPixelBlue(image,ScaleShortToQuantum(pixel),q);
-          if (image->alpha_trait != UndefinedPixelTrait)
+          for (c=0; c < number_channels; c++)
             {
-              pixel=(((unsigned short) *(p+1) << 8) | (*(p+0))) << shift; p+=(ptrdiff_t) 2;
-              SetPixelAlpha(image,ScaleShortToQuantum(pixel),q);
+              if (bits_per_pixel[c] <= 8)
+                values[c]=ScaleCharToQuantum(*p[c]++);
+              else
+                {
+                  uint16_t
+                    pixel;
+
+                  /*
+                    Planar samples use native byte order.
+                  */
+                  (void) memcpy(&pixel,p[c],sizeof(pixel));
+                  p[c]+=(ptrdiff_t) sizeof(pixel);
+                  values[c]=ScaleShortToQuantum((unsigned short)
+                    (pixel << (16-bits_per_pixel[c])));
+                }
             }
+          SetPixelRed(image,values[0],q);
+          SetPixelGreen(image,values[1],q);
+          SetPixelBlue(image,values[2],q);
+          if (has_alpha != 0)
+            SetPixelAlpha(image,values[3],q);
           q+=(ptrdiff_t) GetPixelChannels(image);
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
-          break;
+          {
+            status=MagickFalse;
+            break;
+          }
       }
     heif_image_release(heif_image);
+    if (status == MagickFalse)
+      break;
     scene++;
     if (image_info->number_scenes != 0)
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
@@ -994,6 +1111,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,ExceptionInfo *exception
     *image;
 
   MagickBooleanType
+    primary_image,
     status;
 
   ssize_t
@@ -1042,6 +1160,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,ExceptionInfo *exception
   /*
     Decode HEIF image.
   */
+  primary_image=IsStringTrue(GetImageOption(image_info,"heic:primary-image"));
   heif_context=heif_context_alloc();
   if (heif_context == (struct heif_context *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -1057,15 +1176,27 @@ static Image *ReadHEICImage(const ImageInfo *image_info,ExceptionInfo *exception
     }
 #if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,20,0)
   /*
-    Check for image sequence (animated AVIF) and decode via track API.
+    Prefer an available primary image for still-image major brands.
   */
-  if (heif_context_has_sequence(heif_context) != 0)
+  if ((heif_context_has_sequence(heif_context) != 0) &&
+     (IsHEICPrimaryImagePreferred(image_info,heif_context,magic,sizeof(magic)) == MagickFalse))
     {
-      status=ReadHEICSequenceFrames(image_info,image,heif_context,exception);
-      heif_context_free(heif_context);
-      if (status == MagickFalse)
-        return(DestroyImageList(image));
-      return(GetFirstImageInList(image));
+      heif_track
+        *track;
+
+      if (GetHEICSequenceTrack(image,heif_context,&track,exception) == MagickFalse)
+        {
+          heif_context_free(heif_context);
+          return(DestroyImageList(image));
+        }
+      if (track != (heif_track *) NULL)
+        {
+          status=ReadHEICSequenceFrames(image_info,image,track,exception);
+          heif_context_free(heif_context);
+          if (status == MagickFalse)
+            return(DestroyImageList(image));
+          return(GetFirstImageInList(image));
+        }
     }
 #endif
   error=heif_context_get_primary_image_ID(heif_context,&primary_image_id);
@@ -1085,7 +1216,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,ExceptionInfo *exception
     exception);
   heif_image_handle_release(image_handle);
   count=(ssize_t) heif_context_get_number_of_top_level_images(heif_context);
-  if ((status != MagickFalse) && (count > 1))
+  if ((status != MagickFalse) && (primary_image == MagickFalse) && (count > 1))
     {
       heif_item_id
         *ids;
@@ -1139,7 +1270,8 @@ static Image *ReadHEICImage(const ImageInfo *image_info,ExceptionInfo *exception
       heif_context_free(heif_context);
       return(DestroyImageList(image));
     }
-  ReadHEICDepthImage(image_info,image,heif_context,image_handle,exception);
+  if (primary_image == MagickFalse)
+    ReadHEICDepthImage(image_info,image,heif_context,image_handle,exception);
   heif_image_handle_release(image_handle);
   heif_context_free(heif_context);
   if (status == MagickFalse)

@@ -56,6 +56,7 @@
 #include "MagickCore/option.h"
 #include "MagickCore/option-private.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/policy.h"
 #include "MagickCore/profile.h"
 #include "MagickCore/profile-private.h"
 #include "MagickCore/property.h"
@@ -90,6 +91,12 @@ static MagickBooleanType
 
 static void
   WriteTo8BimProfile(Image *,const char*,const StringInfo *);
+
+/*
+  Global declarations.
+*/
+static size_t
+  max_profile_count = 0;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -343,6 +350,52 @@ MagickExport const StringInfo *GetImageProfile(const Image *image,
   profile=(const StringInfo *) GetValueFromSplayTree((SplayTreeInfo *)
     image->profiles,name);
   return(profile);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   G e t M a x P r o f i l e C o u n t                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetMaxProfileCount() returns the max profile count value.
+%
+%  The format of the GetMaxProfileCount method is:
+%
+%      size_t GetMaxProfileCount(void)
+%
+*/
+static size_t GetMaxProfileCountFromPolicy(void)
+{
+  char
+    *value;
+
+  size_t
+    max=(size_t) MAGICK_SSIZE_MAX;
+
+  value=GetPolicyValue("system:max-profile-count");
+  if (value != (char *) NULL)
+    {
+      /*
+        The security policy sets a max profile count limit.
+      */
+      max=StringToSizeType(value,100.0);
+      max=MagickMax(1,max);
+      value=DestroyString(value);
+    }
+  return(MagickMin(max,(size_t) MAGICK_SSIZE_MAX));
+}
+
+MagickExport size_t GetMaxProfileCount(void)
+{
+  if (max_profile_count == 0)
+    max_profile_count=GetMaxProfileCountFromPolicy();
+  return(max_profile_count);
 }
 
 /*
@@ -2042,6 +2095,14 @@ static MagickBooleanType SetImageProfileInternal(Image *image,const char *name,
   assert(name != (const char *) NULL);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if ((image->profiles != (SplayTreeInfo*) NULL) &&
+      (GetNumberOfNodesInSplayTree((SplayTreeInfo*) image->profiles) >= GetMaxProfileCount()))
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitWarning,"MaximumProfilesExceeded","`%s'",name);
+      profile=DestroyStringInfo(profile);
+      return(MagickTrue);
+    }
   length=GetStringInfoLength(profile);
   if ((length == 0) || (length > GetMaxProfileSize()))
     {
@@ -2302,14 +2363,36 @@ static void WriteProfileShort(const EndianType endian,
   (void) memcpy(p,buffer,2);
 }
 
+static inline void WriteProfileDimension(const EndianType endian,
+  const size_t dimension,const ssize_t format,const int components,
+  unsigned char *entry,unsigned char *value)
+{
+  if ((components != 1) || ((format != 3) && (format != 4)))
+    return;
+  if ((format == 3) && (dimension <= MAGICK_USHORT_MAX))
+    {
+      WriteProfileShort(endian,(unsigned short) dimension,value);
+      return;
+    }
+  if (dimension > UINT32_MAX)
+    return;
+  if (format == 3)
+    WriteProfileShort(endian,4,entry+2);
+  WriteProfileLong(endian,dimension,value);
+}
+
 static void SyncExifProfile(const Image *image,unsigned char *exif,
   size_t length)
 {
 #define MaxDirectoryStack  16
 #define EXIF_DELIMITER  "\n"
 #define EXIF_NUM_FORMATS  12
+#define TAG_IMAGE_WIDTH  0x0100
+#define TAG_IMAGE_LENGTH  0x0101
 #define TAG_EXIF_OFFSET  0x8769
 #define TAG_INTEROP_OFFSET  0xa005
+#define TAG_PIXEL_X_DIMENSION  0xa002
+#define TAG_PIXEL_Y_DIMENSION  0xa003
 
   typedef struct _DirectoryInfo
   {
@@ -2327,6 +2410,7 @@ static void SyncExifProfile(const Image *image,unsigned char *exif,
     endian;
 
   size_t
+    directory_length,
     entry,
     number_entries;
 
@@ -2342,7 +2426,9 @@ static void SyncExifProfile(const Image *image,unsigned char *exif,
     format_bytes[] = {0, 1, 1, 2, 4, 8, 1, 1, 2, 4, 8, 4, 8};
 
   unsigned char
-    *directory;
+    *directory,
+    *exif_directory,
+    *ifd0;
 
   if (length < 16)
     return;
@@ -2386,6 +2472,8 @@ static void SyncExifProfile(const Image *image,unsigned char *exif,
   if ((offset < 0) || ((size_t) offset >= length))
     return;
   directory=exif+offset;
+  exif_directory=(unsigned char *) NULL;
+  ifd0=directory;
   level=0;
   entry=0;
   exif_resources=NewSplayTree((int (*)(const void *,const void *)) NULL,
@@ -2403,7 +2491,13 @@ static void SyncExifProfile(const Image *image,unsigned char *exif,
     /*
       Determine how many entries there are in the current IFD.
     */
-    number_entries=(size_t) ReadProfileShort(endian,directory);
+    directory_length=length-(size_t) (directory-exif);
+    if (directory_length < 6)
+      continue;
+    number_entries=(size_t) (unsigned short) ReadProfileShort(endian,
+      directory);
+    if (number_entries > ((directory_length-6)/12))
+      continue;
     for ( ; entry < number_entries; entry++)
     {
       int
@@ -2417,7 +2511,9 @@ static void SyncExifProfile(const Image *image,unsigned char *exif,
         number_bytes;
 
       ssize_t
-        format,
+        format;
+
+      unsigned short
         tag_value;
 
       q=(unsigned char *) (directory+2+(12*entry));
@@ -2426,7 +2522,7 @@ static void SyncExifProfile(const Image *image,unsigned char *exif,
       if (GetValueFromSplayTree(exif_resources,q) == q)
         break;
       (void) AddValueToSplayTree(exif_resources,q,q);
-      tag_value=(ssize_t) ReadProfileShort(endian,q);
+      tag_value=(unsigned short) ReadProfileShort(endian,q);
       format=(ssize_t) ReadProfileShort(endian,q+2);
       if ((format < 0) || ((format-1) >= EXIF_NUM_FORMATS))
         break;
@@ -2453,8 +2549,26 @@ static void SyncExifProfile(const Image *image,unsigned char *exif,
         }
       switch (tag_value)
       {
+        case TAG_IMAGE_WIDTH:
+        case TAG_IMAGE_LENGTH:
+        {
+          if (directory == ifd0)
+            WriteProfileDimension(endian,tag_value == TAG_IMAGE_WIDTH ?
+              image->columns : image->rows,format,components,q,p);
+          break;
+        }
+        case TAG_PIXEL_X_DIMENSION:
+        case TAG_PIXEL_Y_DIMENSION:
+        {
+          if (directory == exif_directory)
+            WriteProfileDimension(endian,tag_value == TAG_PIXEL_X_DIMENSION ?
+              image->columns : image->rows,format,components,q,p);
+          break;
+        }
         case 0x011a:
         {
+          if (directory != ifd0)
+            break;
           (void) WriteProfileLong(endian,(size_t) (image->resolution.x+0.5),p);
           if (number_bytes == 8)
             (void) WriteProfileLong(endian,1UL,p+4);
@@ -2462,6 +2576,8 @@ static void SyncExifProfile(const Image *image,unsigned char *exif,
         }
         case 0x011b:
         {
+          if (directory != ifd0)
+            break;
           (void) WriteProfileLong(endian,(size_t) (image->resolution.y+0.5),p);
           if (number_bytes == 8)
             (void) WriteProfileLong(endian,1UL,p+4);
@@ -2469,6 +2585,8 @@ static void SyncExifProfile(const Image *image,unsigned char *exif,
         }
         case 0x0112:
         {
+          if (directory != ifd0)
+            break;
           if (number_bytes == 4)
             {
               (void) WriteProfileLong(endian,(size_t) image->orientation,p);
@@ -2480,6 +2598,8 @@ static void SyncExifProfile(const Image *image,unsigned char *exif,
         }
         case 0x0128:
         {
+          if (directory != ifd0)
+            break;
           if (number_bytes == 4)
             {
               (void) WriteProfileLong(endian,((size_t) image->units)+1,p);
@@ -2491,11 +2611,16 @@ static void SyncExifProfile(const Image *image,unsigned char *exif,
         default:
           break;
       }
-      if ((tag_value == TAG_EXIF_OFFSET) || (tag_value == TAG_INTEROP_OFFSET))
+      if (((tag_value == TAG_EXIF_OFFSET) ||
+           (tag_value == TAG_INTEROP_OFFSET)) && (format == 4) &&
+          (components == 1) && (number_bytes == 4))
         {
           offset=(ssize_t) ReadProfileLong(endian,p);
-          if (((size_t) offset < length) && (level < (MaxDirectoryStack-2)))
+          if (((size_t) offset < (length-1)) &&
+              (level < (MaxDirectoryStack-2)))
             {
+              if ((directory == ifd0) && (tag_value == TAG_EXIF_OFFSET))
+                exif_directory=exif+offset;
               directory_stack[level].directory=directory;
               entry++;
               directory_stack[level].entry=entry;
@@ -2507,15 +2632,15 @@ static void SyncExifProfile(const Image *image,unsigned char *exif,
                 break;
               offset=(ssize_t) ReadProfileLong(endian,directory+2+(12*
                 number_entries));
-              if ((offset != 0) && ((size_t) offset < length) &&
+              if ((offset != 0) && ((size_t) offset < (length-1)) &&
                   (level < (MaxDirectoryStack-2)))
                 {
                   directory_stack[level].directory=exif+offset;
                   directory_stack[level].entry=0;
                   level++;
                 }
+              break;
             }
-          break;
         }
     }
   } while (level > 0);
@@ -2587,7 +2712,7 @@ static void Sync8BimProfile(const Image *image,const StringInfo *profile)
   return;
 }
 
-static void ReplaceXmpValue(StringInfo *profile,size_t start,size_t end,
+static void ReplaceXMPValue(StringInfo *profile,size_t start,size_t end,
   const char *value)
 {
   char
@@ -2606,15 +2731,15 @@ static void ReplaceXmpValue(StringInfo *profile,size_t start,size_t end,
   datum=(char *) GetStringInfoDatum(profile);
   (void) memmove(datum+start+value_length,datum+end,length-end);
   (void) memcpy(datum+start,value,value_length);
+  *(datum+new_length)='\0';
   if (new_length < length)
     {
       SetStringInfoLength(profile,new_length);
       datum=(char *) GetStringInfoDatum(profile);
-      *(datum+new_length)='\0';
     }
 }
 
-static MagickBooleanType GetXmpOffsets(const StringInfo *profile,
+static MagickBooleanType GetXMPOffsets(const StringInfo *profile,
   const char *tag,size_t *start,size_t *end)
 {
   char
@@ -2641,11 +2766,39 @@ static MagickBooleanType GetXmpOffsets(const StringInfo *profile,
   return(MagickTrue);
 }
 
-static void GetXmpNumeratorAndDenominator(double value,
+static MagickBooleanType TryAccumulate(const double term,
+  const unsigned long previous,const unsigned long before_previous,
+  unsigned long *result)
+{
+  double
+    accumulated;
+
+  *result=0;
+  if (term > (double) MAGICK_ULONG_MAX)
+    return(MagickFalse);
+  accumulated=(term*previous)+before_previous;
+  if ((accumulated < 0.0) || (accumulated > (double) MAGICK_ULONG_MAX))
+    return(MagickFalse);
+  *result=(unsigned long) accumulated;
+  return(MagickTrue);
+}
+
+static void GetXMPNumeratorAndDenominator(double value,
   unsigned long *numerator,unsigned long *denominator)
 {
   double
-    df;
+    remainder;
+
+  unsigned long
+    den,
+    new_den,
+    new_num,
+    num,
+    prev_den,
+    prev_num;
+
+  ssize_t
+    i;
 
   *numerator=0;
   *denominator=1;
@@ -2653,32 +2806,50 @@ static void GetXmpNumeratorAndDenominator(double value,
     return;
   if (value > (double) MAGICK_ULONG_MAX)
     {
-      *numerator = MAGICK_ULONG_MAX;
-      *denominator = 1;
+      *numerator=MAGICK_ULONG_MAX;
+      *denominator=1;
       return;
     }
   if (floor(value) == value)
     {
-      *numerator = (unsigned long) value;
-      *denominator = 1;
+      *numerator=(unsigned long) value;
+      *denominator=1;
       return;
     }
-  *numerator=1;
-  df=1.0;
-  while(fabs(df - value) > MagickEpsilon)
+  num=1;
+  prev_num=0;
+  den=0;
+  prev_den=1;
+  remainder=value;
+  for (i=0; i < 128; i++)
   {
-    if (df < value)
-      (*numerator)++;
-    else
-      {
-        (*denominator)++;
-        *numerator=(unsigned long) (value*(*denominator));
-      }
-    df=*numerator/(double)*denominator;
+    double
+      approximation,
+      fraction,
+      term;
+
+    term=floor(remainder);
+    if ((TryAccumulate(term,num,prev_num,&new_num) == MagickFalse) ||
+        (TryAccumulate(term,den,prev_den,&new_den) == MagickFalse) ||
+        (new_den == 0))
+      break;
+    prev_num=num;
+    num=new_num;
+    prev_den=den;
+    den=new_den;
+    approximation=num/(double) den;
+    if (fabs(approximation-value) <= MagickEpsilon)
+      break;
+    fraction=remainder-term;
+    if (fraction <= 0.0)
+      break;
+    remainder=1.0/fraction;
   }
+  *numerator=num;
+  *denominator=(den == 0 ? 1 : den);
 }
 
-static void SyncXmpProfile(const Image *image,StringInfo *profile)
+static void SyncXMPProfile(const Image *image,StringInfo *profile)
 {
   char
     value[MagickPathExtent];
@@ -2692,37 +2863,37 @@ static void SyncXmpProfile(const Image *image,StringInfo *profile)
     numerator;
 
   *value='\0';
-  if (GetXmpOffsets(profile,"tiff:XResolution",&start,&end) != MagickFalse)
+  if (GetXMPOffsets(profile,"tiff:XResolution",&start,&end) != MagickFalse)
     {
-      GetXmpNumeratorAndDenominator(image->resolution.x,&numerator,
+      GetXMPNumeratorAndDenominator(image->resolution.x,&numerator,
         &denominator);
       (void) FormatLocaleString(value,MagickPathExtent,"%lu/%lu",numerator,
         denominator);
-      ReplaceXmpValue(profile,start,end,value);
+      ReplaceXMPValue(profile,start,end,value);
     }
-  if (GetXmpOffsets(profile,"tiff:YResolution",&start,&end) != MagickFalse)
+  if (GetXMPOffsets(profile,"tiff:YResolution",&start,&end) != MagickFalse)
     {
       if ((fabs(image->resolution.x-image->resolution.y) > MagickEpsilon) ||
           (*value == '\0'))
         {
-          GetXmpNumeratorAndDenominator(image->resolution.y,&numerator,
+          GetXMPNumeratorAndDenominator(image->resolution.y,&numerator,
             &denominator);
           (void) FormatLocaleString(value,MagickPathExtent,"%lu/%lu",
             numerator,denominator);
         }
-      ReplaceXmpValue(profile,start,end,value);
+      ReplaceXMPValue(profile,start,end,value);
     }
-  if (GetXmpOffsets(profile,"tiff:ResolutionUnit",&start,&end) != MagickFalse)
+  if (GetXMPOffsets(profile,"tiff:ResolutionUnit",&start,&end) != MagickFalse)
     {
       (void) FormatLocaleString(value,MagickPathExtent,"%d",
         ((int) image->units)+1);
-      ReplaceXmpValue(profile,start,end,value);
+      ReplaceXMPValue(profile,start,end,value);
     }
-  if (GetXmpOffsets(profile,"tiff:Orientation",&start,&end) != MagickFalse)
+  if (GetXMPOffsets(profile,"tiff:Orientation",&start,&end) != MagickFalse)
     {
       (void) FormatLocaleString(value,MagickPathExtent,"%d",
         (int) image->orientation);
-      ReplaceXmpValue(profile,start,end,value);
+      ReplaceXMPValue(profile,start,end,value);
     }
 }
 
@@ -2740,7 +2911,7 @@ MagickPrivate void SyncImageProfiles(Image *image)
       profile));
   profile=(StringInfo *) GetImageProfile(image,"XMP");
   if (profile != (StringInfo *) NULL)
-    SyncXmpProfile(image,profile);
+    SyncXMPProfile(image,profile);
 }
 
 static void UpdateClipPath(unsigned char *blob,size_t length,

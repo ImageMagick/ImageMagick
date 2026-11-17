@@ -127,6 +127,7 @@ struct _XMLTreeRoot
     *semaphore;
 
   size_t
+    depth,
     signature;
 };
 
@@ -164,6 +165,74 @@ static char
 %    o offset: the tag offset.
 %
 */
+
+static XMLTreeInfo *InsertTagIntoXMLTree(XMLTreeInfo *xml_info,
+  XMLTreeInfo *child,const size_t offset)
+{
+  XMLTreeInfo
+    *head,
+    *node,
+    *previous;
+
+  child->ordered=(XMLTreeInfo *) NULL;
+  child->sibling=(XMLTreeInfo *) NULL;
+  child->next=(XMLTreeInfo *) NULL;
+  child->offset=offset;
+  child->parent=xml_info;
+  if (xml_info->child == (XMLTreeInfo *) NULL)
+    {
+      xml_info->child=child;
+      return(child);
+    }
+  head=xml_info->child;
+  if (head->offset > offset)
+    {
+      child->ordered=head;
+      xml_info->child=child;
+    }
+  else
+    {
+      node=head;
+      while ((node->ordered != (XMLTreeInfo *) NULL) &&
+             (node->ordered->offset <= offset))
+        node=node->ordered;
+      child->ordered=node->ordered;
+      node->ordered=child;
+    }
+  previous=(XMLTreeInfo *) NULL;
+  node=head;
+  while ((node != (XMLTreeInfo *) NULL) && (strcmp(node->tag,child->tag) != 0))
+  {
+    previous=node;
+    node=node->sibling;
+  }
+  if ((node != (XMLTreeInfo *) NULL) && (node->offset <= offset))
+    {
+      while ((node->next != (XMLTreeInfo *) NULL) &&
+             (node->next->offset <= offset))
+        node=node->next;
+      child->next=node->next;
+      node->next=child;
+    }
+  else
+    {
+      if ((previous != (XMLTreeInfo *) NULL) && (node != (XMLTreeInfo *) NULL))
+        previous->sibling=node->sibling;
+      child->next=node;
+      previous=(XMLTreeInfo *) NULL;
+      node=head;
+      while ((node != (XMLTreeInfo *) NULL) && (node->offset <= offset))
+      {
+        previous=node;
+        node=node->sibling;
+      }
+      child->sibling=node;
+      if (previous != (XMLTreeInfo *) NULL)
+        previous->sibling=child;
+    }
+  return(child);
+}
+
 MagickExport XMLTreeInfo *AddChildToXMLTree(XMLTreeInfo *xml_info,
   const char *tag,const size_t offset)
 {
@@ -212,89 +281,8 @@ MagickExport XMLTreeInfo *AddChildToXMLTree(XMLTreeInfo *xml_info,
 %    o offset: the tag offset.
 %
 */
-MagickPrivate XMLTreeInfo *AddPathToXMLTree(XMLTreeInfo *xml_info,
-  const char *path,const size_t offset)
-{
-  char
-    **components,
-    subnode[MagickPathExtent],
-    tag[MagickPathExtent];
 
-  size_t
-    number_components;
-
-  ssize_t
-    i,
-    j;
-
-  XMLTreeInfo
-    *child,
-    *node;
-
-  assert(xml_info != (XMLTreeInfo *) NULL);
-  assert((xml_info->signature == MagickCoreSignature) ||
-         (((XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
-  if (IsEventLogging() != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  node=xml_info;
-  components=GetPathComponents(path,&number_components);
-  if (components == (char **) NULL)
-    return((XMLTreeInfo *) NULL);
-  for (i=0; i < (ssize_t) number_components; i++)
-  {
-    GetPathComponent(components[i],SubimagePath,subnode);
-    GetPathComponent(components[i],CanonicalPath,tag);
-    child=GetXMLTreeChild(node,tag);
-    if (child == (XMLTreeInfo *) NULL)
-      child=AddChildToXMLTree(node,tag,offset);
-    node=child;
-    if (node == (XMLTreeInfo *) NULL)
-      break;
-    for (j=(ssize_t) StringToLong(subnode)-1; j > 0; j--)
-    {
-      node=GetXMLTreeOrdered(node);
-      if (node == (XMLTreeInfo *) NULL)
-        break;
-    }
-    if (node == (XMLTreeInfo *) NULL)
-      break;
-    components[i]=DestroyString(components[i]);
-  }
-  for ( ; i < (ssize_t) number_components; i++)
-    components[i]=DestroyString(components[i]);
-  components=(char **) RelinquishMagickMemory(components);
-  return(node);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   C a n o n i c a l X M L C o n t e n t                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  CanonicalXMLContent() converts text to canonical XML content by converting
-%  to UTF-8, substituting predefined entities, wrapping as CDATA, or encoding
-%  as base-64 as required.
-%
-%  The format of the CanonicalXMLContent method is:
-%
-%      char *CanonicalXMLContent(const char *content,
-%        const MagickBooleanType pedantic)
-%
-%  A description of each parameter follows:
-%
-%    o content: the content.
-%
-%    o pedantic: if true, replace newlines and tabs with their respective
-%      entities.
-%
-*/
-MagickPrivate char *CanonicalXMLContent(const char *content,
+static char *CanonicalXMLContent(const char *content,
   const MagickBooleanType pedantic)
 {
   char
@@ -335,6 +323,60 @@ MagickPrivate char *CanonicalXMLContent(const char *content,
   utf8=(unsigned char *) RelinquishMagickMemory(utf8);
   return(canonical_content);
 }
+
+MagickPrivate XMLTreeInfo *AddPathToXMLTree(XMLTreeInfo *xml_info,
+  const char *path,const size_t offset)
+{
+  char
+    **components,
+    subnode[MagickPathExtent],
+    tag[MagickPathExtent];
+
+  size_t
+    number_components;
+
+  ssize_t
+    i,
+    j;
+
+  XMLTreeInfo
+    *child,
+    *node;
+
+  assert(xml_info != (XMLTreeInfo *) NULL);
+  assert((xml_info->signature == MagickCoreSignature) ||
+         (((XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
+  node=xml_info;
+  components=GetPathComponents(path,&number_components);
+  if (components == (char **) NULL)
+    return((XMLTreeInfo *) NULL);
+  for (i=0; i < (ssize_t) number_components; i++)
+  {
+    GetPathComponent(components[i],SubimagePath,subnode);
+    GetPathComponent(components[i],CanonicalPath,tag);
+    child=GetXMLTreeChild(node,tag);
+    if (child == (XMLTreeInfo *) NULL)
+      child=AddChildToXMLTree(node,tag,offset);
+    node=child;
+    if (node == (XMLTreeInfo *) NULL)
+      break;
+    for (j=(ssize_t) StringToLong(subnode)-1; j > 0; j--)
+    {
+      node=node->ordered;
+      if (node == (XMLTreeInfo *) NULL)
+        break;
+    }
+    if (node == (XMLTreeInfo *) NULL)
+      break;
+    components[i]=DestroyString(components[i]);
+  }
+  for ( ; i < (ssize_t) number_components; i++)
+    components[i]=DestroyString(components[i]);
+  components=(char **) RelinquishMagickMemory(components);
+  return(node);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -358,9 +400,6 @@ MagickPrivate char *CanonicalXMLContent(const char *content,
 %    o xml_info: the xml info.
 %
 */
-
-static XMLTreeInfo
-  *DestroyXMLTree_(XMLTreeInfo *,const size_t);
 
 static char **DestroyXMLTreeAttributes(char **attributes)
 {
@@ -386,8 +425,7 @@ static char **DestroyXMLTreeAttributes(char **attributes)
   return((char **) NULL);
 }
 
-static void DestroyXMLTreeChild(XMLTreeInfo *xml_info,
-  const size_t depth)
+static void DestroyXMLTreeChild(XMLTreeInfo *xml_info)
 {
   XMLTreeInfo
     *child,
@@ -399,12 +437,11 @@ static void DestroyXMLTreeChild(XMLTreeInfo *xml_info,
     node=child;
     child=node->child;
     node->child=(XMLTreeInfo *) NULL;
-    (void) DestroyXMLTree_(node,depth+1);
+    (void) DestroyXMLTree(node);
   }
 }
 
-static void DestroyXMLTreeOrdered(XMLTreeInfo *xml_info,
-  const size_t depth)
+static void DestroyXMLTreeOrdered(XMLTreeInfo *xml_info)
 {
   XMLTreeInfo
     *node,
@@ -416,7 +453,7 @@ static void DestroyXMLTreeOrdered(XMLTreeInfo *xml_info,
     node=ordered;
     ordered=node->ordered;
     node->ordered=(XMLTreeInfo *) NULL;
-    (void) DestroyXMLTree_(node,depth+1);
+    (void) DestroyXMLTree(node);
   }
 }
 
@@ -481,30 +518,21 @@ static void DestroyXMLTreeRoot(XMLTreeInfo *xml_info)
     }
 }
 
-static XMLTreeInfo *DestroyXMLTree_(XMLTreeInfo *xml_info,
-  const size_t depth)
+MagickExport XMLTreeInfo *DestroyXMLTree(XMLTreeInfo *xml_info)
 {
   assert(xml_info != (XMLTreeInfo *) NULL);
   assert((xml_info->signature == MagickCoreSignature) ||
          (((XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  if (depth > MagickMaxRecursionDepth)
-    ThrowFatalException(ResourceLimitFatalError,
-      "MemoryAllocationFailed");
-  DestroyXMLTreeChild(xml_info,depth+1);
-  DestroyXMLTreeOrdered(xml_info,depth+1);
+  DestroyXMLTreeChild(xml_info);
+  DestroyXMLTreeOrdered(xml_info);
   DestroyXMLTreeRoot(xml_info);
   xml_info->attributes=DestroyXMLTreeAttributes(xml_info->attributes);
   xml_info->content=DestroyString(xml_info->content);
   xml_info->tag=DestroyString(xml_info->tag);
   xml_info=(XMLTreeInfo *) RelinquishMagickMemory(xml_info);
   return((XMLTreeInfo *) NULL);
-}
-
-MagickExport XMLTreeInfo *DestroyXMLTree(XMLTreeInfo *xml_info)
-{
-  return(DestroyXMLTree_(xml_info,0));
 }
 
 /*
@@ -556,7 +584,7 @@ MagickPrivate char *FileToXML(const char *filename,const size_t extent)
   length=0;
   file=fileno(stdin);
   if (LocaleCompare(filename,"-") != 0)
-    file=open_utf8(filename,O_RDONLY | O_BINARY,0);
+    file=open_utf8(filename,O_RDONLY | O_CLOEXEC | O_BINARY,0);
   if (file == -1)
     return((char *) NULL);
   offset=(MagickOffsetType) lseek(file,0,SEEK_END);
@@ -748,57 +776,6 @@ MagickExport const char *GetXMLTreeAttribute(XMLTreeInfo *xml_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t X M L T r e e A t t r i b u t e s                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetXMLTreeAttributes() injects all attributes associated with the current
-%  tag in the specified splay-tree.
-%
-%  The format of the GetXMLTreeAttributes method is:
-%
-%      MagickBooleanType GetXMLTreeAttributes(const XMLTreeInfo *xml_info,
-%        SplayTreeInfo *attributes)
-%
-%  A description of each parameter follows:
-%
-%    o xml_info: the xml info.
-%
-%    o attributes: the attribute splay-tree.
-%
-*/
-MagickPrivate MagickBooleanType GetXMLTreeAttributes(
-  const XMLTreeInfo *xml_info,SplayTreeInfo *attributes)
-{
-  ssize_t
-    i;
-
-  assert(xml_info != (XMLTreeInfo *) NULL);
-  assert((xml_info->signature == MagickCoreSignature) ||
-         (((const XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
-  assert(attributes != (SplayTreeInfo *) NULL);
-  if (IsEventLogging() != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  if (xml_info->attributes == (char **) NULL)
-    return(MagickTrue);
-  i=0;
-  while (xml_info->attributes[i] != (char *) NULL)
-  {
-     (void) AddValueToSplayTree(attributes,
-       ConstantString(xml_info->attributes[i]),
-       ConstantString(xml_info->attributes[i+1]));
-    i+=2;
-  }
-  return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   G e t X M L T r e e C h i l d                                             %
 %                                                                             %
 %                                                                             %
@@ -872,163 +849,6 @@ MagickExport const char *GetXMLTreeContent(XMLTreeInfo *xml_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t X M L T r e e O r d e r e d                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetXMLTreeOrdered() returns the next ordered node if found, otherwise NULL.
-%
-%  The format of the GetXMLTreeOrdered method is:
-%
-%      XMLTreeInfo *GetXMLTreeOrdered(XMLTreeInfo *xml_info)
-%
-%  A description of each parameter follows:
-%
-%    o xml_info: the xml info.
-%
-*/
-MagickPrivate XMLTreeInfo *GetXMLTreeOrdered(XMLTreeInfo *xml_info)
-{
-  assert(xml_info != (XMLTreeInfo *) NULL);
-  assert((xml_info->signature == MagickCoreSignature) ||
-         (((XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
-  if (IsEventLogging() != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  return(xml_info->ordered);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t X M L T r e e P a t h                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetXMLTreePath() traverses the XML-tree as defined by the specified path
-%  and returns the node if found, otherwise NULL.
-%
-%  The format of the GetXMLTreePath method is:
-%
-%      XMLTreeInfo *GetXMLTreePath(XMLTreeInfo *xml_info,const char *path)
-%
-%  A description of each parameter follows:
-%
-%    o xml_info: the xml info.
-%
-%    o path: the path (e.g. property/elapsed-time).
-%
-*/
-MagickPrivate XMLTreeInfo *GetXMLTreePath(XMLTreeInfo *xml_info,
-  const char *path)
-{
-  char
-    **components,
-    subnode[MagickPathExtent],
-    tag[MagickPathExtent];
-
-  size_t
-    number_components;
-
-  ssize_t
-    i,
-    j;
-
-  XMLTreeInfo
-    *node;
-
-  assert(xml_info != (XMLTreeInfo *) NULL);
-  assert((xml_info->signature == MagickCoreSignature) ||
-         (((XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
-  if (IsEventLogging() != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  node=xml_info;
-  components=GetPathComponents(path,&number_components);
-  if (components == (char **) NULL)
-    return((XMLTreeInfo *) NULL);
-  for (i=0; i < (ssize_t) number_components; i++)
-  {
-    GetPathComponent(components[i],SubimagePath,subnode);
-    GetPathComponent(components[i],CanonicalPath,tag);
-    node=GetXMLTreeChild(node,tag);
-    if (node == (XMLTreeInfo *) NULL)
-      break;
-    for (j=(ssize_t) StringToLong(subnode)-1; j > 0; j--)
-    {
-      node=GetXMLTreeOrdered(node);
-      if (node == (XMLTreeInfo *) NULL)
-        break;
-    }
-    if (node == (XMLTreeInfo *) NULL)
-      break;
-    components[i]=DestroyString(components[i]);
-  }
-  for ( ; i < (ssize_t) number_components; i++)
-    components[i]=DestroyString(components[i]);
-  components=(char **) RelinquishMagickMemory(components);
-  return(node);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t X M L T r e e P r o c e s s i n g I n s t r u c t i o n s           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetXMLTreeProcessingInstructions() returns a null terminated array of
-%  processing instructions for the given target.
-%
-%  The format of the GetXMLTreeProcessingInstructions method is:
-%
-%      const char **GetXMLTreeProcessingInstructions(XMLTreeInfo *xml_info,
-%        const char *target)
-%
-%  A description of each parameter follows:
-%
-%    o xml_info: the xml info.
-%
-*/
-MagickPrivate const char **GetXMLTreeProcessingInstructions(
-  XMLTreeInfo *xml_info,const char *target)
-{
-  ssize_t
-    i;
-
-  XMLTreeRoot
-    *root;
-
-  assert(xml_info != (XMLTreeInfo *) NULL);
-  assert((xml_info->signature == MagickCoreSignature) ||
-         (((XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
-  if (IsEventLogging() != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  root=(XMLTreeRoot *) xml_info;
-  while (root->root.parent != (XMLTreeInfo *) NULL)
-    root=(XMLTreeRoot *) root->root.parent;
-  i=0;
-  while ((root->processing_instructions[i] != (char **) NULL) &&
-         (strcmp(root->processing_instructions[i][0],target) != 0))
-    i++;
-  if (root->processing_instructions[i] == (char **) NULL)
-    return((const char **) sentinel);
-  return((const char **) (root->processing_instructions[i]+1));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   G e t X M L T r e e S i b l i n g                                         %
 %                                                                             %
 %                                                                             %
@@ -1086,101 +906,6 @@ MagickExport const char *GetXMLTreeTag(XMLTreeInfo *xml_info)
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   return(xml_info->tag);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   I n s e r t I n t o T a g X M L T r e e                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  InsertTagIntoXMLTree() inserts a tag at an offset relative to the start of
-%  the parent tag's character content.  This method returns the child tag.
-%
-%  The format of the InsertTagIntoXMLTree method is:
-%
-%      XMLTreeInfo *InsertTagIntoXMLTree(XMLTreeInfo *xml_info,
-%        XMLTreeInfo *child,const size_t offset)
-%
-%  A description of each parameter follows:
-%
-%    o xml_info: the xml info.
-%
-%    o child: the child tag.
-%
-%    o offset: the tag offset.
-%
-*/
-MagickPrivate XMLTreeInfo *InsertTagIntoXMLTree(XMLTreeInfo *xml_info,
-  XMLTreeInfo *child,const size_t offset)
-{
-  XMLTreeInfo
-    *head,
-    *node,
-    *previous;
-
-  child->ordered=(XMLTreeInfo *) NULL;
-  child->sibling=(XMLTreeInfo *) NULL;
-  child->next=(XMLTreeInfo *) NULL;
-  child->offset=offset;
-  child->parent=xml_info;
-  if (xml_info->child == (XMLTreeInfo *) NULL)
-    {
-      xml_info->child=child;
-      return(child);
-    }
-  head=xml_info->child;
-  if (head->offset > offset)
-    {
-      child->ordered=head;
-      xml_info->child=child;
-    }
-  else
-    {
-      node=head;
-      while ((node->ordered != (XMLTreeInfo *) NULL) &&
-             (node->ordered->offset <= offset))
-        node=node->ordered;
-      child->ordered=node->ordered;
-      node->ordered=child;
-    }
-  previous=(XMLTreeInfo *) NULL;
-  node=head;
-  while ((node != (XMLTreeInfo *) NULL) && (strcmp(node->tag,child->tag) != 0))
-  {
-    previous=node;
-    node=node->sibling;
-  }
-  if ((node != (XMLTreeInfo *) NULL) && (node->offset <= offset))
-    {
-      while ((node->next != (XMLTreeInfo *) NULL) &&
-             (node->next->offset <= offset))
-        node=node->next;
-      child->next=node->next;
-      node->next=child;
-    }
-  else
-    {
-      if ((previous != (XMLTreeInfo *) NULL) && (node != (XMLTreeInfo *) NULL))
-        previous->sibling=node->sibling;
-      child->next=node;
-      previous=(XMLTreeInfo *) NULL;
-      node=head;
-      while ((node != (XMLTreeInfo *) NULL) && (node->offset <= offset))
-      {
-        previous=node;
-        node=node->sibling;
-      }
-      child->sibling=node;
-      if (previous != (XMLTreeInfo *) NULL)
-        previous->sibling=child;
-    }
-  return(child);
 }
 
 /*
@@ -1288,7 +1013,8 @@ static char *ConvertUTF16ToUTF8(const char *content,size_t *length)
   return(utf8);
 }
 
-static char *ParseEntities(char *xml,char **entities,int state)
+static char *ParseEntities(char *xml,char **entities,int state,
+  ExceptionInfo *exception)
 {
   char
     *entity,
@@ -1336,14 +1062,19 @@ static char *ParseEntities(char *xml,char **entities,int state)
     */
     if ((state != 'c') && (strncmp(xml,"&#",2) == 0))
       {
+        long
+          codepoint;
+
         /*
           Character reference.
         */
         if (xml[2] != 'x')
-          c=strtol(xml+2,&entity,10);  /* base 10 */
+          codepoint=strtol(xml+2,&entity,10);  /* base 10 */
         else
-          c=strtol(xml+3,&entity,16);  /* base 16 */
-        if ((c == 0) || (*entity != ';'))
+          codepoint=strtol(xml+3,&entity,16);  /* base 16 */
+        if ((codepoint <= 0) || (codepoint > 0x10ffff) ||
+            ((codepoint >= 0xd800) && (codepoint <= 0xdfff)) ||
+            (*entity != ';'))
           {
             /*
               Not a character reference.
@@ -1351,6 +1082,7 @@ static char *ParseEntities(char *xml,char **entities,int state)
             xml++;
             continue;
           }
+        c=(int) codepoint;
         if (c < 0x80)
           *(xml++)=(char) c;
         else
@@ -1421,8 +1153,19 @@ static char *ParseEntities(char *xml,char **entities,int state)
                         p=extent_xml;
                       }
                     if (p == (char *) NULL)
-                      ThrowFatalException(ResourceLimitFatalError,
-                        "MemoryAllocationFailed");
+                      {
+                        (void) ThrowMagickException(exception,GetMagickModule(),
+                          OptionWarning,"ParseError",
+                          "memory allocation failed");
+                        return(p);
+                      }
+                    if (strlen(p) > GetMaxProfileSize())
+                      {
+                        (void) ThrowMagickException(exception,GetMagickModule(),
+                          ResourceLimitError,"ProfileSizeExceedsLimit",
+                          "`%.17g'",(double) strlen(p));
+                        return(p == q ? ConstantString(p) : p);
+                      }
                     xml=p+offset;
                     entity=strchr(xml,';');
                   }
@@ -1464,7 +1207,7 @@ static char *ParseEntities(char *xml,char **entities,int state)
 }
 
 static void ParseCharacterContent(XMLTreeRoot *root,char *xml,
-  const size_t length,const char state)
+  const size_t length,const char state,ExceptionInfo *exception)
 {
   XMLTreeInfo
     *xml_info;
@@ -1474,7 +1217,7 @@ static void ParseCharacterContent(XMLTreeRoot *root,char *xml,
       (length == 0))
     return;
   xml[length]='\0';
-  xml=ParseEntities(xml,root->entities,state);
+  xml=ParseEntities(xml,root->entities,state,exception);
   if ((xml_info->content != (char *) NULL) && (*xml_info->content != '\0'))
     {
       (void) ConcatenateString(&xml_info->content,xml);
@@ -1499,11 +1242,12 @@ static XMLTreeInfo *ParseCloseTag(XMLTreeRoot *root,char *tag,
       return(&root->root);
     }
   root->node=root->node->parent;
+  root->depth--;
   return((XMLTreeInfo *) NULL);
 }
 
 static MagickBooleanType ValidateEntities(char *tag,char *xml,
-  const size_t depth,char **entities)
+  const int delimiter,const size_t depth,char **entities)
 {
   ssize_t
     i;
@@ -1511,11 +1255,11 @@ static MagickBooleanType ValidateEntities(char *tag,char *xml,
   /*
     Check for circular entity references.
   */
-  if (depth > MagickMaxRecursionDepth)
+  if (depth >= MagickMaxRecursionDepth)
     return(MagickFalse);
   for ( ; ; xml++)
   {
-    while ((*xml != '\0') && (*xml != '&'))
+    while ((*xml != '\0') && (*xml != delimiter))
       xml++;
     if (*xml == '\0')
       return(MagickTrue);
@@ -1526,7 +1270,7 @@ static MagickBooleanType ValidateEntities(char *tag,char *xml,
            (strncmp(entities[i],xml+1,strlen(entities[i])) == 0))
       i+=2;
     if ((entities[i] != (char *) NULL) &&
-        (ValidateEntities(tag,entities[i+1],depth+1,entities) == 0))
+        (ValidateEntities(tag,entities[i+1],delimiter,depth+1,entities) == MagickFalse))
       return(MagickFalse);
   }
 }
@@ -1607,6 +1351,15 @@ static void ParseProcessingInstructions(XMLTreeRoot *root,char *xml,
 static MagickBooleanType ParseInternalDoctype(XMLTreeRoot *root,char *xml,
   size_t length,ExceptionInfo *exception)
 {
+#define DestroyXMLEntities(predefined_entities) \
+{ \
+  ssize_t k; \
+  for (k=0; predefined_entities[k] != (char *) NULL; k++) \
+    if ((k & 0x01) != 0) \
+      predefined_entities[k]=DestroyString(predefined_entities[k]); \
+  predefined_entities=(char **) RelinquishMagickMemory(predefined_entities); \
+}
+
   char
     *c,
     **entities,
@@ -1676,18 +1429,18 @@ static MagickBooleanType ParseInternalDoctype(XMLTreeRoot *root,char *xml,
             *xml='\0';
             xml++;
           }
-        entities[i+1]=ParseEntities(v,predefined_entities,'%');
+        entities[i+1]=ParseEntities(v,predefined_entities,'%',exception);
         entities[i+2]=(char *) NULL;
-        if (ValidateEntities(n,entities[i+1],0,entities) != MagickFalse)
+        if ((ValidateEntities(n,entities[i+1],'%',0,entities) != MagickFalse) &&
+            (ValidateEntities(n,entities[i+1],'&',0,entities) != MagickFalse))
           entities[i]=n;
         else
           {
             if (entities[i+1] != v)
               entities[i+1]=DestroyString(entities[i+1]);
             (void) ThrowMagickException(exception,GetMagickModule(),
-              OptionWarning,"ParseError","circular entity declaration &%s",n);
-            predefined_entities=(char **) RelinquishMagickMemory(
-              predefined_entities);
+              OptionWarning,"ParseError","circular entity declaration %s",n);
+            DestroyXMLEntities(predefined_entities);
             return(MagickFalse);
           }
         }
@@ -1702,8 +1455,7 @@ static MagickBooleanType ParseInternalDoctype(XMLTreeRoot *root,char *xml,
               {
                 (void) ThrowMagickException(exception,GetMagickModule(),
                   OptionWarning,"ParseError","unclosed <!ATTLIST");
-                predefined_entities=(char **) RelinquishMagickMemory(
-                  predefined_entities);
+                DestroyXMLEntities(predefined_entities);
                 return(MagickFalse);
               }
             xml=t+strcspn(t,XMLWhitespace ">");
@@ -1725,8 +1477,7 @@ static MagickBooleanType ParseInternalDoctype(XMLTreeRoot *root,char *xml,
                 {
                   (void) ThrowMagickException(exception,GetMagickModule(),
                     OptionWarning,"ParseError","malformed <!ATTLIST");
-                  predefined_entities=(char **) RelinquishMagickMemory(
-                    predefined_entities);
+                  DestroyXMLEntities(predefined_entities);
                   return(MagickFalse);
                 }
               xml+=strspn(xml+1,XMLWhitespace)+1;
@@ -1739,8 +1490,7 @@ static MagickBooleanType ParseInternalDoctype(XMLTreeRoot *root,char *xml,
                 {
                   (void) ThrowMagickException(exception,GetMagickModule(),
                     OptionWarning,"ParseError","malformed <!ATTLIST");
-                  predefined_entities=(char **) RelinquishMagickMemory(
-                    predefined_entities);
+                  DestroyXMLEntities(predefined_entities);
                   return(MagickFalse);
                 }
               xml+=strspn(xml,XMLWhitespace ")");
@@ -1761,8 +1511,7 @@ static MagickBooleanType ParseInternalDoctype(XMLTreeRoot *root,char *xml,
                   {
                     (void) ThrowMagickException(exception,GetMagickModule(),
                       OptionWarning,"ParseError","malformed <!ATTLIST");
-                    predefined_entities=(char **) RelinquishMagickMemory(
-                      predefined_entities);
+                    DestroyXMLEntities(predefined_entities);
                     return(MagickFalse);
                   }
               if (root->attributes[i] == (char **) NULL)
@@ -1799,7 +1548,8 @@ static MagickBooleanType ParseInternalDoctype(XMLTreeRoot *root,char *xml,
               root->attributes[i][j+2]=ConstantString(c);
               root->attributes[i][j+1]=(char *) NULL;
               if (v != (char *) NULL)
-                root->attributes[i][j+1]=ParseEntities(v,root->entities,*c);
+                root->attributes[i][j+1]=ParseEntities(v,root->entities,*c,
+                  exception);
               root->attributes[i][j]=ConstantString(n);
             }
         }
@@ -1824,15 +1574,22 @@ static MagickBooleanType ParseInternalDoctype(XMLTreeRoot *root,char *xml,
                if ((*(xml++) == '%') && (root->standalone == MagickFalse))
                  break;
     }
-  predefined_entities=(char **) RelinquishMagickMemory(predefined_entities);
+  DestroyXMLEntities(predefined_entities);
   return(MagickTrue);
 }
 
-static void ParseOpenTag(XMLTreeRoot *root,char *tag,char **attributes)
+static MagickBooleanType ParseOpenTag(XMLTreeRoot *root,char *tag,
+  char **attributes,ExceptionInfo *exception)
 {
   XMLTreeInfo
     *xml_info;
 
+  if (root->depth >= MagickMaxRecursionDepth) 
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
+        "ParseError","unexpected open tag </%s>",tag);
+      return(MagickFalse);
+    }
   xml_info=root->node;
   if (xml_info->tag == (char *) NULL)
     xml_info->tag=ConstantString(tag);
@@ -1841,6 +1598,8 @@ static void ParseOpenTag(XMLTreeRoot *root,char *tag,char **attributes)
   if (xml_info != (XMLTreeInfo *) NULL)
     xml_info->attributes=attributes;
   root->node=xml_info;
+  root->depth++;
+  return(MagickTrue);
 }
 
 static const char
@@ -2028,7 +1787,7 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
                       attributes[l+1]=ParseEntities(attributes[l+1],
                         root->entities,(attribute != (char **) NULL) &&
                         (attribute[j] != (char *) NULL) ? *attribute[j+2] :
-                        ' ');
+                        ' ',exception);
                     }
                   attributes[l]=ConstantString(attributes[l]);
                 }
@@ -2050,18 +1809,30 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
             if (((*p != '\0') && (*p != '>')) ||
                 ((*p == '\0') && (terminal != '>')))
               {
-                if (l != 0)
-                  (void) DestroyXMLTreeAttributes(attributes);
-                (void) ThrowMagickException(exception,GetMagickModule(),
-                  OptionWarning,"ParseError","missing >");
-                utf8=DestroyString(utf8);
-                return(&root->root);
+                if ((LocaleNCompare(tag,"rdf:",4) != 0) &&
+                    (LocaleNCompare(tag,"x:xmpmeta",9) != 0))
+                  {
+                    if (l != 0)
+                      (void) DestroyXMLTreeAttributes(attributes);
+                    (void) ThrowMagickException(exception,GetMagickModule(),
+                      OptionWarning,"ParseError","missing >");
+                    utf8=DestroyString(utf8);
+                    return(&root->root);
+                  }
+                *p='>';
               }
             if ((ignore_depth != 0) || (IsSkipTag(tag) != MagickFalse))
               (void) DestroyXMLTreeAttributes(attributes);
             else
               {
-                ParseOpenTag(root,tag,attributes);
+                status=ParseOpenTag(root,tag,attributes,exception);
+                if (status == MagickFalse)
+                  {
+                    if (l != 0)
+                      (void) DestroyXMLTreeAttributes(attributes);
+                    utf8=DestroyString(utf8);
+                    return(&root->root);
+                  }
                 (void) ParseCloseTag(root,tag,exception);
               }
           }
@@ -2072,7 +1843,16 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
               {
                 *p='\0';
                 if ((ignore_depth == 0) && (IsSkipTag(tag) == MagickFalse))
-                  ParseOpenTag(root,tag,attributes);
+                  {
+                    status=ParseOpenTag(root,tag,attributes,exception);
+                    if (status == MagickFalse)
+                      {
+                        if (l != 0)
+                          (void) DestroyXMLTreeAttributes(attributes);
+                        utf8=DestroyString(utf8);
+                        return(&root->root);
+                      }
+                  }
                 else
                   {
                     ignore_depth++;
@@ -2147,7 +1927,8 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
                 {
                   p+=(ptrdiff_t) 2;
                   if (ignore_depth == 0)
-                    ParseCharacterContent(root,tag+8,(size_t) (p-tag-10),'c');
+                    ParseCharacterContent(root,tag+8,(size_t) (p-tag-10),'c',
+                      exception);
                 }
               else
                 {
@@ -2233,7 +2014,7 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
         if (*p == '\0')
           break;
         if (ignore_depth == 0)
-          ParseCharacterContent(root,tag,(size_t) (p-tag),'&');
+          ParseCharacterContent(root,tag,(size_t) (p-tag),'&',exception);
       }
     else
       if (*p == '\0')
@@ -2309,167 +2090,6 @@ MagickExport XMLTreeInfo *NewXMLTreeTag(const char *tag)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   P r u n e T a g F r o m X M L T r e e                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  PruneTagFromXMLTree() prunes a tag from the xml-tree along with all its
-%  subtags.
-%
-%  The format of the PruneTagFromXMLTree method is:
-%
-%      XMLTreeInfo *PruneTagFromXMLTree(XMLTreeInfo *xml_info)
-%
-%  A description of each parameter follows:
-%
-%    o xml_info: the xml info.
-%
-*/
-MagickPrivate XMLTreeInfo *PruneTagFromXMLTree(XMLTreeInfo *xml_info)
-{
-  XMLTreeInfo
-    *node;
-
-  assert(xml_info != (XMLTreeInfo *) NULL);
-  assert((xml_info->signature == MagickCoreSignature) ||
-         (((XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
-  if (IsEventLogging() != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  if (xml_info->next != (XMLTreeInfo *) NULL)
-    xml_info->next->sibling=xml_info->sibling;
-  if (xml_info->parent != (XMLTreeInfo *) NULL)
-    {
-      node=xml_info->parent->child;
-      if (node == xml_info)
-        xml_info->parent->child=xml_info->ordered;
-      else
-        {
-          while (node->ordered != xml_info)
-            node=node->ordered;
-          node->ordered=node->ordered->ordered;
-          node=xml_info->parent->child;
-          if (strcmp(node->tag,xml_info->tag) != 0)
-            {
-              while (strcmp(node->sibling->tag,xml_info->tag) != 0)
-                node=node->sibling;
-              if (node->sibling != xml_info)
-                node=node->sibling;
-              else
-                node->sibling=(xml_info->next != (XMLTreeInfo *) NULL) ?
-                  xml_info->next : node->sibling->sibling;
-            }
-          while ((node->next != (XMLTreeInfo *) NULL) &&
-                 (node->next != xml_info))
-            node=node->next;
-          if (node->next != (XMLTreeInfo *) NULL)
-            node->next=node->next->next;
-        }
-    }
-  xml_info->ordered=(XMLTreeInfo *) NULL;
-  xml_info->sibling=(XMLTreeInfo *) NULL;
-  xml_info->next=(XMLTreeInfo *) NULL;
-  return(xml_info);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   S e t X M L T r e e A t t r i b u t e                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  SetXMLTreeAttribute() sets the tag attributes or adds a new attribute if not
-%  found.  A value of NULL removes the specified attribute.
-%
-%  The format of the SetXMLTreeAttribute method is:
-%
-%      XMLTreeInfo *SetXMLTreeAttribute(XMLTreeInfo *xml_info,const char *tag,
-%        const char *value)
-%
-%  A description of each parameter follows:
-%
-%    o xml_info: the xml info.
-%
-%    o tag:  The attribute tag.
-%
-%    o value:  The attribute value.
-%
-*/
-MagickPrivate XMLTreeInfo *SetXMLTreeAttribute(XMLTreeInfo *xml_info,
-  const char *tag,const char *value)
-{
-  ssize_t
-    i,
-    j;
-
-  assert(xml_info != (XMLTreeInfo *) NULL);
-  assert((xml_info->signature == MagickCoreSignature) ||
-         (((XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
-  if (IsEventLogging() != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  i=0;
-  while ((xml_info->attributes[i] != (char *) NULL) &&
-         (strcmp(xml_info->attributes[i],tag) != 0))
-    i+=2;
-  if (xml_info->attributes[i] == (char *) NULL)
-    {
-      /*
-        Add new attribute tag.
-      */
-      if (value == (const char *) NULL)
-        return(xml_info);
-      if (xml_info->attributes != sentinel)
-        xml_info->attributes=(char **) ResizeQuantumMemory(
-          xml_info->attributes,(size_t) (i+4),sizeof(*xml_info->attributes));
-      else
-        {
-          xml_info->attributes=(char **) AcquireQuantumMemory(4,
-            sizeof(*xml_info->attributes));
-          if (xml_info->attributes != (char **) NULL)
-            xml_info->attributes[1]=ConstantString("");
-        }
-      if (xml_info->attributes == (char **) NULL)
-        ThrowFatalException(ResourceLimitFatalError,"UnableToAcquireString");
-      xml_info->attributes[i]=ConstantString(tag);
-      xml_info->attributes[i+2]=(char *) NULL;
-      (void) strlen(xml_info->attributes[i+1]);
-    }
-  /*
-    Add new value to an existing attribute.
-  */
-  for (j=i; xml_info->attributes[j] != (char *) NULL; j+=2) ;
-  if (xml_info->attributes[i+1] != (char *) NULL)
-    xml_info->attributes[i+1]=DestroyString(xml_info->attributes[i+1]);
-  if (value != (const char *) NULL)
-    {
-      xml_info->attributes[i+1]=ConstantString(value);
-      return(xml_info);
-    }
-  if (xml_info->attributes[i] != (char *) NULL)
-    xml_info->attributes[i]=DestroyString(xml_info->attributes[i]);
-  (void) memmove(xml_info->attributes+i,xml_info->attributes+i+2,(size_t)
-    (j-i)*sizeof(*xml_info->attributes));
-  xml_info->attributes=(char **) ResizeQuantumMemory(xml_info->attributes,
-    (size_t) (j+2),sizeof(*xml_info->attributes));
-  if (xml_info->attributes == (char **) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"UnableToAcquireString");
-  j-=2;
-  (void) memmove(xml_info->attributes[j+1]+(i/2),xml_info->attributes[j+1]+
-    (i/2)+1,(size_t) (((j+2)/2)-(i/2))*sizeof(**xml_info->attributes));
-  return(xml_info);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   S e t X M L T r e e C o n t e n t                                         %
 %                                                                             %
 %                                                                             %
@@ -2503,6 +2123,209 @@ MagickExport XMLTreeInfo *SetXMLTreeContent(XMLTreeInfo *xml_info,
     xml_info->content=DestroyString(xml_info->content);
   xml_info->content=(char *) ConstantString(content);
   return(xml_info);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S k i p X M L C o m m e n t                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SkipXMLComment() skips leading whitespace and XML comments, leaving the
+%  next token untouched.  It returns MagickFalse for an unterminated comment.
+%
+*/
+MagickPrivate MagickBooleanType SkipXMLComment(const char **xml)
+{
+  const char
+    *p;
+
+  for (p=*xml; ; )
+  {
+    while (isspace((int) ((unsigned char) *p)) != 0)
+      p++;
+    if (strncmp(p,"<!--",4) != 0)
+      break;
+    *xml=p;
+    p=strstr(p+4,"-->");
+    if (p == (const char *) NULL)
+      return(MagickFalse);
+    p+=3;
+  }
+  *xml=p;
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S k i p X M L D O C T Y P E                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SkipXMLDocType() skips a DOCTYPE declaration, including its internal subset.
+%
+*/
+MagickPrivate MagickBooleanType SkipXMLDocType(const char **xml)
+{
+  const char
+    *p;
+
+  int
+    bracket_depth,
+    quote;
+
+  bracket_depth=0;
+  quote=0;
+  for (p=*xml; *p != '\0'; )
+  {
+    if ((quote == 0) && (strncmp(p,"<!--",4) == 0))
+      {
+        if (SkipXMLComment(&p) == MagickFalse)
+          break;
+        continue;
+      }
+    if (quote != 0)
+      {
+        if (*p == quote)
+          quote=0;
+      }
+    else
+      {
+        if ((*p == '"') || (*p == '\''))
+          quote=(*p);
+        else
+          if (*p == '[')
+            bracket_depth++;
+          else
+            if (*p == ']')
+              {
+                if (bracket_depth > 0)
+                  bracket_depth--;
+              }
+            else
+              if ((*p == '>') && (bracket_depth == 0))
+                {
+                  *xml=p+1;
+                  return(MagickTrue);
+                }
+      }
+    p++;
+  }
+  *xml=p;
+  return(MagickFalse);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S u b s t i t u t e X M L E n t i t i e s                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SubstituteXMLEntities() substitutes the predefined XML entities.
+%
+*/
+MagickExport char *SubstituteXMLEntities(const char *content,
+  const MagickBooleanType pedantic)
+{
+  char
+    *canonical_content;
+
+  const char
+    *p;
+
+  size_t
+    extent;
+
+  ssize_t
+    i;
+
+  /*
+    Substitute predefined entities.
+  */
+  i=0;
+  canonical_content=AcquireString((char *) NULL);
+  extent=MagickPathExtent;
+  for (p=content; *p != '\0'; p++)
+  {
+    if ((i+MagickPathExtent) > (ssize_t) extent)
+      {
+        extent+=MagickPathExtent;
+        canonical_content=(char *) ResizeQuantumMemory(canonical_content,extent,
+          sizeof(*canonical_content));
+        if (canonical_content == (char *) NULL)
+          return(canonical_content);
+      }
+    switch (*p)
+    {
+      case '&':
+      {
+        i+=FormatLocaleString(canonical_content+i,extent,"&amp;");
+        break;
+      }
+      case '<':
+      {
+        i+=FormatLocaleString(canonical_content+i,extent,"&lt;");
+        break;
+      }
+      case '>':
+      {
+        i+=FormatLocaleString(canonical_content+i,extent,"&gt;");
+        break;
+      }
+      case '"':
+      {
+        i+=FormatLocaleString(canonical_content+i,extent,"&quot;");
+        break;
+      }
+      case '\n':
+      {
+        if (pedantic == MagickFalse)
+          {
+            canonical_content[i++]=(char) (*p);
+            break;
+          }
+        i+=FormatLocaleString(canonical_content+i,extent,"&#xA;");
+        break;
+      }
+      case '\t':
+      {
+        if (pedantic == MagickFalse)
+          {
+            canonical_content[i++]=(char) (*p);
+            break;
+          }
+        i+=FormatLocaleString(canonical_content+i,extent,"&#x9;");
+        break;
+      }
+      case '\r':
+      {
+        i+=FormatLocaleString(canonical_content+i,extent,"&#xD;");
+        break;
+      }
+      default:
+      {
+        canonical_content[i++]=(char) (*p);
+        break;
+      }
+    }
+  }
+  canonical_content[i]='\0';
+  return(canonical_content);
 }
 
 /*
@@ -2640,7 +2463,8 @@ static char *XMLTreeTagToXML(XMLTreeInfo *xml_info,char **source,size_t *length,
     j+=3;
   }
   *length+=(size_t) FormatLocaleString(*source+(*length),*extent,
-    *xml_info->content ? ">" : "/>");
+    (*xml_info->content || (xml_info->child != (XMLTreeInfo *) NULL)) ?
+    ">" : "/>");
   if (xml_info->child != (XMLTreeInfo *) NULL)
     *source=XMLTreeTagToXML(xml_info->child,source,length,extent,0,attributes);
   else
@@ -2653,7 +2477,8 @@ static char *XMLTreeTagToXML(XMLTreeInfo *xml_info,char **source,size_t *length,
       if (*source == (char *) NULL)
         return((char *) NULL);
     }
-  if (*xml_info->content != '\0')
+  if ((*xml_info->content != '\0') ||
+      (xml_info->child != (XMLTreeInfo *) NULL))
     *length+=(size_t) FormatLocaleString(*source+(*length),*extent,"</%s>",
       xml_info->tag);
   while ((offset < xml_info->offset) && (content[offset] != '\0'))

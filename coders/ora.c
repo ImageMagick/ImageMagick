@@ -46,6 +46,7 @@
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
 #include "MagickCore/constitute.h"
+#include "MagickCore/constitute-private.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/image.h"
@@ -228,9 +229,9 @@ static Image *ReadORAImage(const ImageInfo *image_info,
       image_metadata=DestroyImage(image_metadata);
       return((Image *) NULL);
     }
-  /* Delegate to ReadImage to read mergedimage.png */
+  /* Read mergedimage.png without applying the caller's options yet. */
   read_info->file=file;
-  out_image=ReadImage(read_info,exception);
+  out_image=ReadImageWithoutPostProcessing(read_info,exception);
   (void) RelinquishUniqueFileResource(read_info->filename);
   read_info=DestroyImageInfo(read_info);
   /* Update fields of image from fields of png_image */

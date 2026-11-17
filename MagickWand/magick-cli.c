@@ -1018,6 +1018,7 @@ static MagickBooleanType MagickCommandUsage(void)
       "                       terms (coefficients and degree pairs).\n"
       "  -print string        interpret string and print to console\n"
       "  -process arguments   process the image with a custom image filter\n"
+      "  -shuffle strategy    reorders the sequence of images\n"
       "  -smush geometry      smush an image sequence together\n"
       "  -write filename      write images to this file",
     settings[] =
@@ -1102,7 +1103,6 @@ static MagickBooleanType MagickCommandUsage(void)
       "  -stroke color        graphic primitive stroke color\n"
       "  -strokewidth value   graphic primitive stroke width\n"
       "  -style type          render text with this font style\n"
-      "  -support factor      resize support: > 1.0 is blurry, < 1.0 is sharp\n"
       "  -synchronize         synchronize image to storage device\n"
       "  -taint               declare the image as modified\n"
       "  -texture filename    name of texture to tile onto the image background\n"

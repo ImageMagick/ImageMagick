@@ -340,7 +340,10 @@ static MagickBooleanType WriteHRZImage(const ImageInfo *image_info,Image *image,
     }
     count=WriteBlob(image,(size_t) (q-pixels),pixels);
     if (count != (ssize_t) (q-pixels))
-      break;
+      {
+        status=MagickFalse;
+        break;
+      }
     status=SetImageProgress(image,SaveImageTag,y,hrz_image->rows);
     if (status == MagickFalse)
       break;

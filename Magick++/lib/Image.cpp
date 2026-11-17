@@ -12,12 +12,6 @@
 #define MAGICK_PLUSPLUS_IMPLEMENTATION 1
 
 #include "Magick++/Include.h"
-#include <cstdlib>
-#include <string>
-#include <string.h>
-#include <errno.h>
-#include <math.h>
-
 #include "Magick++/Image.h"
 #include "Magick++/Functions.h"
 #include "Magick++/Pixels.h"
@@ -26,8 +20,7 @@
 
 using namespace std;
 
-#define AbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
-#define MagickPI  3.14159265358979323846264338327950288419716939937510
+#define MagickPI     3.1415926535897932384626433832795028841971693993751058209749445923078164062
 #define DegreesToRadians(x)  (MagickPI*(x)/180.0)
 #define ThrowImageException ThrowPPException(quiet())
 

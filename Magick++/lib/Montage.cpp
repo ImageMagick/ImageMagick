@@ -12,11 +12,9 @@
 #define MAGICK_PLUSPLUS_IMPLEMENTATION 1
 
 #include "Magick++/Include.h"
-#include <string>
-#include <string.h>
-
 #include "Magick++/Montage.h"
 #include "Magick++/Functions.h"
+#include <cstring>
 
 Magick::Montage::Montage(void)
   : _backgroundColor("#ffffff"),
@@ -195,8 +193,8 @@ void Magick::Montage::updateMontageInfo(MontageInfo &montageInfo_ ) const
   // filename
   if (_font.length() != 0)
     {
-      _fileName.copy(montageInfo_.filename,MagickPathExtent-1);
-      montageInfo_.filename[ _fileName.length() ] = 0; // null terminate
+      size_t n = _fileName.copy(montageInfo_.filename,MagickPathExtent-1);
+      montageInfo_.filename[n] = 0; // null terminate
     }
   // fill
   montageInfo_.fill=_fill;

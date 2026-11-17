@@ -23,6 +23,8 @@
 # include <pthread.h>
 #endif // defined(MAGICKCORE_HAVE_PTHREAD)
 
+#include <mutex>
+
 namespace Magick
 {
   // Mutex lock wrapper

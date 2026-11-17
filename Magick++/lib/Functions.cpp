@@ -12,8 +12,6 @@
 #define MAGICK_PLUSPLUS_IMPLEMENTATION 1
 
 #include "Magick++/Include.h"
-#include <string>
-
 #include "Magick++/Functions.h"
 #include "Magick++/Exception.h"
 

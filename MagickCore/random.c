@@ -186,7 +186,7 @@ MagickExport RandomInfo *AcquireRandomInfo(void)
   random_info->reservoir=AcquireStringInfo(GetSignatureDigestsize(
     random_info->signature_info));
   ResetStringInfo(random_info->reservoir);
-  random_info->normalize=(double) (1.0/(MagickULLConstant(~0) >> 11));
+  random_info->normalize=(double) (1.0/(double) (MagickULLConstant(1) << 53));
   random_info->seed[0]=MagickULLConstant(0x76e15d3efefdcbbf);
   random_info->seed[1]=MagickULLConstant(0xc5004e441c522fb3);
   random_info->seed[2]=MagickULLConstant(0x77710069854ee241);
@@ -249,6 +249,17 @@ MagickExport RandomInfo *AcquireRandomInfo(void)
         sizeof(random_info->seed)));
       signature_info=DestroySignatureInfo(signature_info);
     }
+  if ((random_info->seed[0] | random_info->seed[1] | random_info->seed[2] |
+       random_info->seed[3]) == 0)
+    {
+      /*
+        An all-zero state is a fixed point of xoshiro256; never allow it.
+      */
+      random_info->seed[0]=MagickULLConstant(0x76e15d3efefdcbbf);
+      random_info->seed[1]=MagickULLConstant(0xc5004e441c522fb3);
+      random_info->seed[2]=MagickULLConstant(0x77710069854ee241);
+      random_info->seed[3]=MagickULLConstant(0x39109bb02acbe635);
+    }
   return(random_info);
 }
 
@@ -290,6 +301,7 @@ MagickExport RandomInfo *DestroyRandomInfo(RandomInfo *random_info)
     random_info->signature_info=DestroySignatureInfo(
       random_info->signature_info);
   (void) memset(random_info->seed,0,sizeof(random_info->seed));
+  random_info->secret_key=0;
   random_info->signature=(~MagickCoreSignature);
   UnlockSemaphoreInfo(random_info->semaphore);
   RelinquishSemaphoreInfo(&random_info->semaphore);
@@ -335,18 +347,26 @@ static ssize_t ReadRandom(int file,unsigned char *source,size_t length)
   for (q=source; length != 0; length-=(size_t) count)
   {
     count=(ssize_t) read(file,q,length);
-    if (count <= 0)
+    if (count < 0)
       {
         count=0;
         if (errno == EINTR)
           continue;
-        return(-1);
+        return((ssize_t) ((offset > 0) ? offset : -1));
       }
+    if (count == 0)
+      return((ssize_t) ((offset > 0) ? offset : -1));  /* unexpected EOF */
     q+=(ptrdiff_t) count;
     offset+=count;
   }
   return(offset);
 }
+#endif
+
+#if defined(CLOCK_REALTIME_HR)
+#define RandomClockId  CLOCK_REALTIME_HR
+#elif defined(CLOCK_REALTIME)
+#define RandomClockId  CLOCK_REALTIME
 #endif
 
 static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
@@ -397,6 +417,10 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
         UnlockSemaphoreInfo(random_info->semaphore);
         return(entropy);
       }
+    /*
+      getentropy() failed: discard the unfilled buffer and fall back.
+    */
+    SetStringInfoLength(entropy,0);
   }
 #endif
   chaos=AcquireStringInfo(sizeof(unsigned char *));
@@ -432,6 +456,7 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
       {
         SetStringInfoLength(chaos,sizeof(usage));
         SetStringInfoDatum(chaos,(unsigned char *) &usage);
+        ConcatenateStringInfo(entropy,chaos);
       }
   }
 #endif
@@ -449,12 +474,12 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
       }
   }
 #endif
-#if defined(MAGICKCORE_HAVE_CLOCK_GETTIME) && defined(CLOCK_REALTIME_HR)
+#if defined(MAGICKCORE_HAVE_CLOCK_GETTIME) && defined(RandomClockId)
   {
     struct timespec
       timer;
 
-    if (clock_gettime(CLOCK_REALTIME_HR,&timer) == 0)
+    if (clock_gettime(RandomClockId,&timer) == 0)
       {
         seconds=timer.tv_sec;
         nanoseconds=timer.tv_nsec;
@@ -513,17 +538,11 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
   }
 #else
   {
-    char
-      *filename;
-
     int
       file;
 
     ssize_t
       count;
-
-    StringInfo
-      *device;
 
     /*
       Not cryptographically strong but better than nothing.
@@ -543,43 +562,36 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
           ConcatenateStringInfo(entropy,chaos);
         }
       }
-    filename=AcquireString("/dev/urandom");
-    device=StringToStringInfo(filename);
-    device=DestroyStringInfo(device);
-    file=open_utf8(filename,O_RDONLY | O_BINARY,0);
-    filename=DestroyString(filename);
+    file=open_utf8("/dev/urandom",O_RDONLY | O_CLOEXEC | O_BINARY,0);
     if (file != -1)
       {
         SetStringInfoLength(chaos,MaxEntropyExtent);
         count=ReadRandom(file,GetStringInfoDatum(chaos),MaxEntropyExtent);
         (void) close_utf8(file);
-        SetStringInfoLength(chaos,(size_t) count);
-        ConcatenateStringInfo(entropy,chaos);
+        if (count > 0)
+          {
+            SetStringInfoLength(chaos,(size_t) count);
+            ConcatenateStringInfo(entropy,chaos);
+          }
       }
     if (gather_true_random != MagickFalse)
       {
         /*
           Our best hope for true entropy.
         */
-        filename=AcquireString("/dev/random");
-        device=StringToStringInfo(filename);
-        device=DestroyStringInfo(device);
-        file=open_utf8(filename,O_RDONLY | O_BINARY,0);
-        filename=DestroyString(filename);
+        file=open_utf8("/dev/random",O_RDONLY | O_CLOEXEC | O_BINARY,0);
         if (file == -1)
-          {
-            filename=AcquireString("/dev/srandom");
-            device=StringToStringInfo(filename);
-            device=DestroyStringInfo(device);
-            file=open_utf8(filename,O_RDONLY | O_BINARY,0);
-          }
+          file=open_utf8("/dev/srandom",O_RDONLY | O_CLOEXEC | O_BINARY,0);
         if (file != -1)
           {
             SetStringInfoLength(chaos,MaxEntropyExtent);
             count=ReadRandom(file,GetStringInfoDatum(chaos),MaxEntropyExtent);
             (void) close_utf8(file);
-            SetStringInfoLength(chaos,(size_t) count);
-            ConcatenateStringInfo(entropy,chaos);
+            if (count > 0)
+              {
+                SetStringInfoLength(chaos,(size_t) count);
+                ConcatenateStringInfo(entropy,chaos);
+              }
           }
       }
   }
@@ -618,10 +630,13 @@ MagickExport double GetPseudoRandomValue(
 {
 #define RandomROTL(x,k) (((x) << (k)) | ((x) >> (64-(k))))
 
-  const MagickSizeType
-    alpha = (random_info->seed[1] << 17),
-    value = (random_info->seed[0]+random_info->seed[3]);
+  MagickSizeType
+    alpha,
+    value;
 
+  assert(random_info != (RandomInfo *) NULL);
+  alpha=(random_info->seed[1] << 17);
+  value=(random_info->seed[0]+random_info->seed[3]);
   random_info->seed[2]^=random_info->seed[0];
   random_info->seed[3]^=random_info->seed[1];
   random_info->seed[1]^=random_info->seed[2];
@@ -746,6 +761,7 @@ MagickExport StringInfo *GetRandomKey(RandomInfo *random_info,
 */
 MagickExport unsigned long GetRandomSecretKey(const RandomInfo *random_info)
 {
+  assert(random_info != (const RandomInfo *) NULL);
   return(random_info->secret_key);
 }
 
@@ -771,16 +787,12 @@ MagickExport unsigned long GetRandomSecretKey(const RandomInfo *random_info)
 */
 MagickExport double GetRandomValue(RandomInfo *random_info)
 {
-  unsigned long
-    key,
-    range;
+  MagickSizeType
+    key;
 
-  range=(~0UL);
-  do
-  {
-    SetRandomKey(random_info,sizeof(key),(unsigned char *) &key);
-  } while (key == range);
-  return((double) key/range);
+  assert(random_info != (RandomInfo *) NULL);
+  SetRandomKey(random_info,sizeof(key),(unsigned char *) &key);
+  return((double) (key >> 11)*random_info->normalize);
 }
 
 /*
@@ -870,7 +882,7 @@ static inline void IncrementRandomNonce(StringInfo *nonce)
     *datum;
 
   datum=GetStringInfoDatum(nonce);
-  for (i=(ssize_t) (GetStringInfoLength(nonce)-1); i != 0; i--)
+  for (i=(ssize_t) GetStringInfoLength(nonce)-1; i >= 0; i--)
   {
     datum[i]++;
     if (datum[i] != 0)
@@ -895,6 +907,7 @@ MagickExport void SetRandomKey(RandomInfo *random_info,const size_t length,
     *datum;
 
   assert(random_info != (RandomInfo *) NULL);
+  assert(key != (unsigned char *) NULL);
   if (length == 0)
     return;
 #ifdef FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION

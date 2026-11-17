@@ -277,6 +277,10 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   Quantum
     *q;
 
+  size_t
+   comment_extent = 0,
+   comment_offset = 0;
+
   ssize_t
     count,
     scene,
@@ -374,10 +378,40 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
           fits_info.scale=StringToDouble(p,(char **) NULL);
         if (LocaleCompare(keyword,"comment") == 0)
           {
+            size_t length = strlen(p);
             if (comment == (char *) NULL)
-              comment=ConstantString(p);
-            else
-              (void) ConcatenateString(&comment,p);
+              {
+                comment_extent=length+MagickPathExtent;
+                comment=(char *) AcquireQuantumMemory(comment_extent,
+                  sizeof(*comment));
+                if (comment != (char *) NULL)
+                  {
+                    (void) CopyMagickString(comment,p,comment_extent);
+                    comment_offset=length;
+                  }
+             }
+           else
+             {
+               if ((comment_offset+length) >= comment_extent)
+                 {
+                   char
+                     *new_comment;
+
+                   comment_extent=2*(comment_offset+length)+MagickPathExtent;
+                   new_comment=(char *) ResizeQuantumMemory(comment,
+                     comment_extent,sizeof(*comment));
+                   if (new_comment == (char *) NULL)
+                     comment=DestroyString(comment);
+                   else
+                     comment=new_comment;
+                 }
+               if (comment != (char *) NULL)
+                 {
+                   (void) CopyMagickString(comment+comment_offset,p,
+                     comment_extent-comment_offset);
+                   comment_offset+=length;
+                 }
+             }
           }
         if (LocaleCompare(keyword,"xendian") == 0)
           {
@@ -424,8 +458,12 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         comment=DestroyString(comment);
       }
     if (EOFBlob(image) != MagickFalse)
-      ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
-        image->filename);
+      {
+        ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+          image->filename);
+        status=MagickFalse;
+        break;
+      }
     number_pixels=((MagickSizeType) fits_info.columns*fits_info.rows);
     if ((fits_info.simple == MagickFalse) || (fits_info.number_axes < 1) ||
         (fits_info.number_axes > 4) || (number_pixels == 0) ||
@@ -438,8 +476,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         (void) SeekBlob(image,(MagickOffsetType) number_pixels,SEEK_CUR);
       }
     if (AcquireMagickResource(ListLengthResource,fits_info.number_planes) == MagickFalse)
-      ThrowFileException(exception,ResourceLimitError,"ListLengthExceedsLimit",
-        image->filename);
+      ThrowReaderException(ResourceLimitError,"ListLengthExceedsLimit");
     for (scene=0; scene < (ssize_t) fits_info.number_planes; scene++)
     {
       image->columns=(size_t) fits_info.columns;
@@ -507,6 +544,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         {
           ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
             image->filename);
+          status=MagickFalse;
           break;
         }
       /*
@@ -542,6 +580,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       {
         ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
           image->filename);
+        status=MagickFalse;
         break;
       }
     /*
@@ -822,7 +861,10 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
               pixels);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
           status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
             image->rows);
           if (status == MagickFalse)
@@ -848,12 +890,17 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
               pixels);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
           status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
             image->rows);
           if (status == MagickFalse)
             break;
         }
+        if (status == MagickFalse)
+          break;
         length=GetQuantumExtent(image,quantum_info,GreenQuantum);
         for (y=(ssize_t) image->rows-1; y >= 0; y--)
         {
@@ -871,12 +918,17 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
               pixels);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
           status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
             image->rows);
           if (status == MagickFalse)
             break;
         }
+        if (status == MagickFalse)
+          break;
         length=GetQuantumExtent(image,quantum_info,BlueQuantum);
         for (y=(ssize_t) image->rows-1; y >= 0; y--)
         {
@@ -894,7 +946,10 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
               pixels);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
           status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
             image->rows);
           if (status == MagickFalse)
@@ -902,6 +957,8 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
         }
       }
     quantum_info=DestroyQuantumInfo(quantum_info);
+    if (status == MagickFalse)
+      break;
     length=(size_t) (FITSBlocksize-TellBlob(image) % FITSBlocksize);
     if (length != FITSBlocksize)
       {

@@ -52,8 +52,7 @@
 #include "MagickCore/colorspace-private.h"
 #include "MagickCore/compress.h"
 #include "MagickCore/constitute.h"
-#include "MagickCore/delegate.h"
-#include "MagickCore/delegate-private.h"
+#include "MagickCore/constitute-private.h"
 #include "MagickCore/distort.h"
 #include "MagickCore/draw.h"
 #include "MagickCore/exception.h"
@@ -86,7 +85,6 @@
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
 #include "MagickCore/xml-tree-private.h"
-#include "coders/bytebuffer-private.h"
 #include "coders/coders-private.h"
 #include "coders/ghostscript-private.h"
 
@@ -650,7 +648,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) CopyMagickString(filename,read_info->filename,MagickPathExtent);
   (void) AcquireUniqueFilename(filename);
   (void) RelinquishUniqueFileResource(filename);
-  (void) ConcatenateMagickString(filename,"%d",MagickPathExtent);
   (void) FormatLocaleString(command,MagickPathExtent,
     GetDelegateCommands(delegate_info),
     read_info->antialias != MagickFalse ? 4 : 1,
@@ -667,8 +664,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (status == MagickFalse)
     for (i=1; ; i++)
     {
-      (void) InterpretImageFilename(image_info,image,filename,(int) i,
-        read_info->filename,exception);
+      (void) AppendImageFilenameScene(filename,(int) i,read_info->filename);
       if (IsGhostscriptRendered(read_info->filename) == MagickFalse)
         break;
       (void) RelinquishUniqueFileResource(read_info->filename);
@@ -678,13 +674,12 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       next=(Image *) NULL;
       for (i=1; ; i++)
       {
-        (void) InterpretImageFilename(image_info,image,filename,(int) i,
-          read_info->filename,exception);
+        (void) AppendImageFilenameScene(filename,(int) i,read_info->filename);
         if (IsGhostscriptRendered(read_info->filename) == MagickFalse)
           break;
         read_info->blob=NULL;
         read_info->length=0;
-        next=ReadImage(read_info,exception);
+        next=ReadImageWithoutPostProcessing(read_info,exception);
         (void) RelinquishUniqueFileResource(read_info->filename);
         if (next == (Image *) NULL)
           break;
@@ -698,8 +693,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
           for (j=i+1; ; j++)
             {
-              (void) InterpretImageFilename(image_info,image,filename,(int) j,
-                read_info->filename,exception);
+              (void) AppendImageFilenameScene(filename,(int) j,read_info->filename);
               if (IsGhostscriptRendered(read_info->filename) == MagickFalse)
                 break;
               (void) RelinquishUniqueFileResource(read_info->filename);
@@ -747,6 +741,8 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Add place holder images to meet the subimage specification requirement.
       */
+      if (AcquireMagickResource(ListLengthResource,image_info->scene) == MagickFalse)
+        ThrowReaderException(ResourceLimitError,"ListLengthExceedsLimit");
       for (i=0; i < (ssize_t) image_info->scene; i++)
       {
         clone_image=CloneImage(pdf_image,1,1,MagickTrue,exception);
@@ -914,50 +910,6 @@ ModuleExport void UnregisterPDFImage(void)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static char *EscapeParenthesis(const char *source)
-{
-  char
-    *destination;
-
-  char
-    *q;
-
-  const char
-    *p;
-
-  size_t
-    length;
-
-  assert(source != (const char *) NULL);
-  length=0;
-  for (p=source; *p != '\0'; p++)
-  {
-    if ((*p == '\\') || (*p == '(') || (*p == ')'))
-      {
-        if (~length < 1)
-          ThrowFatalException(ResourceLimitFatalError,"UnableToEscapeString");
-        length++;
-      }
-    length++;
-  }
-  destination=(char *) NULL;
-  if (~length >= (MagickPathExtent-1))
-    destination=(char *) AcquireQuantumMemory(length+MagickPathExtent,
-      sizeof(*destination));
-  if (destination == (char *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"UnableToEscapeString");
-  *destination='\0';
-  q=destination;
-  for (p=source; *p != '\0'; p++)
-  {
-    if ((*p == '\\') || (*p == '(') || (*p == ')'))
-      *q++='\\';
-    *q++=(*p);
-  }
-  *q='\0';
-  return(destination);
-}
 
 static size_t UTF8ToUTF16(const unsigned char *utf8,wchar_t *utf16)
 {
@@ -1303,7 +1255,7 @@ static const char *GetPDFKeywords(const ImageInfo *image_info)
 }
 
 static void WritePDFValue(Image* image,const char *keyword,
-  const char *value,const MagickBooleanType is_pdfa)
+  const char *value,const MagickBooleanType is_pdfa,ExceptionInfo *exception)
 {
   char
     *escaped;
@@ -1321,7 +1273,7 @@ static void WritePDFValue(Image* image,const char *keyword,
     return;
   if (is_pdfa != MagickFalse)
     {
-      escaped=EscapeParenthesis(value);
+      escaped=EscapeParenthesis(value,MAGICK_SIZE_MAX,exception);
       (void) WriteBlobString(image,"/");
       (void) WriteBlobString(image,keyword);
       (void) WriteBlobString(image," (");
@@ -1539,8 +1491,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     number_scenes,
     object,
     pages_id,
-    root_id,
-    text_size;
+    root_id;
 
   ssize_t
     count,
@@ -1727,9 +1678,17 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
       kid_image=image;
       for ( ; GetNextImageInList(kid_image) != (Image *) NULL; count+=ObjectsPerImage)
       {
+        CompressionType
+          kid_compression;
+
         page_count++;
+        kid_compression=kid_image->compression;
+        if (image_info->compression != UndefinedCompression)
+          kid_compression=image_info->compression;
         icc_profile=GetCompatibleColorProfile(kid_image);
-        if (icc_profile != (StringInfo *) NULL)
+        if ((icc_profile != (StringInfo *) NULL) &&
+            ((kid_compression != JPEG2000Compression) ||
+             (IssRGBCompatibleColorspace(kid_image->colorspace) != MagickFalse)))
           count+=2;
         (void) FormatLocaleString(buffer,MagickPathExtent,"%.17g 0 R ",(double)
           count);
@@ -1757,7 +1716,6 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     MagickBooleanType
       thumbnail;
 
-    icc_profile=GetCompatibleColorProfile(image);
     compression=image->compression;
     if (image_info->compression != UndefinedCompression)
       compression=image_info->compression;
@@ -1818,7 +1776,8 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     }
     if (compression == JPEG2000Compression)
       if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
-      (void) TransformImageColorspace(image,sRGBColorspace,exception);
+        (void) TransformImageColorspace(image,sRGBColorspace,exception);
+    icc_profile=GetCompatibleColorProfile(image);
     /*
       Scale relative to dots-per-inch.
     */
@@ -1882,11 +1841,6 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     pointsize=12.0;
     if (image_info->pointsize != 0.0)
       pointsize=image_info->pointsize;
-    text_size=0;
-    value=GetImageProperty(image,"label",exception);
-    if (value != (const char *) NULL)
-      text_size=(size_t) (MultilineCensus(value)*pointsize+12);
-    (void) text_size;
     /*
       Write Page object.
     */
@@ -1954,6 +1908,9 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     if (labels != (char **) NULL)
       for (i=0; labels[i] != (char *) NULL; i++)
       {
+        char
+          *escape;
+
         (void) WriteBlobString(image,"BT\n");
         (void) FormatLocaleString(buffer,MagickPathExtent,"/F%.17g %g Tf\n",
           (double) image->scene,pointsize);
@@ -1962,8 +1919,9 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
           (double) geometry.x,(double) (geometry.y+(ssize_t) geometry.height+
           i*pointsize+12));
         (void) WriteBlobString(image,buffer);
-        (void) FormatLocaleString(buffer,MagickPathExtent,"(%s) Tj\n",
-           labels[i]);
+        escape=EscapeParenthesis(labels[i],MAGICK_SIZE_MAX,exception);
+        (void) FormatLocaleString(buffer,MagickPathExtent,"(%s) Tj\n",escape);
+        escape=DestroyString(escape);
         (void) WriteBlobString(image,buffer);
         (void) WriteBlobString(image,"ET\n");
         labels[i]=DestroyString(labels[i]);
@@ -3217,12 +3175,12 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     object);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"<<\n");
-  WritePDFValue(image,"Title",GetPDFTitle(image_info,basename),is_pdfa);
-  WritePDFValue(image,"Author",GetPDFAuthor(image_info),is_pdfa);
-  WritePDFValue(image,"Creator",GetPDFCreator(image_info),is_pdfa);
-  WritePDFValue(image,"Producer",GetPDFProducer(image_info),is_pdfa);
-  WritePDFValue(image,"Subject",GetPDFSubject(image_info),is_pdfa);
-  WritePDFValue(image,"Keywords",GetPDFKeywords(image_info),is_pdfa);
+  WritePDFValue(image,"Title",GetPDFTitle(image_info,basename),is_pdfa,exception);
+  WritePDFValue(image,"Author",GetPDFAuthor(image_info),is_pdfa,exception);
+  WritePDFValue(image,"Creator",GetPDFCreator(image_info),is_pdfa,exception);
+  WritePDFValue(image,"Producer",GetPDFProducer(image_info),is_pdfa,exception);
+  WritePDFValue(image,"Subject",GetPDFSubject(image_info),is_pdfa,exception);
+  WritePDFValue(image,"Keywords",GetPDFKeywords(image_info),is_pdfa,exception);
   seconds=GetPdfCreationDate(image_info,image);
   GetMagickUTCTime(&seconds,&utc_time);
   (void) FormatLocaleString(temp,MagickPathExtent,"D:%04d%02d%02d%02d%02d%02d",

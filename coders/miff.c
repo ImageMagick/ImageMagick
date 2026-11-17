@@ -947,6 +947,14 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   {
                     if (profiles == (LinkedListInfo *) NULL)
                       profiles=NewLinkedList(0);
+                    if (GetNumberOfElementsInLinkedList(profiles) >= GetMaxProfileCount())
+                      {
+                        options=DestroyString(options);
+                        profiles=DestroyLinkedList(profiles,
+                          RelinquishMagickMemory);
+                        ThrowReaderException(ResourceLimitError,
+                          "TooManyProfiles");
+                      }
                     (void) AppendValueToLinkedList(profiles,
                       AcquireString(options));
                     break;
@@ -1250,6 +1258,11 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             if (colormap == (unsigned char *) NULL)
               ThrowMIFFException(ResourceLimitError,"MemoryAllocationFailed");
             count=ReadBlob(image,packet_size*image->colors,colormap);
+            if (count != (ssize_t) (packet_size*image->colors))
+              {
+                colormap=(unsigned char *) RelinquishMagickMemory(colormap);
+                ThrowMIFFException(CorruptImageError,"UnexpectedEndOfFile");
+              }
             p=colormap;
             switch (image->depth)
             {
@@ -1386,7 +1399,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         if (image->alpha_trait != UndefinedPixelTrait)
           quantum_type=IndexAlphaQuantum;
       }
-    if (image->number_meta_channels != 0)
+    if ((image->number_meta_channels != 0) &&
+        (image->storage_class != PseudoClass))
       quantum_type=MultispectralQuantum;
     status=MagickTrue;
     GetPixelInfo(image,&pixel);

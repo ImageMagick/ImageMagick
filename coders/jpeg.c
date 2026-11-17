@@ -56,6 +56,7 @@
 #include "MagickCore/colorspace.h"
 #include "MagickCore/colorspace-private.h"
 #include "MagickCore/constitute.h"
+#include "MagickCore/constitute-private.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/geometry.h"
@@ -405,7 +406,7 @@ static MagickBooleanType IsUltraHDRJPEGAutoRoutingEnabled(
     return(MagickFalse);
   if (IsRightsAuthorized(CoderPolicyDomain,rights,"UHDR") == MagickFalse)
     return(MagickFalse);
-  if (IsRightsAuthorized(ModulePolicyDomain,rights,"UHDr") == MagickFalse)
+  if (IsRightsAuthorized(ModulePolicyDomain,rights,"UHDR") == MagickFalse)
     return(MagickFalse);
   return(MagickTrue);
 }
@@ -439,7 +440,7 @@ static Image *ReadUltraHDRJPEGImage(const ImageInfo *image_info,
   uhdr_info=CloneImageInfo(image_info);
   SetUltraHDRCoderFilename(uhdr_info,image_info->filename);
   (void) SetImageOption(uhdr_info,"jpeg:detect-uhdr","false");
-  images=ReadImage(uhdr_info,exception);
+  images=ReadImageWithoutPostProcessing(uhdr_info,exception);
   uhdr_info=DestroyImageInfo(uhdr_info);
   return(images);
 }
@@ -1424,17 +1425,25 @@ static void JPEGSetImageSamplingFactor(const struct jpeg_decompress_struct *jpeg
     }
     default:
     {
+      size_t
+        length;
+
+      ssize_t
+        i;
+
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Colorspace: %d",
         jpeg_info->out_color_space);
-      (void) FormatLocaleString(sampling_factor,MagickPathExtent,
-        "%dx%d,%dx%d,%dx%d,%dx%d",jpeg_info->comp_info[0].h_samp_factor,
-        jpeg_info->comp_info[0].v_samp_factor,
-        jpeg_info->comp_info[1].h_samp_factor,
-        jpeg_info->comp_info[1].v_samp_factor,
-        jpeg_info->comp_info[2].h_samp_factor,
-        jpeg_info->comp_info[2].v_samp_factor,
-        jpeg_info->comp_info[3].h_samp_factor,
-        jpeg_info->comp_info[3].v_samp_factor);
+      (void) FormatLocaleString(sampling_factor,MagickPathExtent,"%dx%d",
+        jpeg_info->comp_info[0].h_samp_factor,
+        jpeg_info->comp_info[0].v_samp_factor);
+      length=strlen(sampling_factor);
+      for (i=1; (i < (ssize_t) jpeg_info->num_components) && (length < MagickPathExtent); i++)
+      {
+        (void) FormatLocaleString(sampling_factor+length,MagickPathExtent-
+          length,",%dx%d",jpeg_info->comp_info[i].h_samp_factor,
+          jpeg_info->comp_info[i].v_samp_factor);
+         length+=strlen(sampling_factor+length);
+      }
       break;
     }
   }
@@ -1619,7 +1628,11 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
         MagickFalse))
     {
       const char
+        *comment,
         *sampling_factor;
+
+      const StringInfo
+        *profile;
 
       ExceptionInfo
         *uhdr_exception;
@@ -1652,11 +1665,17 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
             uhdr_image->quality=image->quality;
           uhdr_image->resolution=image->resolution;
           uhdr_image->units=image->units;
+          profile=GetImageProfile(image,"iptc");
+          if (profile != (const StringInfo *) NULL)
+            (void) SetImageProfile(uhdr_image,"iptc",profile,uhdr_exception);
           sampling_factor=GetImageProperty(image,"jpeg:sampling-factor",
             exception);
           if (sampling_factor != (const char *) NULL)
             (void) SetImageProperty(uhdr_image,"jpeg:sampling-factor",
               sampling_factor,exception);
+          comment=GetImageProperty(image,"comment",exception);
+          if (comment != (const char *) NULL)
+            (void) SetImageProperty(uhdr_image,"comment",comment,exception);
           InheritException(exception,uhdr_exception);
           uhdr_exception=DestroyExceptionInfo(uhdr_exception);
           client_info=JPEGCleanup(jpeg_info,client_info);
@@ -1717,7 +1736,12 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
           (scale_factor > (jpeg_info->output_height/geometry_info.sigma)))
         scale_factor=jpeg_info->output_height/geometry_info.sigma;
 #if defined(LIBJPEG_TURBO_VERSION_NUMBER) || (JPEG_LIB_VERSION >= 70)
-      jpeg_info->scale_num=(unsigned int) (8.0/scale_factor+0.5);
+      /*
+        Use the smallest scaling factor (M/8) that is not smaller than the
+        size hint.
+      */
+      jpeg_info->scale_num=(unsigned int) ceil(MagickMin(8.0/scale_factor,
+        16.0)-MagickEpsilon);
       if (jpeg_info->scale_num > 16U)
         jpeg_info->scale_num=16U;
       if (jpeg_info->scale_num < 1U)
@@ -2595,8 +2619,12 @@ static QuantizationTable *GetQuantizationTable(const char *filename,
   table->levels=(unsigned int *) AcquireQuantumMemory(length,
     sizeof(*table->levels));
   if (table->levels == (unsigned int *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,
-      "UnableToAcquireQuantizationTable");
+    {
+      quantization_tables=DestroyXMLTree(quantization_tables);
+      table=DestroyQuantizationTable(table);
+      xml=DestroyString(xml);
+      return(table);
+    }
   for (i=0; i < (ssize_t) (table->width*table->height); i++)
   {
     table->levels[i]=(unsigned int) (InterpretLocaleValue(content,&p)/
@@ -2826,7 +2854,7 @@ static char **SamplingFactorToList(const char *text)
   textlist=(char **) AcquireQuantumMemory((size_t) MAX_COMPONENTS,
     sizeof(*textlist));
   if (textlist == (char **) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"UnableToConvertText");
+    return((char **) NULL);
   p=text;
   for (i=0; i < (ssize_t) MAX_COMPONENTS; i++)
   {
@@ -2836,7 +2864,15 @@ static char **SamplingFactorToList(const char *text)
     textlist[i]=(char *) AcquireQuantumMemory((size_t) (q-p)+MagickPathExtent,
       sizeof(*textlist[i]));
     if (textlist[i] == (char *) NULL)
-      ThrowFatalException(ResourceLimitFatalError,"UnableToConvertText");
+      {
+        ssize_t
+          j;
+
+        for (j=0; j < i; j++)
+          textlist[j]=DestroyString(textlist[j]);
+        textlist=(char **) RelinquishMagickMemory(textlist);
+        return(textlist);
+      }
     (void) CopyMagickString(textlist[i],p,(size_t) (q-p+1));
     if (*q == '\r')
       q++;

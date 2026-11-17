@@ -837,7 +837,7 @@ static MagickBooleanType LoadMimeCache(LinkedListInfo *cache,const char *xml,
     attribute=GetXMLTreeAttribute(include,"file");
     if (attribute != (const char *) NULL)
       {
-        if (depth > MagickMaxRecursionDepth)
+        if (depth >= MagickMaxRecursionDepth)
           (void) ThrowMagickException(exception,GetMagickModule(),
             ConfigureError,"IncludeElementNestedTooDeeply","`%s'",filename);
         else

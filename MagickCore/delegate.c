@@ -109,8 +109,8 @@ static const char
     "  <delegate decode=\"browse\" stealth=\"True\" spawn=\"True\" command=\"" DELEGATE_ESC "xdg-open" DELEGATE_ESC " https://imagemagick.org/; rm " DELEGATE_ESC "%i" DELEGATE_ESC "\"/>"
     "  <delegate decode=\"cdr\" command=\"" DELEGATE_ESC "uniconvertor" DELEGATE_ESC " " DELEGATE_ESC "%i" DELEGATE_ESC " " DELEGATE_ESC "%o.svg" DELEGATE_ESC "; mv " DELEGATE_ESC "%o.svg" DELEGATE_ESC " " DELEGATE_ESC "%o" DELEGATE_ESC "\"/>"
     "  <delegate decode=\"cgm\" command=\"" DELEGATE_ESC "uniconvertor" DELEGATE_ESC " " DELEGATE_ESC "%i" DELEGATE_ESC " " DELEGATE_ESC "%o.svg" DELEGATE_ESC "; mv " DELEGATE_ESC "%o.svg" DELEGATE_ESC " " DELEGATE_ESC "%o" DELEGATE_ESC "\"/>"
-    "  <delegate decode=\"http\" command=\"" DELEGATE_ESC "curl" DELEGATE_ESC " -s -L -o " DELEGATE_ESC "%o" DELEGATE_ESC " " DELEGATE_ESC "http:%M" DELEGATE_ESC "\"/>"
-    "  <delegate decode=\"https\" command=\"" DELEGATE_ESC "curl" DELEGATE_ESC " -s -L -o " DELEGATE_ESC "%o" DELEGATE_ESC " " DELEGATE_ESC "https:%M" DELEGATE_ESC "\"/>"
+    "  <delegate decode=\"http:decode\" command=\"" DELEGATE_ESC "curl" DELEGATE_ESC " -s -L -o " DELEGATE_ESC "%u.dat" DELEGATE_ESC " " DELEGATE_ESC "http:%M" DELEGATE_ESC "\"/>"
+    "  <delegate decode=\"https:decode\" command=\"" DELEGATE_ESC "curl" DELEGATE_ESC " -s -L -o " DELEGATE_ESC "%u.dat" DELEGATE_ESC " " DELEGATE_ESC "https:%M" DELEGATE_ESC "\"/>"
     "  <delegate decode=\"doc\" command=\"" DELEGATE_ESC "soffice" DELEGATE_ESC " --convert-to pdf -outdir `dirname " DELEGATE_ESC "%i" DELEGATE_ESC "` " DELEGATE_ESC "%i" DELEGATE_ESC " 2&gt; " DELEGATE_ESC "%u" DELEGATE_ESC "; mv " DELEGATE_ESC "%i.pdf" DELEGATE_ESC " " DELEGATE_ESC "%o" DELEGATE_ESC "\"/>"
     "  <delegate decode=\"docx\" command=\"" DELEGATE_ESC "soffice" DELEGATE_ESC " --convert-to pdf -outdir `dirname " DELEGATE_ESC "%i" DELEGATE_ESC "` " DELEGATE_ESC "%i" DELEGATE_ESC " 2&gt; " DELEGATE_ESC "%u" DELEGATE_ESC "; mv " DELEGATE_ESC "%i.pdf" DELEGATE_ESC " " DELEGATE_ESC "%o" DELEGATE_ESC "\"/>"
     "  <delegate decode=\"dng:decode\" command=\"" DELEGATE_ESC "ufraw-batch" DELEGATE_ESC " --silent --create-id=also --out-type=png --out-depth=16 " DELEGATE_ESC "--output=%u.png" DELEGATE_ESC " " DELEGATE_ESC "%i" DELEGATE_ESC "\"/>"
@@ -357,6 +357,39 @@ MagickPrivate void DelegateComponentTerminus(void)
 %    o exception: return any errors here.
 %
 */
+
+static inline MagickBooleanType IsExecutableToken(const char *token)
+{
+  size_t
+    length = 0;
+
+  if ((token == (const char *) NULL) || (*token == '\0'))
+    return(MagickFalse);
+  if (*token == '-')
+    return(MagickFalse);
+  if (*token == '%')
+    return(MagickFalse);
+  if ((*token == '\'') || (*token == '"'))
+    return(MagickFalse);
+  length=strlen(token);
+  if (length >= 3)
+    {
+      if ((isalpha((int) *token) != 0) && (token[1] == ':') &&
+          ((token[2] == '\\') || (token[2] == '/')))
+        return(MagickTrue);
+    }
+  if (*token == '/')
+    return(MagickTrue);
+  if (length >= 2)
+    {
+      if ((*token == '.') && ((token[1] == '\\') || (token[1] == '/')))
+        return(MagickTrue);
+    }
+  if (isalnum((int) *token))
+    return(MagickTrue);
+  return(MagickFalse);
+}
+
 MagickExport int ExternalDelegateCommand(const MagickBooleanType asynchronous,
   const MagickBooleanType verbose,const char *command,char *message,
   ExceptionInfo *exception)
@@ -382,7 +415,8 @@ MagickExport int ExternalDelegateCommand(const MagickBooleanType asynchronous,
   arguments=StringToArgv(command,&number_arguments);
   if (arguments == (char **) NULL)
     return(status);
-  if (*arguments[1] == '\0')
+  if ((number_arguments <= 1) || (arguments[1] == (char *) NULL) ||
+      (*arguments[1] == '\0'))
     {
       for (i=0; i < (ssize_t) number_arguments; i++)
         arguments[i]=DestroyString(arguments[i]);
@@ -391,16 +425,24 @@ MagickExport int ExternalDelegateCommand(const MagickBooleanType asynchronous,
     }
   rights=ExecutePolicyRights;
   domain=DelegatePolicyDomain;
-  if (IsRightsAuthorized(domain,rights,arguments[1]) == MagickFalse)
-    {
-      errno=EPERM;
-      (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
-        "NotAuthorized","`%s'",arguments[1]);
-      for (i=0; i < (ssize_t) number_arguments; i++)
-        arguments[i]=DestroyString(arguments[i]);
-      arguments=(char **) RelinquishMagickMemory(arguments);
-      return(-1);
-    }
+  for (i=1; i < (ssize_t) number_arguments; i++)
+  {
+    if ((i != 1) && (IsExecutableToken(arguments[i]) == MagickFalse))
+      continue;
+    if (IsRightsAuthorized(domain,rights,arguments[i]) == MagickFalse)
+      {
+        ssize_t
+          j;
+
+        errno=EPERM;
+        (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
+          "NotAuthorized","`%s'",arguments[i]);
+        for (j=0; j < (ssize_t) number_arguments; j++)
+          arguments[j]=DestroyString(arguments[j]);
+        arguments=(char **) RelinquishMagickMemory(arguments);
+        return(-1);
+      }
+  }
   if (verbose != MagickFalse)
     {
       (void) FormatLocaleFile(stderr,"%s\n",command);
@@ -415,6 +457,9 @@ MagickExport int ExternalDelegateCommand(const MagickBooleanType asynchronous,
 #if defined(MAGICKCORE_HAVE_POPEN)
   if ((asynchronous == MagickFalse) && (message !=  (char *) NULL))
     {
+      char
+        buffer[MagickPathExtent];
+
       FILE
         *file;
 
@@ -426,9 +471,21 @@ MagickExport int ExternalDelegateCommand(const MagickBooleanType asynchronous,
           size_t
             offset = 0;
 
-          while ((offset < MagickPathExtent) &&
-                 (fgets(message+offset,(int) (MagickPathExtent-offset),file) != NULL))
-            offset+=strlen(message);
+          while (fgets(buffer,(int) sizeof(buffer),file) != NULL)
+          {
+            size_t
+              length,
+              count;
+
+            length=strlen(buffer);
+            count=MagickMin(length,MagickPathExtent-offset-1);
+            if (count != 0)
+              {
+                (void) memcpy(message+offset,buffer,count);
+                offset+=count;
+                message[offset]='\0';
+              }
+          }
           status=pclose(file);
         }
     }
@@ -1629,22 +1686,20 @@ static MagickBooleanType CopyDelegateFile(const char *source,
   ExceptionInfo *exception)
 {
   int
-    destination_file,
-    source_file;
+    destination_file = -1,
+    source_file = -1;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   ssize_t
-    count,
-    i;
+    count = 0;
 
   size_t
-    length,
-    quantum;
+    quantum = 0;
 
   struct stat
-    attributes;
+    attributes = { 0 };
 
   unsigned char
     *buffer;
@@ -1654,18 +1709,23 @@ static MagickBooleanType CopyDelegateFile(const char *source,
   */
   assert(source != (const char *) NULL);
   assert(destination != (char *) NULL);
-  if (overwrite == MagickFalse)
-    {
-      status=GetPathAttributes(destination,&attributes);
-      if (status != MagickFalse)
-        return(MagickTrue);
-    }
+  if ((overwrite == MagickFalse) &&
+      (GetPathAttributes(destination,&attributes) != MagickFalse))
+    return(MagickTrue);
   if (IsPathAuthorized(WritePolicyRights,destination) == MagickFalse)
-    ThrowPolicyException(destination,MagickFalse);
-  destination_file=open_utf8(destination,O_WRONLY | O_BINARY | O_CREAT,S_MODE);
+    ThrowPolicyException(source,MagickFalse);
+  destination_file=open_utf8(destination,O_WRONLY | O_CLOEXEC | O_BINARY |
+    O_CREAT | O_NOFOLLOW | (overwrite != MagickFalse ? O_TRUNC : 0),S_MODE);
   if (destination_file == -1)
     return(MagickFalse);
-  source_file=open_utf8(source,O_RDONLY | O_BINARY,0);
+  if (IsPathAuthorized(WritePolicyRights,destination) == MagickFalse)
+    ThrowPolicyException(destination,MagickFalse);
+  if (IsPathAuthorized(ReadPolicyRights,source) == MagickFalse)
+    {
+      (void) close_utf8(destination_file);
+      ThrowPolicyException(source,MagickFalse);
+    }
+  source_file=open_utf8(source,O_RDONLY | O_CLOEXEC | O_BINARY,0);
   if (source_file == -1)
     {
       (void) close_utf8(destination_file);
@@ -1681,21 +1741,40 @@ static MagickBooleanType CopyDelegateFile(const char *source,
       (void) close_utf8(destination_file);
       return(MagickFalse);
     }
-  length=0;
-  for (i=0; ; i+=(ssize_t) count)
+  while ((count=read(source_file,buffer,quantum)) > 0)
   {
-    count=(ssize_t) read(source_file,buffer,quantum);
-    if (count <= 0)
-      break;
-    length=(size_t) count;
-    count=(ssize_t) write(destination_file,buffer,length);
-    if ((size_t) count != length)
+    ssize_t
+      offset = 0;
+
+    while (offset < count)
+    {
+      ssize_t
+        written;
+
+      written=write(destination_file,buffer+offset,(size_t) (count-offset));
+      if (written < 0)
+        {
+          if (errno == EINTR)
+            continue;
+          status=MagickFalse;
+          break;
+        }
+      if (written == 0)
+        {
+          status=MagickFalse;
+          break;
+        }
+      offset+=written;
+    }
+    if (status == MagickFalse)
       break;
   }
+  if (count < 0)
+    status=MagickFalse;
   (void) close_utf8(destination_file);
   (void) close_utf8(source_file);
   buffer=(unsigned char *) RelinquishMagickMemory(buffer);
-  return(i != 0 ? MagickTrue : MagickFalse);
+  return(status);
 }
 
 MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
@@ -1855,13 +1934,6 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
   (void) CopyMagickString(input_filename,image->filename,MagickPathExtent);
   for (i=0; commands[i] != (char *) NULL; i++)
   {
-    if (IsPathAuthorized(WritePolicyRights,output_filename) == MagickFalse)
-      {
-        errno=EPERM;
-        (void) ThrowMagickException(exception,GetMagickModule(),PolicyError, \
-          "NotAuthorized","`%s'",output_filename);
-        break;
-      }
     (void) AcquireUniqueSymbolicLink(output_filename,image_info->filename);
     if (AcquireUniqueFilename(image_info->unique) == MagickFalse)
       {
@@ -1869,7 +1941,7 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
           "UnableToCreateTemporaryFile",image_info->unique);
         break;
       }
-    if (LocaleCompare(decode,"SCAN") != 0)
+    if (IsPathAccessible(input_filename) != MagickFalse)
       {
         status=AcquireUniqueSymbolicLink(input_filename,image->filename);
         if (status == MagickFalse)
@@ -1886,8 +1958,7 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
         /*
           Execute delegate.
         */
-        if (ExternalDelegateCommand(delegate_info->spawn,image_info->verbose,
-          command,(char *) NULL,exception) != 0)
+        if (ExternalDelegateCommand(delegate_info->spawn,image_info->verbose,command,(char *) NULL,exception) != 0)
           status=MagickFalse;
         if (delegate_info->spawn != MagickFalse)
           {
@@ -1903,14 +1974,20 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
           }
         command=DestroyString(command);
       }
-    if (LocaleCompare(decode,"SCAN") != 0)
+    if (IsPathAccessible(input_filename) != MagickFalse)
       {
         if (CopyDelegateFile(image->filename,input_filename,MagickFalse,exception) == MagickFalse)
-          (void) RelinquishUniqueFileResource(input_filename);
+          {
+            (void) RelinquishUniqueFileResource(input_filename);
+            status=MagickFalse;
+          }
       }
     if ((strcmp(input_filename,output_filename) != 0) &&
         (CopyDelegateFile(image_info->filename,output_filename,MagickTrue,exception) == MagickFalse))
-      (void) RelinquishUniqueFileResource(output_filename);
+      {
+        (void) RelinquishUniqueFileResource(output_filename);
+        status=MagickFalse;
+      }
     if (image_info->temporary != MagickFalse)
       (void) RelinquishUniqueFileResource(image_info->filename);
     (void) RelinquishUniqueFileResource(image_info->unique);
@@ -2075,7 +2152,7 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *cache,
   DelegateInfo
     *delegate_info;
 
-  MagickStatusType
+  MagickBooleanType
     status;
 
   size_t
@@ -2097,26 +2174,29 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *cache,
     /*
       Interpret XML.
     */
+    if (SkipXMLComment(&q) == MagickFalse)
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          ConfigureError,"UnterminatedComment","`%s'",filename);
+        status=MagickFalse;
+        break;
+      }
     (void) GetNextToken(q,&q,extent,token);
     if (*token == '\0')
       break;
     (void) CopyMagickString(keyword,token,MagickPathExtent);
     if (LocaleNCompare(keyword,"<!DOCTYPE",9) == 0)
       {
-        /*
-          Doctype element.
-        */
-        while ((LocaleNCompare(q,"]>",2) != 0) && (*q != '\0'))
-          (void) GetNextToken(q,&q,extent,token);
-        continue;
-      }
-    if (LocaleNCompare(keyword,"<!--",4) == 0)
-      {
-        /*
-          Comment element.
-        */
-        while ((LocaleNCompare(q,"->",2) != 0) && (*q != '\0'))
-          (void) GetNextToken(q,&q,extent,token);
+        if (SkipXMLDocType(&q) == MagickFalse)
+          {
+            /*
+              Detect unterminated DOCTYPE.
+            */
+            (void) ThrowMagickException(exception,GetMagickModule(),
+              ConfigureError,"UnterminatedDOCTYPE","`%s'",filename);
+            status=MagickFalse;
+            break;
+          }
         continue;
       }
     if (LocaleCompare(keyword,"<include") == 0)
@@ -2133,7 +2213,7 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *cache,
           (void) GetNextToken(q,&q,extent,token);
           if (LocaleCompare(keyword,"file") == 0)
             {
-              if (depth > MagickMaxRecursionDepth)
+              if (depth >= MagickMaxRecursionDepth)
                 (void) ThrowMagickException(exception,GetMagickModule(),
                   ConfigureError,"IncludeElementNestedTooDeeply","`%s'",token);
               else
@@ -2153,13 +2233,17 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *cache,
                   file_xml=FileToXML(path,~0UL);
                   if (file_xml != (char *) NULL)
                     {
-                      status&=(MagickStatusType) LoadDelegateCache(cache,
-                        file_xml,path,depth+1,exception);
+                      if (LoadDelegateCache(cache,file_xml,path,depth+1,exception) == MagickFalse)
+                        status=MagickFalse;
                       file_xml=DestroyString(file_xml);
+                      if (status == MagickFalse)
+                        break;
                     }
                 }
             }
         }
+        if (status == MagickFalse)
+          break;
         continue;
       }
     if (LocaleCompare(keyword,"<delegate") == 0)
@@ -2297,5 +2381,5 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *cache,
     }
   }
   token=(char *) RelinquishMagickMemory(token);
-  return(status != 0 ? MagickTrue : MagickFalse);
+  return(status);
 }

@@ -716,12 +716,12 @@ extern "C" {
 static int SceneCompare(const void *x,const void *y)
 {
   const Image
-    **image_1,
-    **image_2;
+    *image_1,
+    *image_2;
 
-  image_1=(const Image **) x;
-  image_2=(const Image **) y;
-  return((int) ((*image_1)->scene-(*image_2)->scene));
+  image_1=(*(const Image * const *) x);
+  image_2=(*(const Image * const *) y);
+  return((int) (image_1->scene-image_2->scene));
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -1793,9 +1793,10 @@ MagickExport Image *XAnimateImages(Display *display,
   XMakeWindow(display,windows->image.id,argv,argc,class_hints,manager_hints,
     &windows->info);
   windows->info.highlight_stipple=XCreateBitmapFromData(display,
-    windows->info.id,(char *) HighlightBitmap,HighlightWidth,HighlightHeight);
+    windows->info.id,(const char *) HighlightBitmap,HighlightWidth,
+    HighlightHeight);
   windows->info.shadow_stipple=XCreateBitmapFromData(display,
-    windows->info.id,(char *) ShadowBitmap,ShadowWidth,ShadowHeight);
+    windows->info.id,(const char *) ShadowBitmap,ShadowWidth,ShadowHeight);
   (void) XSetTransientForHint(display,windows->info.id,windows->image.id);
   if (windows->image.mapped)
     (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
@@ -1826,10 +1827,10 @@ MagickExport Image *XAnimateImages(Display *display,
   XMakeWindow(display,root_window,argv,argc,class_hints,manager_hints,
     &windows->command);
   windows->command.highlight_stipple=XCreateBitmapFromData(display,
-    windows->command.id,(char *) HighlightBitmap,HighlightWidth,
+    windows->command.id,(const char *) HighlightBitmap,HighlightWidth,
     HighlightHeight);
   windows->command.shadow_stipple=XCreateBitmapFromData(display,
-    windows->command.id,(char *) ShadowBitmap,ShadowWidth,ShadowHeight);
+    windows->command.id,(const char *) ShadowBitmap,ShadowWidth,ShadowHeight);
   (void) XSetTransientForHint(display,windows->command.id,windows->image.id);
   if (resource_info->debug != MagickFalse)
     (void) LogMagickEvent(X11Event,GetMagickModule(),
@@ -1856,9 +1857,10 @@ MagickExport Image *XAnimateImages(Display *display,
   XMakeWindow(display,root_window,argv,argc,class_hints,manager_hints,
     &windows->widget);
   windows->widget.highlight_stipple=XCreateBitmapFromData(display,
-    windows->widget.id,(char *) HighlightBitmap,HighlightWidth,HighlightHeight);
+    windows->widget.id,(const char *) HighlightBitmap,HighlightWidth,
+    HighlightHeight);
   windows->widget.shadow_stipple=XCreateBitmapFromData(display,
-    windows->widget.id,(char *) ShadowBitmap,ShadowWidth,ShadowHeight);
+    windows->widget.id,(const char *) ShadowBitmap,ShadowWidth,ShadowHeight);
   (void) XSetTransientForHint(display,windows->widget.id,windows->image.id);
   if (resource_info->debug != MagickFalse)
     (void) LogMagickEvent(X11Event,GetMagickModule(),
@@ -1880,9 +1882,10 @@ MagickExport Image *XAnimateImages(Display *display,
   XMakeWindow(display,root_window,argv,argc,class_hints,manager_hints,
     &windows->popup);
   windows->popup.highlight_stipple=XCreateBitmapFromData(display,
-    windows->popup.id,(char *) HighlightBitmap,HighlightWidth,HighlightHeight);
+    windows->popup.id,(const char *) HighlightBitmap,HighlightWidth,
+    HighlightHeight);
   windows->popup.shadow_stipple=XCreateBitmapFromData(display,
-    windows->popup.id,(char *) ShadowBitmap,ShadowWidth,ShadowHeight);
+    windows->popup.id,(const char *) ShadowBitmap,ShadowWidth,ShadowHeight);
   (void) XSetTransientForHint(display,windows->popup.id,windows->image.id);
   if (resource_info->debug != MagickFalse)
     (void) LogMagickEvent(X11Event,GetMagickModule(),

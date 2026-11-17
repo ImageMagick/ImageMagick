@@ -18,15 +18,13 @@
 #ifndef MAGICKCORE_IMAGE_PRIVATE_H
 #define MAGICKCORE_IMAGE_PRIVATE_H
 
+#include <limits.h>
+#include "MagickCore/pixel-accessor.h"
+#include "MagickCore/quantum-private.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#define MagickMax(x,y)  (((x) > (y)) ? (x) : (y))
-#define MagickMin(x,y)  (((x) < (y)) ? (x) : (y))
-
-#include "MagickCore/pixel-accessor.h"
-#include "MagickCore/quantum-private.h"
 
 #define BackgroundColor  "#ffffff"  /* white */
 #define BackgroundColorRGBA  QuantumRange,QuantumRange,QuantumRange,OpaqueAlpha
@@ -65,6 +63,16 @@ extern "C" {
 #define UndefinedCompressionQuality  0UL
 #define UndefinedTicksPerSecond  100L
 
+#if !defined(MAGICK_INT_MAX)
+#define MAGICK_INT_MAX  (INT_MAX)
+#endif
+#if !defined(MAGICK_INT_MIN)
+#define MAGICK_INT_MIN  (INT_MIN)
+#endif
+#if !defined(IsNaN)
+#define IsNaN(a)  ((a) != (a))
+#endif
+
 static inline int CastDoubleToInt(const double x)
 {
   double
@@ -76,12 +84,12 @@ static inline int CastDoubleToInt(const double x)
       return(0);
     }
   value=(x < 0.0) ? ceil(x) : floor(x);
-  if (value < 0.0)
+  if (value < ((double) MAGICK_INT_MIN))
     {
       errno=ERANGE;
-      return(0);
+      return(MAGICK_INT_MIN);
     }
-  if (value >= ((double) MAGICK_INT_MAX))
+  if (value > ((double) MAGICK_INT_MAX))
     {
       errno=ERANGE;
       return(MAGICK_INT_MAX);
@@ -111,30 +119,6 @@ static inline ptrdiff_t CastDoubleToPtrdiffT(const double x)
       return(MAGICK_PTRDIFF_MAX);
     }
   return((ptrdiff_t) value);
-}
-
-static inline QuantumAny CastDoubleToQuantumAny(const double x)
-{
-  double
-    value;
-
-  if (IsNaN(x) != 0)
-    {
-      errno=ERANGE;
-      return(0);
-    }
-  value=(x < 0.0) ? ceil(x) : floor(x);
-  if (value < 0.0)
-    {
-      errno=ERANGE;
-      return(0);
-    }
-  if (value >= ((double) ((QuantumAny) ~0)))
-    {
-      errno=ERANGE;
-      return((QuantumAny) ~0);
-    }
-  return((QuantumAny) value);
 }
 
 static inline size_t CastDoubleToSizeT(const double x)
@@ -201,7 +185,7 @@ static inline unsigned char CastDoubleToUChar(const double x)
       errno=ERANGE;
       return(0);
     }
-  if (value >= ((double) MAGICK_UCHAR_MAX))
+  if (value > ((double) MAGICK_UCHAR_MAX))
     {
       errno=ERANGE;
       return(MAGICK_UCHAR_MAX);
@@ -225,7 +209,7 @@ static inline unsigned int CastDoubleToUInt(const double x)
       errno=ERANGE;
       return(0);
     }
-  if (value >= ((double) MAGICK_UINT_MAX))
+  if (value > ((double) MAGICK_UINT_MAX))
     {
       errno=ERANGE;
       return(MAGICK_UINT_MAX);
@@ -249,7 +233,7 @@ static inline unsigned short CastDoubleToUShort(const double x)
       errno=ERANGE;
       return(0);
     }
-  if (value >= ((double) MAGICK_USHORT_MAX))
+  if (value > ((double) MAGICK_USHORT_MAX))
     {
       errno=ERANGE;
       return(MAGICK_USHORT_MAX);
@@ -262,23 +246,44 @@ static inline double DegreesToRadians(const double degrees)
   return((double) (MagickPI*degrees/180.0));
 }
 
-static inline size_t GetImageChannels(const Image *image)
+static inline MagickBooleanType IsValidFormatSpecifier(const char *start,
+  const char *end)
 {
-  ssize_t
-    i;
+  char
+    specifier;
 
   size_t
-    channels;
+    length;
 
-  channels=0;
-  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-  {
-    PixelChannel channel = GetPixelChannelChannel(image,i);
-    PixelTrait traits = GetPixelChannelTraits(image,channel);
-    if ((traits & UpdatePixelTrait) != 0)
-      channels++;
-  }
-  return(channels == 0 ? (size_t) 1 : channels);
+  /*
+    Is this a valid format specifier?
+  */
+  if ((start == (const char *) NULL) || (end == (const char *) NULL) ||
+      (end <= start))
+    return(MagickFalse);
+  specifier=end[-1];
+  length=(size_t) (end-start);
+  if ((specifier != 'd') && (specifier != 'x') && (specifier != 'o'))
+    return(MagickFalse);
+  if ((length == 1) && (*start == specifier))
+    return(MagickTrue);
+  if (length >= 2)
+    {
+      size_t
+        i = 0;
+
+      if (*start == '0')
+        {
+          if ((length >= 3) && (start[1] == '0'))
+            return(MagickFalse);
+          i=1;
+        }
+      for ( ; i < (length-1); i++)
+        if (isdigit((int) ((unsigned char) start[i])) == 0)
+          return(MagickFalse);
+      return(MagickTrue);
+    }
+  return(MagickFalse);
 }
 
 static inline double RadiansToDegrees(const double radians)
@@ -288,12 +293,12 @@ static inline double RadiansToDegrees(const double radians)
 
 static inline unsigned char ScaleColor5to8(const unsigned int color)
 {
-  return((unsigned char) (((color) << 3) | ((color) >> 2)));
+  return((unsigned char) ((((color) & 0x1f) << 3) | (((color) & 0x1f) >> 2)));
 }
 
 static inline unsigned char ScaleColor6to8(const unsigned int color)
 {
-  return((unsigned char) (((color) << 2) | ((color) >> 4)));
+  return((unsigned char) ((((color) & 0x3f) << 2) | (((color) & 0x3f) >> 4)));
 }
 
 static inline unsigned int ScaleColor8to5(const unsigned char color)

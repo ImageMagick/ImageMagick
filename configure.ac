@@ -984,7 +984,7 @@ AC_HEADER_ASSERT
 AC_HEADER_DIRENT
 
 # Check additional headers
-AC_CHECK_HEADERS(arm/limits.h arpa/inet.h complex.h errno.h fcntl.h float.h inttypes.h limits.h linux/unistd.h locale.h machine/param.h mach-o/dyld.h malloc.h netdb.h netinet/in.h OS.h process.h sun_prefetch.h stdarg.h stddef.h stdint.h strings.h sys/ipc.h sys/loadavg.h sys/mman.h sys/resource.h sys/sendfile.h sys/socket.h sys/syslimits.h sys/time.h sys/times.h sys/uio.h unistd.h sys/wait.h utime.h wchar.h xlocale.h)
+AC_CHECK_HEADERS(arm/limits.h arpa/inet.h complex.h errno.h fcntl.h float.h inttypes.h limits.h linux/unistd.h locale.h machine/param.h mach-o/dyld.h malloc.h netdb.h netinet/in.h OS.h process.h sun_prefetch.h stdarg.h stdatomic.h stddef.h stdint.h strings.h sys/ipc.h sys/loadavg.h sys/mman.h sys/resource.h sys/sendfile.h sys/socket.h sys/syslimits.h sys/time.h sys/times.h sys/uio.h unistd.h sys/wait.h utime.h wchar.h xlocale.h)
 
 ########
 #
@@ -2896,13 +2896,59 @@ if test "$with_uhdr" != 'yes'; then
 fi
 
 have_uhdr='no'
+have_uhdr_shared='no'
+have_uhdr_static='no'
 UHDR_CFLAGS=""
 UHDR_LIBS=""
 UHDR_PKG=""
 if test "$with_uhdr" != 'no'; then
     AC_MSG_RESULT([-------------------------------------------------------------])
-    PKG_CHECK_MODULES([UHDR],[libuhdr >= 1.3.0],[have_uhdr=yes],[have_uhdr=no])
+    PKG_CHECK_MODULES([UHDR_SHARED],[libuhdr >= 1.4.0],
+      [have_uhdr_shared=yes],[have_uhdr_shared=no])
+    PKG_CHECK_MODULES_STATIC([UHDR_STATIC],[libuhdr >= 1.4.0],
+      [have_uhdr_static=yes],[have_uhdr_static=no])
     AC_MSG_RESULT([])
+fi
+
+if test "$have_uhdr_shared" = 'yes' || test "$have_uhdr_static" = 'yes'; then
+  AC_MSG_CHECKING([whether libuhdr links from C])
+  uhdr_links_from_c='no'
+  saved_CPPFLAGS="$CPPFLAGS"
+  saved_LIBS="$LIBS"
+  for uhdr_link_mode in shared static; do
+    if test "$uhdr_link_mode" = 'shared'; then
+      if test "$have_uhdr_shared" != 'yes'; then
+        continue
+      fi
+      candidate_cflags="$UHDR_SHARED_CFLAGS"
+      candidate_libs="$UHDR_SHARED_LIBS"
+    else
+      if test "$have_uhdr_static" != 'yes'; then
+        continue
+      fi
+      candidate_cflags="$UHDR_STATIC_CFLAGS"
+      candidate_libs="$UHDR_STATIC_LIBS"
+    fi
+    CPPFLAGS="$candidate_cflags $saved_CPPFLAGS"
+    for cxx_runtime in '' '-lstdc++' '-lc++' '-lc++ -lc++abi'; do
+      LIBS="$candidate_libs $cxx_runtime $MATH_LIBS $saved_LIBS"
+      AC_LINK_IFELSE(
+        [AC_LANG_PROGRAM([[#include <ultrahdr_api.h>]],
+          [[uhdr_codec_private_t *decoder=uhdr_create_decoder();
+            uhdr_codec_private_t *encoder=uhdr_create_encoder();
+            (void) uhdr_encode(encoder);
+            uhdr_release_encoder(encoder);
+            uhdr_release_decoder(decoder);]])],
+        [UHDR_CFLAGS="$candidate_cflags"
+         UHDR_LIBS="$candidate_libs $cxx_runtime"
+         uhdr_links_from_c='yes'
+         have_uhdr='yes'
+         break 2],[])
+    done
+  done
+  CPPFLAGS="$saved_CPPFLAGS"
+  LIBS="$saved_LIBS"
+  AC_MSG_RESULT([$uhdr_links_from_c])
 fi
 
 if test "$have_uhdr" = 'yes'; then
@@ -3097,7 +3143,7 @@ dnl ===========================================================================
 
 # Check for functions
 #
-AC_CHECK_FUNCS([acosh _aligned_malloc aligned_malloc asinh atanh atoll atexit cabs carg cimag creal clock clock_getres clock_gettime ctime_r directio erf _exit execvp fchmod floor fork ftime ftruncate getc_unlocked getcwd getentropy getexecname getdtablesize getloadavg getpagesize getpid getpwnam_r getrlimit getrusage gettimeofday gmtime_r isnan j0 j1 lltostr localtime_r lstat memmove memset mkdir mkstemp mmap munmap nanosleep newlocale _NSGetExecutablePath pclose _pclose poll popen _popen posix_fadvise posix_fallocate posix_madvise posix_memalign posix_spawnp pow pread putenv pwrite qsort_r raise rand_r readlink realpath select seekdir sendfile setlocale socket sqrt setvbuf stat strcasestr strchr strrchr strcspn strdup strpbrk strspn strstr strtod strtod_l strtol strtoul symlink sysconf sigemptyset sigaction spawnvp strerror strlcat strlcpy strcasecmp strncasecmp system telldir tempnam times ulltostr uselocale usleep utime utimensat vfprintf vfprintf_l vsprintf vsnprintf vsnprintf_l waitpid _wfopen _wstat])
+AC_CHECK_FUNCS([acosh _aligned_malloc aligned_malloc asinh atanh atoll atexit cabs carg cimag creal clock clock_getres clock_gettime ctime_r directio erf _exit execvp fchmod floor fork ftime ftruncate getc_unlocked getcwd getentropy getexecname getdtablesize getloadavg getpagesize getpid getpwnam_r getrlimit getrusage gettimeofday gmtime_r isnan j0 j1 link lltostr localtime_r lstat memmove memset mkdir mkstemp mmap munmap nanosleep newlocale _NSGetExecutablePath pclose _pclose poll popen _popen posix_fadvise posix_fallocate posix_madvise posix_memalign posix_spawnp pow pread putenv pwrite qsort_r raise rand_r readlink realpath select seekdir sendfile setlocale socket sqrt setvbuf stat strcasestr strchr strrchr strcspn strdup strpbrk strspn strstr strtod strtod_l strtol strtoul symlink sysconf sigemptyset sigaction spawnvp strerror strlcat strlcpy strcasecmp strncasecmp system telldir tempnam times ulltostr uselocale usleep utime utimensat vfprintf vfprintf_l vsprintf vsnprintf vsnprintf_l waitpid _wfopen _wstat])
 
 # Substitute compiler name to build/link PerlMagick
 #
@@ -3301,6 +3347,8 @@ BPGEncodeDelegateDefault='bpgenc'
 BlenderDecodeDelegateDefault='blender'
 BrowseDelegateDefault='xdg-open'
 ClipboardDelegateDefault='xclip'
+C2PADecodeDelegateDefault='c2patool'
+C2PAEncodeDelegateDefault='c2patool'
 DNGDecodeDelegateDefault='darktable-cli'
 DOCDecodeDelegateDefault='libreoffice'
 GVCDecodeDelegateDefault='dot'
@@ -3350,6 +3398,8 @@ AC_PATH_PROG([BPGEncodeDelegate],["$BPGEncodeDelegateDefault"],["$BPGEncodeDeleg
 AC_PATH_PROG([BlenderDecodeDelegate],["$BlenderDecodeDelegateDefault"],["$BlenderDecodeDelegateDefault"])
 AC_PATH_PROGS([BrowseDelegate],["$BrowseDelegateDefault" brave-browser microsoft-edge google-chrome firefox konqueror lynx],["$BrowseDelegateDefault"])
 AC_PATH_PROGS([ClipboardDelegate],["$ClipboardDelegateDefault"],["$ClipboardDelegateDefault"])
+AC_PATH_PROG([C2PADecodeDelegate],["$C2PADecodeDelegateDefault"],["$C2PADecodeDelegateDefault"])
+AC_PATH_PROG([C2PAEncodeDelegate],["$C2PAEncodeDelegateDefault"],["$C2PAEncodeDelegateDefault"])
 AC_PATH_PROG([DNGDecodeDelegate],["$DNGDecodeDelegateDefault"],["$DNGDecodeDelegateDefault"])
 AC_PATH_PROG([DOCDecodeDelegate],["$DOCDecodeDelegateDefault"],["$DOCDecodeDelegateDefault"])
 AC_PATH_PROG([DVIDecodeDelegate],["$DVIDecodeDelegateDefault"],["$DVIDecodeDelegateDefault"])
@@ -3401,6 +3451,7 @@ DisplayDelegate="${BIN_DIR}/${DisplayDelegateDefault}"
 MogrifyDelegate="${BIN_DIR}/${MogrifyDelegateDefault}"
 
 # Set delegate booleans
+have_c2pa='no'; if test "$C2PADecodeDelegate" != "$C2PADecodeDelegateDefault" ; then have_c2pa='yes'; fi
 have_gs='no'         ; if test "$PSDelegate" != "$PSDelegateDefault"; then have_gs='yes'; fi
 have_hp2xx='no'      ; if test "$HPGLDecodeDelegate" !=  "$HPGLDecodeDelegateDefault" ; then have_hp2xx='yes'; fi
 have_ilbmtoppm='no'  ; if test "$ILBMDecodeDelegate" != "$ILBMDecodeDelegateDefault" ; then have_ilbmtoppm='yes'; fi
@@ -3667,6 +3718,8 @@ if test "$with_frozenpaths" != 'yes'; then
   BrowseDelegate="$BrowseDelegateDefault"
   ClipboardDelegate="$ClipboardDelegateDefault"
   ConvertDelegate="$ConvertDelegateDefault"
+  C2PADecodeDelegate="$C2PADecodeDelegateDefault"
+  C2PAEncodeDelegate="$C2PAEncodeDelegateDefault"
   DisplayDelegate="$DisplayDelegateDefault"
   DNGDecodeDelegate="$DNGDecodeDelegateDefault"
   DOCDecodeDelegate="$DOCDecodeDelegateDefault"
@@ -3708,6 +3761,8 @@ AC_SUBST([BlenderDecodeDelegate])
 AC_SUBST([BrowseDelegate])
 AC_SUBST([ClipboardDelegate])
 AC_SUBST([ConvertDelegate])
+AC_SUBST([C2PADecodeDelegate])
+AC_SUBST([C2PAEncodeDelegate])
 AC_SUBST([GVCDecodeDelegate])
 AC_SUBST([DVIDecodeDelegate])
 AC_SUBST([EditorDelegate])
@@ -4024,6 +4079,9 @@ if test "$have_bzlib"  = 'yes' ; then
 fi
 if test "$have_cairo"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES cairo"
+fi
+if test "$have_c2pa"   = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES C2PA"
 fi
 if test "$have_dmr"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES dmr"

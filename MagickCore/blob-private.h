@@ -126,6 +126,7 @@ extern MagickExport ssize_t
   WriteBlobMSBLong(Image *,const unsigned int),
   WriteBlobMSBShort(Image *,const unsigned short),
   WriteBlobMSBSignedShort(Image *,const signed short),
+  WriteBlobPadding(Image *,const size_t,const char),
   WriteBlobString(Image *,const char *);
 
 extern MagickExport unsigned int
@@ -147,6 +148,9 @@ extern MagickExport void
   *MapBlob(int,const MapMode,const MagickOffsetType,const size_t),
   MSBOrderLong(unsigned char *,const size_t),
   MSBOrderShort(unsigned char *,const size_t);
+
+extern MagickPrivate void
+  SyncBlobStream(ImageInfo *,Image *,Image *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

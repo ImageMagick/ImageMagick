@@ -2783,19 +2783,24 @@ static Image *ReadOnePNGImage(MngReadInfo *mng_info,
                       if (png_get_valid(ping, ping_info, PNG_INFO_bKGD))
                         background.index=ping_background->index;
 
-                      background.red=(png_uint_16)
-                        mng_info->global_plte[background.index].red;
+                      if (background.index >= mng_info->global_plte_length)
+                        png_error(ping,"bKGD index exceeds global PLTE");
+                      else
+                        {
+                          background.red=(png_uint_16)
+                            mng_info->global_plte[background.index].red;
 
-                      background.green=(png_uint_16)
-                        mng_info->global_plte[background.index].green;
+                          background.green=(png_uint_16)
+                            mng_info->global_plte[background.index].green;
 
-                      background.blue=(png_uint_16)
-                        mng_info->global_plte[background.index].blue;
+                          background.blue=(png_uint_16)
+                            mng_info->global_plte[background.index].blue;
 
-                      background.gray=(png_uint_16)
-                        mng_info->global_plte[background.index].green;
+                          background.gray=(png_uint_16)
+                            mng_info->global_plte[background.index].green;
 
-                      png_set_bKGD(ping,ping_info,&background);
+                          png_set_bKGD(ping,ping_info,&background);
+                       }
                     }
 #endif
                 }
@@ -4084,11 +4089,15 @@ DestroyJNG(unsigned char *chunk,Image **color_image,
   }
   if (color_image && *color_image)
   {
+    if (*(*color_image)->filename != '\0')
+      (void) RelinquishUniqueFileResource((*color_image)->filename);
     DestroyImageList(*color_image);
     *color_image = (Image *)NULL;
   }
   if (alpha_image && *alpha_image)
   {
+    if (*(*alpha_image)->filename != '\0')
+      (void) RelinquishUniqueFileResource((*alpha_image)->filename);
     DestroyImageList(*alpha_image);
     *alpha_image = (Image *)NULL;
   }
@@ -6440,8 +6449,14 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
                    magnified_width += mng_info->magn_mr;
 
                 if (image->columns > 2)
-                   magnified_width += (size_t)
-                      ((image->columns-2)*(mng_info->magn_mx));
+                  {
+                    size_t extra_width;
+                    if (HeapOverflowSanityCheckGetSize(image->columns-2,mng_info->magn_mx,&extra_width) != MagickFalse)
+                      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+                    if (((size_t) MAGICK_SSIZE_MAX-magnified_width) < extra_width)
+                      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+                    magnified_width+=extra_width;
+                  }
               }
 
             else
@@ -6455,8 +6470,14 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
                    magnified_width += mng_info->magn_mr-1;
 
                 if (image->columns > 3)
-                   magnified_width += (size_t)
-                      ((image->columns-3)*(mng_info->magn_mx-1));
+                  {
+                    size_t extra_width;
+                    if (HeapOverflowSanityCheckGetSize(image->columns-3,mng_info->magn_mx-1,&extra_width) != MagickFalse)
+                      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+                    if (((size_t) MAGICK_SSIZE_MAX-magnified_width) < extra_width)
+                      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+                    magnified_width+=extra_width;
+                  }
               }
 
             if (mng_info->magn_methy == 1)
@@ -6467,8 +6488,14 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
                    magnified_height += mng_info->magn_mb;
 
                 if (image->rows > 2)
-                   magnified_height += (size_t)
-                      ((image->rows-2)*(mng_info->magn_my));
+                  {
+                    size_t extra_height;
+                    if (HeapOverflowSanityCheckGetSize(image->rows-2,mng_info->magn_my,&extra_height) != MagickFalse)
+                      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+                    if (((size_t) MAGICK_SSIZE_MAX-magnified_height) < extra_height)
+                      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+                    magnified_height+=extra_height;
+                  }
               }
 
             else
@@ -6482,8 +6509,14 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
                    magnified_height += mng_info->magn_mb-1;
 
                 if (image->rows > 3)
-                   magnified_height += (size_t)
-                      ((image->rows-3)*(mng_info->magn_my-1));
+                  {
+                    size_t extra_height;
+                    if (HeapOverflowSanityCheckGetSize(image->rows-3,mng_info->magn_my-1,&extra_height) != MagickFalse)
+                      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+                    if (((size_t) MAGICK_SSIZE_MAX-magnified_height) < extra_height)
+                      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+                    magnified_height+=extra_height;
+                  }
               }
 
             if (magnified_height > image->rows ||
@@ -7812,6 +7845,26 @@ static inline MagickBooleanType IsColorEqual(const Image *image,
   return(MagickFalse);
 }
 
+#define PNGPaletteHashSize  1024
+
+static inline size_t PNGPaletteHash(const Quantum red,const Quantum green,
+  const Quantum blue,const Quantum alpha)
+{
+  size_t
+    hash;
+
+  /*
+    Colors that compare equal share a hash (barring HDRI values within
+    MagickEpsilon of a rounding edge), so a probe that stops at the first
+    empty slot finds them.
+  */
+  hash=(size_t) ScaleQuantumToChar(red);
+  hash=31*hash+(size_t) ScaleQuantumToChar(green);
+  hash=31*hash+(size_t) ScaleQuantumToChar(blue);
+  hash=31*hash+(size_t) ScaleQuantumToChar(alpha);
+  return(hash & (PNGPaletteHashSize-1));
+}
+
 #if defined(PNG_tIME_SUPPORTED)
 static void write_tIME_chunk(Image *image,png_struct *ping,png_info *info,
   const char *timestamp,ExceptionInfo *exception)
@@ -8535,6 +8588,14 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
    Quantum
      *q;
 
+   size_t
+     h;
+
+   unsigned short
+     opaque_hash[PNGPaletteHashSize],
+     semitransparent_hash[PNGPaletteHashSize],
+     transparent_hash[PNGPaletteHashSize];
+
    if (logging != MagickFalse)
      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
          "    Enter BUILD_PALETTE:");
@@ -8599,6 +8660,9 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
      number_opaque = 0;
      number_semitransparent = 0;
      number_transparent = 0;
+     (void) memset(opaque_hash,0,sizeof(opaque_hash));
+     (void) memset(semitransparent_hash,0,sizeof(semitransparent_hash));
+     (void) memset(transparent_hash,0,sizeof(transparent_hash));
 
      for (y=0; y < (ssize_t) image->rows; y++)
      {
@@ -8615,24 +8679,27 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
              {
                if (number_opaque < 259)
                  {
+                   h=PNGPaletteHash(GetPixelRed(image,r),GetPixelGreen(image,r),
+                     GetPixelBlue(image,r),(Quantum) 0);
                    if (number_opaque == 0)
                      {
                        GetPixelInfoPixel(image,r,opaque);
                        opaque[0].alpha=OpaqueAlpha;
                        number_opaque=1;
+                       opaque_hash[h]=1;
                      }
 
-                   for (i=0; i< (ssize_t) number_opaque; i++)
-                     {
-                       if (IsColorEqual(image,r,opaque+i))
-                         break;
-                     }
+                   while ((opaque_hash[h] != 0) &&
+                          (IsColorEqual(image,r,opaque+opaque_hash[h]-1) ==
+                           MagickFalse))
+                     h=(h+1) & (PNGPaletteHashSize-1);
 
-                   if (i ==  (ssize_t) number_opaque && number_opaque < 259)
+                   if (opaque_hash[h] == 0)
                      {
-                       number_opaque++;
+                       i=(ssize_t) number_opaque++;
                        GetPixelInfoPixel(image,r,opaque+i);
                        opaque[i].alpha=OpaqueAlpha;
+                       opaque_hash[h]=(unsigned short) number_opaque;
                      }
                  }
              }
@@ -8640,6 +8707,8 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
              {
                if (number_transparent < 259)
                  {
+                   h=PNGPaletteHash(GetPixelRed(image,r),GetPixelGreen(image,r),
+                     GetPixelBlue(image,r),(Quantum) 0);
                    if (number_transparent == 0)
                      {
                        GetPixelInfoPixel(image,r,transparent);
@@ -8652,19 +8721,19 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
                        ping_trans_color.gray=(unsigned short)
                          GetPixelGray(image,r);
                        number_transparent = 1;
+                       transparent_hash[h]=1;
                      }
 
-                   for (i=0; i< (ssize_t) number_transparent; i++)
-                     {
-                       if (IsColorEqual(image,r,transparent+i))
-                         break;
-                     }
+                   while ((transparent_hash[h] != 0) &&
+                          (IsColorEqual(image,r,transparent+
+                           transparent_hash[h]-1) == MagickFalse))
+                     h=(h+1) & (PNGPaletteHashSize-1);
 
-                   if (i ==  (ssize_t) number_transparent &&
-                       number_transparent < 259)
+                   if (transparent_hash[h] == 0)
                      {
-                       number_transparent++;
+                       i=(ssize_t) number_transparent++;
                        GetPixelInfoPixel(image,r,transparent+i);
+                       transparent_hash[h]=(unsigned short) number_transparent;
                      }
                  }
              }
@@ -8672,25 +8741,31 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
              {
                if (number_semitransparent < 259)
                  {
+                   h=PNGPaletteHash(GetPixelRed(image,r),GetPixelGreen(image,r),
+                     GetPixelBlue(image,r),GetPixelAlpha(image,r));
                    if (number_semitransparent == 0)
                      {
                        GetPixelInfoPixel(image,r,semitransparent);
                        number_semitransparent = 1;
+                       semitransparent_hash[h]=1;
                      }
 
-                   for (i=0; i< (ssize_t) number_semitransparent; i++)
+                   while (semitransparent_hash[h] != 0)
                      {
+                       i=(ssize_t) semitransparent_hash[h]-1;
                        if (IsColorEqual(image,r,semitransparent+i)
                            && (double) GetPixelAlpha(image,r) ==
                            semitransparent[i].alpha)
                          break;
+                       h=(h+1) & (PNGPaletteHashSize-1);
                      }
 
-                   if (i ==  (ssize_t) number_semitransparent &&
-                       number_semitransparent < 259)
+                   if (semitransparent_hash[h] == 0)
                      {
-                       number_semitransparent++;
+                       i=(ssize_t) number_semitransparent++;
                        GetPixelInfoPixel(image,r,semitransparent+i);
+                       semitransparent_hash[h]=(unsigned short)
+                         number_semitransparent;
                      }
                  }
              }
@@ -8703,9 +8778,6 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
      if (mng_info->write_png8 == MagickFalse &&
          mng_info->exclude_bKGD == MagickFalse)
        {
-         /* Add the background color to the palette, if it
-          * isn't already there.
-          */
           if (logging != MagickFalse)
             {
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -8714,32 +8786,6 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
                   (int) image->background_color.green,
                   (int) image->background_color.blue);
             }
-          if (number_opaque < 259)
-            {
-              for (i=0; i<number_opaque; i++)
-              {
-                 if (opaque[i].red == image->background_color.red &&
-                     opaque[i].green == image->background_color.green &&
-                     opaque[i].blue == image->background_color.blue)
-                   break;
-              }
-              if ((i == number_opaque) && (image_colors < 256))
-                {
-                  ping_background.index=(png_byte) i;
-                  if (image->storage_class == PseudoClass)
-                    image->colormap[image->colors++]=image->background_color;
-                  opaque[i]=image->background_color;
-                  number_opaque++;
-                  if (logging != MagickFalse)
-                    {
-                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "      background_color index is %d",(int) i);
-                    }
-                }
-            }
-          else if (logging != MagickFalse)
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "      No room in the colormap to add background color");
        }
 
      image_colors=number_opaque+number_transparent+number_semitransparent;
@@ -8820,8 +8866,14 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
 
      if (image_colors < 257)
        {
+         MagickBooleanType
+           ignore_alpha;
+
          PixelInfo
            colormap[260];
+
+         unsigned short
+           colormap_hash[PNGPaletteHashSize];
 
          /*
           * Initialize image colormap.
@@ -8911,6 +8963,21 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
 
             /* Sync the pixel indices with the new colormap */
 
+            ignore_alpha=(((image->alpha_trait & BlendPixelTrait) == 0) &&
+              ((image->alpha_trait & UpdatePixelTrait) == 0)) ? MagickTrue :
+              MagickFalse;
+            (void) memset(colormap_hash,0,sizeof(colormap_hash));
+            for (i=0; i< (ssize_t) image_colors; i++)
+            {
+              h=PNGPaletteHash((Quantum) image->colormap[i].red,
+                (Quantum) image->colormap[i].green,
+                (Quantum) image->colormap[i].blue,ignore_alpha != MagickFalse ?
+                (Quantum) 0 : (Quantum) image->colormap[i].alpha);
+              while (colormap_hash[h] != 0)
+                h=(h+1) & (PNGPaletteHashSize-1);
+              colormap_hash[h]=(unsigned short) (i+1);
+            }
+
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
@@ -8920,10 +8987,13 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
 
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                for (i=0; i< (ssize_t) image_colors; i++)
+                h=PNGPaletteHash(GetPixelRed(image,q),GetPixelGreen(image,q),
+                  GetPixelBlue(image,q),ignore_alpha != MagickFalse ?
+                  (Quantum) 0 : GetPixelAlpha(image,q));
+                while (colormap_hash[h] != 0)
                 {
-                  if (((((image->alpha_trait & BlendPixelTrait) == 0) &&
-                       (((image->alpha_trait & UpdatePixelTrait) == 0))) ||
+                  i=(ssize_t) colormap_hash[h]-1;
+                  if ((ignore_alpha != MagickFalse ||
                       image->colormap[i].alpha == (double) GetPixelAlpha(image,q)) &&
                       image->colormap[i].red == (double) GetPixelRed(image,q) &&
                       image->colormap[i].green == (double) GetPixelGreen(image,q) &&
@@ -8932,6 +9002,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
                     SetPixelIndex(image,(Quantum) i,q);
                     break;
                   }
+                  h=(h+1) & (PNGPaletteHashSize-1);
                 }
                 q+=(ptrdiff_t) GetPixelChannels(image);
               }
@@ -9426,14 +9497,24 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
 
 #endif
   if (ping == (png_struct *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    {
+      image_info=DestroyImageInfo(image_info);
+      image=DestroyImage(image);
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",IMimage->filename);
+      return(MagickFalse);
+    }
 
   ping_info=png_create_info_struct(ping);
 
   if (ping_info == (png_info *) NULL)
     {
+      image_info=DestroyImageInfo(image_info);
+      image=DestroyImage(image);
       png_destroy_write_struct(&ping,(png_info **) NULL);
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",IMimage->filename);
+      return(MagickFalse);
     }
 
   png_set_write_fn(ping,image,png_put_data,png_flush_data);
@@ -12323,7 +12404,10 @@ static MagickBooleanType WriteOneJNGImage(MngWriteInfo *mng_info,
 
       jpeg_image=SeparateImage(image,AlphaChannel,exception);
       if (jpeg_image == (Image *) NULL)
-        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+        {
+          jpeg_image_info=DestroyImageInfo(jpeg_image_info);
+          ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+        }
       (void) CopyMagickString(jpeg_image->magick,"JPEG",MagickPathExtent);
       jpeg_image->alpha_trait=UndefinedPixelTrait;
       jpeg_image->quality=jng_alpha_quality;
@@ -12373,12 +12457,15 @@ static MagickBooleanType WriteOneJNGImage(MngWriteInfo *mng_info,
         {
           const char
             *value;
-
           /* Encode alpha as a grayscale PNG blob */
           status=OpenBlob(jpeg_image_info,jpeg_image,WriteBinaryBlobMode,
             exception);
           if (status == MagickFalse)
-            ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+            {
+              jpeg_image=DestroyImage(jpeg_image);
+              jpeg_image_info=DestroyImageInfo(jpeg_image_info);
+              ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+            }
 
           if (logging != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -12414,7 +12501,11 @@ static MagickBooleanType WriteOneJNGImage(MngWriteInfo *mng_info,
           status=OpenBlob(jpeg_image_info,jpeg_image,WriteBinaryBlobMode,
             exception);
           if (status == MagickFalse)
-            ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+            {
+              jpeg_image=DestroyImage(jpeg_image);
+              jpeg_image_info=DestroyImageInfo(jpeg_image_info);
+              ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+            }
 
           (void) CopyMagickString(jpeg_image_info->magick,"JPEG",
             MagickPathExtent);

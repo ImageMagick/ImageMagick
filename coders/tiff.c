@@ -55,6 +55,7 @@
 #include "MagickCore/colorspace.h"
 #include "MagickCore/colorspace-private.h"
 #include "MagickCore/constitute.h"
+#include "MagickCore/constitute-private.h"
 #include "MagickCore/enhance.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
@@ -1138,8 +1139,8 @@ static void TIFFReadPhotoshopLayers(const ImageInfo *image_info,Image *image,
 }
 #endif
 
-static Image *ReadTIFFImage(const ImageInfo *image_info,
-  ExceptionInfo *exception)
+static Image *ReadTIFFImageInternal(const ImageInfo *image_info,
+  MagickBooleanType *is_dng,ExceptionInfo *exception)
 {
 #define ThrowTIFFException(severity,message) \
 { \
@@ -1259,33 +1260,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       return((Image *) NULL);
     }
   if (TIFFGetField(tiff,TIFFTAG_DNGVERSION,&dng_version) == 1)
-    {
-      Image
-        *dng_image = (Image *) NULL;
-
-      /*
-        Redirect to DNG image reader.
-      */
-      ImageInfo *read_info = CloneImageInfo(image_info);
-      (void) CopyMagickString(read_info->magick,"DNG",MagickPathExtent);
-      TIFFClose(tiff);
-      if (*read_info->filename != '\0')
-        dng_image=ReadImage(read_info,exception);
-      else
-        {
-          status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
-          if (status != MagickFalse)
-            {
-              status=ImageToFile(image,read_info->filename,exception);
-              if (status != MagickFalse)
-                dng_image=ReadImage(read_info,exception);
-              (void) RelinquishUniqueFileResource(read_info->filename);
-            }
-        }
-      read_info=DestroyImageInfo(read_info);
-      image=DestroyImageList(image);
-      return(dng_image);
-    }
+    *is_dng=MagickTrue;
   if (image_info->number_scenes != 0)
     {
       /*
@@ -1787,7 +1762,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     image_quantum_type=GrayQuantum;
     if (image->storage_class == PseudoClass)
       image_quantum_type=IndexQuantum;
-    if (image->number_meta_channels != 0)
+    if ((image->number_meta_channels != 0) &&
+        (image->storage_class != PseudoClass))
       {
         image_quantum_type=MultispectralQuantum;
         (void) SetQuantumPad(image,quantum_info,0);
@@ -2292,6 +2268,67 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   if (status == MagickFalse)
     return(DestroyImageList(image));
   return(GetFirstImageInList(image));
+}
+
+static Image *ReadTIFFImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
+{
+  ExceptionInfo
+    *dng_exception;
+
+  Image
+    *dng_image = (Image *) NULL,
+    *image;
+
+  ImageInfo
+    *read_info;
+
+  MagickBooleanType
+    is_dng = MagickFalse,
+    status;
+
+  /*
+    Read the image as TIFF and remember whether it has a DNGVersion tag.
+  */
+  image=ReadTIFFImageInternal(image_info,&is_dng,exception);
+  if ((image == (Image *) NULL) || (is_dng == MagickFalse) ||
+      (image_info->affirm != MagickFalse) ||
+      (GetMagickInfo("DNG",exception) == (const MagickInfo *) NULL))
+    return(image);
+  /*
+    Try the DNG image reader and only use its result when it succeeds.
+  */
+  dng_exception=AcquireExceptionInfo();
+  read_info=CloneImageInfo(image_info);
+  (void) CopyMagickString(read_info->magick,"DNG",MagickPathExtent);
+  if (*read_info->filename != '\0')
+    dng_image=ReadImageWithoutPostProcessing(read_info,dng_exception);
+  else
+    {
+      Image
+        *blob_image;
+
+      blob_image=AcquireImage(image_info,dng_exception);
+      status=OpenBlob(image_info,blob_image,ReadBinaryBlobMode,dng_exception);
+      if (status != MagickFalse)
+        {
+          status=ImageToFile(blob_image,read_info->filename,dng_exception);
+          (void) CloseBlob(blob_image);
+          if (status != MagickFalse)
+            dng_image=ReadImageWithoutPostProcessing(read_info,dng_exception);
+          (void) RelinquishUniqueFileResource(read_info->filename);
+        }
+      blob_image=DestroyImage(blob_image);
+    }
+  read_info=DestroyImageInfo(read_info);
+  if (dng_image != (Image *) NULL)
+    {
+      image=DestroyImageList(image);
+      InheritException(exception,dng_exception);
+      image=dng_image;
+    }
+  dng_exception=DestroyExceptionInfo(dng_exception);
+  return(image);
 }
 #endif
 
@@ -3602,13 +3639,16 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       case FaxCompression:
       case Group4Compression:
       {
-        if (IsImageMonochrome(image) == MagickFalse)
-          {
-            if (IsImageGray(image) == MagickFalse)
-              (void) SetImageType(image,BilevelType,exception);
-            else
-              (void) SetImageDepth(image,1,exception);
-          }
+        if (image->alpha_trait != UndefinedPixelTrait)
+          (void) SetImageType(image,BilevelType,exception);
+        else
+          if (IsImageMonochrome(image) == MagickFalse)
+            {
+              if (IsImageGray(image) == MagickFalse)
+                (void) SetImageType(image,BilevelType,exception);
+              else
+                (void) SetImageDepth(image,1,exception);
+            }
         image->depth=1;
         image->number_meta_channels=0;
         break;
@@ -4160,7 +4200,11 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       }
     if (compress_tag == COMPRESSION_CCITTFAX4)
       (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,(uint32) image->rows);
-    (void) SetQuantumEndian(image,quantum_info,LSBEndian);
+#if defined(WORDS_BIGENDIAN)
+    (void) SetQuantumEndian(image,quantum_info,MSBEndian);
+#else
+     (void) SetQuantumEndian(image,quantum_info,LSBEndian);
+#endif
     pixels=(unsigned char *) GetQuantumPixels(quantum_info);
     tiff_info.scanline=(unsigned char *) GetQuantumPixels(quantum_info);
     switch (photometric)

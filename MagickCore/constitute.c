@@ -605,8 +605,8 @@ static void SyncResolutionFromProperties(Image *image,
     }
 }
 
-MagickExport Image *ReadImage(const ImageInfo *image_info,
-  ExceptionInfo *exception)
+static Image *ReadImageInternal(const ImageInfo *image_info,
+  const MagickBooleanType postprocess,ExceptionInfo *exception)
 {
   char
     filename[MagickPathExtent],
@@ -723,7 +723,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       */
       if (GetMagickDecoderThreadSupport(magick_info) == MagickFalse)
         LockSemaphoreInfo(magick_info->semaphore);
-      status=IsCoderAuthorized(magick_info->magick_module,read_info->magick,
+      status=IsCoderAuthorized(magick_info->magick_module,magick_info->name,
         ReadPolicyRights,exception);
       image=(Image *) NULL;
       if (status != MagickFalse)
@@ -785,7 +785,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       */
       if (GetMagickDecoderThreadSupport(magick_info) == MagickFalse)
         LockSemaphoreInfo(magick_info->semaphore);
-      status=IsCoderAuthorized(magick_info->magick_module,read_info->magick,
+      status=IsCoderAuthorized(magick_info->magick_module,magick_info->name,
         ReadPolicyRights,exception);
       image=(Image *) NULL;
       if (status != MagickFalse)
@@ -805,12 +805,15 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       read_info=DestroyImageInfo(read_info);
       return(image);
     }
-  if (exception->severity >= ErrorException)
-    (void) LogMagickEvent(ExceptionEvent,GetMagickModule(),
-      "Coder (%s) generated an image despite an error (%d), "
-      "notify the developers",image->magick,exception->severity);
   if (IsBlobTemporary(image) != MagickFalse)
     (void) RelinquishUniqueFileResource(read_info->filename);
+  if (exception->severity >= ErrorException)
+    {
+      (void) LogMagickEvent(ExceptionEvent,GetMagickModule(),
+        "Coder (%s) generated an image despite an error (%d), "
+        "notify the developers",image->magick,exception->severity);
+      return(DestroyImageList(image));
+    }
   if (read_info->ping != MagickFalse)
     {
       for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
@@ -822,7 +825,8 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           }
       }
     }
-  if ((IsSceneGeometry(read_info->scenes,MagickFalse) != MagickFalse) &&
+  if ((postprocess != MagickFalse) &&
+      (IsSceneGeometry(read_info->scenes,MagickFalse) != MagickFalse) &&
       (GetImageListLength(image) != 1))
     {
       Image
@@ -860,6 +864,11 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       next->magick_columns=next->columns;
     if (next->magick_rows == 0)
       next->magick_rows=next->rows;
+    if (postprocess == MagickFalse)
+      {
+        image=next;
+        continue;
+      }
     (void) GetImageProperty(next,"exif:*",exception);
     (void) GetImageProperty(next,"icc:*",exception);
     (void) GetImageProperty(next,"iptc:*",exception);
@@ -984,6 +993,47 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   if (GetBlobError(image) != MagickFalse)
     ThrowReaderException(CorruptImageError,"UnableToReadImageData");
   return(GetFirstImageInList(image));
+}
+
+MagickExport Image *ReadImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
+{
+  return(ReadImageInternal(image_info,MagickTrue,exception));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e a d I m a g e W i t h o u t P o s t P r o c e s s i n g               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReadImageWithoutPostProcessing() reads an intermediate image with format
+%  and source-dimension bookkeeping, leaving scene selection and final
+%  post-processing to the enclosing ReadImage() call.  On failure, a NULL
+%  image is returned and exception describes the reason for the failure.
+%
+%  The format of the ReadImageWithoutPostProcessing method is:
+%
+%      Image *ReadImageWithoutPostProcessing(const ImageInfo *image_info,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: Read the image defined by the file or filename members of
+%      this structure.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport Image *ReadImageWithoutPostProcessing(const ImageInfo *image_info,
+  ExceptionInfo *exception)
+{
+  return(ReadImageInternal(image_info,MagickFalse,exception));
 }
 
 /*
@@ -1196,7 +1246,11 @@ MagickExport Image *ReadInlineImage(const ImageInfo *image_info,
     (void *) NULL);
   *read_info->filename='\0';
   if (GetImplicitDataImageType(content,read_info->magick,exception) == MagickFalse)
-    ThrowReaderException(ImageError,"ImageTypeNotSupported");
+    {
+      blob=(unsigned char *) RelinquishMagickMemory(blob);
+      read_info=DestroyImageInfo(read_info);
+      ThrowReaderException(ImageError,"ImageTypeNotSupported");
+    }
   image=BlobToImage(read_info,blob,length,exception);
   blob=(unsigned char *) RelinquishMagickMemory(blob);
   read_info=DestroyImageInfo(read_info);
@@ -1367,7 +1421,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
       */
       if (GetMagickEncoderThreadSupport(magick_info) == MagickFalse)
         LockSemaphoreInfo(magick_info->semaphore);
-      status=IsCoderAuthorized(magick_info->magick_module,write_info->magick,
+      status=IsCoderAuthorized(magick_info->magick_module,magick_info->name,
         WritePolicyRights,exception);
       if (status != MagickFalse)
         status=encoder(write_info,image,exception);
@@ -1439,7 +1493,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
               */
               if (GetMagickEncoderThreadSupport(magick_info) == MagickFalse)
                 LockSemaphoreInfo(magick_info->semaphore);
-              status=IsCoderAuthorized(magick_info->magick_module,write_info->magick,
+              status=IsCoderAuthorized(magick_info->magick_module,magick_info->name,
                 WritePolicyRights,exception);
               if (status != MagickFalse)
                 status=encoder(write_info,image,exception);
@@ -1592,6 +1646,8 @@ MagickExport MagickBooleanType WriteImages(const ImageInfo *image_info,
       progress_monitor=SetImageProgressMonitor(p,(MagickProgressMonitor) NULL,
         p->client_data);
     status&=(MagickStatusType) WriteImage(write_info,p,exception);
+    if (write_info->blob != (void *) NULL)
+      SyncBlobStream(write_info,p,images);
     if (number_images != 1)
       (void) SetImageProgressMonitor(p,progress_monitor,p->client_data);
     if (write_info->adjoin != MagickFalse)

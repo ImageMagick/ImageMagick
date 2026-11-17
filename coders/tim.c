@@ -96,9 +96,6 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       flag;
   } TIMInfo;
 
-  TIMInfo
-    tim_info;
-
   Image
     *image;
 
@@ -109,17 +106,8 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
-  ssize_t
-    x;
-
   Quantum
     *q;
-
-  ssize_t
-    i;
-
-  unsigned char
-    *p;
 
   size_t
     bytes_per_line,
@@ -130,9 +118,15 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   ssize_t
     count,
+    i,
+    x,
     y;
 
+  TIMInfo
+    tim_info;
+
   unsigned char
+    *p,
     *tim_pixels;
 
   unsigned short
@@ -178,7 +172,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       default: bits_per_pixel=4; break;
     }
     image->depth=8;
-    if (has_clut)
+    if (has_clut != 0)
       {
         unsigned char
           *tim_colormap;
@@ -186,9 +180,9 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Read TIM raster colormap.
         */
-        (void)ReadBlobLSBLong(image);
-        (void)ReadBlobLSBShort(image);
-        (void)ReadBlobLSBShort(image);
+        (void) ReadBlobLSBLong(image);
+        (void) ReadBlobLSBShort(image);
+        (void) ReadBlobLSBShort(image);
         width=ReadBlobLSBShort(image);
         height=ReadBlobLSBShort(image);
         image->columns=width;

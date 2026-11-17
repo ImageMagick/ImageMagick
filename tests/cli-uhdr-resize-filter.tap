@@ -1,0 +1,126 @@
+#!/bin/sh
+# Regression tests for Ultra HDR gain-map resize filter replay.
+. ./common.shi
+. ${srcdir}/tests/common.shi
+
+resize_sdr=cli-uhdr-resize-filter-sdr.miff
+resize_hdr=cli-uhdr-resize-filter-hdr.miff
+resize_source=cli-uhdr-resize-filter-source.jpg
+resize_point=cli-uhdr-resize-filter-point.jpg
+resize_lanczos=cli-uhdr-resize-filter-lanczos.jpg
+resize_point_linear=cli-uhdr-resize-filter-point-linear.miff
+resize_lanczos_linear=cli-uhdr-resize-filter-lanczos-linear.miff
+legacy_output=cli-uhdr-resize-filter-legacy.jpg
+modern_output=cli-uhdr-resize-filter-modern.jpg
+legacy_linear=cli-uhdr-resize-filter-legacy-linear.miff
+modern_linear=cli-uhdr-resize-filter-modern-linear.miff
+default_point=cli-uhdr-resize-filter-default-point.jpg
+default_lanczos=cli-uhdr-resize-filter-default-lanczos.jpg
+default_point_linear=cli-uhdr-resize-filter-default-point-linear.miff
+default_lanczos_linear=cli-uhdr-resize-filter-default-lanczos-linear.miff
+
+cleanup()
+{
+  rm -f "$resize_sdr" "$resize_hdr" "$resize_source" "$resize_point" \
+    "$resize_lanczos" "$resize_point_linear" "$resize_lanczos_linear" \
+    "$legacy_output" "$modern_output" "$legacy_linear" "$modern_linear" \
+    "$default_point" "$default_lanczos" "$default_point_linear" \
+    "$default_lanczos_linear"
+}
+
+check_metric()
+{
+  description=$1
+  first=$2
+  second=$3
+  actual=`${MAGICK} compare -metric AE "$first" "$second" null: 2>&1`
+  status=$?
+  metric=`echo "$actual" | awk '{print $1}'`
+  if [ "$status" = "0" ] && [ "X$metric" = "X0" ]; then
+    echo "ok - $description"
+  else
+    echo "not ok - $description"
+    echo "# expected zero absolute error, got '$actual'"
+  fi
+}
+
+cleanup
+if ! ${MAGICK} -list configure 2>/dev/null | awk '
+    $1 == "DELEGATES" {
+      for (i=2; i <= NF; i++)
+        {
+          if ($i == "jpeg")
+            jpeg=1
+          if ($i == "uhdr")
+            uhdr=1
+        }
+    }
+    END { exit(jpeg && uhdr ? 0 : 1) }
+  '; then
+  echo "1..0 # SKIP JPEG or UHDR coder unavailable"
+  exit 0
+fi
+
+echo "1..3"
+if ! ${MAGICK} "${SRCDIR}/rose.pnm" -depth 8 "$resize_sdr" \
+    >/dev/null 2>&1 ||
+   ! ${MAGICK} "${SRCDIR}/rose.pnm" -depth 16 -evaluate multiply 1.4 \
+    "$resize_hdr" >/dev/null 2>&1 ||
+   ! ${MAGICK} "$resize_sdr" "$resize_hdr" \
+    -define uhdr:hdr-color-transfer=linear "UHDR:$resize_source" \
+    >/dev/null 2>&1; then
+  echo "Bail out! unable to create spatial gain-map fixture"
+  cleanup
+  exit 0
+fi
+
+if ${MAGICK} "UHDR:$resize_source" \
+    -filter point -resize 35x23 -filter box -resize 18x12 -filter point \
+    "UHDR:$resize_point" >/dev/null 2>&1 &&
+   ${MAGICK} "UHDR:$resize_source" \
+    -filter point -resize 35x23 -filter box -resize 18x12 -filter lanczos \
+    "UHDR:$resize_lanczos" >/dev/null 2>&1 &&
+   ${MAGICK} -define uhdr:output-color-transfer=linear \
+    "UHDR:$resize_point" "$resize_point_linear" >/dev/null 2>&1 &&
+   ${MAGICK} -define uhdr:output-color-transfer=linear \
+    "UHDR:$resize_lanczos" "$resize_lanczos_linear" >/dev/null 2>&1; then
+  check_metric "historical resize filters are independent of final filter" \
+    "$resize_point_linear" "$resize_lanczos_linear"
+else
+  echo "not ok - historical resize filters are independent of final filter"
+  echo "# unable to create or decode resize outputs"
+fi
+
+if ${MAGICK} "UHDR:$resize_source" -filter point -resize 35x23 \
+    -set hdrgm:Transform 'resize 70x46 35x23' -filter point \
+    "UHDR:$legacy_output" >/dev/null 2>&1 &&
+   ${MAGICK} "UHDR:$resize_source" -filter point -resize 35x23 \
+    -filter point "UHDR:$modern_output" >/dev/null 2>&1 &&
+   ${MAGICK} -define uhdr:output-color-transfer=linear \
+    "UHDR:$legacy_output" "$legacy_linear" >/dev/null 2>&1 &&
+   ${MAGICK} -define uhdr:output-color-transfer=linear \
+    "UHDR:$modern_output" "$modern_linear" >/dev/null 2>&1; then
+  check_metric "legacy four-field resize records remain compatible" \
+    "$legacy_linear" "$modern_linear"
+else
+  echo "not ok - legacy four-field resize records remain compatible"
+  echo "# unable to create or decode legacy outputs"
+fi
+
+if ${MAGICK} "UHDR:$resize_source" -resize 35x23 -filter point \
+    "UHDR:$default_point" >/dev/null 2>&1 &&
+   ${MAGICK} "UHDR:$resize_source" -resize 35x23 -filter lanczos \
+    "UHDR:$default_lanczos" >/dev/null 2>&1 &&
+   ${MAGICK} -define uhdr:output-color-transfer=linear \
+    "UHDR:$default_point" "$default_point_linear" >/dev/null 2>&1 &&
+   ${MAGICK} -define uhdr:output-color-transfer=linear \
+    "UHDR:$default_lanczos" "$default_lanczos_linear" >/dev/null 2>&1; then
+  check_metric "resolved default resize filter is recorded" \
+    "$default_point_linear" "$default_lanczos_linear"
+else
+  echo "not ok - resolved default resize filter is recorded"
+  echo "# unable to create or decode default-filter outputs"
+fi
+
+cleanup
+:

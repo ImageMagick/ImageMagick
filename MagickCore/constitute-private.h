@@ -29,19 +29,39 @@ extern "C" {
 #include "MagickCore/magick-private.h"
 #include "MagickCore/utility.h"
 
-static inline Image *StrictReadImage(const ImageInfo *image_info,
+extern MagickExport Image
+  *ReadImageWithoutPostProcessing(const ImageInfo *,ExceptionInfo *);
+
+static inline MagickBooleanType CheckCoderDepth(ImageInfo *image_info,
+  ExceptionInfo *exception)
+{
+#define MagickMaxCoderDepth  128
+
+  if (image_info->coder_depth++ >= MagickMaxCoderDepth)
+    {
+      errno=EPERM;
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "ImageNestedTooDeeply","`%s'",image_info->filename);
+      return(MagickFalse);
+    }
+  return(MagickTrue);
+}
+
+static inline Image *StrictReadImage(ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   char
     magic[MagickPathExtent];
 
+  if (CheckCoderDepth(image_info,exception) == MagickFalse)
+    return((Image *) NULL);
   (void) GetPathComponent(image_info->filename,MagickPath,magic);
   if (*magic != '\0')
     {
       const MagickInfo *magick_info = GetMagickInfo(magic,exception);
       if ((magick_info != (const MagickInfo *) NULL) &&
           (GetMagickExplicitAllowed(magick_info) != MagickFalse))
-        return(ReadImage(image_info,exception));
+          return(ReadImage(image_info,exception));
       else
         {
           (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
@@ -56,6 +76,14 @@ static inline Image *StrictReadImage(const ImageInfo *image_info,
       return((Image *) NULL);
     }
   return(ReadImage(image_info,exception));
+}
+
+static inline Image *StrictReadInlineImage(ImageInfo *image_info,
+  const char *content,ExceptionInfo *exception)
+{
+  if (CheckCoderDepth(image_info,exception) == MagickFalse)
+    return((Image *) NULL);
+  return(ReadInlineImage(image_info,content,exception));
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)

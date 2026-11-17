@@ -157,6 +157,7 @@ ModuleExport size_t RegisterCLIPImage(void)
   entry=AcquireMagickInfo("CLIP","CLIP","Image Clip Mask");
   entry->decoder=(DecodeImageHandler *) ReadCLIPImage;
   entry->encoder=(EncodeImageHandler *) WriteCLIPImage;
+  entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

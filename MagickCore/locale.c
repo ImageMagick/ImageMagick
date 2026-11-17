@@ -1184,7 +1184,7 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *cache,const char *xml,
   LocaleInfo
     *locale_info;
 
-  MagickStatusType
+  MagickBooleanType
     status;
 
   char
@@ -1213,34 +1213,29 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *cache,const char *xml,
     /*
       Interpret XML.
     */
+    if (SkipXMLComment(&q) == MagickFalse)
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          ConfigureError,"UnterminatedComment","`%s'",filename);
+        status=MagickFalse;
+        break;
+      }
     (void) GetNextToken(q,&q,extent,token);
     if (*token == '\0')
       break;
     (void) CopyMagickString(keyword,token,MagickLocaleExtent);
     if (LocaleNCompare(keyword,"<!DOCTYPE",9) == 0)
       {
-        /*
-          Doctype element.
-        */
-        while ((LocaleNCompare(q,"]>",2) != 0) && (*q != '\0'))
-        {
-          (void) GetNextToken(q,&q,extent,token);
-          while (isspace((int) ((unsigned char) *q)) != 0)
-            q++;
-        }
-        continue;
-      }
-    if (LocaleNCompare(keyword,"<!--",4) == 0)
-      {
-        /*
-          Comment element.
-        */
-        while ((LocaleNCompare(q,"->",2) != 0) && (*q != '\0'))
-        {
-          (void) GetNextToken(q,&q,extent,token);
-          while (isspace((int) ((unsigned char) *q)) != 0)
-            q++;
-        }
+        if (SkipXMLDocType(&q) == MagickFalse)
+          {
+            /*
+              Detect unterminated DOCTYPE.
+            */
+            (void) ThrowMagickException(exception,GetMagickModule(),
+              ConfigureError,"UnterminatedDOCTYPE","`%s'",filename);
+            status=MagickFalse;
+            break;
+          }
         continue;
       }
     if (LocaleCompare(keyword,"<include") == 0)
@@ -1263,7 +1258,7 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *cache,const char *xml,
             }
           if (LocaleCompare(keyword,"file") == 0)
             {
-              if (depth > MagickMaxRecursionDepth)
+              if (depth >= MagickMaxRecursionDepth)
                 (void) ThrowMagickException(exception,GetMagickModule(),
                   ConfigureError,"IncludeElementNestedTooDeeply","`%s'",token);
               else
@@ -1284,13 +1279,17 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *cache,const char *xml,
                   file_xml=FileToXML(path,~0UL);
                   if (file_xml != (char *) NULL)
                     {
-                      status&=(MagickStatusType) LoadLocaleCache(cache,file_xml,
-                        path,locale,depth+1,exception);
+                      if (LoadLocaleCache(cache,file_xml,path,locale,depth+1,exception) == MagickFalse)
+                        status=MagickFalse;
                       file_xml=DestroyString(file_xml);
+                      if (status == MagickFalse)
+                        break;
                     }
                 }
             }
         }
+        if (status == MagickFalse)
+          break;
         continue;
       }
     if (LocaleCompare(keyword,"<locale") == 0)
@@ -1392,7 +1391,7 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *cache,const char *xml,
   }
   token=(char *) RelinquishMagickMemory(token);
   (void) SetFatalErrorHandler(fatal_handler);
-  return(status != 0 ? MagickTrue : MagickFalse);
+  return(status);
 }
 
 /*

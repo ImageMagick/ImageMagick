@@ -463,13 +463,6 @@ static void *DestroyTemporaryResources(void *temporary_resource)
 
 MagickExport int AcquireUniqueFileResource(char *path)
 {
-#if !defined(O_NOFOLLOW)
-#define O_NOFOLLOW 0
-#endif
-#if !defined(TMP_MAX)
-# define TMP_MAX  238328
-#endif
-
   int
     c,
     file;
@@ -549,7 +542,7 @@ MagickExport int AcquireUniqueFileResource(char *path)
       *p++=portable_filename[c];
     }
     key=DestroyStringInfo(key);
-    file=open_utf8(path,O_RDWR | O_CREAT | O_EXCL | O_BINARY | O_NOFOLLOW,
+    file=open_utf8(path,O_RDWR | O_CLOEXEC | O_CREAT | O_EXCL | O_BINARY | O_NOFOLLOW,
       S_MODE);
     if ((file >= 0) || (errno != EEXIST))
       break;

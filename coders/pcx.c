@@ -341,6 +341,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     image->columns=(size_t) (pcx_info.right-pcx_info.left)+1UL;
     image->rows=(size_t) (pcx_info.bottom-pcx_info.top)+1UL;
+    image->page.x=(ssize_t) pcx_info.left;
+    image->page.y=(ssize_t) pcx_info.top;
     image->depth=pcx_info.bits_per_pixel;
     image->units=PixelsPerInchResolution;
     image->resolution.x=(double) pcx_info.horizontal_resolution;
@@ -827,8 +829,10 @@ static MagickBooleanType PCXWritePixels(PCXInfo *pcx_info,
   {
     if (pcx_info->encoding == 0)
       {
-        for (x=0; x < (ssize_t) pcx_info->bytes_per_line; x++)
-          (void) WriteBlobByte(image,(unsigned char) (*q++));
+        if (WriteBlob(image,(size_t) pcx_info->bytes_per_line,q) !=
+            (ssize_t) pcx_info->bytes_per_line)
+          return(MagickFalse);
+        q+=pcx_info->bytes_per_line;
       }
     else
       {
@@ -845,18 +849,22 @@ static MagickBooleanType PCXWritePixels(PCXInfo *pcx_info,
           if ((count > 1) || ((previous & 0xc0) == 0xc0))
             {
               count|=0xc0;
-              (void) WriteBlobByte(image,(unsigned char) count);
+              if (WriteBlobByte(image,(unsigned char) count) != 1)
+                return(MagickFalse);
             }
-          (void) WriteBlobByte(image,previous);
+          if (WriteBlobByte(image,previous) != 1)
+            return(MagickFalse);
           previous=packet;
           count=1;
         }
         if ((count > 1) || ((previous & 0xc0) == 0xc0))
           {
             count|=0xc0;
-            (void) WriteBlobByte(image,(unsigned char) count);
+            if (WriteBlobByte(image,(unsigned char) count) != 1)
+              return(MagickFalse);
           }
-        (void) WriteBlobByte(image,previous);
+        if (WriteBlobByte(image,previous) != 1)
+          return(MagickFalse);
       }
   }
   return (MagickTrue);
@@ -947,9 +955,17 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
     else if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
         (void) TransformImageColorspace(image,sRGBColorspace,exception);
     pcx_info.left=0;
+    if ((image->page.x > 0) && (image->page.x <= MAGICK_USHORT_MAX) &&
+        (image->columns <= (size_t) MAGICK_USHORT_MAX+1UL-
+          (size_t) image->page.x))
+      pcx_info.left=(unsigned short) image->page.x;
     pcx_info.top=0;
-    pcx_info.right=(unsigned short) (image->columns-1);
-    pcx_info.bottom=(unsigned short) (image->rows-1);
+    if ((image->page.y > 0) && (image->page.y <= MAGICK_USHORT_MAX) &&
+        (image->rows <= (size_t) MAGICK_USHORT_MAX+1UL-
+          (size_t) image->page.y))
+      pcx_info.top=(unsigned short) image->page.y;
+    pcx_info.right=(unsigned short) (pcx_info.left+image->columns-1);
+    pcx_info.bottom=(unsigned short) (pcx_info.top+image->rows-1);
     switch (image->units)
     {
       case UndefinedResolution:
@@ -1027,8 +1043,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
     (void) WriteBlobByte(image,pcx_info.planes);
     (void) WriteBlobLSBShort(image,pcx_info.bytes_per_line);
     (void) WriteBlobLSBShort(image,pcx_info.palette_info);
-    for (i=0; i < 58; i++)
-      (void) WriteBlobByte(image,'\0');
+    (void) WriteBlobPadding(image,58,'\0');
     length=(size_t) pcx_info.bytes_per_line;
     pixel_info=AcquireVirtualMemory(length,pcx_info.planes*sizeof(*pixels));
     if (pixel_info == (MemoryInfo *) NULL)
@@ -1095,7 +1110,10 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
             }
           }
           if (PCXWritePixels(&pcx_info,pixels,image) == MagickFalse)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
           if (image->previous == (Image *) NULL)
             {
               status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -1120,7 +1138,10 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
               p+=(ptrdiff_t) GetPixelChannels(image);
             }
             if (PCXWritePixels(&pcx_info,pixels,image) == MagickFalse)
-              break;
+              {
+                status=MagickFalse;
+                break;
+              }
             if (image->previous == (Image *) NULL)
               {
                 status=SetImageProgress(image,SaveImageTag,(MagickOffsetType)
@@ -1167,7 +1188,10 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
                   *q++=bit << (8-byte);
               }
               if (PCXWritePixels(&pcx_info,pixels,image) == MagickFalse)
-                break;
+                {
+                  status=MagickFalse;
+                  break;
+                }
               if (image->previous == (Image *) NULL)
                 {
                   status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -1211,7 +1235,10 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
               if (bit != 0)
                 *q++=byte << (8-bit);
               if (PCXWritePixels(&pcx_info,pixels,image) == MagickFalse)
-                break;
+                {
+                  status=MagickFalse;
+                  break;
+                }
               if (image->previous == (Image *) NULL)
                 {
                   status=SetImageProgress(image,SaveImageTag,(MagickOffsetType)
@@ -1227,6 +1254,8 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
     pixel_info=RelinquishVirtualMemory(pixel_info);
     pcx_colormap=(unsigned char *) RelinquishMagickMemory(pcx_colormap);
     if (page_table == (MagickOffsetType *) NULL)
+      break;
+    if (status == MagickFalse)
       break;
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
