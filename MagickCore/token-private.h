@@ -40,7 +40,7 @@ typedef struct
     utf_value;
 } UTFInfo;
 
-static UTFInfo
+static const UTFInfo
   utf_info[MaxMultibyteCodes] =
   {
     { 0x80, 0x00, 0x000007f, 0x0000000 },  /* 1 byte sequence */
@@ -67,6 +67,8 @@ static inline unsigned char *ConvertLatin1ToUTF8(
     *magick_restrict q,
     *utf8;
 
+  if (content == (const unsigned char *) NULL)
+    return((unsigned char *) NULL);
   length=0;
   for (p=content; *p != '\0'; p++)
     length+=(*p & 0x80) != 0 ? 2 : 1;
@@ -126,9 +128,11 @@ static inline unsigned char *ConvertMacRomanToUTF8(
     *magick_restrict q,
     *utf8;
 
+  if (content == (const unsigned char *) NULL)
+    return((unsigned char *) NULL);
   length=0;
   for (p=content; *p != '\0'; p++)
-    length+=(*p & 0x80) != 0 ? 4 : 1;
+    length+=(*p & 0x80) != 0 ? 3 : 1;  /* table maps to at most 3 bytes */
   utf8=(unsigned char *) NULL;
   if (~length >= 1)
     utf8=(unsigned char *) AcquireQuantumMemory(length+1UL,sizeof(*utf8));
@@ -138,7 +142,7 @@ static inline unsigned char *ConvertMacRomanToUTF8(
   for (p=content; *p != '\0'; p++)
   {
     c=(*p);
-    if (c > 128)
+    if (c >= 128)
       c=(int) macroman_unicode[c-128];
     if ((c & 0x80) == 0)
       *q++=(unsigned char) c;
@@ -170,15 +174,15 @@ static inline unsigned char *ConvertMacRomanToUTF8(
 static inline int GetNextUTFCode(const char *magick_restrict text,
   unsigned int *magick_restrict octets)
 {
+  const unsigned char
+    *p;
+
   int
     code;
 
-  ssize_t
+  unsigned int
+    count,
     i;
-
-  int
-    c,
-    unicode;
 
   *octets=1;
   if (text == (const char *) NULL)
@@ -186,25 +190,45 @@ static inline int GetNextUTFCode(const char *magick_restrict text,
       errno=EINVAL;
       return(-1);
     }
-  code=(int) (*text++) & 0xff;
-  unicode=code;
-  for (i=0; i < MaxMultibyteCodes; i++)
-  {
-    if ((code & utf_info[i].code_mask) == utf_info[i].code_value)
+  p=(const unsigned char *) text;
+  code=(int) p[0];
+  if (code < 0x80)
+    return(code);
+  if (code < 0xc2)  /* stray continuation byte or overlong 2-byte lead */
+    goto invalid;
+  if (code < 0xe0)
+    {
+      count=2;
+      code&=0x1f;
+    }
+  else
+    if (code < 0xf0)
       {
-        unicode&=utf_info[i].utf_mask;
-        if (unicode < utf_info[i].utf_value)
-          break;
-        *octets=(unsigned int) (i+1);
-        return(unicode);
+        count=3;
+        code&=0x0f;
       }
-    c=(int) (*text++ ^ 0x80) & 0xff;
-    if ((c & 0xc0) != 0)
-      break;
-    if (unicode > 0x10FFFF)
-      break;
-    unicode=(unicode << 6) | c;
+    else
+      if (code < 0xf5)
+        {
+          count=4;
+          code&=0x07;
+        }
+      else
+        goto invalid;
+  for (i=1; i < count; i++)
+  {
+    if ((p[i] & 0xc0) != 0x80)
+      goto invalid;
+    code=(code << 6) | (int) (p[i] & 0x3f);
   }
+  if (((count == 3) && (code < 0x800)) ||    /* overlong */
+      ((count == 4) && (code < 0x10000)) ||  /* overlong */
+      (code > 0x10ffff) ||                   /* beyond Unicode */
+      ((code >= 0xd800) && (code <= 0xdfff)))  /* surrogates */
+    goto invalid;
+  *octets=count;
+  return(code);
+invalid:
   errno=EILSEQ;
   return(-1);
 }
@@ -246,12 +270,11 @@ static inline MagickBooleanType IsUTFSpace(const int code)
 
 static inline MagickBooleanType IsUTFValid(int code)
 {
-  int
-    mask;
-
-  mask=(int) 0x7fffffff;
-  if (((code & ~mask) != 0) && ((code < 0xd800) || (code > 0xdfff)) &&
-      (code != 0xfffe) && (code != 0xffff))
+  if ((code < 0) || (code > 0x10ffff))
+    return(MagickFalse);
+  if ((code >= 0xd800) && (code <= 0xdfff))
+    return(MagickFalse);
+  if ((code & 0xfffe) == 0xfffe)  /* U+FFFE/U+FFFF on every plane */
     return(MagickFalse);
   return(MagickTrue);
 }
