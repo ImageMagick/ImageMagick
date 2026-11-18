@@ -8,7 +8,7 @@ Introduction
 
     See
 
-        https://imagemagick.org/script/perl-magick.php
+        https://imagemagick.org/perl-magick/
 
     for additional information about PerlMagick.  If you have problems, go to
 
@@ -82,7 +82,7 @@ Installation - Win32 Strawberry perl
    following:
 
    1) Download and install ImageMagick Windows binaries from
-      https://imagemagick.org/script/binary-releases.php#windows
+      https://imagemagick.org/download/#windows
 
    2) You HAVE TO choose dynamic (DLL) ImageMagick binaries.  Note: it is not
       possible to mix 32/64bit binaries of perl and ImageMagick
