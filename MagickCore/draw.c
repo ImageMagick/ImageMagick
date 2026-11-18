@@ -3806,6 +3806,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
               }
             if (LocaleCompare("symbol",token) == 0)
               {
+                if (*q == '"')
+                  (void) GetNextToken(q,&q,extent,token);
                 symbolDepth++;
                 graphic_context[n]->render=symbolDepth > 0 ? MagickFalse :
                   MagickTrue;

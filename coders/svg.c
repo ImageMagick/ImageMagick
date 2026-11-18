@@ -1739,7 +1739,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
         }
       if (LocaleCompare((const char *) name,"symbol") == 0)
         {
-          (void) FormatLocaleFile(svg_info->file,"push symbol\n");
+          if (*id == '\0')
+            (void) FormatLocaleFile(svg_info->file,"push symbol\n");
+          else
+            (void) FormatLocaleFile(svg_info->file,"push symbol \"%s\"\n",
+              id);
           break;
         }
       break;
