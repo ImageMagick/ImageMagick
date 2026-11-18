@@ -7197,6 +7197,14 @@ static ssize_t TracePath(MVGInfo *mvg_info,const char *path,
         /*
           Move to.
         */
+        if ((mvg_info->offset-subpath_offset) == 1)
+          {
+            /*
+              Discard a subpath that consists of a lone moveto.
+            */
+            mvg_info->offset=subpath_offset;
+            q=(*mvg_info->primitive_info)+subpath_offset;
+          }
         if (mvg_info->offset != subpath_offset)
           {
             primitive_info=(*mvg_info->primitive_info)+subpath_offset;
