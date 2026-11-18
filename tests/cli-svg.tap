@@ -18,7 +18,7 @@
 #
 . ./common.shi
 . ${srcdir}/tests/common.shi
-echo "1..5"
+echo "1..6"
 
 # gradientTransform should not cause a double-free / SIGABRT (#8582)
 ${MAGICK} ${SRCDIR}/input_svg_gradient_transform.svg null: && echo "ok" || echo "not ok"
@@ -66,5 +66,17 @@ case "$msvg_mode" in
     esac
     ;;
   *) echo "ok # SKIP MSVG coder unavailable" ;;
+esac
+
+# A leading lone moveto must not suppress the fill and stroke of the path.
+lone=`${MAGICK} -size 20x20 xc:white -fill black -stroke blue \
+  -draw "path 'M 0 0 m 5 5 h 10 v 10 h -10 z'" \
+  -format '%[fx:int(255*p{10,10}.r+0.5)] %#' info:- 2>/dev/null`
+plain=`${MAGICK} -size 20x20 xc:white -fill black -stroke blue \
+  -draw "path 'M 5 5 h 10 v 10 h -10 z'" \
+  -format '%[fx:int(255*p{10,10}.r+0.5)] %#' info:- 2>/dev/null`
+case "$lone" in
+  '0 '*) [ "X$lone" = "X$plain" ] && echo "ok" || echo "not ok" ;;
+  *) echo "not ok" ;;
 esac
 :
