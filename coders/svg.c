@@ -178,6 +178,7 @@ typedef struct _SVGInfo
     radius;
 
   char
+    **color,
     *stop_color,
     *offset,
     *text,
@@ -682,11 +683,23 @@ static SVGInfo *AcquireSVGInfo(void)
   svg_info->scale=(double *) AcquireCriticalMemory(sizeof(*svg_info->scale));
   GetAffineMatrix(&svg_info->affine);
   svg_info->scale[0]=ExpandAffine(&svg_info->affine);
+  svg_info->color=(char **) AcquireCriticalMemory(sizeof(*svg_info->color));
+  svg_info->color[0]=AcquireString("black");
   return(svg_info);
 }
 
 static SVGInfo *DestroySVGInfo(SVGInfo *svg_info)
 {
+  if (svg_info->color != (char **) NULL)
+    {
+      ssize_t
+        i;
+
+      for (i=0; i <= (ssize_t) svg_info->n; i++)
+        if (svg_info->color[i] != (char *) NULL)
+          svg_info->color[i]=DestroyString(svg_info->color[i]);
+      svg_info->color=(char **) RelinquishMagickMemory(svg_info->color);
+    }
   if (svg_info->size != (char *) NULL)
     svg_info->size=DestroyString(svg_info->size);
   if (svg_info->text != (char *) NULL)
@@ -1021,6 +1034,17 @@ static char *SVGSanitizeNumberList(const char *value,
   return(sanitized);
 }
 
+static void SVGSetCurrentColor(SVGInfo *svg_info,const char *value)
+{
+  /*
+    The color property is inherited, it sets the value of currentColor.
+  */
+  if ((LocaleCompare(value,"inherit") == 0) ||
+      (LocaleCompare(value,"currentColor") == 0))
+    return;
+  (void) CloneString(&svg_info->color[svg_info->n],value);
+}
+
 static void SVGProcessStyleElement(SVGInfo *svg_info,const xmlChar *name,
   const char *style)
 {
@@ -1051,7 +1075,7 @@ static void SVGProcessStyleElement(SVGInfo *svg_info,const xmlChar *name,
     (void) FormatLocaleFile(svg_info->file,"font-size %g\n",
       svg_info->pointsize);
   }
-  color=AcquireString("none");
+  color=AcquireString(svg_info->color[svg_info->n]);
   units=AcquireString("userSpaceOnUse");
   for (i=0; i < ((ssize_t) number_tokens-1); i+=2)
   {
@@ -1097,7 +1121,9 @@ static void SVGProcessStyleElement(SVGInfo *svg_info,const xmlChar *name,
            }
         if (LocaleCompare(keyword,"color") == 0)
           {
-            (void) CloneString(&color,value);
+            if ((LocaleCompare(value,"inherit") != 0) &&
+                (LocaleCompare(value,"currentColor") != 0))
+              (void) CloneString(&color,value);
             (void) FormatLocaleFile(svg_info->file,"currentColor \"%s\"\n",
               color);
             break;
@@ -1368,7 +1394,6 @@ static void SVGStartElement(void *context,const xmlChar *name,
 }
 
   char
-    *color,
     background[MagickPathExtent],
     id[MagickPathExtent],
     *next_token,
@@ -1409,6 +1434,16 @@ static void SVGStartElement(void *context,const xmlChar *name,
       return;
     }
   svg_info->n++;
+  svg_info->color=(char **) ResizeQuantumMemory(svg_info->color,(size_t)
+    svg_info->n+1,sizeof(*svg_info->color));
+  if (svg_info->color == (char **) NULL)
+    {
+      (void) ThrowMagickException(svg_info->exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",name);
+      xmlStopParser((xmlParserCtxtPtr) context);
+      return;
+    }
+  svg_info->color[svg_info->n]=AcquireString(svg_info->color[svg_info->n-1]);
   svg_info->scale=(double *) ResizeQuantumMemory(svg_info->scale,(size_t)
     svg_info->n+1,sizeof(*svg_info->scale));
   if (svg_info->scale == (double *) NULL)
@@ -1418,7 +1453,6 @@ static void SVGStartElement(void *context,const xmlChar *name,
       return;
     }
   svg_info->scale[svg_info->n]=svg_info->scale[svg_info->n-1];
-  color=AcquireString("none");
   style=(char *) NULL;
   units=AcquireString("userSpaceOnUse");
   *id='\0';
@@ -1450,6 +1484,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
             {
               svg_info->element.cx=
                 GetUserSpaceCoordinateValue(svg_info,1,value);
+              break;
+            }
+          if (LocaleCompare(keyword,"color") == 0)
+            {
+              SVGSetCurrentColor(svg_info,value);
               break;
             }
           if (LocaleCompare(keyword,"cy") == 0)
@@ -1505,6 +1544,24 @@ static void SVGStartElement(void *context,const xmlChar *name,
             {
               svg_info->element.angle=GetUserSpaceCoordinateValue(svg_info,0,
                 value);
+              break;
+            }
+          break;
+        }
+        case 'S':
+        case 's':
+        {
+          if (LocaleCompare(keyword,"style") == 0)
+            {
+              tokens=SVGKeyValuePairs(svg_info,':',';',value,&number_tokens);
+              if (tokens == (char **) NULL)
+                break;
+              for (j=0; j < ((ssize_t) number_tokens-1); j+=2)
+                if (LocaleCompare(tokens[j],"color") == 0)
+                  SVGSetCurrentColor(svg_info,tokens[j+1]);
+              for (j=0; tokens[j] != (char *) NULL; j++)
+                tokens[j]=DestroyString(tokens[j]);
+              tokens=(char **) RelinquishMagickMemory(tokens);
               break;
             }
           break;
@@ -1846,11 +1903,6 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 value);
               break;
             }
-          if (LocaleCompare(keyword,"color") == 0)
-            {
-              (void) CloneString(&color,value);
-              break;
-            }
           if (LocaleCompare(keyword,"cx") == 0)
             {
               svg_info->element.cx=
@@ -1906,7 +1958,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
             {
               if (LocaleCompare(value,"currentColor") == 0)
                 {
-                  (void) FormatLocaleFile(svg_info->file,"fill \"%s\"\n",color);
+                  (void) FormatLocaleFile(svg_info->file,"fill \"%s\"\n",
+                    svg_info->color[svg_info->n]);
                   break;
                 }
               (void) FormatLocaleFile(svg_info->file,"fill \"%s\"\n",value);
@@ -2297,7 +2350,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
               if (LocaleCompare(value,"currentColor") == 0)
                 {
                   (void) FormatLocaleFile(svg_info->file,"stroke \"%s\"\n",
-                    color);
+                    svg_info->color[svg_info->n]);
                   break;
                 }
               (void) FormatLocaleFile(svg_info->file,"stroke \"%s\"\n",value);
@@ -2705,8 +2758,6 @@ static void SVGStartElement(void *context,const xmlChar *name,
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  )");
   if (units != (char *) NULL)
     units=DestroyString(units);
-  if (color != (char *) NULL)
-    color=DestroyString(color);
 }
 
 static void SVGEndElement(void *context,const xmlChar *name)
@@ -3100,6 +3151,9 @@ static void SVGEndElement(void *context,const xmlChar *name)
   *svg_info->text='\0';
   (void) memset(&svg_info->element,0,sizeof(svg_info->element));
   (void) memset(&svg_info->segment,0,sizeof(svg_info->segment));
+  if ((svg_info->color != (char **) NULL) &&
+      (svg_info->color[svg_info->n] != (char *) NULL))
+    svg_info->color[svg_info->n]=DestroyString(svg_info->color[svg_info->n]);
   svg_info->n--;
 }
 
