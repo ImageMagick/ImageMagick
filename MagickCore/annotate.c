@@ -1033,6 +1033,65 @@ static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
       if (strpbrk(draw_info->family,",'\"") == (char *) NULL)
         type_info=GetTypeInfoByFamily(draw_info->family,draw_info->style,
           draw_info->stretch,draw_info->weight,exception);
+      else
+        {
+          char
+            family[MagickPathExtent];
+
+          const char
+            *p,
+            *q;
+
+          const TypeInfo
+            *list_info;
+
+          size_t
+            length;
+
+          /*
+            Parse a CSS font family list: the families are separated by
+            commas, may be quoted and their names may contain spaces.
+          */
+          p=draw_info->family;
+          while (*p != '\0')
+          {
+            while ((isspace((int) ((unsigned char) *p)) != 0) || (*p == ','))
+              p++;
+            if (*p == '\0')
+              break;
+            if ((*p == '\'') || (*p == '"'))
+              {
+                q=strchr(p+1,*p);
+                if (q == (const char *) NULL)
+                  q=p+strlen(p);
+                length=(size_t) (q-p-1);
+                (void) CopyMagickString(family,p+1,MagickMin(length+1,
+                  MagickPathExtent));
+                p=(*q == '\0') ? q : q+1;
+              }
+            else
+              {
+                q=strchr(p,',');
+                if (q == (const char *) NULL)
+                  q=p+strlen(p);
+                length=(size_t) (q-p);
+                while ((length > 0) &&
+                       (isspace((int) ((unsigned char) p[length-1])) != 0))
+                  length--;
+                (void) CopyMagickString(family,p,MagickMin(length+1,
+                  MagickPathExtent));
+                p=q;
+              }
+            list_info=GetTypeInfoByFamily(family,draw_info->style,
+              draw_info->stretch,draw_info->weight,exception);
+            if ((list_info != (const TypeInfo *) NULL) &&
+                (LocaleCompare(family,list_info->family) == 0))
+              {
+                type_info=list_info;
+                break;
+              }
+          }
+        }
       if (type_info == (const TypeInfo *) NULL)
         {
           char
