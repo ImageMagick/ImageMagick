@@ -18,7 +18,7 @@
 #
 . ./common.shi
 . ${srcdir}/tests/common.shi
-echo "1..4"
+echo "1..5"
 
 # gradientTransform should not cause a double-free / SIGABRT (#8582)
 ${MAGICK} ${SRCDIR}/input_svg_gradient_transform.svg null: && echo "ok" || echo "not ok"
@@ -50,4 +50,19 @@ spaced=`${MAGICK} -size 24x24 xc:white -fill none -stroke black \
   -draw "path 'M6 12 h9 a4 4 0 0 1 0 8 H7 a1 1 0 0 1 -1 -1 V5 a1 1 0 0 1 1 -1 h7 a4 4 0 0 1 0 8'" \
   -format '%#' info:- 2>/dev/null`
 [ "X$compact" != "X" ] && [ "X$compact" = "X$spaced" ] && echo "ok" || echo "not ok"
+
+# The view box keeps its aspect ratio: centered by default, and a missing
+# height is computed from the width.
+case "$msvg_mode" in
+  *r*)
+    meet=`printf '%s' '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 10">' \
+      '<rect width="20" height="10" fill="red"/></svg>' |
+      ${MAGICK} MSVG:- -format '%[fx:int(255*p{10,2}.g+0.5)],%[fx:int(255*p{10,10}.g+0.5)],%[fx:int(255*p{10,17}.g+0.5)]' info:- 2>/dev/null`
+    size=`printf '%s' '<svg xmlns="http://www.w3.org/2000/svg" width="40" viewBox="0 0 20 10">' \
+      '<rect width="20" height="10" fill="red"/></svg>' |
+      ${MAGICK} MSVG:- -format '%wx%h' info:- 2>/dev/null`
+    [ "X$meet $size" = "X255,0,255 40x20" ] && echo "ok" || echo "not ok"
+    ;;
+  *) echo "ok # SKIP MSVG coder unavailable" ;;
+esac
 :
