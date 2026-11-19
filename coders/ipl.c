@@ -528,7 +528,7 @@ static MagickBooleanType WriteIPLFrame(Image *image,QuantumInfo *quantum_info,
       break;
     (void) ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
       quantum_type,pixels,exception);
-    length=image->columns*quantum_depth->depth/8;
+    length=image->columns*quantum_info->depth/8;
     if (WriteBlob(image,length,pixels) != (ssize_t) length)
       return(MagickFalse);
     if ((quantum_type == BlueQuantum) && (image->previous == (Image *) NULL))
