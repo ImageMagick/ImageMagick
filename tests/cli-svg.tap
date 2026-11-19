@@ -34,6 +34,16 @@ case "$msvg_mode" in
   *) echo "ok # SKIP MSVG coder unavailable" ;;
 esac
 
+# The font shorthand must not write the whole style attribute as font-style.
+case "$msvg_mode" in
+  *r*)
+    color=`${MAGICK} MSVG:${SRCDIR}/input_svg_font_shorthand.svg \
+      -format '%[fx:int(255*p{5,5}.r+0.5)],%[fx:int(255*p{5,5}.g+0.5)],%[fx:int(255*p{5,5}.b+0.5)]' info:-`
+    [ "X$color" = "X255,0,0" ] && echo "ok" || echo "not ok"
+    ;;
+  *) echo "ok # SKIP MSVG coder unavailable" ;;
+esac
+
 # MVG comments written to the SVG <desc> element must be XML escaped.
 svg=`printf '%s\n' 'viewbox 0 0 4 4' '#x(<script>)' |
   ${MAGICK} MVG:- SVG:- 2>/dev/null`

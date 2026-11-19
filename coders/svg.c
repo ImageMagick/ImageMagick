@@ -1148,7 +1148,7 @@ static void SVGProcessStyleElement(SVGInfo *svg_info,const xmlChar *name,
               break;
             if (GetUserSpaceCoordinateValue(svg_info,0,font_style) == 0)
               (void) FormatLocaleFile(svg_info->file,"font-style \"%s\"\n",
-                style);
+                font_style);
             else
               if (MagickSscanf(value,"%2048s %2048s",font_size,font_family) != 2)
                 break;
@@ -3008,10 +3008,11 @@ static void SVGEndElement(void *context,const xmlChar *name)
             break;
           for (j=0; j < ((ssize_t) number_tokens-1); j+=2)
           {
-            keyword=(char *) tokens[j];
+            keyword=SVGEscapeString((const char *) tokens[j]);
             value=(char *) tokens[j+1];
             (void) FormatLocaleFile(svg_info->file,"push class \"%s\"\n",
               *keyword == '.' ? keyword+1 : keyword);
+            keyword=DestroyString(keyword);
             SVGProcessStyleElement(svg_info,name,value);
             (void) FormatLocaleFile(svg_info->file,"pop class\n");
           }
