@@ -97,6 +97,9 @@
 #define PrimitiveExtentPad  4296.0
 #define MaxBezierCoordinates  67108864
 #define MacroExpansionLimit  262144
+#define MaxArcAngle  1099511627776.0  /* 2^40 degrees */
+#define MaxDashSegments  4194304  /* per polygon edge */
+#define MinDashLength  0.01  /* minimum rendered dash/gap, in pixels */
 #define ThrowPointExpectedException(token,exception) \
 { \
   (void) ThrowMagickException(exception,GetMagickModule(),DrawError, \
@@ -1794,6 +1797,7 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
     i;
 
   size_t
+    dash_count,
     number_vertices;
 
   ssize_t
@@ -1820,6 +1824,21 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
   dash_polygon[0]=primitive_info[0];
   dash_polygon[0].closed_subpath=MagickFalse;
   scale=ExpandAffine(&draw_info->affine);
+  for (n=0; fabs(draw_info->dash_pattern[n]) >= MagickEpsilon; n++)
+    if (scale*draw_info->dash_pattern[n] < MinDashLength)
+      {
+        /*
+          Dashes this small are sub-pixel; stroke solid instead of looping
+          for an unbounded number of iterations.
+        */
+        dash_polygon=(PrimitiveInfo *) RelinquishMagickMemory(dash_polygon);
+        clone_info=DestroyDrawInfo(clone_info);
+        status=DrawStrokePolygon(image,draw_info,primitive_info,exception);
+        if (draw_info->debug != MagickFalse)
+          (void) LogMagickEvent(DrawEvent,GetMagickModule(),
+            "    end draw-dash");
+        return(status != 0 ? MagickTrue : MagickFalse);
+      }
   length=scale*draw_info->dash_pattern[0];
   offset=fabs(draw_info->dash_offset) >= MagickEpsilon ?
     scale*draw_info->dash_offset : 0.0;
@@ -1863,7 +1882,9 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
           n=0;
         length=scale*draw_info->dash_pattern[n];
       }
-    for (total_length=0.0; (length >= 0.0) && (maximum_length >= (total_length+length)); )
+    dash_count=0;
+    for (total_length=0.0; (length >= 0.0) && (maximum_length >= (total_length+length)) &&
+         (dash_count++ < MaxDashSegments); )
     {
       total_length+=length;
       if ((n & 0x01) != 0)
@@ -6711,9 +6732,19 @@ static MagickBooleanType TraceEllipse(MVGInfo *mvg_info,const PointInfo center,
   delta=MagickSafeReciprocal(MagickMax(radii.x,radii.y));
   step=MagickPI/(MagickPI*MagickSafeReciprocal(delta))/8.0;
   angle.x=DegreesToRadians(arc.x);
+  if ((isfinite(arc.x) == 0) || (isfinite(arc.y) == 0) ||
+      (fabs(arc.x) > MaxArcAngle) || (fabs(arc.y) > MaxArcAngle))
+    {
+      (void) ThrowMagickException(mvg_info->exception,GetMagickModule(),
+        DrawError,"NonconformingDrawingPrimitiveDefinition","`%s'",
+        "ellipse angle out of range");
+      return(MagickFalse);
+    }
   y=arc.y;
-  while (y < arc.x)
-    y+=360.0;
+  if (y < arc.x)
+    y+=360.0*ceil((arc.x-y)/360.0);
+  if (y < arc.x)
+    y=arc.x;
   angle.y=DegreesToRadians(y);
   coordinates=ceil((angle.y-angle.x)/step+1.0);
   if (CheckPrimitiveExtent(mvg_info,coordinates+1) == MagickFalse)
