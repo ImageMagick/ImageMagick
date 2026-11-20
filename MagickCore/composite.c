@@ -851,7 +851,6 @@ static MagickBooleanType BlendRMSEResidual(const Image *alpha_image,
         status=MagickFalse;
         continue;
       }
-    channel_residual=0.0;
     for (x=0; x < (ssize_t) columns; x++)
     {
       double
@@ -1030,17 +1029,10 @@ static MagickBooleanType CompositeOverImage(Image *image,
       if ((pixels == (Quantum *) NULL) || (x < x_offset) ||
           ((x-x_offset) >= (ssize_t) source_image->columns))
         {
-          Quantum
-            source[MaxPixelChannels];
-
           /*
-            Virtual composite:
-              Sc: source color.
-              Dc: canvas color.
+            Virtual composite: outside the overlay the source is fully
+            transparent, so the canvas is left untouched (alpha included).
           */
-          (void) GetOneVirtualPixel(source_image,
-            CastDoubleToSsizeT((double) x-x_offset),
-            CastDoubleToSsizeT((double) y-y_offset),source,exception);
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             MagickRealType
@@ -1053,10 +1045,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
             if ((traits == UndefinedPixelTrait) ||
                 (source_traits == UndefinedPixelTrait))
               continue;
-            if (channel == AlphaPixelChannel)
-              pixel=(MagickRealType) TransparentAlpha;
-            else
-              pixel=(MagickRealType) q[i];
+            pixel=(MagickRealType) q[i];
             q[i]=clamp != MagickFalse ? ClampPixel(pixel) :
               ClampToQuantum(pixel);
           }
@@ -1203,12 +1192,14 @@ static MagickBooleanType SaliencyBlendImage(Image *image,
     {
       crop_image=DestroyImage(crop_image);
       divergent_image=DestroyImage(divergent_image);
+      relax_image=DestroyImage(relax_image);
       return(MagickFalse);
     }
   residual_image=CloneImage(relax_image,0,0,MagickTrue,exception);
   if (residual_image == (Image *) NULL)
     {
       crop_image=DestroyImage(crop_image);
+      divergent_image=DestroyImage(divergent_image);
       relax_image=DestroyImage(relax_image);
       return(MagickFalse);
     }
@@ -1219,6 +1210,7 @@ static MagickBooleanType SaliencyBlendImage(Image *image,
   if (kernel_info == (KernelInfo *) NULL)
     {
       crop_image=DestroyImage(crop_image);
+      divergent_image=DestroyImage(divergent_image);
       residual_image=DestroyImage(residual_image);
       relax_image=DestroyImage(relax_image);
       return(MagickFalse);
@@ -1237,12 +1229,18 @@ static MagickBooleanType SaliencyBlendImage(Image *image,
 
     convolve_image=ConvolveImage(relax_image,kernel_info,exception);
     if (convolve_image == (Image *) NULL)
-      break;
+      {
+        status=MagickFalse;
+        break;
+      }
     relax_image=DestroyImage(relax_image);
     relax_image=convolve_image;
     sum_image=BlendSumImage(relax_image,divergent_image,1.0,-1.0,exception);
     if (sum_image == (Image *) NULL)
-      break;
+      {
+        status=MagickFalse;
+        break;
+      }
     relax_image=DestroyImage(relax_image);
     relax_image=sum_image;
     status=CompositeOverImage(relax_image,crop_image,MagickTrue,0,0,exception);
@@ -1263,12 +1261,21 @@ static MagickBooleanType SaliencyBlendImage(Image *image,
     residual_image=DestroyImage(residual_image);
     residual_image=CloneImage(relax_image,0,0,MagickTrue,exception);
     if (residual_image == (Image *) NULL)
-      break;
+      {
+        status=MagickFalse;
+        break;
+      }
   }
   kernel_info=DestroyKernelInfo(kernel_info);
   crop_image=DestroyImage(crop_image);
   divergent_image=DestroyImage(divergent_image);
-  residual_image=DestroyImage(residual_image);
+  if (residual_image != (Image *) NULL)
+    residual_image=DestroyImage(residual_image);
+  if (status == MagickFalse)
+    {
+      relax_image=DestroyImage(relax_image);
+      return(MagickFalse);
+    }
   /*
     Composite relaxed over the background image.
   */
@@ -1369,7 +1376,10 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
 
     convolve_image=ConvolveImage(relax_image,kernel_info,exception);
     if (convolve_image == (Image *) NULL)
-      break;
+      {
+        status=MagickFalse;
+        break;
+      }
     relax_image=DestroyImage(relax_image);
     relax_image=convolve_image;
     status=CompositeOverImage(relax_image,mean_image,MagickTrue,0,0,exception);
@@ -1391,11 +1401,20 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
       residual_image=DestroyImage(residual_image);
     residual_image=CloneImage(relax_image,0,0,MagickTrue,exception);
     if (residual_image == (Image *) NULL)
-      break;
+      {
+        status=MagickFalse;
+        break;
+      }
   }
   kernel_info=DestroyKernelInfo(kernel_info);
   mean_image=DestroyImage(mean_image);
-  residual_image=DestroyImage(residual_image);
+  if (residual_image != (Image *) NULL)
+    residual_image=DestroyImage(residual_image);
+  if (status == MagickFalse)
+    {
+      relax_image=DestroyImage(relax_image);
+      return(MagickFalse);
+    }
   /*
     Composite the foreground image over the background image.
   */
@@ -1744,7 +1763,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       if ((flags & WidthValue) == 0)
         {
           (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
-            "InvalidSetting","'%s' '%s'","compose:args",artifact);
+            "InvalidSetting","'%s' '%s'","compose:args",
+            artifact != (const char *) NULL ? artifact : "");
           source_image=DestroyImage(source_image);
           canvas_image=DestroyImage(canvas_image);
           return(MagickFalse);
@@ -1803,6 +1823,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       /*
         Perform the variable blurring of each pixel in image.
       */
+      status=MagickTrue;
       GetPixelInfo(image,&pixel);
       source_view=AcquireVirtualCacheView(source_image,exception);
       canvas_view=AcquireAuthenticCacheView(canvas_image,exception);
@@ -1824,15 +1845,19 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           continue;
         p=GetCacheViewVirtualPixels(source_view,0,y,source_image->columns,1,
           exception);
-        q=QueueCacheViewAuthenticPixels(canvas_view,0,y,canvas_image->columns,1,
+        q=GetCacheViewAuthenticPixels(canvas_view,0,y,canvas_image->columns,1,
           exception);
         if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
-          break;
+          {
+            status=MagickFalse;
+            break;
+          }
         for (x=0; x < (ssize_t) source_image->columns; x++)
         {
           if (((x_offset+x) < 0) || ((x_offset+x) >= (ssize_t) image->columns))
             {
               p+=(ptrdiff_t) GetPixelChannels(source_image);
+              q+=(ptrdiff_t) GetPixelChannels(canvas_image);
               continue;
             }
           if (fabs(angle_range) > MagickEpsilon)
@@ -1860,11 +1885,20 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         }
         sync=SyncCacheViewAuthenticPixels(canvas_view,exception);
         if (sync == MagickFalse)
-          break;
+          {
+            status=MagickFalse;
+            break;
+          }
       }
       resample_filter=DestroyResampleFilter(resample_filter);
       source_view=DestroyCacheView(source_view);
       canvas_view=DestroyCacheView(canvas_view);
+      if (status == MagickFalse)
+        {
+          source_image=DestroyImage(source_image);
+          canvas_image=DestroyImage(canvas_image);
+          return(MagickFalse);
+        }
       source_image=DestroyImage(source_image);
       source_image=canvas_image;
       break;
@@ -1973,6 +2007,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         Shift the pixel offset point as defined by the provided,
         displacement/distortion map.  -- Like a lens...
       */
+      status=MagickTrue;
       GetPixelInfo(image,&pixel);
       image_view=AcquireVirtualCacheView(image,exception);
       source_view=AcquireVirtualCacheView(source_image,exception);
@@ -1995,15 +2030,19 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           continue;
         p=GetCacheViewVirtualPixels(source_view,0,y,source_image->columns,1,
           exception);
-        q=QueueCacheViewAuthenticPixels(canvas_view,0,y,canvas_image->columns,1,
+        q=GetCacheViewAuthenticPixels(canvas_view,0,y,canvas_image->columns,1,
           exception);
         if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
-          break;
+          {
+            status=MagickFalse;
+            break;
+          }
         for (x=0; x < (ssize_t) source_image->columns; x++)
         {
           if (((x_offset+x) < 0) || ((x_offset+x) >= (ssize_t) image->columns))
             {
               p+=(ptrdiff_t) GetPixelChannels(source_image);
+              q+=(ptrdiff_t) GetPixelChannels(canvas_image);
               continue;
             }
           /*
@@ -2035,11 +2074,20 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           break;
         sync=SyncCacheViewAuthenticPixels(canvas_view,exception);
         if (sync == MagickFalse)
-          break;
+          {
+            status=MagickFalse;
+            break;
+          }
       }
       canvas_view=DestroyCacheView(canvas_view);
       source_view=DestroyCacheView(source_view);
       image_view=DestroyCacheView(image_view);
+      if (status == MagickFalse)
+        {
+          source_image=DestroyImage(source_image);
+          canvas_image=DestroyImage(canvas_image);
+          return(MagickFalse);
+        }
       source_image=DestroyImage(source_image);
       source_image=canvas_image;
       break;
@@ -2358,12 +2406,14 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                   pixel=canvas_dissolve*(double) GetPixelAlpha(source_image,
                     source);
                 else
-                  pixel=(MagickRealType) source[channel];
+                  pixel=(MagickRealType) GetPixelChannel(source_image,channel,
+                    source);
                 break;
               }
               default:
               {
-                pixel=(MagickRealType) source[channel];
+                pixel=(MagickRealType) GetPixelChannel(source_image,channel,
+                    source);
                 break;
               }
             }
@@ -2617,10 +2667,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               {
                 if (compose_sync == MagickFalse)
                   {
-                    pixel=Si < Di ? Sa : Da;
+                    pixel=(double) QuantumRange*(Si < Di ? Sa : Da);
                     break;
                   }
-                pixel=Sa*Si < Da*Di ? Sa : Da;
+                pixel=(double) QuantumRange*(Sa*Si < Da*Di ? Sa : Da);
                 break;
               }
               case DifferenceCompositeOp:
@@ -2646,10 +2696,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               {
                 if (compose_sync == MagickFalse)
                   {
-                    pixel=Si > Di ? Sa : Da;
+                    pixel=(double) QuantumRange*(Si > Di ? Sa : Da);
                     break;
                   }
-                pixel=Sa*Si > Da*Di ? Sa : Da;
+                pixel=(double) QuantumRange*(Sa*Si > Da*Di ? Sa : Da);
                 break;
               }
               case ModulateCompositeOp:
@@ -2723,21 +2773,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         */
         Sca=QuantumScale*Sa*Sc;
         Dca=QuantumScale*Da*Dc;
-        switch (compose)
-        {
-          case DarkenCompositeOp:
-          case LightenCompositeOp:
-          case ModulusSubtractCompositeOp:
-          {
-            gamma=MagickSafeReciprocal(1.0-alpha);
-            break;
-          }
-          default:
-          {
-            gamma=MagickSafeReciprocal(alpha);
-            break;
-          }
-        }
+        gamma=MagickSafeReciprocal(alpha);
         pixel=Dc;
         switch (compose)
         {
@@ -2895,33 +2931,33 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           {
             if (compose_sync == MagickFalse)
               {
-                pixel=RoundToUnity(MagickMin(Sca,Dca)+Sca*(1.0-Da)+Dca*
-                  (1.0-Sa));
+                pixel=MagickMin(Sc,Dc);
                 break;
               }
-            pixel=(double) QuantumRange*RoundToUnity(MagickMin(Sca,Dca)+Sca*
-              (1.0-Da)+Dca*(1.0-Sa));
+            if ((Sca*Da) < (Dca*Sa))
+              {
+                pixel=(double) QuantumRange*gamma*(Sca+Dca*(1.0-Sa));
+                break;
+              }
+            pixel=(double) QuantumRange*gamma*(Dca+Sca*(1.0-Da));
             break;
           }
           case DarkenIntensityCompositeOp:
           {
             if (compose_sync == MagickFalse)
               {
-                pixel=RoundToUnity(MagickMin(Sca,Dca)+Sca*(1.0-Di)+Dca*
-                  (1.0-Si));
+                pixel=Si < Di ? Sc : Dc;
                 break;
               }
-            pixel=(double) QuantumRange*RoundToUnity(MagickMin(Sca,Dca)+Sca*
-              (1.0-Di)+Dca*(1.0-Si));
+            pixel=Sa*Si < Da*Di ? Sc : Dc;
             break;
           }
           case DifferenceCompositeOp:
           {
             if (compose_sync == MagickFalse)
               {
-                 pixel=(double) QuantumRange*RoundToUnity(fabs((double) Sc-
-                  (double) Dc));
-                 break;
+                pixel=fabs((double) Sc-(double) Dc);
+                break;
               }
             S=(Sa > 0.0) ? RoundToUnity(Sca/Sa) : 0.0;
             D=(Da > 0.0) ? RoundToUnity(Dca/Da) : 0.0;
@@ -2974,7 +3010,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                   pixel=(double) QuantumRange*(Dc/Sc);
                 break;
               }
-            if (fabs(Dca) < MagickEpsilon)
+            if (fabs(Sca) < MagickEpsilon)
               pixel=(double) QuantumRange*gamma*(Dca+(1.0-Da));
             else
               pixel=(double) QuantumRange*gamma*(Dca/Sca+Dca*(1.0-Sa)+Sca*(1.0-Da));
@@ -3089,7 +3125,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           case InCompositeOp:
           case SrcInCompositeOp:
           {
-            pixel=(double) QuantumRange*(Sca*Da);
+            pixel=(double) QuantumRange*gamma*(Sca*Da);
             break;
           }
           case InterpolateCompositeOp:
@@ -3143,15 +3179,22 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 pixel=MagickMax(Sc,Dc);
                 break;
               }
-            S=(Sa > 0.0) ? RoundToUnity(Sca/Sa) : 0.0;
-            D=(Da > 0.0) ? RoundToUnity(Dca/Da) : 0.0;
-            pixel=(double) QuantumRange*RoundToUnity(Sca*(1.0-Da)+Dca*(1.0-Sa)+
-              MagickMax(S,D)*Sa*Da);
+            if ((Sca*Da) > (Dca*Sa))
+              {
+                pixel=(double) QuantumRange*gamma*(Sca+Dca*(1.0-Sa));
+                break;
+              }
+            pixel=(double) QuantumRange*gamma*(Dca+Sca*(1.0-Da));
             break;
           }
           case LightenIntensityCompositeOp:
           {
-            pixel=Si > Di ? Sc : Dc;
+            if (compose_sync == MagickFalse)
+              {
+                pixel=Si > Di ? Sc : Dc;
+                break;
+              }
+            pixel=Sa*Si > Da*Di ? Sc : Dc;
             break;
           }
           case LuminizeCompositeOp:
@@ -3206,8 +3249,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             */
             if (compose_sync == MagickFalse)
               {
-                pixel=geometry_info.rho*Sc*Dc+geometry_info.sigma*Sc+
-                  geometry_info.xi*Dc+geometry_info.psi;
+                S=QuantumScale*Sc;
+                D=QuantumScale*Dc;
+                pixel=(double) QuantumRange*(geometry_info.rho*S*D+
+                  geometry_info.sigma*S+geometry_info.xi*D+geometry_info.psi);
                 break;
               }
             pixel=(double) QuantumRange*gamma*(geometry_info.rho*Sca*Dca+
@@ -3271,27 +3316,31 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           {
             if (compose_sync == MagickFalse)
               {
-                pixel=(Quantum) QuantumRange*((Sc+Dc)-floor(Sc+Dc));
+                pixel=Sc+Dc;
+                if (pixel > (double) QuantumRange)
+                  pixel-=(double) QuantumRange;
                 break;
               }
-            pixel=(Quantum) QuantumRange*((Sca+Dca)-floor(Sca+Dca));
+            pixel=(double) QuantumRange*((Sca+Dca)-floor(Sca+Dca));
             break;
           }
           case ModulusSubtractCompositeOp:
           {
             if (compose_sync == MagickFalse)
               {
-                pixel=(Quantum) QuantumRange*((Sc-Dc)-floor(Sc-Dc));
+                pixel=Sc-Dc;
+                if (pixel < 0.0)
+                  pixel+=(double) QuantumRange;
                 break;
               }
-            pixel=(Quantum) QuantumRange*((Sca-Dca)-floor(Sca-Dca));
+            pixel=(double) QuantumRange*((Sca-Dca)-floor(Sca-Dca));
             break;
           }
           case MultiplyCompositeOp:
           {
             if (compose_sync == MagickFalse)
               {
-                pixel=(double) QuantumRange*Sc*Dc;
+                pixel=QuantumScale*Sc*Dc;
                 break;
               }
             pixel=(double) QuantumRange*gamma*(Sca*Dca+Sca*(1.0-Da)+Dca*(1.0-Sa));
@@ -3312,7 +3361,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           case OutCompositeOp:
           case SrcOutCompositeOp:
           {
-            pixel=(double) QuantumRange*(Sca*(1.0-Da));
+            pixel=(double) QuantumRange*gamma*(Sca*(1.0-Da));
             break;
           }
           case OverCompositeOp:
@@ -3385,7 +3434,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           {
             if (compose_sync == MagickFalse)
               {
-                pixel=(double) QuantumRange*(Sc+Dc);
+                pixel=Sc+Dc;
                 break;
               }
             pixel=(double) QuantumRange*(Sca+Dca);
@@ -3395,8 +3444,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           {
             if (compose_sync == MagickFalse)
               {
-                if (Dc < 1.0)
-                  blend=(Sc*Sc)/(1.0-Dc);
+                S=QuantumScale*Sc;
+                D=QuantumScale*Dc;
+                if (D < 1.0)
+                  blend=(S*S)/(1.0-D);
                 else
                   blend=1.0;
                 pixel=(double) QuantumRange*RoundToUnity(blend);
@@ -3433,12 +3484,12 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 break;
               }
             gray=sqrt(
-              (canvas_pixel.red-source_pixel.red)*
-              (canvas_pixel.red-source_pixel.red)+
-              (canvas_pixel.green-source_pixel.green)*
-              (canvas_pixel.green-source_pixel.green)+
-              (canvas_pixel.blue-source_pixel.blue)*
-              (canvas_pixel.blue-source_pixel.blue)/3.0);
+              ((canvas_pixel.red-source_pixel.red)*
+               (canvas_pixel.red-source_pixel.red)+
+               (canvas_pixel.green-source_pixel.green)*
+               (canvas_pixel.green-source_pixel.green)+
+               (canvas_pixel.blue-source_pixel.blue)*
+               (canvas_pixel.blue-source_pixel.blue))/3.0);
             switch (channel)
             {
               case RedPixelChannel: pixel=gray; break;
@@ -3481,7 +3532,9 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           {
             if (compose_sync == MagickFalse)
               {
-                pixel=(double) QuantumRange*RoundToUnity(Sc+Dc-Sc*Dc);
+                S=QuantumScale*Sc;
+                D=QuantumScale*Dc;
+                pixel=(double) QuantumRange*RoundToUnity(S+D-S*D);
                 break;
               }
             S=(Sa > 0.0) ? RoundToUnity(Sca/Sa) : 0.0;
@@ -3585,7 +3638,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case XorCompositeOp:
           {
-            pixel=(double) QuantumRange*(Sca*(1.0-Da)+Dca*(1.0-Sa));
+            pixel=(double) QuantumRange*gamma*(Sca*(1.0-Da)+Dca*(1.0-Sa));
             break;
           }
           default:
