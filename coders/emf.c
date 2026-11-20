@@ -415,7 +415,8 @@ static HENHMETAFILE ReadEnhMetaFile(const char *path,ssize_t *width,
     }
   ReadFile(hFile,pBits,dwSize,&dwSize,NULL);
   CloseHandle(hFile);
-  if ((((PAPMHEADER) pBits)->dwKey != 0x9ac6cdd7l) ||
+  if ((dwSize < sizeof(APMHEADER)) ||
+      (((PAPMHEADER) pBits)->dwKey != 0x9ac6cdd7l) ||
       (((PAPMHEADER) pBits)->wInch == 0))
     {
       pBits=(BYTE *) DestroyString((char *) pBits);
@@ -433,7 +434,8 @@ static HENHMETAFILE ReadEnhMetaFile(const char *path,ssize_t *width,
   mp.yExt=(mp.yExt*2540l)/(DWORD) (((PAPMHEADER) pBits)->wInch);
   mp.hMF=NULL;
   hDC=GetDC(NULL);
-  hTemp=SetWinMetaFileBits(dwSize,&(pBits[sizeof(APMHEADER)]),hDC,&mp);
+  hTemp=SetWinMetaFileBits(dwSize-sizeof(APMHEADER),&(pBits[sizeof(APMHEADER)]),
+    hDC,&mp);
   ReleaseDC(NULL,hDC);
   pBits=(BYTE *) DestroyString((char *) pBits);
   return(hTemp);
