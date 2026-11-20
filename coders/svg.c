@@ -1259,6 +1259,35 @@ static void SVGProcessStyleElement(SVGInfo *svg_info,const xmlChar *name,
   tokens=(char **) RelinquishMagickMemory(tokens);
 }
 
+static MagickBooleanType GetSVGAlignment(const char *align,double *x,
+  double *y)
+{
+  static const char
+    *offsets[] = { "Min", "Mid", "Max" };
+
+  ssize_t
+    i,
+    j;
+
+  /*
+    Parse an alignment like xMidYMid into fractions of the free space.
+  */
+  if ((strlen(align) != 8) || ((*align != 'x') && (*align != 'X')) ||
+      ((align[4] != 'y') && (align[4] != 'Y')))
+    return(MagickFalse);
+  for (i=0; i < 3; i++)
+    if (LocaleNCompare(align+1,offsets[i],3) == 0)
+      break;
+  for (j=0; j < 3; j++)
+    if (LocaleNCompare(align+5,offsets[j],3) == 0)
+      break;
+  if ((i == 3) || (j == 3))
+    return(MagickFalse);
+  *x=0.5*i;
+  *y=0.5*j;
+  return(MagickTrue);
+}
+
 static void SVGStartElement(void *context,const xmlChar *name,
   const xmlChar **attributes)
 {
@@ -1272,6 +1301,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
 }
 
   char
+    aspect_ratio[MagickPathExtent],
     *color,
     background[MagickPathExtent],
     id[MagickPathExtent],
@@ -1328,6 +1358,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
   *id='\0';
   *token='\0';
   *background='\0';
+  *aspect_ratio='\0';
   if ((LocaleCompare((char *) name,"image") == 0) ||
       (LocaleCompare((char *) name,"pattern") == 0) ||
       (LocaleCompare((char *) name,"rect") == 0) ||
@@ -2134,6 +2165,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
               (void) CloneString(&svg_info->vertices,value);
               break;
             }
+          if (LocaleCompare(keyword,"preserveAspectRatio") == 0)
+            {
+              (void) CopyMagickString(aspect_ratio,value,MagickPathExtent);
+              break;
+            }
           break;
         }
         case 'R':
@@ -2480,15 +2516,31 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 (void) GetNextToken(p,&p,MagickPathExtent,token);
               svg_info->view_box.width=StringToDouble(token,
                 (char **) NULL);
-              if (svg_info->bounds.width < MagickEpsilon)
-                svg_info->bounds.width=svg_info->view_box.width;
               (void) GetNextToken(p,&p,MagickPathExtent,token);
               if (*token == ',')
                 (void) GetNextToken(p,&p,MagickPathExtent,token);
               svg_info->view_box.height=StringToDouble(token,
                 (char **) NULL);
-              if (svg_info->bounds.height == 0)
-                svg_info->bounds.height=svg_info->view_box.height;
+              /*
+                A missing width or height keeps the aspect ratio of the
+                view box.
+              */
+              if ((svg_info->bounds.width < MagickEpsilon) &&
+                  (svg_info->bounds.height < MagickEpsilon))
+                {
+                  svg_info->bounds.width=svg_info->view_box.width;
+                  svg_info->bounds.height=svg_info->view_box.height;
+                }
+              else
+                if (svg_info->bounds.width < MagickEpsilon)
+                  svg_info->bounds.width=svg_info->bounds.height*
+                    svg_info->view_box.width*
+                    MagickSafeReciprocal(svg_info->view_box.height);
+                else
+                  if (svg_info->bounds.height < MagickEpsilon)
+                    svg_info->bounds.height=svg_info->bounds.width*
+                      svg_info->view_box.height*
+                      MagickSafeReciprocal(svg_info->view_box.width);
               break;
             }
           break;
@@ -2593,6 +2645,52 @@ static void SVGStartElement(void *context,const xmlChar *name,
             0.0;
           ty=svg_info->view_box.y != 0.0 ? (double) -sy*svg_info->view_box.y :
             0.0;
+          {
+            double
+              align_x = 0.5,
+              align_y = 0.5;
+
+            MagickBooleanType
+              slice = MagickFalse,
+              uniform = MagickTrue;
+
+            /*
+              preserveAspectRatio="[defer] <align> [meet|slice]", the
+              default is xMidYMid meet.
+            */
+            p=aspect_ratio;
+            (void) GetNextToken(p,&p,MagickPathExtent,token);
+            if (LocaleCompare(token,"defer") == 0)
+              (void) GetNextToken(p,&p,MagickPathExtent,token);
+            if (LocaleCompare(token,"none") == 0)
+              uniform=MagickFalse;
+            else
+              if (GetSVGAlignment(token,&align_x,&align_y) != MagickFalse)
+                {
+                  (void) GetNextToken(p,&p,MagickPathExtent,token);
+                  if (LocaleCompare(token,"slice") == 0)
+                    slice=MagickTrue;
+                  else
+                    if ((*token != '\0') &&
+                        (LocaleCompare(token,"meet") != 0))
+                      {
+                        align_x=0.5;
+                        align_y=0.5;
+                      }
+                }
+            if (uniform != MagickFalse)
+              {
+                if (slice != MagickFalse)
+                  sx=MagickMax(sx,sy);
+                else
+                  sx=MagickMin(sx,sy);
+                sy=sx;
+                tx=align_x*((double) svg_info->width-sx*
+                  svg_info->view_box.width)-sx*svg_info->view_box.x;
+                ty=align_y*((double) svg_info->height-sy*
+                  svg_info->view_box.height)-sy*svg_info->view_box.y;
+              }
+          }
           (void) FormatLocaleFile(svg_info->file,"affine %g 0 0 %g %g %g\n",
             sx,sy,tx,ty);
           if ((svg_info->svgDepth == 1) && (*background != '\0'))
