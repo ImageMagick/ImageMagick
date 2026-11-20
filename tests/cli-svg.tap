@@ -18,7 +18,7 @@
 #
 . ./common.shi
 . ${srcdir}/tests/common.shi
-echo "1..4"
+echo "1..6"
 
 # gradientTransform should not cause a double-free / SIGABRT (#8582)
 ${MAGICK} ${SRCDIR}/input_svg_gradient_transform.svg null: && echo "ok" || echo "not ok"
@@ -50,4 +50,33 @@ spaced=`${MAGICK} -size 24x24 xc:white -fill none -stroke black \
   -draw "path 'M6 12 h9 a4 4 0 0 1 0 8 H7 a1 1 0 0 1 -1 -1 V5 a1 1 0 0 1 1 -1 h7 a4 4 0 0 1 0 8'" \
   -format '%#' info:- 2>/dev/null`
 [ "X$compact" != "X" ] && [ "X$compact" = "X$spaced" ] && echo "ok" || echo "not ok"
+
+# <use> must draw a referenced <symbol> like a referenced <g>.
+case "$msvg_mode" in
+  *r*)
+    svg_head='<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20">'
+    svg_use='<use xlink:href="#a" x="5" y="5" fill="red"/></svg>'
+    symbol=`printf '%s' "$svg_head" '<defs><symbol id="a"><rect width="10" height="10"/></symbol></defs>' "$svg_use" |
+      ${MAGICK} MSVG:- -format '%[fx:int(255*p{10,10}.r+0.5)],%[fx:int(255*p{10,10}.g+0.5)] %#' info:- 2>/dev/null`
+    group=`printf '%s' "$svg_head" '<defs><g id="a"><rect width="10" height="10"/></g></defs>' "$svg_use" |
+      ${MAGICK} MSVG:- -format '%[fx:int(255*p{10,10}.r+0.5)],%[fx:int(255*p{10,10}.g+0.5)] %#' info:- 2>/dev/null`
+    case "$symbol" in
+      '255,0 '*) [ "X$symbol" = "X$group" ] && echo "ok" || echo "not ok" ;;
+      *) echo "not ok" ;;
+    esac
+    ;;
+  *) echo "ok # SKIP MSVG coder unavailable" ;;
+esac
+
+# A leading lone moveto must not suppress the fill and stroke of the path.
+lone=`${MAGICK} -size 20x20 xc:white -fill black -stroke blue \
+  -draw "path 'M 0 0 m 5 5 h 10 v 10 h -10 z'" \
+  -format '%[fx:int(255*p{10,10}.r+0.5)] %#' info:- 2>/dev/null`
+plain=`${MAGICK} -size 20x20 xc:white -fill black -stroke blue \
+  -draw "path 'M 5 5 h 10 v 10 h -10 z'" \
+  -format '%[fx:int(255*p{10,10}.r+0.5)] %#' info:- 2>/dev/null`
+case "$lone" in
+  '0 '*) [ "X$lone" = "X$plain" ] && echo "ok" || echo "not ok" ;;
+  *) echo "not ok" ;;
+esac
 :
