@@ -2485,8 +2485,8 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
       break;
   }
   image_info=DestroyImageInfo(image_info);
-  if (status == MagickFalse)
-    return(status);
+  if (status == 0)
+    return(MagickFalse);
   image->type=type;
   return(MagickTrue);
 }
