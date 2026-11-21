@@ -181,7 +181,7 @@ static SplayTreeInfo
 %
 %    o type: the type of resource.
 %
-%    o size: the number of bytes needed from for this resource.
+%    o size: the number of bytes needed for this resource.
 %
 */
 MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
@@ -256,6 +256,8 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
           if ((limit == MagickResourceInfinity) ||
               (resource_info.file < (MagickOffsetType) limit))
             status=MagickTrue;
+          else
+            resource_info.file-=request;
         }
       current=resource_info.file;
       break;
@@ -403,9 +405,9 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
 %  It differs from ResourceComponentTerminus() in that it can be called from a
 %  asynchronous signal handler.
 %
-%  The format of the ResourceComponentTerminus() method is:
+%  The format of the AsynchronousResourceComponentTerminus() method is:
 %
-%      ResourceComponentTerminus(void)
+%      void AsynchronousResourceComponentTerminus(void)
 %
 */
 MagickExport void AsynchronousResourceComponentTerminus(void)
@@ -566,7 +568,11 @@ MagickExport int AcquireUniqueFileResource(char *path)
     status=AddValueToSplayTree(temporary_resources,ConstantString(path),
       attributes);
   if (status == MagickFalse)
-    file=close_utf8(file)-1;
+    {
+      (void) close_utf8(file);
+      (void) remove_utf8(path);
+      return(-1);
+    }
   return(file);
 }
 
@@ -725,6 +731,8 @@ MagickExport MagickBooleanType IsFileResourceIdentityValid(const char *path)
 
   if (temporary_resources == (SplayTreeInfo *) NULL)
     return(MagickTrue);
+  if (resource_semaphore[FileResource] == (SemaphoreInfo *) NULL)
+    ActivateSemaphoreInfo(&resource_semaphore[FileResource]);
   LockSemaphoreInfo(resource_semaphore[FileResource]);
   temporary_attributes=(const struct stat *) GetValueFromSplayTree(
     temporary_resources,(const void *) path);
@@ -785,6 +793,8 @@ MagickExport MagickSizeType GetMagickResourceLimit(const ResourceType type)
     default: ;
   }
   resource=0;
+  if ((size_t) type >= NumberOfResourceTypes)
+    return(resource);
   if (resource_semaphore[type] == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&resource_semaphore[type]);
   LockSemaphoreInfo(resource_semaphore[type]);
@@ -863,47 +873,52 @@ static void FormatTimeToLive(const MagickSizeType ttl,char *timeString)
   seconds=ttl % 31536000;
   if (seconds == 0)
     {
-      (void) FormatLocaleString(timeString,MagickPathExtent,"%lld years",years);
+      (void) FormatLocaleString(timeString,MagickPathExtent,"%llu years",
+        (unsigned long long) years);
       return;
     }
   months=ttl/2628000;
   seconds=ttl % 2628000;
   if (seconds == 0)
     {
-      (void) FormatLocaleString(timeString,MagickPathExtent,"%lld months",
-        months);
+      (void) FormatLocaleString(timeString,MagickPathExtent,"%llu months",
+        (unsigned long long) months);
       return;
     }
   weeks=ttl/604800;
   seconds=ttl % 604800;
   if (seconds == 0)
     {
-      (void) FormatLocaleString(timeString,MagickPathExtent,"%lld weeks",weeks);
+      (void) FormatLocaleString(timeString,MagickPathExtent,"%llu weeks",
+        (unsigned long long) weeks);
       return;
     }
   days=ttl/86400;
   seconds=ttl % 86400;
   if (seconds == 0)
     {
-      (void) FormatLocaleString(timeString,MagickPathExtent,"%lld days",days);
+      (void) FormatLocaleString(timeString,MagickPathExtent,"%llu days",
+        (unsigned long long) days);
       return;
     }
   hours=ttl/3600;
   seconds=ttl % 3600;
   if (seconds == 0)
     {
-      (void) FormatLocaleString(timeString,MagickPathExtent,"%lld hours",hours);
+      (void) FormatLocaleString(timeString,MagickPathExtent,"%llu hours",
+        (unsigned long long) hours);
       return;
     }
   minutes=ttl/60;
   seconds=ttl % 60;
   if (seconds == 0)
     {
-      (void) FormatLocaleString(timeString,MagickPathExtent,"%lld minutes",
-        minutes);
+      (void) FormatLocaleString(timeString,MagickPathExtent,"%llu minutes",
+        (unsigned long long) minutes);
       return;
     }
-  (void) FormatLocaleString(timeString,MagickPathExtent,"%lld seconds",ttl);
+  (void) FormatLocaleString(timeString,MagickPathExtent,"%llu seconds",
+    (unsigned long long) ttl);
 }
 
 MagickExport MagickBooleanType ListMagickResourceInfo(FILE *file,
@@ -934,8 +949,8 @@ MagickExport MagickBooleanType ListMagickResourceInfo(FILE *file,
     MagickFormatExtent,area_limit);
   (void) CopyMagickString(list_length_limit,"unlimited",MagickFormatExtent);
   if (resource_info.list_length_limit != MagickResourceInfinity)
-    (void) FormatMagickSize(resource_info.list_length_limit,MagickTrue,"B",
-      MagickFormatExtent,list_length_limit);
+    (void) FormatMagickSize(resource_info.list_length_limit,MagickFalse,
+      (const char *) NULL,MagickFormatExtent,list_length_limit);
   (void) FormatMagickSize(resource_info.memory_limit,MagickTrue,"B",
     MagickFormatExtent,memory_limit);
   (void) FormatMagickSize(resource_info.map_limit,MagickTrue,"B",
@@ -992,6 +1007,15 @@ MagickExport MagickBooleanType ListMagickResourceInfo(FILE *file,
 %    o size: the size of the resource.
 %
 */
+static inline MagickOffsetType SubtractResource(const MagickOffsetType current,
+  const MagickSizeType size)
+{
+  assert(size <= (MagickSizeType) current);
+  if (size > (MagickSizeType) current)
+    return(0);
+  return(current-(MagickOffsetType) size);
+}
+
 MagickExport void RelinquishMagickResource(const ResourceType type,
   const MagickSizeType size)
 {
@@ -1025,45 +1049,39 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
     case DiskResource:
     {
       bi=MagickTrue;
-      resource_info.disk-=(MagickOffsetType) size;
+      resource_info.disk=SubtractResource(resource_info.disk,size);
       current=(MagickSizeType) resource_info.disk;
       limit=resource_info.disk_limit;
-      assert(resource_info.disk >= 0);
       break;
     }
     case FileResource:
     {
-      resource_info.file-=(MagickOffsetType) size;
+      resource_info.file=SubtractResource(resource_info.file,size);
       current=(MagickSizeType) resource_info.file;
       limit=resource_info.file_limit;
-      assert(resource_info.file >= 0);
       break;
     }
     case MapResource:
     {
       bi=MagickTrue;
-      resource_info.map-=(MagickOffsetType) size;
+      resource_info.map=SubtractResource(resource_info.map,size);
       current=(MagickSizeType) resource_info.map;
       limit=resource_info.map_limit;
-      assert(resource_info.map >= 0);
       break;
     }
     case MemoryResource:
     {
       bi=MagickTrue;
-      resource_info.memory-=(MagickOffsetType) size;
+      resource_info.memory=SubtractResource(resource_info.memory,size);
       current=(MagickSizeType) resource_info.memory;
       limit=resource_info.memory_limit;
-      assert(resource_info.memory >= 0);
       break;
     }
     case TimeResource:
     {
-      bi=MagickTrue;
-      resource_info.time-=(MagickOffsetType) size;
+      resource_info.time=SubtractResource(resource_info.time,size);
       current=(MagickSizeType) resource_info.time;
       limit=resource_info.time_limit;
-      assert(resource_info.time >= 0);
       break;
     }
     default:
@@ -1131,7 +1149,7 @@ MagickExport MagickBooleanType RelinquishUniqueFileResource(const char *path)
   char
     cache_path[MagickPathExtent];
 
-  MagickStatusType
+  MagickBooleanType
     status;
 
   assert(path != (const char *) NULL);
@@ -1148,15 +1166,15 @@ MagickExport MagickBooleanType RelinquishUniqueFileResource(const char *path)
   AppendImageFormat("cache",cache_path);
   if (access_utf8(cache_path,F_OK) == 0)
     {
-      status=ShredFile(cache_path);
-      status|=(MagickStatusType) remove_utf8(cache_path);
+      (void) ShredFile(cache_path);
+      (void) remove_utf8(cache_path);
     }
   if (status == MagickFalse)
     {
-      status=ShredFile(path);
-      status|=(MagickStatusType) remove_utf8(path);
+      (void) ShredFile(path);
+      status=remove_utf8(path) == 0 ? MagickTrue : MagickFalse;
     }
-  return(status == 0 ? MagickFalse : MagickTrue);
+  return(status);
 }
 
 /*

@@ -101,7 +101,7 @@
   Define declarations.
 */
 #if defined(MAGICKCORE_LCMS_DELEGATE)
-#if defined(LCMS_VERSION) && (LCMS_VERSION < 2000)
+#if !defined(LCMS_VERSION) || (LCMS_VERSION < 2000)
 #define cmsUInt32Number  DWORD
 #endif
 #endif
@@ -132,18 +132,14 @@
 %
 */
 
-typedef char
-  *(*CloneKeyFunc)(const char *),
-  *(*CloneValueFunc)(const char *);
-
 static inline void *ClonePropertyKey(void *key)
 {
-  return((void *) ((CloneKeyFunc) ConstantString)((const char *) key));
+  return((void *) ConstantString((const char *) key));
 }
 
 static inline void *ClonePropertyValue(void *value)
 {
-  return((void *) ((CloneValueFunc) ConstantString)((const char *) value));
+  return((void *) ConstantString((const char *) value));
 }
 
 MagickExport MagickBooleanType CloneImageProperties(Image *image,
@@ -255,6 +251,7 @@ MagickExport MagickBooleanType DefineImageProperty(Image *image,
     *p;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
   assert(property != (const char *) NULL);
   (void) CopyMagickString(key,property,MagickPathExtent-1);
   for (p=key; *p != '\0'; p++)
@@ -456,11 +453,14 @@ static MagickBooleanType GetIPTCProperty(const Image *image,const char *key,
     profile=GetImageProfile(image,"8bim");
   if (profile == (StringInfo *) NULL)
     return(MagickFalse);
-  count=MagickSscanf(key,"IPTC:%ld:%ld",&dataset,&record);
+  if (strlen(key) <= 5)
+    return(MagickFalse);
+  count=MagickSscanf(key+5,"%ld:%ld",&dataset,&record);  /* prefix is
+    matched case-insensitively by the caller */
   if (count != 2)
     return(MagickFalse);
   attribute=(char *) NULL;
-  for (i=0; i < (ssize_t) GetStringInfoLength(profile)-5; )
+  for (i=0; i < (ssize_t) GetStringInfoLength(profile)-4; )
   {
     const unsigned char *p = GetStringInfoDatum(profile)+i;
   
@@ -497,7 +497,7 @@ static MagickBooleanType GetIPTCProperty(const Image *image,const char *key,
     /*
       Advance past this record header + data.
     */
-    i+=(((size_t) p[3] << 8) | (size_t) p[4])+5;
+    i+=(ssize_t) ((((size_t) p[3] << 8) | (size_t) p[4])+5);
   }
   if ((attribute == (char *) NULL) || (*attribute == ';'))
     {
@@ -522,6 +522,17 @@ static inline int ReadPropertyByte(const unsigned char **p,size_t *length)
   c=(int) (*(*p)++);
   (*length)--;
   return(c);
+}
+
+static inline void SkipPropertyBytes(const unsigned char **p,size_t *length,
+  const size_t count)
+{
+  size_t
+    skip;
+
+  skip=(count < *length) ? count : *length;
+  *p+=skip;
+  *length-=skip;
 }
 
 static inline signed int ReadPropertyMSBLong(const unsigned char **p,
@@ -640,8 +651,11 @@ static MagickBooleanType Get8BIMProperty(const Image *image,const char *key,
   profile=GetImageProfile(image,"8bim");
   if (profile == (StringInfo *) NULL)
     return(MagickFalse);
-  count=(ssize_t) MagickSscanf(key,"8BIM:%ld,%ld:%1024[^\n]\n%1024[^\n]",
-    &start,&stop,name,format);
+  if (strlen(key) <= 5)
+    return(MagickFalse);
+  count=(ssize_t) MagickSscanf(key+5,"%ld,%ld:%1024[^\n]\n%1024[^\n]",
+    &start,&stop,name,format);  /* prefix is matched case-insensitively by
+    the caller */
   if ((count != 2) && (count != 3) && (count != 4))
     return(MagickFalse);
   if (count < 4)
@@ -859,6 +873,48 @@ static inline unsigned short ReadPropertyUnsignedShort(const EndianType endian,
   return(value & 0xffff);
 }
 
+static inline float ReadPropertyFloat(const EndianType endian,
+  const unsigned char *buffer)
+{
+  float
+    value;
+
+  unsigned int
+    bits;
+
+  bits=ReadPropertyUnsignedLong(endian,buffer);
+  (void) memcpy(&value,&bits,sizeof(value));
+  return(value);
+}
+
+static inline double ReadPropertyDouble(const EndianType endian,
+  const unsigned char *buffer)
+{
+  double
+    value;
+
+  MagickSizeType
+    bits;
+
+  unsigned int
+    high,
+    low;
+
+  if (endian == LSBEndian)
+    {
+      low=ReadPropertyUnsignedLong(endian,buffer);
+      high=ReadPropertyUnsignedLong(endian,buffer+4);
+    }
+  else
+    {
+      high=ReadPropertyUnsignedLong(endian,buffer);
+      low=ReadPropertyUnsignedLong(endian,buffer+4);
+    }
+  bits=((MagickSizeType) high << 32) | (MagickSizeType) low;
+  (void) memcpy(&value,&bits,sizeof(value));
+  return(value);
+}
+
 static MagickBooleanType GetEXIFProperty(const Image *image,
   const char *property,ExceptionInfo *exception)
 {
@@ -884,7 +940,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
 #define TAG_GPS_OFFSET  0x8825
 #define TAG_INTEROP_OFFSET  0xa005
 
-#define EXIFGPSFractions(format,arg1,arg2,arg3,arg4,arg5,arg6) \
+#define EXIFGPSFractions(fmt,arg1,arg2,arg3,arg4,arg5,arg6) \
 { \
    size_t \
      extent = 0; \
@@ -898,16 +954,26 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
        extent+=(size_t) FormatLocaleString(buffer+extent,MagickPathExtent- \
          extent,", "); \
      extent+=(size_t) FormatLocaleString(buffer+extent,MagickPathExtent- \
-       extent,format,(arg1),(arg2),(arg3),(arg4),(arg5),(arg6)); \
+       extent,fmt,(arg1),(arg2),(arg3),(arg4),(arg5),(arg6)); \
      if (extent >= (MagickPathExtent-1)) \
-       extent=MagickPathExtent-1; \
+       { \
+         extent=MagickPathExtent-1; \
+         break; \
+       } \
    } \
    buffer[extent]='\0'; \
    value=AcquireString(buffer); \
 }
 
-#define EXIFMultipleValues(format,arg) \
+/*
+  The multi-value macros walk the entry with the cursor "cp" (advanced by the
+  size of one component), so every component prints its own value.
+*/
+#define EXIFMultipleValues(fmt,arg) \
 { \
+   const unsigned char \
+     *cp = p; \
+ \
    size_t \
      extent = 0; \
  \
@@ -920,16 +986,23 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
        extent+=(size_t) FormatLocaleString(buffer+extent,MagickPathExtent- \
          extent,", "); \
      extent+=(size_t) FormatLocaleString(buffer+extent,MagickPathExtent- \
-       extent,format,arg); \
+       extent,fmt,arg); \
      if (extent >= (MagickPathExtent-1)) \
-       extent=MagickPathExtent-1; \
+       { \
+         extent=MagickPathExtent-1; \
+         break; \
+       } \
+     cp+=tag_bytes[format]; \
    } \
    buffer[extent]='\0'; \
    value=AcquireString(buffer); \
 }
 
-#define EXIFMultipleFractions(format,arg1,arg2) \
+#define EXIFMultipleFractions(fmt,arg1,arg2) \
 { \
+   const unsigned char \
+     *cp = p; \
+ \
    size_t \
      extent = 0; \
  \
@@ -939,12 +1012,16 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
    for ( ; component < components; component++) \
    { \
      if (component != 0) \
-       extent+=(size_t) FormatLocaleString(buffer+extent,MagickPathExtent-\
+       extent+=(size_t) FormatLocaleString(buffer+extent,MagickPathExtent- \
          extent,", "); \
      extent+=(size_t) FormatLocaleString(buffer+extent,MagickPathExtent- \
-       extent,format,(arg1),(arg2)); \
+       extent,fmt,(arg1),(arg2)); \
      if (extent >= (MagickPathExtent-1)) \
-       extent=MagickPathExtent-1; \
+       { \
+         extent=MagickPathExtent-1; \
+         break; \
+       } \
+     cp+=tag_bytes[format]; \
    } \
    buffer[extent]='\0'; \
    value=AcquireString(buffer); \
@@ -1494,8 +1571,9 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
       components=(ssize_t) ReadPropertySignedLong(endian,q+4);
       if (components < 0)
         break;  /* corrupt EXIF */
-      number_bytes=components*(ssize_t) tag_bytes[format];
-      if (number_bytes < components)
+      number_bytes=(ssize_t) ((size_t) components*(size_t) tag_bytes[format]);
+      if ((number_bytes < 0) || ((size_t) number_bytes/
+          (size_t) tag_bytes[format] != (size_t) components))
         break;  /* prevent overflow */
       if (number_bytes <= 4)
         p=q+8;
@@ -1510,10 +1588,8 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
           dir_offset=(ssize_t) ReadPropertySignedLong(endian,q+8);
           if ((dir_offset < 0) || (size_t) dir_offset >= length)
             continue;
-          if (((size_t) dir_offset+(size_t) number_bytes) < (size_t) dir_offset)
-            continue;  /* prevent overflow */
-          if ((size_t) (dir_offset+(ssize_t) number_bytes) > length)
-            continue;
+          if ((size_t) number_bytes > (length-(size_t) dir_offset))
+            continue;  /* out of bounds (also prevents overflow) */
           p=(unsigned char *) (exif+dir_offset);
         }
       if ((all != 0) || (tag == (size_t) tag_value))
@@ -1548,29 +1624,29 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
             }
             case EXIF_FMT_SBYTE:
             {
-              EXIFMultipleValues("%.17g",(double) (*(signed char *) p));
+              EXIFMultipleValues("%.17g",(double) (*(const signed char *) cp));
               break;
             }
             case EXIF_FMT_SSHORT:
             {
-              EXIFMultipleValues("%hd",ReadPropertySignedShort(endian,p));
+              EXIFMultipleValues("%hd",ReadPropertySignedShort(endian,cp));
               break;
             }
             case EXIF_FMT_USHORT:
             {
-              EXIFMultipleValues("%hu",ReadPropertyUnsignedShort(endian,p));
+              EXIFMultipleValues("%hu",ReadPropertyUnsignedShort(endian,cp));
               break;
             }
             case EXIF_FMT_ULONG:
             {
               EXIFMultipleValues("%.17g",(double)
-                ReadPropertyUnsignedLong(endian,p));
+                ReadPropertyUnsignedLong(endian,cp));
               break;
             }
             case EXIF_FMT_SLONG:
             {
               EXIFMultipleValues("%.17g",(double)
-                ReadPropertySignedLong(endian,p));
+                ReadPropertySignedLong(endian,cp));
               break;
             }
             case EXIF_FMT_URATIONAL:
@@ -1591,27 +1667,26 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
                   break;
                 }
               EXIFMultipleFractions("%.17g/%.17g",(double)
-                ReadPropertyUnsignedLong(endian,p),(double)
-                ReadPropertyUnsignedLong(endian,p+4));
+                ReadPropertyUnsignedLong(endian,cp),(double)
+                ReadPropertyUnsignedLong(endian,cp+4));
               break;
             }
             case EXIF_FMT_SRATIONAL:
             {
               EXIFMultipleFractions("%.17g/%.17g",(double)
-                ReadPropertySignedLong(endian,p),(double)
-                ReadPropertySignedLong(endian,p+4));
+                ReadPropertySignedLong(endian,cp),(double)
+                ReadPropertySignedLong(endian,cp+4));
               break;
             }
             case EXIF_FMT_SINGLE:
             {
-              EXIFMultipleValues("%.17g",(double)
-                ReadPropertySignedLong(endian,p));
+              EXIFMultipleValues("%.9g",(double)
+                ReadPropertyFloat(endian,cp));
               break;
             }
             case EXIF_FMT_DOUBLE:
             {
-              EXIFMultipleValues("%.17g",(double)
-                ReadPropertySignedLong(endian,p));
+              EXIFMultipleValues("%.17g",ReadPropertyDouble(endian,cp));
               break;
             }
             case EXIF_FMT_STRING:
@@ -1769,7 +1844,7 @@ static MagickBooleanType GetICCProperty(const Image *image,
     return(MagickFalse);  /* minimum ICC profile length */
   icc_profile=cmsOpenProfileFromMem(GetStringInfoDatum(profile),
     (cmsUInt32Number) GetStringInfoLength(profile));
-  if (icc_profile != (cmsHPROFILE *) NULL)
+  if (icc_profile != (cmsHPROFILE) NULL)
     {
 #if defined(LCMS_VERSION) && (LCMS_VERSION < 2000)
       const char
@@ -2018,16 +2093,16 @@ static char *TracePSClippath(const unsigned char *blob,size_t length)
       {
         if (knot_count != 0)
           {
-            blob+=24;
-            length=(size_t) ((ssize_t) length-MagickMin(24,(ssize_t) length));
+            SkipPropertyBytes(&blob,&length,24);
             break;
           }
         /*
           Expected subpath length record.
         */
         knot_count=(ssize_t) ReadPropertyMSBShort(&blob,&length);
-        blob+=22;
-        length=(size_t) ((ssize_t) length-MagickMin(22,(ssize_t) length));
+        if (knot_count < 0)
+          knot_count=0;
+        SkipPropertyBytes(&blob,&length,22);
         break;
       }
       case 1:
@@ -2040,8 +2115,7 @@ static char *TracePSClippath(const unsigned char *blob,size_t length)
             /*
               Unexpected subpath knot
             */
-            blob+=24;
-            length=(size_t) ((ssize_t) length-MagickMin(24,(ssize_t) length));
+            SkipPropertyBytes(&blob,&length,24);
             break;
           }
         /*
@@ -2131,8 +2205,7 @@ static char *TracePSClippath(const unsigned char *blob,size_t length)
       case 8:
       default:
       {
-        blob+=24;
-        length=(size_t) ((ssize_t) length-MagickMin(24,(ssize_t) length));
+        SkipPropertyBytes(&blob,&length,24);
         break;
       }
     }
@@ -2216,16 +2289,16 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
       {
         if (knot_count != 0)
           {
-            blob+=24;
-            length=(size_t) ((ssize_t) length-MagickMin(24,(ssize_t) length));
+            SkipPropertyBytes(&blob,&length,24);
             break;
           }
         /*
           Expected subpath length record.
         */
         knot_count=(ssize_t) ReadPropertyMSBShort(&blob,&length);
-        blob+=22;
-        length=(size_t) ((ssize_t) length-MagickMin(22,(ssize_t) length));
+        if (knot_count < 0)
+          knot_count=0;
+        SkipPropertyBytes(&blob,&length,22);
         break;
       }
       case 1:
@@ -2238,8 +2311,7 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
             /*
               Unexpected subpath knot.
             */
-            blob+=24;
-            length=(size_t) ((ssize_t) length-MagickMin(24,(ssize_t) length));
+            SkipPropertyBytes(&blob,&length,24);
             break;
           }
         /*
@@ -2287,8 +2359,7 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
       case 8:
       default:
       {
-        blob+=24;
-        length=(size_t) ((ssize_t) length-MagickMin(24,(ssize_t) length));
+        SkipPropertyBytes(&blob,&length,24);
         break;
       }
     }
@@ -3051,6 +3122,11 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
           convex_hull=GetImageConvexHull(image,&number_points,exception);
           if (convex_hull == (PointInfo *) NULL)
             break;
+          if (number_points == 0)
+            {
+              convex_hull=(PointInfo *) RelinquishMagickMemory(convex_hull);
+              break;
+            }
           points=AcquireString("");
           extreme=convex_hull[0];  /* top */
           for (n=0; n < (ssize_t) number_points; n++)
@@ -3326,7 +3402,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
           (void) SetImageProperty(image,"minimum-bounding-box",points,
             exception);
           points=DestroyString(points);
-          string=GetImageProperty(image,property,exception);
+          string=GetImageProperty(image,"minimum-bounding-box",exception);
           break;
         }
       break;
@@ -3388,10 +3464,6 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
       if (LocaleCompare("profile:icc",property) == 0 ||
           LocaleCompare("profile:icm",property) == 0)
         {
-#if !defined(LCMS_VERSION) || (LCMS_VERSION < 2000)
-#define cmsUInt32Number  DWORD
-#endif
-
           const StringInfo
             *profile;
 
@@ -3404,7 +3476,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
             break;
           icc_profile=cmsOpenProfileFromMem(GetStringInfoDatum(profile),
             (cmsUInt32Number) GetStringInfoLength(profile));
-          if (icc_profile != (cmsHPROFILE *) NULL)
+          if (icc_profile != (cmsHPROFILE) NULL)
             {
 #if defined(LCMS_VERSION) && (LCMS_VERSION < 2000)
               string=cmsTakeProductName(icc_profile);
@@ -3797,7 +3869,15 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
       /*
         Handle a '@' replace string from file.
       */
-      interpret_text=FileToString(p,~0UL,exception);
+      if (IsRightsAuthorized(PathPolicyDomain,ReadPolicyRights,p) ==
+          MagickFalse)
+        {
+          errno=EPERM;
+          (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
+            "NotAuthorized","`%s'",p);
+          return(ConstantString(""));
+        }
+      interpret_text=FileToString(p+1,~0UL,exception);
       if (interpret_text != (char *) NULL)
         return(interpret_text);
     }
@@ -4205,7 +4285,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
             {
               ResetImagePropertyIterator(property_image);
               while ((key=GetNextImageProperty(property_image)) != (const char *) NULL)
-                if (GlobExpression(key,pattern,MagickTrue) != MagickFalse)
+                if (GlobExpression(key,pattern+9,MagickTrue) != MagickFalse)
                   {
                     string=GetImageProperty(property_image,key,exception);
                     if (string != (const char *) NULL)
@@ -4534,24 +4614,34 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           GeometryInfo
             geometry_info;
 
+          ssize_t
+            delay,
+            ticks_per_second;
+
           flags=ParseGeometry(value,&geometry_info);
+          delay=CastDoubleToSsizeT(floor(geometry_info.rho+0.5));
+          if (delay < 0)
+            delay=0;
           if ((flags & GreaterValue) != 0)
             {
-              if (image->delay > (size_t) floor(geometry_info.rho+0.5))
-                image->delay=(size_t) floor(geometry_info.rho+0.5);
+              if (image->delay > (size_t) delay)
+                image->delay=(size_t) delay;
             }
           else
             if ((flags & LessValue) != 0)
               {
-                if ((double) image->delay < floor(geometry_info.rho+0.5))
-                  image->delay=(size_t) CastDoubleToSsizeT(floor(
-                    geometry_info.sigma+0.5));
+                if (image->delay < (size_t) delay)
+                  image->delay=(size_t) delay;
               }
             else
-              image->delay=(size_t) floor(geometry_info.rho+0.5);
+              image->delay=(size_t) delay;
           if ((flags & SigmaValue) != 0)
-            image->ticks_per_second=CastDoubleToSsizeT(floor(
-              geometry_info.sigma+0.5));
+            {
+              ticks_per_second=CastDoubleToSsizeT(floor(
+                geometry_info.sigma+0.5));
+              if (ticks_per_second > 0)
+                image->ticks_per_second=ticks_per_second;
+            }
           return(MagickTrue);
         }
       if (LocaleCompare("delay_units",property) == 0)
@@ -4722,7 +4812,6 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
       if ((LocaleCompare("magick",property) == 0) ||
           (LocaleCompare("max",property) == 0) ||
           (LocaleCompare("mean",property) == 0) ||
-          (LocaleCompare("min",property) == 0) ||
           (LocaleCompare("min",property) == 0))
         {
           (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,

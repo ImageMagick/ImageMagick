@@ -63,6 +63,7 @@
 #include "MagickCore/option.h"
 #include "MagickCore/profile.h"
 #include "MagickCore/quantum.h"
+#include "MagickCore/quantum-private.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/splay-tree.h"
 #include "MagickCore/signature-private.h"
@@ -85,7 +86,9 @@
 %
 %  CloneImageArtifacts() clones all image artifacts to another image.
 %
-%  This will not delete any existing artifacts that may be present!
+%  Any artifacts already present on image are replaced by the clone.  Cloning
+%  an image onto itself is a no-op.  MagickFalse is returned if the artifacts
+%  could not be cloned.
 %
 %  The format of the CloneImageArtifacts method is:
 %
@@ -100,18 +103,14 @@
 %
 */
 
-typedef char
-  *(*CloneKeyFunc)(const char *),
-  *(*CloneValueFunc)(const char *);
-
 static inline void *CloneArtifactKey(void *key)
 {
-  return((void *) ((CloneKeyFunc) ConstantString)((const char *) key));
+  return((void *) ConstantString((const char *) key));
 }
 
 static inline void *CloneArtifactValue(void *value)
 {
-  return((void *) ((CloneValueFunc) ConstantString)((const char *) value));
+  return((void *) ConstantString((const char *) value));
 }
 
 MagickExport MagickBooleanType CloneImageArtifacts(Image *image,
@@ -127,12 +126,16 @@ MagickExport MagickBooleanType CloneImageArtifacts(Image *image,
       (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
         clone_image->filename);
     }
+  if (image == clone_image)
+    return(MagickTrue);
   if (clone_image->artifacts != (void *) NULL)
     {
       if (image->artifacts != (void *) NULL)
         DestroyImageArtifacts(image);
       image->artifacts=CloneSplayTree((SplayTreeInfo *) clone_image->artifacts,
         CloneArtifactKey,CloneArtifactValue);
+      if (image->artifacts == (void *) NULL)
+        return(MagickFalse);
     }
   return(MagickTrue);
 }
@@ -168,23 +171,22 @@ MagickExport MagickBooleanType DefineImageArtifact(Image *image,
   const char *artifact)
 {
   char
-    key[MagickPathExtent],
-    value[MagickPathExtent];
+    key[MagickPathExtent];
 
-  char
+  const char
     *p;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
   assert(artifact != (const char *) NULL);
-  (void) CopyMagickString(key,artifact,MagickPathExtent-1);
-  for (p=key; *p != '\0'; p++)
-    if (*p == '=')
-      break;
-  *value='\0';
-  if (*p == '=')
-    (void) CopyMagickString(value,p+1,MagickPathExtent);
-  *p='\0';
-  return(SetImageArtifact(image,key,value));
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  p=strchr(artifact,'=');
+  if (p == (const char *) NULL)
+    return(SetImageArtifact(image,artifact,""));
+  (void) CopyMagickString(key,artifact,MagickMin((size_t) (p-artifact)+1,
+    MagickPathExtent));
+  return(SetImageArtifact(image,key,p+1));
 }
 
 /*
@@ -218,7 +220,7 @@ MagickExport MagickBooleanType DeleteImageArtifact(Image *image,
   assert(image->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (image->artifacts == (void *) NULL)
+  if ((image->artifacts == (void *) NULL) || (artifact == (const char *) NULL))
     return(MagickFalse);
   return(DeleteNodeFromSplayTree((SplayTreeInfo *) image->artifacts,artifact));
 }
@@ -277,13 +279,13 @@ MagickExport void DestroyImageArtifacts(Image *image)
 %
 %  The format of the GetImageArtifact method is:
 %
-%      const char *GetImageArtifact(const Image *image,const char *key)
+%      const char *GetImageArtifact(const Image *image,const char *artifact)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o key: the key.
+%    o artifact: the artifact key.
 %
 */
 MagickExport const char *GetImageArtifact(const Image *image,
@@ -307,6 +309,8 @@ MagickExport const char *GetImageArtifact(const Image *image,
       if (p != (const char *) NULL)
         return(p);
     }
+  if (artifact == (const char *) NULL)
+    return((const char *) NULL);
   if ((image->image_info != (ImageInfo *) NULL) &&
       (image->image_info->options != (void *) NULL))
     p=(const char *) GetValueFromSplayTree((SplayTreeInfo *)
@@ -329,7 +333,7 @@ MagickExport const char *GetImageArtifact(const Image *image,
 %
 %  The format of the GetNextImageArtifact method is:
 %
-%      char *GetNextImageArtifact(const Image *image)
+%      const char *GetNextImageArtifact(const Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -385,7 +389,7 @@ MagickExport char *RemoveImageArtifact(Image *image,const char *artifact)
   assert(image->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (image->artifacts == (void *) NULL)
+  if ((image->artifacts == (void *) NULL) || (artifact == (const char *) NULL))
     return((char *) NULL);
   value=(char *) RemoveNodeFromSplayTree((SplayTreeInfo *) image->artifacts,
     artifact);
@@ -471,17 +475,22 @@ MagickExport MagickBooleanType SetImageArtifact(Image *image,
   assert(image->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  /*
-    Create tree if needed - specify how key,values are to be freed.
-  */
-  if (image->artifacts == (void *) NULL)
-    image->artifacts=NewSplayTree(CompareSplayTreeString,RelinquishMagickMemory,
-      RelinquishMagickMemory);
+  assert(artifact != (const char *) NULL);
   /*
     Delete artifact if NULL --  empty string values are valid!,
   */
   if (value == (const char *) NULL)
     return(DeleteImageArtifact(image,artifact));
+  /*
+    Create tree if needed - specify how key,values are to be freed.
+  */
+  if (image->artifacts == (void *) NULL)
+    {
+      image->artifacts=NewSplayTree(CompareSplayTreeString,
+        RelinquishMagickMemory,RelinquishMagickMemory);
+      if (image->artifacts == (void *) NULL)
+        return(MagickFalse);
+    }
   /*
     Add artifact to splay-tree.
   */

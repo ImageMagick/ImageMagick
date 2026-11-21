@@ -139,7 +139,8 @@ MagickExport PixelChannelMap *ClonePixelChannelMap(PixelChannelMap *channel_map)
   clone_map=AcquirePixelChannelMap();
   if (clone_map == (PixelChannelMap *) NULL)
     return((PixelChannelMap *) NULL);
-  (void) memcpy(clone_map,channel_map,MaxPixelChannels*sizeof(*channel_map));
+  (void) memcpy(clone_map,channel_map,(MaxPixelChannels+1)*
+    sizeof(*channel_map));
   return(clone_map);
 }
 
@@ -174,6 +175,9 @@ MagickExport PixelInfo *ClonePixelInfo(const PixelInfo *pixel)
   pixel_info=(PixelInfo *) AcquireMagickMemory(sizeof(*pixel_info));
   if (pixel_info == (PixelInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  GetPixelInfo((const Image *) NULL,pixel_info);
+  if (pixel == (const PixelInfo *) NULL)
+    return(pixel_info);
   *pixel_info=(*pixel);
   return(pixel_info);
 }
@@ -213,6 +217,7 @@ MagickExport void ConformPixelInfo(Image *image,const PixelInfo *source,
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
+  assert(source != (const PixelInfo *) NULL);
   assert(destination != (const PixelInfo *) NULL);
   *destination=(*source);
   ConformPixelInfoColorspace(image,destination,exception);
@@ -351,7 +356,6 @@ MagickExport PixelChannelMap *DestroyPixelChannelMap(
   PixelChannelMap *channel_map)
 {
   assert(channel_map != (PixelChannelMap *) NULL);
-  channel_map=(PixelChannelMap *) RelinquishMagickMemory(channel_map);
   return((PixelChannelMap *) RelinquishMagickMemory(channel_map));
 }
 
@@ -5148,7 +5152,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(
           }
         CatromWeights((double) (x-x_offset),&cx);
         CatromWeights((double) (y-y_offset),&cy);
-        gamma=((traits & BlendPixelTrait) ? (double) (1.0) :
+        gamma=((traits & BlendPixelTrait) == 0 ? (double) (1.0) :
           MagickSafeReciprocal(cy[0]*(cx[0]*alpha[0]+cx[1]*alpha[1]+cx[2]*
           alpha[2]+cx[3]*alpha[3])+cy[1]*(cx[0]*alpha[4]+cx[1]*alpha[5]+cx[2]*
           alpha[6]+cx[3]*alpha[7])+cy[2]*(cx[0]*alpha[8]+cx[1]*alpha[9]+cx[2]*
@@ -5356,7 +5360,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(
           }
         SplineWeights((double) (x-x_offset),&cx);
         SplineWeights((double) (y-y_offset),&cy);
-        gamma=((traits & BlendPixelTrait) ? (double) (1.0) :
+        gamma=((traits & BlendPixelTrait) == 0 ? (double) (1.0) :
           MagickSafeReciprocal(cy[0]*(cx[0]*alpha[0]+cx[1]*alpha[1]+cx[2]*
           alpha[2]+cx[3]*alpha[3])+cy[1]*(cx[0]*alpha[4]+cx[1]*alpha[5]+cx[2]*
           alpha[6]+cx[3]*alpha[7])+cy[2]*(cx[0]*alpha[8]+cx[1]*alpha[9]+cx[2]*
@@ -5414,6 +5418,15 @@ MagickExport MagickBooleanType InterpolatePixelChannels(
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static inline double BicubicSum(const double *cx,const double *cy,
+  const double *v)
+{
+  return(cy[0]*(cx[0]*v[0]+cx[1]*v[1]+cx[2]*v[2]+cx[3]*v[3])+
+    cy[1]*(cx[0]*v[4]+cx[1]*v[5]+cx[2]*v[6]+cx[3]*v[7])+
+    cy[2]*(cx[0]*v[8]+cx[1]*v[9]+cx[2]*v[10]+cx[3]*v[11])+
+    cy[3]*(cx[0]*v[12]+cx[1]*v[13]+cx[2]*v[14]+cx[3]*v[15]));
+}
 
 static inline void AlphaBlendPixelInfo(const Image *image,
   const Quantum *pixel,PixelInfo *pixel_info,double *alpha)
@@ -5688,6 +5701,12 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
         cy[2]*(cx[0]*pixels[8].alpha+cx[1]*pixels[9].alpha+cx[2]*
         pixels[10].alpha+cx[3]*pixels[11].alpha)+cy[3]*(cx[0]*pixels[12].alpha+
         cx[1]*pixels[13].alpha+cx[2]*pixels[14].alpha+cx[3]*pixels[15].alpha));
+      gamma=MagickSafeReciprocal(BicubicSum(cx,cy,alpha));
+      pixel->red*=gamma;
+      pixel->green*=gamma;
+      pixel->blue*=gamma;
+      if (image->colorspace == CMYKColorspace)
+        pixel->black*=gamma;
       break;
     }
     case IntegerInterpolatePixel:
@@ -5884,6 +5903,12 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
         cy[2]*(cx[0]*pixels[8].alpha+cx[1]*pixels[9].alpha+cx[2]*
         pixels[10].alpha+cx[3]*pixels[11].alpha)+cy[3]*(cx[0]*pixels[12].alpha+
         cx[1]*pixels[13].alpha+cx[2]*pixels[14].alpha+cx[3]*pixels[15].alpha));
+      gamma=MagickSafeReciprocal(BicubicSum(cx,cy,alpha));
+      pixel->red*=gamma;
+      pixel->green*=gamma;
+      pixel->blue*=gamma;
+      if (image->colorspace == CMYKColorspace)
+        pixel->black*=gamma;
       break;
     }
   }
@@ -6437,7 +6462,7 @@ MagickExport MagickBooleanType SetPixelMetaChannels(Image *image,
 MagickExport MagickBooleanType SortImagePixels(Image *image,
   ExceptionInfo *exception)
 {
-#define SolarizeImageTag  "Solarize/Image"
+#define SortImageTag  "Sort/Image"
 
   CacheView
     *image_view;
@@ -6526,7 +6551,7 @@ MagickExport MagickBooleanType SortImagePixels(Image *image,
         #pragma omp atomic
 #endif
         progress++;
-        proceed=SetImageProgress(image,SolarizeImageTag,progress,image->rows);
+        proceed=SetImageProgress(image,SortImageTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }

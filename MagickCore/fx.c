@@ -4550,7 +4550,7 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
             (fx_traits == UndefinedPixelTrait))
           continue;
         if ((fx_traits & CopyPixelTrait) != 0) {
-            SetPixelChannel (fx_image, channel, p[i], q);
+            SetPixelChannel(fx_image, channel,p[i],q);
             continue;
         }
 
@@ -4559,7 +4559,8 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
           break;
         }
 
-        q[i] = ClampToQuantum ((MagickRealType) (QuantumRange*result));
+        SetPixelChannel(fx_image,channel,ClampToQuantum((MagickRealType)
+          (QuantumRange*result)),q);
       }
       if (status == MagickFalse)
         break;

@@ -73,6 +73,7 @@
 /*
   Define declarations.
 */
+#define DefaultWhiteLuminance  10000.0
 #define MaximumLogarithmicColorspace  1024.0
 #define DisplayGamma  (1.0/1.7)
 #define FilmGamma  0.6
@@ -124,20 +125,58 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickPrivate void ConformPixelInfoColorspace(const Image *image,
-  PixelInfo *pixel,ExceptionInfo *exception)
+
+static IlluminantType GetColorspaceIlluminant(const Image *image)
+{
+  const char
+    *value;
+
+  ssize_t
+    illuminant_type;
+
+  value=GetImageArtifact(image,"color:illuminant");
+  if (value == (const char *) NULL)
+    return(D65Illuminant);
+  illuminant_type=ParseCommandOption(MagickIlluminantOptions,MagickFalse,
+    value);
+  if (illuminant_type < 0)
+    return(UndefinedIlluminant);
+  return((IlluminantType) illuminant_type);
+}
+
+static double GetColorspaceWhiteLuminance(const Image *image,
+  ExceptionInfo *exception)
 {
   const char
     *value;
 
   double
+    white_luminance;
+
+  /*
+    The white luminance divides into the Jzazbz transfer function, so reject
+    anything that is not a finite, positive number.
+  */
+  value=GetImageProperty(image,"white-luminance",exception);
+  if (value == (const char *) NULL)
+    return(DefaultWhiteLuminance);
+  white_luminance=StringToDouble(value,(char **) NULL);
+  if ((isfinite(white_luminance) == 0) || (white_luminance <= 0.0))
+    return(DefaultWhiteLuminance);
+  return(white_luminance);
+}
+
+MagickPrivate void ConformPixelInfoColorspace(const Image *image,
+  PixelInfo *pixel,ExceptionInfo *exception)
+{
+  double
     blue,
     green,
     red,
-    white_luminance = 10000.0;
+    white_luminance;
 
   IlluminantType
-    illuminant = D65Illuminant;
+    illuminant;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickCoreSignature);
@@ -146,22 +185,8 @@ MagickPrivate void ConformPixelInfoColorspace(const Image *image,
       (pixel->colorspace == CMYKColorspace) ||
       (IssRGBCompatibleColorspace(pixel->colorspace) != MagickFalse))
     return;
-  value=GetImageArtifact(image,"color:illuminant");
-  if (value != (const char *) NULL)
-    {
-      ssize_t
-        illuminant_type;
-
-      illuminant_type=ParseCommandOption(MagickIlluminantOptions,MagickFalse,
-        value);
-      if (illuminant_type < 0)
-        illuminant=UndefinedIlluminant;
-      else
-        illuminant=(IlluminantType) illuminant_type;
-    }
-  value=GetImageProperty(image,"white-luminance",exception);
-  if (value != (const char *) NULL)
-    white_luminance=StringToDouble(value,(char **) NULL);
+  illuminant=GetColorspaceIlluminant(image);
+  white_luminance=GetColorspaceWhiteLuminance(image,exception);
   ConvertGenericToRGB(pixel->colorspace,QuantumScale*pixel->red,
     QuantumScale*pixel->green,QuantumScale*pixel->blue,white_luminance,
     illuminant,&red,&green,&blue);
@@ -387,7 +412,7 @@ MagickPrivate void ConvertGenericToRGB(const ColorspaceType colorspace,
 %  ConvertHSLToRGB() transforms a (hue, saturation, lightness) to a (red,
 %  green, blue) triple.
 %
-%  The format of the ConvertHSLToRGBImage method is:
+%  The format of the ConvertHSLToRGB method is:
 %
 %      void ConvertHSLToRGB(const double hue,const double saturation,
 %        const double lightness,double *red,double *green,double *blue)
@@ -397,7 +422,8 @@ MagickPrivate void ConvertGenericToRGB(const ColorspaceType colorspace,
 %    o hue, saturation, lightness: A double value representing a
 %      component of the HSL color space.
 %
-%    o red, green, blue: A pointer to a pixel component of type Quantum.
+%    o red, green, blue: A pointer to a double value representing the
+%      sRGB red, green, and blue components, scaled to [0..QuantumRange].
 %
 */
 MagickExport void ConvertHSLToRGB(const double hue,const double saturation,
@@ -681,7 +707,7 @@ MagickPrivate void ConvertRGBToGeneric(const ColorspaceType colorspace,
 %  A description of each parameter follows:
 %
 %    o red, green, blue: A Quantum value representing the red, green, and
-%      blue component of a pixel..
+%      blue component of a pixel.
 %
 %    o hue, saturation, lightness: A pointer to a double value representing a
 %      component of the HSL color space.
@@ -795,7 +821,7 @@ MagickExport ColorspaceType GetImageColorspaceType(const Image *image,
 %
 %  sRGBTransformImage() converts the reference image from sRGB to an alternate
 %  colorspace.  The transformation matrices are not the standard ones: the
-%  weights are rescaled to normalized the range of the transformed values to
+%  weights are rescaled to normalize the range of the transformed values to
 %  be [0..QuantumRange].
 %
 %  The format of the sRGBTransformImage method is:
@@ -844,9 +870,11 @@ static void GetLogParameters(const Image *image,double *density,
   *density=DisplayGamma;
   *gamma=DisplayGamma;
   value=GetLogProperty(image,"gamma",0.0,exception);
-  if (value != 0.0)
+  if (value > 0.0)
     *gamma=MagickSafeReciprocal(value);
   *film_gamma=GetLogProperty(image,"film-gamma",FilmGamma,exception);
+  if (*film_gamma <= 0.0)
+    *film_gamma=FilmGamma;
   *reference_black=GetLogProperty(image,"reference-black",ReferenceBlack,
     exception);
   *reference_white=GetLogProperty(image,"reference-white",ReferenceWhite,
@@ -858,6 +886,7 @@ static void GetLogParameters(const Image *image,double *density,
   if (*reference_black > *reference_white)
     *reference_black=*reference_white;
 }
+
 static MagickBooleanType sRGBTransformImage(Image *image,
   const ColorspaceType colorspace,ExceptionInfo *exception)
 {
@@ -866,11 +895,8 @@ static MagickBooleanType sRGBTransformImage(Image *image,
   CacheView
     *image_view;
 
-  const char
-    *artifact;
-
   IlluminantType
-    illuminant = D65Illuminant;
+    illuminant;
 
   MagickBooleanType
     status;
@@ -897,19 +923,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
   assert(colorspace != UndefinedColorspace);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  artifact=GetImageArtifact(image,"color:illuminant");
-  if (artifact != (const char *) NULL)
-    {
-      ssize_t
-        illuminant_type;
-
-      illuminant_type=ParseCommandOption(MagickIlluminantOptions,MagickFalse,
-        artifact);
-      if (illuminant_type < 0)
-        illuminant=UndefinedIlluminant;
-      else
-        illuminant=(IlluminantType) illuminant_type;
-    }
+  illuminant=GetColorspaceIlluminant(image);
   status=MagickTrue;
   progress=0;
   switch (colorspace)
@@ -982,7 +996,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
     case LinearGRAYColorspace:
     {
       /*
-        Transform image from sRGB to GRAY.
+        Transform image from sRGB to linear GRAY.
       */
       if (image->storage_class == PseudoClass)
         {
@@ -1120,18 +1134,13 @@ static MagickBooleanType sRGBTransformImage(Image *image,
     case YPbPrColorspace:
     case YUVColorspace:
     {
-      const char
-        *value;
-
       double
-        white_luminance = 10000.0;
+        white_luminance;
 
       /*
         Transform image from sRGB to target colorspace.
       */
-      value=GetImageProperty(image,"white-luminance",exception);
-      if (value != (const char *) NULL)
-        white_luminance=StringToDouble(value,(char **) NULL);
+      white_luminance=GetColorspaceWhiteLuminance(image,exception);
       if (image->storage_class == PseudoClass)
         {
           if (SyncImage(image,exception) == MagickFalse)
@@ -1637,7 +1646,8 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         image->colormap[i].green=(double) ScaleMapToQuantum(pixel.green);
         image->colormap[i].blue=(double) ScaleMapToQuantum(pixel.blue);
       }
-      (void) SyncImage(image,exception);
+      if (SyncImage(image,exception) == MagickFalse)
+        status=MagickFalse;
       break;
     }
   }
@@ -1749,7 +1759,7 @@ MagickExport MagickBooleanType SetImageColorspace(Image *image,
 %
 %  The format of the SetImageGray method is:
 %
-%      MagickBooleanType SetImageGray(const Image *image,
+%      MagickBooleanType SetImageGray(Image *image,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1834,7 +1844,7 @@ MagickExport MagickBooleanType SetImageMonochrome(Image *image,
   if (is_bilevel == MagickFalse)
     return(MagickFalse);
   image->colorspace=GRAYColorspace;
-  if (SyncImagePixelCache((Image *) image,exception) == MagickFalse)
+  if (SyncImagePixelCache(image,exception) == MagickFalse)
     return(MagickFalse);
   image->type=BilevelType;
   return(MagickTrue);
@@ -1933,7 +1943,7 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
 
 static inline ssize_t RoundToYCC(const double value)
 {
-  if (value <= 0.0)
+  if ((isnan(value) != 0) || (value <= 0.0))
     return(0);
   if (value >= 1388.0)
     return(1388);
@@ -2185,11 +2195,8 @@ static MagickBooleanType TransformsRGBImage(Image *image,
   CacheView
     *image_view;
 
-  const char
-    *artifact;
-
   IlluminantType
-    illuminant = D65Illuminant;
+    illuminant;
 
   MagickBooleanType
     status;
@@ -2210,19 +2217,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
   assert(image->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  artifact=GetImageArtifact(image,"color:illuminant");
-  if (artifact != (const char *) NULL)
-    {
-      ssize_t
-        illuminant_type;
-
-      illuminant_type=ParseCommandOption(MagickIlluminantOptions,MagickFalse,
-        artifact);
-      if (illuminant_type < 0)
-        illuminant=UndefinedIlluminant;
-      else
-        illuminant=(IlluminantType) illuminant_type;
-    }
+  illuminant=GetColorspaceIlluminant(image);
   status=MagickTrue;
   progress=0;
   switch (image->colorspace)
@@ -2438,19 +2433,13 @@ static MagickBooleanType TransformsRGBImage(Image *image,
     case YPbPrColorspace:
     case YUVColorspace:
     {
-      const char
-        *value;
-
       double
         white_luminance;
 
       /*
         Transform image from source colorspace to sRGB.
       */
-      white_luminance=10000.0;
-      value=GetImageProperty(image,"white-luminance",exception);
-      if (value != (const char *) NULL)
-        white_luminance=StringToDouble(value,(char **) NULL);
+      white_luminance=GetColorspaceWhiteLuminance(image,exception);
       if (image->storage_class == PseudoClass)
         {
           if (SyncImage(image,exception) == MagickFalse)
@@ -2546,7 +2535,8 @@ static MagickBooleanType TransformsRGBImage(Image *image,
       if (image->storage_class == PseudoClass)
         {
           if ((SyncImage(image,exception) == MagickFalse) ||
-              (SetImageStorageClass(image,DirectClass,exception) == MagickFalse))
+              (SetImageStorageClass(image,DirectClass,exception) ==
+               MagickFalse))
             {
               logmap=(Quantum *) RelinquishMagickMemory(logmap);
               return(MagickFalse);
@@ -2976,7 +2966,8 @@ static MagickBooleanType TransformsRGBImage(Image *image,
         image->colormap[i].green=(double) ClampToQuantum(pixel.green);
         image->colormap[i].blue=(double) ClampToQuantum(pixel.blue);
       }
-      (void) SyncImage(image,exception);
+      if (SyncImage(image,exception) == MagickFalse)
+        status=MagickFalse;
       break;
     }
   }
@@ -2988,5 +2979,5 @@ static MagickBooleanType TransformsRGBImage(Image *image,
   x_map=(TransformPacket *) RelinquishMagickMemory(x_map);
   if (SetImageColorspace(image,sRGBColorspace,exception) == MagickFalse)
     return(MagickFalse);
-  return(MagickTrue);
+  return(status);
 }
