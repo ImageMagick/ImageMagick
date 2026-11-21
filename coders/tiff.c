@@ -1139,6 +1139,38 @@ static void TIFFReadPhotoshopLayers(const ImageInfo *image_info,Image *image,
 }
 #endif
 
+static MagickBooleanType TIFFReadNextDirectory(TIFF *tiff,
+  ExceptionInfo *exception)
+{
+  ExceptionInfo
+    *directory_exception;
+
+  int
+    status;
+
+  MagickBooleanType
+    skip;
+
+  /*
+    Advance to the next IFD.
+  */
+  directory_exception=AcquireExceptionInfo();
+  (void) SetMagickThreadValue(tiff_exception,directory_exception);
+  status=TIFFReadDirectory(tiff);
+  (void) SetMagickThreadValue(tiff_exception,exception);
+  skip=MagickFalse;
+  if ((status == 0) && (directory_exception->reason != (char *) NULL) &&
+      (strstr(directory_exception->reason,"missing required") != (char *) NULL))
+    skip=MagickTrue;
+  if (skip != MagickFalse)
+    (void) ThrowMagickException(exception,GetMagickModule(),CoderWarning,
+      directory_exception->reason,"`%s'","skipping non-image TIFF directory");
+  else
+    InheritException(exception,directory_exception);
+  directory_exception=DestroyExceptionInfo(directory_exception);
+  return(status != 0 ? MagickTrue : MagickFalse);
+}
+
 static Image *ReadTIFFImageInternal(const ImageInfo *image_info,
   MagickBooleanType *is_dng,ExceptionInfo *exception)
 {
@@ -2240,7 +2272,8 @@ static Image *ReadTIFFImageInternal(const ImageInfo *image_info,
     if (image_info->number_scenes != 0)
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
-    more_frames=TIFFReadDirectory(tiff) != 0 ? MagickTrue : MagickFalse;
+    more_frames=TIFFReadNextDirectory(tiff,exception) != 0 ? MagickTrue :
+      MagickFalse;
     if (more_frames != MagickFalse)
       {
         /*
