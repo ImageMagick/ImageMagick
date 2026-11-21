@@ -18,7 +18,7 @@
 #
 . ./common.shi
 . ${srcdir}/tests/common.shi
-echo "1..33"
+echo "1..34"
 
 ${MAGICK} pnm:- null:   < ${SRCDIR}/rose.pnm && echo "ok" || echo "not ok"
 ${MAGICK} pnm:- info:   < ${SRCDIR}/rose.pnm && echo "ok" || echo "not ok"
@@ -214,4 +214,20 @@ for method in Rec601Luma Rec601Luminance Rec709Luma Rec709Luminance; do
   fi
   test_number=$((test_number+1))
 done
+
+# A SIXEL repeat run that ends on the last pixel of the canvas must decode.
+pipe_sixel_input=cli-pipe-sixel-input.six
+rm -f "$pipe_sixel_input"
+{ printf '\033Pq"1;1;2048;2052#1;2;100;0;0#1'
+  printf '%341s' '' | tr ' ' '-'
+  printf '!2048_\033\\\n'
+  printf '%2300s\n' ''; } >"$pipe_sixel_input"
+pixels=`LC_ALL=C ${MAGICK} "SIXEL:$pipe_sixel_input" \
+  -format '%wx%h|%[pixel:p{0,2051}]|%[pixel:p{2047,2051}]' info:- 2>/dev/null`
+if [ "X$pixels" = 'X2048x2052|srgb(255,0,0)|srgb(255,0,0)' ]; then
+  echo "ok 34 - SIXEL repeat run ending on the last pixel"
+else
+  echo "not ok 34 - SIXEL repeat run ending on the last pixel: $pixels"
+fi
+rm -f "$pipe_sixel_input"
 :
