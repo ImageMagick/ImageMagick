@@ -1699,7 +1699,8 @@ static MagickBooleanType CopyDelegateFile(const char *source,
     quantum = 0;
 
   struct stat
-    attributes = { 0 };
+    attributes = { 0 },
+    source_attributes = { 0 };
 
   unsigned char
     *buffer;
@@ -1715,7 +1716,7 @@ static MagickBooleanType CopyDelegateFile(const char *source,
   if (IsPathAuthorized(WritePolicyRights,destination) == MagickFalse)
     ThrowPolicyException(source,MagickFalse);
   destination_file=open_utf8(destination,O_WRONLY | O_CLOEXEC | O_BINARY |
-    O_CREAT | O_NOFOLLOW | (overwrite != MagickFalse ? O_TRUNC : 0),S_MODE);
+    O_CREAT | O_NOFOLLOW,S_MODE);
   if (destination_file == -1)
     return(MagickFalse);
   if (IsPathAuthorized(WritePolicyRights,destination) == MagickFalse)
@@ -1730,6 +1731,23 @@ static MagickBooleanType CopyDelegateFile(const char *source,
     {
       (void) close_utf8(destination_file);
       return(MagickFalse);
+    }
+  if ((overwrite != MagickFalse) &&
+      (fstat(source_file,&source_attributes) == 0) &&
+      (fstat(destination_file,&attributes) == 0) &&
+      (attributes.st_size > source_attributes.st_size))
+    {
+      /*
+        Discard contents when the destination is larger than the source.
+      */
+      (void) close_utf8(destination_file);
+      destination_file=open_utf8(destination,O_WRONLY | O_CLOEXEC | O_BINARY |
+        O_CREAT | O_NOFOLLOW | O_TRUNC,S_MODE);
+      if (destination_file == -1)
+        {
+          (void) close_utf8(source_file);
+          return(MagickFalse);
+        }
     }
   quantum=(size_t) MagickMaxBufferExtent;
   if ((fstat(source_file,&attributes) == 0) && (attributes.st_size > 0))

@@ -91,7 +91,7 @@ struct _TokenInfo
 %
 %  The format of the AcquireTokenInfo method is:
 %
-%      TokenInfo *AcquireTokenInfo()
+%      TokenInfo *AcquireTokenInfo(void)
 %
 */
 MagickExport TokenInfo *AcquireTokenInfo(void)
@@ -100,6 +100,7 @@ MagickExport TokenInfo *AcquireTokenInfo(void)
     *token_info;
 
   token_info=(TokenInfo *) AcquireCriticalMemory(sizeof(*token_info));
+  (void) memset(token_info,0,sizeof(*token_info));
   token_info->signature=MagickCoreSignature;
   return(token_info);
 }
@@ -115,7 +116,7 @@ MagickExport TokenInfo *AcquireTokenInfo(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyTokenInfo() deallocates memory associated with an TokenInfo
+%  DestroyTokenInfo() deallocates memory associated with a TokenInfo
 %  structure.
 %
 %  The format of the DestroyTokenInfo method is:
@@ -124,7 +125,7 @@ MagickExport TokenInfo *AcquireTokenInfo(void)
 %
 %  A description of each parameter follows:
 %
-%    o token_info: Specifies a pointer to an TokenInfo structure.
+%    o token_info: Specifies a pointer to a TokenInfo structure.
 %
 */
 MagickExport TokenInfo *DestroyTokenInfo(TokenInfo *token_info)
@@ -151,7 +152,7 @@ MagickExport TokenInfo *DestroyTokenInfo(TokenInfo *token_info)
 %
 %  GetNextToken() gets a token from the token stream.  A token is defined as
 %  a sequence of characters delimited by whitespace (e.g. clip-path), a
-%  sequence delimited with quotes (.e.g "Quote me"), or a sequence enclosed in
+%  sequence delimited with quotes (e.g. "Quote me"), or a sequence enclosed in
 %  parenthesis (e.g. rgb(0,0,0)).  GetNextToken() also recognizes these
 %  separator characters: ':', '=', ',', and ';'.  GetNextToken() returns the
 %  length of the consumed token.
@@ -191,6 +192,7 @@ MagickExport magick_hot_spot size_t GetNextToken(
 
   assert(start != (const char *) NULL);
   assert(token != (char *) NULL);
+  assert(extent != 0);
   i=0;
   p=start;
   while ((isspace((int) ((unsigned char) *p)) != 0) && (*p != '\0'))
@@ -352,28 +354,62 @@ MagickExport magick_hot_spot size_t GetNextToken(
 %
 */
 
-static MagickBooleanType GlobExpression_(const char *magick_restrict expression,
+static inline int GlobFoldCase(const int code)
+{
+  if ((code >= 'A') && (code <= 'Z'))
+    return(code-'A'+'a');
+  return(code);
+}
+
+static inline MagickBooleanType GlobInRange(const int code,const int low,
+  const int high,const MagickBooleanType case_insensitive)
+{
+  if ((code >= low) && (code <= high))
+    return(MagickTrue);
+  if (case_insensitive != MagickFalse)
+    {
+      int
+        other;
+
+      other=code;
+      if ((code >= 'a') && (code <= 'z'))
+        other=code-'a'+'A';
+      else
+        if ((code >= 'A') && (code <= 'Z'))
+          other=code-'A'+'a';
+      if ((other != code) && (other >= low) && (other <= high))
+        return(MagickTrue);
+    }
+  return(MagickFalse);
+}
+
+static int GlobExpression_(const char *magick_restrict expression,
   const char *magick_restrict pattern,const MagickBooleanType case_insensitive,
   const size_t depth)
 {
+#define GlobNoMatch  0
+#define GlobMatched  1
+#define GlobAbort  (-1)
+
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
+#define MagickGlobEscapes
+#endif
+
   if (depth >= MagickMaxRecursionDepth)
     {
       errno=EOVERFLOW;
-      return(MagickFalse);
+      return(GlobAbort);
     }
   /*
-    Empty pattern or single '*' always matches.
+    A lone '*' always matches.
   */
-  if (pattern == (const char *) NULL)
-    return(MagickTrue);
-  if (GetUTFCode(pattern) == 0)
-    return(MagickTrue);
   if ((GetUTFCode(pattern) == '*') &&
       (GetUTFCode(pattern+GetUTFOctets(pattern)) == 0))
-    return(MagickTrue);
+    return(GlobMatched);
   if ((strchr(pattern,'{') == NULL) &&
       (strchr(pattern,'*') == NULL) &&
-      (strchr(pattern,'?') == NULL))
+      (strchr(pattern,'?') == NULL) &&
+      (strchr(pattern,'[') != NULL))
     {
       char
         path[MagickPathExtent]= { 0 };
@@ -383,7 +419,7 @@ static MagickBooleanType GlobExpression_(const char *magick_restrict expression,
       */
       GetPathComponent(pattern,SubimagePath,path);
       if (*path != '\0')
-        return(MagickFalse);
+        return(GlobNoMatch);
     }
   while (GetUTFCode(pattern) != 0)
   {
@@ -405,32 +441,33 @@ static MagickBooleanType GlobExpression_(const char *magick_restrict expression,
           pattern+=GetUTFOctets(pattern);
         }
         while (GetUTFCode(pattern) == '*');
+        if (GetUTFCode(pattern) == 0)
+          return(GlobMatched);
         while (1)
         {
+          int
+            status;
+
           /*
             Try to match at each position.
           */
-          if (GlobExpression_(expression,pattern,case_insensitive,depth+1) != MagickFalse)
-            {
-              /*
-                Consume rest of expression and pattern.
-              */
-              while (GetUTFCode(expression) != 0)
-                expression+=GetUTFOctets(expression);
-              while (GetUTFCode(pattern) != 0)
-                pattern+=GetUTFOctets(pattern);
-              return(MagickTrue);
-            }
-            if (GetUTFCode(expression) == 0)
-              break;
-            expression+=GetUTFOctets(expression);
-          }
-        return(MagickFalse);
+          status=GlobExpression_(expression,pattern,case_insensitive,depth+1);
+          if (status != GlobNoMatch)
+            return(status);
+          if (GetUTFCode(expression) == 0)
+            break;
+          expression+=GetUTFOctets(expression);
+        }
+        /*
+          Every suffix of the expression has been tried: no earlier '*' can do
+          better by consuming more.
+        */
+        return(GlobAbort);
       }
       case '?':
       {
         if (ecode == 0)
-          return(MagickFalse);
+          return(GlobNoMatch);
         pattern+=GetUTFOctets(pattern);
         expression+=GetUTFOctets(expression);
         break;
@@ -445,18 +482,30 @@ static MagickBooleanType GlobExpression_(const char *magick_restrict expression,
           matched = MagickFalse;
 
         if (ecode == 0)
-          return(MagickFalse);
+          return(GlobNoMatch);
+        /*
+          Find the closing ']'; a backslash escapes the next character.
+        */
         while ((GetUTFCode(q) != 0) && (GetUTFCode(q) != ']'))
+        {
+          if (GetUTFCode(q) == '\\')
+            {
+              q+=GetUTFOctets(q);
+              if (GetUTFCode(q) == 0)
+                break;
+            }
           q+=GetUTFOctets(q);
+        }
         if (GetUTFCode(q) == 0)
-          return(MagickFalse);  /* malformed */
+          return(GlobNoMatch);  /* malformed */
         while (p < q)
         {
           const char
             *next;
 
           int
-            code = GetUTFCode(p);
+            code = GetUTFCode(p),
+            high;
 
           size_t
             octets = GetUTFOctets(p);
@@ -468,150 +517,125 @@ static MagickBooleanType GlobExpression_(const char *magick_restrict expression,
               octets=GetUTFOctets(p);
             }
           next=p+octets;
+          high=code;
           if ((next < q) && (GetUTFCode(next) == '-'))
             {
-              int
-                ncode;
+              const char
+                *range;
 
-              next+=GetUTFOctets(next);
-              ncode=GetUTFCode(next);
-              if (ncode == '\\')
+              /*
+                A '-' immediately before the closing ']' is a literal.
+              */
+              range=next+GetUTFOctets(next);
+              if (range < q)
                 {
-                  next+=GetUTFOctets(next);
-                  ncode=GetUTFCode(next);
+                  high=GetUTFCode(range);
+                  if (high == '\\')
+                    {
+                      range+=GetUTFOctets(range);
+                      high=GetUTFCode(range);
+                    }
+                  next=range+GetUTFOctets(range);
                 }
-              if ((ecode >= code) && (ecode <= ncode))
-                matched=MagickTrue;
-              p=next+GetUTFOctets(next);
             }
-          else
-            {
-              if (ecode == code)
-                matched=MagickTrue;
-              p+=octets;
-            }
+          if (GlobInRange(ecode,code,high,case_insensitive) != MagickFalse)
+            matched=MagickTrue;
+          p=next;
         }
-        /*
-          Skip consecutive '*'.
-        */
         if (matched == MagickFalse)
-          return(MagickFalse);
+          return(GlobNoMatch);
         pattern=q+GetUTFOctets(q);  /* skip ']' */
         expression+=GetUTFOctets(expression);
         break;
       }
       case '{':
       {
-        char
-          *a,
-          *alternative;
-
         const char
-          *p,
-          *q;
+          *alternative,
+          *end,
+          *rest;
 
         size_t
-          remaining = MagickPathExtent;
+          rest_length;
 
-        pattern+=GetUTFOctets(pattern);  /* Skip '{' */
-        if (GetUTFCode(pattern) == 0)
-          return(MagickFalse);
         /*
-          End of brace expression: append remaining pattern.
+          Locate the closing brace.  Each alternative is matched together with
+          the remainder of the pattern.
         */
-        p=pattern;
-        while ((GetUTFCode(p) != 0) && (GetUTFCode(p) != '}'))
+        alternative=pattern+GetUTFOctets(pattern);  /* skip '{' */
+        end=alternative;
+        while ((GetUTFCode(end) != 0) && (GetUTFCode(end) != '}'))
         {
-#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
-          if (GetUTFCode(p) == '\\')
+#if defined(MagickGlobEscapes)
+          if (GetUTFCode(end) == '\\')
             {
-              p+=GetUTFOctets(p);
-              if (GetUTFCode(p) == 0)
+              end+=GetUTFOctets(end);
+              if (GetUTFCode(end) == 0)
                 break;
             }
 #endif
-          p+=GetUTFOctets(p);
+          end+=GetUTFOctets(end);
         }
-        if (GetUTFCode(p) != '}')
-          return(MagickFalse);  /* malformed */
-        q=p+GetUTFOctets(p);
-        alternative=AcquireString(pattern);
-        a=alternative;
+        if (GetUTFCode(end) != '}')
+          return(GlobNoMatch);  /* malformed */
+        rest=end+GetUTFOctets(end);
+        rest_length=strlen(rest);
         while (1)
         {
+          char
+            *subpattern;
+
+          const char
+            *next;
+
           int
-            code = GetUTFCode(pattern);
+            status;
 
           size_t
-            octets;
+            length;
 
-          if ((code == 0) || (code == ',') || (code == '}'))
-            {
-              char
-                *subpattern;
-
-              MagickBooleanType
-                match;
-
-              /*
-                Try alternative as a full sub-pattern.
-              */
-              *a='\0';
-              subpattern=AcquireString(alternative);
-              if (ConcatenateString(&subpattern,q) == MagickFalse)
-                {
-                  subpattern=DestroyString(subpattern);
-                  alternative=DestroyString(alternative);
-                  return(MagickFalse);
-                }
-              match=GlobExpression_(expression,subpattern,case_insensitive,
-                depth+1);
-              subpattern=DestroyString(subpattern);
-              if (match != MagickFalse)
-                {
-                  /*
-                    Consume rest of expression and pattern.
-                  */
-                  while (GetUTFCode(expression) != 0)
-                    expression+=GetUTFOctets(expression);
-                  pattern=q;
-                  while (GetUTFCode(pattern) != 0)
-                    pattern+=GetUTFOctets(pattern);
-                  alternative=DestroyString(alternative);
-                  return(MagickTrue);
-                }
-              /*
-                Reset buffer for next alternative.
-              */
-              a=alternative;
-              remaining=MagickPathExtent;
-              if (code == ',')
-                {
-                  pattern+=GetUTFOctets(pattern);  /* skip ',' */
-                  continue;
-                }
-              break;  /* '}' or end */
-            }
           /*
-            Copy UTF-8 sequence into alternative.
+            Find the end of this alternative (an escaped ',' does not split).
           */
-          octets=GetUTFOctets(pattern);
-          if ((octets == 0) || (octets >= remaining))
+          next=alternative;
+          while ((next < end) && (GetUTFCode(next) != ','))
+          {
+#if defined(MagickGlobEscapes)
+            if (GetUTFCode(next) == '\\')
+              next+=GetUTFOctets(next);
+#endif
+            next+=GetUTFOctets(next);
+          }
+          if (next > end)
+            next=end;
+          length=(size_t) (next-alternative);
+          subpattern=(char *) AcquireQuantumMemory(length+rest_length+1,
+            sizeof(*subpattern));
+          if (subpattern == (char *) NULL)
+            {
+              errno=ENOMEM;
+              return(GlobAbort);
+            }
+          (void) memcpy(subpattern,alternative,length);
+          (void) memcpy(subpattern+length,rest,rest_length+1);
+          status=GlobExpression_(expression,subpattern,case_insensitive,
+            depth+1);
+          subpattern=(char *) RelinquishMagickMemory(subpattern);
+          if (status == GlobMatched)
+            return(GlobMatched);
+          if (next >= end)
             break;
-          (void) memcpy(a,pattern,octets);
-          a+=octets;
-          remaining-=octets;
-          pattern+=octets;
+          alternative=next+GetUTFOctets(next);  /* skip ',' */
         }
-        alternative=DestroyString(alternative);
-        return(MagickFalse);
+        return(GlobNoMatch);
       }
-#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
+#if defined(MagickGlobEscapes)
       case '\\':
       {
         pattern+=GetUTFOctets(pattern);
-        if (GetUTFCode(pattern) == 0)
-          return(MagickFalse);
+        pcode=GetUTFCode(pattern);
+        if (pcode == 0)
+          return(GlobNoMatch);
         magick_fallthrough;
       }
 #endif
@@ -622,14 +646,14 @@ static MagickBooleanType GlobExpression_(const char *magick_restrict expression,
           pc = pcode;
 
         if (ecode == 0)
-          return(MagickFalse);
+          return(GlobNoMatch);
         if (case_insensitive != MagickFalse)
           {
-            pc=LocaleToLowercase(pc);
-            ec=LocaleToLowercase(ec);
+            pc=GlobFoldCase(pc);
+            ec=GlobFoldCase(ec);
           }
         if (pc != ec)
-          return(MagickFalse);
+          return(GlobNoMatch);
         pattern+=GetUTFOctets(pattern);
         expression+=GetUTFOctets(expression);
         break;
@@ -639,14 +663,21 @@ static MagickBooleanType GlobExpression_(const char *magick_restrict expression,
   while (GetUTFCode(pattern) == '*')
     pattern+=GetUTFOctets(pattern);
   return(((GetUTFCode(expression) == 0) &&
-          (GetUTFCode(pattern) == 0)) ? MagickTrue : MagickFalse);
+          (GetUTFCode(pattern) == 0)) ? GlobMatched : GlobNoMatch);
 }
 
 MagickExport MagickBooleanType GlobExpression(
   const char *magick_restrict expression,const char *magick_restrict pattern,
   const MagickBooleanType case_insensitive)
 {
-  return(GlobExpression_(expression,pattern,case_insensitive,0));
+  if (pattern == (const char *) NULL)
+    return(MagickTrue);
+  if (GetUTFCode(pattern) == 0)
+    return(MagickTrue);
+  if (expression == (const char *) NULL)
+    return(MagickFalse);
+  return(GlobExpression_(expression,pattern,case_insensitive,0) == GlobMatched ?
+    MagickTrue : MagickFalse);
 }
 
 /*
@@ -665,7 +696,7 @@ MagickExport MagickBooleanType GlobExpression(
 %
 %  The format of the IsGlob method is:
 %
-%      MagickBooleanType IsGlob(const char *geometry)
+%      MagickBooleanType IsGlob(const char *path)
 %
 %  A description of each parameter follows:
 %
@@ -674,12 +705,10 @@ MagickExport MagickBooleanType GlobExpression(
 */
 MagickPrivate MagickBooleanType IsGlob(const char *path)
 {
-  MagickBooleanType
-    status = MagickFalse;
-
   const char
     *p;
 
+  assert(path != (const char *) NULL);
   if (IsPathAccessible(path) != MagickFalse)
     return(MagickFalse);
   for (p=path; *p != '\0'; p++)
@@ -692,15 +721,12 @@ MagickPrivate MagickBooleanType IsGlob(const char *path)
       case '}':
       case '[':
       case ']':
-      {
-        status=MagickTrue;
-        break;
-      }
+        return(MagickTrue);
       default:
         break;
     }
   }
-  return(status);
+  return(MagickFalse);
 }
 
 /*
@@ -725,7 +751,7 @@ MagickPrivate MagickBooleanType IsGlob(const char *path)
 %    o token: A single unit of information in the form of a group of
 %      characters.
 %
-%    o white space: Apace that gets ignored (except within quotes or when
+%    o white space: Space that gets ignored (except within quotes or when
 %      escaped), like blanks and tabs. in addition, white space terminates a
 %      non-quoted token.
 %
@@ -797,7 +823,7 @@ MagickPrivate MagickBooleanType IsGlob(const char *path)
 %
 %  A description of each parameter follows:
 %
-%    o flag: right now, only the low order 3 bits are used.
+%    o flag: right now, only the low order 2 bits are used.
 %
 %        1 => convert non-quoted tokens to upper case
 %        2 => convert non-quoted tokens to lower case
@@ -824,7 +850,7 @@ MagickPrivate MagickBooleanType IsGlob(const char *path)
 %
 %    o quote: a string of the valid quote characters. An example would be
 %
-%        char whitesp[]={"'\"");
+%        char quotes[]={"'\""};
 %
 %      (this causes single and double quotes to be valid) Note that a
 %      token starting with one of these characters needs the same quote
@@ -898,12 +924,12 @@ static void StoreToken(TokenInfo *token_info,char *string,
   {
     case 1:
     {
-      string[i]=(char) LocaleToUppercase(c);
+      string[i]=(char) LocaleToUppercase((int) ((unsigned char) c));
       break;
     }
     case 2:
     {
-      string[i]=(char) LocaleToLowercase(c);
+      string[i]=(char) LocaleToLowercase((int) ((unsigned char) c));
       break;
     }
     default:
@@ -922,6 +948,17 @@ MagickExport int Tokenizer(TokenInfo *token_info,const unsigned flag,
   ssize_t
     i;
 
+  assert(token_info != (TokenInfo *) NULL);
+  assert(token_info->signature == MagickCoreSignature);
+  assert(token != (char *) NULL);
+  assert(max_token_length != 0);
+  assert(line != (const char *) NULL);
+  assert(white != (const char *) NULL);
+  assert(break_set != (const char *) NULL);
+  assert(quote != (const char *) NULL);
+  assert(breaker != (char *) NULL);
+  assert(next != (int *) NULL);
+  assert(quoted != (char *) NULL);
   *breaker='\0';
   *quoted='\0';
   if (line[*next] == '\0')

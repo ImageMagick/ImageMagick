@@ -713,8 +713,8 @@ MagickExport char *ConstantString(const char *source)
 %
 %  The format of the CopyMagickString method is:
 %
-%      size_t CopyMagickString(const char *magick_restrict destination,
-%        char *magick_restrict source,const size_t length)
+%      size_t CopyMagickString(char *magick_restrict destination,
+%        const char *magick_restrict source,const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -1052,8 +1052,9 @@ MagickExport StringInfo *FileToStringInfo(const char *filename,
 %
 %  The format of the FormatMagickSize method is:
 %
-%      ssize_t FormatMagickSize(const MagickSizeType size,const char *suffix,
-%        const size_t length,char *format)
+%      ssize_t FormatMagickSize(const MagickSizeType size,
+%        const MagickBooleanType bi,const char *suffix,const size_t length,
+%        char *format)
 %
 %  A description of each parameter follows:
 %
@@ -1629,7 +1630,7 @@ MagickExport char *SanitizeStringForIdentifier(const char *source)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S a n t i z e S t r i n g                                                 %
+%   S a n i t i z e S t r i n g                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1819,7 +1820,7 @@ MagickExport void SetStringInfoName(StringInfo *string_info,const char *name)
   assert(string_info != (StringInfo *) NULL);
   assert(string_info->signature == MagickCoreSignature);
   assert(name != (const char *) NULL);
-  string_info->name=ConstantString(name);
+  (void) CloneString(&string_info->name,name);
 }
 
 /*
@@ -1851,7 +1852,7 @@ MagickExport void SetStringInfoPath(StringInfo *string_info,const char *path)
   assert(string_info != (StringInfo *) NULL);
   assert(string_info->signature == MagickCoreSignature);
   assert(path != (const char *) NULL);
-  string_info->path=ConstantString(path);
+  (void) CloneString(&string_info->path,path);
 }
 
 /*
@@ -1921,13 +1922,21 @@ MagickExport char *StringInfoToDigest(const StringInfo *signature)
   char
     *digest;
 
+  const StringInfo
+    *digest_info;
+
   SignatureInfo
     *signature_info;
 
+  assert(signature != (const StringInfo *) NULL);
+  assert(signature->signature == MagickCoreSignature);
   signature_info=AcquireSignatureInfo();
   UpdateSignature(signature_info,signature);
   FinalizeSignature(signature_info);
-  digest=StringInfoToHexString(GetSignatureDigest(signature_info));
+  digest=(char *) NULL;
+  digest_info=GetSignatureDigest(signature_info);
+  if (digest_info != (const StringInfo *) NULL)
+    digest=StringInfoToHexString(digest_info);
   signature_info=DestroySignatureInfo(signature_info);
   return(digest);
 }
@@ -1974,6 +1983,8 @@ MagickExport char *StringInfoToHexString(const StringInfo *string_info)
   unsigned char
     hex_digits[16];
 
+  assert(string_info != (const StringInfo *) NULL);
+  assert(string_info->signature == MagickCoreSignature);
   length=string_info->length;
   if (~length < MagickPathExtent)
     ThrowFatalException(ResourceLimitFatalError,"UnableToAcquireString");
@@ -2039,6 +2050,8 @@ MagickExport char *StringInfoToString(const StringInfo *string_info)
   size_t
     length;
 
+  assert(string_info != (const StringInfo *) NULL);
+  assert(string_info->signature == MagickCoreSignature);
   string=(char *) NULL;
   length=string_info->length;
   if (~length >= (MagickPathExtent-1))
@@ -2046,7 +2059,8 @@ MagickExport char *StringInfoToString(const StringInfo *string_info)
       sizeof(*string));
   if (string == (char *) NULL)
     return((char *) NULL);
-  (void) memcpy(string,(char *) string_info->datum,length*sizeof(*string));
+  if (length != 0)
+    (void) memcpy(string,(char *) string_info->datum,length*sizeof(*string));
   string[length]='\0';
   return(string);
 }
@@ -2315,7 +2329,7 @@ MagickExport char **StringToArgv(const char *text,int *argc)
 %
 %  The format of the StringToArrayOfDoubles method is:
 %
-%     double *StringToArrayOfDoubles(const char *string,size_t *count,
+%     double *StringToArrayOfDoubles(const char *string,ssize_t *count,
 %       ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -2386,7 +2400,11 @@ MagickExport double *StringToArrayOfDoubles(const char *string,ssize_t *count,
   {
     array[i++]=StringToDouble(p,&q);
     p=q;
-    while ((isspace((int) ((unsigned char) *p)) != 0) || (*p == ','))
+    while (isspace((int) ((unsigned char) *p)) != 0)
+      p++;
+    if (*p == ',')
+      p++;
+    while (isspace((int) ((unsigned char) *p)) != 0)
       p++;
   }
   return(array);
@@ -2509,9 +2527,9 @@ MagickExport char **StringToList(const char *text)
 %  string at each carriage return discovered.  The list is converted to HEX
 %  characters if any control characters are discovered within the text string.
 %
-%  The format of the StringToList method is:
+%  The format of the StringToStrings method is:
 %
-%      char **StringToList(const char *text,size_t *lines)
+%      char **StringToStrings(const char *text,size_t *count)
 %
 %  A description of each parameter follows:
 %
@@ -2608,6 +2626,7 @@ MagickExport char **StringToStrings(const char *text,size_t *count)
       for (i=0; i < (ssize_t) lines; i++)
       {
         size_t
+          chunk,
           length;
 
         textlist[i]=(char *) AcquireQuantumMemory(2UL*MagickPathExtent,
@@ -2620,26 +2639,28 @@ MagickExport char **StringToStrings(const char *text,size_t *count)
             return((char **) NULL);
           }
         (void) FormatLocaleString(textlist[i],MagickPathExtent,"0x%08lx: ",
-          (long) (CharsPerLine*i));
+          (unsigned long) (CharsPerLine*i));
         q=textlist[i]+strlen(textlist[i]);
         length=strlen(p);
-        for (j=1; j <= (ssize_t) MagickMin(length,CharsPerLine); j++)
+        chunk=MagickMin(length,CharsPerLine);
+        for (j=0; j < (ssize_t) chunk; j++)
         {
-          (void) FormatLocaleString(hex_string,MagickPathExtent,"%02x",*(p+j));
+          (void) FormatLocaleString(hex_string,MagickPathExtent,"%02x",
+            (unsigned int) ((unsigned char) p[j]));
           (void) CopyMagickString(q,hex_string,MagickPathExtent);
           q+=(ptrdiff_t) 2;
-          if ((j % 0x04) == 0)
+          if (((j+1) % 0x04) == 0)
             *q++=' ';
         }
-        for ( ; j <= CharsPerLine; j++)
+        for ( ; j < CharsPerLine; j++)
         {
           *q++=' ';
           *q++=' ';
-          if ((j % 0x04) == 0)
+          if (((j+1) % 0x04) == 0)
             *q++=' ';
         }
         *q++=' ';
-        for (j=1; j <= (ssize_t) MagickMin(length,CharsPerLine); j++)
+        for (j=0; j < (ssize_t) chunk; j++)
         {
           if (isprint((int) ((unsigned char) *p)) != 0)
             *q++=(*p);
@@ -2747,8 +2768,6 @@ MagickExport size_t StripMagickString(char *message)
   if (*message == '\0')
     return(0);
   length=strlen(message);
-  if (length == 1)
-    return(1);
   p=message;
   while (isspace((int) ((unsigned char) *p)) != 0)
     p++;
@@ -2760,12 +2779,18 @@ MagickExport size_t StripMagickString(char *message)
   if (q > p)
     if ((*q == '\'') || (*q == '"'))
       q--;
-  (void) memmove(message,p,(size_t) (q-p+1));
-  message[q-p+1]='\0';
+  if (q < p)
+    {
+      *message='\0';
+      return(0);
+    }
+  length=(size_t) (q-p+1);
+  (void) memmove(message,p,length);
+  message[length]='\0';
   for (p=message; *p != '\0'; p++)
     if (*p == '\n')
       *p=' ';
-  return((size_t) (q-p+1));
+  return(length);
 }
 
 /*
@@ -2816,21 +2841,27 @@ MagickExport MagickBooleanType SubstituteString(char **string,
   ssize_t
     offset;
 
+  assert(string != (char **) NULL);
+  assert(*string != (char *) NULL);
+  assert(search != (const char *) NULL);
+  assert(replace != (const char *) NULL);
+  if (*search == '\0')
+    return(MagickFalse);
   status=MagickFalse;
-  search_extent=0,
-  replace_extent=0;
-  for (p=strchr(*string,*search); p != (char *) NULL; p=strchr(p+1,*search))
+  search_extent=strlen(search);
+  replace_extent=strlen(replace);
+  p=strchr(*string,*search);
+  while (p != (char *) NULL)
   {
-    if (search_extent == 0)
-      search_extent=strlen(search);
     if (strncmp(p,search,search_extent) != 0)
-      continue;
+      {
+        p=strchr(p+1,*search);
+        continue;
+      }
     /*
       We found a match.
     */
     status=MagickTrue;
-    if (replace_extent == 0)
-      replace_extent=strlen(replace);
     if (replace_extent > search_extent)
       {
         /*
@@ -2850,8 +2881,9 @@ MagickExport MagickBooleanType SubstituteString(char **string,
     if (search_extent != replace_extent)
       (void) memmove(p+replace_extent,p+search_extent,
         strlen(p+search_extent)+1);
-    (void) memcpy(p,replace,replace_extent);
-    p+=(ptrdiff_t) replace_extent-1;
+    if (replace_extent != 0)
+      (void) memcpy(p,replace,replace_extent);
+    p=strchr(p+replace_extent,*search);
   }
   return(status);
 }

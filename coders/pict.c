@@ -1525,12 +1525,33 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
           }
         if (tile_image == (Image *) NULL)
           continue;
-        (void) SetImageExtent(image,
-          MagickMax(image->columns,tile_image->columns),
-          MagickMax(image->rows,tile_image->rows),exception);
-        (void) TransformImageColorspace(image,tile_image->colorspace,exception);
-        (void) CompositeImage(image,tile_image,CopyCompositeOp,MagickTrue,
-          (ssize_t) frame.left,(ssize_t) frame.right,exception);
+        {
+          size_t
+            columns,
+            rows;
+
+          columns=MagickMax(image->columns,tile_image->columns);
+          rows=MagickMax(image->rows,tile_image->rows);
+          if ((columns != image->columns) || (rows != image->rows))
+            {
+              /*
+                Clear added pixels them so they cannot leak process memory.
+              */
+              if ((SetImageExtent(image,columns,rows,exception) == MagickFalse) ||
+                  (ResetImagePixels(image,exception) == MagickFalse))
+                ThrowPICTException(ResourceLimitError,"UnableToReadImageData");
+            }
+        }
+        /*
+          The tile must lie entirely within the canvas.
+        */
+        if ((((MagickSizeType) frame.left+tile_image->columns) > image->columns) ||
+            (((MagickSizeType) frame.top+tile_image->rows) > image->rows))
+          ThrowPICTException(CorruptImageError,"ImproperImageHeader");
+        if (TransformImageColorspace(image,tile_image->colorspace,exception) == MagickFalse)
+          ThrowPICTException(CorruptImageError,"UnableToReadImageData");
+        if (CompositeImage(image,tile_image,CopyCompositeOp,MagickTrue,(ssize_t) frame.left,(ssize_t) frame.top,exception) == MagickFalse)
+          ThrowPICTException(CorruptImageError,"UnableToReadImageData");
         image->compression=tile_image->compression;
         tile_image=DestroyImage(tile_image);
         continue;

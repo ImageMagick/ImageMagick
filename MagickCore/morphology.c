@@ -43,7 +43,7 @@
 % This module provides not only a general morphology function, and the ability
 % to apply more advanced or iterative morphologies, but also functions for the
 % generation of many different types of kernel arrays from user supplied
-% arguments. Prehaps even the generation of a kernel from a small image.
+% arguments. Perhaps even the generation of a kernel from a small image.
 */
 
 /*
@@ -536,6 +536,8 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
           {
             if (kernel != (KernelInfo *) NULL)
               kernel=DestroyKernelInfo(kernel);
+            if (kernel_cache != (char *) NULL)
+              kernel_cache=DestroyString(kernel_cache);
             return((KernelInfo *) NULL);
           }
 
@@ -602,7 +604,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
 %       NOTE: that the 'radius' is optional, but if provided can limit (clip)
 %       the final size of the resulting kernel to a square 2*radius+1 in size.
 %       The radius should be at least 2 times that of the sigma value, or
-%       sever clipping and aliasing may result.  If not given or set to 0 the
+%       severe clipping and aliasing may result.  If not given or set to 0 the
 %       radius will be determined so as to produce the best minimal error
 %       result, which is usually much larger than is normally needed.
 %
@@ -788,7 +790,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
 %      the default FreiChen (type 0) kernel.  As such  FreiChen:45  will look
 %      like a  Sobel:45  but with 'sqrt(2)' instead of '2' values.
 %
-%      WARNING: The above was layed out as per
+%      WARNING: The above was laid out as per
 %          http://www.math.tau.ac.il/~turkel/notes/edge_detectors.pdf
 %      But rotated 90 degrees so direction is from left rather than the top.
 %      I have yet to find any secondary confirmation of the above. The only
@@ -816,7 +818,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
 %    Disk:[{radius}[,{scale}]]
 %       Generate a binary disk, thresholded at the radius given, the radius
 %       may be a float-point value. Final Kernel size is floor(radius)*2+1
-%       square. A radius of 5.3 is the default.
+%       square. The default is a radius of approximately 4.3 (a 9x9 kernel).
 %
 %       NOTE: That a low radii Disk kernels produce the same results as
 %       many of the previously defined kernels, but differ greatly at larger
@@ -1050,7 +1052,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           AcquireAlignedMemory(1,sizeof(*kernel->values)));
         if (kernel->values == (MagickRealType *) NULL)
           return(DestroyKernelInfo(kernel));
-        kernel->maximum = kernel->values[0] = args->rho;
+        kernel->values[0] = args->rho;
+        CalcKernelMetaData(kernel);  /* ranges, minimum and maximum */
         break;
       }
       break;
@@ -1168,7 +1171,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         ** It generates a gaussian 3 times the width, and compresses it into
         ** the expected range.  This produces a closer normalization of the
         ** resulting kernel, especially for very low sigma values.
-        ** As such while wierd it is prefered.
+        ** As such while weird it is preferred.
         **
         ** I am told this method originally came from Photoshop.
         **
@@ -1323,12 +1326,22 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         /* set all kernel values within diamond area to scale given */
         for ( i=0, v=0; v < (ssize_t)kernel->height; v++)
           {
-            size_t
-              alpha = order_f / ( fact((size_t) v) * fact(kernel->height-(size_t) v-1) );
+            /* Each binomial coefficient fits in a size_t, but their product
+            ** times order_f did not (orders >= 18 on 64-bit, >= 11 on 32-bit).
+            ** Form the product in floating point instead.
+            */
+            const double
+              alpha = (double) (order_f / ( fact((size_t) v) *
+                fact(kernel->height-(size_t) v-1) ));
 
             for ( u=0; u < (ssize_t)kernel->width; u++, i++)
-              kernel->positive_range += kernel->values[i] = (double)
-                (alpha * order_f / ( fact((size_t) u) * fact(kernel->height-(size_t) u-1) ));
+              {
+                const double
+                  beta = (double) (order_f / ( fact((size_t) u) *
+                    fact(kernel->width-(size_t) u-1) ));
+
+                kernel->positive_range += kernel->values[i] = alpha*beta;
+              }
           }
         kernel->minimum = 1.0;
         kernel->maximum = kernel->values[kernel->x+kernel->y*(ssize_t) kernel->width];
@@ -1691,7 +1704,9 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         {
           ssize_t
             limit1,
-            limit2,
+            limit2;
+
+          double
             scale;
 
           if (args->rho < args->sigma)
@@ -1715,7 +1730,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             return(DestroyKernelInfo(kernel));
 
           /* set a ring of points of 'scale' ( 0.0 for PeaksKernel ) */
-          scale = (ssize_t) (( type == PeaksKernel) ? 0.0 : args->xi);
+          scale = ( type == PeaksKernel) ? 0.0 : args->xi;
           for ( i=0, v= -kernel->y; v <= (ssize_t)kernel->y; v++)
             for ( u=-kernel->x; u <= (ssize_t)kernel->x; u++, i++)
               { ssize_t radius=u*u+v*v;
@@ -2155,6 +2170,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
     default:
       {
         /* No-Op Kernel - Basically just a single pixel on its own */
+        if (kernel != (KernelInfo *) NULL)
+          kernel=DestroyKernelInfo(kernel);  /* do not leak the base kernel */
         kernel=ParseKernelArray("1:1");
         if (kernel == (KernelInfo *) NULL)
           return(kernel);
@@ -2203,6 +2220,9 @@ MagickExport KernelInfo *CloneKernelInfo(const KernelInfo *kernel)
   if (new_kernel == (KernelInfo *) NULL)
     return(new_kernel);
   *new_kernel=(*kernel); /* copy values in structure */
+  new_kernel->values=(MagickRealType *) NULL;
+  new_kernel->next=(KernelInfo *) NULL;  /* must not alias the original list,
+    otherwise DestroyKernelInfo() below would free the caller's kernels */
 
   /* replace the values with a copy of the values */
   if (AcquireKernelValues(new_kernel) == MagickFalse)
@@ -2465,6 +2485,8 @@ static void CalcKernelMetaData(KernelInfo *kernel)
   kernel->negative_range = kernel->positive_range = 0.0;
   for (i=0; i < (kernel->width*kernel->height); i++)
     {
+      if (IsNaN(kernel->values[i]))
+        continue;   /* 'nan' marks a value that is not part of the kernel */
       if ( fabs(kernel->values[i]) < MagickEpsilon )
         kernel->values[i] = 0.0;
       ( kernel->values[i] < 0)
@@ -2615,7 +2637,9 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
     {
       (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
         "InvalidOption","`%s'","not a primitive morphology method");
-      break;
+      morphology_view=DestroyCacheView(morphology_view);
+      image_view=DestroyCacheView(image_view);
+      return(-1);
     }
   }
   changed=0;
@@ -2777,7 +2801,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
       for (j=0; j < (ssize_t) GetOpenMPMaximumThreads(); j++)
         changed+=changes[j];
       changes=(size_t *) RelinquishMagickMemory(changes);
-      return(status ? (ssize_t) (changed/GetImageChannels(image)) : 0);
+      return(status ? (ssize_t) (changed/GetImageChannels(image)) : -1);
     }
   /*
     Normal handling of horizontal or rectangular kernels (row by row).
@@ -2874,7 +2898,6 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             break;
           }
           case DilateMorphology:
-          case ErodeIntensityMorphology:
           {
             pixel=0.0;
             break;
@@ -3065,7 +3088,12 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
               Select pixel with minimum intensity within kernel neighbourhood.
 
               The kernel is not reflected for this operation.
+
+              Start above any possible intensity: a neighbourhood of pure
+              white has intensity == QuantumRange (give or take rounding) and
+              would otherwise never be selected, yielding black.
             */
+            minimum=MagickMaximumValue;
             k=kernel->values;
             for (v=0; v < (ssize_t) kernel->height; v++)
             {
@@ -3610,9 +3638,6 @@ MagickPrivate Image *MorphologyApply(const Image *image,
   const KernelInfo *kernel, const CompositeOperator compose,const double bias,
   ExceptionInfo *exception)
 {
-  CompositeOperator
-    curr_compose;
-
   Image
     *curr_image,    /* Image we are working with or iterating */
     *work_image,    /* secondary image for primitive iteration */
@@ -3672,8 +3697,6 @@ MagickPrivate Image *MorphologyApply(const Image *image,
 
   /* initialise for cleanup */
   curr_image = (Image *) image;
-  curr_compose = image->compose;
-  (void) curr_compose;
   work_image = save_image = rslt_image = (Image *) NULL;
   reflected_kernel = (KernelInfo *) NULL;
 
@@ -3729,7 +3752,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
       changed=MorphologyPrimitiveDirect(rslt_image,method,kernel,exception);
 
       if (verbose != MagickFalse)
-        (void) (void) FormatLocaleFile(stderr,
+        (void) FormatLocaleFile(stderr,
           "%s:%.17g.%.17g #%.17g => Changed %.17g\n",
           CommandOptionToMnemonic(MagickMorphologyOptions, method),
           1.0,0.0,1.0, (double) changed);
@@ -3913,7 +3936,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
           if (verbose != MagickFalse) {
             if ( kernel_loop > 1 )
               (void) FormatLocaleFile(stderr, "\n"); /* add end-of-line from previous */
-            (void) (void) FormatLocaleFile(stderr,
+            (void) FormatLocaleFile(stderr,
               "%s%s%s:%.17g.%.17g #%.17g => Changed %.17g",
               v_info,CommandOptionToMnemonic(MagickMorphologyOptions,
               primitive),(this_kernel == rflt_kernel ) ? "*" : "",
@@ -4156,7 +4179,12 @@ MagickExport Image *MorphologyImage(const Image *image,
           if ( curr_kernel == kernel )
             curr_kernel = CloneKernelInfo(kernel);
           if (curr_kernel == (KernelInfo *) NULL)
-            return((Image *) NULL);
+            {
+              (void) ThrowMagickException(exception,GetMagickModule(),
+                ResourceLimitError,"MemoryAllocationFailed","`%s'",
+                image->filename);
+              return((Image *) NULL);
+            }
           ScaleGeometryKernelInfo(curr_kernel, artifact);
         }
       }
@@ -4312,7 +4340,8 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
           kernel->angle = fmod(kernel->angle+45.0, 360.0);
         }
       else
-        perror("Unable to rotate non-3x3 kernel by 45 degrees");
+        (void) FormatLocaleFile(stderr,
+          "Unable to rotate non-3x3 kernel by 45 degrees\n");
     }
   if ( 45.0 < fmod(angle, 180.0)  && fmod(angle,180.0) <= 135.0 )
     {
@@ -4365,7 +4394,8 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
           kernel->angle = fmod(kernel->angle+90.0, 360.0);
         }
       else
-        perror("Unable to rotate a non-square, non-linear kernel 90 degrees");
+        (void) FormatLocaleFile(stderr,
+          "Unable to rotate a non-square, non-linear kernel 90 degrees\n");
     }
   if ( 135.0 < angle && angle <= 225.0 )
     {
@@ -4576,6 +4606,12 @@ MagickExport void ScaleKernelInfo(KernelInfo *kernel,
   else
     neg_scale = pos_scale;
 
+  /* guard against division by zero (for example an all-zero kernel) */
+  if ( fabs(pos_scale) < MagickEpsilon )
+    pos_scale = 1.0;
+  if ( fabs(neg_scale) < MagickEpsilon )
+    neg_scale = 1.0;
+
   /* finalize scaling_factor for positive and negative components */
   pos_scale = scaling_factor/pos_scale;
   neg_scale = scaling_factor/neg_scale;
@@ -4599,7 +4635,7 @@ MagickExport void ScaleKernelInfo(KernelInfo *kernel,
     kernel->negative_range = t;
     t = kernel->maximum;
     kernel->maximum = kernel->minimum;
-    kernel->minimum = 1;
+    kernel->minimum = t;
   }
 
   return;
@@ -4716,7 +4752,16 @@ MagickExport void UnityAddKernelInfo(KernelInfo *kernel,
     UnityAddKernelInfo(kernel->next, scale);
 
   /* Add the scaled unity kernel to the existing kernel */
-  kernel->values[kernel->x+kernel->y*(ssize_t) kernel->width] += scale;
+  {
+    MagickRealType
+      *origin;
+
+    origin=(&kernel->values[kernel->x+kernel->y*(ssize_t) kernel->width]);
+    if (IsNaN(*origin))
+      *origin=(MagickRealType) scale;  /* origin was not part of the kernel */
+    else
+      *origin+=(MagickRealType) scale;
+  }
   CalcKernelMetaData(kernel);  /* recalculate the meta-data */
 
   return;

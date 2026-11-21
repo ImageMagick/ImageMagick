@@ -1,141 +1,205 @@
-Introduction 
+PerlMagick
+==========
 
-    PerlMagick, is an objected-oriented Perl interface to ImageMagick.
-    Use the module to read, manipulate, or write an image or image sequence
-    from within a Perl script. This makes it suitable for Web CGI scripts. You
-    must have ImageMagick 7.0.0 or above installed on your system for this
-    module to work properly.
+INTRODUCTION
+------------
 
-    See
+PerlMagick is an object-oriented Perl interface to ImageMagick. Use it to
+read, manipulate, or write an image or image sequence from within a Perl
+script. This makes it well suited to web CGI scripts as well as batch and
+command-line tools.
 
-        https://imagemagick.org/script/perl-magick.php
+Requirements:
 
-    for additional information about PerlMagick.  If you have problems, go to
+    * ImageMagick 7.0.0 or above, installed on your system.
+    * A working Perl installation with a C compiler and the standard build
+      tools (make, ExtUtils::MakeMaker) if you are building from source.
+    * Development files (headers and libraries) for ImageMagick.
 
-        https://github.com/ImageMagick/ImageMagick/discussions
+Resources:
 
-    for help.  For instructions about installing ImageMagick, see
-
-        https://imagemagick.org/
-
-
-Installation 
-
-    Get the PerlMagick distribution and type the following: 
-
-        gunzip ImageMagick-7.1.2-0.tar.gz
-        tar xvf ImageMagick-7.1.2
-
-    Follow the ImageMagick installation instructions in INSTALL-unix.txt
-		then type
-
-      cd PerlMagick
-
-    Next, edit Makefile.PL and change LIBS and INC to include the appropriate
-    path information to the required libMagick library. You will also need
-    library search paths (-L) to JPEG, PNG, TIFF, etc. libraries if they were
-    included with your installed version of ImageMagick. If an extension
-    library is built as a shared library but not installed in the system's
-    default library search path, you may need to add run-path information
-    (often -R or -rpath) corresponding to the equivalent library search
-    path option so that the library can be located at run-time.
-
-    To create and install the dynamically-loaded version of PerlMagick
-    (the preferred way), execute
-        
-        perl Makefile.PL
-        make
-        make install
-
-    To create and install a new 'perl' executable (replacing your existing
-    PERL interpreter!) with PerlMagick statically linked (but other libraries
-    linked statically or dynamically according to system linker default),
-    execute
-
-        perl Makefile.PL
-        make perl
-        make -f Makefile.aperl inst_perl
-	
-    or to create and install a new PERL interpreter with a different name
-    than 'perl' (e.g. 'PerlMagick') and with PerlMagick statically linked
-
-        perl Makefile.PL MAP_TARGET=PerlMagick
-        make PerlMagick
-        make -f Makefile.aperl inst_perl
-
-    See the ExtUtils::MakeMaker(3) manual page for more information on
-    building PERL extensions (like PerlMagick).
-
-    For Windows systems, type
-
-        perl Makefile.nt
-        nmake install
-
-    For Unix, you typically need to be root to install the software.
-    There are ways around this.  Consult the Perl manual pages for more
-    information. You are now ready to utilize the PerlMagick routines from
-    within your Perl scripts.
-
-Installation - Win32 Strawberry perl
-
-   On Win32 Strawberry perl the prefered way of installing PerlMagick is the
-   following:
-
-   1) Download and install ImageMagick Windows binaries from
-      https://imagemagick.org/script/binary-releases.php#windows
-
-   2) You HAVE TO choose dynamic (DLL) ImageMagick binaries.  Note: it is not
-      possible to mix 32/64bit binaries of perl and ImageMagick
-
-   3) During installation select that you want to install ImageMagick's
-      development files (libraries+headers)
-
-   4) You also need to have ImageMagick's directory in your PATH. We are
-      using the 'magick' tool to determine your actual configuration.
-
-   5) You might need Visual C++ Redistributable Package installed on your
-      system.  See instructions on ImageMagick's Binary Release webpage.
-
-   6) If you have all prerequisites 1)...5) you can simply install
-      ImageMagick by running: cpan -i Image::Magick
+    * PerlMagick documentation:   https://imagemagick.org/perl-magick/
+    * Help and discussion:        https://github.com/ImageMagick/ImageMagick/discussions
+    * ImageMagick installation:   https://imagemagick.org/
 
 
-Testing PerlMagick
+INSTALLATION (UNIX, LINUX, macOS)
+---------------------------------
 
-    Before PerlMagick is installed, you may want to execute
-    
-        make test
+1. Unpack the ImageMagick distribution (adjust the file name to match the
+   version you downloaded):
 
-    to verify that PERL can load the PerlMagick extension ok.  Chances are
-    some of the tests will fail if you do not have the proper delegates
-    installed for formats like JPEG, TIFF, etc.
+       gunzip ImageMagick-7.1.2-0.tar.gz
+       tar xvf ImageMagick-7.1.2-0.tar
 
-    Use the 'prove' utility to execute a test from the build folder:
+2. Build and install ImageMagick itself by following the instructions in
+   INSTALL-unix.txt.
 
-        prove --blib blib -I `pwd` -bv ./t/read.t
+3. Change to the PerlMagick directory:
 
-    To see a number of PerlMagick demonstration scripts, type
-    
-        cd demo
-        make
+       cd PerlMagick
+
+4. Edit Makefile.PL and set LIBS and INC so they point to the libMagick
+   library and headers. You will also need library search paths (-L) for the
+   JPEG, PNG, TIFF, and other libraries if they were included with your
+   installed version of ImageMagick.
+
+   If an extension library is built as a shared library but is not installed
+   in the system's default library search path, you may also need to add
+   run-path information (often -R or -rpath) that matches the library search
+   path, so the library can be located at run time.
+
+5. Build and install the dynamically loaded version of PerlMagick (the
+   preferred method):
+
+       perl Makefile.PL
+       make
+       make install
+
+   On Unix you typically need root privileges for "make install". There are
+   ways around this, such as installing into a local directory (for example,
+   perl Makefile.PL PREFIX=$HOME/perl). Consult the Perl manual pages for
+   details.
+
+You are now ready to use PerlMagick in your Perl scripts.
 
 
-Example Perl Magick Script 
+STATICALLY LINKED BUILDS (OPTIONAL)
+-----------------------------------
 
-    Here is an example script to get you started: 
+Most users should use the dynamically loaded build above. If you need
+PerlMagick linked statically into a Perl executable, you have two options.
 
-        #!/usr/bin/perl
-        use Image::Magick;
+Replace your existing "perl" executable (use with caution: this overwrites
+your current Perl interpreter):
 
-        $q = Image::Magick->new;
-        $x = $q->Read("model.gif", "logo.gif", "rose.gif");
-        warn "$x" if $x;
+    perl Makefile.PL
+    make perl
+    make -f Makefile.aperl inst_perl
 
-        $x = $q->Crop(geom=>'100x100+100+100');
-        warn "$x" if $x;
+Or create a new interpreter with a different name (for example, "PerlMagick"),
+leaving your existing Perl untouched:
 
-        $x = $q->Write("x.gif");
-        warn "$x" if $x;
+    perl Makefile.PL MAP_TARGET=PerlMagick
+    make PerlMagick
+    make -f Makefile.aperl inst_perl
 
-    The script reads three images, crops them, and writes a single image
-    as a GIF animation sequence.
+In both cases PerlMagick is linked statically, while other libraries are
+linked statically or dynamically according to your system linker's defaults.
+See the ExtUtils::MakeMaker(3) manual page for more information on building
+Perl extensions such as PerlMagick.
+
+
+INSTALLATION (WINDOWS)
+----------------------
+
+With a standard Perl and Visual C++ toolchain:
+
+    perl Makefile.nt
+    nmake install
+
+With Strawberry Perl (recommended on Windows):
+
+1. Download and install the ImageMagick Windows binaries from
+   https://imagemagick.org/download/#windows
+
+2. Choose the dynamic (DLL) ImageMagick binaries. Note that you cannot mix
+   32-bit and 64-bit builds: your Perl and ImageMagick must match.
+
+3. During installation, select the option to install ImageMagick's
+   development files (libraries and headers).
+
+4. Make sure ImageMagick's directory is in your PATH. The "magick" tool is
+   used to determine your configuration.
+
+5. You may need the Visual C++ Redistributable Package. See the instructions
+   on ImageMagick's binary release web page.
+
+6. Once steps 1 through 5 are complete, install PerlMagick by running:
+
+       cpan -i Image::Magick
+
+
+TESTING
+-------
+
+Before installing PerlMagick, you may want to run
+
+    make test
+
+to verify that Perl can load the PerlMagick extension. Some tests may fail if
+you do not have the proper delegate libraries installed for formats such as
+JPEG, TIFF, and PNG. Such failures usually indicate missing format support,
+not a broken build.
+
+To run a single test from the build folder, use the "prove" utility:
+
+    prove --blib blib -I `pwd` -bv ./t/read.t
+
+After installation, you can confirm that the module loads and check its
+version with:
+
+    perl -MImage::Magick -e 'print "$Image::Magick::VERSION\n"'
+
+To see a number of PerlMagick demonstration scripts, run:
+
+    cd demo
+    make
+
+
+EXAMPLE SCRIPT
+--------------
+
+The following script reads three images, crops each of them, and writes the
+result as a single GIF animation sequence:
+
+    #!/usr/bin/perl
+    use strict;
+    use warnings;
+    use Image::Magick;
+
+    my $image = Image::Magick->new;
+
+    # Read three images into one image sequence.
+    my $status = $image->Read("model.gif", "logo.gif", "rose.gif");
+    warn "$status" if $status;
+
+    # Crop every image in the sequence to 100x100 pixels, starting at
+    # an offset of (100,100).
+    $status = $image->Crop(geometry => '100x100+100+100');
+    warn "$status" if $status;
+
+    # Write the sequence as a single animated GIF.
+    $status = $image->Write("x.gif");
+    warn "$status" if $status;
+
+Notes:
+
+    * PerlMagick methods return an empty value on success and an error
+      message on failure, which is why each call is checked and passed to
+      "warn".
+    * Methods operate on every image in the sequence, so the Crop call above
+      affects all three images.
+    * Writing a multi-image sequence to a format that supports animation (such
+      as GIF) produces one animated file. For formats that do not, each image
+      is typically written to its own file.
+
+
+TROUBLESHOOTING
+---------------
+
+    * "Can't locate Image/Magick.pm": PerlMagick is not installed, or it was
+      installed to a directory that is not in Perl's @INC path.
+    * Build errors about missing headers or libraries: check the LIBS and INC
+      settings in Makefile.PL, and confirm that the ImageMagick development
+      files are installed.
+    * "error while loading shared libraries": the ImageMagick (or delegate)
+      shared libraries are not in the system's library search path. Add
+      their location to the run-path settings described in Installation,
+      or to your system's library path configuration.
+    * Failures reading or writing certain formats: the required delegate
+      library (JPEG, PNG, TIFF, and so on) was not available when
+      ImageMagick was built.
+
+If problems persist, ask for help at
+https://github.com/ImageMagick/ImageMagick/discussions

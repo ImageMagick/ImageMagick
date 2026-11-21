@@ -135,7 +135,7 @@ extern "C" {
 
 #define ThrowPerlException(exception,severity,tag,reason) \
   (void) ThrowMagickException(exception,GetMagickModule(),severity, \
-    tag,"`%s'",reason); \
+    tag,"`%s'",reason);
 
 /*
   Typedef and structure declarations.
@@ -923,19 +923,45 @@ static Image *GetList(pTHX_ SV *reference,SV ***reference_vector,
       n=av_len(av);
       for (i=0; i <= n; i++)
       {
+        Image
+          *saved_next,
+          *saved_previous,
+          *peek;
+
         SV
           **rv;
 
         rv=av_fetch(av,i,0);
         if (rv && *rv && sv_isobject(*rv))
           {
+            /*
+              A blessed scalar resets image->next and image->previous in the
+              recursive call below; remember them so an image that appears
+              more than once does not break the list already built.
+            */
+            peek=(Image *) NULL;
+            saved_next=(Image *) NULL;
+            saved_previous=(Image *) NULL;
+            if (SvTYPE(SvRV(*rv)) == SVt_PVMG)
+              {
+                peek=INT2PTR(Image *,SvIV(SvRV(*rv)));
+                if (peek != (Image *) NULL)
+                  {
+                    saved_next=peek->next;
+                    saved_previous=peek->previous;
+                  }
+              }
             image=GetList(aTHX_ SvRV(*rv),reference_vector,current,last,
               exception);
             if (image == (Image *) NULL)
               continue;
             {
-              MagickBooleanType duplicate = MagickFalse;
-              ssize_t j = 0;
+              MagickBooleanType
+                duplicate = MagickFalse;
+
+              ssize_t
+                j;
+
               for (j=0; j < count; j++)
               {
                 if (seen[j] == image)
@@ -949,18 +975,31 @@ static Image *GetList(pTHX_ SV *reference,SV ***reference_vector,
                   /*
                     Clone if already seen (adjacent or non-adjacent).
                   */
-                  Image *clone = CloneImage(image,0,0,MagickTrue,exception);
+                  Image
+                    *clone;
+
+                  if (image == peek)
+                    {
+                      image->next=saved_next;
+                      image->previous=saved_previous;
+                    }
+                  clone=CloneImage(image,0,0,MagickTrue,exception);
                   if (clone == (Image *) NULL)
                     {
                       if (seen != (Image **) NULL)
-                        free(seen);
-                      return(NULL);
+                        seen=(Image **) RelinquishMagickMemory(seen);
+                      return((Image *) NULL);
                     }
                   image=clone;
                 }
-              seen=(Image **) realloc(seen,(count+1)*sizeof(Image *));
+              seen=(Image **) ResizeQuantumMemory(seen,(size_t) count+1,
+                sizeof(*seen));
               if (seen == (Image **) NULL)
-                return((Image *) NULL);
+                {
+                  ThrowPerlException(exception,ResourceLimitError,
+                    "MemoryAllocationFailed",PackageName);
+                  return((Image *) NULL);
+                }
               seen[count++]=image;
             }
             image->previous=previous;
@@ -969,7 +1008,7 @@ static Image *GetList(pTHX_ SV *reference,SV ***reference_vector,
           }
       }
       if (seen != (Image **) NULL)
-        free(seen);
+        seen=(Image **) RelinquishMagickMemory(seen);
       return(head);
     }
     case SVt_PVMG:
@@ -1054,7 +1093,7 @@ static struct PackageInfo *GetPackageInfo(pTHX_ void *reference,
 
   (void) FormatLocaleString(message,MagickPathExtent,"%s::package%s%p",
     PackageName,XS_VERSION,reference);
-  sv=perl_get_sv(message,(TRUE | 0x02));
+  sv=get_sv(message,(GV_ADD | GV_ADDMULTI));
   if (sv == (SV *) NULL)
     {
       ThrowPerlException(exception,ResourceLimitError,"UnableToGetPackageInfo",
@@ -1301,8 +1340,9 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             *clip_mask;
 
           clip_mask=(Image *) NULL;
-          if (SvPOK(sval))
-            clip_mask=SetupList(aTHX_ SvRV(sval),&info,(SV ***) NULL,exception);
+          if (SvROK(sval))
+            clip_mask=SetupList(aTHX_ SvRV(sval),(struct PackageInfo **) NULL,
+              (SV ***) NULL,exception);
           for ( ; image; image=image->next)
             SetImageMask(image,ReadPixelMask,clip_mask,exception);
           break;
@@ -1314,16 +1354,20 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             int
               items;
 
-            ssize_t
+            long
               i;
 
-            if (image->storage_class == DirectClass)
+            if ((image->storage_class == DirectClass) || (image->colors == 0))
               continue;
             i=0;
             items=sscanf(attribute,"%*[^[][%ld",&i);
             (void) items;
-            if (i > (ssize_t) image->colors)
-              i%=(ssize_t) image->colors;
+            if ((i < 0) || (i >= (long) image->colors))
+              {
+                i%=(long) image->colors;
+                if (i < 0)
+                  i+=(long) image->colors;
+              }
             if ((strchr(SvPV(sval,na),',') == 0) ||
                 (strchr(SvPV(sval,na),')') != 0))
               QueryColorCompliance(SvPV(sval,na),AllCompliance,
@@ -1526,7 +1570,8 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
           /*
             Set image extract geometry.
           */
-          (void) CloneString(&info->image_info->extract,SvPV(sval,na));
+          if (info)
+            (void) CloneString(&info->image_info->extract,SvPV(sval,na));
           break;
         }
       if (info)
@@ -1670,7 +1715,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             items;
 
           long
-            index;
+            palette_index;
 
           Quantum
             *q;
@@ -1687,9 +1732,11 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             q=GetCacheViewAuthenticPixels(image_view,x,y,1,1,exception);
             if (q != (Quantum *) NULL)
               {
-                items=sscanf(SvPV(sval,na),"%ld",&index);
-                if ((index >= 0) && (index < (ssize_t) image->colors))
-                  SetPixelIndex(image,index,q);
+                palette_index=-1;
+                items=sscanf(SvPV(sval,na),"%ld",&palette_index);
+                if ((items == 1) && (palette_index >= 0) &&
+                    (palette_index < (long) image->colors))
+                  SetPixelIndex(image,(Quantum) palette_index,q);
                 (void) SyncCacheViewAuthenticPixels(image_view,exception);
               }
             image_view=DestroyCacheView(image_view);
@@ -1785,8 +1832,9 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             *mask;
 
           mask=(Image *) NULL;
-          if (SvPOK(sval))
-            mask=SetupList(aTHX_ SvRV(sval),&info,(SV ***) NULL,exception);
+          if (SvROK(sval))
+            mask=SetupList(aTHX_ SvRV(sval),(struct PackageInfo **) NULL,
+              (SV ***) NULL,exception);
           for ( ; image; image=image->next)
             SetImageMask(image,ReadPixelMask,mask,exception);
           break;
@@ -1951,7 +1999,8 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
                 SetPixelBlue(image,ClampToQuantum(pixel.blue),q);
                 if (image->colorspace == CMYKColorspace)
                   SetPixelBlack(image,ClampToQuantum(pixel.black),q);
-                SetPixelAlpha(image,ClampToQuantum(pixel.alpha),q);
+                if (image->alpha_trait != UndefinedPixelTrait)
+                  SetPixelAlpha(image,ClampToQuantum(pixel.alpha),q);
                 (void) SyncCacheViewAuthenticPixels(image_view,exception);
               }
             image_view=DestroyCacheView(image_view);
@@ -2010,8 +2059,9 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             *mask;
 
           mask=(Image *) NULL;
-          if (SvPOK(sval))
-            mask=SetupList(aTHX_ SvRV(sval),&info,(SV ***) NULL,exception);
+          if (SvROK(sval))
+            mask=SetupList(aTHX_ SvRV(sval),(struct PackageInfo **) NULL,
+              (SV ***) NULL,exception);
           for ( ; image; image=image->next)
             SetImageMask(image,ReadPixelMask,mask,exception);
           break;
@@ -2180,8 +2230,6 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             *geometry;
 
           geometry=GetPageGeometry(SvPV(sval,na));
-          if (info)
-            (void) CloneString(&info->image_info->page,geometry);
           for ( ; image; image=image->next)
             (void) ParsePageGeometry(image,geometry,&image->tile_offset,
               exception);
@@ -2198,6 +2246,13 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             limit=(MagickSizeType) SiPrefixToDoubleInterval(SvPV(sval,na),
               100.0);
           (void) SetMagickResourceLimit(TimeResource,limit);
+          break;
+        }
+      if (LocaleCompare(attribute,"title") == 0)
+        {
+          for ( ; image; image=image->next)
+            (void) CopyMagickString(image->magick_filename,SvPV(sval,na),
+              MagickPathExtent);
           break;
         }
       if (LocaleCompare(attribute,"transparent-color") == 0)
@@ -2354,8 +2409,9 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             *mask;
 
           mask=(Image *) NULL;
-          if (SvPOK(sval))
-            mask=SetupList(aTHX_ SvRV(sval),&info,(SV ***) NULL,exception);
+          if (SvROK(sval))
+            mask=SetupList(aTHX_ SvRV(sval),(struct PackageInfo **) NULL,
+              (SV ***) NULL,exception);
           for ( ; image; image=image->next)
             SetImageMask(image,WritePixelMask,mask,exception);
           break;
@@ -7907,7 +7963,7 @@ Mogrify(ref,...)
       {
         case ArrayReference:
         {
-          if (SvTYPE(sv) != SVt_RV)
+          if (!SvROK(sv))
             {
               (void) FormatLocaleString(message,MagickPathExtent,
                 "invalid %.60s value",pp->method);
@@ -14396,7 +14452,7 @@ SetPixel(ref,...)
             }
           if (LocaleCompare(attribute,"color") == 0)
             {
-              if (SvTYPE(ST(i)) != SVt_RV)
+              if (!SvROK(ST(i)))
                 {
                   char
                     message[MagickPathExtent];
@@ -14405,6 +14461,7 @@ SetPixel(ref,...)
                     "invalid %.60s value",attribute);
                   ThrowPerlException(exception,OptionError,message,
                     SvPV(ST(i),na));
+                  return;
                 }
               av=(AV *) SvRV(ST(i));
               break;
@@ -14640,7 +14697,7 @@ SetPixels(ref,...)
             }
           if (LocaleCompare(attribute,"color") == 0)
             {
-              if (SvTYPE(ST(i)) != SVt_RV)
+              if (!SvROK(ST(i)))
                 {
                   char
                     message[MagickPathExtent];
@@ -14649,6 +14706,7 @@ SetPixels(ref,...)
                     "invalid %.60s value",attribute);
                   ThrowPerlException(exception,OptionError,message,
                     SvPV(ST(i),na));
+                  return;
                 }
               av=(AV *) SvRV(ST(i));
               break;

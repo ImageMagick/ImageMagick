@@ -594,7 +594,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
 static double LexicographicalOrder(PointInfo *a,PointInfo *b,PointInfo *c)
 {
   /*
-    Order by x-coordinate, and in case of a tie, by y-coordinate.
+    Cross product of (a,b) and (a,c).
   */
   return((b->x-a->x)*(c->y-a->y)-(b->y-a->y)*(c->x-a->x));
 }
@@ -619,7 +619,9 @@ static PixelInfo GetEdgeBackgroundColor(const Image *image,
   /*
     Most dominant color of edges/corners is the background color of the image.
   */
-  memset(&edge_background,0,sizeof(edge_background));
+  (void) memset(&edge_background,0,sizeof(edge_background));
+  (void) memset(background,0,sizeof(background));
+  (void) memset(census,0,sizeof(census));
   artifact=GetImageArtifact(image,"convex-hull:background-color");
   if (artifact == (const char *) NULL)
     artifact=GetImageArtifact(image,"background");
@@ -690,6 +692,8 @@ static PixelInfo GetEdgeBackgroundColor(const Image *image,
         break;
       }
     }
+    if (p == (const Quantum *) NULL)
+      continue;
     GetPixelInfoPixel(image,p,background+i);
     if (artifact != (const char *) NULL)
       (void) QueryColorCompliance(artifact,AllCompliance,background+i,
@@ -806,15 +810,14 @@ MagickExport PointInfo *GetImageConvexHull(const Image *image,
         ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       return((PointInfo *) NULL);
     }
-  vertices_info=AcquireVirtualMemory(image->columns,image->rows*
-    sizeof(*vertices));
   if (HeapOverflowSanityCheck(2*image->columns,2*image->rows*sizeof(*monotone_chain)) != MagickFalse)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
-      vertices_info=RelinquishVirtualMemory(vertices_info);
       return((PointInfo *) NULL);
     }
+  vertices_info=AcquireVirtualMemory(image->columns,image->rows*
+    sizeof(*vertices));
   monotone_info=AcquireVirtualMemory(2*image->columns,2*image->rows*
     sizeof(*monotone_chain));
   if ((vertices_info == (MemoryInfo *) NULL) ||
@@ -824,6 +827,8 @@ MagickExport PointInfo *GetImageConvexHull(const Image *image,
         monotone_info=(MemoryInfo *) RelinquishVirtualMemory(monotone_info);
       if (vertices_info != (MemoryInfo *) NULL)
         vertices_info=RelinquishVirtualMemory(vertices_info);
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       return((PointInfo *) NULL);
     }
   vertices=(PointInfo *) GetVirtualMemoryBlob(vertices_info);
@@ -864,6 +869,12 @@ MagickExport PointInfo *GetImageConvexHull(const Image *image,
     }
   }
   image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    {
+      monotone_info=RelinquishVirtualMemory(monotone_info);
+      vertices_info=RelinquishVirtualMemory(vertices_info);
+      return((PointInfo *) NULL);
+    }
   /*
     Return the convex hull of the image foreground object(s).
   */
@@ -873,6 +884,8 @@ MagickExport PointInfo *GetImageConvexHull(const Image *image,
   if (convex_hull != (PointInfo *) NULL)
     for (n=0; n < *number_vertices; n++)
       convex_hull[n]=(*monotone_chain[n]);
+  else
+    *number_vertices=0;
   monotone_info=RelinquishVirtualMemory(monotone_info);
   vertices_info=RelinquishVirtualMemory(vertices_info);
   return(convex_hull);
@@ -1197,7 +1210,7 @@ static inline double getProjection(PointInfo *p,PointInfo *q,PointInfo *v)
   distance=getDistance(p,q);
   if (distance < MagickEpsilon)
     return(INFINITY);
-  return((q->x-p->x)*(v->x-p->x)+(v->y-p->y)*(q->y-p->y))/sqrt(distance);
+  return(((q->x-p->x)*(v->x-p->x)+(v->y-p->y)*(q->y-p->y))/sqrt(distance));
 }
 
 static inline double getFeretDiameter(PointInfo *p,PointInfo *q,PointInfo *v)
@@ -1211,7 +1224,7 @@ static inline double getFeretDiameter(PointInfo *p,PointInfo *q,PointInfo *v)
   distance=getDistance(p,q);
   if (distance < MagickEpsilon)
     return(INFINITY);
-  return((q->x-p->x)*(v->y-p->y)-(v->x-p->x)*(q->y-p->y))/sqrt(distance);
+  return(((q->x-p->x)*(v->y-p->y)-(v->x-p->x)*(q->y-p->y))/sqrt(distance));
 }
 
 MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
@@ -1249,12 +1262,21 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
   vertices=GetImageConvexHull(image,&number_hull_vertices,exception);
   if (vertices == (PointInfo *) NULL)
     return((PointInfo *) NULL);
+  if (number_hull_vertices == 0)
+    {
+      /*
+        No foreground object(s): there is nothing to bound.
+      */
+      vertices=(PointInfo *) RelinquishMagickMemory(vertices);
+      return((PointInfo *) NULL);
+    }
   *number_vertices=4;
   bounding_box=(PointInfo *) AcquireQuantumMemory(*number_vertices,
     sizeof(*bounding_box));
   if (bounding_box == (PointInfo *) NULL)
     {
       vertices=(PointInfo *) RelinquishMagickMemory(vertices);
+      *number_vertices=0;
       return((PointInfo *) NULL);
     }
   caliper_info.area=2.0*image->columns*image->rows;
@@ -1293,6 +1315,8 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
           v=j;
         }
     }
+    if ((p < 0) || (q < 0) || (v < 0))
+      continue;
     for (k=0; k < (ssize_t) number_hull_vertices; k++)
     {
       double
@@ -1316,14 +1340,17 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
         caliper_info.q=q;
         caliper_info.v=v;
       }
-    if ((caliper_info.p < 0) || (caliper_info.q < 0) || (caliper_info.v < 0))
-      {
-        vertices=(PointInfo *) RelinquishMagickMemory(vertices);
-        bounding_box=(PointInfo *) RelinquishMagickMemory(bounding_box);
-        *number_vertices=0;
-        return((PointInfo *) NULL);
-      }
   }
+  if ((caliper_info.p < 0) || (caliper_info.q < 0) || (caliper_info.v < 0))
+    {
+      /*
+        Degenerate hull (e.g. a single point): no bounding box exists.
+      */
+      vertices=(PointInfo *) RelinquishMagickMemory(vertices);
+      bounding_box=(PointInfo *) RelinquishMagickMemory(bounding_box);
+      *number_vertices=0;
+      return((PointInfo *) NULL);
+    }
   /*
     Initialize minimum bounding box.
   */
@@ -2120,6 +2147,7 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
       image->depth=depth;
       return(MagickTrue);
     }
+  status=MagickTrue;
   artifact=GetImageArtifact(image,"dither");
   if ((artifact != (const char *) NULL) &&
       (LocaleCompare(artifact,"FloydSteinberg") == 0))
@@ -2325,7 +2353,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
   ImageInfo
     *image_info;
 
-  MagickBooleanType
+  MagickStatusType
     status;
 
   QuantizeInfo
@@ -2352,7 +2380,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
       quantize_info=AcquireQuantizeInfo(image_info);
       quantize_info->number_colors=2;
       quantize_info->colorspace=GRAYColorspace;
-      status=QuantizeImage(quantize_info,image,exception);
+      status&=QuantizeImage(quantize_info,image,exception);
       quantize_info=DestroyQuantizeInfo(quantize_info);
       image->alpha_trait=UndefinedPixelTrait;
       break;
@@ -2380,7 +2408,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
         {
           quantize_info=AcquireQuantizeInfo(image_info);
           quantize_info->number_colors=256;
-          status=QuantizeImage(quantize_info,image,exception);
+          status&=QuantizeImage(quantize_info,image,exception);
           quantize_info=DestroyQuantizeInfo(quantize_info);
         }
       image->alpha_trait=UndefinedPixelTrait;
@@ -2399,7 +2427,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
       (void) BilevelImage(image,(double) QuantumRange/2.0,exception);
       (void) SetImageChannelMask(image,channel_mask);
       quantize_info=AcquireQuantizeInfo(image_info);
-      status=QuantizeImage(quantize_info,image,exception);
+      status&=QuantizeImage(quantize_info,image,exception);
       quantize_info=DestroyQuantizeInfo(quantize_info);
       break;
     }
@@ -2410,7 +2438,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
       if ((image->alpha_trait & BlendPixelTrait) == 0)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       quantize_info=AcquireQuantizeInfo(image_info);
-      status=QuantizeImage(quantize_info,image,exception);
+      status&=QuantizeImage(quantize_info,image,exception);
       quantize_info=DestroyQuantizeInfo(quantize_info);
       break;
     }
@@ -2419,7 +2447,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
       if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
         status=TransformImageColorspace(image,sRGBColorspace,exception);
       if (image->storage_class != DirectClass)
-        status=SetImageStorageClass(image,DirectClass,exception);
+        status&=SetImageStorageClass(image,DirectClass,exception);
       image->alpha_trait=UndefinedPixelTrait;
       break;
     }
@@ -2428,7 +2456,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
       if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
         status=TransformImageColorspace(image,sRGBColorspace,exception);
       if (image->storage_class != DirectClass)
-        status=SetImageStorageClass(image,DirectClass,exception);
+        status&=SetImageStorageClass(image,DirectClass,exception);
       if ((image->alpha_trait & BlendPixelTrait) == 0)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       break;
@@ -2438,7 +2466,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
       if (image->colorspace != CMYKColorspace)
         status=TransformImageColorspace(image,CMYKColorspace,exception);
       if (image->storage_class != DirectClass)
-        status=SetImageStorageClass(image,DirectClass,exception);
+        status&=SetImageStorageClass(image,DirectClass,exception);
       image->alpha_trait=UndefinedPixelTrait;
       break;
     }
@@ -2447,9 +2475,9 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
       if (image->colorspace != CMYKColorspace)
         status=TransformImageColorspace(image,CMYKColorspace,exception);
       if (image->storage_class != DirectClass)
-        status=SetImageStorageClass(image,DirectClass,exception);
+        status&=SetImageStorageClass(image,DirectClass,exception);
       if ((image->alpha_trait & BlendPixelTrait) == 0)
-        status=SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
+        status&=SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       break;
     }
     case OptimizeType:
@@ -2457,8 +2485,8 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
       break;
   }
   image_info=DestroyImageInfo(image_info);
-  if (status == MagickFalse)
-    return(status);
+  if (status == 0)
+    return(MagickFalse);
   image->type=type;
   return(MagickTrue);
 }
