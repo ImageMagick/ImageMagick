@@ -414,15 +414,15 @@ MagickExport LogEventType GetLogEventMask(void)
   ExceptionInfo
     *exception;
 
+  LogEventType
+    event_mask;
+
   LogInfo
     *log_info;
 
   exception=AcquireExceptionInfo();
   log_info=GetLogInfo("*",exception);
   exception=DestroyExceptionInfo(exception);
-  LogEventType
-    event_mask;
-
   if (log_info == (const LogInfo *) NULL)
     return(NoEvents);
   LockSemaphoreInfo(log_semaphore);
