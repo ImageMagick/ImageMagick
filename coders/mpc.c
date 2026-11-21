@@ -217,7 +217,6 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImage(image);
       return((Image *) NULL);
     }
-  *id='\0';
   (void) memset(keyword,0,sizeof(keyword));
   offset=0;
   do
@@ -226,6 +225,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Decode image header;  header terminates one character beyond a ':'.
     */
     SetGeometryInfo(&geometry_info);
+    *id='\0';
     profiles=(LinkedListInfo *) NULL;
     length=MagickPathExtent;
     options=AcquireString((char *) NULL);
@@ -253,7 +253,11 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             c=ReadBlobByte(image);
             if (c == (int) '\\')
-              c=ReadBlobByte(image);
+              {
+                c=ReadBlobByte(image);
+                if (c == EOF)
+                  break;
+              }
             else
               if ((c == EOF) || (c == (int) '}'))
                 break;
@@ -272,6 +276,8 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (comment == (char *) NULL)
             {
               options=DestroyString(options);
+              if (profiles != (LinkedListInfo *) NULL)
+                profiles=DestroyLinkedList(profiles,RelinquishMagickMemory);
               ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
             }
           *p='\0';
@@ -338,12 +344,17 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       break;
                 }
                 if (options == (char *) NULL)
-                  ThrowReaderException(ResourceLimitError,
-                    "MemoryAllocationFailed");
+                  {
+                    if (profiles != (LinkedListInfo *) NULL)
+                      profiles=DestroyLinkedList(profiles,
+                        RelinquishMagickMemory);
+                    ThrowReaderException(ResourceLimitError,
+                      "MemoryAllocationFailed");
+                  }
               }
             *p='\0';
             if (*options == '{')
-              (void) CopyMagickString(options,options+1,strlen(options));
+              (void) memmove(options,options+1,strlen(options));
             /*
               Assign a value to the specified keyword.
             */
@@ -401,7 +412,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (LocaleCompare(keyword,"channel-mask") == 0)
                   {
                     image->channel_mask=(ChannelType)
-                      strtol(options,(char **) NULL,16);
+                      strtoull(options,(char **) NULL,16);
                     break;
                   }
                 if (LocaleCompare(keyword,"class") == 0)
@@ -638,7 +649,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   {
                     if (profiles == (LinkedListInfo *) NULL)
                       profiles=NewLinkedList(0);
-                    if (GetNumberOfElementsInLinkedList(profiles) >= GetMaxProfileCount())              
+                    if (GetNumberOfElementsInLinkedList(profiles) >= GetMaxProfileCount())
                       {
                         options=DestroyString(options);
                         profiles=DestroyLinkedList(profiles,
@@ -671,8 +682,10 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   {
                     flags=ParseGeometry(options,&geometry_info);
                     image->chromaticity.red_primary.x=geometry_info.rho;
-                    if ((flags & SigmaValue) != 0)
-                      image->chromaticity.red_primary.y=geometry_info.sigma;
+                    image->chromaticity.red_primary.y=geometry_info.sigma;
+                    if ((flags & SigmaValue) == 0)
+                      image->chromaticity.red_primary.y=
+                        image->chromaticity.red_primary.x;
                     break;
                   }
                 if (LocaleCompare(keyword,"rendering-intent") == 0)
@@ -731,6 +744,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     geometry=GetPageGeometry(options);
                     (void) ParseAbsoluteGeometry(geometry,&image->tile_offset);
                     geometry=DestroyString(geometry);
+                    break;
                   }
                 if (LocaleCompare(keyword,"type") == 0)
                   {
@@ -876,13 +890,24 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           length=ReadBlobMSBLong(image);
           if ((MagickSizeType) length > GetBlobSize(image))
-            break;
+            {
+              profiles=DestroyLinkedList(profiles,RelinquishMagickMemory);
+              ThrowReaderException(CorruptImageError,
+                "InsufficientImageDataInFile");
+            }
           profile=AcquireProfileStringInfo(name,length,exception);
           if (profile == (StringInfo *) NULL)
             {
-              count=(ssize_t) SeekBlob(image,(MagickOffsetType) length,SEEK_CUR);
-              if (count != (ssize_t) length)
-                break;
+              /*
+                Skip the profile data (SeekBlob() returns the new offset, or
+                -1 on failure).
+              */
+              if (SeekBlob(image,(MagickOffsetType) length,SEEK_CUR) < 0)
+                {
+                  profiles=DestroyLinkedList(profiles,RelinquishMagickMemory);
+                  ThrowReaderException(CorruptImageError,
+                    "InsufficientImageDataInFile");
+                }
             }
           else
             {
@@ -890,15 +915,19 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (count != (ssize_t) length)
                 {
                   profile=DestroyStringInfo(profile);
-                  break;
+                  profiles=DestroyLinkedList(profiles,RelinquishMagickMemory);
+                  ThrowReaderException(CorruptImageError,
+                    "InsufficientImageDataInFile");
                 }
               status=SetImageProfilePrivate(image,profile,exception);
+              if (status == MagickFalse)
+                break;
             }
-          if (status == MagickFalse)
-            break;
           name=(const char *) GetNextValueInLinkedList(profiles);
         }
         profiles=DestroyLinkedList(profiles,RelinquishMagickMemory);
+        if (status == MagickFalse)
+          break;
       }
     depth=GetImageQuantumDepth(image,MagickFalse);
     if (image->storage_class == PseudoClass)
@@ -916,12 +945,15 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Create image colormap.
         */
         packet_size=(size_t) (3UL*depth/8UL);
-        if ((MagickSizeType) (packet_size*image->colors) > GetBlobSize(image))
+        if ((packet_size == 0) ||
+            ((MagickSizeType) image->colors > (GetBlobSize(image)/packet_size)))
           ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
         image->colormap=(PixelInfo *) AcquireQuantumMemory(image->colors+1,
           sizeof(*image->colormap));
         if (image->colormap == (PixelInfo *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        (void) memset(image->colormap,0,(image->colors+1)*
+          sizeof(*image->colormap));
         if (image->colors != 0)
           {
             /*
@@ -1225,7 +1257,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
     (void) FormatLocaleString(buffer,MagickPathExtent,"number-channels=%.17g "
       "number-meta-channels=%.17g channel-mask=0x%016llx\n",
       (double) image->number_channels,(double) image->number_meta_channels,
-      (MagickOffsetType) image->channel_mask);
+      (unsigned long long) image->channel_mask);
     (void) WriteBlobString(image,buffer);
     (void) FormatLocaleString(buffer,MagickPathExtent,
       "columns=%.17g rows=%.17g depth=%.17g\n",(double) image->columns,
@@ -1429,7 +1461,8 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
 
           length=strlen(value);
           for (i=0; i < (ssize_t) length; i++)
-            if (isspace((int) ((unsigned char) value[i])) != 0)
+            if ((isspace((int) ((unsigned char) value[i])) != 0) ||
+                (value[i] == (int) '{') || (value[i] == (int) '}'))
               break;
           if ((i == (ssize_t) length) && (i != 0))
             (void) WriteBlob(image,length,(const unsigned char *) value);
@@ -1462,7 +1495,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
           (void) WriteBlobString(image,image->directory);
         (void) WriteBlobByte(image,'\0');
       }
-    if (image->profiles != 0)
+    if (image->profiles != (void *) NULL)
       {
         const char
           *name;
@@ -1478,10 +1511,13 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
         while (name != (const char *) NULL)
         {
           profile=GetImageProfile(image,name);
-          (void) WriteBlobMSBLong(image,(unsigned int)
-            GetStringInfoLength(profile));
-          (void) WriteBlob(image,GetStringInfoLength(profile),
-            GetStringInfoDatum(profile));
+          if (profile != (const StringInfo *) NULL)
+            {
+              (void) WriteBlobMSBLong(image,(unsigned int)
+                GetStringInfoLength(profile));
+              (void) WriteBlob(image,GetStringInfoLength(profile),
+                GetStringInfoDatum(profile));
+            }
           name=GetNextImageProfile(image);
         }
       }
@@ -1501,7 +1537,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
         colormap=(unsigned char *) AcquireQuantumMemory(image->colors,
           packet_size*sizeof(*colormap));
         if (colormap == (unsigned char *) NULL)
-          return(MagickFalse);
+          ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
         /*
           Write colormap to file.
         */

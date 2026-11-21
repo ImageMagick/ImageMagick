@@ -126,7 +126,7 @@ static void InvertPerspectiveCoefficients(const double *coeff,
  * Polynomial Term Defining Functions
  *
  * Order must either be an integer, or 1.5 to produce
- * the 2 number_valuesal polynomial function...
+ * the 2-dimensional polynomial function...
  *    affine     1   (3)      u = c0 + c1*x + c2*y
  *    bilinear   1.5 (4)      u = '' + c3*x*y
  *    quadratic  2   (6)      u = '' + c4*x*x + c5*y*y
@@ -144,8 +144,8 @@ static void InvertPerspectiveCoefficients(const double *coeff,
 static size_t poly_number_terms(double order)
 {
  /* Return the number of terms for a 2d polynomial */
-  if ( order < 1 || order > 5 ||
-       ( order != floor(order) && (order-1.5) > MagickEpsilon) )
+  if ( order < 1.0 || order > 5.0 ||
+       ( order != floor(order) && fabs(order-1.5) > MagickEpsilon) )
     return 0; /* invalid polynomial order */
   return(CastDoubleToSizeT(floor((order+1.0)*(order+2.0)/2.0)));
 }
@@ -214,21 +214,21 @@ static double poly_basis_dx(ssize_t n, double x, double y)
     case  1:  return( 1.0 );
     case  2:  return( 0.0 ); /* affine      order = 1   terms = 3 */
     case  3:  return(  y  ); /* bilinear    order = 1.5 terms = 4 */
-    case  4:  return(  x  );
+    case  4:  return( 2.0*x );
     case  5:  return( 0.0 ); /* quadratic   order = 2   terms = 6 */
-    case  6:  return( x*x );
-    case  7:  return( x*y );
+    case  6:  return( 3.0*x*x );
+    case  7:  return( 2.0*x*y );
     case  8:  return( y*y );
     case  9:  return( 0.0 ); /* cubic       order = 3   terms = 10 */
-    case 10:  return( x*x*x );
-    case 11:  return( x*x*y );
-    case 12:  return( x*y*y );
+    case 10:  return( 4.0*x*x*x );
+    case 11:  return( 3.0*x*x*y );
+    case 12:  return( 2.0*x*y*y );
     case 13:  return( y*y*y );
     case 14:  return( 0.0 ); /* quartic     order = 4   terms = 15 */
-    case 15:  return( x*x*x*x );
-    case 16:  return( x*x*x*y );
-    case 17:  return( x*x*y*y );
-    case 18:  return( x*y*y*y );
+    case 15:  return( 5.0*x*x*x*x );
+    case 16:  return( 4.0*x*x*x*y );
+    case 17:  return( 3.0*x*x*y*y );
+    case 18:  return( 2.0*x*y*y*y );
     case 19:  return( y*y*y*y );
     case 20:  return( 0.0 ); /* quintic     order = 5   terms = 21 */
   }
@@ -243,12 +243,24 @@ static double poly_basis_dy(ssize_t n, double x, double y)
     case  2:  return( 1.0 ); /* affine      order = 1   terms = 3 */
     case  3:  return(  x  ); /* bilinear    order = 1.5 terms = 4 */
     case  4:  return( 0.0 );
-    case  5:  return(  y  ); /* quadratic   order = 2   terms = 6 */
-    default:  return( poly_basis_dx(n-1,x,y) ); /* weird but true */
+    case  5:  return( 2.0*y ); /* quadratic   order = 2   terms = 6 */
+    case  6:  return( 0.0 );
+    case  7:  return( x*x );
+    case  8:  return( 2.0*x*y );
+    case  9:  return( 3.0*y*y ); /* cubic       order = 3   terms = 10 */
+    case 10:  return( 0.0 );
+    case 11:  return( x*x*x );
+    case 12:  return( 2.0*x*x*y );
+    case 13:  return( 3.0*x*y*y );
+    case 14:  return( 4.0*y*y*y ); /* quartic     order = 4   terms = 15 */
+    case 15:  return( 0.0 );
+    case 16:  return( x*x*x*x );
+    case 17:  return( 2.0*x*x*x*y );
+    case 18:  return( 3.0*x*x*y*y );
+    case 19:  return( 4.0*x*y*y*y );
+    case 20:  return( 5.0*y*y*y*y ); /* quintic     order = 5   terms = 21 */
   }
-  /* NOTE: the only reason that last is not true for 'quadratic'
-     is due to the re-arrangement of terms to allow for 'bilinear'
-  */
+  return( 0.0 ); /* should never happen */
 }
 
 /*
@@ -292,6 +304,7 @@ MagickExport Image *AffineTransformImage(const Image *image,
   /*
     Affine transform image.
   */
+  assert(image != (const Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   assert(affine_matrix != (AffineMatrix *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
@@ -490,7 +503,10 @@ static double *GenerateCoefficients(const Image *image,
       number_coefficients=10;
       break;
     default:
-      perror("unknown method given"); /* just fail assertion */
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "InvalidArgument","%s : 'Unknown Distortion Method'",
+        CommandOptionToMnemonic(MagickDistortOptions,*method));
+      return((double *) NULL);
   }
 
   /* allocate the array of coefficients needed */
@@ -706,11 +722,11 @@ static double *GenerateCoefficients(const Image *image,
         Where      u = sx*x + ry*y + tx
                    v = rx*x + sy*y + ty
 
-        Returns coefficients (in there inverse form) ordered as...
+        Returns coefficients (in their inverse form) ordered as...
              sx ry tx  rx sy ty
 
         AffineProjection Distortion Notes...
-           + Will only work with a 2 number_values for Image Distortion
+           + Will only work with 2-dimensional Image Distortion
            + Can not be used for generating a sparse gradient (interpolation)
       */
       double inverse[8];
@@ -721,7 +737,14 @@ static double *GenerateCoefficients(const Image *image,
               CommandOptionToMnemonic(MagickDistortOptions, *method) );
         return((double *) NULL);
       }
-      /* FUTURE: trap test for sx*sy-rx*ry == 0 (determinant = 0, no inverse) */
+      if (fabs(arguments[0]*arguments[3]-arguments[1]*arguments[2]) < MagickEpsilon)
+        {
+          coeff = (double *) RelinquishMagickMemory(coeff);
+          (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+            "InvalidArgument","%s : 'Unsolvable Matrix'",
+            CommandOptionToMnemonic(MagickDistortOptions, *method));
+          return((double *) NULL);
+        }
       for(i=0; i<6UL; i++ )
         inverse[i] = arguments[i];
       AffineArgsToCoefficients(inverse); /* map into coefficients */
@@ -954,7 +977,14 @@ static double *GenerateCoefficients(const Image *image,
               CommandOptionToMnemonic(MagickDistortOptions, *method));
         return((double *) NULL);
       }
-      /* FUTURE: trap test  c0*c4-c3*c1 == 0  (determinate = 0, no inverse) */
+      if (fabs(arguments[0]*arguments[4]-arguments[3]*arguments[1]) < MagickEpsilon)
+        {
+          coeff = (double *) RelinquishMagickMemory(coeff);
+          (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+            "InvalidArgument","%s : 'Unsolvable Matrix'",
+            CommandOptionToMnemonic(MagickDistortOptions, *method));
+          return((double *) NULL);
+        }
       InvertPerspectiveCoefficients(arguments, coeff);
       /*
         Calculate 9'th coefficient! The ground-sky determination.
@@ -1518,8 +1548,10 @@ static double *GenerateCoefficients(const Image *image,
     default:
       break;
   }
-  /* you should never reach this point */
-  perror("no method handler"); /* just fail assertion */
+  coeff=(double *) RelinquishMagickMemory(coeff);
+  (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+    "InvalidArgument","%s : 'Unhandled Distortion Method'",
+    CommandOptionToMnemonic(MagickDistortOptions,*method));
   return((double *) NULL);
 }
 
@@ -1639,7 +1671,10 @@ MagickExport Image *DistortResizeImage(const Image *image,const size_t columns,
       /* distort the actual image containing alpha + VP alpha */
       tmp_image=CloneImage(image,0,0,MagickTrue,exception);
       if (tmp_image == (Image *) NULL)
-        return((Image *) NULL);
+        {
+          resize_alpha=DestroyImage(resize_alpha);
+          return((Image *) NULL);
+        }
       (void) SetImageVirtualPixelMethod(tmp_image,
         TransparentVirtualPixelMethod,exception);
       resize_image=DistortImage(tmp_image,AffineDistortion,12,distort_args,
@@ -2624,7 +2659,12 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
             /* Handle Special degenerate (non-quadratic) case
              * Currently without horizon anti-aliasing */
             if ( fabs(coeff[9]) < MagickEpsilon )
-              s.y =  -c/b;
+              {
+                if ( fabs(b) < MagickEpsilon )
+                  validity = 0.0;
+                else
+                  s.y = -c/b;
+              }
             else {
               c = b*b - 2*coeff[9]*c;
               if ( c < 0.0 )
@@ -2633,7 +2673,13 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
                 s.y = ( -b + sqrt(c) )/coeff[9];
             }
             if ( validity > 0.0 )
-              s.x = ( d.x - coeff[1]*s.y) / ( coeff[0] + coeff[2]*s.y );
+              {
+                double denom = coeff[0] + coeff[2]*s.y;
+                if ( fabs(denom) < MagickEpsilon )
+                  validity = 0.0;
+                else
+                  s.x = ( d.x - coeff[1]*s.y ) / denom;
+              }
 
             /* NOTE: the sign of the square root should be -ve for parts
                      where the source image becomes 'flipped' or 'mirrored'.
@@ -2743,7 +2789,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
             s.y = d.y*cx;           /* v  = y*cos(u/r) */
             /* derivatives... (see personal notes) */
             ScaleFilter( resample_filter[id],
-                  1.0/(1.0+d.x*d.x), 0.0, -d.x*s.y*cx*cx/coeff[1], s.y/d.y );
+                  1.0/(1.0+d.x*d.x), 0.0, -d.x*s.y*cx*cx/coeff[1], cx );
 #if 0
 if ( i == 0 && j == 0 ) {
   fprintf(stderr, "x=%lf  y=%lf  u=%lf  v=%lf\n", d.x*coeff[1], d.y, s.x, s.y);
@@ -2768,7 +2814,7 @@ if ( i == 0 && j == 0 ) {
             if ( validity > 0.0 ) {
               double cx,tx;
               d.x /= coeff[1];           /* x'= x/r */
-              cx = 1/cos(d.x);           /* cx = 1/cos(x/r) */
+              cx = MagickSafeReciprocal(cos(d.x)); /* cx = 1/cos(x/r) */
               tx = tan(d.x);             /* tx = tan(x/r) */
               s.x = coeff[1]*tx;         /* u = r * tan(x/r) */
               s.y = d.y*cx;              /* v = y / cos(x/r) */
@@ -2826,9 +2872,9 @@ if ( d.x == 0.5 && d.y == 0.5 ) {
                 ScaleFilter( resample_filter[id],
                      coeff[3], 0, 0, coeff[7] );
               else /* method == BarrelInverseDistortion */
-                /* FUTURE, trap for D==0 causing division by zero */
                 ScaleFilter( resample_filter[id],
-                     1.0/coeff[3], 0, 0, 1.0/coeff[7] );
+                     MagickSafeReciprocal(coeff[3]), 0, 0,
+                     MagickSafeReciprocal(coeff[7]) );
             }
             break;
           }
@@ -3339,18 +3385,21 @@ MagickExport Image *SparseColorImage(const Image *image,
                 pixel.alpha += arguments[x++]*weight;
               denominator += weight;
             }
-            if ((GetPixelRedTraits(sparse_image) & UpdatePixelTrait) != 0)
-              pixel.red/=denominator;
-            if ((GetPixelGreenTraits(sparse_image) & UpdatePixelTrait) != 0)
-              pixel.green/=denominator;
-            if ((GetPixelBlueTraits(sparse_image) & UpdatePixelTrait) != 0)
-              pixel.blue/=denominator;
-            if (((GetPixelBlackTraits(sparse_image) & UpdatePixelTrait) != 0) &&
-                (image->colorspace == CMYKColorspace))
-              pixel.black/=denominator;
-            if (((GetPixelAlphaTraits(sparse_image) & UpdatePixelTrait) != 0) &&
-                (sparse_image->alpha_trait != UndefinedPixelTrait))
-              pixel.alpha/=denominator;
+            if (denominator > MagickEpsilon)
+              {
+                if ((GetPixelRedTraits(sparse_image) & UpdatePixelTrait) != 0)
+                  pixel.red/=denominator;
+                if ((GetPixelGreenTraits(sparse_image) & UpdatePixelTrait) != 0)
+                  pixel.green/=denominator;
+                if ((GetPixelBlueTraits(sparse_image) & UpdatePixelTrait) != 0)
+                  pixel.blue/=denominator;
+                if (((GetPixelBlackTraits(sparse_image) & UpdatePixelTrait) != 0) &&
+                    (image->colorspace == CMYKColorspace))
+                  pixel.black/=denominator;
+                if (((GetPixelAlphaTraits(sparse_image) & UpdatePixelTrait) != 0) &&
+                    (sparse_image->alpha_trait != UndefinedPixelTrait))
+                  pixel.alpha/=denominator;
+              }
             break;
           }
           case ManhattanColorInterpolate:

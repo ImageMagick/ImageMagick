@@ -18,7 +18,7 @@
 #
 . ./common.shi
 . ${srcdir}/tests/common.shi
-echo "1..4"
+echo "1..5"
 
 # gradientTransform should not cause a double-free / SIGABRT (#8582)
 ${MAGICK} ${SRCDIR}/input_svg_gradient_transform.svg null: && echo "ok" || echo "not ok"
@@ -50,4 +50,17 @@ spaced=`${MAGICK} -size 24x24 xc:white -fill none -stroke black \
   -draw "path 'M6 12 h9 a4 4 0 0 1 0 8 H7 a1 1 0 0 1 -1 -1 V5 a1 1 0 0 1 1 -1 h7 a4 4 0 0 1 0 8'" \
   -format '%#' info:- 2>/dev/null`
 [ "X$compact" != "X" ] && [ "X$compact" = "X$spaced" ] && echo "ok" || echo "not ok"
+
+# Font families are separated by commas and their names may contain spaces.
+family=`${MAGICK} -list font | sed -n 's/^ *family: \([A-Za-z0-9]* [A-Za-z0-9 ]*\)$/\1/p' | head -n 1`
+case "$msvg_mode:$family" in
+  *r*:?*)
+    single=`printf '<svg xmlns="http://www.w3.org/2000/svg" width="120" height="40"><text x="5" y="30" font-family="%s" font-size="24">ACME</text></svg>' "$family" |
+      ${MAGICK} MSVG:- -format '%#' info:- 2>/dev/null`
+    list=`printf '<svg xmlns="http://www.w3.org/2000/svg" width="120" height="40"><text x="5" y="30" font-family="%s, serif" font-size="24">ACME</text></svg>' "$family" |
+      ${MAGICK} MSVG:- -format '%#' info:- 2>/dev/null`
+    [ "X$single" != "X" ] && [ "X$single" = "X$list" ] && echo "ok" || echo "not ok"
+    ;;
+  *) echo "ok # SKIP MSVG coder or a font family with a space unavailable" ;;
+esac
 :
