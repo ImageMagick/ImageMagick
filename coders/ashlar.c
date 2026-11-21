@@ -230,7 +230,8 @@ static inline ssize_t FindMinimumTileLocation(NodeInfo *first,const ssize_t x,
   y=0;
   extent=0;
   node=first;
-  while (node->x < (x+(ssize_t) width))
+  while ((node != (NodeInfo *) NULL) && (node->next != (NodeInfo *) NULL) &&
+         (node->x < (x+(ssize_t) width)))
   {
     if (node->y > y)
       {
@@ -255,7 +256,7 @@ static inline ssize_t FindMinimumTileLocation(NodeInfo *first,const ssize_t x,
 }
 
 static inline TileInfo AssignBestTileLocation(AshlarInfo *ashlar_info,
-  const size_t width,size_t const height)
+  const size_t width,const size_t height)
 {
   NodeInfo
     *node,
@@ -275,6 +276,10 @@ static inline TileInfo AssignBestTileLocation(AshlarInfo *ashlar_info,
     Align along left edge.
   */
   tile.previous=(NodeInfo **) NULL;
+  tile.x=0;
+  tile.y=0;
+  if ((ashlar_info->align <= 0) || (width == 0) || (height == 0))
+    return(tile);
   ashlar_width=(size_t) ((ssize_t) width+ashlar_info->align-1);
   ashlar_width-=(size_t) ((ssize_t) ashlar_width % ashlar_info->align);
   if ((ashlar_width > ashlar_info->width) || (height > ashlar_info->height))
@@ -282,8 +287,6 @@ static inline TileInfo AssignBestTileLocation(AshlarInfo *ashlar_info,
       /*
         Tile can't fit, bail.
       */
-      tile.x=0;
-      tile.y=0;
       return(tile);
     }
   tile.x=(ssize_t) MAGICK_SSIZE_MAX;
@@ -291,7 +294,8 @@ static inline TileInfo AssignBestTileLocation(AshlarInfo *ashlar_info,
   min_excess=(ssize_t) MAGICK_SSIZE_MAX;
   node=ashlar_info->current;
   previous=(&ashlar_info->current);
-  while (((ssize_t) ashlar_width+node->x) <= (ssize_t) ashlar_info->width)
+  while ((node != (NodeInfo *) NULL) &&
+         (((ssize_t) ashlar_width+node->x) <= (ssize_t) ashlar_info->width))
   {
     ssize_t
       excess,
@@ -328,7 +332,7 @@ static inline TileInfo AssignBestTileLocation(AshlarInfo *ashlar_info,
       tail=ashlar_info->current;
       node=ashlar_info->current;
       previous=(&ashlar_info->current);
-      while (tail->x < (ssize_t) ashlar_width)
+      while ((tail != (NodeInfo *) NULL) && (tail->x < (ssize_t) ashlar_width))
         tail=tail->next;
       while (tail != (NodeInfo *) NULL)
       {
@@ -338,7 +342,7 @@ static inline TileInfo AssignBestTileLocation(AshlarInfo *ashlar_info,
           y;
 
         x=tail->x-(ssize_t) ashlar_width;
-        while (node->next->x <= x)
+        while ((node->next != (NodeInfo *) NULL) && (node->next->x <= x))
         {
           previous=(&node->next);
           node=node->next;
@@ -354,11 +358,11 @@ static inline TileInfo AssignBestTileLocation(AshlarInfo *ashlar_info,
                   tile.y=y;
                   min_excess=excess;
                   tile.previous=previous;
-               }
-         }
-       tail=tail->next;
+                }
+          }
+        tail=tail->next;
+      }
     }
-  }
   return(tile);
 }
 
@@ -383,40 +387,41 @@ static inline TileInfo AssignTileLocation(AshlarInfo *ashlar_info,
       tile.previous=(NodeInfo **) NULL;
       return(tile);
     }
-   /*
-     Create a new node.
-   */
-   node=ashlar_info->free;
-   node->x=(ssize_t) tile.x;
-   node->y=tile.y+(ssize_t) height;
-   ashlar_info->free=node->next;
-   /*
-     Insert node.
-   */
-   current=(*tile.previous);
-   if (current->x >= tile.x)
-     *tile.previous=node;
-   else
-     {
-       NodeInfo *next = current->next;
-       current->next=node;
-       current=next;
-     }
-   while ((current->next != (NodeInfo *) NULL) &&
-          (current->next->x <= (tile.x+(ssize_t) width)))
-   {
-     /*
-       Push current node to free list.
-     */
-     NodeInfo *next = current->next;
-     current->next=ashlar_info->free;
-     ashlar_info->free=current;
-     current=next;
-   }
-   node->next=current;
-   if (current->x < (tile.x+(ssize_t) width))
-     current->x=tile.x+(ssize_t) width;
-   return(tile);
+  /*
+    Create a new node.
+  */
+  node=ashlar_info->free;
+  node->x=(ssize_t) tile.x;
+  node->y=tile.y+(ssize_t) height;
+  ashlar_info->free=node->next;
+  /*
+    Insert node.
+  */
+  current=(*tile.previous);
+  if (current->x >= tile.x)
+    *tile.previous=node;
+  else
+    {
+      NodeInfo *next = current->next;
+      current->next=node;
+      current=next;
+    }
+  while ((current != (NodeInfo *) NULL) &&
+         (current->next != (NodeInfo *) NULL) &&
+         (current->next->x <= (tile.x+(ssize_t) width)))
+  {
+    /*
+      Push current node to free list.
+    */
+    NodeInfo *next = current->next;
+    current->next=ashlar_info->free;
+    ashlar_info->free=current;
+    current=next;
+  }
+  node->next=current;
+  if ((current != (NodeInfo *) NULL) && (current->x < (tile.x+(ssize_t) width)))
+    current->x=tile.x+(ssize_t) width;
+  return(tile);
 }
 
 static inline int CompareTileHeight(const void *p_tile,const void *q_tile)
@@ -457,11 +462,8 @@ static inline MagickBooleanType PackAshlarTiles(AshlarInfo *ashlar_info,
   /*
     Pack tiles so they fit the canvas with minimum excess.
   */
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic) shared(status)
-#endif
   for (i=0; i < (ssize_t) number_tiles; i++)
-    tiles[i].order=(i);
+    tiles[i].order=i;
   qsort((void *) tiles,number_tiles,sizeof(*tiles),CompareTileHeight);
   for (i=0; i < (ssize_t) number_tiles; i++)
   {
@@ -485,12 +487,9 @@ static inline MagickBooleanType PackAshlarTiles(AshlarInfo *ashlar_info,
   }
   qsort((void *) tiles,number_tiles,sizeof(*tiles),RestoreTileOrder);
   status=MagickTrue;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic) shared(status)
-#endif
   for (i=0; i < (ssize_t) number_tiles; i++)
   {
-    tiles[i].order=(ssize_t) ((tiles[i].x != (ssize_t) MAGICK_SSIZE_MAX) ||
+    tiles[i].order=(ssize_t) ((tiles[i].x != (ssize_t) MAGICK_SSIZE_MAX) &&
       (tiles[i].y != (ssize_t) MAGICK_SSIZE_MAX) ? 1 : 0);
     if (tiles[i].order == 0)
       status=MagickFalse;
@@ -515,6 +514,7 @@ static Image *ASHLARImage(ImageInfo *image_info,Image *image,
     *next;
 
   MagickBooleanType
+    has_extract,
     status;
 
   NodeInfo
@@ -524,6 +524,9 @@ static Image *ASHLARImage(ImageInfo *image_info,Image *image,
     extent,
     geometry;
 
+  size_t
+    number_tiles;
+
   ssize_t
     i,
     n;
@@ -531,7 +534,8 @@ static Image *ASHLARImage(ImageInfo *image_info,Image *image,
   /*
     Convert image sequence laid out in continuous irregular courses.
   */
-  if (image_info->extract != (char *) NULL)
+  has_extract=(image_info->extract != (char *) NULL) ? MagickTrue : MagickFalse;
+  if (has_extract != MagickFalse)
     (void) ParseAbsoluteGeometry(image_info->extract,&geometry);
   else
     {
@@ -544,21 +548,19 @@ static Image *ASHLARImage(ImageInfo *image_info,Image *image,
         geometry.width+=next->columns;
         geometry.height+=next->rows;
       }
-      geometry.width=(size_t) geometry.width/7;
-      geometry.height=(size_t) geometry.height/7;
+      geometry.width=MagickMax((size_t) geometry.width/7,1);
+      geometry.height=MagickMax((size_t) geometry.height/7,1);
       geometry.x=(ssize_t) pow((double) geometry.width,0.4);
       geometry.y=(ssize_t) pow((double) geometry.height,0.4);
-      if (image_info->extract == (char *) NULL)
-        image_info->extract=AcquireString("");
-      if (image_info->extract != (char *) NULL)
-        (void) FormatLocaleString(image_info->extract,MagickPathExtent,
-          "%gx%g%+g%+g",(double) geometry.width,(double) geometry.height,
-          (double) geometry.x,(double) geometry.y);
     }
+  if ((geometry.width == 0) || (geometry.height == 0))
+    ThrowImageException(OptionError,"InvalidGeometry");
   /*
     Initialize image tiles.
   */
   ashlar_image=AcquireImage(image_info,exception);
+  if (ashlar_image == (Image *) NULL)
+    return((Image *) NULL);
   status=SetImageExtent(ashlar_image,geometry.width,geometry.height,exception);
   if (status == MagickFalse)
     {
@@ -566,8 +568,8 @@ static Image *ASHLARImage(ImageInfo *image_info,Image *image,
       return((Image *) NULL);
     }
   (void) SetImageBackgroundColor(ashlar_image,exception);
-  tiles=(CanvasInfo *) AcquireQuantumMemory(GetImageListLength(image),
-    sizeof(*tiles));
+  number_tiles=GetImageListLength(image);
+  tiles=(CanvasInfo *) AcquireQuantumMemory(number_tiles,sizeof(*tiles));
   ashlar_info.number_nodes=2*geometry.width;
   nodes=(NodeInfo *) AcquireQuantumMemory(ashlar_info.number_nodes,
     sizeof(*nodes));
@@ -584,6 +586,14 @@ static Image *ASHLARImage(ImageInfo *image_info,Image *image,
     Iterate until we find a tile size that fits the canvas.
   */
   value=GetImageOption(image_info,"ashlar:best-fit");
+  ashlar_info.best_fit=IsStringTrue(value) != MagickFalse ? MagickTrue :
+    MagickFalse;
+  ashlar_info.width=geometry.width;
+  ashlar_info.height=geometry.height;
+  ashlar_info.align=(ssize_t) MagickMax((ashlar_info.width+
+    ashlar_info.number_nodes-1)/ashlar_info.number_nodes,1);
+  n=0;
+  status=MagickFalse;
   for (i=20; i > 0; i--)
   {
     ssize_t
@@ -592,22 +602,22 @@ static Image *ASHLARImage(ImageInfo *image_info,Image *image,
     n=0;
     for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
     {
+      double
+        scale_x,
+        scale_y;
+
+      scale_x=0.05*(double) i*(double) next->columns+2.0*(double) geometry.x;
+      scale_y=0.05*(double) i*(double) next->rows+2.0*(double) geometry.y;
       tiles[n].id=n;
-      tiles[n].width=(size_t) (0.05*i*next->columns+2*geometry.x);
-      tiles[n].height=(size_t) (0.05*i*next->rows+2*geometry.y);
+      tiles[n].width=(scale_x > 0.0) ? (size_t) scale_x : 0;
+      tiles[n].height=(scale_y > 0.0) ? (size_t) scale_y : 0;
       n++;
     }
     for (j=0; j < (ssize_t) ashlar_info.number_nodes-1; j++)
       nodes[j].next=nodes+j+1;
     nodes[j].next=(NodeInfo *) NULL;
-    ashlar_info.best_fit=IsStringTrue(value) != MagickFalse ? MagickTrue :
-      MagickFalse;
     ashlar_info.free=nodes;
     ashlar_info.current=(&ashlar_info.head);
-    ashlar_info.width=geometry.width;
-    ashlar_info.height=geometry.height;
-    ashlar_info.align=(ssize_t) ((ashlar_info.width+ashlar_info.number_nodes-1)/
-      ashlar_info.number_nodes);
     ashlar_info.head.x=0;
     ashlar_info.head.y=0;
     ashlar_info.head.next=(&ashlar_info.sentinel);
@@ -619,73 +629,103 @@ static Image *ASHLARImage(ImageInfo *image_info,Image *image,
       break;
   }
   /*
-    Determine layout of images tiles on the canvas.
+    Determine layout of image tiles on the canvas.
   */
   value=GetImageOption(image_info,"label");
   extent.width=0;
   extent.height=0;
-  for (i=0; i < n; i++)
-  {
-    Image
-      *tile_image;
+  if (status != MagickFalse)
+    {
+      next=image;
+      for (i=0; (i < n) && (next != (Image *) NULL); i++)
+      {
+        Image
+          *tile_image;
 
-    if (status == MagickFalse)
-      continue;
-    if ((tiles[i].x == (ssize_t) MAGICK_SSIZE_MAX) ||
-        (tiles[i].y == (ssize_t) MAGICK_SSIZE_MAX))
-      continue;
-    tile_image=ResizeImage(GetImageFromList(image,tiles[i].id),(size_t)
-      ((ssize_t) tiles[i].width-2*geometry.x),(size_t)
-      ((ssize_t) tiles[i].height-2*geometry.y),image->filter,exception);
-    if (tile_image == (Image *) NULL)
-      {
-        status=MagickFalse;
-        continue;
-      }
-    status=CompositeImage(ashlar_image,tile_image,image->compose,MagickTrue,
-      tiles[i].x+geometry.x,tiles[i].y+geometry.y,exception);
-    if (status == MagickFalse)
-      {
-        tile_image=DestroyImage(tile_image);
-        continue;
-      }
-    if (value != (const char *) NULL)
-      {
-        char
-          *label,
-          offset[MagickPathExtent];
+        ssize_t
+          tile_height,
+          tile_width;
 
-        label=InterpretImageProperties((ImageInfo *) image_info,tile_image,
-          value,exception);
-        if (label != (const char *) NULL)
+        if ((tiles[i].x == (ssize_t) MAGICK_SSIZE_MAX) ||
+            (tiles[i].y == (ssize_t) MAGICK_SSIZE_MAX))
           {
-            DrawInfo
-              *draw_info = CloneDrawInfo(image_info,(DrawInfo *) NULL);
-
-            (void) CloneString(&draw_info->text,label);
-            label=DestroyString(label);
-            (void) FormatLocaleString(offset,MagickPathExtent,"%+g%+g",(double)
-              tiles[i].x+geometry.x,(double) tiles[i].height+tiles[i].y-
-              geometry.y/2.0+4);
-            (void) CloneString(&draw_info->geometry,offset);
-            status=AnnotateImage(ashlar_image,draw_info,exception);
-            draw_info=DestroyDrawInfo(draw_info);
+            next=GetNextImageInList(next);
+            continue;
           }
+        tile_width=(ssize_t) tiles[i].width-2*geometry.x;
+        tile_height=(ssize_t) tiles[i].height-2*geometry.y;
+        if ((tile_width <= 0) || (tile_height <= 0))
+          {
+            status=MagickFalse;
+            break;
+          }
+        tile_image=ResizeImage(next,(size_t) tile_width,(size_t) tile_height,
+          image->filter,exception);
+        if (tile_image == (Image *) NULL)
+          {
+            status=MagickFalse;
+            break;
+          }
+        status=CompositeImage(ashlar_image,tile_image,image->compose,
+          MagickTrue,tiles[i].x+geometry.x,tiles[i].y+geometry.y,exception);
+        if (status == MagickFalse)
+          {
+            tile_image=DestroyImage(tile_image);
+            break;
+          }
+        if (value != (const char *) NULL)
+          {
+            char
+              *label,
+              offset[MagickPathExtent];
+
+            label=InterpretImageProperties((ImageInfo *) image_info,tile_image,
+              value,exception);
+            if (label != (char *) NULL)
+              {
+                DrawInfo
+                  *draw_info;
+
+                draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
+                if (draw_info != (DrawInfo *) NULL)
+                  {
+                    (void) CloneString(&draw_info->text,label);
+                    (void) FormatLocaleString(offset,MagickPathExtent,"%+g%+g",
+                      (double) (tiles[i].x+geometry.x),(double)
+                      ((ssize_t) tiles[i].height+tiles[i].y-
+                      geometry.y/2.0+4.0));
+                    (void) CloneString(&draw_info->geometry,offset);
+                    status=AnnotateImage(ashlar_image,draw_info,exception);
+                    draw_info=DestroyDrawInfo(draw_info);
+                  }
+                label=DestroyString(label);
+                if (status == MagickFalse)
+                  {
+                    tile_image=DestroyImage(tile_image);
+                    break;
+                  }
+              }
+          }
+        if (((ssize_t) tiles[i].width+tiles[i].x) > (ssize_t) extent.width)
+          extent.width=(size_t) ((ssize_t) tiles[i].width+tiles[i].x);
+        if (((ssize_t) tiles[i].height+tiles[i].y+geometry.y+2) >
+            (ssize_t) extent.height)
+          extent.height=(size_t) ((ssize_t) tiles[i].height+tiles[i].y+
+            geometry.y+2);
+        tile_image=DestroyImage(tile_image);
+        next=GetNextImageInList(next);
       }
-    if (((ssize_t) tiles[i].width+tiles[i].x) > (ssize_t) extent.width)
-      extent.width=(size_t) ((ssize_t) tiles[i].width+tiles[i].x);
-    if (((ssize_t) tiles[i].height+tiles[i].y+geometry.y+2) > (ssize_t) extent.height)
-      extent.height=(size_t) ((ssize_t) tiles[i].height+tiles[i].y+
-        geometry.y+2);
-    tile_image=DestroyImage(tile_image);
-  }
-  if (image_info->extract != (char *) NULL)
+    }
+  if ((status != MagickFalse) && (has_extract != MagickFalse))
     (void) ParseAbsoluteGeometry(image_info->extract,&extent);
-  (void) SetImageExtent(ashlar_image,extent.width,extent.height,exception);
+  if ((status != MagickFalse) && ((extent.width == 0) || (extent.height == 0)))
+    status=MagickFalse;
+  if (status != MagickFalse)
+    status=SetImageExtent(ashlar_image,extent.width,extent.height,exception);
   nodes=(NodeInfo *) RelinquishMagickMemory(nodes);
   tiles=(CanvasInfo *) RelinquishMagickMemory(tiles);
   if (status == MagickFalse)
-    ashlar_image=DestroyImage(ashlar_image);
+    ashlar_image=DestroyImageList(ashlar_image);
   return(ashlar_image);
 }
 
@@ -708,6 +748,7 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
     status;
 
   size_t
+    number_images,
     tiles_per_page;
 
   ssize_t
@@ -722,12 +763,13 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
   assert(image->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  tiles_per_page=GetImageListLength(image);
+  number_images=GetImageListLength(image);
+  tiles_per_page=number_images;
   value=GetImageOption(image_info,"ashlar:tiles");
   if (value != (const char *) NULL)
     tiles_per_page=(size_t) MagickMax(StringToInteger(value),1);
   ashlar_images=NewImageList();
-  for (i=0; i < (ssize_t) GetImageListLength(image); i+=(ssize_t) tiles_per_page)
+  for (i=0; i < (ssize_t) number_images; i+=(ssize_t) tiles_per_page)
   {
     char
       scenes[MagickPathExtent];
@@ -737,7 +779,8 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
       *clone_images;
 
     (void) FormatLocaleString(scenes,MagickPathExtent,"%g-%g",(double) i,
-      (double) (i+(ssize_t) tiles_per_page-1));
+      (double) MagickMin(i+(ssize_t) tiles_per_page-1,
+      (ssize_t) number_images-1));
     clone_images=CloneImages(image,scenes,exception);
     if (clone_images == (Image *) NULL)
       {
@@ -746,6 +789,13 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
         break;
       }
     write_info=CloneImageInfo(image_info);
+    if (write_info == (ImageInfo *) NULL)
+      {
+        clone_images=DestroyImageList(clone_images);
+        if (ashlar_images != (Image *) NULL)
+          ashlar_images=DestroyImageList(ashlar_images);
+        break;
+      }
     ashlar_image=ASHLARImage(write_info,clone_images,exception);
     write_info=DestroyImageInfo(write_info);
     clone_images=DestroyImageList(clone_images);
@@ -754,7 +804,7 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
         if (ashlar_images != (Image *) NULL)
           ashlar_images=DestroyImageList(ashlar_images);
         break;
-      }   
+      }
     AppendImageToList(&ashlar_images,ashlar_image);
   }
   if (ashlar_images == (Image *) NULL)
@@ -763,11 +813,16 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
   (void) CopyMagickString(ashlar_images->filename,image_info->filename,
     MagickPathExtent);
   write_info=CloneImageInfo(image_info);
+  if (write_info == (ImageInfo *) NULL)
+    {
+      ashlar_images=DestroyImageList(ashlar_images);
+      return(MagickFalse);
+    }
   *write_info->magick='\0';
   (void) SetImageInfo(write_info,(unsigned int)
     GetImageListLength(ashlar_images),exception);
   magick_info=GetMagickInfo(write_info->magick,exception);
-  if ((magick_info == (const MagickInfo*) NULL) ||
+  if ((magick_info == (const MagickInfo *) NULL) ||
       (LocaleCompare(magick_info->magick_module,"ASHLAR") == 0))
     (void) FormatLocaleString(ashlar_images->filename,MagickPathExtent,
       "miff:%s",write_info->filename);
