@@ -151,7 +151,8 @@ static inline Image *GetImageCache(const ImageInfo *image_info,const char *path,
   ImageInfo
     *read_info;
 
-  (void) FormatLocaleString(key,MagickPathExtent,"cache:%s",path);
+  (void) FormatLocaleString(key,MagickPathExtent,"cache:%s",
+    path != (const char *) NULL ? path : "");
   sans_exception=AcquireExceptionInfo();
   image=(Image *) GetImageRegistry(ImageRegistryType,key,sans_exception);
   sans_exception=DestroyExceptionInfo(sans_exception);
@@ -242,7 +243,7 @@ static Image *SparseColorOption(const Image *image,
       x++;   /* floating point argument */
   }
   /* control points and color values */
-  if ((x % (2+number_colors)) != 0)
+  if ((x == 0) || ((x % (2+number_colors)) != 0))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
         "InvalidArgument","'%s': %s", "sparse-color",
@@ -301,8 +302,12 @@ static Image *SparseColorOption(const Image *image,
     if (*token == '\0') break;
     if ( isalpha((int) ((unsigned char) *token)) || *token == '#' ) {
       /* Color string given */
-      (void) QueryColorCompliance(token,AllCompliance,&color,
-                exception);
+      if (QueryColorCompliance(token,AllCompliance,&color,exception) ==
+          MagickFalse)
+        {
+          error=MagickTrue;
+          break;
+        }
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         sparse_arguments[x++] = QuantumScale*color.red;
       if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
@@ -615,6 +620,8 @@ static void CLISettingOptionInfo(MagickCLI *cli_wand,
 
           if (IfSetOption && (IsGeometry(arg1) == MagickFalse))
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+          if (arg1 == (const char *) NULL)
+            break;
           limit=MagickResourceInfinity;
           if (LocaleCompare("unlimited",arg1) != 0)
             limit=(MagickSizeType) SiPrefixToDoubleInterval(arg1,100.0);
@@ -1075,9 +1082,12 @@ static void CLISettingOptionInfo(MagickCLI *cli_wand,
             CLIWandExceptArgBreak(OptionError,"UnrecognizedResourceType",
               option,arg1);
           if (LocaleCompare("unlimited",arg2) != 0)
-            limit=(MagickSizeType) SiPrefixToDoubleInterval(arg2,100.0);
-          if ((ResourceType) parse == TimeResource)
-            limit=(MagickSizeType) ParseMagickTimeToLive(arg2);
+            {
+              if ((ResourceType) parse == TimeResource)
+                limit=(MagickSizeType) ParseMagickTimeToLive(arg2);
+              else
+                limit=(MagickSizeType) SiPrefixToDoubleInterval(arg2,100.0);
+            }
           (void) SetMagickResourceLimit((ResourceType) parse,limit);
           break;
         }
@@ -1460,9 +1470,11 @@ static void CLISettingOptionInfo(MagickCLI *cli_wand,
       if (LocaleCompare("tile",option+1) == 0)
         {
           /* Note: arguments do not have percent escapes expanded */
-          _draw_info->fill_pattern=IfSetOption
-                                 ?GetImageCache(_image_info,arg1,_exception)
-                                 :DestroyImage(_draw_info->fill_pattern);
+          if (_draw_info->fill_pattern != (Image *) NULL)
+            _draw_info->fill_pattern=DestroyImage(_draw_info->fill_pattern);
+          if (IfSetOption)
+            _draw_info->fill_pattern=GetImageCache(_image_info,arg1,
+              _exception);
           break;
         }
       if (LocaleCompare("tile-offset",option+1) == 0)
@@ -1837,8 +1849,12 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           AutoThresholdMethod
             method;
 
-          method=(AutoThresholdMethod) ParseCommandOption(
-            MagickAutoThresholdOptions,MagickFalse,arg1);
+          parse=ParseCommandOption(MagickAutoThresholdOptions,MagickFalse,
+            arg1);
+          if (parse < 0)
+            CLIWandExceptArgBreak(OptionError,
+              "UnrecognizedAutoThresholdMethod",option,arg1);
+          method=(AutoThresholdMethod) parse;
           (void) AutoThresholdImage(_image,method,_exception);
           break;
         }
@@ -2510,6 +2526,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
         {
           CLIWandWarnReplaced("-gaussian-blur");
           (void) CLISimpleOperatorImage(cli_wand,"-gaussian-blur",arg1,NULL,exception);
+          break;
         }
       if (LocaleCompare("geometry",option+1) == 0)
         {
@@ -3209,6 +3226,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           CLIWandWarnReplaced("-color-matrix");
           (void) CLISimpleOperatorImage(cli_wand,"-color-matrix",arg1,NULL,
             exception);
+          break;
         }
       if (LocaleCompare("region",option+1) == 0)
         {
@@ -3494,7 +3512,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
         {
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & RhoValue) == 0)
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg2);
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           new_image=SpreadImage(_image,_image->interpolate,geometry_info.rho,
            _exception);
           break;
@@ -3977,6 +3995,9 @@ static MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
           double
             distortion;
 
+          const char
+            *value;
+
           Image
             *image,
             *reconstruct_image;
@@ -4000,10 +4021,10 @@ static MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
               break;
             }
           metric=UndefinedErrorMetric;
-          option=GetImageOption(_image_info,"metric");
-          if (option != (const char *) NULL)
+          value=GetImageOption(_image_info,"metric");
+          if (value != (const char *) NULL)
             metric=(MetricType) ParseCommandOption(MagickMetricOptions,
-              MagickFalse,option);
+              MagickFalse,value);
           new_images=CompareImages(image,reconstruct_image,metric,&distortion,
             _exception);
           (void) distortion;
@@ -4104,7 +4125,12 @@ static MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
 
               canvas_image=CloneImage(new_images,0,0,MagickTrue,_exception);
               if (canvas_image == (Image *) NULL)
-                break;
+                {
+                  mask_image=DestroyImage(mask_image);
+                  source_image=DestroyImage(source_image);
+                  status=MagickFalse;
+                  break;
+                }
               switch (compose)
               {
                 case BlendCompositeOp:
@@ -4145,7 +4171,10 @@ static MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
 
                   clone_image=CloneImage(new_images,0,0,MagickTrue,_exception);
                   if (clone_image == (Image *) NULL)
-                    break;
+                    {
+                      status=MagickFalse;
+                      break;
+                    }
                   status&=(MagickStatusType) CompositeImage(new_images,
                     source_image,compose,clip_to_self,geometry.x,geometry.y,
                     _exception);
@@ -4198,7 +4227,7 @@ static MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
             if (IsGeometry(arg1) == MagickFalse)
               CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
             if (IsGeometry(arg2) == MagickFalse)
-              CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+              CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg2);
             (void) ParsePageGeometry(_images,arg2,&geometry,_exception);
             offset.x=geometry.x;
             offset.y=geometry.y;
@@ -4608,8 +4637,11 @@ static MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
           int
             number_arguments;
 
+          number_arguments=0;
           arguments=StringToArgv(arg1,&number_arguments);
-          if ((arguments == (char **) NULL) || (number_arguments == 1))
+          if (arguments == (char **) NULL)
+            break;
+          if (number_arguments == 1)
             {
               DestroyArguments(arguments,number_arguments);
               break;
@@ -4762,6 +4794,7 @@ static MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
       if (LocaleCompare("swap",option+1) == 0)
         {
         Image
+          *clone,
           *p,
           *q,
           *swap;
@@ -4801,7 +4834,14 @@ static MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
         if (swap == (Image *) NULL)
           CLIWandExceptArgBreak(ResourceLimitError,"MemoryAllocationFailed",
             option,(char *) NULL);
-        ReplaceImageInList(&p,CloneImage(q,0,0,MagickTrue,_exception));
+        clone=CloneImage(q,0,0,MagickTrue,_exception);
+        if (clone == (Image *) NULL)
+          {
+            swap=DestroyImage(swap);
+            CLIWandExceptArgBreak(ResourceLimitError,"MemoryAllocationFailed",
+              option,(char *) NULL);
+          }
+        ReplaceImageInList(&p,clone);
         ReplaceImageInList(&q,swap);
         _images=GetFirstImageInList(q);
         break;
@@ -5102,9 +5142,13 @@ static void CLINoImageOperator(MagickCLI *cli_wand,const char *option,
 
         StringInfo *profile = (StringInfo *) NULL;
 
-        /* FIX: avoid leaking previously interpreted arg1 from header */
+        /* -set does its own interpretation: drop any header copies first */
         if (arg1 != arg1n)
           arg1 = DestroyString((char *) arg1);
+        if (arg2 != arg2n)
+          arg2 = DestroyString((char *) arg2);
+        arg1=arg1n;
+        arg2=arg2n;
 
         /* escape the 'key' once only, using first image. */
         arg1=InterpretImageProperties(_image_info,_images,arg1n,_exception);
@@ -5120,10 +5164,6 @@ static void CLINoImageOperator(MagickCLI *cli_wand,const char *option,
                 arg1=DestroyString((char *)arg1);
                 break;
               }
-
-            /* FIX: avoid leaking previously interpreted arg2 from header */
-            if (arg2 != arg2n)
-              arg2 = DestroyString((char *) arg2);
 
             arg2=InterpretImageProperties(_image_info,_images,arg2n,_exception);
             if (arg2 == (char *) NULL) {
@@ -5151,10 +5191,6 @@ static void CLINoImageOperator(MagickCLI *cli_wand,const char *option,
             arg2=(char *) NULL;
             if (IfNormalOp)
               {
-                /* FIX: avoid leaking previously interpreted arg2 from header */
-                if (arg2 != arg2n)
-                  arg2 = DestroyString((char *) arg2);
-
                 arg2=InterpretImageProperties(_image_info,_images,arg2n,
                   _exception);
                 if (arg2 == (char *) NULL)
@@ -5189,10 +5225,6 @@ static void CLINoImageOperator(MagickCLI *cli_wand,const char *option,
             arg2=(char *) NULL;
             if (IfNormalOp)
               {
-                /* FIX: avoid leaking previously interpreted arg2 from header */
-                if (arg2 != arg2n)
-                  arg2 = DestroyString((char *) arg2);
-
                 arg2=InterpretImageProperties(_image_info,_images,arg2n,
                   _exception);
                 if (arg2 == (char *) NULL)
@@ -5420,7 +5452,7 @@ WandExport void CLIOption(MagickCLI *cli_wand,const char *option,...)
     option_type=(CommandOptionFlags) cli_wand->command->flags;
 
     if ( option_type == UndefinedOptionFlag )
-      CLIWandExceptionReturn(OptionFatalError,"UnrecognizedOption",option);
+      CLIWandExceptionBreak(OptionFatalError,"UnrecognizedOption",option);
 
     assert( LocaleCompare(cli_wand->command->mnemonic,option) == 0 );
 
@@ -5493,6 +5525,7 @@ WandExport void CLIOption(MagickCLI *cli_wand,const char *option,...)
       {
         ExceptionInfo *exception=AcquireExceptionInfo();
         (void) CLISimpleOperatorImages(cli_wand, option, arg1, arg2,exception);
+        InheritException(cli_wand->wand.exception,exception);
         exception=DestroyExceptionInfo(exception);
       }
 
