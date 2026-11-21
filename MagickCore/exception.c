@@ -88,6 +88,9 @@ static FatalErrorHandler
 
 static WarningHandler
   warning_handler = DefaultWarningHandler;
+
+static MagickBooleanType
+  warnings_as_errors = MagickFalse;
 
 /*
   Static declarations.
@@ -959,6 +962,79 @@ MagickExport WarningHandler SetWarningHandler(WarningHandler handler)
   UnlockSemaphoreInfo(exception_semaphore);
   return(previous_handler);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t W a r n i n g s A s E r r o r s                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetWarningsAsErrors() returns MagickTrue if warnings are being escalated to
+%  errors when recorded via ThrowMagickException.
+%
+%  The format of the GetWarningsAsErrors method is:
+%
+%      MagickBooleanType GetWarningsAsErrors(void)
+%
+*/
+MagickExport MagickBooleanType GetWarningsAsErrors(void)
+{
+  MagickBooleanType
+    strict;
+
+  if (exception_semaphore == (SemaphoreInfo *) NULL)
+    ActivateSemaphoreInfo(&exception_semaphore);
+  LockSemaphoreInfo(exception_semaphore);
+  strict=warnings_as_errors;
+  UnlockSemaphoreInfo(exception_semaphore);
+  return(strict);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t W a r n i n g s A s E r r o r s                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetWarningsAsErrors() controls whether warnings are escalated to errors at
+%  the time they are recorded and returns the previous value so callers can
+%  save and restore it.  When enabled, ThrowMagickException promotes a
+%  WarningException-band severity to the matching ErrorException-band value,
+%  which makes the operation exit non-zero.
+%
+%  The format of the SetWarningsAsErrors method is:
+%
+%      MagickBooleanType SetWarningsAsErrors(const MagickBooleanType strict)
+%
+%  A description of each parameter follows:
+%
+%    o strict: MagickTrue to treat warnings as errors, MagickFalse to leave
+%      them as warnings.
+%
+*/
+MagickExport MagickBooleanType SetWarningsAsErrors(const MagickBooleanType strict)
+{
+  MagickBooleanType
+    previous;
+
+  if (exception_semaphore == (SemaphoreInfo *) NULL)
+    ActivateSemaphoreInfo(&exception_semaphore);
+  LockSemaphoreInfo(exception_semaphore);
+  previous=warnings_as_errors;
+  warnings_as_errors=strict;
+  UnlockSemaphoreInfo(exception_semaphore);
+  return(previous);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1095,7 +1171,7 @@ MagickExport MagickBooleanType ThrowException(ExceptionInfo *exception,
 
 MagickExport MagickBooleanType ThrowMagickExceptionList(
   ExceptionInfo *exception,const char *module,const char *function,
-  const size_t line,const ExceptionType severity,const char *tag,
+  const size_t line,ExceptionType severity,const char *tag,
   const char *format,va_list operands)
 {
   char
@@ -1127,6 +1203,9 @@ MagickExport MagickBooleanType ThrowMagickExceptionList(
     reason[MagickPathExtent-1]='\0';
   status=LogMagickEvent(ExceptionEvent,module,function,line,"%s",reason);
   GetPathComponent(module,TailPath,path);
+  if ((warnings_as_errors != MagickFalse) &&
+      (severity >= WarningException) && (severity < ErrorException))
+    severity=(ExceptionType) (severity+(ErrorException-WarningException));
   type="undefined";
   if ((severity >= WarningException) && (severity < ErrorException))
     type="warning";

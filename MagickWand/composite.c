@@ -1444,6 +1444,8 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
             composite_options.stereo=MagickTrue;
             break;
           }
+        if (LocaleCompare("strict",option+1) == 0)
+          break;
         if (LocaleCompare("strip",option+1) == 0)
           break;
         if (LocaleCompare("support",option+1) == 0)
