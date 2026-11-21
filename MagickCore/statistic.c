@@ -609,6 +609,7 @@ MagickExport Image *EvaluateImages(const Image *images,
           exception);
         if ((j < (ssize_t) number_images) || (q == (Quantum *) NULL))
           {
+            p=(const Quantum **) RelinquishMagickMemory((void *) p);
             status=MagickFalse;
             continue;
           }
@@ -725,6 +726,7 @@ MagickExport Image *EvaluateImages(const Image *images,
           exception);
         if ((j < (ssize_t) number_images) || (q == (Quantum *) NULL))
           {
+            p=(const Quantum **) RelinquishMagickMemory((void *) p);
             status=MagickFalse;
             continue;
           }
@@ -1621,25 +1623,11 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
        (M20[c]-M02[c]))));
     channel_moments[c].ellipse_angle=RadiansToDegrees(1.0/2.0*atan(2.0*
       M11[c]*MagickSafeReciprocal(M20[c]-M02[c])));
-    if (fabs(M11[c]) < 0.0)
-      {
-        if ((fabs(M20[c]-M02[c]) >= 0.0) && ((M20[c]-M02[c]) < 0.0))
-          channel_moments[c].ellipse_angle+=90.0;
-      }
+    if ((M20[c]-M02[c]) < 0.0)
+      channel_moments[c].ellipse_angle+=90.0;
     else
-      if (M11[c] < 0.0)
-        {
-          if (fabs(M20[c]-M02[c]) >= 0.0)
-            {
-              if ((M20[c]-M02[c]) < 0.0)
-                channel_moments[c].ellipse_angle+=90.0;
-              else
-                channel_moments[c].ellipse_angle+=180.0;
-            }
-        }
-      else
-        if ((fabs(M20[c]-M02[c]) >= 0.0) && ((M20[c]-M02[c]) < 0.0))
-          channel_moments[c].ellipse_angle+=90.0;
+      if ((M11[c] < 0.0) && ((M20[c]-M02[c]) >= 0.0))
+        channel_moments[c].ellipse_angle+=180.0;
     channel_moments[c].ellipse_eccentricity=sqrt(1.0-(
       channel_moments[c].ellipse_axis.y*
       channel_moments[c].ellipse_axis.y*MagickSafeReciprocal(
@@ -1889,7 +1877,8 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
         status=MagickFalse;
         continue;
       }
-    channel_range=range_info;
+    channel_range.maxima=(-MagickMaximumValue);
+    channel_range.minima=MagickMaximumValue;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       ssize_t
@@ -2278,50 +2267,52 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   histogram=(double *) RelinquishMagickMemory(histogram);
   median_info=AcquireVirtualMemory(image->columns,image->rows*sizeof(*median));
   if (median_info == (MemoryInfo *) NULL)
-    (void) ThrowMagickException(exception,GetMagickModule(),
-      ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
-  else
     {
-      median=(Quantum *) GetVirtualMemoryBlob(median_info);
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-      {
-        size_t
-          n = 0;
-
-        /*
-          Compute median statistics for each channel.
-        */
-        PixelChannel channel = GetPixelChannelChannel(image,i);
-        PixelTrait traits = GetPixelChannelTraits(image,channel);
-        if ((traits & UpdatePixelTrait) == 0)
-          continue;
-        for (y=0; y < (ssize_t) image->rows; y++)
-        {
-          const Quantum
-            *magick_restrict p;
-
-          ssize_t
-            x;
-
-          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
-          if (p == (const Quantum *) NULL)
-            break;
-          for (x=0; x < (ssize_t) image->columns; x++)
-          {
-            if (GetPixelReadMask(image,p) <= (QuantumRange/2))
-              {
-                p+=(ptrdiff_t) GetPixelChannels(image);
-                continue;
-              }
-            median[n++]=p[i];
-            p+=(ptrdiff_t) GetPixelChannels(image);
-          }
-        }
-        channel_statistics[channel].median=(double) median[
-          GetMedianPixel(median,n)];
-      }
-      median_info=RelinquishVirtualMemory(median_info);
+      channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
+        channel_statistics);
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      return((ChannelStatistics *) NULL);
     }
+  median=(Quantum *) GetVirtualMemoryBlob(median_info);
+  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+  {
+    size_t
+      n = 0;
+
+    /*
+      Compute median statistics for each channel.
+    */
+    PixelChannel channel = GetPixelChannelChannel(image,i);
+    PixelTrait traits = GetPixelChannelTraits(image,channel);
+    if ((traits & UpdatePixelTrait) == 0)
+      continue;
+    for (y=0; y < (ssize_t) image->rows; y++)
+    {
+      const Quantum
+        *magick_restrict p;
+
+      ssize_t
+        x;
+
+      p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+      if (p == (const Quantum *) NULL)
+        break;
+      for (x=0; x < (ssize_t) image->columns; x++)
+      {
+        if (GetPixelReadMask(image,p) <= (QuantumRange/2))
+          {
+            p+=(ptrdiff_t) GetPixelChannels(image);
+            continue;
+          }
+        median[n++]=p[i];
+        p+=(ptrdiff_t) GetPixelChannels(image);
+      }
+    }
+    channel_statistics[channel].median=(n > 0) ? (double) median[
+      GetMedianPixel(median,n)] : 0.0;
+  }
+  median_info=RelinquishVirtualMemory(median_info);
   {
     ChannelStatistics *cs_comp = channel_statistics+CompositePixelChannel;
     cs_comp->sum=0.0;
@@ -2450,6 +2441,7 @@ MagickExport Image *PolynomialImage(const Image *images,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  assert((number_terms == 0) || (terms != (const double *) NULL));
   image=AcquireImageCanvas(images,exception);
   if (image == (Image *) NULL)
     return((Image *) NULL);
@@ -2513,13 +2505,11 @@ MagickExport Image *PolynomialImage(const Image *images,
       for (i=0; i < MaxPixelChannels; i++)
         polynomial_pixel[j].channel[i]=0.0;
     next=images;
-    for (j=0; j < (ssize_t) number_images; j++)
+    for (j=0; (j < (ssize_t) number_images) && (j < (ssize_t) number_terms); j++)
     {
       const Quantum
         *p;
 
-      if (j >= (ssize_t) number_terms)
-        continue;
       image_view=AcquireVirtualCacheView(next,exception);
       p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
       if (p == (const Quantum *) NULL)
@@ -2535,7 +2525,7 @@ MagickExport Image *PolynomialImage(const Image *images,
             coefficient,
             degree;
 
-          PixelChannel channel = GetPixelChannelChannel(image,i);
+          PixelChannel channel = GetPixelChannelChannel(next,i);
           PixelTrait traits = GetPixelChannelTraits(next,channel);
           PixelTrait polynomial_traits = GetPixelChannelTraits(image,channel);
           if (((traits & UpdatePixelTrait) == 0) ||
@@ -2544,7 +2534,7 @@ MagickExport Image *PolynomialImage(const Image *images,
           coefficient=(MagickRealType) terms[2*j];
           degree=(MagickRealType) terms[(j << 1)+1];
           polynomial_pixel[x].channel[i]+=coefficient*
-            pow(QuantumScale*(double) GetPixelChannel(image,channel,p),degree);
+            pow(QuantumScale*(double) GetPixelChannel(next,channel,p),degree);
         }
         p+=(ptrdiff_t) GetPixelChannels(next);
       }

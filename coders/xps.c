@@ -303,6 +303,7 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   (void) AcquireUniqueFilename(read_info->filename);
   (void) RelinquishUniqueFileResource(read_info->filename);
+  (void) ConcatenateMagickString(read_info->filename,"%d",MagickPathExtent);
   (void) CopyMagickString(filename,read_info->filename,MagickPathExtent);
   (void) FormatLocaleString(command,MagickPathExtent,
     GetDelegateCommands(delegate_info),

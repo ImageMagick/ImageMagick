@@ -103,7 +103,7 @@ static MagickBooleanType CompareUsage(void)
       "  -resize geometry     resize the image\n"
       "  -rotate degrees      apply Paeth rotation to the image\n"
       "  -sigmoidal-contrast geometry\n"
-      "                       increase the contrast without saturating highlights or\n"
+      "                       increase the contrast without saturating highlights or shadows\n"
       "  -trim                trim image edges\n"
       "  -write filename      write images to this file",
     sequence_operators[] =
@@ -139,7 +139,7 @@ static MagickBooleanType CompareUsage(void)
       "                       de-emphasize pixel differences with this color\n"
       "  -metric type         measure differences between images with this metric\n"
       "  -monitor             monitor progress\n"
-      "  -negate              replace every pixel with its complementary color \n"
+      "  -negate              replace every pixel with its complementary color\n"
       "  -passphrase filename get the passphrase from this file\n"
       "  -precision value     maximum number of significant digits to print\n"
       "  -profile filename    add, delete, or apply an image profile\n"
@@ -153,7 +153,6 @@ static MagickBooleanType CompareUsage(void)
       "                       horizontal and vertical sampling factor\n"
       "  -seed value          seed a new sequence of pseudo-random numbers\n"
       "  -set attribute value set an image attribute\n"
-      "  -quality value       JPEG/MIFF/PNG compression level\n"
       "  -repage geometry     size and location of an image canvas\n"
       "  -similarity-threshold value\n"
       "                       minimum distortion for (sub)image match\n"
@@ -168,7 +167,7 @@ static MagickBooleanType CompareUsage(void)
       "  -version             print version information\n"
       "  -virtual-pixel method\n"
       "                       virtual pixel access method\n"
-      "  -write-mask filename  associate a write mask with the image",
+      "  -write-mask filename associate a write mask with the image",
     stack_operators[] =
       "  -delete indexes      delete the image from the image sequence";
 
@@ -300,6 +299,9 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
           ListMagickVersion(stdout);
           return(MagickTrue);
         }
+      if ((LocaleCompare("help",option+1) == 0) ||
+          (LocaleCompare("-help",option+1) == 0))
+        return(CompareUsage());
     }
   if (argc < 3)
     {
@@ -520,7 +522,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
               ThrowCompareInvalidArgumentException(option,argv[i]);
             break;
           }
-        ThrowCompareException(OptionError,"UnrecognizedOption",option)
+        ThrowCompareException(OptionError,"UnrecognizedOption",option);
       }
       case 'd':
       {
@@ -602,16 +604,16 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
         if (LocaleCompare("dissimilarity-threshold",option+1) == 0)
           {
             if (*option == '+')
-              break;
+              {
+                dissimilarity_threshold=DefaultDissimilarityThreshold;
+                break;
+              }
             i++;
             if (i == (ssize_t) argc)
               ThrowCompareException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowCompareInvalidArgumentException(option,argv[i]);
-            if (*option == '+')
-              dissimilarity_threshold=DefaultDissimilarityThreshold;
-            else
-              dissimilarity_threshold=StringToDouble(argv[i],(char **) NULL);
+            dissimilarity_threshold=StringToDouble(argv[i],(char **) NULL);
             break;
           }
         if (LocaleCompare("distort",option+1) == 0)
@@ -642,7 +644,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
               ThrowCompareInvalidArgumentException(option,argv[i]);
             break;
           }
-        ThrowCompareException(OptionError,"UnrecognizedOption",option)
+        ThrowCompareException(OptionError,"UnrecognizedOption",option);
       }
       case 'e':
       {
@@ -666,7 +668,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
               ThrowCompareInvalidArgumentException(option,argv[i]);
             break;
           }
-        ThrowCompareException(OptionError,"UnrecognizedOption",option)
+        ThrowCompareException(OptionError,"UnrecognizedOption",option);
       }
       case 'f':
       {
@@ -691,7 +693,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
               ThrowCompareInvalidArgumentException(option,argv[i]);
             break;
           }
-        ThrowCompareException(OptionError,"UnrecognizedOption",option)
+        ThrowCompareException(OptionError,"UnrecognizedOption",option);
       }
       case 'g':
       {
@@ -712,7 +714,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
                 argv[i]);
             break;
           }
-        ThrowCompareException(OptionError,"UnrecognizedOption",option)
+        ThrowCompareException(OptionError,"UnrecognizedOption",option);
       }
       case 'h':
       {
@@ -731,7 +733,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
               ThrowCompareException(OptionError,"MissingArgument",option);
             break;
           }
-        ThrowCompareException(OptionError,"UnrecognizedOption",option)
+        ThrowCompareException(OptionError,"UnrecognizedOption",option);
       }
       case 'i':
       {
@@ -754,7 +756,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
                 argv[i]);
             break;
           }
-        ThrowCompareException(OptionError,"UnrecognizedOption",option)
+        ThrowCompareException(OptionError,"UnrecognizedOption",option);
       }
       case 'l':
       {
@@ -833,7 +835,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
               ThrowCompareException(OptionError,"MissingArgument",option);
             break;
           }
-        ThrowCompareException(OptionError,"UnrecognizedOption",option)
+        ThrowCompareException(OptionError,"UnrecognizedOption",option);
       }
       case 'm':
       {
@@ -858,13 +860,13 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("monitor",option+1) == 0)
           break;
-        ThrowCompareException(OptionError,"UnrecognizedOption",option)
+        ThrowCompareException(OptionError,"UnrecognizedOption",option);
       }
       case 'n':
       {
         if (LocaleCompare("negate",option+1) == 0)
           break;
-        ThrowCompareException(OptionError,"UnrecognizedOption",option)
+        ThrowCompareException(OptionError,"UnrecognizedOption",option);
       }
       case 'p':
       {
@@ -895,7 +897,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
               ThrowCompareException(OptionError,"MissingArgument",option);
             break;
           }
-        ThrowCompareException(OptionError,"UnrecognizedOption",option)
+        ThrowCompareException(OptionError,"UnrecognizedOption",option);
       }
       case 'q':
       {
@@ -929,7 +931,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("quiet",option+1) == 0)
           break;
-        ThrowCompareException(OptionError,"UnrecognizedOption",option)
+        ThrowCompareException(OptionError,"UnrecognizedOption",option);
       }
       case 'r':
       {
@@ -980,7 +982,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
               ThrowCompareInvalidArgumentException(option,argv[i]);
             break;
           }
-        ThrowCompareException(OptionError,"UnrecognizedOption",option)
+        ThrowCompareException(OptionError,"UnrecognizedOption",option);
       }
       case 's':
       {
@@ -1032,16 +1034,16 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
         if (LocaleCompare("similarity-threshold",option+1) == 0)
           {
             if (*option == '+')
-              break;
+              {
+                similarity_threshold=DefaultSimilarityThreshold;
+                break;
+              }
             i++;
             if (i == (ssize_t) argc)
               ThrowCompareException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowCompareInvalidArgumentException(option,argv[i]);
-            if (*option == '+')
-              similarity_threshold=DefaultSimilarityThreshold;
-            else
-              similarity_threshold=StringToDouble(argv[i],(char **) NULL);
+            similarity_threshold=StringToDouble(argv[i],(char **) NULL);
             break;
           }
         if (LocaleCompare("size",option+1) == 0)
@@ -1067,7 +1069,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("synchronize",option+1) == 0)
           break;
-        ThrowCompareException(OptionError,"UnrecognizedOption",option)
+        ThrowCompareException(OptionError,"UnrecognizedOption",option);
       }
       case 't':
       {
@@ -1100,7 +1102,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
                 argv[i]);
             break;
           }
-        ThrowCompareException(OptionError,"UnrecognizedOption",option)
+        ThrowCompareException(OptionError,"UnrecognizedOption",option);
       }
       case 'v':
       {
@@ -1129,7 +1131,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
                 "UnrecognizedVirtualPixelMethod",argv[i]);
             break;
           }
-        ThrowCompareException(OptionError,"UnrecognizedOption",option)
+        ThrowCompareException(OptionError,"UnrecognizedOption",option);
       }
       case 'w':
       {
@@ -1149,12 +1151,12 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
               ThrowCompareException(OptionError,"MissingArgument",option);
             break;
           }
-        ThrowCompareException(OptionError,"UnrecognizedOption",option)
+        ThrowCompareException(OptionError,"UnrecognizedOption",option);
       }
       case '?':
         break;
       default:
-        ThrowCompareException(OptionError,"UnrecognizedOption",option)
+        ThrowCompareException(OptionError,"UnrecognizedOption",option);
     }
     fire=(GetCommandOptionFlags(MagickCommandOptions,MagickFalse,option) &
       FireOptionFlag) == 0 ?  MagickFalse : MagickTrue;
@@ -1162,7 +1164,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
       FireImageStack(MagickTrue,MagickTrue,MagickTrue);
   }
   if (k != 0)
-    ThrowCompareException(OptionError,"UnbalancedParenthesis",argv[i]);
+    ThrowCompareException(OptionError,"UnbalancedParenthesis",
+      argv[i < (ssize_t) argc ? i : (ssize_t) argc-1]);
   if (i-- != ((ssize_t) argc-1))
     ThrowCompareException(OptionError,"MissingAnImageFilename",argv[i]);
   if ((image == (Image *) NULL) || (GetImageListLength(image) < 2))
@@ -1277,7 +1280,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
           CompareConstantColorException,"(%s)",CommandOptionToMnemonic(
           MagickMetricOptions,(ssize_t) metric));
       break;
-    } 
+    }
     case PeakAbsoluteErrorMetric:
     {
       if ((subimage_search != MagickFalse) &&
@@ -1388,6 +1391,9 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
 
           channel_distortion=GetImageDistortions(image,reconstruct_image,
             metric,exception);
+          if (channel_distortion == (double *) NULL)
+            ThrowCompareException(ResourceLimitError,"MemoryAllocationFailed",
+              (char *) NULL);
           (void) FormatLocaleFile(stderr,"Image: %s\n",image->filename);
           if ((reconstruct_image->columns != image->columns) ||
               (reconstruct_image->rows != image->rows))
@@ -1571,7 +1577,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
                 case CMYKColorspace:
                 {
                   (void) FormatLocaleFile(stderr,"    cyan: %.*g\n",
-                    GetMagickPrecision(),channel_distortion[CyanPixelChannel]);
+                    GetMagickPrecision(),scale*
+                    channel_distortion[CyanPixelChannel]);
                   (void) FormatLocaleFile(stderr,"    magenta: %.*g\n",
                     GetMagickPrecision(),scale*
                     channel_distortion[MagentaPixelChannel]);
@@ -1615,12 +1622,12 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
               (void) FormatLocaleFile(stderr,"   Offset: %.17g,%.17g\n",
                 (double) difference_image->page.x,(double)
                 difference_image->page.y);
-              (void) FormatLocaleFile(stderr,"   Similarity metric: %*g\n",
+              (void) FormatLocaleFile(stderr,"   Similarity metric: %.*g\n",
                 GetMagickPrecision(),similarity_metric);
-              (void) FormatLocaleFile(stderr,"   Similarity threshold: %*g\n",
+              (void) FormatLocaleFile(stderr,"   Similarity threshold: %.*g\n",
                 GetMagickPrecision(),similarity_threshold);
               (void) FormatLocaleFile(stderr,
-                "   Dissimilarity threshold: %*g\n",GetMagickPrecision(),
+                "   Dissimilarity threshold: %.*g\n",GetMagickPrecision(),
                 dissimilarity_threshold);
             }
         }

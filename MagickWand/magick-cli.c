@@ -1269,8 +1269,11 @@ static MagickBooleanType ConcatenateImages(int argc,char **argv,
   for (i=2; i < ((ssize_t) argc-1); i++)
   {
     if (IsPathAuthorized(ReadPolicyRights,argv[i]) == MagickFalse)
-      ThrowPolicyException(argv[i],MagickFalse);
-    input=fopen_utf8(argv[i],"rb");
+      {
+        (void) fclose(output);
+        ThrowPolicyException(argv[i],MagickFalse);
+      }
+      input=fopen_utf8(argv[i],"rb");
     if (input == (FILE *) NULL)
       {
         ThrowFileException(exception,FileOpenError,"UnableToOpenFile",argv[i]);
