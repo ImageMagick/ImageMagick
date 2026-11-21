@@ -150,7 +150,7 @@ MagickExport QuantumInfo *AcquireQuantumInfo(const ImageInfo *image_info,
 %
 %    o quantum_info: the quantum info.
 %
-%    o extent: the quantum info.
+%    o extent: the size, in bytes, of each per-thread pixel staging buffer.
 %
 */
 static MagickBooleanType AcquireQuantumPixels(QuantumInfo *quantum_info,
@@ -161,11 +161,18 @@ static MagickBooleanType AcquireQuantumPixels(QuantumInfo *quantum_info,
 
   assert(quantum_info != (QuantumInfo *) NULL);
   assert(quantum_info->signature == MagickCoreSignature);
+  if (extent >= (size_t) MAGICK_SSIZE_MAX)
+    return(MagickFalse);  /* extent+1 below must not overflow */
   quantum_info->number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
+  if (quantum_info->number_threads == 0)
+    quantum_info->number_threads=1;
   quantum_info->pixels=(MemoryInfo **) AcquireQuantumMemory(
     quantum_info->number_threads,sizeof(*quantum_info->pixels));
   if (quantum_info->pixels == (MemoryInfo **) NULL)
-    return(MagickFalse);
+    {
+      quantum_info->extent=0;
+      return(MagickFalse);
+    }
   quantum_info->extent=extent;
   (void) memset(quantum_info->pixels,0,quantum_info->number_threads*
     sizeof(*quantum_info->pixels));
@@ -275,6 +282,7 @@ static void DestroyQuantumPixels(QuantumInfo *quantum_info)
       }
   quantum_info->pixels=(MemoryInfo **) RelinquishMagickMemory(
     quantum_info->pixels);
+  quantum_info->extent=0;
 }
 
 /*
@@ -311,6 +319,8 @@ MagickExport size_t GetQuantumExtent(const Image *image,
   size_t
     channels;
 
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
   assert(quantum_info != (QuantumInfo *) NULL);
   assert(quantum_info->signature == MagickCoreSignature);
   channels=1;
@@ -421,7 +431,8 @@ MagickExport QuantumFormatType GetQuantumFormat(const QuantumInfo *quantum_info)
 %
 %  The format of the GetQuantumInfo method is:
 %
-%      GetQuantumInfo(const ImageInfo *image_info,QuantumInfo *quantum_info)
+%      void GetQuantumInfo(const ImageInfo *image_info,
+%        QuantumInfo *quantum_info)
 %
 %  A description of each parameter follows:
 %
@@ -445,7 +456,13 @@ MagickExport void GetQuantumInfo(const ImageInfo *image_info,
   quantum_info->semaphore=AcquireSemaphoreInfo();
   quantum_info->signature=MagickCoreSignature;
   if (image_info == (const ImageInfo *) NULL)
-    return;
+    {
+      /*
+        Leave the bit-packing state valid even without image options.
+      */
+      ResetQuantumState(quantum_info);
+      return;
+    }
   option=GetImageOption(image_info,"quantum:format");
   if (option != (char *) NULL)
     quantum_info->format=(QuantumFormatType) ParseCommandOption(
@@ -493,12 +510,11 @@ MagickExport void GetQuantumInfo(const ImageInfo *image_info,
 %
 %  The format of the GetQuantumPixels method is:
 %
-%      unsigned char *QuantumPixels GetQuantumPixels(
-%        const QuantumInfo *quantum_info)
+%      unsigned char *GetQuantumPixels(const QuantumInfo *quantum_info)
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
+%    o quantum_info: the quantum info.
 %
 */
 MagickExport unsigned char *GetQuantumPixels(const QuantumInfo *quantum_info)
@@ -508,6 +524,8 @@ MagickExport unsigned char *GetQuantumPixels(const QuantumInfo *quantum_info)
 
   assert(quantum_info != (QuantumInfo *) NULL);
   assert(quantum_info->signature == MagickCoreSignature);
+  assert(quantum_info->pixels != (MemoryInfo **) NULL);
+  assert((id >= 0) && ((size_t) id < quantum_info->number_threads));
   return((unsigned char *) GetVirtualMemoryBlob(quantum_info->pixels[id]));
 }
 
@@ -621,13 +639,13 @@ MagickPrivate void ResetQuantumState(QuantumInfo *quantum_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S e t Q u a n t u m F o r m a t                                           %
+%   S e t Q u a n t u m A l p h a T y p e                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetQuantumAlphaType() sets the quantum format.
+%  SetQuantumAlphaType() sets the quantum alpha type.
 %
 %  The format of the SetQuantumAlphaType method is:
 %
@@ -718,7 +736,7 @@ MagickExport MagickBooleanType SetQuantumDepth(const Image *image,
 %
 %  SetQuantumEndian() sets the quantum endian.
 %
-%  The endian of the SetQuantumEndian method is:
+%  The format of the SetQuantumEndian method is:
 %
 %      MagickBooleanType SetQuantumEndian(const Image *image,
 %        QuantumInfo *quantum_info,const EndianType endian)
@@ -760,7 +778,7 @@ MagickExport MagickBooleanType SetQuantumEndian(const Image *image,
 %
 %  The format of the SetQuantumExtent method is:
 %
-%      MagickBooleanType SetQuantumExtent(Image *image,
+%      MagickBooleanType SetQuantumExtent(const Image *image,
 %        QuantumInfo *quantum_info)
 %
 %  A description of each parameter follows:
@@ -784,6 +802,8 @@ MagickExport MagickBooleanType SetQuantumExtent(const Image *image,
   assert(image->signature == MagickCoreSignature);
   assert(quantum_info != (QuantumInfo *) NULL);
   assert(quantum_info->signature == MagickCoreSignature);
+  if (quantum_info->pad >= (MAGICK_SSIZE_MAX/(GetPixelChannels(image)+3)))
+    return(MagickFalse);
   quantum=(GetPixelChannels(image)+quantum_info->pad+3)*
     ((quantum_info->depth+7)/8)*sizeof(double);
   extent=MagickMax(image->columns,image->rows)*quantum;
@@ -854,7 +874,7 @@ MagickExport MagickBooleanType SetQuantumFormat(const Image *image,
 %
 %  The format of the SetQuantumImageType method is:
 %
-%      void ImageType SetQuantumImageType(Image *image,
+%      void SetQuantumImageType(Image *image,
 %        const QuantumType quantum_type)
 %
 %  A description of each parameter follows:
@@ -924,8 +944,8 @@ MagickExport void SetQuantumImageType(Image *image,
 %
 %  The format of the SetQuantumMetaChannel method is:
 %
-%      void SetQuantumMetaChannel(const Image *image,QuantumInfo *quantum_info,
-%        const ssize_t meta_channel)
+%      MagickBooleanType SetQuantumMetaChannel(const Image *image,
+%        QuantumInfo *quantum_info,const ssize_t meta_channel)
 %
 %  A description of each parameter follows:
 %
@@ -937,8 +957,10 @@ MagickExport void SetQuantumImageType(Image *image,
 %
 */
 MagickExport MagickBooleanType SetQuantumMetaChannel(const Image *image,
-  QuantumInfo *quantum_info, const ssize_t meta_channel) 
+  QuantumInfo *quantum_info,const ssize_t meta_channel)
 {
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
   assert(quantum_info != (QuantumInfo *) NULL);
   assert(quantum_info->signature == MagickCoreSignature);
   if ((meta_channel < -1) ||
@@ -1017,7 +1039,8 @@ MagickExport MagickBooleanType SetQuantumPad(const Image *image,
   assert(quantum_info->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (pad >= (MAGICK_SSIZE_MAX/GetImageChannels(image)))
+  if ((GetImageChannels(image) == 0) ||
+      (pad >= (MAGICK_SSIZE_MAX/GetImageChannels(image))))
     return(MagickFalse);
   quantum_info->pad=pad;
   return(SetQuantumExtent(image,quantum_info));

@@ -1226,7 +1226,7 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image,
   SetQuantumPack(quantum_info,MagickFalse);
   quantum_type=RGBQuantum;
   pixels=(unsigned char *) GetQuantumPixels(quantum_info);
-  length=GetBytesPerRow(image->columns,3,image->depth,MagickTrue);
+  length=GetBytesPerRow(image->columns,3,quantum_info->depth,MagickTrue);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
