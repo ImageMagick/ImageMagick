@@ -453,7 +453,7 @@ static double *GenerateCoefficients(const Image *image,
           return((double *) NULL);
         }
       if ((number_arguments < (1+i*cp_size)) ||
-          (((number_arguments-1) % cp_size) != 0)) 
+          (((number_arguments-1) % cp_size) != 0))
         {
           (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
                  "InvalidArgument", "%s : 'require at least %.17g CPs'",
@@ -3145,14 +3145,31 @@ MagickExport Image *SparseColorImage(const Image *image,
     Convert input arguments into mapping coefficients, in this case
     we are mapping (distorting) colors, rather than coordinates.
   */
-  { DistortMethod
+  {
+    DistortMethod
       distort_method;
 
     distort_method=(DistortMethod) method;
     if ( distort_method >= SentinelDistortion )
       distort_method = ShepardsDistortion; /* Pretend to be Shepards */
-    coeff = GenerateCoefficients(image, &distort_method, number_arguments,
-                arguments, number_colors, exception);
+    else
+      switch (distort_method)
+      {
+        case AffineDistortion:            /* BarycentricColorInterpolate */
+        case BilinearReverseDistortion:   /* BilinearColorInterpolate */
+        case PolynomialDistortion:
+        case ShepardsDistortion:
+          break;
+        default:
+        {
+          (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+            "InvalidArgument","%s : 'Not a sparse color method'",
+            CommandOptionToMnemonic(MagickDistortOptions,distort_method));
+          return((Image *) NULL);
+        }
+      }
+    coeff=GenerateCoefficients(image,&distort_method,number_arguments,
+      arguments,number_colors,exception);
     if ( coeff == (double *) NULL )
       return((Image *) NULL);
     /*
