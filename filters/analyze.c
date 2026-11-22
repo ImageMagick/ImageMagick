@@ -87,25 +87,28 @@ typedef struct _StatisticsInfo
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
 static inline int GetMagickNumberThreads(const Image *source,
-  const Image *destination,const size_t chunk,int multithreaded)
+  const Image *destination,const size_t chunk,const double factor)
 {
-#define MagickMax(x,y)  (((x) > (y)) ? (x) : (y))
-#define MagickMin(x,y)  (((x) < (y)) ? (x) : (y))
+  const CacheType
+    destination_type = (CacheType) GetImagePixelCacheType(destination),
+    source_type = (CacheType) GetImagePixelCacheType(source);
 
-  /*
-    Number of threads bounded by the amount of work and any thread resource
-    limit.  The limit is 2 if the pixel cache type is not memory or
-    memory-mapped.
-  */
-  if (multithreaded == 0)
-    return(1);
-  if (((GetImagePixelCacheType(source) != MemoryCache) &&
-       (GetImagePixelCacheType(source) != MapCache)) ||
-      ((GetImagePixelCacheType(destination) != MemoryCache) &&
-       (GetImagePixelCacheType(destination) != MapCache)))
-    return(MagickMax(MagickMin((int) GetMagickResourceLimit(ThreadResource),2),1));
-  return(MagickMax(MagickMin((int) GetMagickResourceLimit(ThreadResource),
-    (int) (chunk)/64),1));
+  size_t
+    max_threads = (size_t) GetMagickResourceLimit(ThreadResource),
+    number_threads = 1UL,
+    pixels_per_thread = CastDoubleToSizeT(262144.0*factor);
+
+  if (pixels_per_thread != 0)
+    {
+      const size_t total_pixels = chunk*source->columns;
+      number_threads=(total_pixels < pixels_per_thread) ? 1UL :
+        MagickMin(max_threads,(total_pixels+pixels_per_thread-1)/
+        pixels_per_thread);
+    }
+  if (((source_type != MemoryCache) && (source_type != MapCache)) ||
+      ((destination_type != MemoryCache) && (destination_type != MapCache)))
+    number_threads=MagickMin(number_threads,4UL);
+  return((int) number_threads);
 }
 #endif
 
