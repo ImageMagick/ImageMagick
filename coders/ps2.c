@@ -61,7 +61,6 @@
 #include "MagickCore/module.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
-#include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/property.h"
@@ -393,7 +392,11 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
       "    %%\n"
       "    /colormap colors 3 mul string def\n"
       "    currentfile colormap readhexstring pop pop\n"
-      "    currentfile buffer readline pop\n"
+      "    %%\n"
+      "    %% readline leaves a substring and a boolean on the stack; discard\n"
+      "    %% both so the operand stack stays balanced (save/restore safe).\n"
+      "    %%\n"
+      "    currentfile buffer readline pop pop\n"
       "    [ /Indexed /DeviceRGB colors 1 sub colormap ] setcolorspace\n"
       "    <<\n"
       "      /ImageType 1\n"
@@ -827,11 +830,14 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
           case Group4Compression:
           {
             if (LocaleCompare(CCITTParam,"0") == 0)
+              status=HuffmanEncodeImage(image_info,image,image,exception);
+            else
+              status=Huffman2DEncodeImage(image_info,image,image,exception);
+            if (status == MagickFalse)
               {
-                (void) HuffmanEncodeImage(image_info,image,image,exception);
-                break;
+                (void) CloseBlob(image);
+                return(MagickFalse);
               }
-            (void) Huffman2DEncodeImage(image_info,image,image,exception);
             break;
           }
           case JPEGCompression:
@@ -1005,12 +1011,12 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
                 status=LZWEncodeImage(image,length,pixels,exception);
               else
                 status=PackbitsEncodeImage(image,length,pixels,exception);
+              pixel_info=RelinquishVirtualMemory(pixel_info);
               if (status == MagickFalse)
                 {
                   (void) CloseBlob(image);
                   return(MagickFalse);
                 }
-              pixel_info=RelinquishVirtualMemory(pixel_info);
               break;
             }
             case NoCompression:
@@ -1181,6 +1187,8 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
       compression == NoCompression ? "ASCII" : "Binary");
     (void) WriteBlobString(image,buffer);
     offset=SeekBlob(image,stop,SEEK_SET);
+    if (offset < 0)
+      ThrowWriterException(CorruptImageError,"ImproperImageHeader");
     (void) WriteBlobString(image,"%%EndData\n");
     if (LocaleCompare(image_info->magick,"PS2") != 0)
       (void) WriteBlobString(image,"end\n");
