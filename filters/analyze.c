@@ -86,9 +86,36 @@ typedef struct _StatisticsInfo
 } StatisticsInfo;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
+
+static inline size_t CastDoubleToSizeT(const double x)
+{
+  double
+    value;
+
+  if (IsNaN(x) != 0)
+    {
+      errno=ERANGE;
+      return(0);
+    }
+  value=(x < 0.0) ? ceil(x) : floor(x);
+  if (value < 0.0)
+    {
+      errno=ERANGE;
+      return(0);
+    }
+  if (value >= ((double) MAGICK_SIZE_MAX))
+    {
+      errno=ERANGE;
+      return(MAGICK_SIZE_MAX);
+    }
+  return((size_t) value);
+}
+
 static inline int GetMagickNumberThreads(const Image *source,
   const Image *destination,const size_t chunk,const double factor)
 {
+#define MagickMin(x,y)  (((x) < (y)) ? (x) : (y))
+
   const CacheType
     destination_type = (CacheType) GetImagePixelCacheType(destination),
     source_type = (CacheType) GetImagePixelCacheType(source);
