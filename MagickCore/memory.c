@@ -57,7 +57,7 @@
 %      Free the memory reserve with RelinquishVirtualMemory().
 %    ResetMagickMemory(): fills the bytes of the memory area with a constant
 %      byte.
-%    
+%
 %  In addition, we provide hooks for your own memory constructor/destructors.
 %  You can also utilize our internal custom allocator as follows: Segregate
 %  our memory requirements from any program that calls our API.  This should
@@ -354,7 +354,11 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
     }
   if (memory_methods.acquire_aligned_memory_handler != (AcquireAlignedMemoryHandler) NULL)
     return(memory_methods.acquire_aligned_memory_handler(size,CACHE_LINE_SIZE));
-  return(AcquireAlignedMemory_Actual(size));
+  /*
+    A zero-byte request may legitimately yield NULL from aligned_alloc() or
+    posix_memalign(), which callers would misread as out-of-memory.
+  */
+  return(AcquireAlignedMemory_Actual(size == 0 ? 1UL : size));
 }
 
 #if defined(MAGICKCORE_ANONYMOUS_MEMORY_SUPPORT)
@@ -462,8 +466,10 @@ static void *AcquireBlock(size_t size)
     *block;
 
   /*
-    Find free block.
+    Find free block.  Reject requests whose rounded size would overflow.
   */
+  if (size > ((size_t) MAGICK_SSIZE_MAX-(size_t) (8*sizeof(size_t))))
+    return((void *) NULL);
   size=(size_t) (size+sizeof(size_t)+6*sizeof(size_t)-1) & -(4U*sizeof(size_t));
   i=AllocationPolicy(size);
   block=memory_pool.blocks[i];
@@ -472,11 +478,11 @@ static void *AcquireBlock(size_t size)
   if (block == (void *) NULL)
     {
       i++;
-      while (memory_pool.blocks[i] == (void *) NULL)
+      while ((i < MaxBlocks) && (memory_pool.blocks[i] == (void *) NULL))
         i++;
-      block=memory_pool.blocks[i];
       if (i >= MaxBlocks)
         return((void *) NULL);
+      block=memory_pool.blocks[i];
     }
   assert((*BlockHeader(NextBlock(block)) & PreviousBlockBit) == 0);
   assert(SizeOfBlock(block) >= size);
@@ -708,6 +714,8 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
       errno=ENOMEM;
       return((MemoryInfo *) NULL);
     }
+  if (size == 0)
+    size=1;
   if (virtual_anonymous_memory == 0)
     {
       virtual_anonymous_memory=1;
@@ -772,14 +780,17 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
 #endif
                   if (memory_info->blob != NULL)
                     memory_info->type=MapVirtualMemory;
-                  else
-                    {
-                      (void) RelinquishUniqueFileResource(
-                        memory_info->filename);
-                      *memory_info->filename='\0';
-                    }
                 }
               (void) close_utf8(file);
+              if (memory_info->blob == NULL)
+                {
+                  /*
+                    Seek, write, fallocate, or map failed: do not leak the
+                    temporary file.
+                  */
+                  (void) RelinquishUniqueFileResource(memory_info->filename);
+                  *memory_info->filename='\0';
+                }
             }
         }
     }
@@ -938,8 +949,16 @@ static MagickBooleanType ExpandHeap(size_t size)
   void
     *segment;
 
+  /*
+    Guard against arithmetic overflow and segment table exhaustion; these were
+    previously asserts only, which vanish in release builds.
+  */
+  if (size > ((size_t) MAGICK_SSIZE_MAX-(size_t) (12*sizeof(size_t)+SegmentSize)))
+    return(MagickFalse);
+  if ((memory_pool.number_segments >= MaxSegments) ||
+      (free_segments == (DataSegmentInfo *) NULL))
+    return(MagickFalse);
   blocksize=((size+12*sizeof(size_t))+SegmentSize-1) & -SegmentSize;
-  assert(memory_pool.number_segments < MaxSegments);
   segment=MapBlob(-1,IOMode,0,blocksize);
   mapped=segment != (void *) NULL ? MagickTrue : MagickFalse;
   if (segment == (void *) NULL)
@@ -1063,7 +1082,7 @@ MagickExport size_t GetMaxMemoryRequest(void)
       */
       max_memory_request=(size_t) MAGICK_SSIZE_MAX;
       max_memory_request=GetMaxMemoryRequestFromPolicy();
-    } 
+    }
   return(max_memory_request);
 }
 
@@ -1318,7 +1337,8 @@ MagickExport MemoryInfo *RelinquishVirtualMemory(MemoryInfo *memory_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ResetMagickMemory() fills the first size bytes of the memory area pointed to %  by memory with the constant byte c.  We use a volatile pointer when
+%  ResetMagickMemory() fills the first size bytes of the memory area pointed to
+%  by memory with the constant byte c.  We use a volatile pointer when
 %  updating the byte string.  Most compilers will avoid optimizing away access
 %  to a volatile pointer, even if the pointer appears to be unused after the
 %  call.
@@ -1346,7 +1366,7 @@ MagickExport void *ResetMagickMemory(void *memory,int c,const size_t size)
 
   assert(memory != (void *) NULL);
   while (n-- != 0)
-  	*p++=(unsigned char) c;
+    *p++=(unsigned char) c;
   return(memory);
 }
 
