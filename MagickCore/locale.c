@@ -162,11 +162,11 @@ static locale_t AcquireCLocale(void)
 %  The format of the AcquireLocaleSplayTree method is:
 %
 %      SplayTreeInfo *AcquireLocaleSplayTree(const char *filename,
-%        ExceptionInfo *exception)
+%        const char *locale,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o filename: the font file tag.
+%    o filename: the locale file tag.
 %
 %    o locale: the actual locale.
 %
@@ -281,16 +281,16 @@ static void DestroyCLocale(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyLocaleOptions() releases memory associated with an locale
+%  DestroyLocaleOptions() releases memory associated with a locale
 %  messages.
 %
-%  The format of the DestroyProfiles method is:
+%  The format of the DestroyLocaleOptions method is:
 %
-%      LinkedListInfo *DestroyLocaleOptions(Image *image)
+%      LinkedListInfo *DestroyLocaleOptions(LinkedListInfo *messages)
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
+%    o messages: the locale messages.
 %
 */
 
@@ -472,7 +472,7 @@ MagickPrivate ssize_t FormatLocaleStringList(char *magick_restrict string,
 #else
   n=(ssize_t) vsnprintf(string,length,format,operands);
 #endif
-  if (n < 0)
+  if ((n < 0) && (length != 0))
     string[length-1]='\0';
   return(n);
 }
@@ -614,14 +614,17 @@ MagickExport const LocaleInfo **GetLocaleInfoList(const char *pattern,
   p=GetLocaleInfo_("*",exception);
   if (p == (const LocaleInfo *) NULL)
     return((const LocaleInfo **) NULL);
+  LockSemaphoreInfo(locale_semaphore);
   messages=(const LocaleInfo **) AcquireQuantumMemory((size_t)
     GetNumberOfNodesInSplayTree(locale_cache)+1UL,sizeof(*messages));
   if (messages == (const LocaleInfo **) NULL)
-    return((const LocaleInfo **) NULL);
+    {
+      UnlockSemaphoreInfo(locale_semaphore);
+      return((const LocaleInfo **) NULL);
+    }
   /*
     Generate locale list.
   */
-  LockSemaphoreInfo(locale_semaphore);
   ResetSplayTreeIterator(locale_cache);
   p=(const LocaleInfo *) GetNextValueInSplayTree(locale_cache);
   for (i=0; p != (const LocaleInfo *) NULL; )
@@ -655,7 +658,7 @@ MagickExport const LocaleInfo **GetLocaleInfoList(const char *pattern,
 %  The format of the GetLocaleList function is:
 %
 %      char **GetLocaleList(const char *pattern,size_t *number_messages,
-%        Exceptioninfo *exception)
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -710,11 +713,19 @@ MagickExport char **GetLocaleList(const char *pattern,size_t *number_messages,
   p=GetLocaleInfo_("*",exception);
   if (p == (const LocaleInfo *) NULL)
     return((char **) NULL);
+  LockSemaphoreInfo(locale_semaphore);
   messages=(char **) AcquireQuantumMemory((size_t)
     GetNumberOfNodesInSplayTree(locale_cache)+1UL,sizeof(*messages));
   if (messages == (char **) NULL)
-    return((char **) NULL);
-  LockSemaphoreInfo(locale_semaphore);
+    {
+      UnlockSemaphoreInfo(locale_semaphore);
+      return((char **) NULL);
+    }
+  /*
+    GetLocaleInfo_() above advanced the iterator past the first node; reset it
+    so that the first locale tag is not skipped.
+  */
+  ResetSplayTreeIterator(locale_cache);
   p=(const LocaleInfo *) GetNextValueInSplayTree(locale_cache);
   for (i=0; p != (const LocaleInfo *) NULL; )
   {
@@ -994,6 +1005,7 @@ MagickExport double InterpretLocaleValue(const char *magick_restrict string,
   double
     value;
 
+  assert(string != (const char *) NULL);
   if ((*string == '0') && ((string[1] | 0x20)=='x'))
     value=(double) strtoul(string,&q,16);
   else
@@ -1109,13 +1121,18 @@ MagickExport MagickBooleanType ListLocaleInfo(FILE *file,
 %  The format of the LoadLocaleCache method is:
 %
 %      MagickBooleanType LoadLocaleCache(SplayTreeInfo *cache,const char *xml,
-%        const char *filename,const size_t depth,ExceptionInfo *exception)
+%        const char *filename,const char *locale,const size_t depth,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
+%
+%    o cache:  The locale splay tree to populate.
 %
 %    o xml:  The locale list in XML format.
 %
 %    o filename:  The locale list filename.
+%
+%    o locale:  The locale used to select <include /> elements.
 %
 %    o depth: depth of <include /> statements.
 %
@@ -1243,6 +1260,14 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *cache,const char *xml,
         /*
           Include element.
         */
+        char
+          include_file[MagickPathExtent];
+
+        MagickBooleanType
+          locale_match;
+
+        *include_file='\0';
+        locale_match=MagickTrue;
         while (((*token != '/') && (*(token+1) != '>')) && (*q != '\0'))
         {
           (void) CopyMagickString(keyword,token,MagickLocaleExtent);
@@ -1253,41 +1278,44 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *cache,const char *xml,
           if (LocaleCompare(keyword,"locale") == 0)
             {
               if (LocaleCompare(locale,token) != 0)
-                break;
+                locale_match=MagickFalse;
               continue;
             }
           if (LocaleCompare(keyword,"file") == 0)
-            {
-              if (depth >= MagickMaxRecursionDepth)
-                (void) ThrowMagickException(exception,GetMagickModule(),
-                  ConfigureError,"IncludeElementNestedTooDeeply","`%s'",token);
-              else
-                {
-                  char
-                    path[MagickPathExtent],
-                    *file_xml;
-
-                  *path='\0';
-                  GetPathComponent(filename,HeadPath,path);
-                  if (*path != '\0')
-                    (void) ConcatenateMagickString(path,DirectorySeparator,
-                      MagickPathExtent);
-                  if (*token == *DirectorySeparator)
-                    (void) CopyMagickString(path,token,MagickPathExtent);
-                  else
-                    (void) ConcatenateMagickString(path,token,MagickPathExtent);
-                  file_xml=FileToXML(path,~0UL);
-                  if (file_xml != (char *) NULL)
-                    {
-                      if (LoadLocaleCache(cache,file_xml,path,locale,depth+1,exception) == MagickFalse)
-                        status=MagickFalse;
-                      file_xml=DestroyString(file_xml);
-                      if (status == MagickFalse)
-                        break;
-                    }
-                }
-            }
+            (void) CopyMagickString(include_file,token,MagickPathExtent);
         }
+        if ((locale_match != MagickFalse) && (*include_file != '\0'))
+          {
+            if (depth >= MagickMaxRecursionDepth)
+              (void) ThrowMagickException(exception,GetMagickModule(),
+                ConfigureError,"IncludeElementNestedTooDeeply","`%s'",
+                include_file);
+            else
+              {
+                char
+                  path[MagickPathExtent],
+                  *file_xml;
+
+                *path='\0';
+                GetPathComponent(filename,HeadPath,path);
+                if (*path != '\0')
+                  (void) ConcatenateMagickString(path,DirectorySeparator,
+                    MagickPathExtent);
+                if (*include_file == *DirectorySeparator)
+                  (void) CopyMagickString(path,include_file,MagickPathExtent);
+                else
+                  (void) ConcatenateMagickString(path,include_file,
+                    MagickPathExtent);
+                file_xml=FileToXML(path,~0UL);
+                if (file_xml != (char *) NULL)
+                  {
+                    if (LoadLocaleCache(cache,file_xml,path,locale,depth+1,
+                          exception) == MagickFalse)
+                      status=MagickFalse;
+                    file_xml=DestroyString(file_xml);
+                  }
+              }
+          }
         if (status == MagickFalse)
           break;
         continue;
@@ -1349,11 +1377,16 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *cache,const char *xml,
         locale_info->tag=ConstantString(tag);
         locale_info->message=ConstantString(message);
         locale_info->signature=MagickCoreSignature;
-        status=AddValueToSplayTree(cache,locale_info->tag,locale_info);
-        if (status == MagickFalse)
-          (void) ThrowMagickException(exception,GetMagickModule(),
-            ResourceLimitError,"MemoryAllocationFailed","`%s'",
-            locale_info->tag);
+        if (AddValueToSplayTree(cache,locale_info->tag,locale_info) ==
+            MagickFalse)
+          {
+            (void) ThrowMagickException(exception,GetMagickModule(),
+              ResourceLimitError,"MemoryAllocationFailed","`%s'",
+              locale_info->tag);
+            (void) DestroyLocaleNode(locale_info);
+            status=MagickFalse;
+            break;
+          }
         (void) ConcatenateMagickString(tag,message,MagickLocaleExtent);
         (void) ConcatenateMagickString(tag,"\n",MagickLocaleExtent);
         q++;
@@ -1380,7 +1413,7 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *cache,const char *xml,
             continue;
           }
         token[strlen(token)-1]='\0';
-        (void) CopyMagickString(token,token+1,MagickLocaleExtent);
+        (void) memmove(token,token+1,strlen(token+1)+1);
         (void) ConcatenateMagickString(tag,token,MagickLocaleExtent);
         (void) ConcatenateMagickString(tag,"/",MagickLocaleExtent);
         continue;
