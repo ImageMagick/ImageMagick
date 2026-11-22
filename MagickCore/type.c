@@ -785,10 +785,7 @@ MagickExport MagickBooleanType LoadFontConfigFonts(SplayTreeInfo *type_cache,
       FcObjectSetDestroy(object_set);
     }
   if (font_set == (FcFontSet *) NULL)
-    {
-      FcConfigDestroy(font_config);
-      return(MagickFalse);
-    }
+    return(MagickFalse);
   for (i=0; i < (ssize_t) font_set->nfont; i++)
   {
     status=FcPatternGetString(font_set->fonts[i],FC_FAMILY,0,&family);
@@ -830,12 +827,14 @@ MagickExport MagickBooleanType LoadFontConfigFonts(SplayTreeInfo *type_cache,
     status=FcPatternGetInteger(font_set->fonts[i],FC_INDEX,0,&index);
     if (status == FcResultMatch)
       type_info->face=(size_t) index;
+    slant=FC_SLANT_ROMAN;
     status=FcPatternGetInteger(font_set->fonts[i],FC_SLANT,0,&slant);
     type_info->style=NormalStyle;
     if (slant == FC_SLANT_ITALIC)
       type_info->style=ItalicStyle;
     if (slant == FC_SLANT_OBLIQUE)
       type_info->style=ObliqueStyle;
+    width=FC_WIDTH_NORMAL;
     status=FcPatternGetInteger(font_set->fonts[i],FC_WIDTH,0,&width);
     type_info->stretch=NormalStretch;
     if (width >= FC_WIDTH_ULTRACONDENSED)
@@ -857,6 +856,7 @@ MagickExport MagickBooleanType LoadFontConfigFonts(SplayTreeInfo *type_cache,
     if (width >= FC_WIDTH_ULTRAEXPANDED)
       type_info->stretch=UltraExpandedStretch;
     type_info->weight=400;
+    weight=FC_WEIGHT_REGULAR;
     status=FcPatternGetInteger(font_set->fonts[i],FC_WEIGHT,0,&weight);
     if (weight >= FC_WEIGHT_THIN)
       type_info->weight=100;
@@ -880,7 +880,6 @@ MagickExport MagickBooleanType LoadFontConfigFonts(SplayTreeInfo *type_cache,
     (void) AddValueToSplayTree(type_cache,type_info->name,type_info);
   }
   FcFontSetDestroy(font_set);
-  FcConfigDestroy(font_config);
   return(MagickTrue);
 }
 #endif
@@ -1038,6 +1037,8 @@ static inline MagickBooleanType SetTypeNodePath(const char *filename,
   char
    *path;
 
+  if (*target != (char *) NULL)
+    *target=DestroyString(*target);
   path=ConstantString(token);
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
   if (strchr(path,'@') != (char *) NULL)
@@ -1198,6 +1199,8 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *cache,const char *xml,
         /*
           Type element.
         */
+        if (type_info != (TypeInfo *) NULL)
+          type_info=(TypeInfo *) DestroyTypeNode(type_info);
         type_info=(TypeInfo *) AcquireCriticalMemory(sizeof(*type_info));
         (void) memset(type_info,0,sizeof(*type_info));
         type_info->path=ConstantString(filename);
@@ -1207,12 +1210,23 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *cache,const char *xml,
     if (type_info == (TypeInfo *) NULL)
       continue;
     if ((LocaleCompare(keyword,"/>") == 0) ||
-        (LocaleCompare(keyword,"</policy>") == 0))
+        (LocaleCompare(keyword,"</type>") == 0))
       {
+        if (type_info->name == (char *) NULL)
+          {
+            (void) ThrowMagickException(exception,GetMagickModule(),
+              ConfigureWarning,"MissingTypeName","`%s'",filename);
+            type_info=(TypeInfo *) DestroyTypeNode(type_info);
+            continue;
+          }
         status=AddValueToSplayTree(cache,type_info->name,type_info);
         if (status == MagickFalse)
-          (void) ThrowMagickException(exception,GetMagickModule(),
-            ResourceLimitError,"MemoryAllocationFailed","`%s'",type_info->name);
+          {
+            (void) ThrowMagickException(exception,GetMagickModule(),
+              ResourceLimitError,"MemoryAllocationFailed","`%s'",
+              type_info->name);
+            type_info=(TypeInfo *) DestroyTypeNode(type_info);
+          }
         type_info=(TypeInfo *) NULL;
         continue;
       }
@@ -1337,6 +1351,8 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *cache,const char *xml,
         break;
     }
   }
+  if (type_info != (TypeInfo *) NULL)
+    type_info=(TypeInfo *) DestroyTypeNode(type_info);
   token=(char *) RelinquishMagickMemory(token);
   return(status);
 }
