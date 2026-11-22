@@ -925,6 +925,102 @@ static inline char *SVGEscapeString(const char* value)
   return(escaped_value);
 }
 
+static inline MagickBooleanType SVGIsNumberSeparator(const int c)
+{
+  return(((c == '\0') || (c == ',') || (isspace(c) != 0)) ? MagickTrue :
+    MagickFalse);
+}
+
+static char *SVGSanitizeNumberList(const char *value,
+  const MagickBooleanType allow_percent)
+{
+  char
+    *sanitized;
+
+  const char
+    *p,
+    *start;
+
+  size_t
+    extent,
+    length;
+
+  /*
+    Reduce an SVG "points" (or similar) attribute to a clean list of numbers.
+  */
+  if (value == (const char *) NULL)
+    return(AcquireString(""));
+  extent=2*strlen(value)+2;  /* each token may gain a leading separator */
+  sanitized=(char *) AcquireQuantumMemory(extent,sizeof(*sanitized));
+  if (sanitized == (char *) NULL)
+    return(AcquireString(""));
+  *sanitized='\0';
+  length=0;
+  p=value;
+  for ( ; ; )
+  {
+    size_t
+      digits;
+
+    while ((SVGIsNumberSeparator((int) ((unsigned char) *p)) != MagickFalse) &&
+           (*p != '\0'))
+      p++;
+    if (*p == '\0')
+      break;
+    start=p;
+    if ((*p == '+') || (*p == '-'))
+      p++;
+    digits=0;
+    while (isdigit((int) ((unsigned char) *p)) != 0)
+    {
+      p++;
+      digits++;
+    }
+    if (*p == '.')
+      {
+        p++;
+        while (isdigit((int) ((unsigned char) *p)) != 0)
+        {
+          p++;
+          digits++;
+        }
+      }
+    if (digits == 0)
+      break;
+    if ((*p == 'e') || (*p == 'E'))
+      {
+        const char
+          *exponent;
+
+        exponent=p+1;
+        if ((*exponent == '+') || (*exponent == '-'))
+          exponent++;
+        if (isdigit((int) ((unsigned char) *exponent)) == 0)
+          break;
+        while (isdigit((int) ((unsigned char) *exponent)) != 0)
+          exponent++;
+        p=exponent;
+      }
+    if ((allow_percent != MagickFalse) && (*p == '%'))
+      p++;
+    /*
+      A number must be followed by a separator, the end of the string, or the
+      sign / decimal point that begins the next number ("10-5", "1.5.5").
+    */
+    if ((SVGIsNumberSeparator((int) ((unsigned char) *p)) == MagickFalse) &&
+        (*p != '-') && (*p != '+') && (*p != '.'))
+      break;
+    if ((length+(size_t) (p-start)+2) > extent)
+      break;
+    if (length != 0)
+      sanitized[length++]=' ';
+    (void) memcpy(sanitized+length,start,(size_t) (p-start));
+    length+=(size_t) (p-start);
+    sanitized[length]='\0';
+  }
+  return(sanitized);
+}
+
 static void SVGProcessStyleElement(SVGInfo *svg_info,const xmlChar *name,
   const char *style)
 {
@@ -2790,21 +2886,39 @@ static void SVGEndElement(void *context,const xmlChar *name)
       if (LocaleCompare((const char *) name,"path") == 0)
         {
           (void) FormatLocaleFile(svg_info->file,"path \"%s\"\n",
-            svg_info->vertices);
+            svg_info->vertices != (char *) NULL ? svg_info->vertices : "");
+          if (svg_info->vertices != (char *) NULL)
+            svg_info->vertices=DestroyString(svg_info->vertices);
           (void) FormatLocaleFile(svg_info->file,"pop graphic-context\n");
           break;
         }
       if (LocaleCompare((const char *) name,"polygon") == 0)
         {
-          (void) FormatLocaleFile(svg_info->file,"polygon %s\n",
-            svg_info->vertices);
+          char
+            *points;
+
+          /*
+            The points list is emitted unquoted: only validated numbers may
+            reach the MVG stream (prevents MVG command injection).
+          */
+          points=SVGSanitizeNumberList(svg_info->vertices,MagickFalse);
+          (void) FormatLocaleFile(svg_info->file,"polygon %s\n",points);
+          points=DestroyString(points);
+          if (svg_info->vertices != (char *) NULL)
+            svg_info->vertices=DestroyString(svg_info->vertices);
           (void) FormatLocaleFile(svg_info->file,"pop graphic-context\n");
           break;
         }
       if (LocaleCompare((const char *) name,"polyline") == 0)
         {
-          (void) FormatLocaleFile(svg_info->file,"polyline %s\n",
-            svg_info->vertices);
+          char
+            *points;
+
+          points=SVGSanitizeNumberList(svg_info->vertices,MagickFalse);
+          (void) FormatLocaleFile(svg_info->file,"polyline %s\n",points);
+          points=DestroyString(points);
+          if (svg_info->vertices != (char *) NULL)
+            svg_info->vertices=DestroyString(svg_info->vertices);
           (void) FormatLocaleFile(svg_info->file,"pop graphic-context\n");
           break;
         }
@@ -2855,9 +2969,21 @@ static void SVGEndElement(void *context,const xmlChar *name)
     {
       if (LocaleCompare((const char *) name,"stop") == 0)
         {
+          char
+            *offset;
+
+          /*
+            The offset is emitted unquoted: validate it as a number.
+          */
+          offset=SVGSanitizeNumberList(svg_info->offset,MagickTrue);
+          if (strchr(offset,' ') != (char *) NULL)
+            *strchr(offset,' ')='\0';
           (void) FormatLocaleFile(svg_info->file,"stop-color \"%s\" %s\n",
-            svg_info->stop_color,svg_info->offset == (char *) NULL ? "100%" :
-            svg_info->offset);
+            svg_info->stop_color != (char *) NULL ? svg_info->stop_color :
+            "none",*offset == '\0' ? "100%" : offset);
+          offset=DestroyString(offset);
+          if (svg_info->offset != (char *) NULL)
+            svg_info->offset=DestroyString(svg_info->offset);
           break;
         }
       if (LocaleCompare((char *) name,"style") == 0)
