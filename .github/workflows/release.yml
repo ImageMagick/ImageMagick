@@ -815,7 +815,7 @@ jobs:
           name: ChangeLog
           path: ImageMagick
 
-      - name: Create source archive
+      - name: Create source archives
         env:
           VERSION: ${{needs.version.outputs.version}}
         run: |
@@ -858,10 +858,34 @@ jobs:
           7z a -mx=9 "artifacts/ImageMagick-$VERSION.7z" "ImageMagick-$VERSION"
           XZ_OPT="-9e" tar -cJf "artifacts/ImageMagick-$VERSION.tar.xz" "ImageMagick-$VERSION"
 
+      - name: Sign source archives
+        env:
+          GPG_KEY: ${{secrets.GPG_KEY}}
+          GPG_PASSPHRASE: ${{secrets.GPG_PASSPHRASE}}
+          VERSION: ${{needs.version.outputs.version}}
+        run: |
+          export GNUPGHOME
+          GNUPGHOME=$(mktemp -d)
+          trap 'gpgconf --kill gpg-agent || true; rm -rf "$GNUPGHOME"' EXIT
+
+          printf '%s' "$GPG_KEY" | gpg --batch --import
+          unset GPG_KEY
+
+          fingerprint=$(gpg --batch --list-secret-keys --with-colons \
+            | awk -F: '$1 == "fpr" && !fingerprint { fingerprint = $10 } END { print fingerprint }')
+
+          for archive in "artifacts/ImageMagick-$VERSION.7z" "artifacts/ImageMagick-$VERSION.tar.xz"; do
+            printf '%s\n' "$GPG_PASSPHRASE" \
+              | gpg --batch --yes --pinentry-mode loopback --passphrase-fd 0 \
+                  --local-user "$fingerprint" --armor --detach-sign "$archive"
+            gpg --batch --verify "$archive.asc" "$archive"
+          done
+          unset GPG_PASSPHRASE
+
       - name: Upload source archive
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 #v7.0.2
         with:
-          name: ImageMagick-${{needs.version.outputs.version}}.7z
+          name: ImageMagick-${{needs.version.outputs.version}}-source
           path: artifacts
 
   release:
@@ -924,12 +948,13 @@ jobs:
             --title "$VERSION" \
             --notes "$VERSION" \
             ${{github.workspace}}/artifacts/*.7z \
+            ${{github.workspace}}/artifacts/*.xz \
+            ${{github.workspace}}/artifacts/*.asc \
             ${{github.workspace}}/artifacts/*.AppImage \
             ${{github.workspace}}/artifacts/*.exe \
             ${{github.workspace}}/artifacts/*.intoto.jsonl \
             ${{github.workspace}}/artifacts/*.msixbundle \
-            ${{github.workspace}}/artifacts/*.cdx.json \
-            ${{github.workspace}}/artifacts/*.xz
+            ${{github.workspace}}/artifacts/*.cdx.json
 
   prepare_msix:
     name: Prepare Msix
