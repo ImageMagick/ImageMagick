@@ -42,7 +42,6 @@
 */
 #include "MagickWand/studio.h"
 #include "MagickWand/MagickWand.h"
-#include "MagickWand/deprecate.h"
 #include "MagickCore/colorspace-private.h"
 #include "MagickCore/gem.h"
 #include "MagickCore/resource_.h"
@@ -874,7 +873,7 @@ static size_t ValidateConvertCommand(ImageInfo *image_info,
         fail++;
         continue;
       }
-    status=ConvertImageCommand(image_info,number_arguments,arguments,
+    status=MagickImageCommand(image_info,number_arguments,arguments,
       (char **) NULL,exception);
     for (j=0; j < (ssize_t) number_arguments; j++)
       arguments[j]=DestroyString(arguments[j]);
