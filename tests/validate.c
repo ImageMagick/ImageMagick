@@ -42,6 +42,7 @@
 */
 #include "MagickWand/studio.h"
 #include "MagickWand/MagickWand.h"
+#include "MagickWand/deprecate.h"
 #include "MagickCore/colorspace-private.h"
 #include "MagickCore/gem.h"
 #include "MagickCore/resource_.h"
