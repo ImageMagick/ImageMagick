@@ -796,7 +796,7 @@ jobs:
           path: artifacts
 
   source:
-    name: Create source archive
+    name: Create source archives
     runs-on: ubuntu-24.04
     needs:
       - changelog
