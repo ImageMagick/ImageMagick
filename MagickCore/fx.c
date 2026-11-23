@@ -760,6 +760,7 @@ struct _FxInfo {
   ExceptionInfo * exception;
 
   fxRtT * fxrts;
+  size_t number_threads;  /* number of fxrts slots, fixed at allocation time. */
 };
 
 /* Forward declarations for recursion.
@@ -4279,7 +4280,13 @@ MagickPrivate MagickBooleanType FxEvaluateChannelExpression (
   assert (pfx->Images != NULL);
   assert (pfx->Imgs != NULL);
   assert (pfx->fxrts != NULL);
-  assert (id >= 0 && id < (int) GetMagickResourceLimit(ThreadResource));
+
+  if ((id < 0) || ((size_t) id >= pfx->number_threads)) {
+    (void) ThrowMagickException (
+      exception, GetMagickModule(), OptionError,
+      "thread id exceeds FxInfo runtime slots", "%i", id);
+    return MagickFalse;
+  }
 
   pfx->fxrts[id].thisPixel = NULL;
 
@@ -4378,6 +4385,9 @@ static FxInfo *AcquireFxInfoPrivate (const Image * images, const char * expressi
   }
 
   {
+    /* The slot count is recorded in pfx and used for every later access
+       and for destruction, because the ThreadResource limit can change
+       at runtime. */
     size_t number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
     ssize_t t;
 
@@ -4394,6 +4404,7 @@ static FxInfo *AcquireFxInfoPrivate (const Image * images, const char * expressi
       pfx = (FxInfo*) RelinquishMagickMemory(pfx);
       return NULL;
     }
+    pfx->number_threads = number_threads;
     for (t=0; t < (ssize_t) number_threads; t++) {
       if (!AllocFxRt (pfx, &pfx->fxrts[t])) {
         (void) ThrowMagickException (
@@ -4434,10 +4445,11 @@ FxInfo *DestroyFxInfo (FxInfo * pfx)
   assert (pfx->Imgs != NULL);
   assert (pfx->fxrts != NULL);
 
-  for (t=0; t < (ssize_t) GetMagickResourceLimit(ThreadResource); t++) {
+  for (t=0; t < (ssize_t) pfx->number_threads; t++) {
     DestroyFxRt (&pfx->fxrts[t]);
   }
   pfx->fxrts = (fxRtT *) RelinquishMagickMemory (pfx->fxrts);
+  pfx->number_threads = 0;
 
   DestroyRPN (pfx);
 
@@ -4530,6 +4542,14 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
 
     if (status == MagickFalse)
       continue;
+    if ((id < 0) || ((size_t) id >= pfx->number_threads)) {
+      /* ThreadResource was raised after pfx was acquired. */
+      (void) ThrowMagickException (
+        pfx->exception, GetMagickModule(), OptionError,
+        "thread id exceeds FxInfo runtime slots", "%i", id);
+      status=MagickFalse;
+      continue;
+    }
     p = GetCacheViewVirtualPixels (image_view, 0, y, image->columns, 1, pfx->exception);
     q = QueueCacheViewAuthenticPixels (fx_view, 0, y, fx_image->columns, 1, pfx->exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL)) {
@@ -4593,7 +4613,7 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
     int t, i;
     char UserSym[MagickPathExtent];
     fprintf (stderr, "User symbols (%i):\n", pfx->usedUserSymbols);
-    for (t=0; t < (int) GetMagickResourceLimit(ThreadResource); t++) {
+    for (t=0; t < (int) pfx->number_threads; t++) {
       for (i = 0; i < (int) pfx->usedUserSymbols; i++) {
         fprintf (stderr, "th=%i us=%i '%s': %.*Lg\n",
                  t, i, NameOfUserSym (pfx, i, UserSym), pfx->precision, pfx->fxrts[t].UserSymVals[i]);

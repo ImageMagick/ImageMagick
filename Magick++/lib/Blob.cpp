@@ -112,21 +112,39 @@ size_t Magick::Blob::length(void) const
 
 void Magick::Blob::update(const void* data_,size_t length_)
 {
-  if (_blobRef->decrease() == 0)
-    delete _blobRef;
+  BlobRef
+    *newRef,
+    *oldRef;
 
-  _blobRef=new Magick::BlobRef(data_,length_);
+  // Build the replacement first. data_ may alias the buffer owned by the
+  // current BlobRef (e.g. blob.update(blob.data(),blob.length())), so the
+  // old buffer must stay alive until the copy is complete. If the
+  // allocation throws, _blobRef is untouched and the Blob remains valid.
+  newRef=new Magick::BlobRef(data_,length_);
+  oldRef=_blobRef;
+  _blobRef=newRef;
+
+  if (oldRef->decrease() == 0)
+    delete oldRef;
 }
 
 void Magick::Blob::updateNoCopy(void* data_,size_t length_,
   Magick::Blob::Allocator allocator_)
 {
-  if (_blobRef->decrease() == 0)
-    delete _blobRef;
+  BlobRef
+    *newRef,
+    *oldRef;
 
-  _blobRef=new Magick::BlobRef((const void*) NULL,0);
-  _blobRef->data=data_;
-  _blobRef->length=length_;
-  _blobRef->allocator=allocator_;
+  // Allocate the replacement before releasing the current reference so
+  // that a failed allocation leaves the Blob in its previous valid state.
+  newRef=new Magick::BlobRef((const void*) NULL,0);
+  newRef->data=data_;
+  newRef->length=length_;
+  newRef->allocator=allocator_;
+
+  oldRef=_blobRef;
+  _blobRef=newRef;
+
+  if (oldRef->decrease() == 0)
+    delete oldRef;
 }
-
