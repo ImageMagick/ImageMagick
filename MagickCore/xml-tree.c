@@ -1706,8 +1706,6 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
         */
         if (root->node == (XMLTreeInfo *) NULL)
           {
-            (void) ThrowMagickException(exception,GetMagickModule(),
-              OptionWarning,"ParseError","root tag missing");
             utf8=DestroyString(utf8);
             return(&root->root);
           }

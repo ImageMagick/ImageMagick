@@ -85,60 +85,6 @@ typedef struct _StatisticsInfo
     skewness;
 } StatisticsInfo;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-
-static inline size_t CastDoubleToSizeT(const double x)
-{
-  double
-    value;
-
-  if (IsNaN(x) != 0)
-    {
-      errno=ERANGE;
-      return(0);
-    }
-  value=(x < 0.0) ? ceil(x) : floor(x);
-  if (value < 0.0)
-    {
-      errno=ERANGE;
-      return(0);
-    }
-  if (value >= ((double) MAGICK_SIZE_MAX))
-    {
-      errno=ERANGE;
-      return(MAGICK_SIZE_MAX);
-    }
-  return((size_t) value);
-}
-
-static inline int GetMagickNumberThreads(const Image *source,
-  const Image *destination,const size_t chunk,const double factor)
-{
-#define MagickMin(x,y)  (((x) < (y)) ? (x) : (y))
-
-  const CacheType
-    destination_type = (CacheType) GetImagePixelCacheType(destination),
-    source_type = (CacheType) GetImagePixelCacheType(source);
-
-  size_t
-    max_threads = (size_t) GetMagickResourceLimit(ThreadResource),
-    number_threads = 1UL,
-    pixels_per_thread = CastDoubleToSizeT(262144.0*factor);
-
-  if (pixels_per_thread != 0)
-    {
-      const size_t total_pixels = chunk*source->columns;
-      number_threads=(total_pixels < pixels_per_thread) ? 1UL :
-        MagickMin(max_threads,(total_pixels+pixels_per_thread-1)/
-        pixels_per_thread);
-    }
-  if (((source_type != MemoryCache) && (source_type != MapCache)) ||
-      ((destination_type != MemoryCache) && (destination_type != MapCache)))
-    number_threads=MagickMin(number_threads,4UL);
-  return((int) number_threads);
-}
-#endif
-
 ModuleExport size_t analyzeImage(Image **images,const int argc,
   const char **argv,ExceptionInfo *exception)
 {
@@ -187,8 +133,7 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,
     image_view=AcquireVirtualCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) \
-    shared(progress,status,brightness,saturation) \
-    num_threads(GetMagickNumberThreads(image,image,image->rows,1))
+    shared(progress,status,brightness,saturation)
 #endif
     for (y=0; y < (ssize_t) image->rows; y++)
     {
