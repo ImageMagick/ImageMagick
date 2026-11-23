@@ -164,6 +164,8 @@ static const char *GetIntermediateFormat(const ImageInfo *image_info)
   option=GetImageOption(image_info,"video:intermediate-format");
   if (LocaleCompare(option,"pam") == 0)
     return(intermediate_formats[0]);
+  if (LocaleCompare(image_info->magick,"APNG") == 0)
+    return(intermediate_formats[0]);  /* APNG is lossless */
 #if defined(MAGICKCORE_WEBP_DELEGATE)
   return(intermediate_formats[1]);
 #else
