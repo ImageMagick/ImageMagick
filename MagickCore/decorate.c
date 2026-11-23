@@ -67,6 +67,29 @@
 #define ShadowModulate  ScaleCharToQuantum(135)
 #define DepthModulate  ScaleCharToQuantum(185)
 #define TroughModulate  ScaleCharToQuantum(110)
+
+/*
+  Static declarations.
+*/
+static inline void BlendPixelChannels(const Image *image,Quantum *q,
+  const double factor,const Quantum target)
+{
+  ssize_t
+    i;
+
+  /*
+    Blend each updatable channel of the pixel at q toward target.
+  */
+  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+  {
+    PixelChannel channel = GetPixelChannelChannel(image,i);
+    PixelTrait traits = GetPixelChannelTraits(image,channel);
+    if ((traits & UpdatePixelTrait) == 0)
+      continue;
+    q[i]=ClampToQuantum(QuantumScale*((double) q[i]*factor+(double) target*
+      ((double) QuantumRange-factor)));
+  }
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -116,6 +139,9 @@ MagickExport Image *BorderImage(const Image *image,
   assert(border_info != (RectangleInfo *) NULL);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if ((border_info->width > (((size_t) MAGICK_SSIZE_MAX-image->columns)/2)) ||
+      (border_info->height > (((size_t) MAGICK_SSIZE_MAX-image->rows)/2)))
+    ThrowImageException(ImageError,"WidthOrHeightExceedsLimit");
   frame_info.width=image->columns+(border_info->width << 1);
   frame_info.height=image->rows+(border_info->height << 1);
   frame_info.x=(ssize_t) border_info->width;
@@ -172,7 +198,6 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
 #define FrameImageTag  "Frame/Image"
 
   CacheView
-    *image_view,
     *frame_view;
 
   Image
@@ -289,11 +314,10 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   trough.alpha=matte.alpha;
   status=MagickTrue;
   progress=0;
-  image_view=AcquireVirtualCacheView(image,exception);
   frame_view=AcquireAuthenticCacheView(frame_image,exception);
   height=(size_t) (frame_info->outer_bevel+(frame_info->y-(ssize_t)
     bevel_width)+frame_info->inner_bevel);
-  if (height != 0)
+  if ((status != MagickFalse) && (height != 0))
     {
       Quantum
         *magick_restrict q;
@@ -389,8 +413,11 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
               q+=(ptrdiff_t) GetPixelChannels(frame_image);
             }
           }
-          (void) SyncCacheViewAuthenticPixels(frame_view,exception);
+          if (SyncCacheViewAuthenticPixels(frame_view,exception) == MagickFalse)
+            status=MagickFalse;
         }
+      else
+        status=MagickFalse;
     }
   /*
     Draw sides of ornamental border.
@@ -480,7 +507,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   height=(size_t) (frame_info->inner_bevel+(ssize_t) frame_info->height-
     frame_info->y-(ssize_t) image->rows-(ssize_t) bevel_width+
     frame_info->outer_bevel);
-  if (height != 0)
+  if ((status != MagickFalse) && (height != 0))
     {
       size_t
         width;
@@ -577,11 +604,13 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
               q+=(ptrdiff_t) GetPixelChannels(frame_image);
             }
           }
-          (void) SyncCacheViewAuthenticPixels(frame_view,exception);
+          if (SyncCacheViewAuthenticPixels(frame_view,exception) == MagickFalse)
+            status=MagickFalse;
         }
+      else
+        status=MagickFalse;
     }
   frame_view=DestroyCacheView(frame_view);
-  image_view=DestroyCacheView(image_view);
   x_offset=frame_info->outer_bevel+(frame_info->x-(ssize_t) bevel_width)+
     frame_info->inner_bevel;
   y_offset=frame_info->outer_bevel+(frame_info->y-(ssize_t) bevel_width)+
@@ -612,7 +641,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
 %
 %  The format of the RaiseImage method is:
 %
-%      MagickBooleanType RaiseImage(const Image *image,
+%      MagickBooleanType RaiseImage(Image *image,
 %        const RectangleInfo *raise_info,const MagickBooleanType raise,
 %        ExceptionInfo *exception)
 %
@@ -659,7 +688,9 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
   assert(raise_info != (RectangleInfo *) NULL);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if ((image->columns <= (raise_info->width << 1)) ||
+  if ((raise_info->width > (image->columns >> 1)) ||
+      (raise_info->height > (image->rows >> 1)) ||
+      (image->columns <= (raise_info->width << 1)) ||
       (image->rows <= (raise_info->height << 1)))
     ThrowBinaryException(OptionError,"ImageSizeMustExceedBevelWidth",
       image->filename);
@@ -685,7 +716,9 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
   for (y=0; y < (ssize_t) raise_info->height; y++)
   {
     ssize_t
-      i,
+      accentuate_end,
+      columns,
+      highlight_end,
       x;
 
     Quantum
@@ -699,45 +732,26 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         status=MagickFalse;
         continue;
       }
-    for (x=0; x < y; x++)
+    /*
+      Clamp the diagonal bevel to the scanline so that a bevel taller than
+      the image is wide cannot write past the end of the row.
+    */
+    columns=(ssize_t) image->columns;
+    highlight_end=(y < columns) ? y : columns;
+    accentuate_end=(columns-y > highlight_end) ? columns-y : highlight_end;
+    for (x=0; x < highlight_end; x++)
     {
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-      {
-        PixelChannel channel = GetPixelChannelChannel(image,i);
-        PixelTrait traits = GetPixelChannelTraits(image,channel);
-        if ((traits & UpdatePixelTrait) == 0)
-          continue;
-        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*(double)
-          HighlightFactor+(double) foreground*((double) QuantumRange-(double)
-          HighlightFactor)));
-      }
+      BlendPixelChannels(image,q,(double) HighlightFactor,foreground);
       q+=(ptrdiff_t) GetPixelChannels(image);
     }
-    for ( ; x < ((ssize_t) image->columns-y); x++)
+    for ( ; x < accentuate_end; x++)
     {
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-      {
-        PixelChannel channel = GetPixelChannelChannel(image,i);
-        PixelTrait traits = GetPixelChannelTraits(image,channel);
-        if ((traits & UpdatePixelTrait) == 0)
-          continue;
-        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*(double)
-          AccentuateFactor+(double) foreground*((double) QuantumRange-(double)
-          AccentuateFactor)));
-      }
+      BlendPixelChannels(image,q,(double) AccentuateFactor,foreground);
       q+=(ptrdiff_t) GetPixelChannels(image);
     }
-    for ( ; x < (ssize_t) image->columns; x++)
+    for ( ; x < columns; x++)
     {
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-      {
-        PixelChannel channel = GetPixelChannelChannel(image,i);
-        PixelTrait traits = GetPixelChannelTraits(image,channel);
-        if ((traits & UpdatePixelTrait) == 0)
-          continue;
-        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*(double) ShadowFactor+
-          (double) background*((double) QuantumRange-(double) ShadowFactor)));
-      }
+      BlendPixelChannels(image,q,(double) ShadowFactor,background);
       q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -760,10 +774,10 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
   #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(image,image,image->rows-2*raise_info->height,1)
 #endif
-  for (y=(ssize_t) raise_info->height; y < (ssize_t) (image->rows-raise_info->height); y++)
+  for (y=(ssize_t) raise_info->height; y < (ssize_t) (image->rows-
+       raise_info->height); y++)
   {
     ssize_t
-      i,
       x;
 
     Quantum
@@ -779,31 +793,14 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       }
     for (x=0; x < (ssize_t) raise_info->width; x++)
     {
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-      {
-        PixelChannel channel = GetPixelChannelChannel(image,i);
-        PixelTrait traits = GetPixelChannelTraits(image,channel);
-        if ((traits & UpdatePixelTrait) == 0)
-          continue;
-        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*(double)
-          HighlightFactor+(double) foreground*((double) QuantumRange-(double)
-          HighlightFactor)));
-      }
+      BlendPixelChannels(image,q,(double) HighlightFactor,foreground);
       q+=(ptrdiff_t) GetPixelChannels(image);
     }
     for ( ; x < (ssize_t) (image->columns-raise_info->width); x++)
       q+=(ptrdiff_t) GetPixelChannels(image);
     for ( ; x < (ssize_t) image->columns; x++)
     {
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-      {
-        PixelChannel channel = GetPixelChannelChannel(image,i);
-        PixelTrait traits = GetPixelChannelTraits(image,channel);
-        if ((traits & UpdatePixelTrait) == 0)
-          continue;
-        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*(double) ShadowFactor+
-          (double) background*((double) QuantumRange-(double) ShadowFactor)));
-      }
+      BlendPixelChannels(image,q,(double) ShadowFactor,background);
       q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -824,12 +821,15 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
   }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    magick_number_threads(image,image,image->rows-raise_info->height,1)
+    magick_number_threads(image,image,raise_info->height,1)
 #endif
-  for (y=(ssize_t) (image->rows-raise_info->height); y < (ssize_t) image->rows; y++)
+  for (y=(ssize_t) (image->rows-raise_info->height); y < (ssize_t) image->rows;
+       y++)
   {
     ssize_t
-      i,
+      columns,
+      highlight_end,
+      trough_end,
       x;
 
     Quantum
@@ -843,44 +843,27 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         status=MagickFalse;
         continue;
       }
-    for (x=0; x < ((ssize_t) image->rows-y); x++)
+    /*
+      Clamp the diagonal bevel to the scanline (see above).
+    */
+    columns=(ssize_t) image->columns;
+    highlight_end=((ssize_t) image->rows-y < columns) ? (ssize_t) image->rows-y :
+      columns;
+    trough_end=(columns-((ssize_t) image->rows-y) > highlight_end) ?
+      columns-((ssize_t) image->rows-y) : highlight_end;
+    for (x=0; x < highlight_end; x++)
     {
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-      {
-        PixelChannel channel = GetPixelChannelChannel(image,i);
-        PixelTrait traits = GetPixelChannelTraits(image,channel);
-        if ((traits & UpdatePixelTrait) == 0)
-          continue;
-        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*(double)
-          HighlightFactor+(double) foreground*((double) QuantumRange-
-          (double) HighlightFactor)));
-      }
+      BlendPixelChannels(image,q,(double) HighlightFactor,foreground);
       q+=(ptrdiff_t) GetPixelChannels(image);
     }
-    for ( ; x < ((ssize_t) image->columns-((ssize_t) image->rows-y)); x++)
+    for ( ; x < trough_end; x++)
     {
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-      {
-        PixelChannel channel = GetPixelChannelChannel(image,i);
-        PixelTrait traits = GetPixelChannelTraits(image,channel);
-        if ((traits & UpdatePixelTrait) == 0)
-          continue;
-        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*(double) TroughFactor+
-          (double) background*((double) QuantumRange-(double) TroughFactor)));
-      }
+      BlendPixelChannels(image,q,(double) TroughFactor,background);
       q+=(ptrdiff_t) GetPixelChannels(image);
     }
-    for ( ; x < (ssize_t) image->columns; x++)
+    for ( ; x < columns; x++)
     {
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-      {
-        PixelChannel channel = GetPixelChannelChannel(image,i);
-        PixelTrait traits = GetPixelChannelTraits(image,channel);
-        if ((traits & UpdatePixelTrait) == 0)
-          continue;
-        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*(double) ShadowFactor+
-          (double) background*((double) QuantumRange-(double) ShadowFactor)));
-      }
+      BlendPixelChannels(image,q,(double) ShadowFactor,background);
       q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
