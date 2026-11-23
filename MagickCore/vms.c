@@ -43,8 +43,11 @@
   Include declarations.
 */
 #include "MagickCore/studio.h"
-#include "MagickCore/string_.h"
+#include "MagickCore/locale_.h"
+#include "MagickCore/log.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
 #include "MagickCore/vms.h"
 
 #if !defined(_AXP_) && (!defined(__VMS_VER) || (__VMS_VER < 70000000))
@@ -63,10 +66,11 @@
 %
 %  The format of the closedir method is:
 %
+%      void closedir(DIR *directory)
 %
 %  A description of each parameter follows:
 %
-%    o entry: Specifies a pointer to a DIR structure.
+%    o directory: Specifies a pointer to a DIR structure.
 %
 %
 */
@@ -75,8 +79,8 @@ void closedir(DIR *directory)
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(directory != (DIR *) NULL);
-  directory->pattern=DestroyString(directory->pattern);
-  directory=DestroyString(directory);
+  directory->pattern=(char *) RelinquishMagickMemory(directory->pattern);
+  directory=(DIR *) RelinquishMagickMemory(directory);
 }
 
 /*
@@ -95,18 +99,40 @@ void closedir(DIR *directory)
 %
 %  The format of the opendir method is:
 %
-%      opendir(entry)
+%      DIR *opendir(char *name)
 %
 %  A description of each parameter follows:
 %
-%    o entry: Specifies a pointer to a DIR structure.
+%    o name: Specifies the name of the directory to open.
 %
 %
 */
 DIR *opendir(char *name)
 {
+  const char
+    *path;
+
   DIR
     *directory;
+
+  size_t
+    extent;
+
+  assert(name != (char *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",name);
+  /*
+    The descriptor length is an unsigned word, so bound the pattern length.
+  */
+  path=name;
+  if (strcmp(".",path) == 0)
+    path="";
+  extent=strlen(path)+sizeof("*.*");
+  if (extent > 65535UL)
+    {
+      errno=EINVAL;
+      return((DIR *) NULL);
+    }
 
   /*
     Allocate memory for handle and the pattern.
@@ -117,23 +143,22 @@ DIR *opendir(char *name)
       errno=ENOMEM;
       return((DIR *) NULL);
     }
-  if (strcmp(".",name) == 0)
-    name="";
-  directory->pattern=(char *) AcquireQuantumMemory(strlen(name)+sizeof("*.*")+
-    1UL,sizeof(*directory->pattern));
+  (void) memset(directory,0,sizeof(*directory));
+  directory->pattern=(char *) AcquireQuantumMemory(extent,
+    sizeof(*directory->pattern));
   if (directory->pattern == (char *) NULL)
     {
-      directory=DestroyString(directory);
+      directory=(DIR *) RelinquishMagickMemory(directory);
       errno=ENOMEM;
-      return(NULL);
+      return((DIR *) NULL);
     }
   /*
     Initialize descriptor.
   */
-  (void) FormatLocaleString(directory->pattern,MagickPathExtent,"%s*.*",name);
+  (void) FormatLocaleString(directory->pattern,extent,"%s*.*",path);
   directory->context=0;
   directory->pat.dsc$a_pointer=directory->pattern;
-  directory->pat.dsc$w_length=strlen(directory->pattern);
+  directory->pat.dsc$w_length=(unsigned short) strlen(directory->pattern);
   directory->pat.dsc$b_dtype=DSC$K_DTYPE_T;
   directory->pat.dsc$b_class=DSC$K_CLASS_S;
   return(directory);
@@ -153,13 +178,13 @@ DIR *opendir(char *name)
 %  readdir() returns a pointer to a structure representing the directory entry
 %  at the current position in the directory stream to which entry refers.
 %
-%  The format of the readdir
+%  The format of the readdir method is:
 %
-%      readdir(entry)
+%      struct dirent *readdir(DIR *directory)
 %
 %  A description of each parameter follows:
 %
-%    o entry: Specifies a pointer to a DIR structure.
+%    o directory: Specifies a pointer to a DIR structure.
 %
 %
 */
@@ -168,47 +193,51 @@ struct dirent *readdir(DIR *directory)
   char
     buffer[sizeof(directory->entry.d_name)];
 
-  int
-    status;
-
   char
     *p;
 
   int
-    i;
+    status;
 
   struct dsc$descriptor_s
     result;
 
+  assert(directory != (DIR *) NULL);
   /*
     Initialize the result descriptor.
   */
+  (void) memset(buffer,0,sizeof(buffer));
   result.dsc$a_pointer=buffer;
   result.dsc$w_length=sizeof(buffer)-2;
   result.dsc$b_dtype=DSC$K_DTYPE_T;
   result.dsc$b_class=DSC$K_CLASS_S;
   status=lib$find_file(&directory->pat,&result,&directory->context);
-  if ((status == RMS$_NMF) || (directory->context == 0L))
+  if (((status & 0x01) == 0) || (directory->context == 0L))
     return((struct dirent *) NULL);
+  /*
+    The result is blank padded: terminate it at the first blank.
+  */
+  buffer[sizeof(buffer)-1]='\0';
+  p=buffer;
+  while ((*p != '\0') && (isspace((int) ((unsigned char) *p)) == 0))
+    p++;
+  *p='\0';
   /*
     Lowercase all filenames.
   */
-  buffer[sizeof(buffer)-1]='\0';
-  for (p=buffer; *p; p++)
-    if (isupper((int) ((unsigned char) *p)))
-      *p=LocaleToLowercase(*p);
+  for (p=buffer; *p != '\0'; p++)
+    if (isupper((int) ((unsigned char) *p)) != 0)
+      *p=(char) LocaleToLowercase((int) ((unsigned char) *p));
   /*
     Skip any directory component and just copy the name.
   */
-  p=buffer;
-  while (isspace((int) ((unsigned char) *p)) == 0)
-    p++;
-  *p='\0';
   p=strchr(buffer,']');
-  if (p)
-    (void) CopyMagickString(directory->entry.d_name,p+1,MagickPathExtent);
+  if (p != (char *) NULL)
+    (void) CopyMagickString(directory->entry.d_name,p+1,
+      sizeof(directory->entry.d_name));
   else
-    (void) CopyMagickString(directory->entry.d_name,buffer,MagickPathExtent);
+    (void) CopyMagickString(directory->entry.d_name,buffer,
+      sizeof(directory->entry.d_name));
   directory->entry.d_namlen=strlen(directory->entry.d_name);
   return(&directory->entry);
 }
@@ -253,7 +282,9 @@ MagickExport MagickBooleanType VMSIsMagickConflict(const char *magick)
     device;
 
   assert(magick != (char *) NULL);
-  device.dsc$w_length=strlen(magick);
+  if (strlen(magick) > 65535UL)
+    return(MagickFalse);
+  device.dsc$w_length=(unsigned short) strlen(magick);
   device.dsc$a_pointer=(char *) magick;
   device.dsc$b_class=DSC$K_CLASS_S;
   device.dsc$b_dtype=DSC$K_DTYPE_T;
@@ -262,7 +293,7 @@ MagickExport MagickBooleanType VMSIsMagickConflict(const char *magick)
   item_list[0].ile3$ps_bufaddr=&device_class;
   item_list[0].ile3$ps_retlen_addr=NULL;
   (void) memset(&item_list[1],0,sizeof(item_list[1]));
-  status=sys$getdviw(0,0,&device,&item_list,0,0,0,0);
+  status=sys$getdviw(0,0,&device,item_list,0,0,0,0);
   if ((status == SS$_NONLOCAL) ||
       ((status & 0x01) && (device_class & (DC$_DISK | DC$_TAPE))))
     return(MagickTrue);
