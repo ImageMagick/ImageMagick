@@ -110,7 +110,7 @@ static MagickBooleanType
 %  AcquireCoderCache() caches one or more coder configurations which provides a
 %  mapping between coder attributes and a coder name.
 %
-%  The format of the AcquireCoderCache coder is:
+%  The format of the AcquireCoderCache method is:
 %
 %      SplayTreeInfo *AcquireCoderCache(ExceptionInfo *exception)
 %
@@ -140,9 +140,6 @@ static void *DestroyCoderNode(void *coder_info)
 
 static SplayTreeInfo *AcquireCoderCache(ExceptionInfo *exception)
 {
-  MagickStatusType
-    status;
-
   ssize_t
     i;
 
@@ -154,14 +151,25 @@ static SplayTreeInfo *AcquireCoderCache(ExceptionInfo *exception)
   */
   cache=NewSplayTree(CompareSplayTreeString,RelinquishMagickMemory,
     DestroyCoderNode);
-  status=MagickTrue;
+  if (cache == (SplayTreeInfo *) NULL)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'","coder cache");
+      return((SplayTreeInfo *) NULL);
+    }
   for (i=0; i < (ssize_t) (sizeof(CoderMap)/sizeof(*CoderMap)); i++)
   {
+    char
+      *key;
+
     CoderInfo
       *coder_info;
 
     const CoderMapInfo
       *p;
+
+    MagickBooleanType
+      status;
 
     p=CoderMap+i;
     coder_info=(CoderInfo *) AcquireMagickMemory(sizeof(*coder_info));
@@ -177,11 +185,18 @@ static SplayTreeInfo *AcquireCoderCache(ExceptionInfo *exception)
     coder_info->name=(char *) p->name;
     coder_info->exempt=MagickTrue;
     coder_info->signature=MagickCoreSignature;
-    status&=(MagickStatusType) AddValueToSplayTree(cache,
-      ConstantString(coder_info->magick),coder_info);
+    key=ConstantString(coder_info->magick);
+    status=AddValueToSplayTree(cache,key,coder_info);
     if (status == MagickFalse)
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",coder_info->name);
+      {
+        /*
+          The tree did not take ownership; release the key and node.
+        */
+        key=DestroyString(key);
+        coder_info=(CoderInfo *) RelinquishMagickMemory(coder_info);
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          ResourceLimitError,"MemoryAllocationFailed","`%s'",p->name);
+      }
   }
   return(cache);
 }
@@ -226,7 +241,7 @@ MagickPrivate MagickBooleanType CoderComponentGenesis(void)
 %
 %  The format of the CoderComponentTerminus method is:
 %
-%      CoderComponentTerminus(void)
+%      void CoderComponentTerminus(void)
 %
 */
 MagickPrivate void CoderComponentTerminus(void)
@@ -309,7 +324,7 @@ static int CoderInfoCompare(const void *x,const void *y)
     **p,
     **q;
 
-  p=(const CoderInfo **) x,
+  p=(const CoderInfo **) x;
   q=(const CoderInfo **) y;
   if (LocaleCompare((*p)->path,(*q)->path) == 0)
     return(LocaleCompare((*p)->name,(*q)->name));
@@ -463,7 +478,7 @@ MagickExport char **GetCoderList(const char *pattern,
 %  IsCoderTreeInstantiated() determines if the coder tree is instantiated.  If
 %  not, it instantiates the tree and returns it.
 %
-%  The format of the IsCoderInstantiated method is:
+%  The format of the IsCoderTreeInstantiated method is:
 %
 %      MagickBooleanType IsCoderTreeInstantiated(ExceptionInfo *exception)
 %
@@ -499,13 +514,13 @@ static MagickBooleanType IsCoderTreeInstantiated(ExceptionInfo *exception)
 %
 %  ListCoderInfo() lists the coder info to a file.
 %
-%  The format of the ListCoderInfo coder is:
+%  The format of the ListCoderInfo method is:
 %
 %      MagickBooleanType ListCoderInfo(FILE *file,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
-%    o file:  An pointer to a FILE.
+%    o file:  A pointer to a FILE.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -524,9 +539,6 @@ MagickExport MagickBooleanType ListCoderInfo(FILE *file,
 
   size_t
     number_coders;
-
-  ssize_t
-    j;
 
   if (file == (const FILE *) NULL)
     file=stdout;
@@ -549,9 +561,7 @@ MagickExport MagickBooleanType ListCoderInfo(FILE *file,
           "------------------------------\n");
       }
     path=coder_info[i]->path;
-    (void) FormatLocaleFile(file,"%s",coder_info[i]->magick);
-    for (j=(ssize_t) strlen(coder_info[i]->magick); j <= 15; j++)
-      (void) FormatLocaleFile(file," ");
+    (void) FormatLocaleFile(file,"%-16s",coder_info[i]->magick);
     if (coder_info[i]->name != (char *) NULL)
       (void) FormatLocaleFile(file,"%s",coder_info[i]->name);
     (void) FormatLocaleFile(file,"\n");
