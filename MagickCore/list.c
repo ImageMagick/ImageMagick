@@ -49,6 +49,7 @@
 #include "MagickCore/image-private.h"
 #include "MagickCore/list.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/random_.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
 
@@ -74,7 +75,7 @@
 %
 %    o images: the image list to be appended to.
 %
-%    o image: the appended image or image list.
+%    o append: the appended image or image list.
 %
 */
 MagickExport void AppendImageToList(Image **images,const Image *append)
@@ -97,6 +98,8 @@ MagickExport void AppendImageToList(Image **images,const Image *append)
   assert((*images)->signature == MagickCoreSignature);
   p=GetLastImageInList(*images);
   q=GetFirstImageInList(append);
+  if (GetFirstImageInList(*images) == q)
+    return;  /* appending a list to itself would create a cycle */
   p->next=q;
   q->previous=p;
 }
@@ -242,12 +245,18 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
   length=GetImageListLength(images);
   for (p=(char *) scenes; *p != '\0';)
   {
+    char
+      *q;
+
     MagickBooleanType
       match;
 
     while ((isspace((int) ((unsigned char) *p)) != 0) || (*p == ','))
       p++;
-    first=(ssize_t) strtol(p,&p,10);
+    first=(ssize_t) strtol(p,&q,10);
+    if (p == q)
+      break;  /* no number to parse (also prevents an endless loop) */
+    p=q;
     offset=first;
     if (first < 0)
       first+=(ssize_t) length;
@@ -260,7 +269,10 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
       p++;
     if (*p == '-')
       {
-        last=(ssize_t) strtol(p+1,&p,10);
+        last=(ssize_t) strtol(p+1,&q,10);
+        if ((p+1) == q)
+          break;
+        p=q;
         if (last < 0)
           last+=(ssize_t) length;
         else
@@ -272,9 +284,25 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
     step=1;
     if (artifact != (const char *) NULL)
       {
+        ssize_t
+          limit;
+
+        /*
+          Bound the step so first+step cannot overflow; any step larger than
+          the scene range yields a single iteration anyway.
+        */
+        limit=(ssize_t) (length << 1);
         step=(ssize_t) StringToLong(artifact);
+        if (step > limit)
+          step=limit;
+        else
+          if (step < -limit)
+            step=(-limit);
         if (step == 0)
           step=1;
+        else
+          if (step < 0)
+            step=(-step);
       }
     step=(ssize_t) (first > last ? -step : step);
     for ( ; step > 0 ? (last-first) >= 0 : (last-first) <= 0; first+=step)
@@ -286,7 +314,11 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
           {
             image=CloneImage(next,0,0,MagickTrue,exception);
             if (image == (Image *) NULL)
-              break;
+              {
+                if (clone_images != (Image *) NULL)
+                  clone_images=DestroyImageList(clone_images);
+                return((Image *) NULL);
+              }
             AppendImageToList(&clone_images,image);
             match=MagickTrue;
           }
@@ -392,10 +424,12 @@ MagickExport void DeleteImages(Image **images,const char *scenes,
     length;
 
   assert(images != (Image **) NULL);
-  assert((*images)->signature == MagickCoreSignature);
   assert(scenes != (char *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (*images == (Image *) NULL)
+    return;
+  assert((*images)->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       (*images)->filename);
@@ -442,9 +476,15 @@ MagickExport void DeleteImages(Image **images,const char *scenes,
       }
     if (first > last)
       continue;
+    /*
+      Clamp to the list so a huge range (e.g. "0-9999999999") cannot spin.
+    */
+    if (first < 0)
+      first=0;
+    if (last >= (long) length)
+      last=(long) length-1;
     for (i=(ssize_t) first; i <= (ssize_t) last; i++)
-      if ((i >= 0) && (i < (ssize_t) length))
-        delete_list[i]=MagickTrue;
+      delete_list[i]=MagickTrue;
   }
   /*
     Delete images marked for deletion, once only.
@@ -476,11 +516,11 @@ MagickExport void DeleteImages(Image **images,const char *scenes,
 %
 %  The format of the DestroyImageList method is:
 %
-%      Image *DestroyImageList(Image *image)
+%      Image *DestroyImageList(Image *images)
 %
 %  A description of each parameter follows:
 %
-%    o image: the image sequence.
+%    o images: the image sequence.
 %
 */
 MagickExport Image *DestroyImageList(Image *images)
@@ -849,7 +889,7 @@ MagickExport Image *GetPreviousImageInList(const Image *images)
 %  an alternative means of indexing the image array.
 %
 %    group = ImageListToArray(images, exception);
-%    while (i = 0; group[i] != (Image *) NULL; i++)
+%    for (i = 0; group[i] != (Image *) NULL; i++)
 %      printf("%s\n", group[i]->filename);
 %    printf("%d images\n", i);
 %    group = RelinquishMagickMemory(group);
@@ -860,7 +900,7 @@ MagickExport Image *GetPreviousImageInList(const Image *images)
 %
 %  A description of each parameter follows:
 %
-%    o image: the image list.
+%    o images: the image list.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -985,7 +1025,7 @@ MagickExport Image *NewImageList(void)
 %
 %    o images: the image list.
 %
-%    o image: the image.
+%    o prepend: the image or image list to prepend.
 %
 */
 MagickExport void PrependImageToList(Image **images,Image *prepend)
@@ -1328,17 +1368,21 @@ MagickExport void ReverseImageList(Image **images)
 }
 
 /*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                            %
-%                                                                            %
-%                                                                            %
-%   S h u f f l e I m a g e s                                                %
-%                                                                            %
-%                                                                            %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S h u f f l e I m a g e s                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ShuffleImages() reorders the sequence of images in an image list based on
-%  ascending, descending, or random mode.
+%  ascending, descending, or random mode.  Ascending and descending orders
+%  compare image filenames and are stable: images with equal filenames keep
+%  their relative order.  The whole list is shuffled, regardless of which
+%  image in the list the given pointer references.
 %
 %  The format of the ShuffleImages method is:
 %
@@ -1347,21 +1391,76 @@ MagickExport void ReverseImageList(Image **images)
 %
 %  A description of each parameter follows:
 %
-%    o images: the image list.
+%    o images: the image list; on success it is set to the new first image.
 %
 %    o mode: the shuffle mode (ascending, descending, random).
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+typedef struct _ShuffleInfo
+{
+  Image
+    *image;
+
+  size_t
+    index;
+} ShuffleInfo;
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
+static int ShuffleAscendingCompare(const void *x,const void *y)
+{
+  const ShuffleInfo
+    *p,
+    *q;
+
+  int
+    compare;
+
+  p=(const ShuffleInfo *) x;
+  q=(const ShuffleInfo *) y;
+  compare=LocaleCompare(p->image->filename,q->image->filename);
+  if (compare != 0)
+    return(compare);
+  return((p->index > q->index)-(p->index < q->index));
+}
+
+static int ShuffleDescendingCompare(const void *x,const void *y)
+{
+  const ShuffleInfo
+    *p,
+    *q;
+
+  int
+    compare;
+
+  p=(const ShuffleInfo *) x;
+  q=(const ShuffleInfo *) y;
+  compare=LocaleCompare(q->image->filename,p->image->filename);
+  if (compare != 0)
+    return(compare);
+  return((p->index > q->index)-(p->index < q->index));
+}
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
+
 MagickExport Image *ShuffleImages(Image **images,const ShuffleMode mode,
   ExceptionInfo *exception)
 {
   Image
-    **image_array;
+    *image;
 
   RandomInfo
     *random_info;
+
+  ShuffleInfo
+    *shuffle_info;
 
   size_t
     number_images;
@@ -1370,100 +1469,69 @@ MagickExport Image *ShuffleImages(Image **images,const ShuffleMode mode,
     i;
 
   assert(images != (Image **) NULL);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
   if (*images == (Image *) NULL)
     return((Image *) NULL);
-  if ((*images)->next == (Image *) NULL)
-    return(*images);
-  number_images=GetImageListLength(*images);
-  if (number_images == 0)
-    return((Image *) NULL);
-  image_array=(Image **) AcquireQuantumMemory(number_images,
-    sizeof(*image_array));
-  if (image_array == (Image **) NULL)
+  assert((*images)->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
+      (*images)->filename);
+  image=GetFirstImageInList(*images);
+  if (image->next == (Image *) NULL)
     {
-      ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
-        "MemoryAllocationFailed","%s",exception->reason);
+      *images=image;
+      return(image);
+    }
+  number_images=GetImageListLength(image);
+  shuffle_info=(ShuffleInfo *) AcquireQuantumMemory(number_images,
+    sizeof(*shuffle_info));
+  if (shuffle_info == (ShuffleInfo *) NULL)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       return((Image *) NULL);
     }
+  for (i=0; i < (ssize_t) number_images; i++)
   {
-    Image
-      *image;
-
-    ssize_t
-      j;
-
-    image=(*images);
-    for (j=0; j < (ssize_t) number_images; j++)
-    {
-      image_array[j]=image;
-      image=image->next;
-    }
+    shuffle_info[i].image=image;
+    shuffle_info[i].index=(size_t) i;
+    image=image->next;
   }
   switch (mode)
   {
     case AscendingShuffle:
     {
-      ssize_t
-        j;
-
-      for (i=0; i < (ssize_t) (number_images-1); i++)
-      {
-        for (j=i+1; j < (ssize_t) number_images; j++)
-        {
-          if (LocaleCompare(image_array[j]->filename,image_array[i]->filename) < 0)
-            {
-              Image
-                *swap;
-
-              swap=image_array[i];
-              image_array[i]=image_array[j];
-              image_array[j]=swap;
-            }
-        }
-      }
+      qsort((void *) shuffle_info,number_images,sizeof(*shuffle_info),
+        ShuffleAscendingCompare);
       break;
     }
     case DescendingShuffle:
     {
-      ssize_t
-        j;
-
-      for (i=0; i < (ssize_t) (number_images-1); i++)
-      {
-        for (j=i+1; j < (ssize_t) number_images; j++)
-        {
-          if (LocaleCompare(image_array[j]->filename,image_array[i]->filename) > 0)
-            {
-              Image
-                *swap;
-
-              swap=image_array[i];
-              image_array[i]=image_array[j];
-              image_array[j]=swap;
-            }
-        }
-      }
+      qsort((void *) shuffle_info,number_images,sizeof(*shuffle_info),
+        ShuffleDescendingCompare);
       break;
     }
     case RandomShuffle:
     {
+      /*
+        Fisher-Yates shuffle.
+      */
       random_info=AcquireRandomInfo();
       for (i=(ssize_t) number_images-1; i > 0; i--)
       {
+        ShuffleInfo
+          swap;
+
         ssize_t
           j;
 
-        j=(ssize_t) (GetPseudoRandomValue(random_info)*(i+1));
+        j=(ssize_t) (GetPseudoRandomValue(random_info)*((double) i+1.0));
         if (j > i)
           j=i;
-        {
-          Image
-            *swap;
-
-          swap=image_array[i];
-          image_array[i]=image_array[j];
-          image_array[j]=swap;
-        }
+        swap=shuffle_info[i];
+        shuffle_info[i]=shuffle_info[j];
+        shuffle_info[j]=swap;
       }
       random_info=DestroyRandomInfo(random_info);
       break;
@@ -1472,15 +1540,18 @@ MagickExport Image *ShuffleImages(Image **images,const ShuffleMode mode,
     default:
       break;
   }
-  *images=image_array[0];
-  (*images)->previous=(Image *) NULL;
+  /*
+    Relink the list in its new order.
+  */
   for (i=0; i < (ssize_t) number_images; i++)
   {
-    image_array[i]->next=(i < (ssize_t) number_images-1) ?
-      image_array[i+1] : (Image *) NULL;
-    image_array[i]->previous=(i > 0) ? image_array[i-1] : (Image *) NULL;
+    shuffle_info[i].image->previous=(i > 0) ? shuffle_info[i-1].image :
+      (Image *) NULL;
+    shuffle_info[i].image->next=(i < (ssize_t) number_images-1) ?
+      shuffle_info[i+1].image : (Image *) NULL;
   }
-  image_array=(Image **) RelinquishMagickMemory(image_array);
+  *images=shuffle_info[0].image;
+  shuffle_info=(ShuffleInfo *) RelinquishMagickMemory(shuffle_info);
   return(*images);
 }
 
