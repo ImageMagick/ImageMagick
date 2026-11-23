@@ -812,6 +812,7 @@ static Image *ReadImageInternal(const ImageInfo *image_info,
       (void) LogMagickEvent(ExceptionEvent,GetMagickModule(),
         "Coder (%s) generated an image despite an error (%d), "
         "notify the developers",image->magick,exception->severity);
+      read_info=DestroyImageInfo(read_info);
       return(DestroyImageList(image));
     }
   if (read_info->ping != MagickFalse)
