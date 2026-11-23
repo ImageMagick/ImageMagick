@@ -107,7 +107,7 @@ static struct
 %  The format of the InvokeStaticImageFilter method is:
 %
 %      MagickBooleanType InvokeStaticImageFilter(const char *tag,Image **image,
-%        const int argc,const char **argv)
+%        const int argc,const char **argv,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -116,8 +116,6 @@ static struct
 %    o image: the image.
 %
 %    o argc: the number of elements in the argument vector.
-%
-%    o argv: A text array containing the command line arguments.
 %
 %    o argv: A text array containing the command line arguments.
 %
@@ -131,14 +129,22 @@ MagickExport MagickBooleanType InvokeStaticImageFilter(const char *tag,
   PolicyRights
     rights;
 
+  assert(tag != (const char *) NULL);
   assert(image != (Image **) NULL);
   assert((*image)->signature == MagickCoreSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",(*image)->filename);
   rights=ReadPolicyRights;
   if (IsRightsAuthorized(FilterPolicyDomain,rights,tag) == MagickFalse)
-    ThrowPolicyException(tag,MagickFalse);
-#if defined(MAGICKCORE_MODULES_SUPPORT)
+    {
+      errno=EPERM;
+      (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
+        "NotAuthorized","`%s'",tag);
+      return(MagickFalse);
+    }
+#if defined(MAGICKCORE_BUILD_MODULES)
   (void) tag;
   (void) argc;
   (void) argv;
@@ -146,7 +152,7 @@ MagickExport MagickBooleanType InvokeStaticImageFilter(const char *tag,
 #else
   {
     extern size_t
-      analyzeImage(Image **,const int,char **,ExceptionInfo *);
+      analyzeImage(Image **,const int,const char **,ExceptionInfo *);
 
     ImageFilterHandler
       *image_filter;
@@ -155,8 +161,11 @@ MagickExport MagickBooleanType InvokeStaticImageFilter(const char *tag,
     if (LocaleCompare("analyze",tag) == 0)
       image_filter=(ImageFilterHandler *) analyzeImage;
     if (image_filter == (ImageFilterHandler *) NULL)
-      (void) ThrowMagickException(exception,GetMagickModule(),ModuleError,
-        "UnableToLoadModule","`%s'",tag);
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),ModuleError,
+          "UnableToLoadModule","`%s'",tag);
+        return(MagickFalse);
+      }
     else
       {
         size_t
@@ -172,7 +181,7 @@ MagickExport MagickBooleanType InvokeStaticImageFilter(const char *tag,
         if (signature != MagickImageFilterSignature)
           {
             (void) ThrowMagickException(exception,GetMagickModule(),ModuleError,
-              "ImageFilterSignatureMismatch","'%s': %8lx != %8lx",tag,
+              "ImageFilterSignatureMismatch","`%s': %8lx != %8lx",tag,
               (unsigned long) signature,(unsigned long)
               MagickImageFilterSignature);
             return(MagickFalse);
@@ -199,12 +208,12 @@ MagickExport MagickBooleanType InvokeStaticImageFilter(const char *tag,
 %
 %  The format of the RegisterStaticModule method is:
 %
-%      MagickBooleanType RegisterStaticModule(const char module,
+%      MagickBooleanType RegisterStaticModule(const char *module,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o module: the want to register.
+%    o module: the module we want to register.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -231,14 +240,21 @@ MagickExport MagickBooleanType RegisterStaticModule(const char *module,
     Assign module name from alias.
   */
   assert(module != (const char *) NULL);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
   (void) CopyMagickString(module_name,module,MagickPathExtent);
   p=GetCoderInfo(module,exception);
   if (p != (CoderInfo *) NULL)
     (void) CopyMagickString(module_name,p->name,MagickPathExtent);
   rights=(PolicyRights) (ReadPolicyRights | WritePolicyRights);
   if (IsRightsAuthorized(ModulePolicyDomain,rights,module_name) == MagickFalse)
-    ThrowPolicyException(module_name,MagickFalse);
-  extent=sizeof(MagickModules)/sizeof(MagickModules[0]);
+    {
+      errno=EPERM;
+      (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
+        "NotAuthorized","`%s'",module_name);
+      return(MagickFalse);
+    }
+  extent=sizeof(MagickModules)/sizeof(MagickModules[0])-1;  /* skip sentinel */
   for (i=0; i < (ssize_t) extent; i++)
     if (LocaleCompare(MagickModules[i].module,module_name) == 0)
       {
@@ -268,7 +284,7 @@ MagickExport MagickBooleanType RegisterStaticModule(const char *module,
 %
 %  The format of the RegisterStaticModules method is:
 %
-%      (void) RegisterStaticModules(void)
+%      void RegisterStaticModules(void)
 %
 */
 MagickExport void RegisterStaticModules(void)
@@ -283,12 +299,13 @@ MagickExport void RegisterStaticModules(void)
     i;
 
   rights=(PolicyRights) (ReadPolicyRights | WritePolicyRights);
-  extent=sizeof(MagickModules)/sizeof(MagickModules[0]);
+  extent=sizeof(MagickModules)/sizeof(MagickModules[0])-1;  /* skip sentinel */
   for (i=0; i < (ssize_t) extent; i++)
   {
     if (MagickModules[i].registered == MagickFalse)
       {
-        if (IsRightsAuthorized(ModulePolicyDomain,rights,MagickModules[i].module) == MagickFalse)
+        if (IsRightsAuthorized(ModulePolicyDomain,rights,
+              MagickModules[i].module) == MagickFalse)
           continue;
         (void) (MagickModules[i].register_module)();
         MagickModules[i].registered=MagickTrue;
@@ -326,7 +343,8 @@ MagickExport MagickBooleanType UnregisterStaticModule(const char *module)
   ssize_t
     i;
 
-  extent=sizeof(MagickModules)/sizeof(MagickModules[0]);
+  assert(module != (const char *) NULL);
+  extent=sizeof(MagickModules)/sizeof(MagickModules[0])-1;  /* skip sentinel */
   for (i=0; i < (ssize_t) extent; i++)
     if (LocaleCompare(MagickModules[i].module,module) == 0)
       {
@@ -356,7 +374,7 @@ MagickExport MagickBooleanType UnregisterStaticModule(const char *module)
 %
 %  The format of the UnregisterStaticModules method is:
 %
-%      UnregisterStaticModules(void)
+%      void UnregisterStaticModules(void)
 %
 */
 MagickExport void UnregisterStaticModules(void)
@@ -367,7 +385,7 @@ MagickExport void UnregisterStaticModules(void)
   ssize_t
     i;
 
-  extent=sizeof(MagickModules)/sizeof(MagickModules[0]);
+  extent=sizeof(MagickModules)/sizeof(MagickModules[0])-1;  /* skip sentinel */
   for (i=0; i < (ssize_t) extent; i++)
   {
     if (MagickModules[i].registered != MagickFalse)
