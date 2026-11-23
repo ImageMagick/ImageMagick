@@ -1,0 +1,38 @@
+#!/bin/sh
+#
+#  Copyright 1999 ImageMagick Studio LLC, a non-profit organization
+#  dedicated to making software imaging solutions freely available.
+#
+#  You may not use this file except in compliance with the License.  You may
+#  obtain a copy of the License at
+#
+#    https://imagemagick.org/license/
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+#  Regression tests for PNG.
+#
+. ./common.shi
+. ${srcdir}/tests/common.shi
+if ! ${MAGICK} -list format | grep -E '^[[:space:]]*PNG\*?[[:space:]]+(PNG[[:space:]]+)?rw' >/dev/null; then
+  echo "1..0 # SKIP PNG coder unavailable"
+  exit 0
+fi
+echo "1..1"
+
+# A 1-bit palette PNG still has 8-bit palette colors.
+${MAGICK} -size 1x1 xc:'rgb(200,30,30)' xc:white +append \
+  -define png:bit-depth=1 -define png:color-type=3 png_palette_out.png &&
+  ${MAGICK} png_palette_out.png png_palette_out.ppm &&
+  actual=$(${MAGICK} png_palette_out.ppm -format '%[pixel:p{0,0}]' info:) &&
+  [ "$actual" = "srgb(200,30,30)" ] && echo "ok" || {
+    echo "not ok"
+    echo "# expected 'srgb(200,30,30)', got '$actual'"
+  }
+
+rm -f png_palette_out.png png_palette_out.ppm
+:

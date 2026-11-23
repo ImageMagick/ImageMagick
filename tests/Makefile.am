@@ -50,6 +50,7 @@ TESTS_TESTS = \
   tests/cli-mogrify.tap \
   tests/cli-pcx.tap \
   tests/cli-pipe.tap \
+  tests/cli-png.tap \
   tests/cli-svg.tap \
   tests/cli-statistic.tap \
   tests/cli-tiff.tap \
