@@ -2628,6 +2628,7 @@ MagickExport Image *TrimImage(const Image *image,ExceptionInfo *exception)
   trim_image=CropImage(image,&geometry,exception);
   if (trim_image != (Image *) NULL)
     {
+      Update8BIMClipPath(trim_image,image->columns,image->rows,&geometry);
       trim_image->page.width=image->columns;
       trim_image->page.height=image->rows;
       if (trim_image->page.x == 0)
