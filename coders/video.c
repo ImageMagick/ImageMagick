@@ -279,12 +279,32 @@ static Image *ReadVIDEOImage(const ImageInfo *image_info,
             "VideoDelegateFailed","`%s'",message);
       (void) RelinquishUniqueFileResource(read_info->unique);
       if (images != (Image *) NULL)
-        for (next=images; next != (Image *) NULL; next=next->next)
         {
-          (void) CopyMagickString(next->filename,image_info->filename,
-            MagickPathExtent);
-          (void) CopyMagickString(next->magick,image_info->magick,
-            MagickPathExtent);
+          if (image_info->number_scenes != 0)
+            {
+              Image
+                *clone_image;
+
+              ssize_t
+                i;
+
+              /*
+                Add place holder images to meet the subimage specification requirement.
+              */
+              if (AcquireMagickResource(ListLengthResource,image_info->scene) == MagickFalse)
+                ThrowReaderException(ResourceLimitError,"ListLengthExceedsLimit");
+              for (i=0; i < (ssize_t) image_info->scene; i++)
+              {
+                clone_image=CloneImage(images,1,1,MagickTrue,exception);
+                if (clone_image != (Image *) NULL)
+                  PrependImageToList(&images,clone_image);
+              }
+            }
+          for (next=images; next != (Image *) NULL; next=next->next)
+          {
+            (void) CopyMagickString(next->filename,image_info->filename,MagickPathExtent);
+            (void) CopyMagickString(next->magick,image_info->magick,MagickPathExtent);
+          }
         }
     }
   read_info=DestroyImageInfo(read_info);
