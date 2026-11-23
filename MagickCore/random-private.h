@@ -36,35 +36,57 @@ extern MagickPrivate unsigned long
 extern MagickPrivate void
   RandomComponentTerminus(void);
 
+/*
+  The per-thread RandomInfo array carries its own element count in a hidden
+  header that precedes the first slot.  Destruction must use this recorded
+  count rather than re-reading the (process-wide, runtime-writable)
+  ThreadResource limit, which may have changed since the array was acquired.
+*/
+static inline size_t RandomInfoTLSHeaderSlots(void)
+{
+  return((sizeof(size_t)+sizeof(RandomInfo *)-1)/sizeof(RandomInfo *));
+}
+
 static inline RandomInfo **DestroyRandomInfoTLS(RandomInfo **random_info)
 {
-  ssize_t
-    i;
+  RandomInfo
+    **base;
 
-  for (i=0; i < (ssize_t) GetMagickResourceLimit(ThreadResource); i++)
+  size_t
+    i,
+    number_threads;
+
+  if (random_info == (RandomInfo **) NULL)
+    return((RandomInfo **) NULL);
+  base=random_info-RandomInfoTLSHeaderSlots();
+  (void) memcpy(&number_threads,base,sizeof(number_threads));
+  for (i=0; i < number_threads; i++)
     if (random_info[i] != (RandomInfo *) NULL)
       random_info[i]=DestroyRandomInfo(random_info[i]);
-  return((RandomInfo **) RelinquishMagickMemory(random_info));
+  return((RandomInfo **) RelinquishMagickMemory(base));
 }
 
 static inline RandomInfo **AcquireRandomInfoTLS(void)
 {
-  ssize_t
-    i;
-
   RandomInfo
+    **base,
     **random_info;
 
   size_t
+    header_slots,
+    i,
     number_threads;
 
   number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
-  random_info=(RandomInfo **) AcquireQuantumMemory(number_threads,
-    sizeof(*random_info));
-  if (random_info == (RandomInfo **) NULL)
+  header_slots=RandomInfoTLSHeaderSlots();
+  base=(RandomInfo **) AcquireQuantumMemory(number_threads+header_slots,
+    sizeof(*base));
+  if (base == (RandomInfo **) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  (void) memset(random_info,0,number_threads*sizeof(*random_info));
-  for (i=0; i < (ssize_t) number_threads; i++)
+  (void) memset(base,0,(number_threads+header_slots)*sizeof(*base));
+  (void) memcpy(base,&number_threads,sizeof(number_threads));
+  random_info=base+header_slots;
+  for (i=0; i < number_threads; i++)
     random_info[i]=AcquireRandomInfo();
   return(random_info);
 }

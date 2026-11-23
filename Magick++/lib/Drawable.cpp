@@ -16,6 +16,8 @@
 #include "Magick++/Drawable.h"
 #include "Magick++/Image.h"
 
+#include <vector>
+
 using namespace std;
 
 MagickPPExport int Magick::operator == (const Magick::Coordinate& left_,
@@ -33,27 +35,28 @@ MagickPPExport int Magick::operator != (const Magick::Coordinate& left_,
 MagickPPExport int Magick::operator > (const Magick::Coordinate& left_,
   const Magick::Coordinate& right_)
 {
-  return (!(left_ < right_) && (left_ != right_));
+  return(right_ < left_);
 }
 
 MagickPPExport int Magick::operator < (const Magick::Coordinate& left_,
   const Magick::Coordinate& right_)
 {
-  // Based on distance from origin
-  return((sqrt(left_.x()*left_.x() + left_.y()*left_.y())) <
-    (sqrt(right_.x()*right_.x() + right_.y()*right_.y())));
+  // Based on distance from origin (squared distance gives the same ordering
+  // without needing sqrt)
+  return((left_.x()*left_.x() + left_.y()*left_.y()) <
+    (right_.x()*right_.x() + right_.y()*right_.y()));
 }
 
 MagickPPExport int Magick::operator >= (const Magick::Coordinate& left_,
   const Magick::Coordinate& right_)
 {
-  return((left_ > right_) || (left_ == right_));
+  return(!(left_ < right_));
 }
 
 MagickPPExport int Magick::operator <= (const Magick::Coordinate& left_,
   const Magick::Coordinate& right_)
 {
-  return((left_ < right_) || (left_ == right_));
+  return(!(right_ < left_));
 }
 
 /* DrawableBase */
@@ -248,22 +251,18 @@ Magick::DrawableBezier::~DrawableBezier( void )
 }
 void Magick::DrawableBezier::operator()( MagickCore::DrawingWand * context_ ) const
 {
-  size_t num_coords = (size_t) _coordinates.size();
-  PointInfo *coordinates = new PointInfo[num_coords];
+  const size_t num_coords = (size_t) _coordinates.size();
+  if (num_coords == 0)
+    return;
 
-  PointInfo *q = coordinates;
-  CoordinateList::const_iterator p = _coordinates.begin();
-
-  while( p != _coordinates.end() )
+  std::vector<PointInfo> coordinates(num_coords);
+  for (size_t i=0; i < num_coords; i++)
     {
-      q->x = p->x();
-      q->y = p->y();
-      q++;
-      p++;
+      coordinates[i].x = _coordinates[i].x();
+      coordinates[i].y = _coordinates[i].y();
     }
 
-  DrawBezier( context_, num_coords, coordinates );
-  delete [] coordinates;
+  DrawBezier( context_, num_coords, &coordinates[0] );
 }
 Magick::DrawableBase* Magick::DrawableBezier::copy() const
 {
@@ -385,7 +384,7 @@ Magick::DrawableBase* Magick::DrawableClipUnits::copy() const
 
 
 //
-//Clip Path 
+// Clip Path
 //
 
 // Pop (terminate) Clip path definition
@@ -444,7 +443,7 @@ Magick::DrawableClipPath::~DrawableClipPath( void )
 }
 void Magick::DrawableClipPath::operator()( MagickCore::DrawingWand * context_ ) const
 {
-	(void) DrawSetClipPath( context_, _id.c_str());
+  (void) DrawSetClipPath( context_, _id.c_str());
 }
 Magick::DrawableBase* Magick::DrawableClipPath::copy() const
 {
@@ -931,22 +930,18 @@ Magick::DrawablePolygon::~DrawablePolygon ( void )
 void Magick::DrawablePolygon::operator()
   ( MagickCore::DrawingWand * context_ ) const
 {
-  size_t num_coords = (size_t) _coordinates.size();
-  PointInfo *coordinates = new PointInfo[num_coords];
+  const size_t num_coords = (size_t) _coordinates.size();
+  if (num_coords == 0)
+    return;
 
-  PointInfo *q = coordinates;
-  CoordinateList::const_iterator p = _coordinates.begin();
-
-  while( p != _coordinates.end() )
+  std::vector<PointInfo> coordinates(num_coords);
+  for (size_t i=0; i < num_coords; i++)
     {
-      q->x = p->x();
-      q->y = p->y();
-      q++;
-      p++;
+      coordinates[i].x = _coordinates[i].x();
+      coordinates[i].y = _coordinates[i].y();
     }
 
-  DrawPolygon( context_, num_coords, coordinates );
-  delete [] coordinates;
+  DrawPolygon( context_, num_coords, &coordinates[0] );
 }
 Magick::DrawableBase* Magick::DrawablePolygon::copy() const
 {
@@ -971,22 +966,18 @@ Magick::DrawablePolyline::~DrawablePolyline ( void )
 void Magick::DrawablePolyline::operator()
   ( MagickCore::DrawingWand * context_ ) const
 {
-  size_t num_coords = (size_t) _coordinates.size();
-  PointInfo *coordinates = new PointInfo[num_coords];
+  const size_t num_coords = (size_t) _coordinates.size();
+  if (num_coords == 0)
+    return;
 
-  PointInfo *q = coordinates;
-  CoordinateList::const_iterator p = _coordinates.begin();
-
-  while( p != _coordinates.end() )
+  std::vector<PointInfo> coordinates(num_coords);
+  for (size_t i=0; i < num_coords; i++)
     {
-      q->x = p->x();
-      q->y = p->y();
-      q++;
-      p++;
+      coordinates[i].x = _coordinates[i].x();
+      coordinates[i].y = _coordinates[i].y();
     }
 
-  DrawPolyline( context_, num_coords, coordinates );
-  delete [] coordinates;
+  DrawPolyline( context_, num_coords, &coordinates[0] );
 }
 Magick::DrawableBase* Magick::DrawablePolyline::copy() const
 {
@@ -1166,15 +1157,11 @@ Magick::DrawableStrokeDashArray::DrawableStrokeDashArray(const double* dasharray
 Magick::DrawableStrokeDashArray::DrawableStrokeDashArray(
   const Magick::DrawableStrokeDashArray& original_)
   : DrawableBase (original_),
-    _size(original_._size),
-    _dasharray(new double[_size+1])
+    _size(0),
+    _dasharray(0)
 {
-  // Copy elements
-  {
-    for (size_t i=0; i < _size; i++)
-      _dasharray[i]=original_._dasharray[i];
-    _dasharray[_size]=0.0;
-  }
+  // Preserve the "no dash array" state of the original
+  dasharray(original_._dasharray);
 }
 
 Magick::DrawableStrokeDashArray::~DrawableStrokeDashArray(void)
@@ -1188,24 +1175,14 @@ Magick::DrawableStrokeDashArray& Magick::DrawableStrokeDashArray::operator=(
   const Magick::DrawableStrokeDashArray &original_)
 {
   if (this != &original_)
-    {
-      delete [] _dasharray;
-      _size=original_._size;
-      _dasharray = new double[_size+1];
-      // Copy elements
-      {
-        for (size_t i=0; i < _size; i++)
-          _dasharray[i]=original_._dasharray[i];
-        _dasharray[_size]=0.0;
-      }
-    }
+    dasharray(original_._dasharray);
   return(*this);
 }
 
 void Magick::DrawableStrokeDashArray::operator()(
   MagickCore::DrawingWand *context_) const
 {
-  (void) DrawSetStrokeDashArray(context_,(unsigned long) _size,_dasharray);
+  (void) DrawSetStrokeDashArray(context_,_size,_dasharray);
 }
 
 Magick::DrawableBase *Magick::DrawableStrokeDashArray::copy() const
@@ -1218,33 +1195,30 @@ void Magick::DrawableStrokeDashArray::dasharray(const double* dasharray_)
   size_t
     n;
 
-  delete [] _dasharray;
-  _size=0;
-  _dasharray=0;
+  double
+    *new_dasharray;
+
+  new_dasharray=(double *) NULL;
+  n=0;
 
   if (dasharray_ != (const double *) NULL)
     {
-      const double
-        *p;
-
       // Count elements in dash array
-      n=0;
-      {
-        p = dasharray_;
-        while(*p++ != 0.0)
-          n++;
-      }
-      _size=n;
+      while(dasharray_[n] != 0.0)
+        n++;
 
-      // Allocate elements
-      _dasharray=new double[_size+1];
-      // Copy elements
-      {
-        for (size_t i=0; i < _size; i++)
-          _dasharray[i]=dasharray_[i];
-        _dasharray[_size]=0.0;
-      }
+      // Allocate and copy elements before releasing the old array so that
+      // a failed allocation leaves the object unchanged and passing our
+      // own array back in is safe.
+      new_dasharray=new double[n+1];
+      for (size_t i=0; i < n; i++)
+        new_dasharray[i]=dasharray_[i];
+      new_dasharray[n]=0.0;
     }
+
+  delete [] _dasharray;
+  _dasharray=new_dasharray;
+  _size=n;
 }
 
 const double* Magick::DrawableStrokeDashArray::dasharray(void) const
