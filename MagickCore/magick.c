@@ -165,7 +165,7 @@ static MagickBooleanType
 %    o name: a character string that represents the image format associated
 %      with the MagickInfo structure.
 %
-%    o description: a character string that represents the image format
+%    o description: a character string that describes the image format
 %      associated with the MagickInfo structure.
 %
 */
@@ -294,6 +294,7 @@ MagickExport MagickBooleanType GetImageMagick(const unsigned char *magick,
     *p;
 
   assert(magick != (const unsigned char *) NULL);
+  assert(format != (char *) NULL);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   exception=AcquireExceptionInfo();
@@ -344,7 +345,8 @@ MagickExport MagickBooleanType GetImageMagick(const unsigned char *magick,
 */
 MagickExport MagickBooleanType GetMagickAdjoin(const MagickInfo *magick_info)
 {
-  assert(magick_info != (MagickInfo *) NULL);
+  if (magick_info == (const MagickInfo *) NULL)
+    return(MagickFalse);
   assert(magick_info->signature == MagickCoreSignature);
   return(((magick_info->flags & CoderAdjoinFlag) == 0) ? MagickFalse :
     MagickTrue);
@@ -375,7 +377,8 @@ MagickExport MagickBooleanType GetMagickAdjoin(const MagickInfo *magick_info)
 MagickExport MagickBooleanType GetMagickBlobSupport(
   const MagickInfo *magick_info)
 {
-  assert(magick_info != (MagickInfo *) NULL);
+  if (magick_info == (const MagickInfo *) NULL)
+    return(MagickFalse);
   assert(magick_info->signature == MagickCoreSignature);
   return(((magick_info->flags & CoderBlobSupportFlag) == 0) ? MagickFalse :
     MagickTrue);
@@ -408,7 +411,8 @@ MagickExport MagickBooleanType GetMagickBlobSupport(
 MagickExport MagickBooleanType GetMagickDecoderSeekableStream(
   const MagickInfo *magick_info)
 {
-  assert(magick_info != (MagickInfo *) NULL);
+  if (magick_info == (const MagickInfo *) NULL)
+    return(MagickFalse);
   assert(magick_info->signature == MagickCoreSignature);
   if ((magick_info->flags & CoderDecoderSeekableStreamFlag) == 0)
     return(MagickFalse);
@@ -431,7 +435,7 @@ MagickExport MagickBooleanType GetMagickDecoderSeekableStream(
 %
 %  The format of the GetMagickDecoderThreadSupport method is:
 %
-%      MagickStatusType GetMagickDecoderThreadSupport(
+%      MagickBooleanType GetMagickDecoderThreadSupport(
 %        const MagickInfo *magick_info)
 %
 %  A description of each parameter follows:
@@ -442,7 +446,8 @@ MagickExport MagickBooleanType GetMagickDecoderSeekableStream(
 MagickExport MagickBooleanType GetMagickDecoderThreadSupport(
   const MagickInfo *magick_info)
 {
-  assert(magick_info != (MagickInfo *) NULL);
+  if (magick_info == (const MagickInfo *) NULL)
+    return(MagickFalse);
   assert(magick_info->signature == MagickCoreSignature);
   return(((magick_info->flags & CoderDecoderThreadSupportFlag) == 0) ?
     MagickFalse : MagickTrue);
@@ -472,7 +477,8 @@ MagickExport MagickBooleanType GetMagickDecoderThreadSupport(
 */
 MagickExport const char *GetMagickDescription(const MagickInfo *magick_info)
 {
-  assert(magick_info != (MagickInfo *) NULL);
+  if (magick_info == (const MagickInfo *) NULL)
+    return((const char *) NULL);
   assert(magick_info->signature == MagickCoreSignature);
   return(magick_info->description);
 }
@@ -504,7 +510,8 @@ MagickExport const char *GetMagickDescription(const MagickInfo *magick_info)
 MagickExport MagickBooleanType GetMagickEncoderSeekableStream(
   const MagickInfo *magick_info)
 {
-  assert(magick_info != (MagickInfo *) NULL);
+  if (magick_info == (const MagickInfo *) NULL)
+    return(MagickFalse);
   assert(magick_info->signature == MagickCoreSignature);
   if ((magick_info->flags & CoderEncoderSeekableStreamFlag) == 0)
     return(MagickFalse);
@@ -527,7 +534,7 @@ MagickExport MagickBooleanType GetMagickEncoderSeekableStream(
 %
 %  The format of the GetMagickEncoderThreadSupport method is:
 %
-%      MagickStatusType GetMagickEncoderThreadSupport(
+%      MagickBooleanType GetMagickEncoderThreadSupport(
 %        const MagickInfo *magick_info)
 %
 %  A description of each parameter follows:
@@ -538,7 +545,8 @@ MagickExport MagickBooleanType GetMagickEncoderSeekableStream(
 MagickExport MagickBooleanType GetMagickEncoderThreadSupport(
   const MagickInfo *magick_info)
 {
-  assert(magick_info != (MagickInfo *) NULL);
+  if (magick_info == (const MagickInfo *) NULL)
+    return(MagickFalse);
   assert(magick_info->signature == MagickCoreSignature);
   return(((magick_info->flags & CoderEncoderThreadSupportFlag) == 0) ?
     MagickFalse : MagickTrue);
@@ -555,7 +563,7 @@ MagickExport MagickBooleanType GetMagickEncoderThreadSupport(
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetMagickEndianSupport() returns the MagickTrue if the coder respects
+%  GetMagickEndianSupport() returns MagickTrue if the coder respects
 %  endianness other than MSBEndian.
 %
 %  The format of the GetMagickEndianSupport method is:
@@ -570,7 +578,8 @@ MagickExport MagickBooleanType GetMagickEncoderThreadSupport(
 MagickExport MagickBooleanType GetMagickEndianSupport(
   const MagickInfo *magick_info)
 {
-  assert(magick_info != (MagickInfo *) NULL);
+  if (magick_info == (const MagickInfo *) NULL)
+    return(MagickFalse);
   assert(magick_info->signature == MagickCoreSignature);
   return(((magick_info->flags & CoderEndianSupportFlag) == 0) ? MagickFalse :
     MagickTrue);
@@ -593,7 +602,8 @@ MagickExport MagickBooleanType GetMagickEndianSupport(
 %
 %  The format of the GetMagickInfo method is:
 %
-%      const MagickInfo *GetMagickInfo(const char *name,Exception *exception)
+%      const MagickInfo *GetMagickInfo(const char *name,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -715,14 +725,18 @@ MagickExport const MagickInfo **GetMagickInfoList(const char *pattern,
   p=GetMagickInfo("*",exception);
   if (p == (const MagickInfo *) NULL)
     return((const MagickInfo **) NULL);
+  /*
+    Size and fill the list under one lock so a concurrent registration cannot
+    grow the tree between the allocation and the iteration.
+  */
+  LockSemaphoreInfo(magick_semaphore);
   formats=(const MagickInfo **) AcquireQuantumMemory((size_t)
     GetNumberOfNodesInSplayTree(magick_list)+1UL,sizeof(*formats));
   if (formats == (const MagickInfo **) NULL)
-    return((const MagickInfo **) NULL);
-  /*
-    Generate magick list.
-  */
-  LockSemaphoreInfo(magick_semaphore);
+    {
+      UnlockSemaphoreInfo(magick_semaphore);
+      return((const MagickInfo **) NULL);
+    }
   ResetSplayTreeIterator(magick_list);
   p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
   for (i=0; p != (const MagickInfo *) NULL; )
@@ -809,11 +823,14 @@ MagickExport char **GetMagickList(const char *pattern,
   p=GetMagickInfo("*",exception);
   if (p == (const MagickInfo *) NULL)
     return((char **) NULL);
+  LockSemaphoreInfo(magick_semaphore);
   formats=(char **) AcquireQuantumMemory((size_t)
     GetNumberOfNodesInSplayTree(magick_list)+1UL,sizeof(*formats));
   if (formats == (char **) NULL)
-    return((char **) NULL);
-  LockSemaphoreInfo(magick_semaphore);
+    {
+      UnlockSemaphoreInfo(magick_semaphore);
+      return((char **) NULL);
+    }
   ResetSplayTreeIterator(magick_list);
   p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
   for (i=0; p != (const MagickInfo *) NULL; )
@@ -854,7 +871,8 @@ MagickExport char **GetMagickList(const char *pattern,
 */
 MagickExport const char *GetMagickMimeType(const MagickInfo *magick_info)
 {
-  assert(magick_info != (MagickInfo *) NULL);
+  if (magick_info == (const MagickInfo *) NULL)
+    return((const char *) NULL);
   assert(magick_info->signature == MagickCoreSignature);
   return(magick_info->mime_type);
 }
@@ -883,7 +901,8 @@ MagickExport const char *GetMagickMimeType(const MagickInfo *magick_info)
 */
 MagickExport const char *GetMagickModuleName(const MagickInfo *magick_info)
 {
-  assert(magick_info != (MagickInfo *) NULL);
+  if (magick_info == (const MagickInfo *) NULL)
+    return((const char *) NULL);
   assert(magick_info->signature == MagickCoreSignature);
   return(magick_info->magick_module);
 }
@@ -912,7 +931,8 @@ MagickExport const char *GetMagickModuleName(const MagickInfo *magick_info)
 */
 MagickExport const char *GetMagickName(const MagickInfo *magick_info)
 {
-  assert(magick_info != (MagickInfo *) NULL);
+  if (magick_info == (const MagickInfo *) NULL)
+    return((const char *) NULL);
   assert(magick_info->signature == MagickCoreSignature);
   return(magick_info->name);
 }
@@ -968,7 +988,8 @@ MagickExport int GetMagickPrecision(void)
 MagickExport MagickBooleanType GetMagickRawSupport(
   const MagickInfo *magick_info)
 {
-  assert(magick_info != (MagickInfo *) NULL);
+  if (magick_info == (const MagickInfo *) NULL)
+    return(MagickFalse);
   assert(magick_info->signature == MagickCoreSignature);
   return(((magick_info->flags & CoderRawSupportFlag) == 0) ? MagickFalse :
     MagickTrue);
@@ -998,7 +1019,8 @@ MagickExport MagickBooleanType GetMagickRawSupport(
 */
 MagickExport MagickBooleanType GetMagickStealth(const MagickInfo *magick_info)
 {
-  assert(magick_info != (MagickInfo *) NULL);
+  if (magick_info == (const MagickInfo *) NULL)
+    return(MagickFalse);
   assert(magick_info->signature == MagickCoreSignature);
   return(((magick_info->flags & CoderStealthFlag) == 0) ? MagickFalse :
     MagickTrue);
@@ -1031,7 +1053,8 @@ MagickExport MagickBooleanType GetMagickStealth(const MagickInfo *magick_info)
 MagickExport MagickBooleanType GetMagickUseExtension(
   const MagickInfo *magick_info)
 {
-  assert(magick_info != (MagickInfo *) NULL);
+  if (magick_info == (const MagickInfo *) NULL)
+    return(MagickFalse);
   assert(magick_info->signature == MagickCoreSignature);
   return(((magick_info->flags & CoderUseExtensionFlag) == 0) ? MagickFalse :
     MagickTrue);
@@ -1053,7 +1076,7 @@ MagickExport MagickBooleanType GetMagickUseExtension(
 %
 %  The format of the IsMagickTreeInstantiated() method is:
 %
-%      IsMagickTreeInstantiated(Exceptioninfo *exception)
+%      MagickBooleanType IsMagickTreeInstantiated(ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -1330,6 +1353,7 @@ MagickPrivate void MagickComponentTerminus(void)
       magick_list=DestroySplayTree(magick_list);
       magick_list_initialized=MagickFalse;
     }
+  magick_precision=0;
   UnlockSemaphoreInfo(magick_semaphore);
   RelinquishSemaphoreInfo(&magick_semaphore);
 }
@@ -1369,15 +1393,19 @@ static SignalHandler *SetMagickSignalHandler(int signal_number,
     status;
 
   sigset_t
-    mask;
+    mask,
+    previous_mask;
 
   struct sigaction
     action,
     previous_action;
 
+  (void) memset(&action,0,sizeof(action));
+  (void) memset(&previous_action,0,sizeof(previous_action));
   sigemptyset(&mask);
   sigaddset(&mask,signal_number);
-  sigprocmask(SIG_BLOCK,&mask,NULL);
+  sigemptyset(&previous_mask);
+  sigprocmask(SIG_BLOCK,&mask,&previous_mask);
   action.sa_mask=mask;
   action.sa_handler=handler;
   action.sa_flags=0;
@@ -1389,9 +1417,13 @@ static SignalHandler *SetMagickSignalHandler(int signal_number,
 #endif
   previous_action.sa_handler=SIG_DFL;
   status=sigaction(signal_number,&action,&previous_action);
+  /*
+    Always restore the caller's signal mask, including on failure, so the
+    signal is never left blocked.
+  */
+  sigprocmask(SIG_SETMASK,&previous_mask,NULL);
   if (status < 0)
     return(SIG_ERR);
-  sigprocmask(SIG_UNBLOCK,&mask,NULL);
   return(previous_action.sa_handler);
 #else
   return(signal(signal_number,handler));
@@ -1400,7 +1432,8 @@ static SignalHandler *SetMagickSignalHandler(int signal_number,
 
 static void MagickSignalHandler(int signal_number)
 {
-  if (magickcore_signal_in_progress != MagickFalse)
+  if ((magickcore_signal_in_progress != MagickFalse) &&
+      (signal_number >= 0) && (signal_number < SIGMAX))
     (void) SetMagickSignalHandler(signal_number,signal_handlers[signal_number]);
   magickcore_signal_in_progress=MagickTrue;
   AsynchronousResourceComponentTerminus();
@@ -1440,7 +1473,8 @@ static void MagickSignalHandler(int signal_number)
     }
 #endif
 #if defined(MAGICKCORE_HAVE_RAISE)
-  if (signal_handlers[signal_number] != MagickSignalHandler)
+  if ((signal_number >= 0) && (signal_number < SIGMAX) &&
+      (signal_handlers[signal_number] != MagickSignalHandler))
     raise(signal_number);
 #endif
   _exit(signal_number);  /* do not invoke registered atexit() methods */
@@ -1852,9 +1886,12 @@ MagickExport MagickBooleanType UnregisterMagickInfo(const char *name)
   assert(name != (const char *) NULL);
   if (magick_list == (SplayTreeInfo *) NULL)
     return(MagickFalse);
-  if (GetNumberOfNodesInSplayTree(magick_list) == 0)
-    return(MagickFalse);
   LockSemaphoreInfo(magick_semaphore);
+  if (GetNumberOfNodesInSplayTree(magick_list) == 0)
+    {
+      UnlockSemaphoreInfo(magick_semaphore);
+      return(MagickFalse);
+    }
   ResetSplayTreeIterator(magick_list);
   p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
   while (p != (const MagickInfo *) NULL)
@@ -1863,7 +1900,9 @@ MagickExport MagickBooleanType UnregisterMagickInfo(const char *name)
       break;
     p=(const MagickInfo *) GetNextValueInSplayTree(magick_list);
   }
-  status=DeleteNodeByValueFromSplayTree(magick_list,p);
+  status=MagickFalse;
+  if (p != (const MagickInfo *) NULL)
+    status=DeleteNodeByValueFromSplayTree(magick_list,p);
   UnlockSemaphoreInfo(magick_semaphore);
   return(status);
 }
