@@ -128,6 +128,9 @@ static SemaphoreInfo
 static MagickBooleanType
   IsMimeCacheInstantiated(ExceptionInfo *);
 
+static void
+  *DestroyMimeElement(void *);
+
 #if !MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
 static MagickBooleanType
  LoadMimeCache(LinkedListInfo *,const char *,const char *,const size_t,
@@ -155,7 +158,7 @@ static MagickBooleanType
 %
 %  A description of each parameter follows:
 %
-%    o filename: the font file name.
+%    o filename: the magic file name.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -214,7 +217,7 @@ MagickExport LinkedListInfo *AcquireMimeCache(const char *filename,
 %
 %  A description of each parameter follows:
 %
-%    o filename:  If we cannot not classify the string, we attempt to classify
+%    o filename:  If we cannot classify the string, we attempt to classify
 %      based on the filename (e.g. *.pdf returns application/pdf).
 %
 %    o magic: A binary string generally representing the first few characters
@@ -284,7 +287,8 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
     {
       case ByteData:
       {
-        if ((size_t) (q->offset+4) > length)
+        if (((size_t) q->offset >= length) ||
+            ((length-(size_t) q->offset) < 1UL))
           break;
         r=magic+q->offset;
         value=(ssize_t) (*r++);
@@ -295,14 +299,15 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
           }
         else
           {
-            if ((q->value & q->mask) == value)
+            if ((value & q->mask) == q->value)
               element_info=p;
           }
         break;
       }
       case ShortData:
       {
-        if ((size_t) (q->offset+4) > length)
+        if (((size_t) q->offset >= length) ||
+            ((length-(size_t) q->offset) < 2UL))
           break;
         r=magic+q->offset;
         endian=q->endian;
@@ -311,12 +316,12 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
         if (endian == LSBEndian)
           {
             value=(ssize_t) (*r++);
-            value|=(*r++) << 8;
+            value|=((ssize_t) (*r++)) << 8;
           }
         else
           {
-            value=(ssize_t) (*r++) << 8;
-            value|=(*r++);
+            value=((ssize_t) (*r++)) << 8;
+            value|=(ssize_t) (*r++);
           }
         if (q->mask == 0)
           {
@@ -325,14 +330,15 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
           }
         else
           {
-            if ((q->value & q->mask) == value)
+            if ((value & q->mask) == q->value)
               element_info=p;
           }
         break;
       }
       case LongData:
       {
-        if ((size_t) (q->offset+4) > length)
+        if (((size_t) q->offset >= length) ||
+            ((length-(size_t) q->offset) < 4UL))
           break;
         r=magic+q->offset;
         endian=q->endian;
@@ -341,16 +347,16 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
         if (endian == LSBEndian)
           {
             value=(ssize_t) (*r++);
-            value|=((ssize_t) *r++) << 8;
-            value|=((ssize_t) *r++) << 16;
-            value|=((ssize_t) *r++) << 24;
+            value|=((ssize_t) (*r++)) << 8;
+            value|=((ssize_t) (*r++)) << 16;
+            value|=((ssize_t) (*r++)) << 24;
           }
         else
           {
-            value=(ssize_t) (*r++) << 24;
-            value|=((ssize_t) *r++) << 16;
-            value|=((ssize_t) *r++) << 8;
-            value|=((ssize_t) *r++);
+            value=((ssize_t) (*r++)) << 24;
+            value|=((ssize_t) (*r++)) << 16;
+            value|=((ssize_t) (*r++)) << 8;
+            value|=(ssize_t) (*r++);
           }
         if (q->mask == 0)
           {
@@ -359,7 +365,7 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
           }
         else
           {
-            if ((q->value & q->mask) == value)
+            if ((value & q->mask) == q->value)
               element_info=p;
           }
         break;
@@ -367,11 +373,17 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
       case StringData:
       default:
       {
+        if ((q->magic == (unsigned char *) NULL) || (q->length == 0))
+          break;
         for (i=0; i <= (ssize_t) q->extent; i++)
         {
-          if ((size_t) (q->offset+i+(ssize_t) q->length) > length)
+          size_t
+            offset;
+
+          offset=(size_t) q->offset+(size_t) i;
+          if ((offset > length) || ((length-offset) < q->length))
             break;
-          if (memcmp(magic+q->offset+i,q->magic,q->length) == 0)
+          if (memcmp(magic+offset,q->magic,q->length) == 0)
             {
               element_info=p;
               break;
@@ -427,14 +439,28 @@ extern "C" {
 static int MimeInfoCompare(const void *x,const void *y)
 {
   const MimeInfo
-    **p,
-    **q;
+    *const *p,
+    *const *q;
 
-  p=(const MimeInfo **) x,
-  q=(const MimeInfo **) y;
-  if (strcasecmp((*p)->path,(*q)->path) == 0)
+  p=(const MimeInfo *const *) x;
+  q=(const MimeInfo *const *) y;
+  if (((*p)->path != (char *) NULL) && ((*q)->path != (char *) NULL))
+    {
+      int
+        status;
+
+      status=strcasecmp((*p)->path,(*q)->path);
+      if (status != 0)
+        return(status);
+    }
+  else
+    if ((*p)->path != (*q)->path)
+      return((*p)->path == (char *) NULL ? -1 : 1);
+  if (((*p)->type != (char *) NULL) && ((*q)->type != (char *) NULL))
     return(strcasecmp((*p)->type,(*q)->type));
-  return(strcasecmp((*p)->path,(*q)->path));
+  if ((*p)->type != (*q)->type)
+    return((*p)->type == (char *) NULL ? -1 : 1);
+  return(0);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -473,6 +499,7 @@ MagickExport const MimeInfo **GetMimeInfoList(const char *pattern,
 
     mime_info=(MimeInfo *) p->value;
     if ((mime_info->stealth == MagickFalse) &&
+        (mime_info->type != (char *) NULL) &&
         (GlobExpression(mime_info->type,pattern,MagickFalse) != MagickFalse))
       aliases[i++]=mime_info;
     p=p->next;
@@ -525,13 +552,13 @@ extern "C" {
 
 static int MimeCompare(const void *x,const void *y)
 {
-  char
-    *p,
-    *q;
+  const char
+    *const *p,
+    *const *q;
 
-  p=(char *) x;
-  q=(char *) y;
-  return(strcasecmp(p,q));
+  p=(const char *const *) x;
+  q=(const char *const *) y;
+  return(strcasecmp(*p,*q));
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -570,6 +597,7 @@ MagickExport char **GetMimeList(const char *pattern,
 
     mime_info=(const MimeInfo *) p->value;
     if ((mime_info->stealth == MagickFalse) &&
+        (mime_info->type != (char *) NULL) &&
         (GlobExpression(mime_info->type,pattern,MagickFalse) != MagickFalse))
       aliases[i++]=ConstantString(mime_info->type);
     p=p->next;
@@ -747,6 +775,8 @@ MagickExport MagickBooleanType ListMimeInfo(FILE *file,ExceptionInfo *exception)
           "-------------------------------------------------"
           "------------------------------\n");
       }
+    if (mime_info[i]->type == (char *) NULL)
+      continue;
     path=mime_info[i]->path;
     (void) FormatLocaleFile(file,"%s",mime_info[i]->type);
     if (strlen(mime_info[i]->type) <= 25)
@@ -921,15 +951,17 @@ static MagickBooleanType LoadMimeCache(LinkedListInfo *cache,const char *xml,
                   mime_info->length++;
                   continue;
                 }
+              if (*p == '\0')
+                break;
               switch (*p)
               {
+                case 'a': *q='\a'; break;
                 case 'b': *q='\b'; break;
                 case 'f': *q='\f'; break;
                 case 'n': *q='\n'; break;
                 case 'r': *q='\r'; break;
                 case 't': *q='\t'; break;
                 case 'v': *q='\v'; break;
-                case 'a': *q='a'; break;
                 case '?': *q='\?'; break;
                 default: *q=(unsigned char) (*p); break;
               }
@@ -955,9 +987,23 @@ static MagickBooleanType LoadMimeCache(LinkedListInfo *cache,const char *xml,
         char
           *c;
 
-        mime_info->offset=(MagickOffsetType) strtol(attribute,&c,0);
+        long
+          offset;
+
+        offset=strtol(attribute,&c,0);
+        if (offset < 0L)
+          offset=0L;
+        mime_info->offset=(MagickOffsetType) offset;
         if (*c == ':')
-          mime_info->extent=(size_t) strtol(c+1,(char **) NULL,0);
+          {
+            long
+              extent;
+
+            extent=strtol(c+1,(char **) NULL,0);
+            if (extent < 0L)
+              extent=0L;
+            mime_info->extent=(size_t) extent;
+          }
       }
     attribute=GetXMLTreeAttribute(mime,"pattern");
     if (attribute != (const char *) NULL)
@@ -973,8 +1019,11 @@ static MagickBooleanType LoadMimeCache(LinkedListInfo *cache,const char *xml,
       mime_info->type=ConstantString(attribute);
     status=AppendValueToLinkedList(cache,mime_info);
     if (status == MagickFalse)
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",filename);
+      {
+        mime_info=(MimeInfo *) DestroyMimeElement(mime_info);
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          ResourceLimitError,"MemoryAllocationFailed","`%s'",filename);
+      }
     mime=GetNextXMLTreeTag(mime);
   }
   mime_map=DestroyXMLTree(mime_map);
@@ -1019,6 +1068,7 @@ MagickExport char *MagickToMime(const char *magick)
   ExceptionInfo
     *exception;
 
+  assert(magick != (const char *) NULL);
   (void) FormatLocaleString(filename,MagickPathExtent,"file.%s",magick);
   LocaleLower(filename);
   exception=AcquireExceptionInfo();
