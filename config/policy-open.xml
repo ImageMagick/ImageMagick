@@ -221,4 +221,7 @@
   <!-- Treat filenames with percent signs (%) as plain text rather than
        formatting placeholders. -->
   <!-- <policy domain="system" name="filename:literal" value="true"/> -->
+
+  <!-- Temporarily take ImageMagick offline for maintenance -->
+  <!-- <policy domain="system" name="offline" value="true"/> -->
 </policymap>
