@@ -105,3 +105,14 @@ cmake . -DCMAKE_INSTALL_PREFIX=$WORK -DBUILD_SHARED_LIBS=false -DBUILD_TESTING=f
 make -j$(nproc)
 make install
 popd
+
+# Build libxml2 (when the OSS-Fuzz Dockerfile has cloned it)
+if [ -d "$SRC/libxml2" ]; then
+    pushd "$SRC/libxml2"
+    cmake . -DCMAKE_INSTALL_PREFIX=$WORK -DBUILD_SHARED_LIBS=false -DLIBXML2_WITH_ICU=false -DLIBXML2_WITH_MODULES=false -DLIBXML2_WITH_PROGRAMS=false -DLIBXML2_WITH_PYTHON=false -DLIBXML2_WITH_TESTS=false -DLIBXML2_WITH_ZLIB=false
+    make -j$(nproc)
+    make install
+    popd
+    MAGICK_LIBS_NO_FUZZ="$MAGICK_LIBS_NO_FUZZ $WORK/lib/libxml2.a"
+    MAGICK_LIBS="$MAGICK_LIBS $WORK/lib/libxml2.a"
+fi
