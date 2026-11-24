@@ -340,7 +340,10 @@ static int ReadBlobLZWByte(LZWInfo *lzw_info)
       lzw_info->genesis=MagickFalse;
       do
       {
-        lzw_info->first_code=(size_t) GetNextLZWCode(lzw_info,lzw_info->bits);
+        code=GetNextLZWCode(lzw_info,lzw_info->bits);
+        if ((code < 0) || ((size_t) code == lzw_info->end_code))
+          return(-1);
+        lzw_info->first_code=(size_t) code;
         lzw_info->last_code=lzw_info->first_code;
       } while (lzw_info->first_code == lzw_info->clear_code);
       return((int) lzw_info->first_code);
@@ -368,7 +371,7 @@ static int ReadBlobLZWByte(LZWInfo *lzw_info)
     if ((size_t) count > MaximumLZWCode)
       return(-1);
     count++;
-    if ((size_t) value > MaximumLZWCode)
+    if ((size_t) value >= MaximumLZWCode)
       return(-1);
     PushLZWStack(lzw_info->stack,lzw_info->table[1][value]);
     value=lzw_info->table[0][value];
@@ -483,22 +486,22 @@ static MagickBooleanType DecodeImage(Image *image,const ssize_t opacity,
             break;
           }
         }
-      if ((pass == 0) && (offset >= (ssize_t) image->rows))
-        {
-          pass++;
-          offset=4;
-        }
-      if ((pass == 1) && (offset >= (ssize_t) image->rows))
-        {
-          pass++;
-          offset=2;
-        }
-      if ((pass == 2) && (offset >= (ssize_t) image->rows))
-        {
-          pass++;
-          offset=1;
-        }
-    }
+        if ((pass == 0) && (offset >= (ssize_t) image->rows))
+          {
+            pass++;
+            offset=4;
+          }
+        if ((pass == 1) && (offset >= (ssize_t) image->rows))
+          {
+            pass++;
+            offset=2;
+          }
+        if ((pass == 2) && (offset >= (ssize_t) image->rows))
+          {
+            pass++;
+            offset=1;
+          }
+      }
   }
   lzw_info=RelinquishLZWInfo(lzw_info);
   if (y < (ssize_t) image->rows)
@@ -1149,9 +1152,10 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Read Netscape Loop extension.
             */
             loop=MagickFalse;
-            if (ReadBlobBlock(image,buffer) != 0)
-              loop=LocaleNCompare((char *) buffer,"NETSCAPE2.0",11) == 0 ?
-                MagickTrue : MagickFalse;
+            if (ReadBlobBlock(image,buffer) == 0)
+              break;
+            loop=LocaleNCompare((char *) buffer,"NETSCAPE2.0",11) == 0 ?
+              MagickTrue : MagickFalse;
             if (loop != MagickFalse)
               while (ReadBlobBlock(image,buffer) != 0)
               {
@@ -1239,6 +1243,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       {
                         if (remaining_profiles == 0)
                           {
+                            profile=DestroyStringInfo(profile);
                             info=(unsigned char *) RelinquishMagickMemory(info);
                             ThrowGIFException(ResourceLimitError,
                               "MaximumProfilesExceeded");
@@ -1259,6 +1264,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           }
         }
+        continue;
       }
     if (c != (unsigned char) ',')
       continue;
@@ -1551,6 +1557,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
   size_t
     bits_per_pixel,
     delay,
+    global_bits_per_pixel,
     length,
     number_scenes,
     one;
@@ -1626,9 +1633,18 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
   */
   scene=0;
   one=1;
+  global_bits_per_pixel=0;
   number_scenes=GetImageListLength(image);
   do
   {
+    if ((image->columns > 65535UL) || (image->rows > 65535UL))
+      {
+        global_colormap=(unsigned char *) RelinquishMagickMemory(
+          global_colormap);
+        colormap=(unsigned char *) RelinquishMagickMemory(colormap);
+        write_info=DestroyImageInfo(write_info);
+        ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
+      }
     if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
       (void) TransformImageColorspace(image,sRGBColorspace,exception);
     opacity=(-1);
@@ -1732,6 +1748,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
         (void) WriteBlob(image,length,colormap);
         for (j=0; j < 768; j++)
           global_colormap[j]=colormap[j];
+        global_bits_per_pixel=bits_per_pixel;
       }
     if (LocaleCompare(write_info->magick,"GIF87") != 0)
       {
@@ -1769,6 +1786,8 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
         (void) WriteBlobByte(image,(unsigned char) c);
         delay=(size_t) (100*image->delay/MagickMax((size_t)
           image->ticks_per_second,1));
+        if (delay > 65535UL)
+          delay=65535UL;
         (void) WriteBlobLSBShort(image,(unsigned short) delay);
         (void) WriteBlobByte(image,(unsigned char) (opacity >= 0 ? opacity :
           0));
@@ -1934,7 +1953,8 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
     for (j=0; j < (ssize_t) (3*image->colors); j++)
       if (colormap[j] != global_colormap[j])
         break;
-    if (j == (ssize_t) (3*image->colors))
+    if ((j == (ssize_t) (3*image->colors)) &&
+        (bits_per_pixel <= global_bits_per_pixel))
       (void) WriteBlobByte(image,(unsigned char) c);
     else
       {
