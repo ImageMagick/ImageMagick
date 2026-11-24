@@ -118,7 +118,7 @@ struct sRGB_info_struct
     png_byte intent;
 };
 
-const struct sRGB_info_struct sRGB_info[] =
+static const struct sRGB_info_struct sRGB_info[] =
 {
     /* ICC v2 perceptual sRGB_IEC61966-2-1_black_scaled.icc */
     { 3048, 0x3b8772b9UL, 0},
@@ -1476,10 +1476,15 @@ static MngBox mng_read_box(MngBox previous_box,char delta_type,
   box.bottom=mng_get_long(&p[12]);
   if (delta_type != 0)
     {
-      box.left+=previous_box.left;
-      box.right+=previous_box.right;
-      box.top+=previous_box.top;
-      box.bottom+=previous_box.bottom;
+      /* Unsigned arithmetic avoids signed-overflow UB on hostile input. */
+      box.left=(long) ((unsigned long) box.left+(unsigned long)
+        previous_box.left);
+      box.right=(long) ((unsigned long) box.right+(unsigned long)
+        previous_box.right);
+      box.top=(long) ((unsigned long) box.top+(unsigned long)
+        previous_box.top);
+      box.bottom=(long) ((unsigned long) box.bottom+(unsigned long)
+        previous_box.bottom);
     }
 
   return(box);
@@ -1498,8 +1503,8 @@ static MngPair mng_read_pair(MngPair previous_pair,int delta_type,
   pair.b=mng_get_long(&p[4]);
   if (delta_type != 0)
     {
-      pair.a+=previous_pair.a;
-      pair.b+=previous_pair.b;
+      pair.a=(long) ((unsigned long) pair.a+(unsigned long) previous_pair.a);
+      pair.b=(long) ((unsigned long) pair.b+(unsigned long) previous_pair.b);
     }
 
   return(pair);
@@ -1602,6 +1607,7 @@ Magick_png_read_raw_profile(png_struct *ping,Image *image,
       png_warning(ping,"invalid profile length");
       return(MagickFalse);
     }
+  extent--;  /* sp starts one byte into the text; keep extent in step */
   /* look for newline */
   while ((extent != 0) && (*sp != '\n') && extent--)
     sp++;
@@ -1633,8 +1639,14 @@ Magick_png_read_raw_profile(png_struct *ping,Image *image,
     }
 
   /* allocate space */
-  if (length == 0)
+  if (length <= 0)
   {
+    png_warning(ping,"invalid profile length");
+    return(MagickFalse);
+  }
+  if ((size_t) length > extent/2)
+  {
+    /* Each profile byte needs two hex digits; reject impossible lengths. */
     png_warning(ping,"invalid profile length");
     return(MagickFalse);
   }
@@ -1673,6 +1685,8 @@ Magick_png_read_raw_profile(png_struct *ping,Image *image,
     if (extent == 0)
       break;
   }
+  if (i < (ssize_t) nibbles)
+    png_warning(ping,"ran out of profile data");
   /*
     We have already read "Raw profile type.
   */
@@ -1773,6 +1787,8 @@ static int PNGParseiTXt(Image *image,png_byte *data,png_size_t size,
         return(0);
       profile=BlobToProfileStringInfo("xmp",(const void *) (data+offset),
         size-(size_t) offset,exception);
+      if (profile == (StringInfo *) NULL)
+        return(-1);
       (void) SetImageProfilePrivate(image,profile,exception);
       return(1);
     }
@@ -1809,6 +1825,14 @@ static int PNGParseiTXt(Image *image,png_byte *data,png_size_t size,
   (void) FormatLocaleString(language,MagickPathExtent,"%s",(const char *)
     GetStringInfoDatum(profile)+offset++);
   offset+=(ssize_t) strlen(language)+1;
+  /*
+    Skip the (possibly non-empty) translated keyword and its terminator.
+    The datum is zero padded beyond size, so strlen is safe; the bounds
+    check below rejects anything that ran past the chunk.
+  */
+  if (offset-1 < (ssize_t) size)
+    offset=(ssize_t) ((offset-1)+(ssize_t) strlen((const char *)
+      GetStringInfoDatum(profile)+offset-1)+1);
   if (((MagickOffsetType) size-offset) < 1)
     {
       profile=DestroyStringInfo(profile);
@@ -1958,9 +1982,9 @@ static void read_tIME_chunk(Image *image,png_struct *ping,png_info *info,
   if (png_get_tIME(ping,info,&time))
     {
       char
-        timestamp[21];
+        timestamp[32];
 
-      FormatLocaleString(timestamp,21,"%04d-%02d-%02dT%02d:%02d:%02dZ",
+      FormatLocaleString(timestamp,sizeof(timestamp),"%04d-%02d-%02dT%02d:%02d:%02dZ",
         time->year,time->month,time->day,time->hour,time->minute,time->second);
       SetImageProperty(image,"png:tIME",timestamp,exception);
     }
@@ -2197,9 +2221,9 @@ static Image *ReadOnePNGImage(MngReadInfo *mng_info,
   /*
     Allocate the PNG structures
   */
+  error_info.image=image;
+  error_info.exception=exception;
 #ifdef PNG_USER_MEM_SUPPORTED
- error_info.image=image;
- error_info.exception=exception;
  ping=png_create_read_struct_2(PNG_LIBPNG_VER_STRING,&error_info,
    MagickPNGErrorHandler,MagickPNGWarningHandler, NULL,
    (png_malloc_ptr) Magick_png_malloc,(png_free_ptr) Magick_png_free);
@@ -2286,7 +2310,7 @@ static Image *ReadOnePNGImage(MngReadInfo *mng_info,
     option=GetImageOption(image_info,"png:chunk-cache-max");
     if (option != (const char *) NULL)
       png_set_chunk_cache_max(ping,(png_uint_32) MagickMin(PNG_UINT_32_MAX,
-        StringToLong(option)));
+        (size_t) MagickMax(StringToLong(option),0)));
     else
       png_set_chunk_cache_max(ping,32767);
 #endif
@@ -2295,7 +2319,7 @@ static Image *ReadOnePNGImage(MngReadInfo *mng_info,
     option=GetImageOption(image_info,"png:chunk-malloc-max");
     if (option != (const char *) NULL)
       png_set_chunk_malloc_max(ping,(png_alloc_size_t) MagickMin(
-        MAGICK_SSIZE_MAX,(size_t) StringToLong(option)));
+        MAGICK_SSIZE_MAX,(size_t) MagickMax(StringToLong(option),0)));
 #endif
   }
 #endif /* PNG_SET_USER_LIMITS_SUPPORTED */
@@ -2764,13 +2788,17 @@ static Image *ReadOnePNGImage(MngReadInfo *mng_info,
               {
                 if (mng_info->global_trns_length)
                   {
-                    png_warning(ping,
-                      "global tRNS has more entries than global PLTE");
-                  }
-                else
-                  {
-                     png_set_tRNS(ping,ping_info,mng_info->global_trns,
-                       (int) mng_info->global_trns_length,NULL);
+                    if (mng_info->global_trns_length >
+                        mng_info->global_plte_length)
+                      {
+                        png_warning(ping,
+                          "global tRNS has more entries than global PLTE");
+                      }
+                    else
+                      {
+                         png_set_tRNS(ping,ping_info,mng_info->global_trns,
+                           (int) mng_info->global_trns_length,NULL);
+                      }
                   }
                }
 #ifdef PNG_READ_bKGD_SUPPORTED
@@ -2826,16 +2854,18 @@ static Image *ReadOnePNGImage(MngReadInfo *mng_info,
 
         bkgd_scale = 1;
 
-        if (ping_bit_depth == 1)
+        /* ping_bit_depth was already promoted to 8 by png_set_packing(),
+           so the file depth must be used here. */
+        if (ping_file_depth == 1)
            bkgd_scale = 255;
 
-        else if (ping_bit_depth == 2)
+        else if (ping_file_depth == 2)
            bkgd_scale = 85;
 
-        else if (ping_bit_depth == 4)
+        else if (ping_file_depth == 4)
            bkgd_scale = 17;
 
-        if (ping_bit_depth <= 8)
+        if (ping_file_depth <= 8)
            bkgd_scale *= 257;
 
         ping_background->red *= (png_uint_16) bkgd_scale;
@@ -3590,7 +3620,8 @@ static Image *ReadOnePNGImage(MngReadInfo *mng_info,
         {
           if ((int) ping_color_type == PNG_COLOR_TYPE_PALETTE)
             {
-              for (x=0; x < ping_num_trans; x++)
+              for (x=0; (x < ping_num_trans) && (x < (ssize_t) image->colors);
+                   x++)
               {
                  image->colormap[x].alpha_trait=BlendPixelTrait;
                  image->colormap[x].alpha=OpaqueAlpha;
@@ -4816,6 +4847,14 @@ static Image *ReadOneJNGImage(MngReadInfo *mng_info,
               jng_image=DestroyImageList(jng_image);
               ThrowReaderException(PolicyError,"NotAuthorized");
             }
+          if ((jng_image->columns != image->columns) ||
+              (jng_image->rows != image->rows))
+            {
+              DestroyJNG(NULL,&color_image,&color_image_info,&alpha_image,
+                &alpha_image_info);
+              jng_image=DestroyImageList(jng_image);
+              ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+            }
           image->alpha_trait=BlendPixelTrait;
           for (y=0; y < (ssize_t) image->rows; y++)
           {
@@ -5267,7 +5306,10 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
                 AcquireNextImage(image_info,image,exception);
 
                 if (GetNextImageInList(image) == (Image *) NULL)
-                  return((Image *) NULL);
+                  {
+                    chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+                    return((Image *) NULL);
+                  }
 
                 image=SyncNextImageInList(image);
                 mng_info->image=image;
@@ -5675,11 +5717,11 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
             mng_info->clip=fb;
             mng_info->clip=mng_minimum_box(fb,mng_info->frame);
 
-            subframe_width=(size_t) (mng_info->clip.right
-               -mng_info->clip.left);
+            subframe_width=(mng_info->clip.right > mng_info->clip.left) ?
+              (size_t) (mng_info->clip.right-mng_info->clip.left) : 0;
 
-            subframe_height=(size_t) (mng_info->clip.bottom
-               -mng_info->clip.top);
+            subframe_height=(mng_info->clip.bottom > mng_info->clip.top) ?
+              (size_t) (mng_info->clip.bottom-mng_info->clip.top) : 0;
             /*
               Insert a background layer behind the frame if framing_mode is 4.
             */
@@ -5697,7 +5739,10 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
                     AcquireNextImage(image_info,image,exception);
 
                     if (GetNextImageInList(image) == (Image *) NULL)
-                      return(DestroyImageList(image));
+                      {
+                        chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+                        return(DestroyImageList(image));
+                      }
 
                     image=SyncNextImageInList(image);
                   }
@@ -5910,7 +5955,7 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
               {
                 loop_level=chunk[0];
 
-                if (skipping_loop > 0)
+                if (skipping_loop >= 0)
                   {
                     if (skipping_loop == loop_level)
                       {
