@@ -403,7 +403,7 @@ MagickExport Image *PingImages(ImageInfo *image_info,const char *filename,
         }
       (void) CopyMagickString(ping_filename,read_info->filename,
         MagickPathExtent);
-      if (image_info->number_scenes > GetMagickResourceLimit(ListLengthResource))
+      if (read_info->number_scenes > GetMagickResourceLimit(ListLengthResource))
         {
           (void) ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
             "ListLengthExceedsLimit","`%s`",read_info->filename);
@@ -1116,7 +1116,7 @@ MagickExport Image *ReadImages(ImageInfo *image_info,const char *filename,
       if (read_info->number_scenes != 0)
         {
           (void) CopyMagickString(read_filename,read_info->filename,MagickPathExtent);
-          if (image_info->number_scenes > GetMagickResourceLimit(ListLengthResource))
+          if (read_info->number_scenes > GetMagickResourceLimit(ListLengthResource))
             {
               (void) ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
                 "ListLengthExceedsLimit","`%s`",read_info->filename);
