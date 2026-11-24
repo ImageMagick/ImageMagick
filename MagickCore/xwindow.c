@@ -9276,6 +9276,7 @@ MagickPrivate MagickBooleanType XRenderImage(Image *image,
       "Font %s; pointsize %g",draw_info->font != (char *) NULL ?
       draw_info->font : "none",draw_info->pointsize);
   cache_info=(*draw_info);
+  (void) cache_info;
   annotate_info.font_info=font_info;
   annotate_info.text=(char *) draw_info->text;
   annotate_info.width=(unsigned int) XTextWidth(font_info,draw_info->text,(int)
