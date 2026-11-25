@@ -1066,7 +1066,10 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
   downsample_image=ResizeImage(tile_image,tile_image->columns/2,
     tile_image->rows/2,TriangleFilter,exception);
   if (downsample_image == (Image *) NULL)
-    return(MagickFalse);
+    {
+      tile_image=DestroyImage(tile_image);
+      return(MagickFalse);
+    }
   /*
     Write tile to PCD file.
   */
