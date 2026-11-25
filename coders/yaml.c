@@ -552,6 +552,9 @@ static ssize_t PrintChannelLocations(FILE *file,const Image *image,
   ExceptionInfo
     *exception;
 
+  PixelTrait
+    traits;
+
   ssize_t
     n,
     y;
@@ -574,7 +577,7 @@ static ssize_t PrintChannelLocations(FILE *file,const Image *image,
     "%.*g\n",name,GetMagickPrecision(),QuantumScale*target);
   exception=AcquireExceptionInfo();
   n=0;
-  PixelTrait traits = GetPixelChannelTraits(image,channel);
+  traits=GetPixelChannelTraits(image,channel);
   for (y=0; (traits != UndefinedPixelTrait) && (y < (ssize_t) image->rows); y++)
   {
     const Quantum
