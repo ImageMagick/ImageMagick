@@ -122,6 +122,16 @@ static Image *ReadC2PAImage(const ImageInfo *image_info,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
+  if (GetImageOption(image_info,"c2pa:nested") != (const char *) NULL)
+    {
+      /*
+        The inner read resolved back to this coder (e.g. a *.c2pa filename);
+        refuse rather than recurse forever.
+      */
+      (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
+        "NestedC2PADecodeNotSupported","`%s'",image_info->filename);
+      return((Image *) NULL);
+    }
   image=AcquireImage(image_info,exception);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
@@ -141,6 +151,8 @@ static Image *ReadC2PAImage(const ImageInfo *image_info,
   status=InvokeDelegate(read_info,image,"c2pa:decode",(char *) NULL,exception);
   (void) FormatLocaleString(json_filename,MagickPathExtent,"%s.json",
     read_info->unique);
+  if (*read_info->unique != '\0')
+    (void) RelinquishUniqueFileResource(read_info->unique);
   read_info=DestroyImageInfo(read_info);
   image=DestroyImageList(image);
   if (status == MagickFalse)
@@ -154,12 +166,13 @@ static Image *ReadC2PAImage(const ImageInfo *image_info,
   read_info=CloneImageInfo(image_info);
   SetImageInfoBlob(read_info,(void *) NULL,0);
   *read_info->magick='\0';
+  (void) SetImageOption(read_info,"c2pa:nested","true");
   image=ReadImageWithoutPostProcessing(read_info,exception);
   read_info=DestroyImageInfo(read_info);
   if (image == (Image *) NULL)
     {
       (void) RelinquishUniqueFileResource(json_filename);
-      return(image);
+      return((Image *) NULL);
     }
   if ((GetPathAttributes(json_filename,&attributes) != MagickFalse) &&
       ((attributes.st_size < 0) ||
@@ -169,12 +182,12 @@ static Image *ReadC2PAImage(const ImageInfo *image_info,
         ResourceLimitWarning,"ProfileSizeExceedsLimit","`%.17g'",
         (double) attributes.st_size);
       (void) RelinquishUniqueFileResource(json_filename);
-      return(image);
+      return(GetFirstImageInList(image));
     }
   json=FileToString(json_filename,GetMaxProfileSize(),exception);
   (void) RelinquishUniqueFileResource(json_filename);
   if (json == (char *) NULL)
-    return(image);
+    return(GetFirstImageInList(image));
   (void) SetImageProperty(image,"c2pa:manifest",json,exception);
   json=DestroyString(json);
   return(GetFirstImageInList(image));
@@ -211,7 +224,7 @@ ModuleExport size_t RegisterC2PAImage(void)
   entry=AcquireMagickInfo("C2PA","C2PA","C2PA Provenance Metadata");
   entry->decoder=(DecodeImageHandler *) ReadC2PAImage;
   entry->flags|=CoderDecoderSeekableStreamFlag;
-  entry->flags^=CoderBlobSupportFlag;
+  entry->flags&=~CoderBlobSupportFlag;
   entry->format_type=ExplicitFormatType;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
