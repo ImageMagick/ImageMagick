@@ -713,12 +713,17 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
 
   size_t
     characters_per_pixel,
-    colors;
+    colors,
+    length;
 
   ssize_t
     j,
     k,
     y;
+
+  unsigned char
+    *pixels,
+    *r;
 
   /*
     Open output image file.
@@ -832,6 +837,18 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
   characters_per_pixel=1;
   for (k=MaxCixels; (ssize_t) colors > k; k*=MaxCixels)
     characters_per_pixel++;
+  if (picon->columns > ((size_t) MAGICK_SSIZE_MAX-4)/characters_per_pixel)
+    {
+      picon=DestroyImage(picon);
+      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    }
+  length=picon->columns*characters_per_pixel+4;
+  pixels=(unsigned char *) AcquireQuantumMemory(length,sizeof(*pixels));
+  if (pixels == (unsigned char *) NULL)
+    {
+      picon=DestroyImage(picon);
+      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   /*
     XPM header.
   */
@@ -886,30 +903,39 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
   {
     p=GetVirtualPixels(picon,0,y,picon->columns,1,exception);
     if (p == (const Quantum *) NULL)
-      break;
-    (void) WriteBlobString(image,"\"");
+      {
+        status=MagickFalse;
+        break;
+      }
+    r=pixels;
+    *r++='"';
     for (x=0; x < (ssize_t) picon->columns; x++)
     {
       k=((ssize_t) GetPixelIndex(picon,p) % MaxCixels);
-      symbol[0]=Cixel[k];
+      *r++=(unsigned char) Cixel[k];
       for (j=1; j < (ssize_t) characters_per_pixel; j++)
       {
         k=(((int) GetPixelIndex(picon,p)-k)/MaxCixels) % MaxCixels;
-        symbol[j]=Cixel[k];
+        *r++=(unsigned char) Cixel[k];
       }
-      symbol[j]='\0';
-      (void) CopyMagickString(buffer,symbol,MagickPathExtent);
-      (void) WriteBlobString(image,buffer);
       p+=(ptrdiff_t) GetPixelChannels(picon);
     }
-    (void) FormatLocaleString(buffer,MagickPathExtent,"\"%.1024s\n",
-      y == (ssize_t) (picon->rows-1) ? "" : ",");
-    (void) WriteBlobString(image,buffer);
+    *r++='"';
+    if (y != (ssize_t) (picon->rows-1))
+      *r++=',';
+    *r++='\n';
+    length=(size_t) (r-pixels);
+    if (WriteBlob(image,length,pixels) != (ssize_t) length)
+      {
+        status=MagickFalse;
+        break;
+      }
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
       picon->rows);
     if (status == MagickFalse)
       break;
   }
+  pixels=(unsigned char *) RelinquishMagickMemory(pixels);
   picon=DestroyImage(picon);
   (void) WriteBlobString(image,"};\n");
   if (CloseBlob(image) == MagickFalse)
@@ -966,7 +992,8 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
     pixel;
 
   size_t
-    characters_per_pixel;
+    characters_per_pixel,
+    length;
 
   ssize_t
     i,
@@ -975,6 +1002,10 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
     opacity,
     x,
     y;
+
+  unsigned char
+    *pixels,
+    *q;
 
   static const char
     Cixel[MaxCixels+1] = " .XoO+@#$%&*=-;:>,<1234567890qwertyuipasdfghjk"
@@ -1061,6 +1092,12 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
   characters_per_pixel=1;
   for (k=MaxCixels; (ssize_t) image->colors > k; k*=MaxCixels)
     characters_per_pixel++;
+  if (image->columns > ((size_t) MAGICK_SSIZE_MAX-4)/characters_per_pixel)
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+  length=image->columns*characters_per_pixel+4;
+  pixels=(unsigned char *) AcquireQuantumMemory(length,sizeof(*pixels));
+  if (pixels == (unsigned char *) NULL)
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   /*
     XPM header.
   */
@@ -1129,29 +1166,37 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
-      break;
-    (void) WriteBlobString(image,"\"");
+      {
+        status=MagickFalse;
+        break;
+      }
+    q=pixels;
+    *q++='"';
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       k=((ssize_t) GetPixelIndex(image,p) % MaxCixels);
       if (k < 0)
         k=0;
-      symbol[0]=Cixel[k];
+      *q++=(unsigned char) Cixel[k];
       for (j=1; j < (ssize_t) characters_per_pixel; j++)
       {
         k=(((int) GetPixelIndex(image,p)-k)/MaxCixels) % MaxCixels;
         if (k < 0)
           k=0;
-        symbol[j]=Cixel[k];
+        *q++=(unsigned char) Cixel[k];
       }
-      symbol[j]='\0';
-      (void) CopyMagickString(buffer,symbol,MagickPathExtent);
-      (void) WriteBlobString(image,buffer);
       p+=(ptrdiff_t) GetPixelChannels(image);
     }
-    (void) FormatLocaleString(buffer,MagickPathExtent,"\"%.1024s\n",
-      (y == (ssize_t) (image->rows-1) ? "" : ","));
-    (void) WriteBlobString(image,buffer);
+    *q++='"';
+    if (y != (ssize_t) (image->rows-1))
+      *q++=',';
+    *q++='\n';
+    length=(size_t) (q-pixels);
+    if (WriteBlob(image,length,pixels) != (ssize_t) length)
+      {
+        status=MagickFalse;
+        break;
+      }
     if (image->previous == (Image *) NULL)
       {
         status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -1160,7 +1205,10 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
           break;
       }
   }
-  (void) WriteBlobString(image,"};\n");
-  (void) CloseBlob(image);
-  return(MagickTrue);
+  pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+  if (status != MagickFalse)
+    (void) WriteBlobString(image,"};\n");
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  return(status);
 }
