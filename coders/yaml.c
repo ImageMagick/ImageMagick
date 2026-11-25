@@ -129,9 +129,9 @@ ModuleExport size_t RegisterYAMLImage(void)
 
   entry=AcquireMagickInfo("YAML","YAML","The image format and characteristics");
   entry->encoder=(EncodeImageHandler *) WriteYAMLImage;
-  entry->mime_type=ConstantString("application/json");
+  entry->mime_type=ConstantString("application/yaml");
   entry->flags|=CoderEndianSupportFlag;
-  entry->flags^=CoderBlobSupportFlag;
+  entry->flags&=(MagickStatusType) ~CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
@@ -188,17 +188,39 @@ ModuleExport void UnregisterYAMLImage(void)
 %
 */
 
+static MagickBooleanType YAMLValueNeedsQuotes(const char *value)
+{
+  const char
+    *p;
+
+  if ((*value == ' ') || (value[strlen(value)-1] == ' '))
+    return(MagickTrue);
+  if (strchr("?|>!&*%@`'\"#,[]{}~",(int) *value) != (char *) NULL)
+    return(MagickTrue);
+  if ((*value == '-') && ((value[1] == '\0') || (value[1] == ' ')))
+    return(MagickTrue);
+  for (p=value; *p != '\0'; p++)
+  {
+    if (((unsigned char) *p < 0x20) || (*p == ':') || (*p == '#') ||
+        (*p == '"') || (*p == '\\') || (*p == ',') || (*p == '[') ||
+        (*p == ']') || (*p == '{') || (*p == '}'))
+      return(MagickTrue);
+  }
+  return(MagickFalse);
+}
+
 static void YAMLFormatLocaleFile(FILE *file,const char *format,
   const char *value)
 {
   char
-    *escaped_json;
-
-  char
+    *escaped,
     *q;
 
   const char
     *p;
+
+  MagickBooleanType
+    quote;
 
   size_t
     length;
@@ -209,49 +231,30 @@ static void YAMLFormatLocaleFile(FILE *file,const char *format,
       (void) FormatLocaleFile(file,format,"null");
       return;
     }
-  length=strlen(value)+2;
   /*
-    Find all the chars that need escaping and increase the dest length counter.
+    Worst case every byte expands to a six character \uXXXX escape, plus the
+    surrounding quotes and the terminating NUL.
   */
-  for (p=value; *p != '\0'; p++)
-  {
-    switch (*p)
-    {
-      case '"':
-      case '\b':
-      case '\f':
-      case '\n':
-      case '\r':
-      case '\t':
-      case '\\':
-      {
-        if (~length < 1)
-          return;
-        length++;
-        break;
-      }
-      default:
-      {
-        if (((int) *p >= 0x00) && ((int) *p <= 0x1f))
-          length+=6;
-        break;
-      }
-    }
-  }
-  escaped_json=(char *) NULL;
-  if (~length >= (MagickPathExtent-1))
-    escaped_json=(char *) AcquireQuantumMemory(length+MagickPathExtent,
-      sizeof(*escaped_json));
-  if (escaped_json == (char *) NULL)
+  length=strlen(value);
+  escaped=(char *) NULL;
+  if (length < (((~(size_t) 0)-MagickPathExtent)/6))
+    escaped=(char *) AcquireQuantumMemory(6*length+3,sizeof(*escaped));
+  if (escaped == (char *) NULL)
     {
       (void) FormatLocaleFile(file,format,"null");
       return;
     }
-  q=escaped_json;
-  if (strchr(value,':') != (char *) NULL)
+  quote=YAMLValueNeedsQuotes(value);
+  q=escaped;
+  if (quote != MagickFalse)
     *q++='"';
   for (p=value; *p != '\0'; p++)
   {
+    if (quote == MagickFalse)
+      {
+        *q++=(*p);
+        continue;
+      }
     switch (*p)
     {
       case '"':
@@ -298,7 +301,7 @@ static void YAMLFormatLocaleFile(FILE *file,const char *format,
       }
       default:
       {
-        if (((int) *p >= 0x00) && ((int) *p <= 0x1f))
+        if ((unsigned char) *p < 0x20)
           {
             (void) FormatLocaleString(q,7,"\\u%04X",(int) *p);
             q+=(ptrdiff_t) 6;
@@ -309,11 +312,11 @@ static void YAMLFormatLocaleFile(FILE *file,const char *format,
       }
     }
   }
-  if (strchr(value,':') != (char *) NULL)
+  if (quote != MagickFalse)
     *q++='"';
   *q='\0';
-  (void) FormatLocaleFile(file,format,escaped_json);
-  (void) DestroyString(escaped_json);
+  (void) FormatLocaleFile(file,format,escaped);
+  (void) DestroyString(escaped);
 }
 
 static ChannelStatistics *GetLocationStatistics(const Image *image,
@@ -571,7 +574,8 @@ static ssize_t PrintChannelLocations(FILE *file,const Image *image,
     "%.*g\n",name,GetMagickPrecision(),QuantumScale*target);
   exception=AcquireExceptionInfo();
   n=0;
-  for (y=0; y < (ssize_t) image->rows; y++)
+  PixelTrait traits = GetPixelChannelTraits(image,channel);
+  for (y=0; (traits != UndefinedPixelTrait) && (y < (ssize_t) image->rows); y++)
   {
     const Quantum
       *p;
@@ -588,9 +592,6 @@ static ssize_t PrintChannelLocations(FILE *file,const Image *image,
       MagickBooleanType
         match;
 
-      PixelTrait traits = GetPixelChannelTraits(image,channel);
-      if (traits == UndefinedPixelTrait)
-        continue;
       offset=GetPixelChannelOffset(image,channel);
       match=fabs(((double) p[offset]-target)) < 0.5 ? MagickTrue : MagickFalse;
       if (match != MagickFalse)
@@ -613,6 +614,7 @@ static ssize_t PrintChannelLocations(FILE *file,const Image *image,
   if (separator != MagickFalse)
     (void) FormatLocaleFile(file," ");
   (void) FormatLocaleFile(file,"\n");
+  exception=DestroyExceptionInfo(exception);
   return(n);
 }
 
@@ -627,9 +629,9 @@ static ssize_t PrintChannelMoments(FILE *file,const PixelChannel channel,
     n;
 
   n=FormatLocaleFile(file,"      %s: \n",name);
-  n+=FormatLocaleFile(file,"        centroid: \n "
+  n+=FormatLocaleFile(file,"        centroid: \n"
     "          x: %.*g\n"
-    "           y: %.*g\n        \n",
+    "          y: %.*g\n        \n",
     GetMagickPrecision(),channel_moments[channel].centroid.x,
     GetMagickPrecision(),channel_moments[channel].centroid.y);
   n+=FormatLocaleFile(file,"        ellipseSemiMajorMinorAxis: \n"
@@ -664,13 +666,15 @@ static ssize_t PrintChannelPerceptualHash(Image *image,FILE *file,
   ssize_t
     n = 0;
 
-  (void) FormatLocaleFile(file,"      colorspaces:  ");
+  (void) FormatLocaleFile(file,"      colorspaces: [");
   for (i=0; i < (ssize_t) channel_phash[0].number_colorspaces; i++)
   {
-    (void) FormatLocaleFile(file,"- %s",CommandOptionToMnemonic(
+    if (i != 0)
+      (void) FormatLocaleFile(file,", ");
+    (void) FormatLocaleFile(file,"%s",CommandOptionToMnemonic(
       MagickColorspaceOptions,(ssize_t) channel_phash[0].colorspace[i]));
   }
-  (void) FormatLocaleFile(file,"\n");
+  (void) FormatLocaleFile(file,"]\n");
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
     ssize_t
@@ -680,19 +684,21 @@ static ssize_t PrintChannelPerceptualHash(Image *image,FILE *file,
     PixelTrait traits = GetPixelChannelTraits(image,channel);
     if (traits == UndefinedPixelTrait)
       continue;
-    n=FormatLocaleFile(file,"      Channel%.17g: \n",(double) channel);
+    n+=FormatLocaleFile(file,"      Channel%.17g: \n",(double) channel);
     for (j=0; j < MaximumNumberOfPerceptualHashes; j++)
     {
       ssize_t
         k;
 
-      n+=FormatLocaleFile(file,"        PH%.17g: ",(double) j+1);
+      n+=FormatLocaleFile(file,"        PH%.17g: [",(double) j+1);
       for (k=0; k < (ssize_t) channel_phash[0].number_colorspaces; k++)
       {
-        n+=FormatLocaleFile(file,"- %.*g",GetMagickPrecision(),
+        if (k != 0)
+          n+=FormatLocaleFile(file,", ");
+        n+=FormatLocaleFile(file,"%.*g",GetMagickPrecision(),
           channel_phash[channel].phash[k][j]);
       }
-      n+=FormatLocaleFile(file," ");
+      n+=FormatLocaleFile(file,"]");
       if (j < (MaximumNumberOfPerceptualHashes-1))
         n+=FormatLocaleFile(file,"\n");
     }
@@ -769,6 +775,8 @@ static void EncodeIptcProfile(FILE *file,const StringInfo *profile)
     sentinel=GetStringInfoDatum(profile)[i++];
     if (sentinel != 0x1c)
       continue;
+    if (((size_t) i+4) > profile_length)
+      break;
     dataset=GetStringInfoDatum(profile)[i++];
     record=GetStringInfoDatum(profile)[i++];
     value=(IPTCInfo *) NULL;
@@ -844,7 +852,7 @@ static void EncodeIptcProfile(FILE *file,const StringInfo *profile)
           case 219: tag="Custom Field 20"; break;
           default: tag="Unknown"; break;
         }
-        (void) CopyMagickString(value->tag,tag,strlen(tag)+1);
+        (void) CopyMagickString(value->tag,tag,sizeof(value->tag));
         value->record=record;
         value->dataset=dataset;
         value->values=(char ***) NULL;
@@ -853,6 +861,8 @@ static void EncodeIptcProfile(FILE *file,const StringInfo *profile)
       }
     length=((size_t) GetStringInfoDatum(profile)[i++] << 8);
     length|=GetStringInfoDatum(profile)[i++];
+    if (length > (profile_length-(size_t) i))
+      break;
     attribute=(char *) NULL;
     if (~length >= (MagickPathExtent-1))
       attribute=(char *) AcquireQuantumMemory(length+MagickPathExtent,
@@ -868,7 +878,16 @@ static void EncodeIptcProfile(FILE *file,const StringInfo *profile)
               value->values_length+1,
               sizeof(*value->values));
             if (value->values == (char ***) NULL)
-              break;
+              {
+                value->values_length=0;
+                for (k=0; attribute_list[k] != (char *) NULL; k++)
+                  attribute_list[k]=(char *) RelinquishMagickMemory(
+                    attribute_list[k]);
+                attribute_list=(char **) RelinquishMagickMemory(
+                  attribute_list);
+                attribute=DestroyString(attribute);
+                break;
+              }
             value->values[value->values_length++]=attribute_list;
           }
         attribute=DestroyString(attribute);
@@ -882,7 +901,7 @@ static void EncodeIptcProfile(FILE *file,const StringInfo *profile)
         (void) FormatLocaleFile(file,"        %s[%.17g,%.17g]: ",
           value->tag,(double) value->dataset,(double) value->record);
         if (value->values_length == 0)
-          (void) FormatLocaleFile(file,"null,");
+          (void) FormatLocaleFile(file,"null\n");
         else
           {
             (void) FormatLocaleFile(file,"[");
@@ -891,7 +910,7 @@ static void EncodeIptcProfile(FILE *file,const StringInfo *profile)
               for (k=0; value->values[j][k] != (char *) NULL; k++)
               {
                 if (j > 0 || k > 0)
-                  (void) FormatLocaleFile(file," ");
+                  (void) FormatLocaleFile(file,", ");
                 YAMLFormatLocaleFile(file,"%s",value->values[j][k]);
                 value->values[j][k]=(char *) RelinquishMagickMemory(
                   value->values[j][k]);
@@ -971,6 +990,8 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
   elapsed_time=GetElapsedTime(&image->timer);
   user_time=GetUserTime(&image->timer);
   GetTimerInfo(&image->timer);
+  if (elapsed_time < MagickEpsilon)
+    elapsed_time=MagickEpsilon;
   ping=MagickTrue;
   if (GetVirtualPixels(image,0,0,1,1,exception) != (const Quantum *) NULL)
     ping=MagickFalse;
@@ -1002,8 +1023,9 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
   properties=(*GetBlobProperties(image));
   if (properties.st_mode != 0)
     (void) FormatLocaleFile(file,"    permissions: %d%d%d\n",
-      (properties.st_mode >> 6) & 0x07,(properties.st_mode >> 3) & 0x07,
-      (properties.st_mode >> 0) & 0x07);
+      (int) ((properties.st_mode >> 6) & 0x07),
+      (int) ((properties.st_mode >> 3) & 0x07),
+      (int) ((properties.st_mode >> 0) & 0x07));
   YAMLFormatLocaleFile(file,"    format: %s\n",image->magick);
   magick_info=GetMagickInfo(image->magick,exception);
   if ((magick_info != (const MagickInfo *) NULL) &&
@@ -1193,7 +1215,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
   }
   (void) FormatLocaleFile(file,"    \n");
   scale=1.0;
-  if (image->depth <= MAGICKCORE_QUANTUM_DEPTH)
+  if ((image->depth > 0) && (image->depth <= MAGICKCORE_QUANTUM_DEPTH))
     scale=(double) (QuantumRange/((size_t) QuantumRange >> ((size_t)
       MAGICKCORE_QUANTUM_DEPTH-image->depth)));
   if (channel_statistics != (ChannelStatistics *) NULL)
@@ -1347,37 +1369,37 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
       (void) FormatLocaleFile(file,"    totalInkDensity: %.*g%%\n",
         GetMagickPrecision(),100.0*GetImageTotalInkDensity(image,exception)/
         (double) QuantumRange);
-    x=0;
     if (image->alpha_trait != UndefinedPixelTrait)
       {
-        const Quantum
-          *p;
+        MagickBooleanType
+          found;
 
-        p=(const Quantum *) NULL;
-        for (y=0; y < (ssize_t) image->rows; y++)
+        found=MagickFalse;
+        for (y=0; (y < (ssize_t) image->rows) && (found == MagickFalse); y++)
         {
+          const Quantum
+            *p;
+
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             if (GetPixelAlpha(image,p) == (Quantum) TransparentAlpha)
-              break;
+              {
+                PixelInfo
+                  pixel;
+
+                GetPixelInfo(image,&pixel);
+                GetPixelInfoPixel(image,p,&pixel);
+                GetColorTuple(&pixel,MagickTrue,color);
+                (void) FormatLocaleFile(file,"    alpha: '%s'\n",color);
+                found=MagickTrue;
+                break;
+              }
             p+=(ptrdiff_t) GetPixelChannels(image);
           }
-          if (x < (ssize_t) image->columns)
-            break;
         }
-        if ((x < (ssize_t) image->columns) || (y < (ssize_t) image->rows))
-          {
-            PixelInfo
-              pixel;
-
-            GetPixelInfo(image,&pixel);
-            GetPixelInfoPixel(image,p,&pixel);
-            GetColorTuple(&pixel,MagickTrue,color);
-            (void) FormatLocaleFile(file,"    alpha: '%s'\n",color);
-          }
       }
   if (image->storage_class == PseudoClass)
     {
@@ -1510,7 +1532,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
       */
       image_info=AcquireImageInfo();
       (void) CloneString(&image_info->size,"64x64");
-      (void) FormatLocaleFile(file,"    montageDirectory: ");
+      (void) FormatLocaleFile(file,"    montageDirectory: \n");
       for (p=image->directory; *p != '\0'; )
       {
         q=p;
@@ -1521,17 +1543,14 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
         p=q;
         if (*p == '\xff')
           p++;
-        YAMLFormatLocaleFile(file,"\n       - name: %s",
+        YAMLFormatLocaleFile(file,"      - name: %s\n",
           image_info->filename);
         handler=SetWarningHandler((WarningHandler) NULL);
         tile=StrictReadImage(image_info,exception);
         (void) SetWarningHandler(handler);
         if (tile == (Image *) NULL)
-          {
-            (void) FormatLocaleFile(file,"    ");
-            continue;
-          }
-        (void) FormatLocaleFile(file,"\n       - info: %.17gx%.17g %s",
+          continue;
+        (void) FormatLocaleFile(file,"        info: %.17gx%.17g %s\n",
           (double) tile->magick_columns,(double) tile->magick_rows,
           tile->magick);
         (void) SignatureImage(tile,exception);
@@ -1539,15 +1558,13 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
         property=GetNextImageProperty(tile);
         while (property != (const char *) NULL)
         {
-          YAMLFormatLocaleFile(file,"\n       %s: ",property);
+          YAMLFormatLocaleFile(file,"        %s: ",property);
           value=GetImageProperty(tile,property,exception);
-          YAMLFormatLocaleFile(file,"%s",value);
+          YAMLFormatLocaleFile(file,"%s\n",value);
           property=GetNextImageProperty(tile);
         }
         tile=DestroyImageList(tile);
-        (void) FormatLocaleFile(file,"\n    ");
       }
-      (void) FormatLocaleFile(file,"\n");
       image_info=DestroyImageInfo(image_info);
     }
   ResetImagePropertyIterator(image);
@@ -1580,7 +1597,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
       /*
         Display clipping path.
       */
-      YAMLFormatLocaleFile(file,"    clipping path: %s\n",value);
+      YAMLFormatLocaleFile(file,"    clippingPath: %s\n",value);
     }
   ResetImageProfileIterator(image);
   name=GetNextImageProfile(image);
@@ -1601,7 +1618,10 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
       {
         profile=GetImageProfile(image,name);
         if (profile == (StringInfo *) NULL)
-          continue;
+          {
+            name=GetNextImageProfile(image);
+            continue;
+          }
         if (n++ != 0)
           (void) FormatLocaleFile(file,"\n");
         YAMLFormatLocaleFile(file,"      %s: \n",name);
@@ -1656,15 +1676,12 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
         if (n++ != 0)
           (void) FormatLocaleFile(file,"\n");
         YAMLFormatLocaleFile(file,"      %s: ",registry);
-        if (registry_value != (char *) NULL)
-          {
-            YAMLFormatLocaleFile(file,"%s",registry_value);
-            registry_value=DestroyString(registry_value);
-          }
         YAMLFormatLocaleFile(file,"%s",registry_value);
+        if (registry_value != (char *) NULL)
+          registry_value=DestroyString(registry_value);
         registry=GetNextImageRegistry();
       }
-      (void) FormatLocaleFile(file,"    \n");
+      (void) FormatLocaleFile(file,"\n    \n");
     }
   (void) FormatLocaleFile(file,"    tainted: %s\n",
     image->taint != MagickFalse ? "true" : "false");
@@ -1681,7 +1698,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
   YAMLFormatLocaleFile(file,"    pixelsPerSecond: %s\n",format);
   (void) FormatLocaleFile(file,"    userTime: %0.3fu\n",user_time);
   (void) FormatLocaleFile(file,"    elapsedTime: %lu:%02lu.%03lu\n",
-    (unsigned long) (elapsed_time/60.0),(unsigned long) ceil(fmod(
+    (unsigned long) (elapsed_time/60.0),(unsigned long) floor(fmod(
     elapsed_time,60.0)),(unsigned long) (1000.0*(elapsed_time-floor(
     elapsed_time))));
   YAMLFormatLocaleFile(file,"    version: %s\n",GetMagickVersion(
@@ -1732,7 +1749,11 @@ static MagickBooleanType WriteYAMLImage(const ImageInfo *image_info,
   {
     image->magick_columns=image->columns;
     image->magick_rows=image->rows;
-    (void) EncodeImageAttributes(image,file,exception);
+    if (EncodeImageAttributes(image,file,exception) == MagickFalse)
+      {
+        status=MagickFalse;
+        break;
+      }
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
