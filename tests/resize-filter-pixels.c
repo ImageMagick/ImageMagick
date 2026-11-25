@@ -539,7 +539,7 @@ int main(int argc,char **argv)
   status&=DumpResize(out,"rgb-write-mask",image,10,8,exception);
   image=ReleaseImage(image);
 
-  if ((ferror(out) != 0) | (fclose(out) != 0))
+  if ((ferror(out) != 0) || (fclose(out) != 0))
     {
       (void) fprintf(stderr,"unable to write %s\n",argv[1]);
       status=MagickFalse;
