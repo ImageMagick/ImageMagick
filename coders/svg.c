@@ -4047,6 +4047,13 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
     encode_length=0;
     base64=Base64Encode(blob,blob_length,&encode_length);
     blob=(unsigned char *) RelinquishMagickMemory(blob);
+    if (base64 == (char *) NULL)
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+        (void) CloseBlob(image);
+        return(MagickFalse);
+      }
     (void) FormatLocaleString(message,MagickPathExtent,
       "  <image id=\"image%.17g\" width=\"%.17g\" height=\"%.17g\" "
       "x=\"%.17g\" y=\"%.17g\"\n    xlink:href=\"data:image/png;base64,",
