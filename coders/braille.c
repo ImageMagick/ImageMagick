@@ -98,23 +98,23 @@ ModuleExport size_t RegisterBRAILLEImage(void)
 
   entry=AcquireMagickInfo("BRAILLE","BRF","BRF ASCII Braille format");
   entry->encoder=(EncodeImageHandler *) WriteBRAILLEImage;
-  entry->flags^=CoderAdjoinFlag;
+  entry->flags&=(~CoderAdjoinFlag);
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("BRAILLE","UBRL","Unicode Text format");
   entry->encoder=(EncodeImageHandler *) WriteBRAILLEImage;
-  entry->flags^=CoderAdjoinFlag;
+  entry->flags&=(~CoderAdjoinFlag);
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("BRAILLE","UBRL6","Unicode Text format 6dot");
   entry->encoder=(EncodeImageHandler *) WriteBRAILLEImage;
-  entry->flags^=CoderAdjoinFlag;
+  entry->flags&=(~CoderAdjoinFlag);
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("BRAILLE","ISOBRL","ISO/TR 11548-1 format");
   entry->encoder=(EncodeImageHandler *) WriteBRAILLEImage;
-  entry->flags^=CoderAdjoinFlag;
+  entry->flags&=(~CoderAdjoinFlag);
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("BRAILLE","ISOBRL6","ISO/TR 11548-1 format 6dot");
   entry->encoder=(EncodeImageHandler *) WriteBRAILLEImage;
-  entry->flags^=CoderAdjoinFlag;
+  entry->flags&=(~CoderAdjoinFlag);
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
@@ -292,7 +292,13 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
       (void) WriteBlobString(image,buffer);
       (void) WriteBlobString(image,"\n");
     }
-  (void) SetImageType(image,BilevelType,exception);
+  status=SetImageType(image,BilevelType,exception);
+  if (status == MagickFalse)
+    {
+      pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+      (void) CloseBlob(image);
+      return(MagickFalse);
+    }
   polarity=0;
   if (image->storage_class == PseudoClass)
     {
@@ -308,7 +314,10 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
       cell_height=(size_t) ((ssize_t) image->rows-y);
     p=GetVirtualPixels(image,0,y,image->columns,cell_height,exception);
     if (p == (const Quantum *) NULL)
-      break;
+      {
+        status=MagickFalse;
+        break;
+      }
     q=pixels;
     for (x=0; x < (ssize_t) image->columns; x+=2)
     {
@@ -345,9 +354,9 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
           /*
             Unicode text.
           */
-          *q++=(unsigned char) (0xe0 | ((0x28 >> 4) & 0x0f));
-          *q++=0x80| ((0x28 << 2) & 0x3f) | (cell >> 6);
-          *q++=0x80| (cell & 0x3f);
+          *q++=(unsigned char) 0xe2;
+          *q++=(unsigned char) (0xa0 | (cell >> 6));
+          *q++=(unsigned char) (0x80 | (cell & 0x3f));
         }
       else
         if (iso_11548_1 != 0)
@@ -375,7 +384,7 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
             /*
               BRF.
             */
-            *q++=iso_to_brf[cell];
+            *q++=iso_to_brf[cell & 0x3f];
           }
     }
     if (iso_11548_1 == 0)
