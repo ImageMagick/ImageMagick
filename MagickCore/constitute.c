@@ -403,13 +403,14 @@ MagickExport Image *PingImages(ImageInfo *image_info,const char *filename,
         }
       (void) CopyMagickString(ping_filename,read_info->filename,
         MagickPathExtent);
-      images=NewImageList();
       if (read_info->number_scenes > GetMagickResourceLimit(ListLengthResource))
         {
           (void) ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
             "ListLengthExceedsLimit","`%s`",read_info->filename);
-          return(images);
+          read_info=DestroyImageInfo(read_info);
+          return((Image *) NULL);
         }
+      images=NewImageList();
       extent=(ssize_t) (read_info->scene+read_info->number_scenes);
       for (scene=(ssize_t) read_info->scene; scene < (ssize_t) extent; scene++)
       {
@@ -1116,13 +1117,14 @@ MagickExport Image *ReadImages(ImageInfo *image_info,const char *filename,
       if (read_info->number_scenes != 0)
         {
           (void) CopyMagickString(read_filename,read_info->filename,MagickPathExtent);
-          images=NewImageList();
           if (read_info->number_scenes > GetMagickResourceLimit(ListLengthResource))
             {
               (void) ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
                 "ListLengthExceedsLimit","`%s`",read_info->filename);
-              return(images);
+              read_info=DestroyImageInfo(read_info);
+              return((Image *) NULL);
             }
+          images=NewImageList();
           extent=(ssize_t) (read_info->scene+read_info->number_scenes);
           scene=(ssize_t) read_info->scene;
           for ( ; scene < (ssize_t) extent; scene++)
