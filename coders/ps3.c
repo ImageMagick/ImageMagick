@@ -535,9 +535,6 @@ static MagickBooleanType WritePS3MaskImage(const ImageInfo *image_info,
   MemoryInfo
     *pixel_info;
 
-  ssize_t
-    i;
-
   size_t
     length;
 
@@ -570,7 +567,6 @@ static MagickBooleanType WritePS3MaskImage(const ImageInfo *image_info,
   */
   switch (compression)
   {
-    case NoCompression:
     default:
     {
       (void) FormatLocaleString(buffer,MagickPathExtent,
@@ -625,18 +621,14 @@ static MagickBooleanType WritePS3MaskImage(const ImageInfo *image_info,
   length=0;
   switch (compression)
   {
-    case NoCompression:
     default:
     {
       status=SerializeImageChannel(image_info,mask_image,&pixel_info,&length,
         exception);
       if (status == MagickFalse)
         break;
-      Ascii85Initialize(image);
       pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
-      for (i=0; i < (ssize_t) length; i++)
-        Ascii85Encode(image,pixels[i]);
-      Ascii85Flush(image);
+      status=Ascii85EncodeImage(image,length,pixels,exception);
       pixel_info=RelinquishVirtualMemory(pixel_info);
       break;
     }
@@ -1306,15 +1298,24 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
           else
             {
               (void) WriteBlobString(image,"<~");
-              Ascii85Initialize(image);
-              for (j=0; escape[j] != '\0'; j++)
-                Ascii85Encode(image,(unsigned char) escape[j]);
-              Ascii85Flush(image);
+              status=Ascii85EncodeImage(image,strlen(escape),
+                (const unsigned char *) escape,exception);
             }
           escape=DestroyString(escape);
           labels[i]=DestroyString(labels[i]);
+          if (status == MagickFalse)
+            {
+              for (i++; labels[i] != (char *) NULL; i++)
+                labels[i]=DestroyString(labels[i]);
+              break;
+            }
         }
         labels=(char **) RelinquishMagickMemory(labels);
+        if (status == MagickFalse)
+          {
+            (void) CloseBlob(image);
+            return(MagickFalse);
+          }
       }
     /*
       Photoshop clipping path active?
@@ -1366,7 +1367,6 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
         (void) WriteBlobString(image,PS3_PseudoClass"\n");
         switch (compression)
         {
-          case NoCompression:
           default:
           {
             (void) WriteBlobString(image,PS3_NoCompression"\n");
@@ -1435,14 +1435,9 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
               pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
               switch (compression)
               {
-                case NoCompression:
                 default:
                 {
-                  Ascii85Initialize(image);
-                  for (i=0; i < (ssize_t) length; i++)
-                    Ascii85Encode(image,pixels[i]);
-                  Ascii85Flush(image);
-                  status=MagickTrue;
+                  status=Ascii85EncodeImage(image,length,pixels,exception);
                   break;
                 }
                 case LZWCompression:
@@ -1474,7 +1469,6 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
           (void) WriteBlobString(image,PS3_DirectClass"\n");
           switch (compression)
           {
-            case NoCompression:
             default:
             {
               (void) WriteBlobString(image,PS3_NoCompression"\n");
@@ -1521,14 +1515,9 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
               pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
               switch (compression)
               {
-                case NoCompression:
                 default:
                 {
-                  Ascii85Initialize(image);
-                  for (i=0; i < (ssize_t) length; i++)
-                    Ascii85Encode(image,pixels[i]);
-                  Ascii85Flush(image);
-                  status=MagickTrue;
+                  status=Ascii85EncodeImage(image,length,pixels,exception);
                   break;
                 }
                 case RLECompression:
@@ -1558,7 +1547,6 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
             (void) WriteBlobString(image,PS3_PseudoClass"\n");
             switch (compression)
             {
-              case NoCompression:
               default:
               {
                 (void) WriteBlobString(image,PS3_NoCompression"\n");
@@ -1604,17 +1592,30 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
               }
             else
               {
-                Ascii85Initialize(image);
+                unsigned char
+                  *colormap,
+                  *q;
+
+                colormap=(unsigned char *) AcquireQuantumMemory(image->colors,
+                  3*sizeof(*colormap));
+                if (colormap == (unsigned char *) NULL)
+                  ThrowWriterException(ResourceLimitError,
+                    "MemoryAllocationFailed");
+                q=colormap;
                 for (i=0; i < (ssize_t) image->colors; i++)
                 {
-                  pixel=ScaleQuantumToChar((Quantum) image->colormap[i].red);
-                  Ascii85Encode(image,(unsigned char) pixel);
-                  pixel=ScaleQuantumToChar((Quantum) image->colormap[i].green);
-                  Ascii85Encode(image,(unsigned char) pixel);
-                  pixel=ScaleQuantumToChar((Quantum) image->colormap[i].blue);
-                  Ascii85Encode(image,(unsigned char) pixel);
+                  *q++=ScaleQuantumToChar((Quantum) image->colormap[i].red);
+                  *q++=ScaleQuantumToChar((Quantum) image->colormap[i].green);
+                  *q++=ScaleQuantumToChar((Quantum) image->colormap[i].blue);
                 }
-                Ascii85Flush(image);
+                status=Ascii85EncodeImage(image,(size_t) (q-colormap),colormap,
+                  exception);
+                colormap=(unsigned char *) RelinquishMagickMemory(colormap);
+                if (status == MagickFalse)
+                  {
+                    (void) CloseBlob(image);
+                    return(MagickFalse);
+                  }
               }
             status=SerializeImageIndexes(image_info,image,&pixel_info,&length,
               exception);
@@ -1626,14 +1627,9 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
             pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
             switch (compression)
             {
-              case NoCompression:
               default:
               {
-                Ascii85Initialize(image);
-                for (i=0; i < (ssize_t) length; i++)
-                  Ascii85Encode(image,pixels[i]);
-                Ascii85Flush(image);
-                status=MagickTrue;
+                status=Ascii85EncodeImage(image,length,pixels,exception);
                 break;
               }
               case RLECompression:
