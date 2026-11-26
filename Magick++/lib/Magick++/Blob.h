@@ -8,8 +8,8 @@
 // Reference counted container class for Binary Large Objects (BLOBs)
 //
 
-#if !defined(Magick_BlobRef_header)
-#define Magick_BlobRef_header
+#if !defined(Magick_Blob_header)
+#define Magick_Blob_header
 
 #include "Magick++/Include.h"
 #include <string>
@@ -79,4 +79,4 @@ namespace Magick
 
 } // namespace Magick
 
-#endif // Magick_BlobRef_header
+#endif // Magick_Blob_header

@@ -11,8 +11,8 @@
 // accessed by users.
 //
 
-#if !defined(Magick_Blob_header)
-#define Magick_Blob_header
+#if !defined(Magick_BlobRef_header)
+#define Magick_BlobRef_header
 
 #include "Magick++/Include.h"
 #include "Magick++/Thread.h"
@@ -42,7 +42,9 @@ namespace Magick
 
   private:
     // Copy constructor and assignment are not supported
+    // (declared but intentionally not defined)
     BlobRef(const BlobRef&);
+    BlobRef& operator=(const BlobRef&);
 
     MutexLock _mutexLock; // Mutex lock
     size_t    _refCount;  // Reference count
@@ -50,4 +52,4 @@ namespace Magick
 
 } // namespace Magick
 
-#endif // Magick_Blob_header
+#endif // Magick_BlobRef_header
