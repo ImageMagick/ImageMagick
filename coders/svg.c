@@ -102,7 +102,7 @@
 #include "librsvg/librsvg-features.h"
 #endif
 #if defined(LIBRSVG_CHECK_VERSION)
-#if LIBRSVG_CHECK_VERSION(2,32,0)
+#if LIBRSVG_CHECK_VERSION(2,46,0)
 #define MagickRSVGHaveReadStream  1
 #endif
 #if LIBRSVG_CHECK_VERSION(2,52,0)
@@ -115,6 +115,8 @@
   Define declarations.
 */
 #define DefaultSVGDensity  96.0
+#define DefaultRSVGDensity  90.0  /* librsvg default, used when no DPI is set */
+#define DefaultRSVGFontSize  12.0  /* librsvg default font size in pixels */
 
 /*
   Typedef declarations.
@@ -367,37 +369,172 @@ static Image *RenderSVGImage(const ImageInfo *image_info,Image *image,
 
 #if defined(MAGICKCORE_RSVG_DELEGATE)
 #if defined(MAGICKCORE_CAIRO_DELEGATE)
+#if defined(MagickRSVGHaveRenderDocument)
+static MagickBooleanType RSVGLengthToPixels(const RsvgLength *length,
+  const double dpi,double *pixels)
+{
+  switch (length->unit)
+  {
+    case RSVG_UNIT_PX:
+    {
+      *pixels=length->length;
+      break;
+    }
+    case RSVG_UNIT_IN:
+    {
+      *pixels=length->length*dpi;
+      break;
+    }
+    case RSVG_UNIT_CM:
+    {
+      *pixels=length->length*dpi/2.54;
+      break;
+    }
+    case RSVG_UNIT_MM:
+    {
+      *pixels=length->length*dpi/25.4;
+      break;
+    }
+    case RSVG_UNIT_PT:
+    {
+      *pixels=length->length*dpi/72.0;
+      break;
+    }
+    case RSVG_UNIT_PC:
+    {
+      *pixels=length->length*dpi/6.0;
+      break;
+    }
+    /*
+      librsvg does not expose the font size of the root element, assume its
+      default.
+    */
+    case RSVG_UNIT_EM:
+    {
+      *pixels=length->length*DefaultRSVGFontSize;
+      break;
+    }
+    case RSVG_UNIT_EX:
+#if LIBRSVG_CHECK_VERSION(2,58,0)
+    case RSVG_UNIT_CH:
+#endif
+    {
+      *pixels=length->length*DefaultRSVGFontSize/2.0;
+      break;
+    }
+    default:
+      return(MagickFalse);
+  }
+  return(MagickTrue);
+}
+
+#endif
 static MagickBooleanType GetRSVGIntrinsicSize(RsvgHandle *svg_handle,
-  double *width,double *height)
+  double dpi_x,double dpi_y,double *width,double *height)
 {
 #if defined(MagickRSVGHaveRenderDocument)
   gboolean
-    has_viewbox;
+    has_height,
+    has_viewbox,
+    has_width,
+    status;
+
+  RsvgLength
+    height_length,
+    width_length;
 
   RsvgRectangle
-    viewbox;
+    ink_rect,
+    logical_rect,
+    viewbox,
+    viewport;
 
+  /*
+    The natural size of the document as computed by the deprecated
+    rsvg_handle_get_dimensions(): the width and height of the <svg> element,
+    the viewBox for percentage units, or else the extents of the drawing,
+    rounded to whole pixels.
+  */
   *width=0.0;
   *height=0.0;
-  if (rsvg_handle_get_intrinsic_size_in_pixels(svg_handle,width,height) != FALSE)
-    return(MagickTrue);
-  /*
-    No absolute intrinsic size; fall back to the viewBox, if any.
-  */
-  has_viewbox=FALSE;
-  (void) memset(&viewbox,0,sizeof(viewbox));
-  rsvg_handle_get_intrinsic_dimensions(svg_handle,(gboolean *) NULL,
-    (RsvgLength *) NULL,(gboolean *) NULL,(RsvgLength *) NULL,&has_viewbox,
-    &viewbox);
-  if (has_viewbox == FALSE)
+  if ((fabs(dpi_x) < MagickEpsilon) || (fabs(dpi_y) < MagickEpsilon))
+    dpi_x=dpi_y=0.0;
+  if (dpi_x <= 0.0)
+    dpi_x=DefaultRSVGDensity;
+  if (dpi_y <= 0.0)
+    dpi_y=DefaultRSVGDensity;
+  status=rsvg_handle_get_intrinsic_size_in_pixels(svg_handle,width,height);
+  if (status == FALSE)
+    {
+      (void) memset(&viewbox,0,sizeof(viewbox));
+      rsvg_handle_get_intrinsic_dimensions(svg_handle,&has_width,&width_length,
+        &has_height,&height_length,&has_viewbox,&viewbox);
+      /*
+        A missing width or height defaults to 100%; older librsvg versions
+        leave the length unset in that case.
+      */
+      if (has_width == FALSE)
+        {
+          width_length.length=1.0;
+          width_length.unit=RSVG_UNIT_PERCENT;
+        }
+      if (has_height == FALSE)
+        {
+          height_length.length=1.0;
+          height_length.unit=RSVG_UNIT_PERCENT;
+        }
+      if ((has_viewbox != FALSE) &&
+          ((width_length.unit == RSVG_UNIT_PERCENT) ||
+           (height_length.unit == RSVG_UNIT_PERCENT)))
+        {
+          status=TRUE;
+          if ((fabs(viewbox.width) <= DBL_EPSILON) ||
+              (fabs(viewbox.height) <= DBL_EPSILON))
+            *width=*height=0.0;
+          else if ((width_length.unit == RSVG_UNIT_PERCENT) &&
+                   (height_length.unit == RSVG_UNIT_PERCENT))
+            {
+              *width=viewbox.width;
+              *height=viewbox.height;
+            }
+          else if (height_length.unit == RSVG_UNIT_PERCENT)
+            {
+              if (RSVGLengthToPixels(&width_length,dpi_x,width) == MagickFalse)
+                status=FALSE;
+              *height=(*width)*viewbox.height/viewbox.width;
+            }
+          else
+            {
+              if (RSVGLengthToPixels(&height_length,dpi_y,height) == MagickFalse)
+                status=FALSE;
+              *width=(*height)*viewbox.width/viewbox.height;
+            }
+        }
+    }
+  if (status == FALSE)
+    {
+      viewport.x=0.0;
+      viewport.y=0.0;
+      viewport.width=1.0;
+      viewport.height=1.0;
+      if (rsvg_handle_get_geometry_for_layer(svg_handle,(const char *) NULL,
+            &viewport,&ink_rect,&logical_rect,(GError **) NULL) == FALSE)
+        return(MagickFalse);
+      *width=ink_rect.width;
+      *height=ink_rect.height;
+    }
+  *width=round(*width);
+  *height=round(*height);
+  if ((!(*width >= 0.0)) || (!(*height >= 0.0)) ||
+      (*width > (double) INT_MAX) || (*height > (double) INT_MAX))
     return(MagickFalse);
-  *width=viewbox.width;
-  *height=viewbox.height;
   return(MagickTrue);
 #else
   RsvgDimensionData
     dimension_info;
 
+  (void) dpi_x;
+  (void) dpi_y;
   rsvg_handle_get_dimensions(svg_handle,&dimension_info);
   *width=(double) dimension_info.width;
   *height=(double) dimension_info.height;
@@ -503,7 +640,12 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
 
     chunk=(guchar *) g_try_malloc((gsize) n);
     if (chunk == (guchar *) NULL)
-      break;
+      {
+        buffer=(unsigned char *) RelinquishMagickMemory(buffer);
+        g_object_unref(stream);
+        g_object_unref(svg_handle);
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+      }
     (void) memcpy(chunk,buffer,(size_t) n);
     g_memory_input_stream_add_data(G_MEMORY_INPUT_STREAM(stream),chunk,
       (gssize) n,g_free);
@@ -544,7 +686,8 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
 #endif
 #if defined(MAGICKCORE_CAIRO_DELEGATE)
   apply_density=MagickTrue;
-  if ((GetRSVGIntrinsicSize(svg_handle,&intrinsic_width,&intrinsic_height) == MagickFalse) ||
+  if ((GetRSVGIntrinsicSize(svg_handle,image->resolution.x,
+       image->resolution.y,&intrinsic_width,&intrinsic_height) == MagickFalse) ||
       (ceil(intrinsic_width) <= 0.0) || (ceil(intrinsic_height) <= 0.0))
     {
       g_object_unref(svg_handle);
@@ -564,7 +707,8 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
       */
       rsvg_handle_set_dpi_x_y(svg_handle,image->resolution.x*256,
         image->resolution.y*256);
-      if ((GetRSVGIntrinsicSize(svg_handle,&dpi_width,&dpi_height) != MagickFalse) &&
+      if ((GetRSVGIntrinsicSize(svg_handle,image->resolution.x*256,
+           image->resolution.y*256,&dpi_width,&dpi_height) != MagickFalse) &&
           ((fabs(ceil(dpi_width)-dimension_width) >= MagickEpsilon) ||
            (fabs(ceil(dpi_height)-dimension_height) >= MagickEpsilon)))
         apply_density=MagickFalse;
@@ -606,8 +750,14 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
     }
   pixel_info=(MemoryInfo *) NULL;
 #else
+#if LIBRSVG_CHECK_VERSION(2,59,0)
+  pixel_buffer=rsvg_handle_get_pixbuf_and_error(svg_handle,(GError **) NULL);
+#else
   pixel_buffer=rsvg_handle_get_pixbuf(svg_handle);
+#endif
   g_object_unref(svg_handle);
+  if (pixel_buffer == (GdkPixbuf *) NULL)
+    ThrowReaderException(CorruptImageError,"UnableToReadImageData");
   image->columns=gdk_pixbuf_get_width(pixel_buffer);
   image->rows=gdk_pixbuf_get_height(pixel_buffer);
 #endif
