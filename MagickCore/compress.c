@@ -396,7 +396,7 @@ MagickExport void Ascii85Encode(Image *image,const unsigned char code)
 */
 MagickExport MagickBooleanType Ascii85EncodeImage(Image *image,
   const size_t length,const unsigned char *magick_restrict pixels,
-  ExceptionInfo *exception)
+  ExceptionInfo *magick_unused(exception))
 {
   char
     tuple[6];
@@ -424,6 +424,7 @@ MagickExport MagickBooleanType Ascii85EncodeImage(Image *image,
   assert((pixels != (const unsigned char *) NULL) || (length == 0));
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  magick_unreferenced(exception);
   data=pixels;
   remaining=length;
   output_length=0;
