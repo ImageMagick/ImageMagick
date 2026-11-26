@@ -67,6 +67,7 @@
 #include "MagickCore/module.h"
 
 #define BMP_HEADER_SIZE 14
+#define BMP_INFO_HEADER_SIZE 40
 
 /*
   Forward declarations.
@@ -126,7 +127,9 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
     clip_size,
     total_size;
 
-  unsigned char
+  size_t
+    header_size,
+    image_size,
     offset;
 
   void
@@ -137,8 +140,7 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
-      image_info->filename);
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image_info->filename);
   image=AcquireImage(image_info,exception);
   if (!IsClipboardFormatAvailable(CF_DIB) &&
       !IsClipboardFormatAvailable(CF_DIBV5))
@@ -150,21 +152,26 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
     clip_handle=GetClipboardData(CF_DIB);
   if ((clip_handle == NULL) || (clip_handle == INVALID_HANDLE_VALUE))
     {
-      CloseClipboard();
+      (void) CloseClipboard();
       ThrowReaderException(CoderError,"UnableToReadImageData");
     }
   clip_size=(size_t) GlobalSize(clip_handle);
+  if (clip_size < BMP_INFO_HEADER_SIZE)
+    {
+      (void) CloseClipboard();
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    }
   total_size=clip_size+BMP_HEADER_SIZE;
   clip_data=AcquireMagickMemory(total_size);
   if (clip_data == (void *) NULL)
     {
-      CloseClipboard();
+      (void) CloseClipboard();
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     }
   clip_mem=GlobalLock(clip_handle);
   if (clip_mem == (LPVOID) NULL)
     {
-      CloseClipboard();
+      (void) CloseClipboard();
       clip_data=RelinquishMagickMemory(clip_data);
       ThrowReaderException(CoderError,"UnableToReadImageData");
     }
@@ -174,31 +181,43 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
   (void) GlobalUnlock(clip_mem);
   (void) CloseClipboard();
   memset(clip_data,0,BMP_HEADER_SIZE);
-  offset=p[0];
-  if ((p[0] == 40) && (p[16] == BI_BITFIELDS))
+  header_size=(size_t) p[0] | ((size_t) p[1] << 8) | ((size_t) p[2] << 16) |
+    ((size_t) p[3] << 24);
+  if ((header_size < BMP_INFO_HEADER_SIZE) || (header_size > clip_size))
+    {
+      clip_data=RelinquishMagickMemory(clip_data);
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    }
+  offset=header_size;
+  if ((header_size == BMP_INFO_HEADER_SIZE) && (p[16] == BI_BITFIELDS))
     offset+=12;
   else
     {
-      unsigned int
-        image_size;
-
-      image_size=(unsigned int) p[20];
-      image_size|=(unsigned int) p[21] << 8;
-      image_size|=(unsigned int) p[22] << 16;
-      image_size|=(unsigned int) p[23] << 24;
+      image_size=(size_t) p[20];
+      image_size|=(size_t) p[21] << 8;
+      image_size|=(size_t) p[22] << 16;
+      image_size|=(size_t) p[23] << 24;
       /* Hack for chrome where the offset seems to be incorrect */
-      if (clip_size - offset - image_size == 12)
+      if ((image_size <= clip_size) && (offset <= clip_size-image_size) &&
+          ((clip_size-image_size)-offset == 12))
         offset+=12;
     }
   offset+=BMP_HEADER_SIZE;
-  p-=(ptrdiff_t)BMP_HEADER_SIZE;
+  p-=(ptrdiff_t) BMP_HEADER_SIZE;
   p[0]='B';
   p[1]='M';
   p[2]=(unsigned char) total_size;
   p[3]=(unsigned char) (total_size >> 8);
   p[4]=(unsigned char) (total_size >> 16);
   p[5]=(unsigned char) (total_size >> 24);
-  p[10]=offset;
+  p[10]=(unsigned char) offset;
+  p[11]=(unsigned char) (offset >> 8);
+  p[12]=(unsigned char) (offset >> 16);
+  p[13]=(unsigned char) (offset >> 24);
+  /*
+    The placeholder image is no longer needed; BlobToImage() returns a new one.
+  */
+  image=DestroyImageList(image);
   read_info=CloneImageInfo(image_info);
   (void) CopyMagickString(read_info->magick,"BMP",MagickPathExtent);
   image=BlobToImage(read_info,clip_data,total_size,exception);
@@ -303,7 +322,8 @@ static MagickBooleanType WriteCLIPBOARDImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
   HANDLE
-    clip_handle;
+    clip_handle,
+    clip_result;
 
   ImageInfo
     *write_info;
@@ -337,6 +357,11 @@ static MagickBooleanType WriteCLIPBOARDImage(const ImageInfo *image_info,
   write_info=DestroyImageInfo(write_info);
   if (clip_data == (void *) NULL)
     ThrowWriterException(CoderError,"UnableToWriteImageData");
+  if (length <= BMP_HEADER_SIZE)
+    {
+      clip_data=RelinquishMagickMemory(clip_data);
+      ThrowWriterException(CoderError,"UnableToWriteImageData");
+    }
   clip_handle=(HANDLE) GlobalAlloc(GMEM_MOVEABLE,length-BMP_HEADER_SIZE);
   if (clip_handle == (HANDLE) NULL)
     {
@@ -362,10 +387,18 @@ static MagickBooleanType WriteCLIPBOARDImage(const ImageInfo *image_info,
     }
   (void) EmptyClipboard();
   if ((image->alpha_trait & BlendPixelTrait) == 0)
-    SetClipboardData(CF_DIB,clip_handle);
+    clip_result=SetClipboardData(CF_DIB,clip_handle);
   else
-    SetClipboardData(CF_DIBV5,clip_handle);
+    clip_result=SetClipboardData(CF_DIBV5,clip_handle);
   (void) CloseClipboard();
+  if (clip_result == (HANDLE) NULL)
+    {
+      /*
+        The clipboard did not take ownership of the memory.
+      */
+      (void) GlobalFree((HGLOBAL) clip_handle);
+      ThrowWriterException(CoderError,"UnableToWriteImageData");
+    }
   return(MagickTrue);
 }
 #endif /* MAGICKCORE_WINGDI32_DELEGATE */
