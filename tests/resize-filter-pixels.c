@@ -52,6 +52,7 @@
 #include <string.h>
 #include <MagickCore/MagickCore.h>
 
+#if MAGICKCORE_QUANTUM_DEPTH == 16 && !defined(MAGICKCORE_HDRI_SUPPORT)
 static Image *AcquireCanvas(const size_t columns,const size_t rows,
   ExceptionInfo *exception)
 {
@@ -450,10 +451,6 @@ int main(int argc,char **argv)
       (void) fprintf(stderr,"usage: %s dump.txt [reference.txt]\n",argv[0]);
       return(1);
     }
-#if MAGICKCORE_QUANTUM_DEPTH != 16 || defined(MAGICKCORE_HDRI_SUPPORT)
-  (void) fprintf(stderr,"skip: Q16 non-HDRI build required\n");
-  return(77);
-#else
 #if defined(_WIN32)
   (void) _putenv("MAGICK_CONFIGURE_PATH=");
 #else
@@ -581,5 +578,11 @@ int main(int argc,char **argv)
         return(1);
     }
   return(0);
-#endif
 }
+#else
+int main(void)
+{
+  (void) fprintf(stderr,"skip: Q16 non-HDRI build required\n");
+  return(77);
+}
+#endif
