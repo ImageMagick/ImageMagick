@@ -172,18 +172,20 @@ static int ReadChar(Image *image, int *chPushed)
   return(ch);
 }
 
-static int ReadInt(Image * image,MagickBooleanType *eofInp,int *chPushed,
+static ssize_t ReadInt(Image * image,MagickBooleanType *eofInp,int *chPushed,
   MagickBooleanType *err)
 {
   char
-    buffer[MaxTextExtent];
+    buffer[MagickPathExtent];
 
   char
     *p,
     *tail;
 
   int
-    chIn,
+    chIn;
+
+  long
     val;
 
   p=buffer;
@@ -194,15 +196,19 @@ static int ReadInt(Image * image,MagickBooleanType *eofInp,int *chPushed,
   {
     *p=(char) chIn;
     p++;
-    if (p-buffer >= MaxTextExtent)
+    if (p-buffer >= MagickPathExtent-1)
       {
         *eofInp=MagickTrue;
+        *err=MagickTrue;
         break;
       }
     chIn=ReadChar(image,chPushed);
   }
   if (p == buffer)
     {
+      /* No digits: clean EOF is fine, anything else is corrupt input. */
+      if (chIn != EOF)
+        *err=MagickTrue;
       *eofInp=MagickTrue;
       return(0);
     }
@@ -222,7 +228,7 @@ static int ReadInt(Image * image,MagickBooleanType *eofInp,int *chPushed,
     }
   if (val < 0)
     *err=MagickTrue;
-  return (val);
+  return((ssize_t) val);
 }
 
 static long double BufToFlt(char * buffer,char ** tail,ValueTypeT expectType,
@@ -257,6 +263,8 @@ static long double BufToFlt(char * buffer,char ** tail,ValueTypeT expectType,
         p++;
       }
       *tail=p;
+      if (p == buffer+1)
+        *err=MagickTrue;
       if ((expectType != vtAny) && (expectType != vtIntHex))
         *err=MagickTrue;
     }
@@ -272,12 +280,12 @@ static long double BufToFlt(char * buffer,char ** tail,ValueTypeT expectType,
       /* Read decimal floating-point (possibly a percent). */
       errno=0;
       val=strtold(buffer,tail);
-      if (errno)
+      if (errno || (*tail == buffer))
         *err=MagickTrue;
       if (**tail=='%')
         {
           (*tail)++;
-          val*=(double) QuantumRange/100.0;
+          val*=(long double) QuantumRange/100.0L;
           if ((expectType != vtAny) && (expectType != vtPercent))
             *err=MagickTrue;
         }
@@ -350,10 +358,10 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   char
-    buffer[MaxTextExtent],
+    buffer[MagickPathExtent],
     chSep,
     *ppf,
-    procFmt[MaxTextExtent];
+    procFmt[MagickPathExtent];
 
   const char
     *pf,
@@ -367,9 +375,11 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,
   int
     chIn,
     chPushed,
-    i,
     nExpCh,
     numMeta;
+
+  ssize_t
+    i;
 
   long double
     chVals[MaxPixelChannels];
@@ -382,7 +392,11 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,
     intErr,
     nChErr,
     status,
-    typeErr;
+    typeErr,
+    valErr;
+
+  MagickOffsetType
+    offsetStart;
 
   PixelInfo
     mppBlack;
@@ -428,6 +442,8 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,
   sNumMeta=GetImageArtifact(image,"ftxt:nummeta");
   if (sNumMeta != (const char *) NULL)
     numMeta=atoi(sNumMeta);
+  if ((numMeta < 0) || (numMeta > MaxPixelChannels))
+    ThrowReaderException(OptionError,"InvalidMetaChannelCount");
   if (hasAlpha)
     {
       if (SetImageAlphaChannel(image,OpaqueAlphaChannel,exception) == MagickFalse)
@@ -451,15 +467,19 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,
     if (*pf == chEsc)
       {
         pf++;
+        if (*pf == '\0')
+          ThrowReaderException(OptionError,"TrailingEscapeInFormat");
         switch (*pf) {
           case chEsc:
-            if (++i >= MaxTextExtent)
+            if ((i+=2) >= MagickPathExtent)
               ThrowReaderException(DelegateFatalError,"ppf bust");
+            *ppf=chEsc;
+            ppf++;
             *ppf=chEsc;
             ppf++;
             break;
           case 'n':
-            if (++i >= MaxTextExtent)
+            if (++i >= MagickPathExtent)
               ThrowReaderException(DelegateFatalError,"ppf bust");
             *ppf='\n';
             ppf++;
@@ -469,7 +489,7 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,
               ThrowReaderException(DelegateFatalError,"EscapeJproblem");
             magick_fallthrough;
           default:
-            if ((i+=2) >= MaxTextExtent)
+            if ((i+=2) >= MagickPathExtent)
               ThrowReaderException(DelegateFatalError,"ppf bust");
             *ppf=chEsc;
             ppf++;
@@ -481,7 +501,7 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,
     else
       {
         /* Not escape */
-        if (++i >= MaxTextExtent)
+        if (++i >= MagickPathExtent)
           ThrowReaderException (DelegateFatalError,"ppf bust");
         *ppf=*pf;
         ppf++;
@@ -489,6 +509,8 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,
     pf++;
   }
   *ppf='\0';
+  if (ppf == procFmt)
+    ThrowReaderException(OptionError,"EmptyFormat");
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionError,"MustSpecifyImageSize");
   /* How many channel values can we expect? */
@@ -512,21 +534,23 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,
   eofInp=MagickFalse;
   chPushed=0;
   x=0;
-  y=0,
+  y=0;
   maxX=-1;
   maxY=-1;
   nPix=0;
-  firstX=MagickTrue,
-  firstY=MagickTrue,
-  intErr=MagickFalse,
-  typeErr=MagickFalse,
+  firstX=MagickTrue;
+  firstY=MagickTrue;
+  intErr=MagickFalse;
+  typeErr=MagickFalse;
   nChErr=MagickFalse;
+  valErr=MagickFalse;
   while (!eofInp)
   {
     ValueTypeT
       expectType;
 
     expectType=vtAny;
+    offsetStart=TellBlob(image);
     ppf=procFmt;
     while (*ppf && eofInp == MagickFalse)
     {
@@ -538,8 +562,10 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,
             case 'x':
             {
               x=ReadInt(image,&eofInp,&chPushed,&intErr);
-              if ((intErr != MagickFalse) || (eofInp != MagickFalse))
-                continue;
+              if (intErr != MagickFalse)
+                eofInp=MagickTrue;
+              if (eofInp != MagickFalse)
+                break;
               if (firstX != MagickFalse)
                 {
                   firstX=MagickFalse;
@@ -552,9 +578,11 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,
             case 'y':
             {
               y=ReadInt(image,&eofInp,&chPushed,&intErr);
-              if ((intErr != MagickFalse) || (eofInp != MagickFalse))
-                continue;
-              if (firstY)
+              if (intErr != MagickFalse)
+                eofInp=MagickTrue;
+              if (eofInp != MagickFalse)
+                break;
+              if (firstY != MagickFalse)
                 {
                   firstY=MagickFalse;
                   maxY=y;
@@ -599,7 +627,7 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,
               */
               untilChar=*(ppf+1);
               ReadUntil(image,untilChar,&eofInp,&chPushed,buffer,
-                MaxTextExtent-1);
+                MagickPathExtent-1);
               if (eofInp != MagickFalse)
                 break;
               pt=buffer;
@@ -607,11 +635,14 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,
               for (;;)
               {
                 /* Loop through input channels. */
-                val=BufToFlt(pt,&tail,expectType,&typeErr);
+                val=BufToFlt(pt,&tail,expectType,&valErr);
                 if (expectType == vtProp)
                   val *= QuantumRange;
-                if (typeErr)
-                  break;
+                if (valErr != MagickFalse)
+                  {
+                    typeErr=MagickTrue;
+                    break;
+                  }
                 if (i < MaxPixelChannels)
                   chVals[i]=val;
                 if ((*tail == '\r') && (chSep == '\n') && (*(tail + 1) == '\n'))
@@ -619,21 +650,63 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,
                 if (*tail == chSep)
                   pt=tail+1;
                 else
-                  break;
+                  {
+                    while (isspace((int) ((unsigned char) *tail)))
+                      tail++;
+                    if (*tail != '\0')
+                      typeErr=MagickTrue;
+                    break;
+                  }
                 i++;
               }
               if (i+1 != nExpCh)
                 nChErr=MagickTrue;
               if (x < (ssize_t) image->columns && y < (ssize_t) image->rows)
                 {
-                  q=QueueAuthenticPixels(image,x,y,1,1,exception);
+                  ssize_t
+                    k;
+
+                  q=GetAuthenticPixels(image,x,y,1,1,exception);
                   if (q == (Quantum *) NULL)
-                    break;
-                  for (i=0; i< nExpCh; i++)
-                    q[i]=(Quantum) chVals[i];
+                    {
+                      status=MagickFalse;
+                      eofInp=MagickTrue;
+                      break;
+                    }
+                  k=0;
+                  for (i=0; (i < (ssize_t) GetPixelChannels(image)) &&
+                            (k < nExpCh); i++)
+                  {
+                    PixelChannel
+                      channel;
+
+                    PixelTrait
+                      traits;
+
+                    channel=GetPixelChannelChannel(image,i);
+                    traits=GetPixelChannelTraits(image,channel);
+                    if ((traits & UpdatePixelTrait) != UpdatePixelTrait)
+                      continue;
+                    q[i]=ClampToQuantum((MagickRealType) chVals[k]);
+                    k++;
+                  }
                   if (SyncAuthenticPixels(image,exception) == MagickFalse)
-                    break;
+                    {
+                      status=MagickFalse;
+                      eofInp=MagickTrue;
+                      break;
+                    }
                 }
+              break;
+            }
+            case chEsc:
+            {
+              /* Literal backslash. */
+              chIn=ReadChar(image,&chPushed);
+              if (chIn == EOF)
+                ThrowReaderException(CorruptImageError,"EOFduringFormat");
+              if (chIn != chEsc)
+                ThrowReaderException(CorruptImageError,"UnexpectedInputChar");
               break;
             }
             case 'j':
@@ -653,7 +726,7 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,
 
               untilChar=*(ppf+1);
               ReadUntil(image,untilChar,&eofInp,&chPushed,buffer,
-                MaxTextExtent-1);
+                MagickPathExtent-1);
               if (eofInp != MagickFalse)
                 break;
               if (*buffer == 0)
@@ -664,12 +737,20 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,
                 break;
               if (x < (ssize_t) image->columns && y < (ssize_t) image->rows)
                 {
-                  q=QueueAuthenticPixels(image,x,y,1,1,exception);
+                  q=GetAuthenticPixels(image,x,y,1,1,exception);
                   if (q == (Quantum *) NULL)
-                    break;
+                    {
+                      status=MagickFalse;
+                      eofInp=MagickTrue;
+                      break;
+                    }
                   SetPixelViaPixelInfo(image,&pixelinf,q);
                   if (SyncAuthenticPixels(image,exception) == MagickFalse)
-                    break;
+                    {
+                      status=MagickFalse;
+                      eofInp=MagickTrue;
+                      break;
+                    }
                 }
               break;
             }
@@ -701,6 +782,8 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,
         }
       ppf++;
     }
+    if ((eofInp == MagickFalse) && (TellBlob(image) == offsetStart))
+      ThrowReaderException(CorruptImageError,"FormatConsumesNoInput");
     if (eofInp == MagickFalse)
       {
         nPix++;
@@ -814,12 +897,12 @@ static MagickBooleanType WriteFTXTString(Image *image,const char *text,
   count=strlen(text);
   while (count != 0)
   {
-    length=MagickMin(count,MaxTextExtent-*extent);
+    length=MagickMin(count,MagickPathExtent-*extent);
     (void) memcpy(pixels+*extent,text,length);
     *extent+=length;
     text+=length;
     count-=length;
-    if (*extent == MaxTextExtent)
+    if (*extent == MagickPathExtent)
       {
         if (WriteBlob(image,*extent,pixels) != (ssize_t) *extent)
           return(MagickFalse);
@@ -860,7 +943,7 @@ static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
   char
-    buffer[MaxTextExtent],
+    buffer[MagickPathExtent],
     chSep,
     sSuff[2];
 
@@ -912,19 +995,20 @@ static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,
     chSep=sChSep[0];
   sSuff[0]='\0';
   sSuff[1]='\0';
-  pixels=(unsigned char *) AcquireQuantumMemory(MaxTextExtent,sizeof(*pixels));
+  pixels=(unsigned char *) AcquireQuantumMemory(MagickPathExtent,
+    sizeof(*pixels));
   if (pixels == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   extent=0;
 
   do
   {
-    long
+    ssize_t
       x,
       y;
 
     GetPixelInfo(image,&pixel);
-    for (y=0; y < (long) image->rows; y++)
+    for (y=0; y < (ssize_t) image->rows; y++)
     {
       if (status == MagickFalse)
         break;
@@ -934,7 +1018,7 @@ static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,
           status=MagickFalse;
           break;
         }
-      for (x=0; x < (long) image->columns; x++)
+      for (x=0; x < (ssize_t) image->columns; x++)
       {
         const char
           *pFmt;
@@ -963,13 +1047,13 @@ static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,
             {
               case 'x':
               {
-                FormatLocaleString(buffer,MaxTextExtent,"%li",x);
+                FormatLocaleString(buffer,MagickPathExtent,"%.20g",(double) x);
                 status=WriteFTXTString(image,buffer,pixels,&extent);
                 break;
               }
               case 'y':
               {
-                FormatLocaleString (buffer,MaxTextExtent,"%li",y);
+                FormatLocaleString(buffer,MagickPathExtent,"%.20g",(double) y);
                 status=WriteFTXTString(image,buffer,pixels,&extent);
                 break;
               }
@@ -980,8 +1064,7 @@ static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,
               }
               case chEsc:
               {
-                FormatLocaleString(buffer,MaxTextExtent,"%c%c",chEsc,chEsc);
-                status=WriteFTXTString(image,buffer,pixels,&extent);
+                status=WriteFTXTString(image,"\\",pixels,&extent);
                 break;
               }
               case 'c':
@@ -998,6 +1081,8 @@ static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,
                   i;
 
                 hexFmt=MagickFalse;
+                fltHexFmt=MagickFalse;
+                sSuff[0]='\0';
                 if (*pFmt == 'c')
                   valMult=1.0;
                 else if (*pFmt == 'v')
@@ -1036,13 +1121,21 @@ static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,
                   if ((traits & UpdatePixelTrait) != UpdatePixelTrait)
                     continue;
                   if (hexFmt)
-                    FormatLocaleString(buffer,MaxTextExtent,"%s#%llx",sSep,
-                      (signed long long)(((long double) p[i])+0.5));
+                    {
+                      long double
+                        hv;
+
+                      hv=((long double) p[i])+0.5L;
+                      if (hv < 0.0L)
+                        hv=0.0L;
+                      FormatLocaleString(buffer,MagickPathExtent,"%s#%llx",sSep,
+                        (unsigned long long) hv);
+                    }
                   else if (fltHexFmt)
-                    FormatLocaleString(buffer,MaxTextExtent,"%s%a",sSep,
+                    FormatLocaleString(buffer,MagickPathExtent,"%s%a",sSep,
                       (double) p[i]);
                   else
-                    FormatLocaleString(buffer,MaxTextExtent,"%s%.*g%s",sSep,
+                    FormatLocaleString(buffer,MagickPathExtent,"%s%.*g%s",sSep,
                       precision,(double) (p[i]*valMult),sSuff);
                   status=WriteFTXTString(image,buffer,pixels,&extent);
                   sSep[0]=chSep;
