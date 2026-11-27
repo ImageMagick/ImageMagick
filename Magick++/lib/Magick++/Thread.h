@@ -28,6 +28,9 @@
 namespace Magick
 {
   // Mutex lock wrapper
+  //
+  // Provides lock()/unlock() so it satisfies the BasicLockable requirements
+  // and can be used with std::lock_guard<Magick::MutexLock>.
   class MagickPPExport MutexLock
   {
   public:
@@ -44,13 +47,13 @@ namespace Magick
     // Unlock mutex
     void unlock(void);
 
-  private:
-
     // Don't support copy constructor
-    MutexLock(const MutexLock& original_);
+    MutexLock(const MutexLock& original_) = delete;
 
     // Don't support assignment
-    MutexLock& operator=(const MutexLock& original );
+    MutexLock& operator=(const MutexLock& original_) = delete;
+
+  private:
 
 #if defined(MAGICKCORE_HAVE_PTHREAD)
     pthread_mutex_t _mutex;

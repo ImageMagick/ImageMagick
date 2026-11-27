@@ -31,19 +31,19 @@ namespace Magick
     // Construct with message string and nested exception
     Exception(const std::string& what_, Exception* nested_);
 
-    // Copy constructor
+    // Copy constructor (deep-copies the nested exception chain)
     Exception(const Exception& original_);
 
     // Destructor
     virtual ~Exception() throw();
 
-    // Assignment operator
+    // Assignment operator (deep-copies the nested exception chain)
     Exception& operator=(const Exception& original_);
 
     // Get string identifying exception
     virtual const char* what() const throw();
 
-    // Get nested exception
+    // Get nested exception (owned by this object; do not delete)
     const Exception* nested() const throw();
 
     //////////////////////////////////////////////////////////////////////
@@ -52,6 +52,7 @@ namespace Magick
     //
     //////////////////////////////////////////////////////////////////////
 
+    // Takes ownership of nested_; any previously held nested exception is deleted
     void nested(Exception* nested_) throw();
 
   private:
@@ -418,7 +419,7 @@ namespace Magick
     const MagickCore::ExceptionType severity_,const char* reason_,
     const char* description_=(char *) NULL);
 
-  // Thow exception based on ImageMagick's ExceptionInfo
+  // Throw exception based on ImageMagick's ExceptionInfo
   extern MagickPPExport void throwException(
     MagickCore::ExceptionInfo *exception_,const bool quiet_=false);
 

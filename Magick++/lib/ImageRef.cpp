@@ -23,9 +23,20 @@ Magick::ImageRef::ImageRef(void)
     _options(new Options),
     _refCount(1)
 {
-  GetPPException;
-  _image=AcquireImage(_options->imageInfo(),exceptionInfo);
-  ThrowPPException(false);
+  try
+  {
+    GetPPException;
+    _image=AcquireImage(_options->imageInfo(),exceptionInfo);
+    ThrowPPException(false);
+  }
+  catch (...)
+  {
+    // The destructor does not run when a constructor throws, so release
+    // the options here to avoid leaking them.
+    delete _options;
+    _options=(Options *) NULL;
+    throw;
+  }
 }
 
 Magick::ImageRef::ImageRef(MagickCore::Image *image_)
@@ -90,8 +101,12 @@ bool Magick::ImageRef::isShared()
 
 void  Magick::ImageRef::options(Magick::Options *options_)
 {
-  delete _options;
-  _options=options_;
+  // Guard against self-assignment, which would delete the new options too
+  if (_options != options_)
+    {
+      delete _options;
+      _options=options_;
+    }
 }
 
 Magick::Options *Magick::ImageRef::options(void)
@@ -118,7 +133,18 @@ Magick::ImageRef *Magick::ImageRef::replaceImage(ImageRef *imgRef,
   else
     {
       // We don't own the image, create a new ImageRef instance.
-      instance=new ImageRef(replacement_,imgRef->_options);
+      try
+      {
+        instance=new ImageRef(replacement_,imgRef->_options);
+      }
+      catch (...)
+      {
+        // Do not leave the mutex locked (or leak the replacement image)
+        // if the allocation fails.
+        imgRef->_mutexLock.unlock();
+        (void) DestroyImageList(replacement_);
+        throw;
+      }
       imgRef->_refCount--;
       imgRef->_mutexLock.unlock();
     }
@@ -129,6 +155,9 @@ std::string Magick::ImageRef::signature(const bool force_)
 {
   const char
     *property;
+
+  std::string
+    result;
 
   // Re-calculate image signature if necessary
   GetPPException;
@@ -141,10 +170,14 @@ std::string Magick::ImageRef::signature(const bool force_)
       (void) SignatureImage(_image,exceptionInfo);
       property=GetImageProperty(_image,"Signature",exceptionInfo);
     }
+  // Copy while still holding the lock; the property belongs to the image
+  if (property != (const char *) NULL)
+    result=std::string(property);
   _mutexLock.unlock();
   ThrowPPException(true);
 
-  return(std::string(property));
+  // An empty string (rather than UB from std::string(NULL)) on failure
+  return(result);
 }
 
 Magick::ImageRef::ImageRef(MagickCore::Image *image_,const Options *options_)

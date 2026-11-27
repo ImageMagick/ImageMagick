@@ -449,12 +449,17 @@ static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
   size_t
     channels,
     colorspace,
-    end,
+    length,
     run;
 
   ssize_t
     idx,
-    i;
+    x,
+    y;
+
+  unsigned char
+    *pixels,
+    *q;
 
   /*
     Open output image file.
@@ -508,93 +513,111 @@ static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
   p=GetVirtualPixels(image,0,0,image->columns,image->rows,exception);
   if (p == (const Quantum *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+  /* Allow space for a pending run from the preceding row. */
+  if (image->columns > ((size_t) MAGICK_SSIZE_MAX-1)/5)
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+  pixels=(unsigned char *) AcquireQuantumMemory(image->columns+1,
+    5*sizeof(*pixels));
+  if (pixels == (unsigned char *) NULL)
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   /*
     Do the actual encoding.
   */
-  end=image->rows * image->columns;
-  for (i=0; i < (ssize_t) end; i++) {
-    pp=px;
-    px.rgba.r=ScaleQuantumToChar(GetPixelRed(image,p));
-    px.rgba.g=ScaleQuantumToChar(GetPixelGreen(image,p));
-    px.rgba.b=ScaleQuantumToChar(GetPixelBlue(image,p));
-    if (channels == 4)
-      px.rgba.a=ScaleQuantumToChar(GetPixelAlpha(image,p));
-    p+=(ptrdiff_t) GetPixelChannels(image);
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    q=pixels;
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      pp=px;
+      px.rgba.r=ScaleQuantumToChar(GetPixelRed(image,p));
+      px.rgba.g=ScaleQuantumToChar(GetPixelGreen(image,p));
+      px.rgba.b=ScaleQuantumToChar(GetPixelBlue(image,p));
+      if (channels == 4)
+        px.rgba.a=ScaleQuantumToChar(GetPixelAlpha(image,p));
+      p+=(ptrdiff_t) GetPixelChannels(image);
 
-    if (pp.v == px.v)
-      {
-        run++;
-        if (run == 62)
-          {
-            (void) WriteBlobByte(image,QOI_OP_RUN | (unsigned char) (run - 1));
-            run=0;
-          }
-        continue;
-      }
-    if (run > 0)
-      {
-        (void) WriteBlobByte(image,QOI_OP_RUN | (unsigned char) (run - 1));
-        run=0;
-      }
-    idx=QOI_COLOR_HASH(px) % 64;
-    if (lut[idx].v == px.v)
-      {
-        (void) WriteBlobByte(image,QOI_OP_INDEX | (unsigned char) idx);
-        continue;
-      }
-    lut[QOI_COLOR_HASH(px) % 64]=px;
-    if (pp.rgba.a == px.rgba.a)
-      {
-        signed char
-          vr,
-          vg,
-          vb,
-          vg_r,
-          vg_b;
+      if (pp.v == px.v)
+        {
+          run++;
+          if (run == 62)
+            {
+              *q++=(unsigned char) (QOI_OP_RUN | (run-1));
+              run=0;
+            }
+          continue;
+        }
+      if (run > 0)
+        {
+          *q++=(unsigned char) (QOI_OP_RUN | (run-1));
+          run=0;
+        }
+      idx=QOI_COLOR_HASH(px) % 64;
+      if (lut[idx].v == px.v)
+        {
+          *q++=(unsigned char) (QOI_OP_INDEX | idx);
+          continue;
+        }
+      lut[QOI_COLOR_HASH(px) % 64]=px;
+      if (pp.rgba.a == px.rgba.a)
+        {
+          signed char
+            vr,
+            vg,
+            vb,
+            vg_r,
+            vg_b;
 
-        unsigned char
-          diff,
-          luma;
+          unsigned char
+            diff,
+            luma;
 
-        vr=(signed char) (px.rgba.r - pp.rgba.r);
-        vg=(signed char) (px.rgba.g - pp.rgba.g);
-        vb=(signed char) (px.rgba.b - pp.rgba.b);
-        vg_r=(signed char) (vr - vg);
-        vg_b=(signed char) (vb - vg);
+          vr=(signed char) (px.rgba.r - pp.rgba.r);
+          vg=(signed char) (px.rgba.g - pp.rgba.g);
+          vb=(signed char) (px.rgba.b - pp.rgba.b);
+          vg_r=(signed char) (vr - vg);
+          vg_b=(signed char) (vb - vg);
 
-        if ((vr > -3) && (vr < 2) && (vg > -3) && (vg < 2) &&
-            (vb > -3) && (vb < 2))
-          {
-            diff=(unsigned char) ((vr + 2) << 4 | (vg + 2) << 2 | (vb + 2));
-            (void) WriteBlobByte(image,QOI_OP_DIFF | diff);
-          }
-        else if ((vg_r > -9) && (vg_r < 8) && (vg > -33) && (vg < 32) &&
-                 (vg_b > -9) && (vg_b < 8))
-          {
-            luma=(unsigned char) (vg + 32);
-            (void) WriteBlobByte(image,QOI_OP_LUMA | luma);
-            luma=(unsigned char) ((vg_r + 8) << 4 | (vg_b +  8));
-            (void) WriteBlobByte(image,luma);
-          }
-        else
-          {
-            (void) WriteBlobByte(image,QOI_OP_RGB);
-            (void) WriteBlobByte(image,px.rgba.r);
-            (void) WriteBlobByte(image,px.rgba.g);
-            (void) WriteBlobByte(image,px.rgba.b);
-          }
-      }
-    else
+          if ((vr > -3) && (vr < 2) && (vg > -3) && (vg < 2) &&
+              (vb > -3) && (vb < 2))
+            {
+              diff=(unsigned char) ((vr + 2) << 4 | (vg + 2) << 2 | (vb + 2));
+              *q++=(unsigned char) (QOI_OP_DIFF | diff);
+            }
+          else if ((vg_r > -9) && (vg_r < 8) && (vg > -33) && (vg < 32) &&
+                   (vg_b > -9) && (vg_b < 8))
+            {
+              luma=(unsigned char) (vg + 32);
+              *q++=(unsigned char) (QOI_OP_LUMA | luma);
+              luma=(unsigned char) ((vg_r + 8) << 4 | (vg_b +  8));
+              *q++=luma;
+            }
+          else
+            {
+              *q++=QOI_OP_RGB;
+              *q++=px.rgba.r;
+              *q++=px.rgba.g;
+              *q++=px.rgba.b;
+            }
+        }
+      else
+        {
+          *q++=QOI_OP_RGBA;
+          *q++=px.rgba.r;
+          *q++=px.rgba.g;
+          *q++=px.rgba.b;
+          *q++=px.rgba.a;
+        }
+    }
+    if ((y == (ssize_t) image->rows-1) && (run > 0))
+      *q++=(unsigned char) (QOI_OP_RUN | (run-1));
+    length=(size_t) (q-pixels);
+    if (WriteBlob(image,length,pixels) != (ssize_t) length)
       {
-        (void) WriteBlobByte(image,QOI_OP_RGBA);
-        (void) WriteBlobByte(image,px.rgba.r);
-        (void) WriteBlobByte(image,px.rgba.g);
-        (void) WriteBlobByte(image,px.rgba.b);
-        (void) WriteBlobByte(image,px.rgba.a);
+        status=MagickFalse;
+        break;
       }
   }
-  if (run > 0)
-    (void) WriteBlobByte(image,QOI_OP_RUN | (unsigned char) (run - 1));
+  pixels=(unsigned char *) RelinquishMagickMemory(pixels);
   /*
     Write the QOI end marker: seven 0x00 bytes followed by 0x01.
   */

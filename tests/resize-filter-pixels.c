@@ -46,11 +46,13 @@
   so host policy and logging files cannot change the oracle. Other quantum
   depths and HDRI builds exit 77 so the test harness can skip them.
 */
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <MagickCore/MagickCore.h>
 
+#if MAGICKCORE_QUANTUM_DEPTH == 16 && !defined(MAGICKCORE_HDRI_SUPPORT)
 static Image *AcquireCanvas(const size_t columns,const size_t rows,
   ExceptionInfo *exception)
 {
@@ -84,6 +86,8 @@ static MagickBooleanType FillPattern(Image *image,ExceptionInfo *exception)
   size_t
     nch;
 
+  if (image == (Image *) NULL)
+    return(MagickFalse);
   nch=GetPixelChannels(image);
   view=AcquireAuthenticCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -133,6 +137,8 @@ static MagickBooleanType DumpResize(FILE *out,const char *name,Image *image,
   size_t
     nch;
 
+  if (image == (Image *) NULL)
+    return(MagickFalse);
   resized=ResizeImage(image,columns,rows,LanczosFilter,exception);
   if (resized == (Image *) NULL)
     {
@@ -258,12 +264,16 @@ static MagickBooleanType CompareDump(FILE *actual,FILE *reference,int *max_diff)
 
   size_t
     channels,
+    columns,
     row,
+    rows,
     sample;
 
   *max_diff=0;
   tolerance=0;
   channels=0;
+  columns=0;
+  rows=0;
   row=0;
   sample=0;
   name[0]='\0';
@@ -286,6 +296,12 @@ static MagickBooleanType CompareDump(FILE *actual,FILE *reference,int *max_diff)
           case_columns,
           case_rows;
 
+        if ((name[0] != '\0') && (row != rows))
+          {
+            (void) fprintf(stderr,"%s has %lu rows, expected %lu\n",name,
+              (unsigned long) row,(unsigned long) rows);
+            return(MagickFalse);
+          }
         if (strcmp(actual_line,reference_line) != 0)
           {
             (void) fprintf(stderr,"case header mismatch:\n%s%s",actual_line,
@@ -298,9 +314,22 @@ static MagickBooleanType CompareDump(FILE *actual,FILE *reference,int *max_diff)
             (void) fprintf(stderr,"malformed case header: %s",actual_line);
             return(MagickFalse);
           }
+        if ((case_channels == 0) || (case_columns == 0) || (case_rows == 0))
+          {
+            (void) fprintf(stderr,"empty case header: %s",actual_line);
+            return(MagickFalse);
+          }
         channels=(size_t) case_channels;
+        columns=(size_t) case_columns;
+        rows=(size_t) case_rows;
         row=0;
         continue;
+      }
+    if ((channels == 0) || (row >= rows))
+      {
+        (void) fprintf(stderr,"%s has unexpected data at row %lu\n",name,
+          (unsigned long) row);
+        return(MagickFalse);
       }
     actual_cursor=actual_line;
     reference_cursor=reference_line;
@@ -337,28 +366,25 @@ static MagickBooleanType CompareDump(FILE *actual,FILE *reference,int *max_diff)
             name,(unsigned long) row);
           return(MagickFalse);
         }
+      errno=0;
       actual_value=strtol(actual_token,&end,10);
-      if (*end != '\0')
+      if ((*end != '\0') || (errno != 0))
         {
           (void) fprintf(stderr,"%s row %lu has a non-numeric sample\n",name,
             (unsigned long) row);
           return(MagickFalse);
         }
+      errno=0;
       reference_value=strtol(reference_token,&end,10);
-      if (*end != '\0')
+      if ((*end != '\0') || (errno != 0))
         {
           (void) fprintf(stderr,
             "reference %s row %lu has a non-numeric sample\n",name,
             (unsigned long) row);
           return(MagickFalse);
         }
-      column=0;
-      channel=sample;
-      if (channels != 0)
-        {
-          column=sample/channels;
-          channel=sample % channels;
-        }
+      column=sample/channels;
+      channel=sample % channels;
       tolerance=CaseTolerance(name,channel);
       difference=(int) labs(actual_value-reference_value);
       if (difference > *max_diff)
@@ -374,8 +400,21 @@ static MagickBooleanType CompareDump(FILE *actual,FILE *reference,int *max_diff)
         }
       sample++;
     }
+    if (sample != (columns*channels))
+      {
+        (void) fprintf(stderr,"%s row %lu has %lu samples, expected %lu\n",
+          name,(unsigned long) row,(unsigned long) sample,
+          (unsigned long) (columns*channels));
+        return(MagickFalse);
+      }
     row++;
   }
+  if ((name[0] != '\0') && (row != rows))
+    {
+      (void) fprintf(stderr,"%s has %lu rows, expected %lu\n",name,
+        (unsigned long) row,(unsigned long) rows);
+      return(MagickFalse);
+    }
   if (ReadDumpLine(reference,reference_line,sizeof(reference_line)) !=
       MagickFalse)
     {
@@ -383,6 +422,13 @@ static MagickBooleanType CompareDump(FILE *actual,FILE *reference,int *max_diff)
       return(MagickFalse);
     }
   return(MagickTrue);
+}
+
+static Image *ReleaseImage(Image *image)
+{
+  if (image == (Image *) NULL)
+    return((Image *) NULL);
+  return(DestroyImage(image));
 }
 
 int main(int argc,char **argv)
@@ -405,10 +451,6 @@ int main(int argc,char **argv)
       (void) fprintf(stderr,"usage: %s dump.txt [reference.txt]\n",argv[0]);
       return(1);
     }
-#if MAGICKCORE_QUANTUM_DEPTH != 16 || defined(MAGICKCORE_HDRI_SUPPORT)
-  (void) fprintf(stderr,"skip: Q16 non-HDRI build required\n");
-  return(77);
-#endif
 #if defined(_WIN32)
   (void) _putenv("MAGICK_CONFIGURE_PATH=");
 #else
@@ -419,13 +461,18 @@ int main(int argc,char **argv)
   exception=AcquireExceptionInfo();
   out=fopen(argv[1],"w");
   if (out == (FILE *) NULL)
-    return(1);
+    {
+      (void) fprintf(stderr,"unable to create %s\n",argv[1]);
+      exception=DestroyExceptionInfo(exception);
+      MagickCoreTerminus();
+      return(1);
+    }
   status=MagickTrue;
 
   image=AcquireCanvas(64,48,exception);
   status&=FillPattern(image,exception);
   status&=DumpResize(out,"rgb-down-64x48",image,16,12,exception);
-  image=DestroyImage(image);
+  image=ReleaseImage(image);
 
   image=AcquireCanvas(20,15,exception);
   status&=FillPattern(image,exception);
@@ -435,7 +482,7 @@ int main(int argc,char **argv)
     The horizontal pass runs first and uses the 4-row kernel.
   */
   status&=DumpResize(out,"rgb-remainder-20x15",image,8,4,exception);
-  image=DestroyImage(image);
+  image=ReleaseImage(image);
 
   image=AcquireCanvas(18,14,exception);
   status&=SetImageAlphaChannel(image,ActivateAlphaChannel,exception);
@@ -447,13 +494,13 @@ int main(int argc,char **argv)
     (PixelTrait) (UpdatePixelTrait | BlendPixelTrait));
   image->alpha_trait=BlendPixelTrait;
   status&=DumpResize(out,"rgba-blend-alpha",image,9,7,exception);
-  image=DestroyImage(image);
+  image=ReleaseImage(image);
 
   image=AcquireCanvas(17,13,exception);
   status&=SetImageColorspace(image,GRAYColorspace,exception);
   status&=FillPattern(image,exception);
   status&=DumpResize(out,"gray-17x13",image,8,6,exception);
-  image=DestroyImage(image);
+  image=ReleaseImage(image);
 
   /*
     The 40x30 to 20x15 cases filter the 40 source columns vertically first:
@@ -463,13 +510,13 @@ int main(int argc,char **argv)
   status&=SetImageColorspace(image,GRAYColorspace,exception);
   status&=FillPattern(image,exception);
   status&=DumpResize(out,"gray-40x30",image,20,15,exception);
-  image=DestroyImage(image);
+  image=ReleaseImage(image);
 
   image=AcquireCanvas(40,30,exception);
   status&=FillPattern(image,exception);
   (void) SetImageChannelMask(image,RedChannel);
   status&=DumpResize(out,"rgb-red-only",image,20,15,exception);
-  image=DestroyImage(image);
+  image=ReleaseImage(image);
 
   image=AcquireCanvas(40,30,exception);
   status&=SetImageColorspace(image,CMYKColorspace,exception);
@@ -477,7 +524,7 @@ int main(int argc,char **argv)
   status&=DumpResize(out,"cmyk-40x30",image,20,15,exception);
   (void) SetImageChannelMask(image,CyanChannel);
   status&=DumpResize(out,"cmyk-cyan-only",image,20,15,exception);
-  image=DestroyImage(image);
+  image=ReleaseImage(image);
 
   image=AcquireCanvas(20,15,exception);
   status&=FillPattern(image,exception);
@@ -485,13 +532,20 @@ int main(int argc,char **argv)
   status&=SetImageColorspace(mask,GRAYColorspace,exception);
   status&=FillPattern(mask,exception);
   status&=SetImageMask(image,WritePixelMask,mask,exception);
-  mask=DestroyImage(mask);
+  mask=ReleaseImage(mask);
   status&=DumpResize(out,"rgb-write-mask",image,10,8,exception);
-  image=DestroyImage(image);
+  image=ReleaseImage(image);
 
-  (void) fclose(out);
+  if ((ferror(out) != 0) || (fclose(out) != 0))
+    {
+      (void) fprintf(stderr,"unable to write %s\n",argv[1]);
+      status=MagickFalse;
+    }
   if (exception->severity >= ErrorException)
-    CatchException(exception);
+    {
+      CatchException(exception);
+      status=MagickFalse;
+    }
   exception=DestroyExceptionInfo(exception);
   MagickCoreTerminus();
   if (status == MagickFalse)
@@ -525,3 +579,10 @@ int main(int argc,char **argv)
     }
   return(0);
 }
+#else
+int main(void)
+{
+  (void) fprintf(stderr,"skip: Q16 non-HDRI build required\n");
+  return(77);
+}
+#endif

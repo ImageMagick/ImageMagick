@@ -850,7 +850,6 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
               }
             break;
           }
-          case RLECompression:
           default:
           {
             MemoryInfo
@@ -887,7 +886,9 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
                 break;
             }
             length=(size_t) (q-pixels);
-            if (compression == LZWCompression)
+            if (compression == NoCompression)
+              status=Ascii85EncodeImage(image,length,pixels,exception);
+            else if (compression == LZWCompression)
               status=LZWEncodeImage(image,length,pixels,exception);
             else
               status=PackbitsEncodeImage(image,length,pixels,exception);
@@ -897,31 +898,6 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
                 (void) CloseBlob(image);
                 return(MagickFalse);
               }
-            break;
-          }
-          case NoCompression:
-          {
-            /*
-              Dump uncompressed PseudoColor packets.
-            */
-            Ascii85Initialize(image);
-            for (y=0; y < (ssize_t) image->rows; y++)
-            {
-              p=GetVirtualPixels(image,0,y,image->columns,1,exception);
-              if (p == (const Quantum *) NULL)
-                break;
-              for (x=0; x < (ssize_t) image->columns; x++)
-              {
-                Ascii85Encode(image,ScaleQuantumToChar(ClampToQuantum(
-                  GetPixelLuma(image,p))));
-                p+=(ptrdiff_t) GetPixelChannels(image);
-              }
-              progress=SetImageProgress(image,SaveImageTag,(MagickOffsetType)
-                y,image->rows);
-              if (progress == MagickFalse)
-                break;
-            }
-            Ascii85Flush(image);
             break;
           }
         }
@@ -949,7 +925,6 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
                 }
               break;
             }
-            case RLECompression:
             default:
             {
               MemoryInfo
@@ -1007,7 +982,9 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
                   break;
               }
               length=(size_t) (q-pixels);
-              if (compression == LZWCompression)
+              if (compression == NoCompression)
+                status=Ascii85EncodeImage(image,length,pixels,exception);
+              else if (compression == LZWCompression)
                 status=LZWEncodeImage(image,length,pixels,exception);
               else
                 status=PackbitsEncodeImage(image,length,pixels,exception);
@@ -1019,64 +996,16 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
                 }
               break;
             }
-            case NoCompression:
-            {
-              /*
-                Dump uncompressed DirectColor packets.
-              */
-              Ascii85Initialize(image);
-              for (y=0; y < (ssize_t) image->rows; y++)
-              {
-                p=GetVirtualPixels(image,0,y,image->columns,1,exception);
-                if (p == (const Quantum *) NULL)
-                  break;
-                for (x=0; x < (ssize_t) image->columns; x++)
-                {
-                  if ((image->alpha_trait != UndefinedPixelTrait) &&
-                      (GetPixelAlpha(image,p) == (Quantum) TransparentAlpha))
-                    {
-                      Ascii85Encode(image,ScaleQuantumToChar((Quantum)
-                        QuantumRange));
-                      Ascii85Encode(image,ScaleQuantumToChar((Quantum)
-                        QuantumRange));
-                      Ascii85Encode(image,ScaleQuantumToChar((Quantum)
-                        QuantumRange));
-                    }
-                  else
-                    if (image->colorspace != CMYKColorspace)
-                      {
-                        Ascii85Encode(image,ScaleQuantumToChar(
-                          GetPixelRed(image,p)));
-                        Ascii85Encode(image,ScaleQuantumToChar(
-                          GetPixelGreen(image,p)));
-                        Ascii85Encode(image,ScaleQuantumToChar(
-                          GetPixelBlue(image,p)));
-                      }
-                    else
-                      {
-                        Ascii85Encode(image,ScaleQuantumToChar(
-                          GetPixelRed(image,p)));
-                        Ascii85Encode(image,ScaleQuantumToChar(
-                          GetPixelGreen(image,p)));
-                        Ascii85Encode(image,ScaleQuantumToChar(
-                          GetPixelBlue(image,p)));
-                        Ascii85Encode(image,ScaleQuantumToChar(
-                          GetPixelBlack(image,p)));
-                      }
-                  p+=(ptrdiff_t) GetPixelChannels(image);
-                }
-                progress=SetImageProgress(image,SaveImageTag,(MagickOffsetType)
-                  y,image->rows);
-                if (progress == MagickFalse)
-                  break;
-              }
-              Ascii85Flush(image);
-              break;
-            }
           }
         }
       else
         {
+          MemoryInfo
+            *pixel_info;
+
+          unsigned char
+            *q;
+
           /*
             Dump number of colors and colormap.
           */
@@ -1098,83 +1027,47 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
               ScaleQuantumToChar((Quantum) image->colormap[i].blue));
             (void) WriteBlobString(image,buffer);
           }
-          switch (compression)
+          /*
+            Allocate pixel array.
+          */
+          length=(size_t) number_pixels;
+          pixel_info=AcquireVirtualMemory(length,sizeof(*pixels));
+          if (pixel_info == (MemoryInfo *) NULL)
+            ThrowWriterException(ResourceLimitError,
+              "MemoryAllocationFailed");
+          pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
+          /*
+            Dump runlength encoded pixels.
+          */
+          q=pixels;
+          for (y=0; y < (ssize_t) image->rows; y++)
           {
-            case RLECompression:
-            default:
-            {
-              MemoryInfo
-                *pixel_info;
-
-              unsigned char
-                *q;
-
-              /*
-                Allocate pixel array.
-              */
-              length=(size_t) number_pixels;
-              pixel_info=AcquireVirtualMemory(length,sizeof(*pixels));
-              if (pixel_info == (MemoryInfo *) NULL)
-                ThrowWriterException(ResourceLimitError,
-                  "MemoryAllocationFailed");
-              pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
-              /*
-                Dump runlength encoded pixels.
-              */
-              q=pixels;
-              for (y=0; y < (ssize_t) image->rows; y++)
-              {
-                p=GetVirtualPixels(image,0,y,image->columns,1,exception);
-                if (p == (const Quantum *) NULL)
-                  break;
-                for (x=0; x < (ssize_t) image->columns; x++)
-                {
-                  *q++=(unsigned char) ((ssize_t) GetPixelIndex(image,p));
-                  p+=(ptrdiff_t) GetPixelChannels(image);
-                }
-                progress=SetImageProgress(image,SaveImageTag,(MagickOffsetType)
-                  y,image->rows);
-                if (progress == MagickFalse)
-                  break;
-              }
-              length=(size_t) (q-pixels);
-              if (compression == LZWCompression)
-                status=LZWEncodeImage(image,length,pixels,exception);
-              else
-                status=PackbitsEncodeImage(image,length,pixels,exception);
-              pixel_info=RelinquishVirtualMemory(pixel_info);
-              if (status == MagickFalse)
-                {
-                  (void) CloseBlob(image);
-                  return(MagickFalse);
-                }
+            p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+            if (p == (const Quantum *) NULL)
               break;
-            }
-            case NoCompression:
+            for (x=0; x < (ssize_t) image->columns; x++)
             {
-              /*
-                Dump uncompressed PseudoColor packets.
-              */
-              Ascii85Initialize(image);
-              for (y=0; y < (ssize_t) image->rows; y++)
-              {
-                p=GetVirtualPixels(image,0,y,image->columns,1,exception);
-                if (p == (const Quantum *) NULL)
-                  break;
-                for (x=0; x < (ssize_t) image->columns; x++)
-                {
-                  Ascii85Encode(image,(unsigned char) ((ssize_t) GetPixelIndex(image,p)));
-                  p+=(ptrdiff_t) GetPixelChannels(image);
-                }
-                progress=SetImageProgress(image,SaveImageTag,(MagickOffsetType)
-                  y,image->rows);
-                if (progress == MagickFalse)
-                  break;
-              }
-              Ascii85Flush(image);
-              break;
+              *q++=(unsigned char) ((ssize_t) GetPixelIndex(image,p));
+              p+=(ptrdiff_t) GetPixelChannels(image);
             }
+            progress=SetImageProgress(image,SaveImageTag,(MagickOffsetType)
+              y,image->rows);
+            if (progress == MagickFalse)
+              break;
           }
+          length=(size_t) (q-pixels);
+          if (compression == NoCompression)
+            status=Ascii85EncodeImage(image,length,pixels,exception);
+          else if (compression == LZWCompression)
+            status=LZWEncodeImage(image,length,pixels,exception);
+          else
+            status=PackbitsEncodeImage(image,length,pixels,exception);
+          pixel_info=RelinquishVirtualMemory(pixel_info);
+          if (status == MagickFalse)
+            {
+              (void) CloseBlob(image);
+              return(MagickFalse);
+            }
         }
     (void) WriteBlobByte(image,'\n');
     length=(size_t) (TellBlob(image)-stop);

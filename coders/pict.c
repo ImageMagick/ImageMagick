@@ -571,7 +571,8 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  EncodeImage compresses an image via Macintosh pack bits encoding
-%  for Macintosh PICT images.
+%  for Macintosh PICT images.  It returns the number of bytes written, or
+%  zero if the write fails.
 %
 %  The format of the EncodeImage method is:
 %
@@ -602,11 +603,9 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
   ssize_t
     i;
 
-  unsigned char
-    *q;
-
   size_t
-    length;
+    length,
+    prefix;
 
   ssize_t
     count,
@@ -614,7 +613,9 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
     runlength;
 
   unsigned char
-    index;
+    index,
+    *q,
+    *r;
 
   /*
     Pack scanline.
@@ -628,7 +629,8 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
   count=0;
   runlength=0;
   p=scanline+(bytes_per_line-1);
-  q=pixels;
+  prefix=bytes_per_line > 250 ? 2 : 1;
+  q=pixels+prefix;
   index=(*p);
   for (i=(ssize_t) bytes_per_line-1; i >= 0; i--)
   {
@@ -698,24 +700,22 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
   if (count > 0)
     *q++=(unsigned char) (count-1);
   /*
-    Write the number of and the packed length.
+    Reverse the packed scanline and write it with its length.
   */
-  length=(size_t) (q-pixels);
-  if (bytes_per_line > 250)
-    {
-      (void) WriteBlobMSBShort(image,(unsigned short) length);
-      length+=2;
-    }
-  else
-    {
-      (void) WriteBlobByte(image,(unsigned char) length);
-      length++;
-    }
-  while (q != pixels)
+  length=(size_t) (q-(pixels+prefix));
+  r=pixels+prefix;
+  while (r < --q)
   {
-    q--;
-    (void) WriteBlobByte(image,*q);
+    index=*r;
+    *r++=*q;
+    *q=index;
   }
+  if (prefix == 2)
+    pixels[0]=(unsigned char) (length >> 8);
+  pixels[prefix-1]=(unsigned char) length;
+  length+=prefix;
+  if (WriteBlob(image,length,pixels) != (ssize_t) length)
+    return(0);
   return(length);
 }
 
@@ -1736,6 +1736,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
   size_t
     bytes_per_line,
     count,
+    length,
     row_bytes,
     storage_class;
 
@@ -1833,7 +1834,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
     ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
   buffer=(unsigned char *) AcquireQuantumMemory(PictInfoSize,sizeof(*buffer));
   packed_scanline=(unsigned char *) AcquireQuantumMemory((size_t)
-   (row_bytes+2*MaxCount),sizeof(*packed_scanline));
+   (row_bytes+2*MaxCount+2),sizeof(*packed_scanline));
   scanline=(unsigned char *) AcquireQuantumMemory(row_bytes,sizeof(*scanline));
   if ((buffer == (unsigned char *) NULL) ||
       (packed_scanline == (unsigned char *) NULL) ||
@@ -1849,7 +1850,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     }
   (void) memset(scanline,0,row_bytes);
-  (void) memset(packed_scanline,0,(size_t) (row_bytes+2*MaxCount)*
+  (void) memset(packed_scanline,0,(size_t) (row_bytes+2*MaxCount+2)*
     sizeof(*packed_scanline));
   /*
     Write header, header size, size bounding box, version, and reserved.
@@ -1919,9 +1920,6 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
 
       ImageInfo
         *jpeg_info;
-
-      size_t
-        length;
 
       unsigned char
         *blob;
@@ -2075,8 +2073,14 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
         scanline[x]=(unsigned char) ((ssize_t) GetPixelIndex(image,p));
         p+=(ptrdiff_t) GetPixelChannels(image);
       }
-      count+=EncodeImage(image,scanline,(size_t) (row_bytes & 0x7FFF),
+      length=EncodeImage(image,scanline,(size_t) (row_bytes & 0x7FFF),
         packed_scanline);
+      if (length == 0)
+        {
+          status=MagickFalse;
+          break;
+        }
+      count+=length;
       if (image->previous == (Image *) NULL)
         {
           status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -2090,8 +2094,16 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
       {
         (void) memset(scanline,0,row_bytes);
         for (y=0; y < (ssize_t) image->rows; y++)
-          count+=EncodeImage(image,scanline,(size_t) (row_bytes & 0x7FFF),
+        {
+          length=EncodeImage(image,scanline,(size_t) (row_bytes & 0x7FFF),
             packed_scanline);
+          if (length == 0)
+            {
+              status=MagickFalse;
+              break;
+            }
+          count+=length;
+        }
       }
     else
       {
@@ -2129,7 +2141,13 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
               *opacity++=ScaleQuantumToChar((Quantum) (GetPixelAlpha(image,p)));
             p+=(ptrdiff_t) GetPixelChannels(image);
           }
-          count+=EncodeImage(image,scanline,bytes_per_line,packed_scanline);
+          length=EncodeImage(image,scanline,bytes_per_line,packed_scanline);
+          if (length == 0)
+            {
+              status=MagickFalse;
+              break;
+            }
+          count+=length;
           if (image->previous == (Image *) NULL)
             {
               status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,

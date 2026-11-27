@@ -28,13 +28,15 @@ Magick::MutexLock::MutexLock(void)
     sysError;
 
   if ((sysError=::pthread_mutexattr_init(&attr)) == 0)
-    if ((sysError=::pthread_mutex_init(&_mutex,&attr)) == 0)
-      {
-        ::pthread_mutexattr_destroy(&attr);
+    {
+      sysError=::pthread_mutex_init(&_mutex,&attr);
+      // Always release the attribute object, even if mutex init failed.
+      (void) ::pthread_mutexattr_destroy(&attr);
+      if (sysError == 0)
         return;
-      }
+    }
   throwExceptionExplicit(MagickCore::OptionError,"mutex initialization failed",
-    strerror(sysError));
+    std::strerror(sysError));
 }
 #else
 #if defined(_VISUALC_) && defined(_MT)
@@ -67,9 +69,9 @@ Magick::MutexLock::~MutexLock(void)
 {
 #if defined(MAGICKCORE_HAVE_PTHREAD)
   (void) ::pthread_mutex_destroy(&_mutex);
-#endif
-#if defined(_MT) && defined(_VISUALC_)
-  (void) ::CloseHandle(_mutex);
+#elif defined(_MT) && defined(_VISUALC_)
+  if (_mutex != (HANDLE) NULL)
+    (void) ::CloseHandle(_mutex);
 #endif
 }
 
@@ -83,10 +85,9 @@ void Magick::MutexLock::lock(void)
   if ((sysError=::pthread_mutex_lock(&_mutex)) == 0)
     return;
   throwExceptionExplicit(MagickCore::OptionError,"mutex lock failed",
-    strerror(sysError));
-#endif
-#if defined(_MT) && defined(_VISUALC_)
-  if (WaitForSingleObject(_mutex,INFINITE) != WAIT_FAILED)
+    std::strerror(sysError));
+#elif defined(_MT) && defined(_VISUALC_)
+  if (::WaitForSingleObject(_mutex,INFINITE) == WAIT_OBJECT_0)
     return;
   throwExceptionExplicit(MagickCore::OptionError,"mutex lock failed");
 #endif
@@ -102,10 +103,9 @@ void Magick::MutexLock::unlock(void)
   if ((sysError=::pthread_mutex_unlock(&_mutex)) == 0)
     return;
   throwExceptionExplicit(MagickCore::OptionError,"mutex unlock failed",
-    strerror(sysError));
-#endif
-#if defined(_MT) && defined(_VISUALC_)
-  if (ReleaseSemaphore(_mutex,1,(LPLONG) NULL) == TRUE)
+    std::strerror(sysError));
+#elif defined(_MT) && defined(_VISUALC_)
+  if (::ReleaseSemaphore(_mutex,1,(LPLONG) NULL) == TRUE)
     return;
   throwExceptionExplicit(MagickCore::OptionError,"mutex unlock failed");
 #endif
