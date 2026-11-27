@@ -131,6 +131,9 @@ static HNodeInfo
 
 static void
   DestroyColorCube(const Image *,HNodeInfo *);
+
+static HCubeInfo
+  *DestroyHCubeInfo(const Image *,HCubeInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -159,6 +162,56 @@ static void
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static MagickBooleanType AppendNodeColor(const Image *image,
+  HNodeInfo *node_info,const PixelInfo *pixel,const Quantum *p)
+{
+  PixelInfo
+    *entry;
+
+  /*
+    Add a new unique color to the color list of a leaf node.
+  */
+  if (node_info->number_unique >= node_info->extent)
+    {
+      PixelInfo
+        *list;
+
+      size_t
+        extent;
+
+      extent=(node_info->extent == 0) ? 1 : node_info->extent << 1;
+      if (node_info->list == (PixelInfo *) NULL)
+        list=(PixelInfo *) AcquireQuantumMemory(extent,sizeof(*list));
+      else
+        list=(PixelInfo *) ResizeQuantumMemory(node_info->list,extent,
+          sizeof(*list));
+      if (list == (PixelInfo *) NULL)
+        {
+          /*
+            ResizeQuantumMemory() relinquishes the old block on failure, so
+            leave the node in a consistent, empty state.
+          */
+          node_info->list=(PixelInfo *) NULL;
+          node_info->extent=0;
+          node_info->number_unique=0;
+          return(MagickFalse);
+        }
+      node_info->list=list;
+      node_info->extent=extent;
+    }
+  entry=node_info->list+node_info->number_unique;
+  *entry=(*pixel);
+  entry->red=(double) GetPixelRed(image,p);
+  entry->green=(double) GetPixelGreen(image,p);
+  entry->blue=(double) GetPixelBlue(image,p);
+  if (image->colorspace == CMYKColorspace)
+    entry->black=(double) GetPixelBlack(image,p);
+  entry->alpha=(double) GetPixelAlpha(image,p);
+  entry->count=1;
+  node_info->number_unique++;
+  return(MagickTrue);
+}
 
 static inline size_t ColorToNodeId(const PixelInfo *pixel,size_t index)
 {
@@ -202,7 +255,6 @@ static inline MagickBooleanType IsPixelInfoColorMatch(
   return(MagickTrue);
 }
 
-
 static HCubeInfo *ClassifyImageColors(const Image *image,
   ExceptionInfo *exception)
 {
@@ -215,7 +267,8 @@ static HCubeInfo *ClassifyImageColors(const Image *image,
     *cube_info;
 
   MagickBooleanType
-    proceed;
+    proceed,
+    status;
 
   PixelInfo
     pixel;
@@ -252,23 +305,27 @@ static HCubeInfo *ClassifyImageColors(const Image *image,
         ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       return(cube_info);
     }
+  status=MagickTrue;
   GetPixelInfo(image,&pixel);
   image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
-      break;
+      {
+        status=MagickFalse;
+        break;
+      }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       /*
         Start at the root and proceed level by level.
       */
+      GetPixelInfoPixel(image,p,&pixel);
       node_info=cube_info->root;
       index=MaxTreeDepth-1;
       for (level=1; level < MaxTreeDepth; level++)
       {
-        GetPixelInfoPixel(image,p,&pixel);
         id=ColorToNodeId(&pixel,index);
         if (node_info->child[id] == (HNodeInfo *) NULL)
           {
@@ -278,12 +335,15 @@ static HCubeInfo *ClassifyImageColors(const Image *image,
                 (void) ThrowMagickException(exception,GetMagickModule(),
                   ResourceLimitError,"MemoryAllocationFailed","`%s'",
                   image->filename);
-                return(0);
+                status=MagickFalse;
+                break;
               }
           }
         node_info=node_info->child[id];
         index--;
       }
+      if (status == MagickFalse)
+        break;
       for (i=0; i < (ssize_t) node_info->number_unique; i++)
         if (IsPixelInfoColorMatch(&pixel,node_info->list+i) != MagickFalse)
           break;
@@ -291,45 +351,37 @@ static HCubeInfo *ClassifyImageColors(const Image *image,
         node_info->list[i].count++;
       else
         {
-          if (node_info->number_unique == 0)
-            {
-              node_info->extent=1;
-              node_info->list=(PixelInfo *) AcquireQuantumMemory(
-                node_info->extent,sizeof(*node_info->list));
-            }
-          else
-            if (i >= (ssize_t) node_info->extent)
-              {
-                node_info->extent<<=1;
-                node_info->list=(PixelInfo *) ResizeQuantumMemory(
-                  node_info->list,node_info->extent,sizeof(*node_info->list));
-              }
-          if (node_info->list == (PixelInfo *) NULL)
+          if (AppendNodeColor(image,node_info,&pixel,p) == MagickFalse)
             {
               (void) ThrowMagickException(exception,GetMagickModule(),
                 ResourceLimitError,"MemoryAllocationFailed","`%s'",
                 image->filename);
-              return(0);
+              status=MagickFalse;
+              break;
             }
-          node_info->list[i]=pixel;
-          node_info->list[i].red=(double) GetPixelRed(image,p);
-          node_info->list[i].green=(double) GetPixelGreen(image,p);
-          node_info->list[i].blue=(double) GetPixelBlue(image,p);
-          if (image->colorspace == CMYKColorspace)
-            node_info->list[i].black=(double) GetPixelBlack(image,p);
-          node_info->list[i].alpha=(double) GetPixelAlpha(image,p);
-          node_info->list[i].count=1;
-          node_info->number_unique++;
           cube_info->colors++;
         }
       p+=(ptrdiff_t) GetPixelChannels(image);
     }
+    if (status == MagickFalse)
+      break;
     proceed=SetImageProgress(image,EvaluateImageTag,(MagickOffsetType) y,
       image->rows);
     if (proceed == MagickFalse)
-      break;
+      {
+        status=MagickFalse;
+        break;
+      }
   }
   image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    {
+      /*
+        Do not hand back a partial tree: it would silently yield wrong counts.
+      */
+      cube_info=DestroyHCubeInfo(image,cube_info);
+      return((HCubeInfo *) NULL);
+    }
   return(cube_info);
 }
 
@@ -426,14 +478,15 @@ static HCubeInfo *DestroyHCubeInfo(const Image *image,HCubeInfo *cube_info)
   /*
     Release color cube tree storage.
   */
-  DestroyColorCube(image,cube_info->root);
-  do
+  if (cube_info->root != (HNodeInfo *) NULL)
+    DestroyColorCube(image,cube_info->root);
+  while (cube_info->node_queue != (HNodes *) NULL)
   {
     nodes=cube_info->node_queue->next;
     cube_info->node_queue=(HNodes *)
       RelinquishMagickMemory(cube_info->node_queue);
     cube_info->node_queue=nodes;
-  } while (cube_info->node_queue != (HNodes *) NULL);
+  }
   return((HCubeInfo *) RelinquishMagickMemory(cube_info));
 }
 
@@ -521,7 +574,10 @@ static HCubeInfo *GetHCubeInfo(void)
   */
   cube_info->root=GetHNodeInfo(cube_info,0);
   if (cube_info->root == (HNodeInfo *) NULL)
-    return((HCubeInfo *) NULL);
+    {
+      (void) RelinquishMagickMemory(cube_info);
+      return((HCubeInfo *) NULL);
+    }
   return(cube_info);
 }
 
@@ -547,7 +603,7 @@ static HCubeInfo *GetHCubeInfo(void)
 %
 %    o image: the image.
 %
-%    o file:  Write a histogram of the color distribution to this file handle.
+%    o number_colors: the number of unique colors returned in the histogram.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -561,6 +617,11 @@ MagickExport PixelInfo *GetImageHistogram(const Image *image,
   HCubeInfo
     *cube_info;
 
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  assert(number_colors != (size_t *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   *number_colors=0;
   histogram=(PixelInfo *) NULL;
   cube_info=ClassifyImageColors(image,exception);
@@ -661,8 +722,6 @@ static HNodeInfo *GetHNodeInfo(HCubeInfo *cube_info,const size_t level)
 %
 %    o image: the image.
 %
-%    o max_colors: the maximum unique colors.
-%
 %    o exception: return any errors or warnings in this structure.
 %
 */
@@ -682,9 +741,11 @@ static MagickBooleanType CheckImageColors(const Image *image,
   HNodeInfo
     *node_info;
 
+  MagickBooleanType
+    status;
+
   PixelInfo
-    pixel,
-    target;
+    pixel;
 
   size_t
     id,
@@ -707,8 +768,8 @@ static MagickBooleanType CheckImageColors(const Image *image,
         ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       return(MagickFalse);
     }
+  status=MagickTrue;
   GetPixelInfo(image,&pixel);
-  GetPixelInfo(image,&target);
   image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -717,17 +778,20 @@ static MagickBooleanType CheckImageColors(const Image *image,
 
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
-      break;
+      {
+        status=MagickFalse;
+        break;
+      }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       /*
         Start at the root and proceed level by level.
       */
+      GetPixelInfoPixel(image,p,&pixel);
       node_info=cube_info->root;
       index=MaxTreeDepth-1;
       for (level=1; level < MaxTreeDepth; level++)
       {
-        GetPixelInfoPixel(image,p,&pixel);
         id=ColorToNodeId(&pixel,index);
         if (node_info->child[id] == (HNodeInfo *) NULL)
           {
@@ -737,20 +801,18 @@ static MagickBooleanType CheckImageColors(const Image *image,
                 (void) ThrowMagickException(exception,GetMagickModule(),
                   ResourceLimitError,"MemoryAllocationFailed","`%s'",
                   image->filename);
+                status=MagickFalse;
                 break;
               }
           }
         node_info=node_info->child[id];
         index--;
       }
-      if (level < MaxTreeDepth)
+      if (status == MagickFalse)
         break;
       for (i=0; i < (ssize_t) node_info->number_unique; i++)
-      {
-        target=node_info->list[i];
-        if (IsPixelInfoColorMatch(&pixel,&target) != MagickFalse)
+        if (IsPixelInfoColorMatch(&pixel,node_info->list+i) != MagickFalse)
           break;
-      }
       if (i < (ssize_t) node_info->number_unique)
         node_info->list[i].count++;
       else
@@ -758,40 +820,29 @@ static MagickBooleanType CheckImageColors(const Image *image,
           /*
             Add this unique color to the color list.
           */
-          if (node_info->list == (PixelInfo *) NULL)
-            node_info->list=(PixelInfo *) AcquireQuantumMemory(1,
-              sizeof(*node_info->list));
-          else
-            node_info->list=(PixelInfo *) ResizeQuantumMemory(node_info->list,
-              (size_t) (i+1),sizeof(*node_info->list));
-          if (node_info->list == (PixelInfo *) NULL)
+          if (AppendNodeColor(image,node_info,&pixel,p) == MagickFalse)
             {
               (void) ThrowMagickException(exception,GetMagickModule(),
                 ResourceLimitError,"MemoryAllocationFailed","`%s'",
                 image->filename);
+              status=MagickFalse;
               break;
             }
-          GetPixelInfo(image,&node_info->list[i]);
-          node_info->list[i].red=(double) GetPixelRed(image,p);
-          node_info->list[i].green=(double) GetPixelGreen(image,p);
-          node_info->list[i].blue=(double) GetPixelBlue(image,p);
-          if (image->colorspace == CMYKColorspace)
-            node_info->list[i].black=(double) GetPixelBlack(image,p);
-          node_info->list[i].alpha=(double) GetPixelAlpha(image,p);
-          node_info->list[i].count=1;
-          node_info->number_unique++;
           cube_info->colors++;
           if (cube_info->colors > max_colors)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
         }
       p+=(ptrdiff_t) GetPixelChannels(image);
     }
-    if (x < (ssize_t) image->columns)
+    if (status == MagickFalse)
       break;
   }
   image_view=DestroyCacheView(image_view);
   cube_info=DestroyHCubeInfo(image,cube_info);
-  return(y < (ssize_t) image->rows ? MagickFalse : MagickTrue);
+  return(status);
 }
 
 MagickExport MagickBooleanType IdentifyPaletteImage(const Image *image,
@@ -938,13 +989,16 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
   MagickStatusType
     status;
 
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
   status=MagickTrue;
   if (image->channel_mask == AllChannels)
     {
       /*
         Auto-level all channels equally.
       */
-      (void) GetImageRange(image,&min,&max,exception);
+      if (GetImageRange(image,&min,&max,exception) == MagickFalse)
+        return(MagickFalse);
       min+=black;
       max-=white;
       if (fabs(min-max) >= MagickEpsilon)
@@ -964,11 +1018,16 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
     if ((traits & UpdatePixelTrait) == 0)
       continue;
     channel_mask=SetImageChannelMask(image,(ChannelType) (1UL << i));
-    status&=(MagickStatusType) GetImageRange(image,&min,&max,exception);
-    min+=black;
-    max-=white;
-    if (fabs(min-max) >= MagickEpsilon)
-      status&=(MagickStatusType) LevelImage(image,min,max,gamma,exception);
+    if (GetImageRange(image,&min,&max,exception) == MagickFalse)
+      status=(MagickStatusType) MagickFalse;
+    else
+      {
+        min+=black;
+        max-=white;
+        if (fabs(min-max) >= MagickEpsilon)
+          status&=(MagickStatusType) LevelImage(image,min,max,gamma,
+            exception);
+      }
     (void) SetImageChannelMask(image,channel_mask);
   }
   return(status != 0 ? MagickTrue : MagickFalse);
@@ -1012,15 +1071,27 @@ static int HistogramCompare(const void *x,const void *y)
     *color_1,
     *color_2;
 
+  /*
+    Order by red, green, blue (ascending), then by count (descending), with
+    black and alpha as final tie-breakers so the order is deterministic.  Plain
+    comparisons are used: subtracting values cast to ssize_t and narrowing to
+    int can truncate or overflow for HDRI values and large pixel counts.
+  */
   color_1=(const PixelInfo *) x;
   color_2=(const PixelInfo *) y;
-  if (color_2->red != color_1->red)
-    return((int) ((ssize_t) color_1->red-(ssize_t) color_2->red));
-  if (color_2->green != color_1->green)
-    return((int) ((ssize_t) color_1->green-(ssize_t) color_2->green));
-  if (color_2->blue != color_1->blue)
-    return((int) ((ssize_t) color_1->blue-(ssize_t) color_2->blue));
-  return((int) ((ssize_t) color_2->count-(ssize_t) color_1->count));
+  if (color_1->red != color_2->red)
+    return(color_1->red < color_2->red ? -1 : 1);
+  if (color_1->green != color_2->green)
+    return(color_1->green < color_2->green ? -1 : 1);
+  if (color_1->blue != color_2->blue)
+    return(color_1->blue < color_2->blue ? -1 : 1);
+  if (color_1->count != color_2->count)
+    return(color_1->count > color_2->count ? -1 : 1);
+  if (color_1->black != color_2->black)
+    return(color_1->black < color_2->black ? -1 : 1);
+  if (color_1->alpha != color_2->alpha)
+    return(color_1->alpha < color_2->alpha ? -1 : 1);
+  return(0);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -1056,6 +1127,10 @@ MagickExport size_t GetNumberColors(const Image *image,FILE *file,
   size_t
     number_colors;
 
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   number_colors=0;
   if (file == (FILE *) NULL)
     {
@@ -1113,7 +1188,10 @@ MagickExport size_t GetNumberColors(const Image *image,FILE *file,
         proceed=SetImageProgress(image,HistogramImageTag,(MagickOffsetType) i,
           number_colors);
         if (proceed == MagickFalse)
-          status=MagickFalse;
+          {
+            status=MagickFalse;
+            break;
+          }
       }
     p++;
   }
@@ -1149,13 +1227,11 @@ MagickExport size_t GetNumberColors(const Image *image,FILE *file,
 %
 */
 
-static void UniqueColorsToImage(Image *unique_image,CacheView *unique_view,
-  HCubeInfo *cube_info,const HNodeInfo *node_info,ExceptionInfo *exception)
+static MagickBooleanType UniqueColorsToImage(Image *unique_image,
+  CacheView *unique_view,HCubeInfo *cube_info,const HNodeInfo *node_info,
+  ExceptionInfo *exception)
 {
 #define UniqueColorsImageTag  "UniqueColors/Image"
-
-  MagickBooleanType
-    status;
 
   ssize_t
     i;
@@ -1169,8 +1245,9 @@ static void UniqueColorsToImage(Image *unique_image,CacheView *unique_view,
   number_children=unique_image->alpha_trait == UndefinedPixelTrait ? 8UL : 16UL;
   for (i=0; i < (ssize_t) number_children; i++)
     if (node_info->child[i] != (HNodeInfo *) NULL)
-      UniqueColorsToImage(unique_image,unique_view,cube_info,
-        node_info->child[i],exception);
+      if (UniqueColorsToImage(unique_image,unique_view,cube_info,
+            node_info->child[i],exception) == MagickFalse)
+        return(MagickFalse);
   if (node_info->level == (MaxTreeDepth-1))
     {
       PixelInfo
@@ -1179,14 +1256,13 @@ static void UniqueColorsToImage(Image *unique_image,CacheView *unique_view,
       Quantum
         *magick_restrict q;
 
-      status=MagickTrue;
       p=node_info->list;
       for (i=0; i < (ssize_t) node_info->number_unique; i++)
       {
         q=QueueCacheViewAuthenticPixels(unique_view,cube_info->x,0,1,1,
           exception);
         if (q == (Quantum *) NULL)
-          continue;
+          return(MagickFalse);
         SetPixelRed(unique_image,ClampToQuantum(p->red),q);
         SetPixelGreen(unique_image,ClampToQuantum(p->green),q);
         SetPixelBlue(unique_image,ClampToQuantum(p->blue),q);
@@ -1194,7 +1270,7 @@ static void UniqueColorsToImage(Image *unique_image,CacheView *unique_view,
         if (unique_image->colorspace == CMYKColorspace)
           SetPixelBlack(unique_image,ClampToQuantum(p->black),q);
         if (SyncCacheViewAuthenticPixels(unique_view,exception) == MagickFalse)
-          break;
+          return(MagickFalse);
         cube_info->x++;
         p++;
       }
@@ -1206,12 +1282,11 @@ static void UniqueColorsToImage(Image *unique_image,CacheView *unique_view,
           proceed=SetImageProgress(unique_image,UniqueColorsImageTag,
             cube_info->progress,cube_info->colors);
           if (proceed == MagickFalse)
-            status=MagickFalse;
+            return(MagickFalse);
         }
       cube_info->progress++;
-      if (status == MagickFalse)
-        return;
     }
+  return(MagickTrue);
 }
 
 MagickExport Image *UniqueImageColors(const Image *image,
@@ -1226,6 +1301,13 @@ MagickExport Image *UniqueImageColors(const Image *image,
   Image
     *unique_image;
 
+  MagickBooleanType
+    status;
+
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   cube_info=ClassifyImageColors(image,exception);
   if (cube_info == (HCubeInfo *) NULL)
     return((Image *) NULL);
@@ -1242,9 +1324,11 @@ MagickExport Image *UniqueImageColors(const Image *image,
       return((Image *) NULL);
     }
   unique_view=AcquireAuthenticCacheView(unique_image,exception);
-  UniqueColorsToImage(unique_image,unique_view,cube_info,cube_info->root,
-    exception);
+  status=UniqueColorsToImage(unique_image,unique_view,cube_info,
+    cube_info->root,exception);
   unique_view=DestroyCacheView(unique_view);
   cube_info=DestroyHCubeInfo(image,cube_info);
+  if (status == MagickFalse)
+    unique_image=DestroyImage(unique_image);
   return(unique_image);
 }

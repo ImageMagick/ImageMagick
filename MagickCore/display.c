@@ -155,7 +155,7 @@ static const char
     "      white\n"
     "      transparent\n"
     "      Browser...\n"
-    "    Font Color\n"
+    "    Box Color\n"
     "      black\n"
     "      blue\n"
     "      cyan\n"
@@ -2241,7 +2241,12 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
     windows->image.width/(size_t) MagickMax(font_info->min_bounds.width,1)+2UL,
     sizeof(*annotate_info->text));
   if (annotate_info->text == (char *) NULL)
-    return(MagickFalse);
+    {
+      annotate_info=(XAnnotateInfo *) RelinquishMagickMemory(annotate_info);
+      if (font_info != windows->font_info)
+        (void) XFreeFont(display,font_info);
+      return(MagickFalse);
+    }
   /*
     Create cursor and set graphic context.
   */
@@ -2285,7 +2290,7 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
           windows->pixel_info->background_color.pixel);
         (void) XSetForeground(display,annotate_context,
           windows->pixel_info->foreground_color.pixel);
-        id=XCommandWidget(display,windows,AnnotateMenu,&event);
+        id=XCommandWidget(display,windows,TextMenu,&event);
         (void) XSetBackground(display,annotate_context,
           windows->pixel_info->pen_colors[box_id].pixel);
         (void) XSetForeground(display,annotate_context,
@@ -2357,7 +2362,7 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
             text_info=annotate_info;
             while (text_info != (XAnnotateInfo *) NULL)
             {
-              if (annotate_info->stencil == ForegroundStencil)
+              if (text_info->stencil == ForegroundStencil)
                 (void) XDrawString(display,windows->image.id,annotate_context,
                   text_info->x,text_info->y,text_info->text,
                   (int) strlen(text_info->text));
@@ -3529,7 +3534,7 @@ static MagickBooleanType XColorEditImage(Display *display,
           default:
           {
             XTextViewHelp(display,resource_info,windows,MagickFalse,
-              "Help Viewer - Image Annotation",ImageColorEditHelp);
+              "Help Viewer - Color Edit",ImageColorEditHelp);
             break;
           }
           case ColorEditDismissCommand:
@@ -3620,7 +3625,7 @@ static MagickBooleanType XColorEditImage(Display *display,
           case XK_Help:
           {
             XTextViewHelp(display,resource_info,windows,MagickFalse,
-              "Help Viewer - Image Annotation",ImageColorEditHelp);
+              "Help Viewer - Color Edit",ImageColorEditHelp);
             break;
           }
           default:
@@ -5174,13 +5179,13 @@ static MagickBooleanType XCropImage(Display *display,
                 case CropMode:
                 {
                   XTextViewHelp(display,resource_info,windows,MagickFalse,
-                    "Help Viewer - Image Cropg",ImageCropHelp);
+                    "Help Viewer - Image Crop",ImageCropHelp);
                   break;
                 }
                 case CutMode:
                 {
                   XTextViewHelp(display,resource_info,windows,MagickFalse,
-                    "Help Viewer - Image Cutg",ImageCutHelp);
+                    "Help Viewer - Image Cut",ImageCutHelp);
                   break;
                 }
               }
@@ -5781,7 +5786,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
             case DrawHelpCommand:
             {
               XTextViewHelp(display,resource_info,windows,MagickFalse,
-                "Help Viewer - Image Rotation",ImageDrawHelp);
+                "Help Viewer - Image Draw",ImageDrawHelp);
               (void) XCheckDefineCursor(display,windows->image.id,cursor);
               break;
             }
@@ -5848,7 +5853,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
             case XK_Help:
             {
               XTextViewHelp(display,resource_info,windows,MagickFalse,
-                "Help Viewer - Image Rotation",ImageDrawHelp);
+                "Help Viewer - Image Draw",ImageDrawHelp);
               break;
             }
             default:
@@ -6120,8 +6125,8 @@ static MagickBooleanType XDrawEditImage(Display *display,
               rectangle_info.y=(ssize_t) event.xmotion.y;
               break;
             }
-          coordinate_info[number_coordinates].x=event.xbutton.x;
-          coordinate_info[number_coordinates].y=event.xbutton.y;
+          coordinate_info[number_coordinates].x=event.xmotion.x;
+          coordinate_info[number_coordinates].y=event.xmotion.y;
           number_coordinates++;
           if (number_coordinates < (int) max_coordinates)
             break;
@@ -8353,7 +8358,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
       flags=ParseGeometry(amount,&geometry_info);
-      spread_image=EdgeImage(*image,geometry_info.rho,exception);
+      spread_image=SpreadImage(*image,(*image)->interpolate,geometry_info.rho,
+        exception);
       if (spread_image != (Image *) NULL)
         {
           *image=DestroyImage(*image);
@@ -10906,7 +10912,7 @@ static MagickBooleanType XPasteImage(Display *display,
   paste_info.width=(unsigned int) (scale_factor*paste_info.width+0.5);
   scale_factor=(double) height/windows->image.ximage->height;
   paste_info.y+=y;
-  paste_info.y=(ssize_t) (scale_factor*paste_info.y*scale_factor+0.5);
+  paste_info.y=(ssize_t) (scale_factor*paste_info.y+0.5);
   paste_info.height=(unsigned int) (scale_factor*paste_info.height+0.5);
   /*
     Paste image with X Image window.
@@ -15333,13 +15339,13 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
               *const MagnifyMenu[] =
               {
                 "2",
+                "3",
                 "4",
                 "5",
                 "6",
                 "7",
                 "8",
                 "9",
-                "3",
                 (char *) NULL,
               };
 
@@ -15350,13 +15356,13 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
               MagnifyCommands[] =
               {
                 XK_2,
+                XK_3,
                 XK_4,
                 XK_5,
                 XK_6,
                 XK_7,
                 XK_8,
-                XK_9,
-                XK_3
+                XK_9
               };
 
             /*

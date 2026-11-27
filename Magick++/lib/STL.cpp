@@ -683,6 +683,20 @@ void Magick::medianConvolveImage::operator()( Magick::Image &image_ ) const
   image_.medianFilter( _radius );
 }
 
+// Merge image layers using the specified layer method
+Magick::mergeLayersImage::mergeLayersImage( const Magick::LayerMethod layerMethod_ )
+  : _layerMethod( layerMethod_ )
+{
+}
+void Magick::mergeLayersImage::operator()( Magick::Image &image_ ) const
+{
+  GetPPException;
+  MagickCore::Image *image=MagickCore::MergeImageLayers( image_.image(),
+    _layerMethod, exceptionInfo );
+  image_.replaceImage( image );
+  ThrowPPException( image_.quiet() );
+}
+
 // Reduce image by integral size
 Magick::minifyImage::minifyImage( void )
 {
@@ -788,16 +802,14 @@ void Magick::raiseImage::operator()( Magick::Image &image_ ) const
 }
 
 Magick::ReadOptions::ReadOptions(void)
-  : _imageInfo(static_cast<ImageInfo*>(AcquireMagickMemory(
-      sizeof(ImageInfo)))),
+  : _imageInfo(MagickCore::AcquireImageInfo()),
     _quiet(false)
 {
-  GetImageInfo(_imageInfo);
 }
 
 Magick::ReadOptions::ReadOptions(const Magick::ReadOptions& options_)
   : _imageInfo(CloneImageInfo(options_._imageInfo)),
-    _quiet(false)
+    _quiet(options_._quiet)
 {
 }
 
@@ -1546,6 +1558,20 @@ Magick::sceneImage::sceneImage( const size_t scene_ )
 void Magick::sceneImage::operator()( Magick::Image &image_ ) const
 {
   image_.scene( _scene );
+}
+
+// Apply a non-linear sigmoidal contrast
+Magick::sigmoidalContrastImage::sigmoidalContrastImage( const size_t sharpen_,
+                                                        const double contrast_,
+                                                        const double midpoint_ )
+  : _sharpen( sharpen_ ),
+    _contrast( contrast_ ),
+    _midpoint( midpoint_ )
+{
+}
+void Magick::sigmoidalContrastImage::operator()( Magick::Image &image_ ) const
+{
+  image_.sigmoidalContrast( _sharpen != 0, _contrast, _midpoint );
 }
 
 // Width and height of a raw image

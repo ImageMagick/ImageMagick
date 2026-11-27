@@ -131,7 +131,7 @@
     these formats without accepting potentially untrusted input through them.
   -->
   <policy domain="module" rights="none" pattern="{MSL,URL,VIDEO}"/>
-  <policy domain="coder" rights="write" pattern="{MVG,PDF,PS,SVG,TXT,XPS}"/>
+  <policy domain="coder" rights="write" pattern="{AI,EPS,MVG,PDF,PS,SVG,TXT,XPS}"/>
 
   <!-- Treat filenames with percent signs (%) as plain text rather than
        formatting placeholders. -->

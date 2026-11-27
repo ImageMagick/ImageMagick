@@ -1078,13 +1078,29 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image,
     {
       case NoCompression:
       {
+        size_t
+          length;
+
+        unsigned char
+          *scanline,
+          *r;
+
         /*
           Write uncompressed SGI pixels.
         */
+        length=(size_t) iris_info.columns*iris_info.bytes_per_pixel;
+        scanline=(unsigned char *) AcquireQuantumMemory(iris_info.columns,
+          iris_info.bytes_per_pixel*sizeof(*scanline));
+        if (scanline == (unsigned char *) NULL)
+          {
+            pixel_info=RelinquishVirtualMemory(pixel_info);
+            ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+          }
         for (z=0; z < (ssize_t) iris_info.depth; z++)
         {
           for (y=0; y < (ssize_t) iris_info.rows; y++)
           {
+            r=scanline;
             if (image->depth <= 8)
               for (x=0; x < (ssize_t) iris_info.columns; x++)
               {
@@ -1093,7 +1109,7 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image,
 
                 q=(unsigned char *) pixels;
                 q+=(ptrdiff_t) y*(4*iris_info.columns)+4*x+z;
-                (void) WriteBlobByte(image,*q);
+                *r++=*q;
               }
             else
               for (x=0; x < (ssize_t) iris_info.columns; x++)
@@ -1103,10 +1119,19 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image,
 
                 q=(unsigned short *) pixels;
                 q+=(ptrdiff_t) y*(4*iris_info.columns)+4*x+z;
-                (void) WriteBlobMSBShort(image,*q);
+                *r++=(unsigned char) (*q >> 8);
+                *r++=(unsigned char) *q;
+              }
+            if (WriteBlob(image,length,scanline) != (ssize_t) length)
+              {
+                status=MagickFalse;
+                break;
               }
           }
+          if (status == MagickFalse)
+            break;
         }
+        scanline=(unsigned char *) RelinquishMagickMemory(scanline);
         break;
       }
       default:
@@ -1188,6 +1213,8 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image,
       }
     }
     pixel_info=RelinquishVirtualMemory(pixel_info);
+    if (status == MagickFalse)
+      break;
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

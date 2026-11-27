@@ -83,7 +83,12 @@
 #define DEBUG_HIT_MISS 0      /* output hit/miss pixels (as gnuplot commands) */
 #define DEBUG_NO_PIXEL_HIT 0  /* Make pixels that fail to hit anything - RED */
 
-#if ! FILTER_DIRECT
+#if DEBUG_HIT_MISS && ! DEBUG_ELLIPSE
+#undef DEBUG_HIT_MISS         /* hit/miss output is only valid with DEBUG_ELLIPSE */
+#define DEBUG_HIT_MISS 0
+#endif
+
+#if FILTER_LUT
 #define WLUT_WIDTH 1024       /* size of the filter cache */
 #endif
 
@@ -105,7 +110,7 @@ struct _ResampleFilter
     debug;
 
   /* Information about image being resampled */
-  ssize_t
+  double
     image_area;
 
   PixelInterpolateMethod
@@ -225,7 +230,7 @@ MagickExport ResampleFilter *AcquireResampleFilter(const Image *image,
   resample_filter->view=AcquireVirtualCacheView(resample_filter->image,
     exception);
   resample_filter->debug=IsEventLogging();
-  resample_filter->image_area=(ssize_t) (image->columns*image->rows);
+  resample_filter->image_area=(double) image->columns*(double) image->rows;
   resample_filter->average_defined=MagickFalse;
   resample_filter->signature=MagickCoreSignature;
   SetResampleFilter(resample_filter,image->filter);
@@ -271,7 +276,9 @@ MagickExport ResampleFilter *DestroyResampleFilter(
   resample_filter->view=DestroyCacheView(resample_filter->view);
   resample_filter->image=DestroyImage(resample_filter->image);
 #if ! FILTER_LUT
-  resample_filter->filter_def=DestroyResizeFilter(resample_filter->filter_def);
+  if (resample_filter->filter_def != (ResizeFilter *) NULL)
+    resample_filter->filter_def=DestroyResizeFilter(
+      resample_filter->filter_def);
 #endif
   resample_filter->signature=(~MagickCoreSignature);
   resample_filter=(ResampleFilter *) RelinquishMagickMemory(resample_filter);
@@ -328,6 +335,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
   assert(resample_filter != (ResampleFilter *) NULL);
   assert(resample_filter->signature == MagickCoreSignature);
 
+  (void) exception;
   status=MagickTrue;
   /* GetPixelInfo(resample_filter->image,pixel); */
   if ( resample_filter->do_interpolate ) {
@@ -481,7 +489,8 @@ MagickExport MagickBooleanType ResamplePixelColor(
               *pixel=resample_filter->average_pixel; /* FAILED */
               break;
             }
-          average_view=AcquireVirtualCacheView(average_image,exception);
+          average_view=AcquireVirtualCacheView(average_image,
+            resample_filter->exception);
           pixels=GetCacheViewVirtualPixels(average_view,0,0,1,1,
             resample_filter->exception);
           if (pixels == (const Quantum *) NULL) {
@@ -556,13 +565,11 @@ MagickExport MagickBooleanType ResamplePixelColor(
 
   /* scan line start and width across the parallelogram */
   u1 = u0 + (v1-v0)*resample_filter->slope - resample_filter->Uwidth;
-  uw = (ssize_t)(2.0*resample_filter->Uwidth)+1;
+  uw = CastDoubleToSsizeT(2.0*resample_filter->Uwidth)+1;
 
 #if DEBUG_ELLIPSE
   (void) FormatLocaleFile(stderr, "v1=%ld; v2=%ld\n", (long)v1, (long)v2);
   (void) FormatLocaleFile(stderr, "u1=%ld; uw=%ld\n", (long)u1, (long)uw);
-#else
-# define DEBUG_HIT_MISS 0 /* only valid if DEBUG_ELLIPSE is enabled */
 #endif
 
   /*
@@ -575,7 +582,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
     long uu = ceil(u1);   /* actual pixel location (for debug only) */
     (void) FormatLocaleFile(stderr, "# scan line from pixel %ld, %ld\n", (long)uu, (long)v);
 #endif
-    u = (ssize_t)ceil(u1);        /* first pixel in scanline */
+    u = CastDoubleToSsizeT(ceil(u1)); /* first pixel in scanline */
     u1 += resample_filter->slope; /* start of next scan line */
 
 
@@ -598,7 +605,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
       weight = 0.0;
 #if FILTER_LUT
       /* Note that the ellipse has been pre-scaled so F = WLUT_WIDTH */
-      if (((int) Q >= 0) && ((int) Q < WLUT_WIDTH)) {
+      if ((Q > -1.0) && (Q < (double) WLUT_WIDTH)) {
         weight = resample_filter->filter_lut[(int) Q];
 #else
       /* Note that the ellipse has been pre-scaled so F = support^2 */
@@ -689,7 +696,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
 %                                                                             %
 %                                                                             %
 %                                                                             %
--   C l a m p U p A x e s                                                     %
+%   C l a m p U p A x e s                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1179,6 +1186,13 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
   F *= resample_filter->support;
   F *= resample_filter->support;
 
+  /* A degenerate (zero area) ellipse cannot be sampled - treat the area as
+     too large, as for the limits above */
+  if ( A <= 0.0 || (A*C-0.25*B*B) <= 0.0 ) {
+    resample_filter->limit_reached = MagickTrue;
+    return;
+  }
+
   /* Orthogonal bounds of the ellipse */
   resample_filter->Ulimit = sqrt(C*F/(A*C-0.25*B*B));
   resample_filter->Vlimit = sqrt(A*F/(A*C-0.25*B*B));
@@ -1254,6 +1268,12 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
   assert(resample_filter != (ResampleFilter *) NULL);
   assert(resample_filter->signature == MagickCoreSignature);
 
+#if ! FILTER_LUT
+  /* release any filter from a previous call */
+  if (resample_filter->filter_def != (ResizeFilter *) NULL)
+    resample_filter->filter_def=DestroyResizeFilter(
+      resample_filter->filter_def);
+#endif
   resample_filter->do_interpolate = MagickFalse;
   resample_filter->filter = filter;
 

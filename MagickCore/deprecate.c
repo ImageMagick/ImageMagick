@@ -195,6 +195,9 @@ MagickExport void *CropImageToHBITMAP(Image *image,
   RGBQUAD
     *bitmap_bits;
 
+  size_t
+    length;
+
   ssize_t
     y;
 
@@ -228,29 +231,45 @@ MagickExport void *CropImageToHBITMAP(Image *image,
       page.height+=page.y;
       page.y=0;
     }
-
   if ((page.width == 0) || (page.height == 0))
     ThrowImageException(OptionError,"GeometryDimensionsAreZero");
   /*
+    The BITMAP structure uses LONG dimensions; make sure the pixel buffer size
+    cannot overflow.
+  */
+  if ((page.width > (size_t) (INT_MAX/sizeof(RGBQUAD))) ||
+      (page.height > ((size_t) INT_MAX/(page.width*sizeof(RGBQUAD)))))
+    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
+    if (SetImageColorspace(image,sRGBColorspace,exception) == MagickFalse)
+      return((void *) NULL);
+  /*
     Initialize crop image attributes.
   */
-  bitmap.bmType         = 0;
-  bitmap.bmWidth        = (LONG) page.width;
-  bitmap.bmHeight       = (LONG) page.height;
-  bitmap.bmWidthBytes   = bitmap.bmWidth * 4;
-  bitmap.bmPlanes       = 1;
-  bitmap.bmBitsPixel    = 32;
-  bitmap.bmBits         = NULL;
-
-  bitmap_bitsH=(HANDLE) GlobalAlloc(GMEM_MOVEABLE | GMEM_DDESHARE,page.width*
-    page.height*bitmap.bmBitsPixel);
+  (void) memset(&bitmap,0,sizeof(bitmap));
+  bitmap.bmType=0;
+  bitmap.bmWidth=(LONG) page.width;
+  bitmap.bmHeight=(LONG) page.height;
+  bitmap.bmWidthBytes=(LONG) (page.width*sizeof(RGBQUAD));
+  bitmap.bmPlanes=1;
+  bitmap.bmBitsPixel=32;
+  bitmap.bmBits=NULL;
+  length=page.width*page.height*sizeof(RGBQUAD);  /* bytes, not bits */
+  bitmap_bitsH=(HANDLE) GlobalAlloc(GMEM_MOVEABLE | GMEM_DDESHARE,length);
   if (bitmap_bitsH == NULL)
-    return(NULL);
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      return((void *) NULL);
+    }
   bitmap_bits=(RGBQUAD *) GlobalLock((HGLOBAL) bitmap_bitsH);
-  if ( bitmap.bmBits == NULL )
-    bitmap.bmBits = bitmap_bits;
-  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
-    SetImageColorspace(image,sRGBColorspace,exception);
+  if (bitmap_bits == (RGBQUAD *) NULL)
+    {
+      GlobalFree((HGLOBAL) bitmap_bitsH);
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      return((void *) NULL);
+    }
   /*
     Extract crop image.
   */
@@ -263,14 +282,15 @@ MagickExport void *CropImageToHBITMAP(Image *image,
     p=GetVirtualPixels(image,page.x,page.y+y,page.width,1,exception);
     if (p == (const Quantum *) NULL)
       break;
-
-    /* Transfer pixels, scaling to Quantum */
-    for( x=(ssize_t) page.width ; x> 0 ; x-- )
+    /*
+      Transfer pixels, scaling to Quantum.
+    */
+    for (x=0; x < (ssize_t) page.width; x++)
     {
-      q->rgbRed = ScaleQuantumToChar(GetPixelRed(image,p));
-      q->rgbGreen = ScaleQuantumToChar(GetPixelGreen(image,p));
-      q->rgbBlue = ScaleQuantumToChar(GetPixelBlue(image,p));
-      q->rgbReserved = 0;
+      q->rgbRed=ScaleQuantumToChar(GetPixelRed(image,p));
+      q->rgbGreen=ScaleQuantumToChar(GetPixelGreen(image,p));
+      q->rgbBlue=ScaleQuantumToChar(GetPixelBlue(image,p));
+      q->rgbReserved=0;
       p+=(ptrdiff_t) GetPixelChannels(image);
       q++;
     }
@@ -288,6 +308,9 @@ MagickExport void *CropImageToHBITMAP(Image *image,
   bitmapH=CreateBitmapIndirect(&bitmap);
   GlobalUnlock((HGLOBAL) bitmap_bitsH);
   GlobalFree((HGLOBAL) bitmap_bitsH);
+  if (bitmapH == (HBITMAP) NULL)
+    (void) ThrowMagickException(exception,GetMagickModule(),
+      ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
   return((void *) bitmapH);
 }
 #endif
@@ -308,11 +331,13 @@ MagickExport void *CropImageToHBITMAP(Image *image,
 %
 %  The format of the ImageToHBITMAP method is:
 %
-%      HBITMAP ImageToHBITMAP(Image *image,Exceptioninfo *exception)
+%      HBITMAP ImageToHBITMAP(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image to convert.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport void *ImageToHBITMAP(Image *image,ExceptionInfo *exception)
@@ -344,32 +369,51 @@ MagickExport void *ImageToHBITMAP(Image *image,ExceptionInfo *exception)
   ssize_t
     y;
 
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
+  /*
+    The BITMAP structure uses LONG dimensions; make sure the pixel buffer size
+    cannot overflow.
+  */
+  if ((image->columns == 0) || (image->rows == 0) ||
+      (image->columns > (size_t) (INT_MAX/sizeof(RGBQUAD))) ||
+      (image->rows > ((size_t) INT_MAX/(image->columns*sizeof(RGBQUAD)))))
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      return((void *) NULL);
+    }
+  if (SetImageColorspace(image,sRGBColorspace,exception) == MagickFalse)
+    return((void *) NULL);
   (void) memset(&bitmap,0,sizeof(bitmap));
   bitmap.bmType=0;
   bitmap.bmWidth=(LONG) image->columns;
   bitmap.bmHeight=(LONG) image->rows;
-  bitmap.bmWidthBytes=4*bitmap.bmWidth;
+  bitmap.bmWidthBytes=(LONG) (image->columns*sizeof(RGBQUAD));
   bitmap.bmPlanes=1;
   bitmap.bmBitsPixel=32;
   bitmap.bmBits=NULL;
-  length=bitmap.bmWidthBytes*bitmap.bmHeight;
+  length=image->columns*image->rows*sizeof(RGBQUAD);
   bitmap_bitsH=(HANDLE) GlobalAlloc(GMEM_MOVEABLE | GMEM_DDESHARE,length);
   if (bitmap_bitsH == NULL)
     {
-      char
-        *message;
-
-      message=GetExceptionMessage(errno);
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",message);
-      message=DestroyString(message);
-      return(NULL);
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      return((void *) NULL);
     }
   bitmap_bits=(RGBQUAD *) GlobalLock((HGLOBAL) bitmap_bitsH);
+  if (bitmap_bits == (RGBQUAD *) NULL)
+    {
+      GlobalFree((HGLOBAL) bitmap_bitsH);
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      return((void *) NULL);
+    }
   q=bitmap_bits;
-  if (bitmap.bmBits == NULL)
-    bitmap.bmBits=bitmap_bits;
-  (void) SetImageColorspace(image,sRGBColorspace,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
@@ -385,20 +429,22 @@ MagickExport void *ImageToHBITMAP(Image *image,ExceptionInfo *exception)
       q++;
     }
   }
+  if (y < (ssize_t) image->rows)
+    {
+      /*
+        Pixel read failed; do not return a partially filled bitmap.
+      */
+      GlobalUnlock((HGLOBAL) bitmap_bitsH);
+      GlobalFree((HGLOBAL) bitmap_bitsH);
+      return((void *) NULL);
+    }
   bitmap.bmBits=bitmap_bits;
   bitmapH=CreateBitmapIndirect(&bitmap);
-  if (bitmapH == NULL)
-    {
-      char
-        *message;
-
-      message=GetExceptionMessage(errno);
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",message);
-      message=DestroyString(message);
-    }
   GlobalUnlock((HGLOBAL) bitmap_bitsH);
   GlobalFree((HGLOBAL) bitmap_bitsH);
+  if (bitmapH == (HBITMAP) NULL)
+    (void) ThrowMagickException(exception,GetMagickModule(),
+      ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
   return((void *) bitmapH);
 }
 #endif
@@ -428,8 +474,11 @@ MagickExport void *ImageToHBITMAP(Image *image,ExceptionInfo *exception)
 MagickExport void InitializePixelChannelMap(Image *image)
 {
   ExceptionInfo
-    *exception = AcquireExceptionInfo();
+    *exception;
 
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  exception=AcquireExceptionInfo();
   (void) ResetPixelChannelMap(image,exception);
   exception=DestroyExceptionInfo(exception);
 }

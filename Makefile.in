@@ -3340,6 +3340,7 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+IPC_LIBS = @IPC_LIBS@
 JBIG_LIBS = @JBIG_LIBS@
 JEMALLOC_LIBS = @JEMALLOC_LIBS@
 JPEG_CFLAGS = @JPEG_CFLAGS@
@@ -3368,8 +3369,6 @@ LIBTOOL = @LIBTOOL@
 
 # Automagically reconfigure libtool
 LIBTOOL_DEPS = @LIBTOOL_DEPS@
-LIBZSTD_CFLAGS = @LIBZSTD_CFLAGS@
-LIBZSTD_LIBS = @LIBZSTD_LIBS@
 LIB_BIN_BASEDIRNAME = @LIB_BIN_BASEDIRNAME@
 LIB_BIN_DIR = @LIB_BIN_DIR@
 LIB_BIN_DIR_PATH = @LIB_BIN_DIR_PATH@
@@ -3396,6 +3395,7 @@ MAGICKPP_LIBRARY_CURRENT_MIN = @MAGICKPP_LIBRARY_CURRENT_MIN@
 MAGICKPP_LIBRARY_REVISION = @MAGICKPP_LIBRARY_REVISION@
 MAGICKPP_LIBRARY_VERSION_INFO = @MAGICKPP_LIBRARY_VERSION_INFO@
 MAGICKPP_LIB_VERSION = @MAGICKPP_LIB_VERSION@
+MAGICKPP_LIB_VERSION_NUMBER = @MAGICKPP_LIB_VERSION_NUMBER@
 MAGICKPP_LIB_VERSION_TEXT = @MAGICKPP_LIB_VERSION_TEXT@
 MAGICK_ABI_SUFFIX = @MAGICK_ABI_SUFFIX@
 MAGICK_CFLAGS = @MAGICK_CFLAGS@
@@ -3476,6 +3476,8 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PACKAGE_VERSION_ADDENDUM = @PACKAGE_VERSION_ADDENDUM@
+PANGOCAIRO_CFLAGS = @PANGOCAIRO_CFLAGS@
+PANGOCAIRO_LIBS = @PANGOCAIRO_LIBS@
 PANGO_CFLAGS = @PANGO_CFLAGS@
 PANGO_LIBS = @PANGO_LIBS@
 PATH_SEPARATOR = @PATH_SEPARATOR@
@@ -3568,6 +3570,7 @@ XPSColorDevice = @XPSColorDevice@
 XPSDelegate = @XPSDelegate@
 XPSMonoDevice = @XPSMonoDevice@
 XPSVersion = @XPSVersion@
+XT_LIBS = @XT_LIBS@
 X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_LIBS = @X_LIBS@
@@ -3656,7 +3659,7 @@ type_include_files = @type_include_files@
 urw_base35_font_dir = @urw_base35_font_dir@
 urw_base35_type1_font_dir = @urw_base35_type1_font_dir@
 windows_font_dir = @windows_font_dir@
-topincludedir = @includedir@/MagickCore
+topincludedir = $(includedir)/MagickCore
 AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)
 ACLOCAL_AMFLAGS = -I m4
 MODULECOMMONFLAGS = -no-undefined -export-symbols-regex ".*" -shared -module -avoid-version
@@ -6384,10 +6387,11 @@ DISTDIRS = scripts www PerlMagick
 
 # Install HTML files
 pkgdocdir = $(DOCUMENTATION_PATH)
-@INSTALL_DOC_TRUE@HTML_INSTALL_DATA_TARGETS = install-data-html
 
-# Uninstall HTML files
-HTML_UNINSTALL_DATA_TARGETS = uninstall-data-html
+# The www tree lives in the source directory, so enumerate it from $(srcdir)
+# (a plain 'find www' only works for in-tree builds).
+@INSTALL_DOC_TRUE@HTML_INSTALL_DATA_TARGETS = install-data-html
+@INSTALL_DOC_TRUE@HTML_UNINSTALL_DATA_TARGETS = uninstall-data-html
 @ZIP_DELEGATE_FALSE@DIST_WINDOWS_SRC_ZIP = 
 
 #
@@ -6411,6 +6415,12 @@ HTML_UNINSTALL_DATA_TARGETS = uninstall-data-html
 @RPM_DELEGATE_TRUE@  $(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-devel-$(PACKAGE_VERSION)-$(PACKAGE_PATCHLEVEL_VERSION).$(RPMARCH).rpm \
 @RPM_DELEGATE_TRUE@  $(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-perl-$(PACKAGE_VERSION)-$(PACKAGE_PATCHLEVEL_VERSION).$(RPMARCH).rpm
 
+
+#
+# Build a validated snapshot release and move to the snapshots directory.
+# Override on the command line: make snapshot SNAPSHOT_DIR=/some/dir
+#
+SNAPSHOT_DIR = /var/ftp/pub/ImageMagick/beta
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -14345,12 +14355,15 @@ maintainer-clean-local: $(PERLMAGICK_MAINTAINER_CLEAN_LOCAL_TARGETS)
 
 check-local: $(PERLMAGICK_CHECK_LOCAL_TARGETS)
 
-# drd: valgrind's newer thread error detector
+# Developer targets (not files)
+.PHONY: drd helgrind memcheck
+
+# drd: valgrind's thread error detector
 drd:
 	$(MAKE) MEMCHECK='valgrind --tool=drd --check-stack-var=yes --var-info=yes \
 	  --quiet $(VALGRIND_EXTRA_OPTS)' check
 
-# helgrind: valgrind's older thread error detector
+# helgrind: valgrind's thread error detector (happens-before based)
 helgrind:
 	$(MAKE) MEMCHECK='valgrind --tool=helgrind --error-exitcode=2 --quiet \
 	$(VALGRIND_EXTRA_OPTS)' check
@@ -14360,48 +14373,48 @@ memcheck:
 	$(MAKE) MEMCHECK='valgrind --tool=memcheck --leak-check=full --read-var-info=yes \
 	--error-exitcode=2 --track-origins=yes --num-callers=12 \
 	--quiet $(VALGRIND_EXTRA_OPTS)' check
-
-# ptrcheck: valgrind's experimental pointer checking tool.
-ptrcheck:
-	$(MAKE) MEMCHECK='valgrind --tool=exp-ptrcheck --quiet $(VALGRIND_EXTRA_OPTS)' check
 dist-hook:
 	( \
 	  builddir=`pwd` ; \
 	  cd $(srcdir) && \
 	  ( \
 	    for dir in $(DISTDIRS) ; do \
-	      find $$dir -depth -print | grep -E -v '(~$$)|(/.git)|(/\.#)|(/\.deps)|(/\.git)' \
+	      find $$dir -depth -print | grep -E -v '(~$$)|(/\.git)|(/\.#)|(/\.deps)' \
 	        | cpio -pdum $$builddir/$(distdir) 2> /dev/null ; \
 	    done \
 	  ) \
 	)
 
+.PHONY: install-data-html uninstall-data-html
+
 install-data-html:
-	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)
-	$(INSTALL_DATA) $(srcdir)/index.html $(DESTDIR)$(pkgdocdir)
-	@for dir in $$(find www -type d) ; do \
-	  $(mkinstalldirs) $(DESTDIR)$(pkgdocdir)/$$dir && \
-	  if test -d $(builddir)/$$dir ; then \
-	    docsrcdir=$(builddir)/$$dir; \
+	$(MKDIR_P) "$(DESTDIR)$(pkgdocdir)"
+	$(INSTALL_DATA) "$(srcdir)/index.html" "$(DESTDIR)$(pkgdocdir)"
+	@for dir in `cd $(srcdir) && find www -type d` ; do \
+	  $(MKDIR_P) "$(DESTDIR)$(pkgdocdir)/$$dir" || exit 1 ; \
+	  if test -d "$(builddir)/$$dir" ; then \
+	    docsrcdir="$(builddir)/$$dir"; \
 	  else \
-	    docsrcdir=$(srcdir)/$$dir; \
+	    docsrcdir="$(srcdir)/$$dir"; \
 	  fi; \
-	  for file in $$docsrcdir/*.* ; do \
+	  for file in "$$docsrcdir"/*.* ; do \
+	    test -f "$$file" || continue ; \
 	    echo "$(INSTALL_DATA) $$file $(DESTDIR)$(pkgdocdir)/$$dir" ; \
-	    $(INSTALL_DATA) "$$file" $(DESTDIR)$(pkgdocdir)/$$dir ; \
+	    $(INSTALL_DATA) "$$file" "$(DESTDIR)$(pkgdocdir)/$$dir" || exit 1 ; \
 	  done ; \
 	done
+
+# Uninstall HTML files
 uninstall-data-html:
-	rm -f $(DESTDIR)$(pkgdocdir)/index.html
-	for dir in $$(find www -type d) ; do \
-	  rm -f -r $(DESTDIR)$(pkgdocdir)/$$dir ; \
+	rm -f "$(DESTDIR)$(pkgdocdir)/index.html"
+	@for dir in `cd $(srcdir) && find www -type d` ; do \
+	  rm -f -r "$(DESTDIR)$(pkgdocdir)/$$dir" ; \
 	done
 
 # Ensure that version.h at $(srcdir)/MagickCore/version.h is kept up to date.
 magick-version: MagickCore/version.h
 	@if test -n "$(VPATH)" ; then \
-	  cmp MagickCore/version.h $(srcdir)/MagickCore/version.h > /dev/null ; \
-	        if test $$? -eq 1 ; then \
+	  if ! cmp -s MagickCore/version.h $(srcdir)/MagickCore/version.h ; then \
 	    echo "Updating $(srcdir)/MagickCore/version.h ..."; \
 	    cp MagickCore/version.h $(srcdir)/MagickCore/version.h ; \
 	  fi ; \
@@ -14414,24 +14427,26 @@ libtool: $(LIBTOOL_DEPS)
 
 # Format C API documentation
 html-local:
-# copy static file
+# copy static file (enumerated from the source tree so VPATH builds work)
 	for dir in $(DOCDIRSMANUAL) ; do \
-		$(mkinstalldirs) $(top_builddir)/$$dir ;\
-		for file in $$dir/*.* ; do \
-			if ! test -f $(top_builddir)/$$file; then \
-				cp -p -f $(top_srcdir)/$$file $(top_builddir)/$$dir ; \
+		$(MKDIR_P) $(top_builddir)/$$dir ;\
+		for file in $(top_srcdir)/$$dir/*.* ; do \
+			test -f "$$file" || continue ; \
+			if ! test -f "$(top_builddir)/$$dir/`basename $$file`"; then \
+				cp -p -f "$$file" $(top_builddir)/$$dir ; \
 			fi; \
 		done ; \
 	done;
-# remove old doxygen files
+# remove old doxygen files
 	for dir in $(DOCDIRDOXYGEN) ; do \
-	    rm -rf $$dir || true; \
+	    rm -rf $$dir || true; \
 	done;
 # make doxygen doc
-	$(mkinstalldirs) $(top_builddir)/www/api
+	$(MKDIR_P) $(top_builddir)/www/api
 	cd config && doxygen MagickCore.dox
 	cd config && doxygen MagickWand.dox
 	cd config && doxygen Magick++.dox
+.PHONY: windows-dist
 $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) windows-dist:
 	if test -d $(PACKAGE_NAME)-$(PACKAGE_VERSION) ; then \
 	  chmod -R u+w $(PACKAGE_NAME)-$(PACKAGE_VERSION) ; \
@@ -14444,7 +14459,7 @@ $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) windows-dist:
 @P7ZIP_DELEGATE_TRUE@	$(P7ZIP) a -t7z -mx=9 $(DIST_WINDOWS_SRC_7ZIP) $(PACKAGE_NAME)-$(PACKAGE_VERSION)
 @P7ZIP_DELEGATE_TRUE@	chmod 644 $(DIST_WINDOWS_SRC_7ZIP)
 	rm -rf $(PACKAGE_NAME)-$(PACKAGE_VERSION)
-@RPM_DELEGATE_TRUE@.PHONY: srpm
+@RPM_DELEGATE_TRUE@.PHONY: srpm rpm
 @RPM_DELEGATE_TRUE@$(DIST_ARCHIVE_SRPM) srpm: dist-bzip2
 @RPM_DELEGATE_TRUE@	rm -f $(DIST_ARCHIVE_SRPM)
 @RPM_DELEGATE_TRUE@	$(RPM) --define="_sourcedir `pwd`" --define="_srcrpmdir `pwd`" --nodeps --bs ImageMagick.spec
@@ -14452,7 +14467,6 @@ $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) windows-dist:
 @RPM_DELEGATE_TRUE@	@echo $(DIST_ARCHIVE_SRPM) is ready for distribution.
 @RPM_DELEGATE_TRUE@	@echo ==============================================================
 
-@RPM_DELEGATE_TRUE@.PHONY: rpm
 @RPM_DELEGATE_TRUE@rpm: dist
 @RPM_DELEGATE_TRUE@	rm -rf $(RPMDIR)
 @RPM_DELEGATE_TRUE@	$(mkinstalldirs) $(RPMDIR)
@@ -14462,15 +14476,12 @@ $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) windows-dist:
 @RPM_DELEGATE_TRUE@	@echo ==============================================================
 @RPM_DELEGATE_TRUE@	@echo $(DIST_ARCHIVE_RPM) is ready for distribution.
 @RPM_DELEGATE_TRUE@	@echo ==============================================================
-
-#
-# Build a validated snapshot release and move to the snapshots directory.
-#
+.PHONY: snapshot
 snapshot: distcheck
-	$(MAKE) $(DIST_ARCHIVE_SRPM)
-	$(MAKE) $(DIST_WINDOWS_SRC_ZIP)
-	$(MAKE) $(DIST_WINDOWS_SRC_7ZIP)
-	mv $(DIST_ARCHIVES) $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) $(DIST_ARCHIVE_SRPM) /var/ftp/pub/ImageMagick/beta/
+	test -z "$(DIST_ARCHIVE_SRPM)" || $(MAKE) $(DIST_ARCHIVE_SRPM)
+	test -z "$(DIST_WINDOWS_SRC_ZIP)" || $(MAKE) $(DIST_WINDOWS_SRC_ZIP)
+	test -z "$(DIST_WINDOWS_SRC_7ZIP)" || $(MAKE) $(DIST_WINDOWS_SRC_7ZIP)
+	mv $(DIST_ARCHIVES) $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) $(DIST_ARCHIVE_SRPM) $(SNAPSHOT_DIR)/
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

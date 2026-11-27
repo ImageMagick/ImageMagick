@@ -2448,6 +2448,7 @@ MagickExport MagickBooleanType DefineImageOption(ImageInfo *image_info,
     *p;
 
   assert(image_info != (ImageInfo *) NULL);
+  assert(image_info->signature == MagickCoreSignature);
   assert(option != (const char *) NULL);
   (void) CopyMagickString(key,option,MagickPathExtent);
   for (p=key; *p != '\0'; p++)
@@ -2499,6 +2500,7 @@ MagickExport MagickBooleanType DeleteImageOption(ImageInfo *image_info,
 {
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
+  assert(option != (const char *) NULL);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
@@ -2521,7 +2523,7 @@ MagickExport MagickBooleanType DeleteImageOption(ImageInfo *image_info,
 %  DestroyImageOptions() destroys all global options and associated memory
 %  attached to the given image_info image list.
 %
-%  The format of the DestroyDefines method is:
+%  The format of the DestroyImageOptions method is:
 %
 %      void DestroyImageOptions(ImageInfo *image_info)
 %
@@ -2574,6 +2576,7 @@ MagickExport const char *GetImageOption(const ImageInfo *image_info,
 {
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
+  assert(option != (const char *) NULL);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
@@ -2802,6 +2805,7 @@ MagickExport const OptionInfo *GetCommandOptionInfo(const char *option)
   ssize_t
     i;
 
+  assert(option != (const char *) NULL);
   for (i=0; CommandOptions[i].mnemonic != (char *) NULL; i++)
     if (LocaleCompare(option,CommandOptions[i].mnemonic) == 0)
       break;
@@ -3033,6 +3037,7 @@ MagickExport MagickBooleanType IsOptionMember(const char *option,
   /*
     Is option a member of the options list?
   */
+  assert(option != (const char *) NULL);
   if (options == (const char *) NULL)
     return(MagickFalse);
   string=ConstantString(options);
@@ -3146,6 +3151,8 @@ MagickExport ssize_t ParseChannelOption(const char *channels)
   ssize_t
     channel;
 
+  if ((channels == (const char *) NULL) || (*channels == '\0'))
+    return(-1);
   channel=ParseCommandOption(MagickChannelOptions,MagickTrue,channels);
   if (channel >= 0)
     return(channel);
@@ -3194,7 +3201,7 @@ MagickExport ssize_t ParseChannelOption(const char *channels)
       case 'o':
       case 'O':
       {
-        channel|=AlphaChannel; /* depreciate */
+        channel|=AlphaChannel; /* deprecated */
         break;
       }
       case 'R':
@@ -3374,6 +3381,8 @@ MagickExport ssize_t ParsePixelChannelOption(const char *channels)
   ssize_t
     channel;
 
+  if ((channels == (const char *) NULL) || (*channels == '\0'))
+    return(-1);
   (void) GetNextToken(channels,(const char **) NULL,MagickPathExtent,token);
   if ((*token == ';') || (*token == '|'))
     return(RedPixelChannel);
@@ -3421,6 +3430,7 @@ MagickExport char *RemoveImageOption(ImageInfo *image_info,const char *option)
 
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
+  assert(option != (const char *) NULL);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
@@ -3534,6 +3544,7 @@ MagickExport MagickBooleanType SetImageOption(ImageInfo *image_info,
 {
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
+  assert(option != (const char *) NULL);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);

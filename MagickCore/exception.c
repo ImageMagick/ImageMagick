@@ -189,7 +189,7 @@ MagickExport void ClearMagickException(ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CatchException() returns if no exceptions is found otherwise it reports
+%  CatchException() returns if no exception is found, otherwise it reports
 %  the exception as a warning, error, or fatal depending on the severity.
 %
 %  The format of the CatchException method is:
@@ -211,7 +211,7 @@ MagickExport void CatchException(ExceptionInfo *exception)
 
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  if (exception->exceptions  == (void *) NULL)
+  if (exception->exceptions == (void *) NULL)
     return;
   LockSemaphoreInfo(exception->semaphore);
   exceptions=(LinkedListInfo *) exception->exceptions;
@@ -246,7 +246,7 @@ MagickExport void CatchException(ExceptionInfo *exception)
 %
 %  The format of the CloneExceptionInfo method is:
 %
-%      ExceptionInfo *CloneException(ExceptionInfo *exception)
+%      ExceptionInfo *CloneExceptionInfo(ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -280,15 +280,14 @@ MagickExport ExceptionInfo *CloneExceptionInfo(ExceptionInfo *exception)
 %
 %  The format of the DefaultErrorHandler method is:
 %
-%      void MagickError(const ExceptionType severity,const char *reason,
+%      void DefaultErrorHandler(const ExceptionType severity,const char *reason,
 %        const char *description)
 %
 %  A description of each parameter follows:
 %
 %    o severity: Specifies the numeric error category.
 %
-%    o reason: Specifies the reason to display before terminating the
-%      program.
+%    o reason: Specifies the reason to display.
 %
 %    o description: Specifies any description to the reason.
 %
@@ -323,8 +322,8 @@ static void DefaultErrorHandler(const ExceptionType magick_unused(severity),
 %
 %  The format of the DefaultFatalErrorHandler method is:
 %
-%      void MagickFatalError(const ExceptionType severity,const char *reason,
-%        const char *description)
+%      void DefaultFatalErrorHandler(const ExceptionType severity,
+%        const char *reason,const char *description)
 %
 %  A description of each parameter follows:
 %
@@ -371,8 +370,7 @@ static void DefaultFatalErrorHandler(const ExceptionType severity,
 %
 %    o severity: Specifies the numeric warning category.
 %
-%    o reason: Specifies the reason to display before terminating the
-%      program.
+%    o reason: Specifies the reason to display.
 %
 %    o description: Specifies any description to the reason.
 %
@@ -424,18 +422,14 @@ MagickExport ExceptionInfo *DestroyExceptionInfo(ExceptionInfo *exception)
     ActivateSemaphoreInfo(&exception->semaphore);
   LockSemaphoreInfo(exception->semaphore);
   exception->severity=UndefinedException;
-  if (exception->relinquish != MagickFalse)
-    {
-      exception->signature=(~MagickCoreSignature);
-      if (exception->exceptions != (void *) NULL)
-        exception->exceptions=(void *) DestroyLinkedList((LinkedListInfo *)
-          exception->exceptions,DestroyExceptionElement);
-    }
-  else
-    if (exception->exceptions != (void *) NULL)
-      ClearLinkedList((LinkedListInfo *) exception->exceptions,
-        DestroyExceptionElement);
+  exception->reason=(char *) NULL;
+  exception->description=(char *) NULL;
+  if (exception->exceptions != (void *) NULL)
+    exception->exceptions=(void *) DestroyLinkedList((LinkedListInfo *)
+      exception->exceptions,DestroyExceptionElement);
   relinquish=exception->relinquish;
+  if (relinquish != MagickFalse)
+    exception->signature=(~MagickCoreSignature);
   UnlockSemaphoreInfo(exception->semaphore);
   if (relinquish != MagickFalse)
     {
@@ -675,7 +669,8 @@ MagickExport const char *GetLocaleExceptionMessage(const ExceptionType severity,
 %
 %  The format of the InheritException method is:
 %
-%      void InheritException(ExceptionInfo *exception,const ExceptionInfo *relative)
+%      void InheritException(ExceptionInfo *exception,
+%        const ExceptionInfo *relative)
 %
 %  A description of each parameter follows:
 %
@@ -715,7 +710,7 @@ MagickExport void InheritException(ExceptionInfo *exception,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   I n i t i a l i z e t E x c e p t i o n I n f o                           %
+%   I n i t i a l i z e E x c e p t i o n I n f o                            %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -762,7 +757,7 @@ MagickPrivate void InitializeExceptionInfo(ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o exception: Specifies the numeric error category.
+%    o error: Specifies the numeric error category.
 %
 %    o reason: Specifies the reason to display before terminating the
 %      program.
@@ -782,7 +777,7 @@ MagickExport void MagickError(const ExceptionType error,const char *reason,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k F a t al E r r o r                                            %
+%   M a g i c k F a t a l E r r o r                                            %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -791,14 +786,14 @@ MagickExport void MagickError(const ExceptionType error,const char *reason,
 %  MagickFatalError() calls the fatal exception handler methods with an error
 %  reason.
 %
-%  The format of the MagickError method is:
+%  The format of the MagickFatalError method is:
 %
 %      void MagickFatalError(const ExceptionType error,const char *reason,
 %        const char *description)
 %
 %  A description of each parameter follows:
 %
-%    o exception: Specifies the numeric error category.
+%    o error: Specifies the numeric error category.
 %
 %    o reason: Specifies the reason to display before terminating the
 %      program.
@@ -900,13 +895,13 @@ MagickExport ErrorHandler SetErrorHandler(ErrorHandler handler)
 %  SetFatalErrorHandler() sets the fatal exception handler to the specified
 %  method and returns the previous fatal exception handler.
 %
-%  The format of the SetErrorHandler method is:
+%  The format of the SetFatalErrorHandler method is:
 %
-%      ErrorHandler SetErrorHandler(ErrorHandler handler)
+%      FatalErrorHandler SetFatalErrorHandler(FatalErrorHandler handler)
 %
 %  A description of each parameter follows:
 %
-%    o handler: the method to handle errors.
+%    o handler: the method to handle fatal errors.
 %
 */
 MagickExport FatalErrorHandler SetFatalErrorHandler(FatalErrorHandler handler)
@@ -939,7 +934,7 @@ MagickExport FatalErrorHandler SetFatalErrorHandler(FatalErrorHandler handler)
 %
 %  The format of the SetWarningHandler method is:
 %
-%      ErrorHandler SetWarningHandler(ErrorHandler handler)
+%      WarningHandler SetWarningHandler(WarningHandler handler)
 %
 %  A description of each parameter follows:
 %
@@ -1020,8 +1015,8 @@ MagickExport MagickBooleanType ThrowException(ExceptionInfo *exception,
     }
   p=(ExceptionInfo *) GetLastValueInLinkedList(exceptions);
   if ((p != (ExceptionInfo *) NULL) && (p->severity == severity) &&
-      (LocaleCompare(exception->reason,reason) == 0) &&
-      (LocaleCompare(exception->description,description) == 0))
+      (LocaleCompare(p->reason,reason) == 0) &&
+      (LocaleCompare(p->description,description) == 0))
     {
       UnlockSemaphoreInfo(exception->semaphore);
       return(MagickTrue);
@@ -1071,7 +1066,7 @@ MagickExport MagickBooleanType ThrowException(ExceptionInfo *exception,
 %
 %  The format of the ThrowMagickException method is:
 %
-%      MagickBooleanType ThrowFileException(ExceptionInfo *exception,
+%      MagickBooleanType ThrowMagickException(ExceptionInfo *exception,
 %        const char *module,const char *function,const size_t line,
 %        const ExceptionType severity,const char *tag,const char *format,...)
 %
@@ -1079,7 +1074,7 @@ MagickExport MagickBooleanType ThrowException(ExceptionInfo *exception,
 %
 %    o exception: the exception info.
 %
-%    o filename: the source module filename.
+%    o module: the source module filename.
 %
 %    o function: the function name.
 %

@@ -59,6 +59,7 @@
 */
 #define SignatureBlocksize  64
 #define SignatureDigestsize  32
+#define SignatureAccumulatorsize  (SignatureDigestsize/4)
 
 /*
   Typedef declarations.
@@ -128,10 +129,10 @@ MagickPrivate SignatureInfo *AcquireSignatureInfo(void)
   signature_info->digest=AcquireStringInfo(SignatureDigestsize);
   signature_info->message=AcquireStringInfo(SignatureBlocksize);
   signature_info->accumulator=(unsigned int *) AcquireQuantumMemory(
-    SignatureBlocksize,sizeof(*signature_info->accumulator));
+    SignatureAccumulatorsize,sizeof(*signature_info->accumulator));
   if (signature_info->accumulator == (unsigned int *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  (void) memset(signature_info->accumulator,0,SignatureBlocksize*
+  (void) memset(signature_info->accumulator,0,SignatureAccumulatorsize*
     sizeof(*signature_info->accumulator));
   signature_info->lsb_first=GetHostEndian() == LSBEndian ? MagickTrue :
     MagickFalse;
@@ -161,7 +162,7 @@ MagickPrivate SignatureInfo *AcquireSignatureInfo(void)
 %
 %  A description of each parameter follows:
 %
-%    o signature_info: the cipher signature_info.
+%    o signature_info: the signature info.
 %
 */
 MagickPrivate SignatureInfo *DestroySignatureInfo(SignatureInfo *signature_info)
@@ -284,7 +285,7 @@ MagickPrivate void FinalizeSignature(SignatureInfo *signature_info)
 %
 %  The format of the GetSignatureBlocksize method is:
 %
-%      unsigned int *GetSignatureBlocksize(const SignatureInfo *signature_info)
+%      unsigned int GetSignatureBlocksize(const SignatureInfo *signature_info)
 %
 %  A description of each parameter follows:
 %
@@ -348,7 +349,7 @@ MagickPrivate const StringInfo *GetSignatureDigest(
 %
 %  The format of the GetSignatureDigestsize method is:
 %
-%      unsigned int *GetSignatureDigestsize(const SignatureInfo *signature_info)
+%      unsigned int GetSignatureDigestsize(const SignatureInfo *signature_info)
 %
 %  A description of each parameter follows:
 %
@@ -378,13 +379,13 @@ MagickPrivate unsigned int GetSignatureDigestsize(
 %
 %  InitializeSignature() initializes the Signature accumulator.
 %
-%  The format of the DestroySignatureInfo method is:
+%  The format of the InitializeSignature method is:
 %
-%      void InitializeSignatureInfo(SignatureInfo *signature_info)
+%      void InitializeSignature(SignatureInfo *signature_info)
 %
 %  A description of each parameter follows:
 %
-%    o signature_info: the cipher signature_info.
+%    o signature_info: the signature info.
 %
 */
 MagickPrivate void InitializeSignature(SignatureInfo *signature_info)
@@ -439,6 +440,8 @@ MagickPrivate void SetSignatureDigest(SignatureInfo *signature_info,
   */
   assert(signature_info != (SignatureInfo *) NULL);
   assert(signature_info->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   SetStringInfo(signature_info->digest,digest);
 }
 
@@ -484,6 +487,9 @@ MagickExport MagickBooleanType SignatureImage(Image *image,
   const Quantum
     *p;
 
+  MagickBooleanType
+    status;
+
   SignatureInfo
     *signature_info;
 
@@ -507,6 +513,7 @@ MagickExport MagickBooleanType SignatureImage(Image *image,
   signature=AcquireStringInfo(GetPixelChannels(image)*image->columns*
     sizeof(pixel));
   image_view=AcquireVirtualCacheView(image,exception);
+  status=MagickTrue;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     ssize_t
@@ -517,7 +524,10 @@ MagickExport MagickBooleanType SignatureImage(Image *image,
 
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
-      break;
+      {
+        status=MagickFalse;
+        break;
+      }
     SetStringInfoLength(signature,GetPixelChannels(image)*image->columns*
       sizeof(pixel));
     pixels=GetStringInfoDatum(signature);
@@ -555,17 +565,20 @@ MagickExport MagickBooleanType SignatureImage(Image *image,
     UpdateSignature(signature_info,signature);
   }
   image_view=DestroyCacheView(image_view);
-  FinalizeSignature(signature_info);
-  hex_signature=StringInfoToHexString(GetSignatureDigest(signature_info));
-  (void) DeleteImageProperty(image,"signature");
-  (void) SetImageProperty(image,"signature",hex_signature,exception);
+  if (status != MagickFalse)
+    {
+      FinalizeSignature(signature_info);
+      hex_signature=StringInfoToHexString(GetSignatureDigest(signature_info));
+      (void) DeleteImageProperty(image,"signature");
+      status=SetImageProperty(image,"signature",hex_signature,exception);
+      hex_signature=DestroyString(hex_signature);
+    }
   /*
     Free resources.
   */
-  hex_signature=DestroyString(hex_signature);
   signature=DestroyStringInfo(signature);
   signature_info=DestroySignatureInfo(signature_info);
-  return(MagickTrue);
+  return(status);
 }
 
 /*
@@ -604,7 +617,7 @@ static void TransformSignature(SignatureInfo *signature_info)
   ssize_t
     i;
 
-  unsigned char
+  const unsigned char
     *p;
 
   ssize_t
@@ -637,56 +650,21 @@ static void TransformSignature(SignatureInfo *signature_info)
     F,
     G,
     H,
-    shift,
-    T,
     T1,
     T2,
     W[64];
 
-  shift=32;
+  /*
+    Load the message block as 16 big-endian words; byte-wise loads are
+    independent of host endianness, alignment, and word size.
+  */
   p=GetStringInfoDatum(signature_info->message);
-  if (signature_info->lsb_first == MagickFalse)
-    {
-DisableMSCWarning(4127)
-      if (sizeof(unsigned int) <= 4)
-RestoreMSCWarning
-        for (i=0; i < 16; i++)
-        {
-          T=(*((unsigned int *) p));
-          p+=(ptrdiff_t) 4;
-          W[i]=Trunc32(T);
-        }
-      else
-        for (i=0; i < 16; i+=2)
-        {
-          T=(*((unsigned int *) p));
-          p+=(ptrdiff_t) 8;
-          W[i]=Trunc32(T >> shift);
-          W[i+1]=Trunc32(T);
-        }
-    }
-  else
-DisableMSCWarning(4127)
-    if (sizeof(unsigned int) <= 4)
-RestoreMSCWarning
-      for (i=0; i < 16; i++)
-      {
-        T=(*((unsigned int *) p));
-        p+=(ptrdiff_t) 4;
-        W[i]=((T << 24) & 0xff000000) | ((T << 8) & 0x00ff0000) |
-          ((T >> 8) & 0x0000ff00) | ((T >> 24) & 0x000000ff);
-      }
-    else
-      for (i=0; i < 16; i+=2)
-      {
-        T=(*((unsigned int *) p));
-        p+=(ptrdiff_t) 8;
-        W[i]=((T << 24) & 0xff000000) | ((T << 8) & 0x00ff0000) |
-          ((T >> 8) & 0x0000ff00) | ((T >> 24) & 0x000000ff);
-        T>>=shift;
-        W[i+1]=((T << 24) & 0xff000000) | ((T << 8) & 0x00ff0000) |
-          ((T >> 8) & 0x0000ff00) | ((T >> 24) & 0x000000ff);
-      }
+  for (i=0; i < 16; i++)
+  {
+    W[i]=((unsigned int) p[0] << 24) | ((unsigned int) p[1] << 16) |
+      ((unsigned int) p[2] << 8) | (unsigned int) p[3];
+    p+=(ptrdiff_t) 4;
+  }
   /*
     Copy accumulator to registers.
   */
@@ -735,10 +713,9 @@ RestoreMSCWarning
   F=0;
   G=0;
   H=0;
-  T=0;
   T1=0;
   T2=0;
-  (void) ResetMagickMemory(W,0,sizeof(W));
+  (void) memset(W,0,sizeof(W));
 }
 
 /*
@@ -774,11 +751,11 @@ MagickPrivate void UpdateSignature(SignatureInfo *signature_info,
   unsigned char
     *p;
 
+  MagickSizeType
+    bits;
+
   size_t
     n;
-
-  unsigned int
-    length;
 
   /*
     Update the Signature accumulator.
@@ -786,11 +763,11 @@ MagickPrivate void UpdateSignature(SignatureInfo *signature_info,
   assert(signature_info != (SignatureInfo *) NULL);
   assert(signature_info->signature == MagickCoreSignature);
   n=GetStringInfoLength(message);
-  length=Trunc32((unsigned int) (signature_info->low_order+(n << 3)));
-  if (length < signature_info->low_order)
-    signature_info->high_order++;
-  signature_info->low_order=length;
-  signature_info->high_order+=(unsigned int) n >> 29;
+  bits=(((MagickSizeType) signature_info->high_order) << 32) |
+    (MagickSizeType) signature_info->low_order;
+  bits+=((MagickSizeType) n) << 3;  /* message length in bits, modulo 2^64 */
+  signature_info->low_order=(unsigned int) (bits & 0xffffffffU);
+  signature_info->high_order=(unsigned int) (bits >> 32);
   p=GetStringInfoDatum(message);
   if (signature_info->extent != 0)
     {

@@ -305,11 +305,18 @@ static MagickBooleanType WriteUYVYImage(const ImageInfo *image_info,
   const Quantum
     *p;
 
+  size_t
+    length;
+
   ssize_t
     x;
 
   ssize_t
     y;
+
+  unsigned char
+    *pixels,
+    *q;
 
   /*
     Open output image file.
@@ -333,6 +340,13 @@ static MagickBooleanType WriteUYVYImage(const ImageInfo *image_info,
   uyvy_image=CloneImage(image,0,0,MagickTrue,exception);
   if (uyvy_image == (Image *) NULL)
     return(MagickFalse);
+  pixels=(unsigned char *) AcquireQuantumMemory(image->columns,2*
+    sizeof(*pixels));
+  if (pixels == (unsigned char *) NULL)
+    {
+      uyvy_image=DestroyImage(uyvy_image);
+      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   (void) TransformImageColorspace(uyvy_image,YCbCrColorspace,exception);
   full=MagickFalse;
   (void) memset(&pixel,0,sizeof(PixelInfo));
@@ -341,17 +355,17 @@ static MagickBooleanType WriteUYVYImage(const ImageInfo *image_info,
     p=GetVirtualPixels(uyvy_image,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
+    q=pixels;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (full != MagickFalse)
         {
           pixel.green=(pixel.green+(double) GetPixelGreen(uyvy_image,p))/2;
           pixel.blue=(pixel.blue+(double) GetPixelBlue(uyvy_image,p))/2;
-          (void) WriteBlobByte(image,ScaleQuantumToChar((Quantum) pixel.green));
-          (void) WriteBlobByte(image,ScaleQuantumToChar((Quantum) pixel.red));
-          (void) WriteBlobByte(image,ScaleQuantumToChar((Quantum) pixel.blue));
-          (void) WriteBlobByte(image,ScaleQuantumToChar(
-            GetPixelRed(uyvy_image,p)));
+          *q++=ScaleQuantumToChar((Quantum) pixel.green);
+          *q++=ScaleQuantumToChar((Quantum) pixel.red);
+          *q++=ScaleQuantumToChar((Quantum) pixel.blue);
+          *q++=ScaleQuantumToChar(GetPixelRed(uyvy_image,p));
         }
       pixel.red=(double) GetPixelRed(uyvy_image,p);
       pixel.green=(double) GetPixelGreen(uyvy_image,p);
@@ -359,11 +373,18 @@ static MagickBooleanType WriteUYVYImage(const ImageInfo *image_info,
       full=full == MagickFalse ? MagickTrue : MagickFalse;
       p+=(ptrdiff_t) GetPixelChannels(uyvy_image);
     }
+    length=(size_t) (q-pixels);
+    if (WriteBlob(image,length,pixels) != (ssize_t) length)
+      {
+        status=MagickFalse;
+        break;
+      }
     status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
       image->rows);
     if (status == MagickFalse)
       break;
   }
+  pixels=(unsigned char *) RelinquishMagickMemory(pixels);
   uyvy_image=DestroyImage(uyvy_image);
   if (CloseBlob(image) == MagickFalse)
     status=MagickFalse;

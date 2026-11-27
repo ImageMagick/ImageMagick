@@ -11,6 +11,8 @@
 #define MAGICKCORE_IMPLEMENTATION  1
 #define MAGICK_PLUSPLUS_IMPLEMENTATION 1
 
+#include <limits>
+
 #include "Magick++/Include.h"
 #include "Magick++/Thread.h"
 #include "Magick++/Exception.h"
@@ -18,19 +20,31 @@
 
 Magick::Pixels::Pixels(Magick::Image &image_)
   : _image(image_),
+    _view((MagickCore::CacheView *) NULL),
     _x(0),
     _y(0),
     _columns(0),
     _rows(0)
 {
   GetPPException;
-    _view=AcquireVirtualCacheView(image_.image(),exceptionInfo),
-  ThrowPPException(image_.quiet());
+  _view=AcquireVirtualCacheView(image_.image(),exceptionInfo);
+  try
+    {
+      ThrowPPException(image_.quiet());
+    }
+  catch (...)
+    {
+      // The destructor does not run when a constructor throws, so release
+      // the view here to avoid leaking it.
+      if (_view != (MagickCore::CacheView *) NULL)
+        _view=DestroyCacheView(_view);
+      throw;
+    }
 }
 
 Magick::Pixels::~Pixels(void)
 {
-  if (_view)
+  if (_view != (MagickCore::CacheView *) NULL)
     _view=DestroyCacheView(_view);
 }
 
@@ -68,6 +82,9 @@ const Magick::Quantum* Magick::Pixels::getConst(const ssize_t x_,
 
 ssize_t Magick::Pixels::offset(PixelChannel channel) const
 {
+  // Guard against an out-of-range channel indexing past channel_map.
+  if ((ssize_t) channel >= MaxPixelChannels)
+    return -1;
   if (_image.constImage()->channel_map[channel].traits == UndefinedPixelTrait)
     return -1;
   return _image.constImage()->channel_map[channel].offset;
@@ -104,15 +121,21 @@ void* Magick::Pixels::metacontent(void)
   return pixel_metacontent;
 }
 
-Magick::PixelData::PixelData(Magick::Image &image_,std::string map_,
+Magick::PixelData::PixelData(Magick::Image &image_,const std::string &map_,
   const StorageType type_)
+  : _data((void *) NULL),
+    _length(0),
+    _size(0)
 {
   init(image_,0,0,image_.columns(),image_.rows(),map_,type_);
 }
 
 Magick::PixelData::PixelData(Magick::Image &image_,const ::ssize_t x_,
-  const ::ssize_t y_,const size_t width_,const size_t height_,std::string map_,
-  const StorageType type_)
+  const ::ssize_t y_,const size_t width_,const size_t height_,
+  const std::string &map_,const StorageType type_)
+  : _data((void *) NULL),
+    _length(0),
+    _size(0)
 {
   init(image_,x_,y_,width_,height_,map_,type_);
 }
@@ -139,51 +162,90 @@ const void *Magick::PixelData::data(void) const
 
 void Magick::PixelData::init(Magick::Image &image_,const ::ssize_t x_,
   const ::ssize_t y_,const size_t width_,const size_t height_,
-  std::string map_,const StorageType type_)
+  const std::string &map_,const StorageType type_)
 {
   size_t
-    size;
+    columns,
+    element_size,
+    length,
+    rows;
+
+  const size_t
+    max_size=(size_t) (std::numeric_limits< ::ssize_t >::max)();
 
   _data=(void *) NULL;
   _length=0;
   _size=0;
-  if ((x_ < 0) || (width_ == 0) || (y_ < 0) || (height_ == 0) ||
-      (x_ > (ssize_t) image_.columns()) || (((ssize_t) width_ + x_) > (ssize_t) image_.columns())
-      || (y_ > (ssize_t) image_.rows()) || (((ssize_t) height_ + y_) > (ssize_t) image_.rows())
-      || (map_.length() == 0))
+
+  // Validate the region using unsigned arithmetic so that large width/height
+  // values cannot overflow a signed sum and slip past the bounds check.
+  columns=image_.columns();
+  rows=image_.rows();
+  if ((x_ < 0) || (y_ < 0) || (width_ == 0) || (height_ == 0) ||
+      (map_.length() == 0) ||
+      ((size_t) x_ >= columns) || (width_ > (columns-(size_t) x_)) ||
+      ((size_t) y_ >= rows) || (height_ > (rows-(size_t) y_)))
     return;
 
   switch(type_)
   {
     case CharPixel:
-      size=sizeof(unsigned char);
+      element_size=sizeof(unsigned char);
       break;
     case DoublePixel:
-      size=sizeof(double);
+      element_size=sizeof(double);
       break;
     case FloatPixel:
-      size=sizeof(float);
+      element_size=sizeof(float);
       break;
     case LongPixel:
-      size=sizeof(unsigned int);
+      element_size=sizeof(unsigned int);
       break;
     case LongLongPixel:
-      size=sizeof(MagickSizeType);
+      element_size=sizeof(MagickSizeType);
       break;
     case QuantumPixel:
-      size=sizeof(Quantum);
+      element_size=sizeof(Quantum);
       break;
     case ShortPixel:
-      size=sizeof(unsigned short);
+      element_size=sizeof(unsigned short);
       break;
     default:
       throwExceptionExplicit(MagickCore::OptionError,"Invalid type");
       return;
   }
 
-  _length=(ssize_t) (width_*height_*map_.length());
-  _size=_length*(ssize_t) size;
-  _data=AcquireMagickMemory((size_t) _size);
+  // Compute width*height*channels and the byte size with overflow checks.
+  if (width_ > (max_size/height_))
+    {
+      throwExceptionExplicit(MagickCore::ResourceLimitError,
+        "Memory allocation failed");
+      return;
+    }
+  length=width_*height_;
+  if (map_.length() > (max_size/length))
+    {
+      throwExceptionExplicit(MagickCore::ResourceLimitError,
+        "Memory allocation failed");
+      return;
+    }
+  length*=map_.length();
+  if (length > (max_size/element_size))
+    {
+      throwExceptionExplicit(MagickCore::ResourceLimitError,
+        "Memory allocation failed");
+      return;
+    }
+
+  _data=AcquireMagickMemory(length*element_size);
+  if (_data == (void *) NULL)
+    {
+      throwExceptionExplicit(MagickCore::ResourceLimitError,
+        "Memory allocation failed");
+      return;
+    }
+  _length=(::ssize_t) length;
+  _size=(::ssize_t) (length*element_size);
 
   GetPPException;
   MagickCore::ExportImagePixels(image_.image(),x_,y_,width_,height_,
@@ -193,7 +255,7 @@ void Magick::PixelData::init(Magick::Image &image_,const ::ssize_t x_,
   ThrowPPException(image_.quiet());
 }
 
-void Magick::PixelData::relinquish(void) throw()
+void Magick::PixelData::relinquish(void) MAGICK_PIXELS_NOEXCEPT
 {
   if (_data != (void *)NULL)
     _data=RelinquishMagickMemory(_data);

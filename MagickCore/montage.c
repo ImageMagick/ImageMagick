@@ -277,7 +277,7 @@ static void GetMontageGeometry(char *geometry,const size_t number_images,
   *tiles_per_row=0;
   (void) GetGeometry(geometry,x_offset,y_offset,tiles_per_row,tiles_per_column);
   if ((*tiles_per_column == 0) && (*tiles_per_row == 0))
-    *tiles_per_column=(size_t) sqrt((double) number_images);
+    *tiles_per_column=MagickMax((size_t) sqrt((double) number_images),1);
   if ((*tiles_per_column == 0) && (*tiles_per_row != 0))
     *tiles_per_column=(size_t) ceil((double) number_images/(*tiles_per_row));
   if ((*tiles_per_row == 0) && (*tiles_per_column != 0))
@@ -290,13 +290,17 @@ extern "C" {
 
 static int SceneCompare(const void *x,const void *y)
 {
-  Image
-    **image_1,
-    **image_2;
+  const Image
+    * const *image_1,
+    * const *image_2;
 
-  image_1=(Image **) x;
-  image_2=(Image **) y;
-  return((int) ((*image_1)->scene-(*image_2)->scene));
+  image_1=(const Image * const *) x;
+  image_2=(const Image * const *) y;
+  if ((*image_1)->scene < (*image_2)->scene)
+    return(-1);
+  if ((*image_1)->scene > (*image_2)->scene)
+    return(1);
+  return(0);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -414,7 +418,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   if (primary_list == (Image **) NULL)
     return((Image *) NULL);
   image_list=primary_list;
-  image=image_list[0];
+  image=NewImageList();
   thumbnail=NewImageList();
   for (i=0; i < (ssize_t) number_images; i++)
   {
@@ -438,11 +442,15 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   }
   if (i < (ssize_t) number_images)
     {
+      ssize_t
+        last_thumbnail;
+
+      last_thumbnail=i;
+      if ((image == (Image *) NULL) || (thumbnail == (Image *) NULL))
+        last_thumbnail--;
       if (image != (Image *) NULL)
         image=DestroyImage(image);
-      if (thumbnail == (Image *) NULL)
-        i--;
-      for (tile=0; (ssize_t) tile <= i; tile++)
+      for (tile=0; tile <= last_thumbnail; tile++)
         if (image_list[tile] != (Image *) NULL)
           image_list[tile]=DestroyImage(image_list[tile]);
       primary_list=(Image **) RelinquishMagickMemory(primary_list);
@@ -460,7 +468,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   /*
     Determine tiles per row and column.
   */
-  tiles_per_column=(size_t) sqrt((double) number_images);
+  tiles_per_column=MagickMax((size_t) sqrt((double) number_images),1);
   tiles_per_row=(size_t) ceil((double) number_images/tiles_per_column);
   x_offset=0;
   y_offset=0;
@@ -566,6 +574,24 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   */
   tile_image=AcquireImage((ImageInfo *) NULL,exception);
   montage=AcquireImage(clone_info,exception);
+  if ((tile_image == (Image *) NULL) || (montage == (Image *) NULL))
+    {
+      if (tile_image != (Image *) NULL)
+        tile_image=DestroyImage(tile_image);
+      if (montage != (Image *) NULL)
+        montage=DestroyImage(montage);
+      for (tile=0; tile < (ssize_t) number_images; tile++)
+        if (image_list[tile] != (Image *) NULL)
+          image_list[tile]=DestroyImage(image_list[tile]);
+      if (texture != (Image *) NULL)
+        texture=DestroyImage(texture);
+      if (title != (char *) NULL)
+        title=DestroyString(title);
+      primary_list=(Image **) RelinquishMagickMemory(primary_list);
+      draw_info=DestroyDrawInfo(draw_info);
+      clone_info=DestroyImageInfo(clone_info);
+      return((Image *) NULL);
+    }
   montage->background_color=montage_info->background_color;
   montage->scene=0;
   images_per_page=(number_images-1)/(tiles_per_row*tiles_per_column)+1;
@@ -582,7 +608,6 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
     if (montage_info->tile != (char *) NULL)
       GetMontageGeometry(montage_info->tile,number_images,&x_offset,&y_offset,
         &sans,&sans);
-    tiles_per_page=tiles_per_row*tiles_per_column;
     y_offset+=(ssize_t) title_offset;
     max_height=0;
     bounds.width=0;
@@ -647,6 +672,17 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
         if (montage->directory != (char *) NULL)
           montage->directory=(char *) RelinquishMagickMemory(
             montage->directory);
+        for (tile=0; tile < (ssize_t) number_images; tile++)
+          if (image_list[tile] != (Image *) NULL)
+            image_list[tile]=DestroyImage(image_list[tile]);
+        tile_image=DestroyImage(tile_image);
+        if (texture != (Image *) NULL)
+          texture=DestroyImage(texture);
+        if (title != (char *) NULL)
+          title=DestroyString(title);
+        primary_list=(Image **) RelinquishMagickMemory(primary_list);
+        draw_info=DestroyDrawInfo(draw_info);
+        clone_info=DestroyImageInfo(clone_info);
         ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
       }
     x_offset=0;
@@ -725,7 +761,20 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
       */
       image=CloneImage(image_list[tile],0,0,MagickTrue,exception);
       if (image == (Image *) NULL)
-        ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+        {
+          for ( ; tile < (ssize_t) number_images; tile++)
+            if (image_list[tile] != (Image *) NULL)
+              image_list[tile]=DestroyImage(image_list[tile]);
+          tile_image=DestroyImage(tile_image);
+          if (texture != (Image *) NULL)
+            texture=DestroyImage(texture);
+          if (title != (char *) NULL)
+            title=DestroyString(title);
+          primary_list=(Image **) RelinquishMagickMemory(primary_list);
+          draw_info=DestroyDrawInfo(draw_info);
+          clone_info=DestroyImageInfo(clone_info);
+          ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+        }
       progress_monitor=SetImageProgressMonitor(image,
         (MagickProgressMonitor) NULL,image->client_data);
       width=concatenate != MagickFalse ? image->columns : extract_info.width;
@@ -837,12 +886,13 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
                 Annotate composite tile with label.
               */
               (void) FormatLocaleString(tile_geometry,MagickPathExtent,
-                "%.17gx%.17g%+.20g%+.20g",(double) ((montage_info->frame ?
-                image->columns : width)-2*border_width),(double)
+                "%.17gx%.17g%+.20g%+.20g",(double) ((ssize_t)
+                (montage_info->frame != (char *) NULL ? image->columns :
+                width)-2*(ssize_t) border_width),(double)
                 (metrics.ascent-metrics.descent+4)*MultilineCensus(value),
                 (double) (x_offset+(ssize_t) border_width),(double)
-                ((montage_info->frame ? y_offset+(ssize_t) height+(ssize_t)
-                border_width+4 : y_offset+(ssize_t)
+                ((montage_info->frame != (char *) NULL ? y_offset+
+                (ssize_t) height+(ssize_t) border_width+4 : y_offset+(ssize_t)
                 (concatenate != MagickFalse ? max_height : extract_info.height)+
                 (ssize_t) border_width+(montage_info->shadow != MagickFalse ?
                 4 : 0))+bevel_width));
@@ -880,6 +930,17 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
         AcquireNextImage(clone_info,montage,exception);
         if (GetNextImageInList(montage) == (Image *) NULL)
           {
+            for (tile=0; tile < (ssize_t) number_images; tile++)
+              if (image_list[tile] != (Image *) NULL)
+                image_list[tile]=DestroyImage(image_list[tile]);
+            tile_image=DestroyImage(tile_image);
+            if (texture != (Image *) NULL)
+              texture=DestroyImage(texture);
+            if (title != (char *) NULL)
+              title=DestroyString(title);
+            primary_list=(Image **) RelinquishMagickMemory(primary_list);
+            draw_info=DestroyDrawInfo(draw_info);
+            clone_info=DestroyImageInfo(clone_info);
             montage=DestroyImageList(montage);
             return((Image *) NULL);
           }
@@ -892,7 +953,8 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   tile_image=DestroyImage(tile_image);
   if (texture != (Image *) NULL)
     texture=DestroyImage(texture);
-  title=DestroyString(title);
+  if (title != (char *) NULL)
+    title=DestroyString(title);
   primary_list=(Image **) RelinquishMagickMemory(primary_list);
   draw_info=DestroyDrawInfo(draw_info);
   clone_info=DestroyImageInfo(clone_info);

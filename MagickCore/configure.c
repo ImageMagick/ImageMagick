@@ -50,6 +50,7 @@
 #include "MagickCore/linked-list-private.h"
 #include "MagickCore/log.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/resource_.h"
 #include "MagickCore/semaphore.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
@@ -91,6 +92,9 @@ static SemaphoreInfo
 static MagickBooleanType
   IsConfigureCacheInstantiated(ExceptionInfo *);
 
+static void
+  *DestroyConfigureElement(void *);
+
 #if !MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
 static MagickBooleanType
   LoadConfigureCache(LinkedListInfo *,const char *,const char *,const size_t,
@@ -118,7 +122,7 @@ static MagickBooleanType
 %
 %  A description of each parameter follows:
 %
-%    o filename: the font file name.
+%    o filename: the configure file name.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -147,7 +151,9 @@ static inline void AddConfigureKey(LinkedListInfo *cache,const char *path,
     }
   configure_info->exempt=exempt;
   configure_info->signature=MagickCoreSignature;
-  (void) AppendValueToLinkedList(cache,configure_info);
+  if ((configure_info->name == (char *) NULL) ||
+      (AppendValueToLinkedList(cache,configure_info) == MagickFalse))
+    (void) DestroyConfigureElement(configure_info);
 }
 
 static LinkedListInfo *AcquireConfigureCache(const char *filename,
@@ -164,6 +170,8 @@ static LinkedListInfo *AcquireConfigureCache(const char *filename,
     Load external configure map.
   */
   cache=NewLinkedList(0);
+  if (cache == (LinkedListInfo *) NULL)
+    return((LinkedListInfo *) NULL);
 #if !MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
   {
     const StringInfo
@@ -176,16 +184,19 @@ static LinkedListInfo *AcquireConfigureCache(const char *filename,
       status;
 
     options=GetConfigureOptions(filename,exception);
-    option=(const StringInfo *) GetNextValueInLinkedList(options);
-    while (option != (const StringInfo *) NULL)
-    {
-      status=LoadConfigureCache(cache,(const char *)
-        GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
-      if (status == MagickTrue)
-        break;
-      option=(const StringInfo *) GetNextValueInLinkedList(options);
-    }
-    options=DestroyConfigureOptions(options);
+    if (options != (LinkedListInfo *) NULL)
+      {
+        option=(const StringInfo *) GetNextValueInLinkedList(options);
+        while (option != (const StringInfo *) NULL)
+        {
+          status=LoadConfigureCache(cache,(const char *)
+            GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
+          if (status == MagickTrue)
+            break;
+          option=(const StringInfo *) GetNextValueInLinkedList(options);
+        }
+        options=DestroyConfigureOptions(options);
+      }
   }
 #else
   magick_unreferenced(filename);
@@ -204,10 +215,18 @@ static LinkedListInfo *AcquireConfigureCache(const char *filename,
     MagickTrue);
   AddConfigureKey(cache,"[built-in]","DELEGATES",GetMagickDelegates(),
     MagickTrue);
-  (void) AcquireUniqueFilename(path);
-  GetPathComponent(path,HeadPath,head_path);
-  AddConfigureKey(cache,"[built-in]","MAGICK_TEMPORARY_PATH",head_path,
-    MagickFalse);
+  *path='\0';
+  if (AcquireUniqueFilename(path) != MagickFalse)
+    {
+      /*
+        AcquireUniqueFilename() leaves an empty file behind and we only want
+        the directory component, so remove it again.
+      */
+      (void) RelinquishUniqueFileResource(path);
+      GetPathComponent(path,HeadPath,head_path);
+      AddConfigureKey(cache,"[built-in]","MAGICK_TEMPORARY_PATH",head_path,
+        MagickFalse);
+    }
   return(cache);
 }
 
@@ -297,16 +316,16 @@ MagickPrivate void ConfigureComponentTerminus(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyConfigureOptions() releases memory associated with an configure
-%  options.
+%  DestroyConfigureOptions() releases memory associated with a configure
+%  options list.
 %
-%  The format of the DestroyProfiles method is:
+%  The format of the DestroyConfigureOptions method is:
 %
-%      LinkedListInfo *DestroyConfigureOptions(Image *image)
+%      LinkedListInfo *DestroyConfigureOptions(LinkedListInfo *options)
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
+%    o options: the configure options list.
 %
 */
 
@@ -370,15 +389,16 @@ MagickExport const ConfigureInfo *GetConfigureInfo(const char *name,
   p=GetHeadElementInLinkedList(configure_cache);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     {
-      UnlockSemaphoreInfo(configure_semaphore);
       if (p != (ElementInfo *) NULL)
         option=(const ConfigureInfo *) p->value;
+      UnlockSemaphoreInfo(configure_semaphore);
       return(option);
     }
   while (p != (ElementInfo *) NULL)
   {
     option=(const ConfigureInfo *) p->value;
-    if (LocaleCompare(name,option->name) == 0)
+    if ((option->name != (char *) NULL) &&
+        (LocaleCompare(name,option->name) == 0))
       break;
     p=p->next;
   }
@@ -430,11 +450,25 @@ static int ConfigureInfoCompare(const void *x,const void *y)
     **p,
     **q;
 
-  p=(const ConfigureInfo **) x,
+  const char
+    *name_p,
+    *name_q,
+    *path_p,
+    *path_q;
+
+  int
+    status;
+
+  p=(const ConfigureInfo **) x;
   q=(const ConfigureInfo **) y;
-  if (LocaleCompare((*p)->path,(*q)->path) == 0)
-    return(LocaleCompare((*p)->name,(*q)->name));
-  return(LocaleCompare((*p)->path,(*q)->path));
+  path_p=((*p)->path != (char *) NULL) ? (*p)->path : "";
+  path_q=((*q)->path != (char *) NULL) ? (*q)->path : "";
+  status=LocaleCompare(path_p,path_q);
+  if (status != 0)
+    return(status);
+  name_p=((*p)->name != (char *) NULL) ? (*p)->name : "";
+  name_q=((*q)->name != (char *) NULL) ? (*q)->name : "";
+  return(LocaleCompare(name_p,name_q));
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -473,6 +507,7 @@ MagickExport const ConfigureInfo **GetConfigureInfoList(const char *pattern,
 
     option=(const ConfigureInfo *) p->value;
     if ((option->stealth == MagickFalse) &&
+        (option->name != (char *) NULL) &&
         (GlobExpression(option->name,pattern,MagickFalse) != MagickFalse))
       options[i++]=option;
     p=p->next;
@@ -569,8 +604,13 @@ MagickExport char **GetConfigureList(const char *pattern,
 
     option=(const ConfigureInfo *) p->value;
     if ((option->stealth == MagickFalse) &&
+        (option->name != (char *) NULL) &&
         (GlobExpression(option->name,pattern,MagickFalse) != MagickFalse))
-      options[i++]=ConstantString(option->name);
+      {
+        options[i]=ConstantString(option->name);
+        if (options[i] != (char *) NULL)
+          i++;
+      }
     p=p->next;
   }
   UnlockSemaphoreInfo(configure_semaphore);
@@ -683,6 +723,8 @@ MagickExport LinkedListInfo *GetConfigureOptions(const char *filename,
     Load XML from configuration files to linked-list.
   */
   options=NewLinkedList(0);
+  if (options == (LinkedListInfo *) NULL)
+    return((LinkedListInfo *) NULL);
   paths=GetConfigurePaths(filename,exception);
   if (paths != (LinkedListInfo *) NULL)
     {
@@ -696,7 +738,8 @@ MagickExport LinkedListInfo *GetConfigureOptions(const char *filename,
           "Searching for configure file: \"%s\"",path);
         xml=ConfigureFileToStringInfo(path);
         if (xml != (StringInfo *) NULL)
-          (void) AppendValueToLinkedList(options,xml);
+          if (AppendValueToLinkedList(options,xml) == MagickFalse)
+            xml=DestroyStringInfo(xml);
         element=(const char *) GetNextValueInLinkedList(paths);
       }
       paths=DestroyLinkedList(paths,RelinquishMagickMemory);
@@ -714,7 +757,9 @@ MagickExport LinkedListInfo *GetConfigureOptions(const char *filename,
           SetStringInfoLength(xml,strlen(blob)+1);
           SetStringInfoDatum(xml,(unsigned char *) blob);
           SetStringInfoPath(xml,filename);
-          (void) AppendValueToLinkedList(options,xml);
+          blob=(char *) RelinquishMagickMemory(blob);  /* datum was copied */
+          if (AppendValueToLinkedList(options,xml) == MagickFalse)
+            xml=DestroyStringInfo(xml);
         }
     }
 #endif
@@ -751,6 +796,23 @@ MagickExport LinkedListInfo *GetConfigureOptions(const char *filename,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+static MagickBooleanType AppendConfigurePath(LinkedListInfo *paths,
+  const char *path)
+{
+  char
+    *directory;
+
+  directory=ConstantString(path);
+  if (directory == (char *) NULL)
+    return(MagickFalse);
+  if (AppendValueToLinkedList(paths,directory) == MagickFalse)
+    {
+      directory=DestroyString(directory);
+      return(MagickFalse);
+    }
+  return(MagickTrue);
+}
+
 MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
   ExceptionInfo *exception)
 {
@@ -766,6 +828,8 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",filename);
   (void) CopyMagickString(path,filename,MagickPathExtent);
   paths=NewLinkedList(0);
+  if (paths == (LinkedListInfo *) NULL)
+    return((LinkedListInfo *) NULL);
   {
     char
       *configure_path;
@@ -780,9 +844,9 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
           *p,
           *q;
 
-        for (p=configure_path-1; p != (char *) NULL; )
+        for (p=configure_path; p != (char *) NULL; )
         {
-          (void) CopyMagickString(path,p+1,MagickPathExtent);
+          (void) CopyMagickString(path,p,MagickPathExtent);
           q=strchr(path,DirectoryListSeparator);
           if (q != (char *) NULL)
             *q='\0';
@@ -790,27 +854,26 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
           if ((q >= path) && (*q != *DirectorySeparator))
             (void) ConcatenateMagickString(path,DirectorySeparator,
               MagickPathExtent);
-          (void) AppendValueToLinkedList(paths,ConstantString(path));
-          p=strchr(p+1,DirectoryListSeparator);
+          (void) AppendConfigurePath(paths,path);
+          p=strchr(p,DirectoryListSeparator);
+          if (p != (char *) NULL)
+            p++;
         }
         configure_path=DestroyString(configure_path);
       }
   }
 #if defined(MAGICKCORE_INSTALLED_SUPPORT)
 #if defined(MAGICKCORE_SHARE_PATH)
-  (void) AppendValueToLinkedList(paths,ConstantString(MAGICKCORE_SHARE_PATH));
+  (void) AppendConfigurePath(paths,MAGICKCORE_SHARE_PATH);
 #endif
 #if defined(MAGICKCORE_SHAREARCH_PATH)
-  (void) AppendValueToLinkedList(paths,ConstantString(
-    MAGICKCORE_SHAREARCH_PATH));
+  (void) AppendConfigurePath(paths,MAGICKCORE_SHAREARCH_PATH);
 #endif
 #if defined(MAGICKCORE_CONFIGURE_PATH)
-  (void) AppendValueToLinkedList(paths,ConstantString(
-    MAGICKCORE_CONFIGURE_PATH));
+  (void) AppendConfigurePath(paths,MAGICKCORE_CONFIGURE_PATH);
 #endif
 #if defined(MAGICKCORE_DOCUMENTATION_PATH)
-  (void) AppendValueToLinkedList(paths,ConstantString(
-    MAGICKCORE_DOCUMENTATION_PATH));
+  (void) AppendConfigurePath(paths,MAGICKCORE_DOCUMENTATION_PATH);
 #endif
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && !(defined(MAGICKCORE_CONFIGURE_PATH) || defined(MAGICKCORE_SHARE_PATH))
   {
@@ -825,7 +888,7 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
       {
         (void) FormatLocaleString(path,MagickPathExtent,"%s%s",(char *)
           key_value,DirectorySeparator);
-        (void) AppendValueToLinkedList(paths,ConstantString(path));
+        (void) AppendConfigurePath(paths,path);
         key_value=(unsigned char *) RelinquishMagickMemory(key_value);
       }
   }
@@ -844,17 +907,17 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
 #if !defined(MAGICKCORE_POSIX_SUPPORT) || defined( __VMS )
         (void) FormatLocaleString(path,MagickPathExtent,"%s%s",home,
           DirectorySeparator);
-        (void) AppendValueToLinkedList(paths,ConstantString(path));
+        (void) AppendConfigurePath(paths,path);
 #else
         (void) FormatLocaleString(path,MagickPathExtent,"%s/etc/%s/",home,
           MAGICKCORE_CONFIGURE_RELATIVE_PATH);
-        (void) AppendValueToLinkedList(paths,ConstantString(path));
+        (void) AppendConfigurePath(paths,path);
         (void) FormatLocaleString(path,MagickPathExtent,"%s/share/%s/",home,
           MAGICKCORE_SHARE_RELATIVE_PATH);
-        (void) AppendValueToLinkedList(paths,ConstantString(path));
+        (void) AppendConfigurePath(paths,path);
         (void) FormatLocaleString(path,MagickPathExtent,"%s",
           MAGICKCORE_SHAREARCH_PATH);
-        (void) AppendValueToLinkedList(paths,ConstantString(path));
+        (void) AppendConfigurePath(paths,path);
 #endif
         home=DestroyString(home);
       }
@@ -864,7 +927,7 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
 #if !defined(MAGICKCORE_POSIX_SUPPORT) || defined( __VMS )
       (void) FormatLocaleString(path,MagickPathExtent,"%s%s",GetClientPath(),
         DirectorySeparator);
-      (void) AppendValueToLinkedList(paths,ConstantString(path));
+      (void) AppendConfigurePath(paths,path);
 #else
       char
         prefix[MagickPathExtent];
@@ -876,19 +939,19 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
       ChopPathComponents(prefix,1);
       (void) FormatLocaleString(path,MagickPathExtent,"%s/etc/%s/",prefix,
         MAGICKCORE_CONFIGURE_RELATIVE_PATH);
-      (void) AppendValueToLinkedList(paths,ConstantString(path));
+      (void) AppendConfigurePath(paths,path);
       (void) FormatLocaleString(path,MagickPathExtent,"%s/share/%s/",prefix,
         MAGICKCORE_SHARE_RELATIVE_PATH);
-      (void) AppendValueToLinkedList(paths,ConstantString(path));
+      (void) AppendConfigurePath(paths,path);
       (void) FormatLocaleString(path,MagickPathExtent,"%s",
         MAGICKCORE_SHAREARCH_PATH);
-      (void) AppendValueToLinkedList(paths,ConstantString(path));
+      (void) AppendConfigurePath(paths,path);
 #endif
     }
   /*
     Search current directory.
   */
-  (void) AppendValueToLinkedList(paths,ConstantString(""));
+  (void) AppendConfigurePath(paths,"");
 #endif
   {
     char
@@ -910,7 +973,7 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
         */
         (void) FormatLocaleString(path,MagickPathExtent,"%s%sImageMagick%s",
           home,DirectorySeparator,DirectorySeparator);
-        (void) AppendValueToLinkedList(paths,ConstantString(path));
+        (void) AppendConfigurePath(paths,path);
         home=DestroyString(home);
       }
     home=GetEnvironmentValue("HOME");
@@ -922,7 +985,7 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
         (void) FormatLocaleString(path,MagickPathExtent,
           "%s%s.config%sImageMagick%s",home,DirectorySeparator,
           DirectorySeparator,DirectorySeparator);
-        (void) AppendValueToLinkedList(paths,ConstantString(path));
+        (void) AppendConfigurePath(paths,path);
         home=DestroyString(home);
       }
   }
@@ -945,7 +1008,7 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
           DirectorySeparator);
         key_value=NTRegistryKeyLookup("ConfigurePath");
         if (key_value == (unsigned char *) NULL)
-          (void) AppendValueToLinkedList(paths,ConstantString(path));
+          (void) AppendConfigurePath(paths,path);
         else
           key_value=(unsigned char *) RelinquishMagickMemory(key_value);
       }
@@ -957,10 +1020,10 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
         */
         (void) FormatLocaleString(path,MagickPathExtent,"%s%s",module_path,
           DirectorySeparator);
-        (void) AppendValueToLinkedList(paths,ConstantString(path));
+        (void) AppendConfigurePath(paths,path);
         (void) FormatLocaleString(path,MagickPathExtent,"%s%s",module_path,
           "\\inc\\lib\\auto\\Image\\Magick\\");
-        (void) AppendValueToLinkedList(paths,ConstantString(path));
+        (void) AppendConfigurePath(paths,path);
       }
   }
 #endif
@@ -1015,7 +1078,7 @@ MagickExport const char *GetConfigureValue(const ConfigureInfo *configure_info)
 %  IsConfigureCacheInstantiated() determines if the configure list is
 %  instantiated.  If not, it instantiates the list and returns it.
 %
-%  The format of the IsConfigureInstantiated method is:
+%  The format of the IsConfigureCacheInstantiated method is:
 %
 %      MagickBooleanType IsConfigureCacheInstantiated(ExceptionInfo *exception)
 %
@@ -1093,6 +1156,7 @@ MagickExport MagickBooleanType ListConfigureInfo(FILE *file,
     if (configure_info[i]->stealth != MagickFalse)
       continue;
     if ((path == (const char *) NULL) ||
+        (configure_info[i]->path == (char *) NULL) ||
         (LocaleCompare(path,configure_info[i]->path) != 0))
       {
         if (configure_info[i]->path != (char *) NULL)
@@ -1266,6 +1330,9 @@ static MagickBooleanType LoadConfigureCache(LinkedListInfo *cache,
         /*
           Configure element.
         */
+        if (configure_info != (ConfigureInfo *) NULL)
+          configure_info=(ConfigureInfo *) DestroyConfigureElement(
+            configure_info);  /* previous element was never terminated */
         configure_info=(ConfigureInfo *) AcquireCriticalMemory(
           sizeof(*configure_info));
         (void) memset(configure_info,0,sizeof(*configure_info));
@@ -1277,13 +1344,27 @@ static MagickBooleanType LoadConfigureCache(LinkedListInfo *cache,
     if (configure_info == (ConfigureInfo *) NULL)
       continue;
     if ((LocaleCompare(keyword,"/>") == 0) ||
-        (LocaleCompare(keyword,"</policy>") == 0))
+        (LocaleCompare(keyword,"</configure>") == 0))
       {
+        if (configure_info->name == (char *) NULL)
+          {
+            /*
+              An unnamed entry can never be looked up; discard it.
+            */
+            configure_info=(ConfigureInfo *) DestroyConfigureElement(
+              configure_info);
+            continue;
+          }
         status=AppendValueToLinkedList(cache,configure_info);
         if (status == MagickFalse)
-          (void) ThrowMagickException(exception,GetMagickModule(),
-            ResourceLimitError,"MemoryAllocationFailed","`%s'",
-            configure_info->name);
+          {
+            (void) ThrowMagickException(exception,GetMagickModule(),
+              ResourceLimitError,"MemoryAllocationFailed","`%s'",
+              configure_info->name);
+            configure_info=(ConfigureInfo *) DestroyConfigureElement(
+              configure_info);
+            break;
+          }
         configure_info=(ConfigureInfo *) NULL;
         continue;
       }
@@ -1302,6 +1383,8 @@ static MagickBooleanType LoadConfigureCache(LinkedListInfo *cache,
       {
         if (LocaleCompare((char *) keyword,"name") == 0)
           {
+            if (configure_info->name != (char *) NULL)
+              configure_info->name=DestroyString(configure_info->name);
             configure_info->name=ConstantString(token);
             break;
           }
@@ -1322,6 +1405,8 @@ static MagickBooleanType LoadConfigureCache(LinkedListInfo *cache,
       {
         if (LocaleCompare((char *) keyword,"value") == 0)
           {
+            if (configure_info->value != (char *) NULL)
+              configure_info->value=DestroyString(configure_info->value);
             configure_info->value=ConstantString(token);
             break;
           }
@@ -1331,6 +1416,8 @@ static MagickBooleanType LoadConfigureCache(LinkedListInfo *cache,
         break;
     }
   }
+  if (configure_info != (ConfigureInfo *) NULL)
+    configure_info=(ConfigureInfo *) DestroyConfigureElement(configure_info);
   token=(char *) RelinquishMagickMemory(token);
   return(status);
 }

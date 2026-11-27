@@ -15,7 +15,14 @@
 #include "Magick++/CoderInfo.h"
 #include "Magick++/Exception.h"
 
-using namespace std;
+namespace
+{
+  // Null-safe conversion of C strings coming from MagickInfo
+  std::string safeString(const char *value_)
+  {
+    return(value_ != (const char *) NULL ? std::string(value_) : std::string());
+  }
+}
 
 Magick::CoderInfo::CoderInfo(void)
   : _decoderThreadSupport(false),
@@ -63,23 +70,18 @@ Magick::CoderInfo::CoderInfo(const std::string &name_)
   if (magickInfo == 0)
     throwExceptionExplicit(MagickCore::OptionError,"Coder not found",
       name_.c_str());
-  else
-    {
-      _decoderThreadSupport=(GetMagickDecoderThreadSupport(magickInfo) ==
-        MagickTrue) ? true : false;
-      _description=std::string(magickInfo->description);
-      _encoderThreadSupport=(GetMagickEncoderThreadSupport(magickInfo) ==
-        MagickTrue) ? true : false;
-      _isMultiFrame=(GetMagickAdjoin(magickInfo) == MagickTrue) ? true : false;
-      _isReadable=((magickInfo->decoder == (MagickCore::DecodeImageHandler *)
-        NULL) ? false : true);
-      _isWritable=((magickInfo->encoder == (MagickCore::EncodeImageHandler *)
-        NULL) ? false : true);
-      _mimeType=std::string(magickInfo->mime_type != (char *) NULL ?
-        magickInfo->mime_type : "");
-      _module=std::string(magickInfo->magick_module);
-      _name=std::string(magickInfo->name);
-    }
+
+  _decoderThreadSupport=(GetMagickDecoderThreadSupport(magickInfo) ==
+    MagickTrue);
+  _description=safeString(magickInfo->description);
+  _encoderThreadSupport=(GetMagickEncoderThreadSupport(magickInfo) ==
+    MagickTrue);
+  _isMultiFrame=(GetMagickAdjoin(magickInfo) == MagickTrue);
+  _isReadable=(magickInfo->decoder != (MagickCore::DecodeImageHandler *) NULL);
+  _isWritable=(magickInfo->encoder != (MagickCore::EncodeImageHandler *) NULL);
+  _mimeType=safeString(magickInfo->mime_type);
+  _module=safeString(magickInfo->magick_module);
+  _name=safeString(magickInfo->name);
 }
 
 Magick::CoderInfo::~CoderInfo(void)

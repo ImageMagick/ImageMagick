@@ -403,6 +403,13 @@ MagickExport Image *PingImages(ImageInfo *image_info,const char *filename,
         }
       (void) CopyMagickString(ping_filename,read_info->filename,
         MagickPathExtent);
+      if (read_info->number_scenes > GetMagickResourceLimit(ListLengthResource))
+        {
+          (void) ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
+            "ListLengthExceedsLimit","`%s`",read_info->filename);
+          read_info=DestroyImageInfo(read_info);
+          return((Image *) NULL);
+        }
       images=NewImageList();
       extent=(ssize_t) (read_info->scene+read_info->number_scenes);
       for (scene=(ssize_t) read_info->scene; scene < (ssize_t) extent; scene++)
@@ -812,6 +819,7 @@ static Image *ReadImageInternal(const ImageInfo *image_info,
       (void) LogMagickEvent(ExceptionEvent,GetMagickModule(),
         "Coder (%s) generated an image despite an error (%d), "
         "notify the developers",image->magick,exception->severity);
+      read_info=DestroyImageInfo(read_info);
       return(DestroyImageList(image));
     }
   if (read_info->ping != MagickFalse)
@@ -1108,8 +1116,14 @@ MagickExport Image *ReadImages(ImageInfo *image_info,const char *filename,
       sans=DestroyExceptionInfo(sans);
       if (read_info->number_scenes != 0)
         {
-          (void) CopyMagickString(read_filename,read_info->filename,
-            MagickPathExtent);
+          (void) CopyMagickString(read_filename,read_info->filename,MagickPathExtent);
+          if (read_info->number_scenes > GetMagickResourceLimit(ListLengthResource))
+            {
+              (void) ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
+                "ListLengthExceedsLimit","`%s`",read_info->filename);
+              read_info=DestroyImageInfo(read_info);
+              return((Image *) NULL);
+            }
           images=NewImageList();
           extent=(ssize_t) (read_info->scene+read_info->number_scenes);
           scene=(ssize_t) read_info->scene;

@@ -79,7 +79,7 @@ static int MagickMain(int argc,char **argv)
       command;
   } CommandInfo;
 
-  const CommandInfo
+  static const CommandInfo
     MagickCommands[] =
     {
       MagickCommandSize("magick", MagickFalse, MagickImageCommand),
@@ -120,26 +120,31 @@ static int MagickMain(int argc,char **argv)
 
   ssize_t
     i;
-  
-#if defined(MAGICKCORE_EXCLUDE_DEPRECATED)
-  if ((argc > 1) &&
-      (LocaleNCompare("magick",argv[0],sizeof("magick")-1) == 0) &&
-      (LocaleNCompare("convert",argv[1],sizeof("convert")-1) == 0))
-    {
-      (void) fprintf(stderr,"Use \"magick\" instead of the deprecated command \"magick convert\".\n");
-      exit(1);
-    }
-#endif
+
+  if ((argc < 1) || (argv == (char **) NULL) || (argv[0] == (char *) NULL))
+    return(1);
   MagickCoreGenesis(*argv,MagickTrue);
   MagickWandGenesis();
   exception=AcquireExceptionInfo();
   image_info=AcquireImageInfo();
   GetPathComponent(argv[0],TailPath,client_name);
+#if defined(MAGICKCORE_EXCLUDE_DEPRECATED)
+  if ((argc > 1) &&
+      (LocaleNCompare("magick",client_name,sizeof("magick")-1) == 0) &&
+      (LocaleCompare("convert",argv[1]) == 0))
+    {
+      (void) fprintf(stderr,"Use \"magick\" instead of the deprecated command "
+        "\"magick convert\".\n");
+      image_info=DestroyImageInfo(image_info);
+      exception=DestroyExceptionInfo(exception);
+      MagickWandTerminus();
+      return(1);
+    }
+#endif
   number_commands=sizeof(MagickCommands)/sizeof(MagickCommands[0]);
   for (i=0; i < (ssize_t) number_commands; i++)
   {
-    offset=LocaleNCompare(MagickCommands[i].client_name,client_name,
-      MagickCommands[i].extent);
+    offset=LocaleNCompare(MagickCommands[i].client_name,client_name,MagickCommands[i].extent);
     if (offset == 0)
       break;
   }
@@ -212,6 +217,8 @@ int wmain(int argc,wchar_t *argv[])
   SetUnhandledExceptionFilter(NTUncaughtException);
   SetConsoleOutputCP(CP_UTF8);
   utf8=NTArgvToUTF8(argc,argv);
+  if (utf8 == (char **) NULL)
+    return(1);
   status=MagickMain(argc,utf8);
   for (i=0; i < argc; i++)
     utf8[i]=DestroyString(utf8[i]);

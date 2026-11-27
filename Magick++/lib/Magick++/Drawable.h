@@ -1290,7 +1290,7 @@ private:
   CoordinateList _coordinates;
 };
 
-// Polyline (Coordinate list must contain at least three members)
+// Polyline (Coordinate list must contain at least two members)
 class MagickPPExport DrawablePolyline : public DrawableBase
 {
 public:
