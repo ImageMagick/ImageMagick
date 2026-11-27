@@ -1035,9 +1035,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((ignore_filesize == MagickFalse) && (bmp_info.file_size != 0) &&
         (start_position == 0) && (bmp_info.ba_offset == 0) &&
         ((MagickSizeType) bmp_info.file_size != blob_size))
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        CorruptImageWarning,"LengthAndFilesizeDoNotMatch","`%s'",
-        image->filename);
+      ThrowReaderException(CorruptImageError,"LengthAndFilesizeDoNotMatch");
     if (bmp_info.width <= 0)
       ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
     if ((bmp_info.height == 0) || (bmp_info.height == (ssize_t) INT_MIN))
