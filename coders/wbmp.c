@@ -364,6 +364,9 @@ static MagickBooleanType WriteWBMPImage(const ImageInfo *image_info,
   const Quantum
     *p;
 
+  size_t
+    length;
+
   ssize_t
     x;
 
@@ -372,7 +375,9 @@ static MagickBooleanType WriteWBMPImage(const ImageInfo *image_info,
 
   unsigned char
     bit,
-    byte;
+    byte,
+    *pixels,
+    *q;
 
   /*
     Open output image file.
@@ -397,6 +402,10 @@ static MagickBooleanType WriteWBMPImage(const ImageInfo *image_info,
   (void) WriteBlobMSBShort(image,0);
   WBMPWriteInteger(image,image->columns);
   WBMPWriteInteger(image,image->rows);
+  length=image->columns/8+(image->columns % 8 != 0 ? 1 : 0);
+  pixels=(unsigned char *) AcquireQuantumMemory(length,sizeof(*pixels));
+  if (pixels == (unsigned char *) NULL)
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
@@ -404,6 +413,7 @@ static MagickBooleanType WriteWBMPImage(const ImageInfo *image_info,
       break;
     bit=0;
     byte=0;
+    q=pixels;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (GetPixelLuma(image,p) >= ((double) QuantumRange/2.0))
@@ -411,19 +421,25 @@ static MagickBooleanType WriteWBMPImage(const ImageInfo *image_info,
       bit++;
       if (bit == 8)
         {
-          (void) WriteBlobByte(image,byte);
+          *q++=byte;
           bit=0;
           byte=0;
         }
       p+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (bit != 0)
-      (void) WriteBlobByte(image,byte);
+      *q++=byte;
+    if (WriteBlob(image,length,pixels) != (ssize_t) length)
+      {
+        status=MagickFalse;
+        break;
+      }
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
       image->rows);
     if (status == MagickFalse)
       break;
   }
+  pixels=(unsigned char *) RelinquishMagickMemory(pixels);
   if (CloseBlob(image) == MagickFalse)
     status=MagickFalse;
   return(status);

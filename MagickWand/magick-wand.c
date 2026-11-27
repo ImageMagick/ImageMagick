@@ -149,7 +149,7 @@ WandExport MagickWand *CloneMagickWand(const MagickWand *wand)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyMagickWand() deallocates memory associated with an MagickWand.
+%  DestroyMagickWand() deallocates memory associated with a MagickWand.
 %
 %  The format of the DestroyMagickWand method is:
 %
@@ -256,7 +256,7 @@ WandExport MagickBooleanType MagickClearException(MagickWand *wand)
 %  MagickGetException() returns the severity, reason, and description of any
 %  error that occurs when using other methods in this API.
 %
-%  Use RelinquishMagickMemory() to free the description when its no longer in
+%  Use MagickRelinquishMemory() to free the description when it's no longer in
 %  use.
 %
 %  The format of the MagickGetException method is:
@@ -296,10 +296,11 @@ WandExport char *MagickGetException(const MagickWand *wand,
       wand->exception->severity,wand->exception->reason),MagickPathExtent);
   if (wand->exception->description != (char *) NULL)
     {
-      (void) ConcatenateMagickString(description," (",MagickPathExtent);
+      (void) ConcatenateMagickString(description," (",2UL*MagickPathExtent);
       (void) ConcatenateMagickString(description,GetLocaleExceptionMessage(
-        wand->exception->severity,wand->exception->description),MagickPathExtent);
-      (void) ConcatenateMagickString(description,")",MagickPathExtent);
+        wand->exception->severity,wand->exception->description),
+        2UL*MagickPathExtent);
+      (void) ConcatenateMagickString(description,")",2UL*MagickPathExtent);
     }
   return(description);
 }
@@ -316,7 +317,7 @@ WandExport char *MagickGetException(const MagickWand *wand,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickGetExceptionType() returns the exception type associated with the
-%  wand.  If no exception has occurred, UndefinedExceptionType is returned.
+%  wand.  If no exception has occurred, UndefinedException is returned.
 %
 %  The format of the MagickGetExceptionType method is:
 %
@@ -348,7 +349,7 @@ WandExport ExceptionType MagickGetExceptionType(const MagickWand *wand)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickGetIteratorIndex() returns the position of the iterator in the image
-%  list.
+%  list, or -1 (and throws an exception) if the wand contains no images.
 %
 %  The format of the MagickGetIteratorIndex method is:
 %
@@ -538,7 +539,11 @@ WandExport double *MagickQueryFontMetrics(MagickWand *wand,
     }
   font_metrics=(double *) AcquireQuantumMemory(13UL,sizeof(*font_metrics));
   if (font_metrics == (double *) NULL)
-    return((double *) NULL);
+    {
+      (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
+        "MemoryAllocationFailed","`%s'",wand->name);
+      return((double *) NULL);
+    }
   draw_info=PeekDrawingWand(drawing_wand);
   if (draw_info == (DrawInfo *) NULL)
     {
@@ -603,7 +608,7 @@ WandExport double *MagickQueryFontMetrics(MagickWand *wand,
 %  This method is like MagickQueryFontMetrics() but it returns the maximum text
 %  width and height for multiple lines of text.
 %
-%  The format of the MagickQueryFontMetrics method is:
+%  The format of the MagickQueryMultilineFontMetrics method is:
 %
 %      double *MagickQueryMultilineFontMetrics(MagickWand *wand,
 %        const DrawingWand *drawing_wand,const char *text)
@@ -645,7 +650,11 @@ WandExport double *MagickQueryMultilineFontMetrics(MagickWand *wand,
     }
   font_metrics=(double *) AcquireQuantumMemory(13UL,sizeof(*font_metrics));
   if (font_metrics == (double *) NULL)
-    return((double *) NULL);
+    {
+      (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
+        "MemoryAllocationFailed","`%s'",wand->name);
+      return((double *) NULL);
+    }
   draw_info=PeekDrawingWand(drawing_wand);
   if (draw_info == (DrawInfo *) NULL)
     {
@@ -689,7 +698,7 @@ WandExport double *MagickQueryMultilineFontMetrics(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickQueryFonts() returns any font that match the specified pattern (e.g.
+%  MagickQueryFonts() returns any fonts that match the specified pattern (e.g.
 %  "*" for all).
 %
 %  The format of the MagickQueryFonts function is:
@@ -779,7 +788,7 @@ WandExport char **MagickQueryFormats(const char *pattern,
 %
 %  A description of each parameter follows:
 %
-%    o resource: Relinquish the memory associated with this resource.
+%    o memory: Relinquish the memory associated with this resource.
 %
 */
 WandExport void *MagickRelinquishMemory(void *memory)
@@ -802,14 +811,14 @@ WandExport void *MagickRelinquishMemory(void *memory)
 %
 %  MagickResetIterator() resets the wand iterator.
 %
-%  It is typically used either before iterating though images, or before
+%  It is typically used either before iterating through images, or before
 %  calling specific functions such as  MagickAppendImages() to append all
 %  images together.
 %
 %  Afterward you can use MagickNextImage() to iterate over all the images
 %  in a wand container, starting with the first image.
 %
-%  Using this before MagickAddImages() or MagickReadImages() will cause
+%  Using this before MagickAddImage() or MagickReadImage() will cause
 %  new images to be inserted between the first and second image.
 %
 %  The format of the MagickResetIterator method is:
@@ -845,7 +854,7 @@ WandExport void MagickResetIterator(MagickWand *wand)
 %
 %  MagickSetFirstIterator() sets the wand iterator to the first image.
 %
-%  After using any images added to the wand using MagickAddImage() or
+%  After using this, any images added to the wand using MagickAddImage() or
 %  MagickReadImage() will be prepended before any image in the wand.
 %
 %  Also the current image has been set to the first image (if any) in the
@@ -898,7 +907,7 @@ WandExport void MagickSetFirstIterator(MagickWand *wand)
 %  as it is not actually an error.  In that case the current image will not
 %  change.
 %
-%  After using any images added to the wand using MagickAddImage() or
+%  After using this, any images added to the wand using MagickAddImage() or
 %  MagickReadImage() will be added after the image indexed, regardless
 %  of if a zero (first image in list) or negative index (from end) is used.
 %
@@ -937,6 +946,7 @@ WandExport MagickBooleanType MagickSetIteratorIndex(MagickWand *wand,
   wand->image_pending=MagickFalse;  /* NextImage will set next image */
   return(MagickTrue);
 }
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1062,7 +1072,7 @@ WandExport void MagickWandTerminus(void)
 %
 %  NewMagickWand() returns a wand required for all other methods in the API.
 %  A fatal exception is thrown if there is not enough memory to allocate the
-%  wand.   Use DestroyMagickWand() to dispose of the wand when it is no longer
+%  wand.  Use DestroyMagickWand() to dispose of the wand when it is no longer
 %  needed.
 %
 %  The format of the NewMagickWand method is:
@@ -1121,6 +1131,7 @@ WandExport MagickWand *NewMagickWandFromImage(const Image *image)
   MagickWand
     *wand;
 
+  assert(image != (const Image *) NULL);
   wand=NewMagickWand();
   wand->images=CloneImage(image,0,0,MagickTrue,wand->exception);
   return(wand);

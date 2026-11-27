@@ -8,25 +8,31 @@
 
    Compile with ImageMagick-develop installed...
 
-     gcc -lMagickWand -lMagickCore wand.c -o wand
+     gcc wand_patched.c -o wand `pkg-config --cflags --libs MagickWand`
+
+   (or, without pkg-config; note libraries must come AFTER the source file
+   for linkers that resolve symbols left to right)
+
+     gcc wand_patched.c -o wand -lMagickWand -lMagickCore
 
    Compile and run directly from Source Directory...
 
-     IM_PROG=api_examples/wand
-     gcc -I`pwd` -LMagickWand/.libs -LMagickCore/.libs \
-       -lMagickWand -lMagickCore  $IM_PROG.c -o $IM_PROG
+     IM_PROG=api_examples/wand_patched
+     gcc -I`pwd` $IM_PROG.c -o $IM_PROG \
+       -LMagickWand/.libs -LMagickCore/.libs -lMagickWand -lMagickCore
 
      sh ./magick.sh    $IM_PROG
-
 */
 #include <stdio.h>
+#include <stdlib.h>
 #include "MagickWand/MagickWand.h"
 
 /* Simplify the exception handling
  * technically we should abort the program if
  *      severity >= ErrorException
+ * (main() below does so by jumping to its cleanup label on any failure)
  */
-void ThrowWandException(MagickWand *wand)
+static void ThrowWandException(MagickWand *wand)
 { char
   *description;
 
@@ -34,34 +40,55 @@ void ThrowWandException(MagickWand *wand)
   severity;
 
   description=MagickGetException(wand,&severity);
-  (void) fprintf(stderr,"%s %s %lu %s\n",GetMagickModule(),description);
-  description=(char *) MagickRelinquishMemory(description);
+  (void) fprintf(stderr,"%s %s %lu %s\n",GetMagickModule(),
+    description != (char *) NULL ? description : "unknown error");
+  if (description != (char *) NULL)
+    description=(char *) MagickRelinquishMemory(description);
 }
 
 /* useful function especially after appending two wands together */
-#define SwapWands(a,b) { MagickWand *tmp=a; a=b; b=tmp; }
+#define SwapWands(a,b) do { MagickWand *tmp=a; a=b; b=tmp; } while (0)
 
 int main(int argc, char *argv[])
 {
     MagickWand
-      *red,     /* red image wand */
-      *rose,    /* rose image wand */
-      *output;  /* the appended output image */
+      *red=NULL,     /* red image wand */
+      *rose=NULL,    /* rose image wand */
+      *output=NULL;  /* the appended output image */
 
     PixelWand
-      *color;
+      *color=NULL;
 
     MagickBooleanType
       status;
+
+    int
+      exit_code=EXIT_FAILURE;
+
+    (void) argc;
+    (void) argv;
 
     MagickWandGenesis();
 
     /* read in the red image */
     red = NewMagickWand();
-    MagickSetSize(red,100,100);
+    if (red == NULL)
+      {
+        (void) fprintf(stderr,"unable to allocate wand\n");
+        goto cleanup;
+      }
+    status = MagickSetSize(red,100,100);
+    if (status == MagickFalse)
+      {
+        ThrowWandException(red);
+        goto cleanup;
+      }
     status = MagickReadImage(red, "xc:red" );
     if (status == MagickFalse)
-      ThrowWandException(red);
+      {
+        ThrowWandException(red);
+        goto cleanup;
+      }
     /* NOTE ABOUT MagickReadImage()
      * Unless the wand is empty set the first/last iterator to determine
      * if the read image(s) are to be prepend/append into that wand image
@@ -72,21 +99,47 @@ int main(int argc, char *argv[])
 
     /* read in the rose image */
     rose = NewMagickWand();
+    if (rose == NULL)
+      {
+        (void) fprintf(stderr,"unable to allocate wand\n");
+        goto cleanup;
+      }
     status = MagickReadImage(rose, "rose:" );
     if (status == MagickFalse)
-      ThrowWandException(rose);
+      {
+        ThrowWandException(rose);
+        goto cleanup;
+      }
 
     /* rotate the rose image - one image only */
     color=NewPixelWand();
-    PixelSetColor(color, "white");
+    if (color == NULL)
+      {
+        (void) fprintf(stderr,"unable to allocate pixel wand\n");
+        goto cleanup;
+      }
+    status = PixelSetColor(color, "white");
+    if (status == MagickFalse)
+      {
+        (void) fprintf(stderr,"unable to set pixel color\n");
+        goto cleanup;
+      }
     status = MagickRotateImage(rose,color,-90.0);
     if (status == MagickFalse)
-      ThrowWandException(rose);
+      {
+        ThrowWandException(rose);
+        goto cleanup;
+      }
     color = DestroyPixelWand(color);
 
     /* append rose image into the red image wand */
     MagickSetLastIterator(red);
-    MagickAddImage(red,rose);
+    status = MagickAddImage(red,rose);
+    if (status == MagickFalse)
+      {
+        ThrowWandException(red);
+        goto cleanup;
+      }
     rose = DestroyMagickWand(rose);  /* finished with 'rose' wand */
     /* NOTE ABOUT MagickAddImage()
      *
@@ -100,6 +153,11 @@ int main(int argc, char *argv[])
     /* append all images together to create the output wand */
     MagickSetFirstIterator(red);
     output = MagickAppendImages(red,MagickFalse);
+    if (output == NULL)
+      {
+        ThrowWandException(red);
+        goto cleanup;
+      }
     red = DestroyMagickWand(red);  /* finished with 'red' wand */
     /* NOTE ABOUT MagickAppendImages()
      *
@@ -115,11 +173,26 @@ int main(int argc, char *argv[])
     /* Final output */
     status = MagickWriteImage(output,"show:");
     if (status == MagickFalse)
-      ThrowWandException(output);
+      {
+        ThrowWandException(output);
+        goto cleanup;
+      }
 
-    output = DestroyMagickWand(output);
+    exit_code=EXIT_SUCCESS;
+
+cleanup:
+    /* every pointer is NULL or valid here, so this is safe on all paths */
+    if (output != NULL)
+      output = DestroyMagickWand(output);
+    if (rose != NULL)
+      rose = DestroyMagickWand(rose);
+    if (red != NULL)
+      red = DestroyMagickWand(red);
+    if (color != NULL)
+      color = DestroyPixelWand(color);
 
     MagickWandTerminus();
+    return exit_code;
 }
 
 /*
@@ -135,4 +208,3 @@ int main(int argc, char *argv[])
  * operator (like MagickRotateImage()) to all the images in a wand you must
  * iterate over all the images yourself.
  */
-
