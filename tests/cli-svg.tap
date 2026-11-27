@@ -18,7 +18,7 @@
 #
 . ./common.shi
 . ${srcdir}/tests/common.shi
-echo "1..5"
+echo "1..6"
 
 # gradientTransform should not cause a double-free / SIGABRT (#8582)
 ${MAGICK} ${SRCDIR}/input_svg_gradient_transform.svg null: && echo "ok" || echo "not ok"
@@ -62,5 +62,24 @@ case "$msvg_mode:$family" in
     [ "X$single" != "X" ] && [ "X$single" = "X$list" ] && echo "ok" || echo "not ok"
     ;;
   *) echo "ok # SKIP MSVG coder or a font family with a space unavailable" ;;
+esac
+# The natural size of a document read with librsvg 2.52 or newer, without the
+# deprecated rsvg_handle_get_dimensions() (#7018).
+rsvg_mode=`${MAGICK} -list format | awk '$1 ~ /^RSVG/ { print $2 }'`
+rsvg_version=`${MAGICK} -list format | sed -n 's/^ *RSVG.*(RSVG \([0-9.]*\)).*$/\1/p'`
+case "$rsvg_mode:$rsvg_version" in
+  *r*:2.5[2-9]*|*r*:2.[6-9][0-9]*|*r*:[3-9].*)
+    sizes=''
+    for attributes in 'width="64" height="48"' 'width="1in" height="0.5in"' \
+      'viewBox="0 0 80 50"' 'height="50" viewBox="0 0 100 200"' \
+      'width="120" height="100%" viewBox="0 0 80 50"' '' \
+      'width="10.4" height="10.6"'; do
+      size=`printf '<svg xmlns="http://www.w3.org/2000/svg" %s><rect width="10" height="10"/></svg>' "$attributes" |
+        ${MAGICK} -density 96 RSVG:- -format '%wx%h' info:- 2>/dev/null`
+      sizes="$sizes $size"
+    done
+    [ "X$sizes" = "X 64x48 96x48 80x50 25x50 120x75 10x10 10x11" ] && echo "ok" || echo "not ok"
+    ;;
+  *) echo "ok # SKIP RSVG coder 2.52 or newer unavailable" ;;
 esac
 :
