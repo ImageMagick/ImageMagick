@@ -228,8 +228,7 @@ static const HuffmanTable
 %
 %
 */
-static inline void Ascii85Tuple(Ascii85Info *ascii85_info,
-  const unsigned char *magick_restrict data)
+static inline void Ascii85Tuple(char *tuple,const unsigned char *magick_restrict data)
 {
 #define MaxLineExtent  36L
 
@@ -243,8 +242,8 @@ static inline void Ascii85Tuple(Ascii85Info *ascii85_info,
     ((size_t) data[2] << 8) | (size_t) data[3];
   if (code == 0L)
     {
-      ascii85_info->tuple[0]='z';
-      ascii85_info->tuple[1]='\0';
+      tuple[0]='z';
+      tuple[1]='\0';
       return;
     }
   quantum=85UL*85UL*85UL*85UL;
@@ -252,11 +251,11 @@ static inline void Ascii85Tuple(Ascii85Info *ascii85_info,
   {
     x=(code/quantum);
     code-=quantum*x;
-    ascii85_info->tuple[i]=(char) (x+(int) '!');
+    tuple[i]=(char) (x+(int) '!');
     quantum/=85L;
   }
-  ascii85_info->tuple[4]=(char) ((code % 85L)+(int) '!');
-  ascii85_info->tuple[5]='\0';
+  tuple[4]=(char) ((code % 85L)+(int) '!');
+  tuple[5]='\0';
 }
 
 MagickExport void Ascii85Initialize(Image *image)
@@ -284,7 +283,7 @@ static MagickBooleanType Ascii85FlushInternal(Image *image)
       image->ascii85->buffer[image->ascii85->offset]='\0';
       image->ascii85->buffer[image->ascii85->offset+1]='\0';
       image->ascii85->buffer[image->ascii85->offset+2]='\0';
-      Ascii85Tuple(image->ascii85,image->ascii85->buffer);
+      Ascii85Tuple(image->ascii85->tuple,image->ascii85->buffer);
       if (WriteBlob(image,(size_t) image->ascii85->offset+1,
         (const unsigned char *) (*image->ascii85->tuple == 'z' ? "!!!!" :
         image->ascii85->tuple)) != (ssize_t) (image->ascii85->offset+1))
@@ -317,6 +316,7 @@ static MagickBooleanType Ascii85EncodeInternal(Image *image,
     *p;
 
   ssize_t
+    i,
     n;
 
   assert(image != (Image *) NULL);
@@ -330,7 +330,7 @@ static MagickBooleanType Ascii85EncodeInternal(Image *image,
   p=image->ascii85->buffer;
   for (n=image->ascii85->offset; n >= 4; n-=4)
   {
-    Ascii85Tuple(image->ascii85,p);
+    Ascii85Tuple(image->ascii85->tuple,p);
     for (q=image->ascii85->tuple; *q != '\0'; q++)
     {
       image->ascii85->line_break--;
@@ -349,18 +349,129 @@ static MagickBooleanType Ascii85EncodeInternal(Image *image,
           break;
         }
     }
-    p+=(ptrdiff_t) 8;
+    p+=(ptrdiff_t) 4;
   }
+  /*
+    Carry any unconsumed bytes over to the start of the buffer.
+  */
   image->ascii85->offset=n;
-  p-=(ptrdiff_t)4;
-  for (n=0; n < 4; n++)
-    image->ascii85->buffer[n]=(*p++);
+  for (i=0; i < n; i++)
+    image->ascii85->buffer[i]=p[i];
   return(status);
 }
 
 MagickExport void Ascii85Encode(Image *image,const unsigned char code)
 {
   (void) Ascii85EncodeInternal(image,code);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   A s c i i 8 5 E n c o d e I m a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Ascii85EncodeImage() encodes a byte buffer in ASCII base-85 format.
+%
+%  The format of the Ascii85EncodeImage method is:
+%
+%      MagickBooleanType Ascii85EncodeImage(Image *image,const size_t length,
+%        const unsigned char *magick_restrict pixels,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: write the encoded data to this image's blob.
+%
+%    o length: the number of bytes to encode.
+%
+%    o pixels: the bytes to encode.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport MagickBooleanType Ascii85EncodeImage(Image *image,
+  const size_t length,const unsigned char *magick_restrict pixels,
+  ExceptionInfo *exception)
+{
+  char
+    tuple[6];
+
+  const char
+    *p;
+
+  const unsigned char
+    *data;
+
+  size_t
+    i,
+    output_length,
+    remaining;
+
+  ssize_t
+    line_break;
+
+  unsigned char
+    input[4],
+    output[4096];
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  assert((pixels != (const unsigned char *) NULL) || (length == 0));
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
+  magick_unreferenced(exception);
+  data=pixels;
+  remaining=length;
+  output_length=0;
+  line_break=2*MaxLineExtent;
+  while (remaining >= 4)
+  {
+    if (output_length > (sizeof(output)-6))
+      {
+        if (WriteBlob(image,output_length,output) != (ssize_t) output_length)
+          return(MagickFalse);
+        output_length=0;
+      }
+    Ascii85Tuple(tuple,data);
+    for (p=tuple; *p != '\0'; p++)
+    {
+      line_break--;
+      if ((line_break < 0) && (*p != '%'))
+        {
+          output[output_length++]='\n';
+          line_break=2*MaxLineExtent;
+        }
+      output[output_length++]=(unsigned char) *p;
+    }
+    data+=4;
+    remaining-=4;
+  }
+  if (output_length > (sizeof(output)-7))
+    {
+      if (WriteBlob(image,output_length,output) != (ssize_t) output_length)
+        return(MagickFalse);
+      output_length=0;
+    }
+  if (remaining != 0)
+    {
+      (void) memset(input,0,sizeof(input));
+      (void) memcpy(input,data,remaining);
+      Ascii85Tuple(tuple,input);
+      p=(*tuple == 'z') ? "!!!!" : tuple;
+      for (i=0; i < remaining+1; i++)
+        output[output_length++]=(unsigned char) p[i];
+    }
+  output[output_length++]='~';
+  output[output_length++]='>';
+  output[output_length++]='\n';
+  if (WriteBlob(image,output_length,output) != (ssize_t) output_length)
+    return(MagickFalse);
+  return(MagickTrue);
 }
 
 /*
@@ -438,7 +549,8 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image,
     mask;
 
   MagickBooleanType
-    proceed;
+    proceed,
+    status;
 
   Quantum
     index;
@@ -472,6 +584,8 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->blob == (BlobInfo *) NULL)
     ThrowBinaryException(BlobError,"UnableToOpenBlob",image->filename);
+  if ((image->colormap == (PixelInfo *) NULL) || (image->colors < 2))
+    ThrowBinaryException(ImageError,"ImageTypeNotSupported",image->filename);
   mb_hash=(HuffmanTable **) AcquireQuantumMemory(HashSize,sizeof(*mb_hash));
   mw_hash=(HuffmanTable **) AcquireQuantumMemory(HashSize,sizeof(*mw_hash));
   scanline=(unsigned char *) AcquireQuantumMemory((size_t) image->columns,
@@ -506,6 +620,7 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image,
   /*
     Uncompress 1D Huffman to runlength encoded pixels.
   */
+  status=MagickTrue;
   byte=0;
   mask=0;
   null_lines=0;
@@ -637,7 +752,10 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image,
     p=scanline;
     q=QueueCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
-      break;
+      {
+        status=MagickFalse;
+        break;
+      }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       index=(Quantum) (*p++);
@@ -646,15 +764,21 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image,
       q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
-      break;
+      {
+        status=MagickFalse;
+        break;
+      }
     proceed=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
       image->rows);
     if (proceed == MagickFalse)
-      break;
+      {
+        status=MagickFalse;
+        break;
+      }
     y++;
   }
   image_view=DestroyCacheView(image_view);
-  image->rows=(size_t) MagickMax((size_t) y-3,1);
+  image->rows=(size_t) MagickMax((ssize_t) y-3,1);
   image->compression=FaxCompression;
   /*
     Free decoder memory.
@@ -662,7 +786,7 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image,
   mw_hash=(HuffmanTable **) RelinquishMagickMemory(mw_hash);
   mb_hash=(HuffmanTable **) RelinquishMagickMemory(mb_hash);
   scanline=(unsigned char *) RelinquishMagickMemory(scanline);
-  return(MagickTrue);
+  return(status);
 }
 
 /*
@@ -819,7 +943,10 @@ RestoreMSCWarning \
       break;
     p=GetVirtualPixels(huffman_image,0,y,huffman_image->columns,1,exception);
     if (p == (const Quantum *) NULL)
-      break;
+      {
+        status=MagickFalse;
+        break;
+      }
     for (x=0; x < (ssize_t) huffman_image->columns; x++)
     {
       *q++=(unsigned char) (GetPixelIntensity(huffman_image,p) >=
@@ -842,13 +969,22 @@ RestoreMSCWarning \
         q++;
         runlength++;
       }
+      while (runlength >= (2560+64))
+        {
+          /*
+            Runs beyond the largest make-up code need repeated 2560 codes.
+          */
+          entry=EXTable+((2560-1792)/64);
+          runlength-=(int) entry->count;
+          HuffmanOutputCode(entry);
+        }
       if (runlength >= 64)
         {
           if (runlength < 1792)
             entry=MWTable+((runlength/64)-1);
           else
             entry=EXTable+(MagickMin((size_t) runlength,2560)-1792)/64;
-          runlength-=(long) entry->count;
+          runlength-=(int) entry->count;
           HuffmanOutputCode(entry);
         }
       entry=TWTable+MagickMin((size_t) runlength,63);
@@ -863,12 +999,19 @@ RestoreMSCWarning \
             q++;
             runlength++;
           }
+          while (runlength >= (2560+64))
+            {
+              entry=EXTable+((2560-1792)/64);
+              runlength-=(int) entry->count;
+              HuffmanOutputCode(entry);
+            }
           if (runlength >= 64)
             {
-              entry=MBTable+((runlength/64)-1);
-              if (runlength >= 1792)
+              if (runlength < 1792)
+                entry=MBTable+((runlength/64)-1);
+              else
                 entry=EXTable+(MagickMin((size_t) runlength,2560)-1792)/64;
-              runlength-=(long) entry->count;
+              runlength-=(int) entry->count;
               HuffmanOutputCode(entry);
             }
           entry=TBTable+MagickMin((size_t) runlength,63);
@@ -964,12 +1107,13 @@ MagickExport MagickBooleanType LZWEncodeImage(Image *image,const size_t length,
 #define LZWEod  257UL  /* End of Data marker */
 #define OutputCode(code) \
 { \
-    accumulator+=code << (32-code_width-number_bits); \
+    accumulator+=(code) << (32-code_width-number_bits); \
     number_bits+=code_width; \
     while (number_bits >= 8) \
     { \
-      (void) WriteBlobByte(image,(unsigned char) (accumulator >> 24)); \
-      accumulator=accumulator << 8; \
+      if (WriteBlobByte(image,(unsigned char) (accumulator >> 24)) != 1) \
+        status=MagickFalse; \
+      accumulator=(accumulator << 8) & 0xffffffffUL; \
       number_bits-=8; \
     } \
 }
@@ -992,6 +1136,9 @@ MagickExport MagickBooleanType LZWEncodeImage(Image *image,const size_t length,
     last_code,
     next_index;
 
+  MagickBooleanType
+    status;
+
   ssize_t
     index;
 
@@ -1010,11 +1157,12 @@ MagickExport MagickBooleanType LZWEncodeImage(Image *image,const size_t length,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   table=(TableType *) AcquireQuantumMemory(1UL << 12,sizeof(*table));
   if (table == (TableType *) NULL)
-    ThrowBinaryException(ResourceLimitWarning,"MemoryAllocationFailed",
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
   /*
     Initialize variables.
   */
+  status=MagickTrue;
   accumulator=0;
   code_width=9;
   number_bits=0;
@@ -1028,7 +1176,8 @@ MagickExport MagickBooleanType LZWEncodeImage(Image *image,const size_t length,
   }
   next_index=LZWEod+1;
   code_width=9;
-  last_code=(size_t) pixels[0];
+  if (length != 0)
+    last_code=(size_t) pixels[0];
   for (i=1; i < (ssize_t) length; i++)
   {
     /*
@@ -1084,12 +1233,23 @@ MagickExport MagickBooleanType LZWEncodeImage(Image *image,const size_t length,
   /*
     Flush tables.
   */
-  OutputCode(last_code);
+  if (length != 0)
+    {
+      OutputCode(last_code);
+      /*
+        A decoder adds one more table entry after the final code, which can
+        widen its code size before it reads the EOD marker; stay in step.
+      */
+      next_index++;
+      if (((next_index >> code_width) != 0) && (code_width < 12))
+        code_width++;
+    }
   OutputCode(LZWEod);
   if (number_bits != 0)
-    (void) WriteBlobByte(image,(unsigned char) (accumulator >> 24));
+    if (WriteBlobByte(image,(unsigned char) (accumulator >> 24)) != 1)
+      status=MagickFalse;
   table=(TableType *) RelinquishMagickMemory(table);
-  return(MagickTrue);
+  return(status);
 }
 
 /*
@@ -1110,7 +1270,7 @@ MagickExport MagickBooleanType LZWEncodeImage(Image *image,const size_t length,
 %  The format of the PackbitsEncodeImage method is:
 %
 %      MagickBooleanType PackbitsEncodeImage(Image *image,const size_t length,
-%        unsigned char *magick_restrict pixels)
+%        unsigned char *magick_restrict pixels,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1121,17 +1281,27 @@ MagickExport MagickBooleanType LZWEncodeImage(Image *image,const size_t length,
 %    o pixels: the address of an unsigned array of characters containing the
 %      pixels to compress.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType PackbitsEncodeImage(Image *image,
   const size_t length,unsigned char *magick_restrict pixels,
   ExceptionInfo *exception)
 {
+#define PackbitsOutput(value) \
+{ \
+  if (WriteBlobByte(image,(unsigned char) (value)) != 1) \
+    status=MagickFalse; \
+}
+
   int
     count;
 
+  MagickBooleanType
+    status;
+
   ssize_t
-    i,
-    j;
+    i;
 
   unsigned char
     *packbits;
@@ -1148,23 +1318,24 @@ MagickExport MagickBooleanType PackbitsEncodeImage(Image *image,
   if (packbits == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
-  for (i=(ssize_t) length; i != 0; )
+  status=MagickTrue;
+  for (i=(ssize_t) length; (i != 0) && (status != MagickFalse); )
   {
     switch (i)
     {
       case 1:
       {
         i--;
-        (void) WriteBlobByte(image,(unsigned char) 0);
-        (void) WriteBlobByte(image,*pixels);
+        PackbitsOutput(0);
+        PackbitsOutput(*pixels);
         break;
       }
       case 2:
       {
         i-=2;
-        (void) WriteBlobByte(image,(unsigned char) 1);
-        (void) WriteBlobByte(image,*pixels);
-        (void) WriteBlobByte(image,pixels[1]);
+        PackbitsOutput(1);
+        PackbitsOutput(*pixels);
+        PackbitsOutput(pixels[1]);
         break;
       }
       case 3:
@@ -1172,14 +1343,14 @@ MagickExport MagickBooleanType PackbitsEncodeImage(Image *image,
         i-=3;
         if ((*pixels == *(pixels+1)) && (*(pixels+1) == *(pixels+2)))
           {
-            (void) WriteBlobByte(image,(unsigned char) ((256-3)+1));
-            (void) WriteBlobByte(image,*pixels);
+            PackbitsOutput((256-3)+1);
+            PackbitsOutput(*pixels);
             break;
           }
-        (void) WriteBlobByte(image,(unsigned char) 2);
-        (void) WriteBlobByte(image,*pixels);
-        (void) WriteBlobByte(image,pixels[1]);
-        (void) WriteBlobByte(image,pixels[2]);
+        PackbitsOutput(2);
+        PackbitsOutput(*pixels);
+        PackbitsOutput(pixels[1]);
+        PackbitsOutput(pixels[2]);
         break;
       }
       default:
@@ -1197,8 +1368,8 @@ MagickExport MagickBooleanType PackbitsEncodeImage(Image *image,
                 break;
             }
             i-=count;
-            (void) WriteBlobByte(image,(unsigned char) ((256-count)+1));
-            (void) WriteBlobByte(image,*pixels);
+            PackbitsOutput((256-count)+1);
+            PackbitsOutput(*pixels);
             pixels+=count;
             break;
           }
@@ -1216,16 +1387,16 @@ MagickExport MagickBooleanType PackbitsEncodeImage(Image *image,
         }
         i-=count;
         *packbits=(unsigned char) (count-1);
-        for (j=0; j <= (ssize_t) count; j++)
-          (void) WriteBlobByte(image,packbits[j]);
+        if (WriteBlob(image,(size_t) count+1,packbits) != (ssize_t) (count+1))
+          status=MagickFalse;
         pixels+=count;
         break;
       }
     }
   }
-  (void) WriteBlobByte(image,(unsigned char) 128);  /* EOD marker */
+  PackbitsOutput(128);  /* EOD marker */
   packbits=(unsigned char *) RelinquishMagickMemory(packbits);
-  return(MagickTrue);
+  return(status);
 }
 
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
@@ -1279,10 +1450,11 @@ MagickExport MagickBooleanType ZLIBEncodeImage(Image *image,const size_t length,
   unsigned char *magick_restrict pixels,ExceptionInfo *exception)
 {
   int
+    level,
     status;
 
-  ssize_t
-    i;
+  MagickBooleanType
+    result;
 
   size_t
     compress_packets;
@@ -1297,37 +1469,66 @@ MagickExport MagickBooleanType ZLIBEncodeImage(Image *image,const size_t length,
   assert(image->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  compress_packets=(size_t) (1.001*length+12);
+  /*
+    zlib counts bytes in an unsigned int.
+  */
+  if ((MagickSizeType) length > (MagickSizeType) 0xffffffffUL)
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      image->filename);
+  level=(int) (image->quality == UndefinedCompressionQuality ? 7 :
+    MagickMin(image->quality/10,9));
+  (void) memset(&stream,0,sizeof(stream));
+  stream.zalloc=AcquireZIPMemory;
+  stream.zfree=RelinquishZIPMemory;
+  stream.opaque=(voidpf) NULL;
+  status=deflateInit(&stream,level);
+  if (status != Z_OK)
+    ThrowBinaryException(CoderError,"UnableToZipCompressImage",
+      image->filename);
+  compress_packets=(size_t) deflateBound(&stream,(uLong) length);
+  if ((MagickSizeType) compress_packets > (MagickSizeType) 0xffffffffUL)
+    {
+      (void) deflateEnd(&stream);
+      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+        image->filename);
+    }
   compress_pixels=(unsigned char *) AcquireQuantumMemory(compress_packets,
     sizeof(*compress_pixels));
   if (compress_pixels == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      image->filename);
-  (void) memset(&stream,0,sizeof(stream));
+    {
+      (void) deflateEnd(&stream);
+      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+        image->filename);
+    }
   stream.next_in=pixels;
   stream.avail_in=(unsigned int) length;
   stream.next_out=compress_pixels;
   stream.avail_out=(unsigned int) compress_packets;
-  stream.zalloc=AcquireZIPMemory;
-  stream.zfree=RelinquishZIPMemory;
-  stream.opaque=(voidpf) NULL;
-  status=deflateInit(&stream,(int) (image->quality ==
-    UndefinedCompressionQuality ? 7 : MagickMin(image->quality/10,9)));
-  if (status == Z_OK)
+  status=deflate(&stream,Z_FINISH);
+  compress_packets=(size_t) stream.total_out;
+  if (status != Z_STREAM_END)
     {
-      status=deflate(&stream,Z_FINISH);
-      if (status == Z_STREAM_END)
-        status=deflateEnd(&stream);
-      else
-        (void) deflateEnd(&stream);
-      compress_packets=(size_t) stream.total_out;
+      /*
+        Anything but Z_STREAM_END means the stream is incomplete.
+      */
+      (void) deflateEnd(&stream);
+      compress_pixels=(unsigned char *) RelinquishMagickMemory(
+        compress_pixels);
+      ThrowBinaryException(CoderError,"UnableToZipCompressImage",
+        image->filename);
     }
+  status=deflateEnd(&stream);
   if (status != Z_OK)
-    ThrowBinaryException(CoderError,"UnableToZipCompressImage",image->filename)
-  for (i=0; i < (ssize_t) compress_packets; i++)
-    (void) WriteBlobByte(image,compress_pixels[i]);
+    {
+      compress_pixels=(unsigned char *) RelinquishMagickMemory(
+        compress_pixels);
+      ThrowBinaryException(CoderError,"UnableToZipCompressImage",
+        image->filename);
+    }
+  result=WriteBlob(image,compress_packets,compress_pixels) ==
+    (ssize_t) compress_packets ? MagickTrue : MagickFalse;
   compress_pixels=(unsigned char *) RelinquishMagickMemory(compress_pixels);
-  return(MagickTrue);
+  return(result);
 }
 #else
 MagickExport MagickBooleanType ZLIBEncodeImage(Image *image,

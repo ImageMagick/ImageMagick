@@ -108,14 +108,18 @@ MagickExport MagickBooleanType AppendValueToLinkedList(
 
   assert(list_info != (LinkedListInfo *) NULL);
   assert(list_info->signature == MagickCoreSignature);
-  if (list_info->elements == list_info->capacity)
-    return(MagickFalse);
   next=(ElementInfo *) AcquireMagickMemory(sizeof(*next));
   if (next == (ElementInfo *) NULL)
     return(MagickFalse);
   next->value=(void *) value;
   next->next=(ElementInfo *) NULL;
   LockSemaphoreInfo(list_info->semaphore);
+  if (list_info->elements == list_info->capacity)
+    {
+      UnlockSemaphoreInfo(list_info->semaphore);
+      next=(ElementInfo *) RelinquishMagickMemory(next);
+      return(MagickFalse);
+    }
   if (list_info->next == (ElementInfo *) NULL)
     list_info->next=next;
   if (list_info->elements == 0)
@@ -294,9 +298,12 @@ MagickExport void *GetLastValueInLinkedList(LinkedListInfo *list_info)
 
   assert(list_info != (LinkedListInfo *) NULL);
   assert(list_info->signature == MagickCoreSignature);
-  if (list_info->elements == 0)
-    return((void *) NULL);
   LockSemaphoreInfo(list_info->semaphore);
+  if (list_info->elements == 0)
+    {
+      UnlockSemaphoreInfo(list_info->semaphore);
+      return((void *) NULL);
+    }
   value=list_info->tail->value;
   UnlockSemaphoreInfo(list_info->semaphore);
   return(value);
@@ -407,7 +414,7 @@ MagickExport void *GetValueFromLinkedList(LinkedListInfo *list_info,
   ElementInfo
     *next;
 
-  ssize_t
+  size_t
     i;
 
   void
@@ -415,9 +422,12 @@ MagickExport void *GetValueFromLinkedList(LinkedListInfo *list_info,
 
   assert(list_info != (LinkedListInfo *) NULL);
   assert(list_info->signature == MagickCoreSignature);
-  if (index >= list_info->elements)
-    return((void *) NULL);
   LockSemaphoreInfo(list_info->semaphore);
+  if (index >= list_info->elements)
+    {
+      UnlockSemaphoreInfo(list_info->semaphore);
+      return((void *) NULL);
+    }
   if (index == 0)
     {
       value=list_info->head->value;
@@ -431,7 +441,7 @@ MagickExport void *GetValueFromLinkedList(LinkedListInfo *list_info,
       return(value);
     }
   next=list_info->head;
-  for (i=0; i < (ssize_t) index; i++)
+  for (i=0; i < index; i++)
     next=next->next;
   value=next->value;
   UnlockSemaphoreInfo(list_info->semaphore);
@@ -472,15 +482,12 @@ MagickExport MagickBooleanType InsertValueInLinkedList(
   ElementInfo
     *next;
 
-  ssize_t
+  size_t
     i;
 
   assert(list_info != (LinkedListInfo *) NULL);
   assert(list_info->signature == MagickCoreSignature);
   if (value == (const void *) NULL)
-    return(MagickFalse);
-  if ((index > list_info->elements) ||
-      (list_info->elements == list_info->capacity))
     return(MagickFalse);
   next=(ElementInfo *) AcquireMagickMemory(sizeof(*next));
   if (next == (ElementInfo *) NULL)
@@ -488,6 +495,13 @@ MagickExport MagickBooleanType InsertValueInLinkedList(
   next->value=(void *) value;
   next->next=(ElementInfo *) NULL;
   LockSemaphoreInfo(list_info->semaphore);
+  if ((index > list_info->elements) ||
+      (list_info->elements == list_info->capacity))
+    {
+      UnlockSemaphoreInfo(list_info->semaphore);
+      next=(ElementInfo *) RelinquishMagickMemory(next);
+      return(MagickFalse);
+    }
   if (list_info->elements == 0)
     {
       if (list_info->next == (ElementInfo *) NULL)
@@ -518,13 +532,9 @@ MagickExport MagickBooleanType InsertValueInLinkedList(
               *element;
 
             element=list_info->head;
-            next->next=element->next;
-            for (i=1; i < (ssize_t) index; i++)
-            {
+            for (i=1; i < index; i++)
               element=element->next;
-              next->next=element->next;
-            }
-            next=next->next;
+            next->next=element->next;
             element->next=next;
             if (list_info->next == next->next)
               list_info->next=next;
@@ -577,7 +587,7 @@ MagickExport MagickBooleanType InsertValueInSortedLinkedList(
   ElementInfo
     *next;
 
-  ssize_t
+  int
     i;
 
   assert(list_info != (LinkedListInfo *) NULL);
@@ -585,27 +595,35 @@ MagickExport MagickBooleanType InsertValueInSortedLinkedList(
   if ((compare == (int (*)(const void *,const void *)) NULL) ||
       (value == (const void *) NULL))
     return(MagickFalse);
-  if (list_info->elements == list_info->capacity)
-    return(MagickFalse);
   next=(ElementInfo *) AcquireMagickMemory(sizeof(*next));
   if (next == (ElementInfo *) NULL)
     return(MagickFalse);
   next->value=(void *) value;
   element=(ElementInfo *) NULL;
   LockSemaphoreInfo(list_info->semaphore);
+  if (list_info->elements == list_info->capacity)
+    {
+      UnlockSemaphoreInfo(list_info->semaphore);
+      next=(ElementInfo *) RelinquishMagickMemory(next);
+      return(MagickFalse);
+    }
   next->next=list_info->head;
   while (next->next != (ElementInfo *) NULL)
   {
-    i=(ssize_t) compare(value,next->next->value);
+    i=compare(value,next->next->value);
     if ((i < 0) || ((replace != (void **) NULL) && (i == 0)))
       {
         if (i == 0)
           {
-            *replace=next->next->value;
-            next->next=next->next->next;
-            if (element != (ElementInfo *) NULL)
-              element->next=(ElementInfo *) RelinquishMagickMemory(
-                element->next);
+            ElementInfo
+              *duplicate;
+
+            duplicate=next->next;
+            *replace=duplicate->value;
+            next->next=duplicate->next;
+            if (list_info->next == duplicate)
+              list_info->next=next;
+            duplicate=(ElementInfo *) RelinquishMagickMemory(duplicate);
             list_info->elements--;
           }
         if (element != (ElementInfo *) NULL)
@@ -783,15 +801,22 @@ MagickExport void *RemoveElementByValueFromLinkedList(LinkedListInfo *list_info,
 
   assert(list_info != (LinkedListInfo *) NULL);
   assert(list_info->signature == MagickCoreSignature);
-  if ((list_info->elements == 0) || (value == (const void *) NULL))
+  if (value == (const void *) NULL)
     return((void *) NULL);
   LockSemaphoreInfo(list_info->semaphore);
+  if (list_info->elements == 0)
+    {
+      UnlockSemaphoreInfo(list_info->semaphore);
+      return((void *) NULL);
+    }
   if (value == list_info->head->value)
     {
       if (list_info->next == list_info->head)
         list_info->next=list_info->head->next;
       next=list_info->head;
       list_info->head=list_info->head->next;
+      if (list_info->head == (ElementInfo *) NULL)
+        list_info->tail=(ElementInfo *) NULL;
       next=(ElementInfo *) RelinquishMagickMemory(next);
     }
   else
@@ -861,9 +886,12 @@ MagickExport void *RemoveElementFromLinkedList(LinkedListInfo *list_info,
 
   assert(list_info != (LinkedListInfo *) NULL);
   assert(list_info->signature == MagickCoreSignature);
-  if (index >= list_info->elements)
-    return((void *) NULL);
   LockSemaphoreInfo(list_info->semaphore);
+  if (index >= list_info->elements)
+    {
+      UnlockSemaphoreInfo(list_info->semaphore);
+      return((void *) NULL);
+    }
   if (index == 0)
     {
       if (list_info->next == list_info->head)
@@ -871,6 +899,8 @@ MagickExport void *RemoveElementFromLinkedList(LinkedListInfo *list_info,
       value=list_info->head->value;
       next=list_info->head;
       list_info->head=list_info->head->next;
+      if (list_info->head == (ElementInfo *) NULL)
+        list_info->tail=(ElementInfo *) NULL;
       next=(ElementInfo *) RelinquishMagickMemory(next);
     }
   else
@@ -925,9 +955,12 @@ MagickExport void *RemoveLastElementFromLinkedList(LinkedListInfo *list_info)
 
   assert(list_info != (LinkedListInfo *) NULL);
   assert(list_info->signature == MagickCoreSignature);
-  if (list_info->elements == 0)
-    return((void *) NULL);
   LockSemaphoreInfo(list_info->semaphore);
+  if (list_info->elements == 0)
+    {
+      UnlockSemaphoreInfo(list_info->semaphore);
+      return((void *) NULL);
+    }
   if (list_info->next == list_info->tail)
     list_info->next=(ElementInfo *) NULL;
   if (list_info->elements == 1UL)
@@ -1021,14 +1054,20 @@ MagickPrivate void SetHeadElementInLinkedList(LinkedListInfo *list_info,
   assert(list_info != (LinkedListInfo *) NULL);
   assert(list_info->signature == MagickCoreSignature);
   assert(element != (ElementInfo *) NULL);
+  LockSemaphoreInfo(list_info->semaphore);
   if (element == list_info->head)
-    return;
+    {
+      UnlockSemaphoreInfo(list_info->semaphore);
+      return;
+    }
   prev=list_info->head;
   while (prev != (ElementInfo *) NULL)
   {
     if (prev->next == element)
       {
         prev->next=element->next;
+        if (element == list_info->tail)
+          list_info->tail=prev;
         element->next=list_info->head;
         if (list_info->head == list_info->next)
           list_info->next=element;
@@ -1037,4 +1076,5 @@ MagickPrivate void SetHeadElementInLinkedList(LinkedListInfo *list_info,
       }
     prev=prev->next;
   }
+  UnlockSemaphoreInfo(list_info->semaphore);
 }

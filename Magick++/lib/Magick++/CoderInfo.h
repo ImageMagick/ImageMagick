@@ -58,7 +58,7 @@ namespace Magick
     // Format is readable
     bool isReadable(void) const;
 
-    // Format is writeable
+    // Format is writable
     bool isWritable(void) const;
 
     // Format mime type

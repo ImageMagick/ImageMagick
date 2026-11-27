@@ -112,6 +112,7 @@ MagickExport ImageView *CloneImageView(const ImageView *image_view)
   (void) memset(clone_view,0,sizeof(*clone_view));
   clone_view->description=ConstantString(image_view->description);
   clone_view->extent=image_view->extent;
+  clone_view->image=image_view->image;
   clone_view->view=CloneCacheView(image_view->view);
   clone_view->exception=AcquireExceptionInfo();
   InheritException(clone_view->exception,image_view->exception);
@@ -230,6 +231,10 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
 
   assert(source != (ImageView *) NULL);
   assert(source->signature == MagickCoreSignature);
+  assert(duplex != (ImageView *) NULL);
+  assert(duplex->signature == MagickCoreSignature);
+  assert(destination != (ImageView *) NULL);
+  assert(destination->signature == MagickCoreSignature);
   if (transfer == (DuplexTransferImageViewMethod) NULL)
     return(MagickFalse);
   source_image=source->image;
@@ -241,11 +246,12 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
   status=MagickTrue;
   progress=0;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  height=source->extent.height-(size_t) source->extent.y;
+  height=source->extent.height;
   #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(source_image,destination_image,height,1)
 #endif
-  for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
+  for (y=source->extent.y; y < (ssize_t) (source->extent.y+(ssize_t)
+    source->extent.height); y++)
   {
     const int
       id = GetOpenMPThreadId();
@@ -293,7 +299,7 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
       {
         MagickBooleanType
           proceed;
- 
+
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
         #pragma omp atomic
 #endif
@@ -321,7 +327,7 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
 %  GetImageViewAuthenticMetacontent() returns the image view authentic
 %  meta-content.
 %
-%  The format of the GetImageViewAuthenticPixels method is:
+%  The format of the GetImageViewAuthenticMetacontent method is:
 %
 %      void *GetImageViewAuthenticMetacontent(
 %        const ImageView *image_view)
@@ -385,12 +391,12 @@ MagickExport Quantum *GetImageViewAuthenticPixels(
 %
 %  The format of the GetImageViewException method is:
 %
-%      char *GetImageViewException(const PixelImage *image_view,
+%      char *GetImageViewException(const ImageView *image_view,
 %        ExceptionType *severity)
 %
 %  A description of each parameter follows:
 %
-%    o image_view: the pixel image_view.
+%    o image_view: the image view.
 %
 %    o severity: the severity of the error is returned here.
 %
@@ -406,7 +412,7 @@ MagickExport char *GetImageViewException(const ImageView *image_view,
   assert(severity != (ExceptionType *) NULL);
   *severity=image_view->exception->severity;
   description=(char *) AcquireQuantumMemory(MagickPathExtent,
-    2*sizeof(*description));
+    sizeof(*description));
   if (description == (char *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   *description='\0';
@@ -469,7 +475,7 @@ MagickExport RectangleInfo GetImageViewExtent(const ImageView *image_view)
 %
 %  The format of the GetImageViewImage method is:
 %
-%      MagickCore *GetImageViewImage(const ImageView *image_view)
+%      Image *GetImageViewImage(const ImageView *image_view)
 %
 %  A description of each parameter follows:
 %
@@ -554,11 +560,12 @@ MagickExport MagickBooleanType GetImageViewIterator(ImageView *source,
   status=MagickTrue;
   progress=0;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  height=source->extent.height-(size_t) source->extent.y;
+  height=source->extent.height;
   #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(source_image,source_image,height,1)
 #endif
-  for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
+  for (y=source->extent.y; y < (ssize_t) (source->extent.y+(ssize_t)
+    source->extent.height); y++)
   {
     const int
       id = GetOpenMPThreadId();
@@ -600,7 +607,7 @@ MagickExport MagickBooleanType GetImageViewIterator(ImageView *source,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t I m a g e V i e w V i r t u a l M e t a c o n t e n t     %
+%   G e t I m a g e V i e w V i r t u a l M e t a c o n t e n t             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -705,7 +712,7 @@ MagickExport MagickBooleanType IsImageView(const ImageView *image_view)
 %
 %  The format of the NewImageView method is:
 %
-%      ImageView *NewImageView(MagickCore *wand,ExceptionInfo *exception)
+%      ImageView *NewImageView(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -731,7 +738,7 @@ MagickExport ImageView *NewImageView(Image *image,ExceptionInfo *exception)
   image_view->extent.x=0;
   image_view->extent.y=0;
   image_view->exception=AcquireExceptionInfo();
-  image_view->debug=(GetLogEventMask() & ImageEvent) != 0 ? MagickTrue : 
+  image_view->debug=(GetLogEventMask() & ImageEvent) != 0 ? MagickTrue :
     MagickFalse;
   image_view->signature=MagickCoreSignature;
   return(image_view);
@@ -753,16 +760,15 @@ MagickExport ImageView *NewImageView(Image *image,ExceptionInfo *exception)
 %
 %  The format of the NewImageViewRegion method is:
 %
-%      ImageView *NewImageViewRegion(MagickCore *wand,const ssize_t x,
+%      ImageView *NewImageViewRegion(Image *image,const ssize_t x,
 %        const ssize_t y,const size_t width,const size_t height,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o wand: the magick wand.
+%    o image: the image.
 %
-%    o x,y,columns,rows:  These values define the perimeter of a extent of
-%      pixel_wands view.
+%    o x,y,width,height:  These values define the extent of the image view.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -779,14 +785,14 @@ MagickExport ImageView *NewImageViewRegion(Image *image,const ssize_t x,
   image_view=(ImageView *) AcquireCriticalMemory(sizeof(*image_view));
   (void) memset(image_view,0,sizeof(*image_view));
   image_view->description=ConstantString("ImageView");
-  image_view->view=AcquireVirtualCacheView(image_view->image,exception);
   image_view->image=image;
+  image_view->view=AcquireVirtualCacheView(image_view->image,exception);
   image_view->extent.width=width;
   image_view->extent.height=height;
   image_view->extent.x=x;
   image_view->extent.y=y;
   image_view->exception=AcquireExceptionInfo();
-  image_view->debug=(GetLogEventMask() & ImageEvent) != 0 ? MagickTrue : 
+  image_view->debug=(GetLogEventMask() & ImageEvent) != 0 ? MagickTrue :
     MagickFalse;
   image_view->signature=MagickCoreSignature;
   return(image_view);
@@ -822,6 +828,8 @@ MagickExport void SetImageViewDescription(ImageView *image_view,
 {
   assert(image_view != (ImageView *) NULL);
   assert(image_view->signature == MagickCoreSignature);
+  if (image_view->description != (char *) NULL)
+    image_view->description=DestroyString(image_view->description);
   image_view->description=ConstantString(description);
 }
 
@@ -901,11 +909,12 @@ MagickExport MagickBooleanType SetImageViewIterator(ImageView *destination,
   status=MagickTrue;
   progress=0;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  height=destination->extent.height-(size_t) destination->extent.y;
+  height=destination->extent.height;
   #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(destination_image,destination_image,height,1)
 #endif
-  for (y=destination->extent.y; y < (ssize_t) destination->extent.height; y++)
+  for (y=destination->extent.y; y < (ssize_t) (destination->extent.y+
+    (ssize_t) destination->extent.height); y++)
   {
     const int
       id = GetOpenMPThreadId();
@@ -1019,6 +1028,8 @@ MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
 
   assert(source != (ImageView *) NULL);
   assert(source->signature == MagickCoreSignature);
+  assert(destination != (ImageView *) NULL);
+  assert(destination->signature == MagickCoreSignature);
   if (transfer == (TransferImageViewMethod) NULL)
     return(MagickFalse);
   source_image=source->image;
@@ -1030,11 +1041,12 @@ MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
   status=MagickTrue;
   progress=0;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  height=source->extent.height-(size_t) source->extent.y;
+  height=source->extent.height;
   #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(source_image,destination_image,height,1)
 #endif
-  for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
+  for (y=source->extent.y; y < (ssize_t) (source->extent.y+(ssize_t)
+    source->extent.height); y++)
   {
     const int
       id = GetOpenMPThreadId();
@@ -1162,14 +1174,18 @@ MagickExport MagickBooleanType UpdateImageViewIterator(ImageView *source,
   status=MagickTrue;
   progress=0;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  height=source->extent.height-(size_t) source->extent.y;
+  height=source->extent.height;
   #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(source_image,source_image,height,1)
 #endif
-  for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
+  for (y=source->extent.y; y < (ssize_t) (source->extent.y+(ssize_t)
+    source->extent.height); y++)
   {
     const int
       id = GetOpenMPThreadId();
+
+    MagickBooleanType
+      sync;
 
     Quantum
       *magick_restrict pixels;
@@ -1185,7 +1201,9 @@ MagickExport MagickBooleanType UpdateImageViewIterator(ImageView *source,
       }
     if (update(source,y,id,context) == MagickFalse)
       status=MagickFalse;
-    status=SyncCacheViewAuthenticPixels(source->view,source->exception);
+    sync=SyncCacheViewAuthenticPixels(source->view,source->exception);
+    if (sync == MagickFalse)
+      status=MagickFalse;
     if (source_image->progress_monitor != (MagickProgressMonitor) NULL)
       {
         MagickBooleanType

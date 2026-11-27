@@ -97,6 +97,7 @@
 #define PrimitiveExtentPad  4296.0
 #define MaxBezierCoordinates  67108864
 #define MacroExpansionLimit  262144
+#define MaskExpansionCost  64  /* a mask/clip/pattern render is far costlier than a use */
 #define MaxArcAngle  1099511627776.0  /* 2^40 degrees */
 #define MaxDashSegments  4194304  /* per polygon edge */
 #define MinDashLength  0.01  /* minimum rendered dash/gap, in pixels */
@@ -1623,6 +1624,30 @@ MagickExport MagickBooleanType DrawClipPath(Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static MagickBooleanType ChargeRenderExpansion(const DrawInfo *draw_info,
+  const char *id,ExceptionInfo *exception)
+{
+  size_t
+    *expansion;
+
+  /*
+    Bound the total number of nested mask, clip-path and pattern renders.
+  */
+  expansion=draw_info->macro_expansion;
+  if (expansion == (size_t *) NULL)
+    return(MagickTrue);
+  if (*expansion >= (MacroExpansionLimit-MaskExpansionCost))
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),DrawError,
+        "VectorGraphicsExpandedTooMuch","`%s'",id != (const char *) NULL ?
+        id : "");
+      return(MagickFalse);
+    }
+  *expansion+=MaskExpansionCost;
+  return(MagickTrue);
+}
+
 static Image *DrawClippingMask(Image *image,const DrawInfo *draw_info,
   const char *id,const char *clip_path,const size_t depth,
   ExceptionInfo *exception)
@@ -1637,6 +1662,9 @@ static Image *DrawClippingMask(Image *image,const DrawInfo *draw_info,
   MagickStatusType
     status;
 
+  size_t
+    expansion = 0;
+
   /*
     Draw a clip path.
   */
@@ -1645,6 +1673,8 @@ static Image *DrawClippingMask(Image *image,const DrawInfo *draw_info,
   assert(draw_info != (const DrawInfo *) NULL);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if (ChargeRenderExpansion(draw_info,id,exception) == MagickFalse)
+    return((Image *) NULL);
   clip_mask=AcquireImage((const ImageInfo *) NULL,exception);
   status=SetImageExtent(clip_mask,image->columns,image->rows,exception);
   if (status == MagickFalse)
@@ -1669,6 +1699,8 @@ static Image *DrawClippingMask(Image *image,const DrawInfo *draw_info,
   clone_info->stroke_width=0.0;
   clone_info->alpha=OpaqueAlpha;
   clone_info->clip_path=MagickTrue;
+  if (clone_info->macro_expansion == (size_t *) NULL)
+    clone_info->macro_expansion=(&expansion);
   status=RenderMVGContent(clip_mask,clone_info,depth+1,exception);
   clone_info=DestroyDrawInfo(clone_info);
   separate_mask=SeparateImage(clip_mask,AlphaChannel,exception);
@@ -1735,6 +1767,9 @@ static Image *DrawCompositeMask(Image *image,const DrawInfo *draw_info,
   MagickStatusType
     status;
 
+  size_t
+    expansion = 0;
+
   /*
     Draw a mask path.
   */
@@ -1743,6 +1778,8 @@ static Image *DrawCompositeMask(Image *image,const DrawInfo *draw_info,
   assert(draw_info != (const DrawInfo *) NULL);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if (ChargeRenderExpansion(draw_info,id,exception) == MagickFalse)
+    return((Image *) NULL);
   composite_mask=AcquireImage((const ImageInfo *) NULL,exception);
   status=SetImageExtent(composite_mask,image->columns,image->rows,exception);
   if (status == MagickFalse)
@@ -1765,6 +1802,8 @@ static Image *DrawCompositeMask(Image *image,const DrawInfo *draw_info,
     exception);
   clone_info->stroke_width=0.0;
   clone_info->alpha=OpaqueAlpha;
+  if (clone_info->macro_expansion == (size_t *) NULL)
+    clone_info->macro_expansion=(&expansion);
   status=RenderMVGContent(composite_mask,clone_info,depth+1,exception);
   clone_info=DestroyDrawInfo(clone_info);
   separate_mask=SeparateImage(composite_mask,AlphaChannel,exception);
@@ -2946,6 +2985,11 @@ static MagickBooleanType RenderMVGContent(Image *image,
                     DestroyImage(graphic_context[n]->clipping_mask);
                 graphic_context[n]->clipping_mask=DrawClippingMask(image,
                   graphic_context[n],token,clip_path,depth+1,exception);
+                if (graphic_context[n]->clipping_mask == (Image *) NULL)
+                  {
+                    status=MagickFalse;
+                    break;
+                  }
                 if (graphic_context[n]->compliance != SVGCompliance)
                   {
                     clip_path=(const char *) GetValueFromSplayTree(macros,
@@ -3359,6 +3403,11 @@ static MagickBooleanType RenderMVGContent(Image *image,
                     DestroyImage(graphic_context[n]->composite_mask);
                 graphic_context[n]->composite_mask=DrawCompositeMask(image,
                   graphic_context[n],token,mask_path,depth+1,exception);
+                if (graphic_context[n]->composite_mask == (Image *) NULL)
+                  {
+                    status=MagickFalse;
+                    break;
+                  }
                 if (graphic_context[n]->compliance != SVGCompliance)
                   status=SetImageMask(image,CompositePixelMask,
                     graphic_context[n]->composite_mask,exception);
@@ -4852,12 +4901,17 @@ MagickExport MagickBooleanType DrawPatternPath(Image *image,
   MagickBooleanType
     status;
 
+  size_t
+    expansion = 0;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   assert(draw_info != (const DrawInfo *) NULL);
   assert(name != (const char *) NULL);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if (ChargeRenderExpansion(draw_info,name,exception) == MagickFalse)
+    return(MagickFalse);
   (void) FormatLocaleString(property,MagickPathExtent,"%s",name);
   path=GetImageArtifact(image,property);
   if (path == (const char *) NULL)
@@ -4889,6 +4943,8 @@ MagickExport MagickBooleanType DrawPatternPath(Image *image,
     clone_info->gradient.type=(GradientType) ParseCommandOption(
       MagickGradientOptions,MagickFalse,type);
   (void) CloneString(&clone_info->primitive,path);
+  if (clone_info->macro_expansion == (size_t *) NULL)
+    clone_info->macro_expansion=(&expansion);
   status=RenderMVGContent(*pattern,clone_info,0,exception);
   clone_info=DestroyDrawInfo(clone_info);
   if (draw_info->debug != MagickFalse)
@@ -6129,7 +6185,7 @@ static MagickBooleanType DrawRoundLinecap(Image *image,
     i;
 
   if (primitive_info->coordinates < 1)
-    return(MagickFalse);
+    return(MagickTrue);
   for (i=0; i < 4; i++)
     linecap[i]=(*primitive_info);
   linecap[0].coordinates=4;

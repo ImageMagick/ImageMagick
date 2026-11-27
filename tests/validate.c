@@ -86,13 +86,13 @@
 %
 %  A description of each parameter follows:
 %
-%    o fails: return the number of validation tests that pass.
+%    o fails: return the number of validation tests that failed.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
 
-static MagickBooleanType ValidateHSIToRGB()
+static MagickBooleanType ValidateHSIToRGB(void)
 {
   double
     r,
@@ -108,7 +108,7 @@ static MagickBooleanType ValidateHSIToRGB()
   return(MagickTrue);
 }
 
-static MagickBooleanType ValidateRGBToHSI()
+static MagickBooleanType ValidateRGBToHSI(void)
 {
   double
     h,
@@ -125,7 +125,7 @@ static MagickBooleanType ValidateRGBToHSI()
   return(MagickTrue);
 }
 
-static MagickBooleanType ValidateHSLToRGB()
+static MagickBooleanType ValidateHSLToRGB(void)
 {
   double
     r,
@@ -141,7 +141,7 @@ static MagickBooleanType ValidateHSLToRGB()
   return(MagickTrue);
 }
 
-static MagickBooleanType ValidateRGBToHSL()
+static MagickBooleanType ValidateRGBToHSL(void)
 {
   double
     h,
@@ -158,7 +158,7 @@ static MagickBooleanType ValidateRGBToHSL()
   return(MagickTrue);
 }
 
-static MagickBooleanType ValidateHSVToRGB()
+static MagickBooleanType ValidateHSVToRGB(void)
 {
   double
     r,
@@ -174,7 +174,7 @@ static MagickBooleanType ValidateHSVToRGB()
   return(MagickTrue);
 }
 
-static MagickBooleanType ValidateRGBToHSV()
+static MagickBooleanType ValidateRGBToHSV(void)
 {
   double
     h,
@@ -191,7 +191,7 @@ static MagickBooleanType ValidateRGBToHSV()
   return(MagickTrue);
 }
 
-static MagickBooleanType ValidateRGBToJPEGYCbCr()
+static MagickBooleanType ValidateRGBToJPEGYCbCr(void)
 {
   double
     Cb,
@@ -208,7 +208,7 @@ static MagickBooleanType ValidateRGBToJPEGYCbCr()
   return(MagickTrue);
 }
 
-static MagickBooleanType ValidateJPEGYCbCrToRGB()
+static MagickBooleanType ValidateJPEGYCbCrToRGB(void)
 {
   double
     r,
@@ -224,7 +224,7 @@ static MagickBooleanType ValidateJPEGYCbCrToRGB()
   return(MagickTrue);
 }
 
-static MagickBooleanType ValidateLabToRGB()
+static MagickBooleanType ValidateLabToRGB(void)
 {
   double
     r,
@@ -241,7 +241,7 @@ static MagickBooleanType ValidateLabToRGB()
   return(MagickTrue);
 }
 
-static MagickBooleanType ValidateRGBToLab()
+static MagickBooleanType ValidateRGBToLab(void)
 {
   double
     a,
@@ -258,7 +258,7 @@ static MagickBooleanType ValidateRGBToLab()
   return(MagickTrue);
 }
 
-static MagickBooleanType ValidateLchToRGB()
+static MagickBooleanType ValidateLchToRGB(void)
 {
   double
     b,
@@ -275,7 +275,7 @@ static MagickBooleanType ValidateLchToRGB()
   return(MagickTrue);
 }
 
-static MagickBooleanType ValidateRGBToLch()
+static MagickBooleanType ValidateRGBToLch(void)
 {
   double
     c,
@@ -292,7 +292,7 @@ static MagickBooleanType ValidateRGBToLch()
   return(MagickTrue);
 }
 
-static MagickBooleanType ValidateRGBToLMS()
+static MagickBooleanType ValidateRGBToLMS(void)
 {
   double
     L,
@@ -309,7 +309,7 @@ static MagickBooleanType ValidateRGBToLMS()
   return(MagickTrue);
 }
 
-static MagickBooleanType ValidateLMSToRGB()
+static MagickBooleanType ValidateLMSToRGB(void)
 {
   double
     r,
@@ -325,7 +325,7 @@ static MagickBooleanType ValidateLMSToRGB()
   return(MagickTrue);
 }
 
-static MagickBooleanType ValidateRGBToLuv()
+static MagickBooleanType ValidateRGBToLuv(void)
 {
   double
     l,
@@ -342,7 +342,7 @@ static MagickBooleanType ValidateRGBToLuv()
   return(MagickTrue);
 }
 
-static MagickBooleanType ValidateLuvToRGB()
+static MagickBooleanType ValidateLuvToRGB(void)
 {
   double
     r,
@@ -359,7 +359,7 @@ static MagickBooleanType ValidateLuvToRGB()
   return(MagickTrue);
 }
 
-static MagickBooleanType ValidateRGBToXYZ()
+static MagickBooleanType ValidateRGBToXYZ(void)
 {
   double
     x,
@@ -376,7 +376,7 @@ static MagickBooleanType ValidateRGBToXYZ()
   return(MagickTrue);
 }
 
-static MagickBooleanType ValidateXYZToRGB()
+static MagickBooleanType ValidateXYZToRGB(void)
 {
   double
     r,
@@ -392,7 +392,7 @@ static MagickBooleanType ValidateXYZToRGB()
   return(MagickTrue);
 }
 
-static MagickBooleanType ValidateYDbDrToRGB()
+static MagickBooleanType ValidateYDbDrToRGB(void)
 {
   double
     r,
@@ -408,7 +408,7 @@ static MagickBooleanType ValidateYDbDrToRGB()
   return(MagickTrue);
 }
 
-static MagickBooleanType ValidateRGBToYDbDr()
+static MagickBooleanType ValidateRGBToYDbDr(void)
 {
   double
     Db,
@@ -425,7 +425,7 @@ static MagickBooleanType ValidateRGBToYDbDr()
   return(MagickTrue);
 }
 
-static MagickBooleanType ValidateRGBToYIQ()
+static MagickBooleanType ValidateRGBToYIQ(void)
 {
   double
     i,
@@ -442,7 +442,7 @@ static MagickBooleanType ValidateRGBToYIQ()
   return(MagickTrue);
 }
 
-static MagickBooleanType ValidateYIQToRGB()
+static MagickBooleanType ValidateYIQToRGB(void)
 {
   double
     r,
@@ -458,7 +458,7 @@ static MagickBooleanType ValidateYIQToRGB()
   return(MagickTrue);
 }
 
-static MagickBooleanType ValidateRGBToYPbPr()
+static MagickBooleanType ValidateRGBToYPbPr(void)
 {
   double
     Pb,
@@ -475,7 +475,7 @@ static MagickBooleanType ValidateRGBToYPbPr()
   return(MagickTrue);
 }
 
-static MagickBooleanType ValidateYPbPrToRGB()
+static MagickBooleanType ValidateYPbPrToRGB(void)
 {
   double
     r,
@@ -491,7 +491,7 @@ static MagickBooleanType ValidateYPbPrToRGB()
   return(MagickTrue);
 }
 
-static MagickBooleanType ValidateRGBToYUV()
+static MagickBooleanType ValidateRGBToYUV(void)
 {
   double
     U,
@@ -508,7 +508,7 @@ static MagickBooleanType ValidateRGBToYUV()
   return(MagickTrue);
 }
 
-static MagickBooleanType ValidateYUVToRGB()
+static MagickBooleanType ValidateYUVToRGB(void)
 {
   double
     r,
@@ -635,7 +635,7 @@ static size_t ValidateColorspaces(size_t *fails,ExceptionInfo *exception)
 %
 %    o output_filename: the output image filename.
 %
-%    o fail: return the number of validation tests that pass.
+%    o fails: return the number of validation tests that failed.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -677,8 +677,9 @@ static size_t ValidateCompareCommand(ImageInfo *image_info,
       {
         (void) FormatLocaleFile(stdout,"... fail @ %s/%s/%lu.\n",
           GetMagickModule());
-        (void) LogMagickEvent(ExceptionEvent,GetMagickModule(),"%s",
-          exception->reason);
+        if (exception->reason != (char *) NULL)
+          (void) LogMagickEvent(ExceptionEvent,GetMagickModule(),"%s",
+            exception->reason);
         fail++;
         continue;
       }
@@ -691,8 +692,9 @@ static size_t ValidateCompareCommand(ImageInfo *image_info,
       {
         (void) FormatLocaleFile(stdout,"... fail @ %s/%s/%lu.\n",
           GetMagickModule());
-        (void) LogMagickEvent(ExceptionEvent,GetMagickModule(),"%s",
-          exception->reason);
+        if (exception->reason != (char *) NULL)
+          (void) LogMagickEvent(ExceptionEvent,GetMagickModule(),"%s",
+            exception->reason);
         fail++;
         continue;
       }
@@ -733,7 +735,7 @@ static size_t ValidateCompareCommand(ImageInfo *image_info,
 %
 %    o output_filename: the output image filename.
 %
-%    o fail: return the number of validation tests that pass.
+%    o fails: return the number of validation tests that failed.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -828,7 +830,7 @@ static size_t ValidateCompositeCommand(ImageInfo *image_info,
 %
 %    o output_filename: the output image filename.
 %
-%    o fail: return the number of validation tests that pass.
+%    o fails: return the number of validation tests that failed.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -873,7 +875,7 @@ static size_t ValidateConvertCommand(ImageInfo *image_info,
         fail++;
         continue;
       }
-    status=ConvertImageCommand(image_info,number_arguments,arguments,
+    status=MagickImageCommand(image_info,number_arguments,arguments,
       (char **) NULL,exception);
     for (j=0; j < (ssize_t) number_arguments; j++)
       arguments[j]=DestroyString(arguments[j]);
@@ -922,7 +924,7 @@ static size_t ValidateConvertCommand(ImageInfo *image_info,
 %
 %    o output_filename: the output image filename.
 %
-%    o fail: return the number of validation tests that pass.
+%    o fails: return the number of validation tests that failed.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -1017,7 +1019,7 @@ static size_t ValidateIdentifyCommand(ImageInfo *image_info,
 %
 %    o output_filename: the output image filename.
 %
-%    o fail: return the number of validation tests that pass.
+%    o fails: return the number of validation tests that failed.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -1109,6 +1111,8 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
             (void) FormatLocaleFile(stdout,"    reason:%s\n",exception->reason);
           CatchException(exception);
           fail++;
+          if (reference_image != (Image *) NULL)
+            reference_image=DestroyImage(reference_image);
           continue;
         }
       /*
@@ -1170,6 +1174,8 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
             (void) FormatLocaleFile(stdout,"    reason:%s\n",exception->reason);
           CatchException(exception);
           fail++;
+          if (ping_image != (Image *) NULL)
+            ping_image=DestroyImage(ping_image);
           continue;
         }
       ping_image=DestroyImage(ping_image);
@@ -1186,6 +1192,8 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
             (void) FormatLocaleFile(stdout,"    reason:%s\n",exception->reason);
           CatchException(exception);
           fail++;
+          if (reference_image != (Image *) NULL)
+            reference_image=DestroyImage(reference_image);
           continue;
         }
       /*
@@ -1209,6 +1217,7 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
             (void) FormatLocaleFile(stdout,"    reason:%s\n",exception->reason);
           CatchException(exception);
           fail++;
+          blob=(unsigned char *) RelinquishMagickMemory(blob);
           reference_image=DestroyImage(reference_image);
           continue;
         }
@@ -1226,6 +1235,9 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
           CatchException(exception);
           fail++;
           blob=(unsigned char *) RelinquishMagickMemory(blob);
+          if (ping_image != (Image *) NULL)
+            ping_image=DestroyImage(ping_image);
+          reference_image=DestroyImage(reference_image);
           continue;
         }
       ping_image=DestroyImage(ping_image);
@@ -1245,6 +1257,8 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
             (void) FormatLocaleFile(stdout,"    reason:%s\n",exception->reason);
           CatchException(exception);
           fail++;
+          if (reconstruct_image != (Image *) NULL)
+            reconstruct_image=DestroyImage(reconstruct_image);
           reference_image=DestroyImage(reference_image);
           continue;
         }
@@ -1267,6 +1281,8 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
             (void) FormatLocaleFile(stdout,"    reason:%s\n",exception->reason);
           CatchException(exception);
           fail++;
+          if (difference_image != (Image *) NULL)
+            difference_image=DestroyImage(difference_image);
           continue;
         }
       difference_image=DestroyImage(difference_image);
@@ -1326,7 +1342,7 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
 %
 %    o output_filename: the output image filename.
 %
-%    o fail: return the number of validation tests that pass.
+%    o fails: return the number of validation tests that failed.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -1394,6 +1410,8 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
             (void) FormatLocaleFile(stdout,"    reason:%s\n",exception->reason);
           CatchException(exception);
           fail++;
+          if (reference_image != (Image *) NULL)
+            reference_image=DestroyImage(reference_image);
           continue;
         }
       /*
@@ -1453,6 +1471,8 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
             GetMagickModule());
           CatchException(exception);
           fail++;
+          if (reference_image != (Image *) NULL)
+            reference_image=DestroyImage(reference_image);
           continue;
         }
       /*
@@ -1485,6 +1505,8 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
             GetMagickModule());
           CatchException(exception);
           fail++;
+          if (reconstruct_image != (Image *) NULL)
+            reconstruct_image=DestroyImage(reconstruct_image);
           reference_image=DestroyImage(reference_image);
           continue;
         }
@@ -1505,6 +1527,8 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
             GetMagickModule());
           CatchException(exception);
           fail++;
+          if (difference_image != (Image *) NULL)
+            difference_image=DestroyImage(difference_image);
           continue;
         }
       difference_image=DestroyImage(difference_image);
@@ -1553,7 +1577,7 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
 %
 %    o output_filename: the output image filename.
 %
-%    o fail: return the number of validation tests that pass.
+%    o fails: return the number of validation tests that failed.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -1613,6 +1637,8 @@ static size_t ValidateImportExportPixels(ImageInfo *image_info,
             GetMagickModule());
           CatchException(exception);
           fail++;
+          if (reference_image != (Image *) NULL)
+            reference_image=DestroyImage(reference_image);
           continue;
         }
       if (LocaleNCompare(reference_map[i],"cmy",3) == 0)
@@ -1662,6 +1688,16 @@ static size_t ValidateImportExportPixels(ImageInfo *image_info,
         Read reconstruct image.
       */
       reconstruct_image=AcquireImage(image_info,exception);
+      if (reconstruct_image == (Image *) NULL)
+        {
+          (void) FormatLocaleFile(stdout,"... fail @ %s/%s/%lu.\n",
+            GetMagickModule());
+          CatchException(exception);
+          fail++;
+          pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+          reference_image=DestroyImage(reference_image);
+          continue;
+        }
       (void) SetImageExtent(reconstruct_image,reference_image->columns,
         reference_image->rows,exception);
       (void) SetImageColorspace(reconstruct_image,reference_image->colorspace,
@@ -1677,6 +1713,8 @@ static size_t ValidateImportExportPixels(ImageInfo *image_info,
             GetMagickModule());
           CatchException(exception);
           fail++;
+          if (reconstruct_image != (Image *) NULL)
+            reconstruct_image=DestroyImage(reconstruct_image);
           reference_image=DestroyImage(reference_image);
           continue;
         }
@@ -1694,6 +1732,8 @@ static size_t ValidateImportExportPixels(ImageInfo *image_info,
             GetMagickModule());
           CatchException(exception);
           fail++;
+          if (difference_image != (Image *) NULL)
+            difference_image=DestroyImage(difference_image);
           continue;
         }
       difference_image=DestroyImage(difference_image);
@@ -1742,7 +1782,7 @@ static size_t ValidateImportExportPixels(ImageInfo *image_info,
 %
 %    o output_filename: the output image filename.
 %
-%    o fail: return the number of validation tests that pass.
+%    o fails: return the number of validation tests that failed.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -1836,7 +1876,7 @@ static size_t ValidateMagickCommand(ImageInfo *image_info,
 %
 %    o output_filename: the output image filename.
 %
-%    o fail: return the number of validation tests that pass.
+%    o fails: return the number of validation tests that failed.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -1931,7 +1971,7 @@ static size_t ValidateMontageCommand(ImageInfo *image_info,
 %
 %    o output_filename: the output image filename.
 %
-%    o fail: return the number of validation tests that pass.
+%    o fails: return the number of validation tests that failed.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -2059,7 +2099,8 @@ int main(int argc,char **argv)
     option); \
   CatchException(exception); \
   DestroyValidate(); \
-  return(MagickFalse); \
+  MagickCoreTerminus(); \
+  return(1); \
 }
 
   char
@@ -2131,7 +2172,10 @@ int main(int argc,char **argv)
       {
         if (LocaleCompare("bench",option+1) == 0)
           {
-            iterations=StringToUnsignedLong(argv[++i]);
+            i++;
+            if (i >= (ssize_t) argc)
+              ThrowValidateException(OptionError,"MissingArgument",option);
+            iterations=StringToUnsignedLong(argv[i]);
             break;
           }
         ThrowValidateException(OptionError,"UnrecognizedOption",option)
@@ -2140,7 +2184,10 @@ int main(int argc,char **argv)
       {
         if (LocaleCompare("debug",option+1) == 0)
           {
-            (void) SetLogEventMask(argv[++i]);
+            i++;
+            if (i >= (ssize_t) argc)
+              ThrowValidateException(OptionError,"MissingArgument",option);
+            (void) SetLogEventMask(argv[i]);
             break;
           }
         ThrowValidateException(OptionError,"UnrecognizedOption",option)
@@ -2150,6 +2197,8 @@ int main(int argc,char **argv)
         if (LocaleCompare("help",option+1) == 0)
           {
             (void) ValidateUsage();
+            DestroyValidate();
+            MagickCoreTerminus();
             return(0);
           }
         ThrowValidateException(OptionError,"UnrecognizedOption",option)
@@ -2159,7 +2208,12 @@ int main(int argc,char **argv)
         if (LocaleCompare("log",option+1) == 0)
           {
             if (*option != '+')
-              (void) SetLogFormat(argv[i+1]);
+              {
+                i++;
+                if (i >= (ssize_t) argc)
+                  ThrowValidateException(OptionError,"MissingArgument",option);
+                (void) SetLogFormat(argv[i]);
+              }
             break;
           }
         ThrowValidateException(OptionError,"UnrecognizedOption",option)
@@ -2193,6 +2247,11 @@ int main(int argc,char **argv)
             type=(ValidateType) validate;
             break;
           }
+        if (LocaleCompare("verbose",option+1) == 0)
+          {
+            image_info->verbose=(*option == '-') ? MagickTrue : MagickFalse;
+            break;
+          }
         if ((LocaleCompare("version",option+1) == 0) ||
             (LocaleCompare("-version",option+1) == 0))
           {
@@ -2202,6 +2261,8 @@ int main(int argc,char **argv)
               GetMagickCopyright());
             (void) FormatLocaleFile(stdout,"Features: %s\n\n",
               GetMagickFeatures());
+            DestroyValidate();
+            MagickCoreTerminus();
             return(0);
           }
         ThrowValidateException(OptionError,"UnrecognizedOption",option)
@@ -2317,7 +2378,7 @@ int main(int argc,char **argv)
       (void) FormatLocaleFile(stderr,
         "Performance: %.17gi %.3fips %0.6fu %ld:%02ld.%03ld\n",(double)
         iterations,1.0*iterations/elapsed_time,user_time,(long)
-        (elapsed_time/60.0),(long) ceil(fmod(elapsed_time,60.0)),
+        (elapsed_time/60.0),(long) floor(fmod(elapsed_time,60.0)),
         (long) (1000.0*(elapsed_time-floor(elapsed_time))));
       timer=DestroyTimerInfo(timer);
     }

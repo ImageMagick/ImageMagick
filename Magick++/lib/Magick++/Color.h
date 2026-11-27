@@ -43,7 +43,7 @@ namespace Magick
     //   Magenta  = green
     //   Yellow   = blue
     //   Black(K) = black
-    // CMYKPixel:
+    // CMYKAPixel:
     //   Cyan     = red
     //   Magenta  = green
     //   Yellow   = blue
@@ -116,7 +116,7 @@ namespace Magick
     operator std::string() const;
 
     // Returns true if the distance between the other color is less than the
-    // specified distance in a linear three(or four) % dimensional color space.
+    // specified distance in a linear three (or four) dimensional color space.
     bool isFuzzyEquivalent(const Color &color_,const double fuzz_) const;
 
     // Does object contain valid color?
@@ -220,7 +220,7 @@ namespace Magick
     void black(const double black_);
     double black(void) const;
 
-    // Black/Key color (range 0.0 to 1.0)
+    // Cyan color (range 0.0 to 1.0)
     void cyan(const double cyan_);
     double cyan(void) const;
 
@@ -338,7 +338,7 @@ namespace Magick
     // Assignment operator from base class
     ColorMono& operator=(const Color& color_);
 
-    // Mono color
+    // Mono color (false=black, true=white)
     void mono(const bool mono_);
     bool mono(void) const;
 
@@ -419,7 +419,7 @@ namespace Magick
     // Assignment operator from base class
     ColorYUV& operator=(const Color& color_);
 
-    // Color U (0.0 through 1.0)
+    // Color U (-0.5 through 0.5)
     void u(const double u_);
     double u(void) const;
 
@@ -427,7 +427,7 @@ namespace Magick
     void v(const double v_);
     double v(void) const;
 
-    // Color Y (-0.5 through 0.5)
+    // Color Y (0.0 through 1.0)
     void y(const double y_);
     double y(void) const;
 

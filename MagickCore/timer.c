@@ -108,8 +108,6 @@ MagickExport TimerInfo *AcquireTimerInfo(void)
     *timer_info;
 
   timer_info=(TimerInfo *) AcquireCriticalMemory(sizeof(*timer_info));
-  (void) memset(timer_info,0,sizeof(*timer_info));
-  timer_info->signature=MagickCoreSignature;
   GetTimerInfo(timer_info);
   return(timer_info);
 }
@@ -164,7 +162,8 @@ MagickExport MagickBooleanType ContinueTimer(TimerInfo *time_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyTimerInfo() zeros memory associated with the TimerInfo structure.
+%  DestroyTimerInfo() relinquishes the memory associated with the TimerInfo
+%  structure and returns NULL.
 %
 %  The format of the DestroyTimerInfo method is:
 %
@@ -172,7 +171,7 @@ MagickExport MagickBooleanType ContinueTimer(TimerInfo *time_info)
 %
 %  A description of each parameter follows:
 %
-%    o timer_info: The cipher context.
+%    o timer_info: The timer info.
 %
 */
 MagickExport TimerInfo *DestroyTimerInfo(TimerInfo *timer_info)
@@ -195,8 +194,9 @@ MagickExport TimerInfo *DestroyTimerInfo(TimerInfo *timer_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ElapsedTime() returns the elapsed time (in seconds) since the last call to
-%  StartTimer().
+%  ElapsedTime() returns a wall-clock timestamp (in seconds) from a monotonic
+%  clock where one is available.  The absolute value is meaningless; callers
+%  subtract two readings to measure an interval.
 %
 %  The format of the ElapsedTime method is:
 %
@@ -279,6 +279,8 @@ MagickExport ssize_t FormatMagickTime(const time_t time,const size_t length,
     utc_time;
 
   assert(timestamp != (char *) NULL);
+  if (length == 0)
+    return(0);
   if (date_precision == -1)
     {
       char
@@ -297,8 +299,13 @@ MagickExport ssize_t FormatMagickTime(const time_t time,const size_t length,
     "%04d-%02d-%02dT%02d:%02d:%02d%+03d:00",utc_time.tm_year+1900,
     utc_time.tm_mon+1,utc_time.tm_mday,utc_time.tm_hour,utc_time.tm_min,
     utc_time.tm_sec,0);
+  if (count >= (ssize_t) length)
+    count=(ssize_t) length-1;  /* output was truncated to fit the buffer */
   if ((date_precision > 0) && (date_precision < (ssize_t) strlen(timestamp)))
-    timestamp[date_precision]='\0';
+    {
+      timestamp[date_precision]='\0';
+      count=date_precision;
+    }
   return(count);
 }
 
@@ -338,22 +345,7 @@ MagickExport double GetElapsedTime(TimerInfo *time_info)
 }
 
 /*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   G e t M a g i c k T i m e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetMagickTime() returns the time as the number of seconds since the Epoch.
-%
-%  The format of the GetMagickTime method is:
-%
-%      time_t GetElapsedTime(void)
-%
+  Initialize magick_epoch from SOURCE_DATE_EPOCH, once.
 */
 static void InitializeEpoch(void)
 {
@@ -363,7 +355,7 @@ static void InitializeEpoch(void)
         *source_date_epoch;
 
       source_date_epoch=GetEnvironmentValue("SOURCE_DATE_EPOCH");
-      if (source_date_epoch != (const char *) NULL)
+      if (source_date_epoch != (char *) NULL)
         {
           time_t
             epoch;
@@ -377,6 +369,26 @@ static void InitializeEpoch(void)
     }
 }
 
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   G e t M a g i c k T i m e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetMagickTime() returns the time as the number of seconds since the Epoch.
+%  If the SOURCE_DATE_EPOCH environment variable holds a valid time that is not
+%  in the future, that value is returned instead (for reproducible builds).
+%
+%  The format of the GetMagickTime method is:
+%
+%      time_t GetMagickTime(void)
+%
+*/
 MagickExport time_t GetMagickTime(void)
 {
 #ifdef FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION
@@ -470,9 +482,9 @@ MagickExport double GetUserTime(TimerInfo *time_info)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  IsSourceDataEpochSet() returns true when the SOURCE_DATE_EPOCH environment
-%  variable is set. This variable is used to set the epoch time for the
-%  GetMagickTime() method. If the variable is not set, then the current time is
-%  returned.
+%  variable is set to a valid time.  This variable is used to set the epoch
+%  time for the GetMagickTime() method.  If the variable is not set (or is
+%  invalid), GetMagickTime() returns the current time.
 %
 %  The format of the IsSourceDataEpochSet method is:
 %
@@ -496,7 +508,8 @@ MagickExport MagickBooleanType IsSourceDataEpochSet(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ResetTimer() resets the stopwatch.
+%  ResetTimer() resets the stopwatch to its initial, zeroed state.  The
+%  stopwatch is left undefined until StartTimer() is called again.
 %
 %  The format of the ResetTimer method is:
 %
@@ -511,9 +524,13 @@ MagickExport void ResetTimer(TimerInfo *time_info)
 {
   assert(time_info != (TimerInfo *) NULL);
   assert(time_info->signature == MagickCoreSignature);
-  StopTimer(time_info);
+  time_info->elapsed.start=0.0;
   time_info->elapsed.stop=0.0;
+  time_info->elapsed.total=0.0;
+  time_info->user.start=0.0;
   time_info->user.stop=0.0;
+  time_info->user.total=0.0;
+  time_info->state=UndefinedTimerState;
 }
 
 /*
@@ -527,7 +544,8 @@ MagickExport void ResetTimer(TimerInfo *time_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetMagickDatePrecision() sets the pseudo-random number generator secret key.
+%  SetMagickDatePrecision() sets the number of characters of the timestamp
+%  that FormatMagickTime() returns (0 means the full timestamp).
 %
 %  The format of the SetMagickDatePrecision method is:
 %
@@ -535,7 +553,7 @@ MagickExport void ResetTimer(TimerInfo *time_info)
 %
 %  A description of each parameter follows:
 %
-%    o key: the date precision.
+%    o precision: the date precision.
 %
 */
 MagickPrivate void SetMagickDatePrecision(const unsigned long precision)
@@ -581,7 +599,7 @@ MagickExport void StartTimer(TimerInfo *time_info,const MagickBooleanType reset)
       time_info->user.total=0.0;
       time_info->elapsed.total=0.0;
     }
-  if (time_info->state != RunningTimerState)
+  if ((reset != MagickFalse) || (time_info->state != RunningTimerState))
     {
       time_info->elapsed.start=ElapsedTime();
       time_info->user.start=UserTime();
@@ -615,15 +633,14 @@ static void StopTimer(TimerInfo *time_info)
 {
   assert(time_info != (TimerInfo *) NULL);
   assert(time_info->signature == MagickCoreSignature);
+  if (time_info->state != RunningTimerState)
+    return;
   time_info->elapsed.stop=ElapsedTime();
   time_info->user.stop=UserTime();
-  if (time_info->state == RunningTimerState)
-    {
-      time_info->user.total+=time_info->user.stop-
-        time_info->user.start+MagickEpsilon;
-      time_info->elapsed.total+=time_info->elapsed.stop-
-        time_info->elapsed.start+MagickEpsilon;
-    }
+  time_info->user.total+=time_info->user.stop-time_info->user.start+
+    MagickEpsilon;
+  time_info->elapsed.total+=time_info->elapsed.stop-time_info->elapsed.start+
+    MagickEpsilon;
   time_info->state=StoppedTimerState;
 }
 
@@ -638,8 +655,9 @@ static void StopTimer(TimerInfo *time_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  UserTime() returns the total time the process has been scheduled (in
-%  seconds) since the last call to StartTimer().
+%  UserTime() returns the total CPU time (user plus system, in seconds) the
+%  process has consumed so far.  Callers subtract two readings to measure an
+%  interval.
 %
 %  The format of the UserTime method is:
 %

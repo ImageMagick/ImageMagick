@@ -3980,15 +3980,27 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
         }
         if (status != MagickFalse)
           {
-            {
-              MagickBooleanType
-                preserve_timestamp;
+            MagickBooleanType
+              preserve_timestamp;
 
-              preserve_timestamp=IsStringTrue(GetImageOption(image_info,
-                "preserve-timestamp"));
-              if (preserve_timestamp != MagickFalse)
-                (void) set_file_timestamp(image->filename,&properties);
-            }
+            if (*backup_filename != '\0')
+              {
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
+                struct stat
+                  destination;
+
+                /*
+                  Restore the permissions of the file being replaced.
+                */
+                if (stat_utf8(image->filename,&destination) == 0)
+                  (void) chmod(backup_filename,destination.st_mode & 0777);
+#endif
+              }
+            preserve_timestamp=IsStringTrue(GetImageOption(image_info,
+              "preserve-timestamp"));
+            if (preserve_timestamp != MagickFalse)
+              (void) set_file_timestamp(*backup_filename != '\0' ?
+                backup_filename : image->filename,&properties);
             if (*backup_filename != '\0')
               {
                 if (rename_utf8(backup_filename,image->filename) != 0)
@@ -8207,7 +8219,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                 {
                   case DisplaceCompositeOp:
                   case DistortCompositeOp:
-                  { 
+                  {
                     status&=(MagickStatusType) CompositeImage(canvas_image,
                       new_images,CopyCompositeOp,clip_to_self,0,0,exception);
                     break;

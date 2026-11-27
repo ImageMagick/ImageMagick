@@ -392,6 +392,9 @@ static MagickBooleanType WriteMTVImage(const ImageInfo *image_info,Image *image,
     (void) WriteBlobString(image,buffer);
     for (y=0; y < (ssize_t) image->rows; y++)
     {
+      size_t
+        count;
+
       p=GetVirtualPixels(image,0,y,image->columns,1,exception);
       if (p == (const Quantum *) NULL)
         break;
@@ -403,7 +406,12 @@ static MagickBooleanType WriteMTVImage(const ImageInfo *image_info,Image *image,
         *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
         p+=(ptrdiff_t) GetPixelChannels(image);
       }
-      (void) WriteBlob(image,(size_t) (q-pixels),pixels);
+      count=(size_t) (q-pixels);
+      if (WriteBlob(image,count,pixels) != (ssize_t) count)
+        {
+          status=MagickFalse;
+          break;
+        }
       if (image->previous == (Image *) NULL)
         {
           status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -413,6 +421,8 @@ static MagickBooleanType WriteMTVImage(const ImageInfo *image_info,Image *image,
         }
     }
     pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+    if (status == MagickFalse)
+      break;
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

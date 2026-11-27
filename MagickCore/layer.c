@@ -92,9 +92,9 @@
 %
 %  A description of each parameter follows:
 %
-%    o image: the image to had the area cleared in
+%    o image: the image to have the area cleared in
 %
-%    o bounds: the area to be clear within the imag image
+%    o bounds: the area to be clear within the image
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -102,14 +102,31 @@
 static void ClearBounds(Image *image,RectangleInfo *bounds,
   ExceptionInfo *exception)
 {
+  size_t
+    height,
+    width;
+
   ssize_t
     y;
 
-  if (bounds->x < 0)
+  /*
+    Ignore null bounds and clamp the rest to the image extent.
+  */
+  if ((bounds->x < 0) || (bounds->y < 0) ||
+      (bounds->x >= (ssize_t) image->columns) ||
+      (bounds->y >= (ssize_t) image->rows))
+    return;
+  width=bounds->width;
+  if (width > (size_t) ((ssize_t) image->columns-bounds->x))
+    width=(size_t) ((ssize_t) image->columns-bounds->x);
+  height=bounds->height;
+  if (height > (size_t) ((ssize_t) image->rows-bounds->y))
+    height=(size_t) ((ssize_t) image->rows-bounds->y);
+  if ((width == 0) || (height == 0))
     return;
   if ((image->alpha_trait & BlendPixelTrait) == 0)
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
-  for (y=0; y < (ssize_t) bounds->height; y++)
+  for (y=0; y < (ssize_t) height; y++)
   {
     ssize_t
       x;
@@ -117,10 +134,10 @@ static void ClearBounds(Image *image,RectangleInfo *bounds,
     Quantum
       *magick_restrict q;
 
-    q=GetAuthenticPixels(image,bounds->x,bounds->y+y,bounds->width,1,exception);
+    q=GetAuthenticPixels(image,bounds->x,bounds->y+y,width,1,exception);
     if (q == (Quantum *) NULL)
       break;
-    for (x=0; x < (ssize_t) bounds->width; x++)
+    for (x=0; x < (ssize_t) width; x++)
     {
       SetPixelAlpha(image,TransparentAlpha,q);
       q+=(ptrdiff_t) GetPixelChannels(image);
@@ -153,13 +170,13 @@ static void ClearBounds(Image *image,RectangleInfo *bounds,
 %  The format is:
 %
 %      MagickBooleanType IsBoundsCleared(const Image *image1,
-%        const Image *image2,RectangleInfo bounds,ExceptionInfo *exception)
+%        const Image *image2,RectangleInfo *bounds,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image1, image 2: the images to check for cleared pixels
 %
-%    o bounds: the area to be clear within the imag image
+%    o bounds: the area to be clear within the image
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -177,7 +194,7 @@ static MagickBooleanType IsBoundsCleared(const Image *image1,
   ssize_t
     y;
 
-  if (bounds->x < 0)
+  if ((bounds->x < 0) || (bounds->y < 0))
     return(MagickFalse);
   for (y=0; y < (ssize_t) bounds->height; y++)
   {
@@ -338,8 +355,13 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
       Next image is the dispose image, overlaid with next frame in sequence.
     */
     coalesce_image->next=CloneImage(dispose_image,0,0,MagickTrue,exception);
-    if (coalesce_image->next != (Image *) NULL)
-      coalesce_image->next->previous=coalesce_image;
+    if (coalesce_image->next == (Image *) NULL)
+      {
+        dispose_image=DestroyImage(dispose_image);
+        coalesce_image=DestroyImageList(coalesce_image);
+        return((Image *) NULL);
+      }
+    coalesce_image->next->previous=coalesce_image;
     previous=coalesce_image;
     coalesce_image=GetNextImageInList(coalesce_image);
     coalesce_image->background_color.alpha_trait=BlendPixelTrait;
@@ -431,7 +453,7 @@ MagickExport Image *DisposeImages(const Image *images,ExceptionInfo *exception)
   dispose_image->background_color.alpha=(MagickRealType) TransparentAlpha;
   (void) SetImageBackgroundColor(dispose_image,exception);
   dispose_images=NewImageList();
-  for (next=image; image != (Image *) NULL; image=GetNextImageInList(image))
+  for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
   {
     Image
       *current_image;
@@ -1361,17 +1383,17 @@ static Image *OptimizeLayerFrames(const Image *image,const LayerMethod method,
       break;
     prev_image->background_color.alpha_trait=BlendPixelTrait;
     if ( disposals[i] == DelDispose ) {
-      size_t time = 0;
+      size_t duration = 0;
       while ( disposals[i] == DelDispose ) {
-        time +=(size_t) (curr->delay*1000*
+        duration +=(size_t) (curr->delay*1000*
           MagickSafeReciprocal((double) curr->ticks_per_second));
         curr=GetNextImageInList(curr);
         i++;
       }
-      time += (size_t)(curr->delay*1000*
+      duration += (size_t)(curr->delay*1000*
         MagickSafeReciprocal((double) curr->ticks_per_second));
       prev_image->ticks_per_second = 100L;
-      prev_image->delay = time*(size_t) prev_image->ticks_per_second/1000;
+      prev_image->delay = duration*(size_t) prev_image->ticks_per_second/1000;
     }
     bgnd_image=CropImage(prev_image,&bounds[i],sans_exception);
     prev_image=DestroyImage(prev_image);
@@ -1443,7 +1465,7 @@ MagickExport Image *OptimizeImageLayers(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  OptimizeImagePlusLayers() is exactly as OptimizeImageLayers(), but may
+%  OptimizePlusImageLayers() is exactly as OptimizeImageLayers(), but may
 %  also add or even remove extra frames in the animation, if it improves
 %  the total number of pixels in the resulting GIF animation.
 %
@@ -1546,8 +1568,7 @@ MagickExport void OptimizeImageTransparency(const Image *image,
       OverCompositeOp : CopyCompositeOp,MagickTrue,next->page.x,next->page.y,
       exception);
     /*
-      At this point the image would be displayed, for the delay period
-    **
+      At this point the image would be displayed, for the delay period.
       Work out the disposal of the previous image
     */
     if (next->dispose == BackgroundDispose)
@@ -1653,14 +1674,14 @@ MagickExport void RemoveDuplicateLayers(Image **images,ExceptionInfo *exception)
           Two images are the same, merge time delays and delete one.
         */
         size_t
-          time;
+          duration;
 
-        time=(size_t) (1000.0*image->delay*
+        duration=(size_t) (1000.0*image->delay*
           MagickSafeReciprocal((double) image->ticks_per_second));
-        time+=(size_t) (1000.0*next->delay*
+        duration+=(size_t) (1000.0*next->delay*
           MagickSafeReciprocal((double) next->ticks_per_second));
         next->ticks_per_second=100L;
-        next->delay=time*(size_t) image->ticks_per_second/1000;
+        next->delay=duration*(size_t) next->ticks_per_second/1000;
         next->iterations=image->iterations;
         *images=image;
         (void) DeleteImageFromList(images);
@@ -1682,7 +1703,7 @@ MagickExport void RemoveDuplicateLayers(Image **images,ExceptionInfo *exception)
 %
 %  RemoveZeroDelayLayers() removes any image that as a zero delay time. Such
 %  images generally represent intermediate or partial updates in GIF
-%  animations used for file optimization.  They are not ment to be displayed
+%  animations used for file optimization.  They are not meant to be displayed
 %  to users of the animation.  Viewable images in an animation should have a
 %  time delay of 3 or more centi-seconds (hundredths of a second).
 %
@@ -1757,7 +1778,7 @@ MagickExport void RemoveZeroDelayLayers(Image **images,
 %  CompositeLayers() compose the source image sequence over the destination
 %  image sequence, starting with the current image in both lists.
 %
-%  Each layer from the two image lists are composted together until the end of
+%  Each layer from the two image lists are composed together until the end of
 %  one of the image lists is reached.  The offset of each composition is also
 %  adjusted to match the virtual canvas offsets of each layer. As such the
 %  given offset is relative to the virtual canvas, and not the actual image.
@@ -1775,7 +1796,7 @@ MagickExport void RemoveZeroDelayLayers(Image **images,
 %  be the single image, for this situation.
 %
 %  In the case of a single destination image (or last image given), that image
-%  will ve cloned to match the number of images remaining in the source image
+%  will be cloned to match the number of images remaining in the source image
 %  list.
 %
 %  This is equivalent to the "-layer Composite" Shell API operator.
@@ -1863,10 +1884,15 @@ MagickExport void CompositeLayers(Image *destination,
         source=GetNextImageInList(source);
         while (source != (Image *) NULL)
         {
-          AppendImageToList(&destination,
-            CloneImage(dest,0,0,MagickTrue,exception));
-          destination->background_color.alpha_trait=BlendPixelTrait;
+          Image
+            *clone;
+
+          clone=CloneImage(dest,0,0,MagickTrue,exception);
+          if (clone == (Image *) NULL)
+            break;
+          AppendImageToList(&destination,clone);
           destination=GetLastImageInList(destination);
+          destination->background_color.alpha_trait=BlendPixelTrait;
           CompositeCanvas(destination,compose,source,x_offset,y_offset,
             exception);
           destination->delay=source->delay;

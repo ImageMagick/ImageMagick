@@ -99,6 +99,7 @@ extern "C" {
 #define AppendImageToList  PrependMagickMethod(AppendImageToList)
 #define AppendValueToLinkedList  PrependMagickMethod(AppendValueToLinkedList)
 #define Ascii85Encode  PrependMagickMethod(Ascii85Encode)
+#define Ascii85EncodeImage  PrependMagickMethod(Ascii85EncodeImage)
 #define Ascii85Flush  PrependMagickMethod(Ascii85Flush)
 #define Ascii85Initialize  PrependMagickMethod(Ascii85Initialize)
 #define AsynchronousResourceComponentTerminus  PrependMagickMethod(AsynchronousResourceComponentTerminus)

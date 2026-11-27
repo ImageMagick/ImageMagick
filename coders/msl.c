@@ -105,8 +105,10 @@
   Define Declarations.
 */
 #define ThrowMSLException(severity,tag,reason) \
-  (void) ThrowMagickException(msl_info->exception,GetMagickModule(),severity, \
-    tag,"`%s'",reason);
+  do { \
+    (void) ThrowMagickException(msl_info->exception,GetMagickModule(),severity, \
+      tag,"`%s'",reason); \
+  } while (0)
 
 /*
   Typedef declarations.
@@ -269,6 +271,7 @@ static ssize_t MSLPushImage(MSLInfo *msl_info,Image *image)
     msl_info->exception);
   msl_info->image[n]=(Image *) image;
   if ((msl_info->image_info[n] == (ImageInfo *) NULL) ||
+      (msl_info->draw_info[n] == (DrawInfo *) NULL) ||
       (msl_info->attributes[n] == (Image *) NULL))
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed")
   if (msl_info->number_groups != 0)
@@ -412,8 +415,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     {
                       option=ParseChannelOption(value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedChannelType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,
+                              "UnrecognizedChannelType",
+                            value);
+                          break;
+                        }
                       channel=(ChannelType) option;
                       break;
                     }
@@ -429,8 +436,11 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       option=ParseCommandOption(MagickNoiseOptions,MagickFalse,
                         value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedNoiseType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,"UnrecognizedNoiseType",
+                            value);
+                          break;
+                        }
                       noise=(NoiseType) option;
                       break;
                     }
@@ -517,8 +527,11 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       option=ParseCommandOption(MagickAlignOptions,MagickFalse,
                         value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedAlignType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,"UnrecognizedAlignType",
+                            value);
+                          break;
+                        }
                       draw_info->align=(AlignType) option;
                       break;
                     }
@@ -527,8 +540,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       option=ParseCommandOption(MagickBooleanOptions,
                         MagickFalse,value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedBooleanType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,
+                              "UnrecognizedBooleanType",
+                            value);
+                          break;
+                        }
                       draw_info->stroke_antialias=(MagickBooleanType) option;
                       draw_info->text_antialias=(MagickBooleanType) option;
                       break;
@@ -598,8 +615,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       option=ParseCommandOption(MagickGravityOptions,
                         MagickFalse,value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedGravityType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,
+                              "UnrecognizedGravityType",
+                            value);
+                          break;
+                        }
                       draw_info->gravity=(GravityType) option;
                       break;
                     }
@@ -666,8 +687,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       option=ParseCommandOption(MagickStretchOptions,
                         MagickFalse,value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedStretchType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,
+                              "UnrecognizedStretchType",
+                            value);
+                          break;
+                        }
                       draw_info->stretch=(StretchType) option;
                       break;
                     }
@@ -687,8 +712,11 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       option=ParseCommandOption(MagickStyleOptions,MagickFalse,
                         value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedStyleType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,"UnrecognizedStyleType",
+                            value);
+                          break;
+                        }
                       draw_info->style=(StyleType) option;
                       break;
                     }
@@ -824,8 +852,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       option=ParseCommandOption(MagickBooleanOptions,
                         MagickFalse,value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedBooleanType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,
+                              "UnrecognizedBooleanType",
+                            value);
+                          break;
+                        }
                       stack=(MagickBooleanType) option;
                       break;
                     }
@@ -865,7 +897,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             }
 
           new_image=AutoOrientImage(msl_info->image[n],
-              msl_info->image[n]->orientation, exception);
+            msl_info->image[n]->orientation,msl_info->exception);
           if (new_image == (Image *) NULL)
             break;
 
@@ -910,8 +942,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     {
                       option=ParseChannelOption(value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedChannelType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,
+                              "UnrecognizedChannelType",
+                            value);
+                          break;
+                        }
                       channel=(ChannelType) option;
                       break;
                     }
@@ -1008,8 +1044,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       option=ParseCommandOption(MagickComposeOptions,
                         MagickFalse,value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedComposeType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,
+                              "UnrecognizedComposeType",
+                            value);
+                          break;
+                        }
                       msl_info->image[n]->compose=(CompositeOperator) option;
                       break;
                     }
@@ -1510,8 +1550,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       option=ParseCommandOption(MagickComposeOptions,
                         MagickFalse,value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedComposeType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,
+                              "UnrecognizedComposeType",
+                            value);
+                          break;
+                        }
                       compose=(CompositeOperator) option;
                       break;
                     }
@@ -1578,8 +1622,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     {
                       option=ParseChannelOption(value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedChannelType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,
+                              "UnrecognizedChannelType",
+                            value);
+                          break;
+                        }
                       channel=(ChannelType) option;
                       break;
                     }
@@ -1611,8 +1659,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       option=ParseCommandOption(MagickGravityOptions,
                         MagickFalse,value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedGravityType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,
+                              "UnrecognizedGravityType",
+                            value);
+                          break;
+                        }
                       msl_info->image[n]->gravity=(GravityType) option;
                       break;
                     }
@@ -1633,25 +1685,28 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 case 'm':
                 {
                   if (LocaleCompare(keyword,"mask") == 0)
-                    for (j=0; j < msl_info->n; j++)
                     {
-                      const char
-                        *property;
+                      for (j=0; j < msl_info->n; j++)
+                      {
+                        const char
+                          *property;
 
-                      property=GetImageProperty(msl_info->attributes[j],"id",
-                        exception);
-                      if ((property != (const char *) NULL)  &&
-                          (LocaleCompare(property,value) == 0))
-                        {
-                          if (msl_info->image[j] == (Image *) NULL)
+                        property=GetImageProperty(msl_info->attributes[j],"id",
+                          exception);
+                        if ((property != (const char *) NULL)  &&
+                            (LocaleCompare(property,value) == 0))
+                          {
+                            if (msl_info->image[j] == (Image *) NULL)
+                              break;
+                            SetImageType(composite_image,TrueColorAlphaType,
+                              exception);
+                            (void) CompositeImage(composite_image,
+                              msl_info->image[j],CopyAlphaCompositeOp,MagickTrue,
+                              0,0,exception);
                             break;
-                          SetImageType(composite_image,TrueColorAlphaType,
-                            exception);
-                          (void) CompositeImage(composite_image,
-                            msl_info->image[j],CopyAlphaCompositeOp,MagickTrue,
-                            0,0,exception);
-                          break;
-                        }
+                          }
+                      }
+                      break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
                     keyword);
@@ -1691,6 +1746,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       {
                         q=GetCacheViewAuthenticPixels(composite_view,0,r,
                           composite_image->columns,1,exception);
+                        if (q == (Quantum *) NULL)
+                          break;
                         for (k=0; k < (ssize_t) composite_image->columns; k++)
                         {
                           if (GetPixelAlpha(composite_image,q) == OpaqueAlpha)
@@ -1713,6 +1770,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"rotate") == 0)
                     {
+                      if (rotate_image != (Image *) NULL)
+                        rotate_image=DestroyImageList(rotate_image);
                       rotate_image=RotateImage(composite_image,
                         StringToDouble(value,(char **) NULL),exception);
                       break;
@@ -1732,8 +1791,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       option=ParseCommandOption(MagickBooleanOptions,
                         MagickFalse,value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedBooleanType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,
+                              "UnrecognizedBooleanType",
+                            value);
+                          break;
+                        }
                       tile=(MagickBooleanType) option;
                       (void) tile;
                       if (rotate_image != (Image *) NULL)
@@ -1856,8 +1919,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       option=ParseCommandOption(MagickBooleanOptions,
                         MagickFalse,value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedBooleanType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,
+                              "UnrecognizedBooleanType",
+                            value);
+                          break;
+                        }
                       sharpen=(MagickBooleanType) option;
                       break;
                     }
@@ -2148,8 +2215,11 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       option=ParseCommandOption(MagickAlignOptions,MagickFalse,
                         value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedAlignType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,"UnrecognizedAlignType",
+                            value);
+                          break;
+                        }
                       draw_info->align=(AlignType) option;
                       break;
                     }
@@ -2158,8 +2228,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       option=ParseCommandOption(MagickBooleanOptions,
                         MagickFalse,value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedBooleanType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,
+                              "UnrecognizedBooleanType",
+                            value);
+                          break;
+                        }
                       draw_info->stroke_antialias=(MagickBooleanType) option;
                       draw_info->text_antialias=(MagickBooleanType) option;
                       break;
@@ -2231,8 +2305,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       option=ParseCommandOption(MagickGravityOptions,
                         MagickFalse,value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedGravityType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,
+                              "UnrecognizedGravityType",
+                            value);
+                          break;
+                        }
                       draw_info->gravity=(GravityType) option;
                       break;
                     }
@@ -2318,8 +2396,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       option=ParseCommandOption(MagickStretchOptions,
                         MagickFalse,value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedStretchType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,
+                              "UnrecognizedStretchType",
+                            value);
+                          break;
+                        }
                       draw_info->stretch=(StretchType) option;
                       break;
                     }
@@ -2339,8 +2421,11 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       option=ParseCommandOption(MagickStyleOptions,MagickFalse,
                         value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedStyleType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,"UnrecognizedStyleType",
+                            value);
+                          break;
+                        }
                       draw_info->style=(StyleType) option;
                       break;
                     }
@@ -2784,8 +2869,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       option=ParseCommandOption(MagickComposeOptions,
                         MagickFalse,value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedComposeType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,
+                              "UnrecognizedComposeType",
+                            value);
+                          break;
+                        }
                       msl_info->image[n]->compose=(CompositeOperator) option;
                       break;
                     }
@@ -2952,8 +3041,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     {
                       option=ParseChannelOption(value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedChannelType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,
+                              "UnrecognizedChannelType",
+                            value);
+                          break;
+                        }
                       channel=(ChannelType) option;
                       break;
                     }
@@ -3027,28 +3120,34 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               {
                 if (LocaleCompare(keyword,"height") == 0)
                   {
-                    (void) FormatLocaleString(value,MagickPathExtent,"%.17g",
+                    char
+                      text[MagickPathExtent];
+
+                    (void) FormatLocaleString(text,MagickPathExtent,"%.17g",
                       (double) msl_info->image[n]->rows);
-                    (void) SetImageProperty(msl_info->attributes[n],key,value,
-                      exception);
+                    (void) SetImageProperty(msl_info->attributes[n],key,text,
+                      msl_info->exception);
                     break;
                   }
                 ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
-                magick_fallthrough;
+                break;
               }
               case 'W':
               case 'w':
               {
                 if (LocaleCompare(keyword,"width") == 0)
                   {
-                    (void) FormatLocaleString(value,MagickPathExtent,"%.17g",
+                    char
+                      text[MagickPathExtent];
+
+                    (void) FormatLocaleString(text,MagickPathExtent,"%.17g",
                       (double) msl_info->image[n]->columns);
-                    (void) SetImageProperty(msl_info->attributes[n],key,value,
-                      exception);
+                    (void) SetImageProperty(msl_info->attributes[n],key,text,
+                      msl_info->exception);
                     break;
                   }
                 ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
-                magick_fallthrough;
+                break;
               }
               default:
               {
@@ -3359,8 +3458,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       option=ParseCommandOption(MagickBooleanOptions,
                         MagickFalse,value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedBooleanType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,
+                              "UnrecognizedBooleanType",
+                            value);
+                          break;
+                        }
                       dither=(MagickBooleanType) option;
                       break;
                     }
@@ -3814,8 +3917,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     {
                       option=ParseChannelOption(value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedChannelType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,
+                              "UnrecognizedChannelType",
+                            value);
+                          break;
+                        }
                       channel=(ChannelType) option;
                       break;
                     }
@@ -3831,8 +3938,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       option=ParseCommandOption(MagickBooleanOptions,
                         MagickFalse,value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedBooleanType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,
+                              "UnrecognizedBooleanType",
+                            value);
+                          break;
+                        }
                       gray=(MagickBooleanType) option;
                       break;
                     }
@@ -3882,8 +3993,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     {
                       option=ParseChannelOption(value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedChannelType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,
+                              "UnrecognizedChannelType",
+                            value);
+                          break;
+                        }
                       channel=(ChannelType) option;
                       break;
                     }
@@ -4012,8 +4127,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     {
                       option=ParseChannelOption(value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedChannelType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,
+                              "UnrecognizedChannelType",
+                            value);
+                          break;
+                        }
                       channel=(ChannelType) option;
                       break;
                     }
@@ -4158,16 +4277,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     if ((*p == ':') && (IsPathDirectory(keyword) < 0) &&
                         (IsPathAccessible(keyword) == MagickFalse))
                       {
-                        char
-                          *q;
-
                         /*
                           Look for profile name (e.g. name:profile).
                         */
                         (void) CopyMagickString(name,filename,(size_t)
                           (p-filename+1));
-                        for (q=filename; *q != '\0'; q++)
-                          *q=(*++p);
+                        (void) memmove(filename,p+1,strlen(p));
                         break;
                       }
                   new_profile=FileToStringInfo(filename,~0UL,exception);
@@ -4239,8 +4354,11 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       option=ParseCommandOption(MagickColorspaceOptions,
                         MagickFalse,value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,
-                          "UnrecognizedColorspaceType",value);
+                        {
+                          ThrowMSLException(OptionError,
+                            "UnrecognizedColorspaceType",value);
+                          break;
+                        }
                       quantize_info.colorspace=(ColorspaceType) option;
                       break;
                     }
@@ -4256,8 +4374,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       option=ParseCommandOption(MagickDitherOptions,MagickFalse,
                         value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedBooleanType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,
+                              "UnrecognizedBooleanType",
+                            value);
+                          break;
+                        }
                       quantize_info.dither_method=(DitherMethod) option;
                       break;
                     }
@@ -4273,8 +4395,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       option=ParseCommandOption(MagickBooleanOptions,
                         MagickFalse,value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedBooleanType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,
+                              "UnrecognizedBooleanType",
+                            value);
+                          break;
+                        }
                       quantize_info.measure_error=(MagickBooleanType) option;
                       break;
                     }
@@ -4372,8 +4498,11 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       option=ParseCommandOption(MagickAlignOptions,MagickFalse,
                         value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedAlignType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,"UnrecognizedAlignType",
+                            value);
+                          break;
+                        }
                       draw_info->align=(AlignType) option;
                       break;
                     }
@@ -4382,8 +4511,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       option=ParseCommandOption(MagickBooleanOptions,
                         MagickFalse,value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedBooleanType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,
+                              "UnrecognizedBooleanType",
+                            value);
+                          break;
+                        }
                       draw_info->stroke_antialias=(MagickBooleanType) option;
                       draw_info->text_antialias=(MagickBooleanType) option;
                       break;
@@ -4455,8 +4588,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       option=ParseCommandOption(MagickGravityOptions,
                         MagickFalse,value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedGravityType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,
+                              "UnrecognizedGravityType",
+                            value);
+                          break;
+                        }
                       draw_info->gravity=(GravityType) option;
                       break;
                     }
@@ -4522,8 +4659,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       option=ParseCommandOption(MagickStretchOptions,
                         MagickFalse,value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedStretchType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,
+                              "UnrecognizedStretchType",
+                            value);
+                          break;
+                        }
                       draw_info->stretch=(StretchType) option;
                       break;
                     }
@@ -4543,8 +4684,11 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       option=ParseCommandOption(MagickStyleOptions,MagickFalse,
                         value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedStyleType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,"UnrecognizedStyleType",
+                            value);
+                          break;
+                        }
                       draw_info->style=(StyleType) option;
                       break;
                     }
@@ -4747,8 +4891,11 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       option=ParseCommandOption(MagickBooleanOptions,
                         MagickFalse,value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedNoiseType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,"UnrecognizedNoiseType",
+                            value);
+                          break;
+                        }
                       raise=(MagickBooleanType) option;
                       break;
                     }
@@ -5175,8 +5322,11 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       option=ParseCommandOption(MagickFilterOptions,MagickFalse,
                         value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedNoiseType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,"UnrecognizedNoiseType",
+                            value);
+                          break;
+                        }
                       filter=(FilterType) option;
                       break;
                     }
@@ -5317,86 +5467,6 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           msl_info->image[n]=roll_image;
           break;
         }
-      else if (LocaleCompare((const char *) tag,"roll") == 0)
-      {
-        if ((n < 1) || (msl_info->image[n] == (Image *) NULL))
-        {
-          ThrowMSLException(OptionError,"NoImagesDefined",
-            (const char *) tag);
-          break;
-        }
-        /* init the values */
-        width=msl_info->image[n]->columns;
-        height=msl_info->image[n]->rows;
-        x = y = 0;
-        if (attributes == (const xmlChar **) NULL)
-          break;
-        for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
-        {
-          keyword=(const char *) attributes[i++];
-          attribute=InterpretImageProperties(msl_info->image_info[n],
-            msl_info->attributes[n],(const char *) attributes[i],exception);
-          CloneString(&value,attribute);
-          attribute=DestroyString(attribute);
-        switch (*keyword)
-        {
-          case 'G':
-          case 'g':
-          {
-          if (LocaleCompare(keyword,"geometry") == 0)
-            {
-            (void) ParseMetaGeometry(value,&x,&y,&width,&height);
-            break;
-            }
-          ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
-          break;
-          }
-          case 'X':
-          case 'x':
-          {
-          if (LocaleCompare(keyword,"x") == 0)
-            {
-            x = StringToLong( value );
-            break;
-            }
-          ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
-          break;
-          }
-          case 'Y':
-          case 'y':
-          {
-          if (LocaleCompare(keyword,"y") == 0)
-            {
-            y = StringToLong( value );
-            break;
-            }
-          ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
-          break;
-          }
-          default:
-          {
-          ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
-          break;
-          }
-        }
-        }
-
-        /*
-          process image.
-        */
-        {
-        Image
-          *newImage;
-
-        newImage=RollImage(msl_info->image[n], x, y, msl_info->exception);
-        if (newImage == (Image *) NULL)
-          break;
-        msl_info->image[n]=DestroyImageList(msl_info->image[n]);
-        msl_info->image[n]=newImage;
-        }
-
-        break;
-      }
       if (LocaleCompare((const char *) tag,"rotate") == 0)
         {
           Image
@@ -5464,69 +5534,6 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           msl_info->image[n]=rotate_image;
           break;
         }
-      else if (LocaleCompare((const char *) tag,"rotate") == 0)
-      {
-        /* init the values */
-        double  degrees = 0;
-
-        if ((n < 1) || (msl_info->image[n] == (Image *) NULL))
-        {
-          ThrowMSLException(OptionError,"NoImagesDefined",
-            (const char *) tag);
-          break;
-        }
-        if (attributes == (const xmlChar **) NULL)
-          break;
-        for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
-        {
-          keyword=(const char *) attributes[i++];
-          attribute=InterpretImageProperties(msl_info->image_info[n],
-            msl_info->attributes[n],(const char *) attributes[i],exception);
-          CloneString(&value,attribute);
-          attribute=DestroyString(attribute);
-        switch (*keyword)
-        {
-          case 'D':
-          case 'd':
-          {
-          if (LocaleCompare(keyword,"degrees") == 0)
-            {
-            degrees = StringToDouble(value,(char **) NULL);
-            break;
-            }
-          ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
-          break;
-          }
-          default:
-          {
-          ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
-          break;
-          }
-        }
-        }
-
-        /*
-          process image.
-        */
-        {
-        Image
-          *newImage;
-
-        newImage=RotateImage(msl_info->image[n], degrees, msl_info->exception);
-        if (newImage == (Image *) NULL)
-          break;
-        msl_info->image[n]=DestroyImageList(msl_info->image[n]);
-        msl_info->image[n]=newImage;
-        }
-
-        break;
-      }
-      ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
-      break;
-    }
-    case 'S':
-    case 's':
-    {
       if (LocaleCompare((const char *) tag,"sample") == 0)
         {
           Image
@@ -5726,8 +5733,11 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       option=ParseCommandOption(MagickColorspaceOptions,
                         MagickFalse,value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,
-                          "UnrecognizedColorspaceType",value);
+                        {
+                          ThrowMSLException(OptionError,
+                            "UnrecognizedColorspaceType",value);
+                          break;
+                        }
                       colorspace=(ColorspaceType) option;
                       break;
                     }
@@ -5805,9 +5815,11 @@ static void MSLStartElement(void *context,const xmlChar *tag,
 
                     property=GetImageProperty(msl_info->attributes[j],"id",
                       exception);
-                    if (LocaleCompare(property,value) == 0)
+                    if ((property != (const char *) NULL) &&
+                        (msl_info->image[j] != (Image *) NULL) &&
+                        (LocaleCompare(property,value) == 0))
                       {
-                        SetImageMask(msl_info->image[n],ReadPixelMask,
+                        (void) SetImageMask(msl_info->image[n],ReadPixelMask,
                           msl_info->image[j],exception);
                         break;
                       }
@@ -5823,9 +5835,11 @@ static void MSLStartElement(void *context,const xmlChar *tag,
 
                     property=GetImageProperty(msl_info->attributes[j],"id",
                       exception);
-                    if (LocaleCompare(property,value) == 0)
+                    if ((property != (const char *) NULL) &&
+                        (msl_info->image[j] != (Image *) NULL) &&
+                        (LocaleCompare(property,value) == 0))
                       {
-                        SetImageMask(msl_info->image[n],ReadPixelMask,
+                        (void) SetImageMask(msl_info->image[n],ReadPixelMask,
                           msl_info->image[j],exception);
                         break;
                       }
@@ -5840,8 +5854,11 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   colorspace=(ColorspaceType) ParseCommandOption(
                     MagickColorspaceOptions,MagickFalse,value);
                   if (colorspace < 0)
-                    ThrowMSLException(OptionError,"UnrecognizedColorspace",
-                      value);
+                    {
+                      ThrowMSLException(OptionError,"UnrecognizedColorspace",
+                        value);
+                      break;
+                    }
                   (void) TransformImageColorspace(msl_info->image[n],
                     (ColorspaceType) colorspace,exception);
                   break;
@@ -6009,8 +6026,11 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       option=ParseCommandOption(MagickBooleanOptions,
                         MagickFalse,value);
                       if (option < 0)
-                        ThrowMSLException(OptionError,"UnrecognizedNoiseType",
-                          value);
+                        {
+                          ThrowMSLException(OptionError,"UnrecognizedNoiseType",
+                            value);
+                          break;
+                        }
                       gray=(MagickBooleanType) option;
                       break;
                     }
@@ -6606,8 +6626,10 @@ static void MSLStartElement(void *context,const xmlChar *tag,
         msl_info->image[n]=DestroyImageList(msl_info->image[n]);
         msl_info->image[n]=newImage;
         break;
-        } else
-          ThrowMSLException(OptionError,"MissingWatermarkImage",keyword);
+        }
+        ThrowMSLException(OptionError,"MissingWatermarkImage",
+          (const char *) tag);
+        break;
       }
       else if (LocaleCompare((const char *) tag,"stereo") == 0)
       {
@@ -6673,8 +6695,10 @@ static void MSLStartElement(void *context,const xmlChar *tag,
         msl_info->image[n]=DestroyImageList(msl_info->image[n]);
         msl_info->image[n]=newImage;
         break;
-        } else
-          ThrowMSLException(OptionError,"Missing stereo image",keyword);
+        }
+        ThrowMSLException(OptionError,"MissingStereoImage",
+          (const char *) tag);
+        break;
       }
       if (LocaleCompare((const char *) tag,"strip") == 0)
         {
@@ -6762,10 +6786,25 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               ThrowMSLException(OptionError,"NoSuchImage",(const char *) tag);
               break;
             }
-          swap=CloneImage(p,0,0,MagickTrue,msl_info->exception);
-          ReplaceImageInList(&p,CloneImage(q,0,0,MagickTrue,
-            msl_info->exception));
-          ReplaceImageInList(&q,swap);
+          if (p == q)
+            break;
+          {
+            Image
+              *q_clone;
+
+            swap=CloneImage(p,0,0,MagickTrue,msl_info->exception);
+            q_clone=CloneImage(q,0,0,MagickTrue,msl_info->exception);
+            if ((swap == (Image *) NULL) || (q_clone == (Image *) NULL))
+              {
+                if (swap != (Image *) NULL)
+                  swap=DestroyImage(swap);
+                if (q_clone != (Image *) NULL)
+                  q_clone=DestroyImage(q_clone);
+                break;
+              }
+            ReplaceImageInList(&p,q_clone);
+            ReplaceImageInList(&q,swap);
+          }
           msl_info->image[n]=GetFirstImageInList(q);
           break;
         }
@@ -7082,7 +7121,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     break;
                   }
                 (void) SetMSLAttributes(msl_info,keyword,value);
-                magick_fallthrough;
+                break;
               }
               default:
               {
@@ -7248,44 +7287,44 @@ static void MSLEndElement(void *context,const xmlChar *tag)
 
 static void MSLCharacters(void *context,const xmlChar *c,int length)
 {
+  char
+    *content;
+
   MSLInfo
     *msl_info;
+
+  size_t
+    extent,
+    offset;
 
   xmlParserCtxtPtr
     parser;
 
-  char
-    *p;
-
-  ssize_t
-    i;
-
   /*
-    Receiving some characters from the parser.
+    Receiving some characters from the parser.  The buffer is not
+    NUL-terminated, so it must be logged with an explicit precision.
   */
+  if ((c == (const xmlChar *) NULL) || (length <= 0))
+    return;
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  SAX.characters(%s,%d)",c,length);
+    "  SAX.characters(%.*s,%d)",length,(const char *) c,length);
   parser=(xmlParserCtxtPtr) context;
   msl_info=(MSLInfo *) parser->_private;
+  offset=0;
   if (msl_info->content != (char *) NULL)
-    msl_info->content=(char *) ResizeQuantumMemory(msl_info->content,
-      strlen(msl_info->content)+(size_t) length+MagickPathExtent,
-      sizeof(*msl_info->content));
-  else
-    {
-      msl_info->content=(char *) NULL;
-      if (~(size_t) length >= (MagickPathExtent-1))
-        msl_info->content=(char *) AcquireQuantumMemory((size_t) (length+
-          MagickPathExtent),sizeof(*msl_info->content));
-      if (msl_info->content != (char *) NULL)
-        *msl_info->content='\0';
-    }
-  if (msl_info->content == (char *) NULL)
+    offset=strlen(msl_info->content);
+  if ((size_t) length >= (~(size_t) 0)-offset-MagickPathExtent)
     return;
-  p=msl_info->content+strlen(msl_info->content);
-  for (i=0; i < length; i++)
-    *p++=(char) c[i];
-  *p='\0';
+  extent=offset+(size_t) length+MagickPathExtent;
+  content=(char *) ResizeQuantumMemory(msl_info->content,extent,
+    sizeof(*content));
+  msl_info->content=content;
+  if (content == (char *) NULL)
+    return;
+  if (offset == 0)
+    *content='\0';
+  (void) memcpy(content+offset,c,(size_t) length);
+  content[offset+(size_t) length]='\0';
 }
 
 static void MSLWarning(void *context,const char *format,...)
@@ -7311,16 +7350,15 @@ static void MSLWarning(void *context,const char *format,...)
     extra parameters.
   */
   va_start(operands,format);
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  SAX.warning: ");
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),format,operands);
+  (void) vsnprintf(reason,MagickPathExtent,format,operands);
+  va_end(operands);
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  SAX.warning: %s",
+    reason);
   parser=(xmlParserCtxtPtr) context;
   msl_info=(MSLInfo *) parser->_private;
-  (void) msl_info;
-  (void) vsnprintf(reason,MagickPathExtent,format,operands);
   message=GetExceptionMessage(errno);
   ThrowMSLException(CoderError,reason,message);
   message=DestroyString(message);
-  va_end(operands);
 }
 
 static void MSLError(void *context,const char *format,...)
@@ -7345,14 +7383,12 @@ static void MSLError(void *context,const char *format,...)
     extra parameters.
   */
   va_start(operands,format);
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  SAX.error: ");
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),format,operands);
+  (void) vsnprintf(reason,MagickPathExtent,format,operands);
+  va_end(operands);
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  SAX.error: %s",reason);
   parser=(xmlParserCtxtPtr) context;
   msl_info=(MSLInfo *) parser->_private;
-  (void) msl_info;
-  (void) vsnprintf(reason,MagickPathExtent,format,operands);
   ThrowMSLException(DelegateFatalError,reason,"SAX error");
-  va_end(operands);
   xmlStopParser(parser);
 }
 
@@ -7440,7 +7476,7 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
   msl_info.draw_info=(DrawInfo **) AcquireQuantumMemory(1,
     sizeof(*msl_info.draw_info));
   /* top of the stack is the MSL file itself */
-  msl_info.image=(Image **) AcquireMagickMemory(sizeof(*msl_info.image));
+  msl_info.image=(Image **) AcquireQuantumMemory(1,sizeof(*msl_info.image));
   msl_info.attributes=(Image **) AcquireQuantumMemory(1,
     sizeof(*msl_info.attributes));
   msl_info.group_info=(MSLGroupInfo *) AcquireQuantumMemory(1,
@@ -7454,6 +7490,10 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
   *msl_info.image_info=CloneImageInfo(image_info);
   *msl_info.draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   *msl_info.attributes=AcquireImage(image_info,exception);
+  if ((*msl_info.image_info == (ImageInfo *) NULL) ||
+      (*msl_info.draw_info == (DrawInfo *) NULL) ||
+      (*msl_info.attributes == (Image *) NULL))
+    ThrowFatalException(ResourceLimitFatalError,"UnableToInterpretMSLImage");
   (void) SetImageExtent(*msl_info.attributes,1,1,exception);
   msl_info.group_info[0].numImages=0;
   /* the first slot is used to point to the MSL file image */
@@ -7585,7 +7625,7 @@ ModuleExport size_t RegisterMSLImage(void)
   entry->decoder=(DecodeImageHandler *) ReadMSLImage;
 #endif
   entry->format_type=ImplicitFormatType;
-  entry->flags^=CoderBlobSupportFlag;
+  entry->flags&=~CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
@@ -7666,7 +7706,10 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
 
           adjoin=ParseCommandOption(MagickBooleanOptions,MagickFalse,value);
           if (adjoin < 0)
-            ThrowMSLException(OptionError,"UnrecognizedType",value);
+            {
+              ThrowMSLException(OptionError,"UnrecognizedType",value);
+              break;
+            }
           image_info->adjoin=(MagickBooleanType) adjoin;
           break;
         }
@@ -7677,7 +7720,10 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
 
           alpha=ParseCommandOption(MagickAlphaChannelOptions,MagickFalse,value);
           if (alpha < 0)
-            ThrowMSLException(OptionError,"UnrecognizedType",value);
+            {
+              ThrowMSLException(OptionError,"UnrecognizedType",value);
+              break;
+            }
           if (image != (Image *) NULL)
             (void) SetImageAlphaChannel(image,(AlphaChannelOption) alpha,
               exception);
@@ -7690,7 +7736,10 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
 
           antialias=ParseCommandOption(MagickBooleanOptions,MagickFalse,value);
           if (antialias < 0)
-            ThrowMSLException(OptionError,"UnrecognizedGravityType",value);
+            {
+              ThrowMSLException(OptionError,"UnrecognizedGravityType",value);
+              break;
+            }
           image_info->antialias=(MagickBooleanType) antialias;
           break;
         }
@@ -7702,6 +7751,8 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
           limit=MagickResourceInfinity;
           if (LocaleCompare(value,"unlimited") != 0)
             limit=(MagickSizeType) StringToDoubleInterval(value,100.0);
+          if (limit > GetMagickResourceLimit(AreaResource))
+            limit=GetMagickResourceLimit(AreaResource);  /* never raise */
           (void) SetMagickResourceLimit(AreaResource,limit);
           break;
         }
@@ -7716,7 +7767,6 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
-      break;
       break;
     }
     case 'B':
@@ -7747,7 +7797,6 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
-      break;
       break;
     }
     case 'D':
@@ -7790,7 +7839,10 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
 
           gravity=ParseCommandOption(MagickGravityOptions,MagickFalse,value);
           if (gravity < 0)
-            ThrowMSLException(OptionError,"UnrecognizedGravityType",value);
+            {
+              ThrowMSLException(OptionError,"UnrecognizedGravityType",value);
+              break;
+            }
           (void) SetImageOption(image_info,keyword,value);
           break;
         }
@@ -7848,6 +7900,7 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
           image->quality=(size_t) StringToLong(value);
           break;
         }
+      ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
       break;
     }
     case 'S':

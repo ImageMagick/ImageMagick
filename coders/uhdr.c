@@ -130,13 +130,13 @@ static MagickBooleanType IsUHDR(const unsigned char *magick,
 */
 static uhdr_color_transfer_t map_ct_to_uhdr_ct(const char *input_ct)
 {
-  if (!strcmp(input_ct, "hlg"))
+  if (LocaleCompare(input_ct,"hlg") == 0)
     return UHDR_CT_HLG;
-  if (!strcmp(input_ct, "pq"))
+  if (LocaleCompare(input_ct,"pq") == 0)
     return UHDR_CT_PQ;
-  if (!strcmp(input_ct, "linear"))
+  if (LocaleCompare(input_ct,"linear") == 0)
     return UHDR_CT_LINEAR;
-  if (!strcmp(input_ct, "srgb"))
+  if (LocaleCompare(input_ct,"srgb") == 0)
     return UHDR_CT_SRGB;
   else
     return UHDR_CT_UNSPECIFIED;
@@ -158,127 +158,181 @@ static Image *ReadUHDRImage(const ImageInfo *image_info,
   (void) FormatLocaleString(buffer,sizeof(buffer),"%.9g,%.9g,%.9g", \
      (double) (value),(double) (value1),(double) (value2)); \
   (void) SetImageProperty(image,"hdrgm:" name,buffer,exception)
-  
+#define ThrowUHDRReadError(severity,tag) \
+{ \
+  (void) ThrowMagickException(exception,GetMagickModule(),severity,tag, \
+    "`%s'",image->filename); \
+  status=MagickFalse; \
+  goto cleanup; \
+}
+#define CHECK_IF_ERR(x) \
+{ \
+  uhdr_error_info_t retval = (x); \
+  if (retval.error_code != UHDR_CODEC_OK) \
+    { \
+      (void) ThrowMagickException(exception,GetMagickModule(),CoderError, \
+        retval.has_detail ? retval.detail : "unknown error","`%s'", \
+        image->filename); \
+      status=MagickFalse; \
+      goto cleanup; \
+    } \
+}
+
+  const char
+    *option,
+    *profile_skip;
+
+  const unsigned char
+    *blob_data;
+
   Image
     *image;
 
   MagickBooleanType
+    skip_app_profiles,
+    skip_exif_profile,
+    skip_gainmap_profile,
+    skip_icc_profile,
     status;
 
-  image = AcquireImage(image_info, exception);
-  status = OpenBlob(image_info, image, ReadBinaryBlobMode, exception);
-  if (status == MagickFalse)
-    return DestroyImageList(image);
+  MagickSizeType
+    blob_size;
+
+  ssize_t
+    x,
+    y;
+
+  uhdr_codec_private_t
+    *handle = (uhdr_codec_private_t *) NULL;
+
+  uhdr_color_transfer_t
+    decoded_img_ct;
 
   uhdr_compressed_image_t
     img;
 
-  img.data = GetBlobStreamData(image);
-  img.data_sz = GetBlobSize(image);
-  img.capacity = GetBlobSize(image);
-  img.cg = UHDR_CG_UNSPECIFIED;
-  img.ct = UHDR_CT_UNSPECIFIED;
-  img.range = UHDR_CR_UNSPECIFIED;
+  uhdr_img_fmt_t
+    decoded_img_fmt;
 
-  uhdr_codec_private_t
-    *handle = uhdr_create_decoder();
+  uhdr_mem_block_t
+    *exif,
+    *icc;
 
-  const char *option = GetImageOption(image_info, "uhdr:output-color-transfer");
-  uhdr_color_transfer_t decoded_img_ct =
-      (option != (const char *)NULL) ? map_ct_to_uhdr_ct(option) : UHDR_CT_SRGB;
+  uhdr_raw_image_t
+    *dst;
 
-  const char *profile_skip = GetImageOption(image_info, "profile:skip");
+  unsigned char
+    *blob_buffer = (unsigned char *) NULL;
 
-  MagickBooleanType
-    skip_app_profiles = IsOptionMember("APP",profile_skip),
-    skip_exif_profile = IsOptionMember("EXIF",profile_skip),
-    skip_gainmap_profile = IsOptionMember("HDRGM",profile_skip),
-    skip_icc_profile = IsOptionMember("ICC",profile_skip);
-
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickCoreSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
+      image_info->filename);
+  image=AcquireImage(image_info,exception);
+  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
+  /*
+    libultrahdr decodes from a contiguous buffer.  The blob is only directly
+    addressable when it is memory-mapped, so fall back to reading it in.
+  */
+  blob_size=GetBlobSize(image);
+  if ((blob_size == 0) || (blob_size > (MagickSizeType) UINT_MAX))
+    ThrowUHDRReadError(CorruptImageError,"ImproperImageHeader");
+  blob_data=(const unsigned char *) GetBlobStreamData(image);
+  if (blob_data == (const unsigned char *) NULL)
+    {
+      blob_buffer=(unsigned char *) AcquireQuantumMemory((size_t) blob_size,
+        sizeof(*blob_buffer));
+      if (blob_buffer == (unsigned char *) NULL)
+        ThrowUHDRReadError(ResourceLimitError,"MemoryAllocationFailed");
+      if (ReadBlob(image,(size_t) blob_size,blob_buffer) !=
+          (ssize_t) blob_size)
+        ThrowUHDRReadError(CorruptImageError,"UnexpectedEndOfFile");
+      blob_data=blob_buffer;
+    }
+  img.data=(void *) blob_data;
+  img.data_sz=(size_t) blob_size;
+  img.capacity=(size_t) blob_size;
+  img.cg=UHDR_CG_UNSPECIFIED;
+  img.ct=UHDR_CT_UNSPECIFIED;
+  img.range=UHDR_CR_UNSPECIFIED;
+  handle=uhdr_create_decoder();
+  if (handle == (uhdr_codec_private_t *) NULL)
+    ThrowUHDRReadError(CoderError,"FailedToCreateDecoder");
+  option=GetImageOption(image_info,"uhdr:output-color-transfer");
+  decoded_img_ct=(option != (const char *) NULL) ?
+    map_ct_to_uhdr_ct(option) : UHDR_CT_SRGB;
+  profile_skip=GetImageOption(image_info,"profile:skip");
+  skip_app_profiles=IsOptionMember("APP",profile_skip);
+  skip_exif_profile=IsOptionMember("EXIF",profile_skip);
+  skip_gainmap_profile=IsOptionMember("HDRGM",profile_skip);
+  skip_icc_profile=IsOptionMember("ICC",profile_skip);
   if (skip_app_profiles != MagickFalse)
     {
       skip_exif_profile=MagickTrue;
       skip_gainmap_profile=MagickTrue;
     }
-
-  uhdr_img_fmt_t
-    decoded_img_fmt = UHDR_CT_SRGB;
-
   if (decoded_img_ct == UHDR_CT_LINEAR)
-    decoded_img_fmt = UHDR_IMG_FMT_64bppRGBAHalfFloat;
-  else if (decoded_img_ct == UHDR_CT_HLG || decoded_img_ct == UHDR_CT_PQ)
-    decoded_img_fmt = UHDR_IMG_FMT_32bppRGBA1010102;
+    decoded_img_fmt=UHDR_IMG_FMT_64bppRGBAHalfFloat;
+  else if ((decoded_img_ct == UHDR_CT_HLG) || (decoded_img_ct == UHDR_CT_PQ))
+    decoded_img_fmt=UHDR_IMG_FMT_32bppRGBA1010102;
   else if (decoded_img_ct == UHDR_CT_SRGB)
-    decoded_img_fmt = UHDR_IMG_FMT_32bppRGBA8888;
+    decoded_img_fmt=UHDR_IMG_FMT_32bppRGBA8888;
   else
-    decoded_img_fmt = UHDR_IMG_FMT_UNSPECIFIED;
-
-#define CHECK_IF_ERR(x)                                                                       \
-  {                                                                                           \
-    uhdr_error_info_t retval = (x);                                                           \
-    if (retval.error_code != UHDR_CODEC_OK)                                                   \
-    {                                                                                         \
-      (void)ThrowMagickException(exception, GetMagickModule(), CoderError,                    \
-                                 retval.has_detail ? retval.detail : "unknown error", "`%s'", \
-                                 image->filename);                                            \
-      uhdr_release_decoder(handle);                                                           \
-      CloseBlob(image);                                                                       \
-      return DestroyImageList(image);                                                         \
-    }                                                                                         \
-  }
-
-  CHECK_IF_ERR(uhdr_dec_set_image(handle, &img))
-  CHECK_IF_ERR(uhdr_dec_set_out_color_transfer(handle, decoded_img_ct))
-  CHECK_IF_ERR(uhdr_dec_set_out_img_format(handle, decoded_img_fmt))
+    decoded_img_fmt=UHDR_IMG_FMT_UNSPECIFIED;
+  CHECK_IF_ERR(uhdr_dec_set_image(handle,&img))
+  CHECK_IF_ERR(uhdr_dec_set_out_color_transfer(handle,decoded_img_ct))
+  CHECK_IF_ERR(uhdr_dec_set_out_img_format(handle,decoded_img_fmt))
   CHECK_IF_ERR(uhdr_dec_probe(handle))
-
-  image->columns = uhdr_dec_get_image_width(handle);
-  image->rows = uhdr_dec_get_image_height(handle);
-
+  if ((uhdr_dec_get_image_width(handle) <= 0) ||
+      (uhdr_dec_get_image_height(handle) <= 0))
+    ThrowUHDRReadError(CorruptImageError,"ImproperImageHeader");
+  image->columns=(size_t) uhdr_dec_get_image_width(handle);
+  image->rows=(size_t) uhdr_dec_get_image_height(handle);
   if (image_info->ping != MagickFalse)
-    {
-      uhdr_release_decoder(handle);
-      (void) CloseBlob(image);
-      return(GetFirstImageInList(image));
-    }
-
+    goto cleanup;
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
-    {
-      uhdr_release_decoder(handle);
-      CloseBlob(image);
-      return(DestroyImageList(image));
-    }
-
+    goto cleanup;
   CHECK_IF_ERR(uhdr_decode(handle))
-
-  uhdr_raw_image_t
-    *dst = uhdr_get_decoded_image(handle);
-
+  dst=uhdr_get_decoded_image(handle);
+  if ((dst == (uhdr_raw_image_t *) NULL) ||
+      (dst->planes[UHDR_PLANE_PACKED] == NULL) ||
+      (dst->w != image->columns) || (dst->h != image->rows))
+    ThrowUHDRReadError(CorruptImageError,"ImproperImageHeader");
   /*
-    Preserve compressed gain‑map + metadata for transcoding.
+    Preserve compressed gain-map + metadata for transcoding.
   */
   {
     uhdr_mem_block_t
       *gainmap_image = uhdr_dec_get_gainmap_image(handle);
-  
+
     uhdr_gainmap_metadata_t
       *gainmap_info = uhdr_dec_get_gainmap_metadata(handle);
-  
+
     if ((skip_gainmap_profile == MagickFalse) &&
         (gainmap_image != (uhdr_mem_block_t *) NULL) &&
+        (gainmap_image->data != NULL) && (gainmap_image->data_sz != 0) &&
         (gainmap_info != (uhdr_gainmap_metadata_t *) NULL))
     {
       char
         buffer[MagickPathExtent];
 
+      StringInfo
+        *gainmap_profile;
+
       /*
         Set gainmap as a binary profile.
       */
-      StringInfo *gainmap_profile = BlobToProfileStringInfo("hdrgm",
-        gainmap_image->data,gainmap_image->data_sz,exception);
-      (void) SetImageProfilePrivate(image,gainmap_profile,exception);
-  
+      gainmap_profile=BlobToProfileStringInfo("hdrgm",gainmap_image->data,
+        gainmap_image->data_sz,exception);
+      if (gainmap_profile != (StringInfo *) NULL)
+        (void) SetImageProfilePrivate(image,gainmap_profile,exception);
+
       /*
         Set metadata as properties.
       */
@@ -301,19 +355,20 @@ static Image *ReadUHDRImage(const ImageInfo *image_info,
       SetHDRGMPropertySize("BaseHeight",image->rows);
     }
   }
-
-#undef CHECK_IF_ERR
-
-  uhdr_mem_block_t *exif = uhdr_dec_get_exif(handle);
-  if ((skip_exif_profile == MagickFalse) && (exif != NULL))
+  exif=uhdr_dec_get_exif(handle);
+  if ((skip_exif_profile == MagickFalse) && (exif != (uhdr_mem_block_t *) NULL) &&
+      (exif->data != NULL) && (exif->data_sz != 0))
   {
-    StringInfo *exif_data = BlobToProfileStringInfo("exif",exif->data,
-      exif->data_sz,exception);
-    (void) SetImageProfilePrivate(image,exif_data,exception);
-  }
+    StringInfo
+      *exif_data;
 
-  uhdr_mem_block_t *icc = uhdr_dec_get_icc(handle);
-  if ((skip_icc_profile == MagickFalse) && (icc != NULL) &&
+    exif_data=BlobToProfileStringInfo("exif",exif->data,exif->data_sz,
+      exception);
+    if (exif_data != (StringInfo *) NULL)
+      (void) SetImageProfilePrivate(image,exif_data,exception);
+  }
+  icc=uhdr_dec_get_icc(handle);
+  if ((skip_icc_profile == MagickFalse) && (icc != (uhdr_mem_block_t *) NULL) &&
       (icc->data != NULL) && (icc->data_sz != 0))
   {
     const unsigned char
@@ -321,6 +376,9 @@ static Image *ReadUHDRImage(const ImageInfo *image_info,
 
     size_t
       icc_data_size = icc->data_sz;
+
+    StringInfo
+      *icc_data;
 
     /*
       libultrahdr returns JPEG APP2 ICC chunk data. ImageMagick stores the
@@ -332,132 +390,169 @@ static Image *ReadUHDRImage(const ImageInfo *image_info,
         icc_data_start+=14;
         icc_data_size-=14;
       }
-    StringInfo *icc_data = BlobToProfileStringInfo("icc",icc_data_start,
-      icc_data_size,exception);
-    (void) SetImageProfilePrivate(image,icc_data,exception);
+    icc_data=BlobToProfileStringInfo("icc",icc_data_start,icc_data_size,
+      exception);
+    if (icc_data != (StringInfo *) NULL)
+      (void) SetImageProfilePrivate(image,icc_data,exception);
   }
-
   if (decoded_img_ct == UHDR_CT_LINEAR)
     {
-      SetImageColorspace(image,RGBColorspace,exception);
+      (void) SetImageColorspace(image,RGBColorspace,exception);
       image->gamma=1.0;
     }
   else if ((decoded_img_ct == UHDR_CT_SRGB) && (dst->cg == UHDR_CG_DISPLAY_P3))
-    SetImageColorspace(image,DisplayP3Colorspace,exception);
+    (void) SetImageColorspace(image,DisplayP3Colorspace,exception);
   else if (decoded_img_ct == UHDR_CT_SRGB)
-    SetImageColorspace(image,sRGBColorspace,exception);
+    (void) SetImageColorspace(image,sRGBColorspace,exception);
   else
-    SetImageColorspace(image,RGBColorspace,exception);
-
-  image->compression = JPEGCompression;
+    (void) SetImageColorspace(image,RGBColorspace,exception);
+  image->compression=JPEGCompression;
   if (decoded_img_fmt == UHDR_IMG_FMT_32bppRGBA8888)
-    image->depth = 8;
+    image->depth=8;
   else if (decoded_img_fmt == UHDR_IMG_FMT_32bppRGBA1010102)
-    image->depth = 10;
+    image->depth=10;
   else if (decoded_img_fmt == UHDR_IMG_FMT_64bppRGBAHalfFloat)
-    image->depth = 16;
+    image->depth=16;
   switch (dst->cg)
   {
-  case UHDR_CG_BT_709:
-    image->chromaticity.red_primary.x = 0.64;
-    image->chromaticity.red_primary.y = 0.33;
-    image->chromaticity.green_primary.x = 0.30;
-    image->chromaticity.green_primary.y = 0.60;
-    image->chromaticity.blue_primary.x = 0.15;
-    image->chromaticity.blue_primary.y = 0.06;
-    image->chromaticity.white_point.x = 0.3127;
-    image->chromaticity.white_point.y = 0.3290;
-    break;
-
-  case UHDR_CG_DISPLAY_P3:
-    image->chromaticity.red_primary.x = 0.680;
-    image->chromaticity.red_primary.y = 0.320;
-    image->chromaticity.green_primary.x = 0.265;
-    image->chromaticity.green_primary.y = 0.690;
-    image->chromaticity.blue_primary.x = 0.150;
-    image->chromaticity.blue_primary.y = 0.060;
-    image->chromaticity.white_point.x = 0.3127;
-    image->chromaticity.white_point.y = 0.3290;
-    break;
-
-  case UHDR_CG_BT_2100:
-    image->chromaticity.red_primary.x = 0.708;
-    image->chromaticity.red_primary.y = 0.292;
-    image->chromaticity.green_primary.x = 0.170;
-    image->chromaticity.green_primary.y = 0.797;
-    image->chromaticity.blue_primary.x = 0.131;
-    image->chromaticity.blue_primary.y = 0.046;
-    image->chromaticity.white_point.x = 0.3127;
-    image->chromaticity.white_point.y = 0.3290;
-    break;
-
-  case UHDR_CG_UNSPECIFIED:
-    break;
+    case UHDR_CG_BT_709:
+    {
+      image->chromaticity.red_primary.x=0.64;
+      image->chromaticity.red_primary.y=0.33;
+      image->chromaticity.green_primary.x=0.30;
+      image->chromaticity.green_primary.y=0.60;
+      image->chromaticity.blue_primary.x=0.15;
+      image->chromaticity.blue_primary.y=0.06;
+      image->chromaticity.white_point.x=0.3127;
+      image->chromaticity.white_point.y=0.3290;
+      break;
+    }
+    case UHDR_CG_DISPLAY_P3:
+    {
+      image->chromaticity.red_primary.x=0.680;
+      image->chromaticity.red_primary.y=0.320;
+      image->chromaticity.green_primary.x=0.265;
+      image->chromaticity.green_primary.y=0.690;
+      image->chromaticity.blue_primary.x=0.150;
+      image->chromaticity.blue_primary.y=0.060;
+      image->chromaticity.white_point.x=0.3127;
+      image->chromaticity.white_point.y=0.3290;
+      break;
+    }
+    case UHDR_CG_BT_2100:
+    {
+      image->chromaticity.red_primary.x=0.708;
+      image->chromaticity.red_primary.y=0.292;
+      image->chromaticity.green_primary.x=0.170;
+      image->chromaticity.green_primary.y=0.797;
+      image->chromaticity.blue_primary.x=0.131;
+      image->chromaticity.blue_primary.y=0.046;
+      image->chromaticity.white_point.x=0.3127;
+      image->chromaticity.white_point.y=0.3290;
+      break;
+    }
+    default:
+      break;
   }
-
-  for (ssize_t y = 0; y < (ssize_t) image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     Quantum
       *q;
 
-    q = QueueAuthenticPixels(image, 0, y, image->columns, 1, exception);
+    q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
-    {
-      status = MagickFalse;
-      break;
-    }
+      {
+        status=MagickFalse;
+        break;
+      }
     if (decoded_img_fmt == UHDR_IMG_FMT_64bppRGBAHalfFloat)
-    {
-      uint16_t *row =
-          (uint16_t *)dst->planes[UHDR_PLANE_PACKED] + (y * dst->stride[UHDR_PLANE_PACKED] * 4);
-      for (ssize_t x = 0; x < (ssize_t)image->columns; x++)
       {
-        SetPixelRed(image, ClampToQuantum(QuantumRange * (HalfToSinglePrecision(*row++))), q);
-        SetPixelGreen(image, ClampToQuantum(QuantumRange * (HalfToSinglePrecision(*row++))), q);
-        SetPixelBlue(image, ClampToQuantum(QuantumRange * (HalfToSinglePrecision(*row++))), q);
-        row++;
-        q += GetPixelChannels(image);
-      }
-    }
-    else if (decoded_img_fmt == UHDR_IMG_FMT_32bppRGBA1010102)
-    {
-      uint32_t *row =
-          (uint32_t *)dst->planes[UHDR_PLANE_PACKED] + (y * dst->stride[UHDR_PLANE_PACKED]);
-      for (ssize_t x = 0; x < (ssize_t)image->columns; x++)
-      {
-        SetPixelRed(image, ScaleShortToQuantum((unsigned short)((*(row + x) & 0x000003FF) << 6)),
-                    q);
-        SetPixelGreen(image, ScaleShortToQuantum((unsigned short)((*(row + x) & 0x000FFC00) >> 4)),
-                      q);
-        SetPixelBlue(image, ScaleShortToQuantum((unsigned short)((*(row + x) & 0x3FF00000) >> 14)),
-                     q);
-        q += GetPixelChannels(image);
-      }
-    }
-    else if (decoded_img_fmt == UHDR_IMG_FMT_32bppRGBA8888) {
-      uint8_t *row =
-          (uint8_t *)dst->planes[UHDR_PLANE_PACKED] + (y * dst->stride[UHDR_PLANE_PACKED] * 4);
-      for (ssize_t x = 0; x < (ssize_t)image->columns; x++)
-      {
-        SetPixelRed(image, ScaleCharToQuantum((unsigned char)(*row++)), q);
-        SetPixelGreen(image, ScaleCharToQuantum((unsigned char)(*row++)), q);
-        SetPixelBlue(image, ScaleCharToQuantum((unsigned char)(*row++)), q);
-        row++;
-        q += GetPixelChannels(image);
-      }
-    }
+        const uint16_t
+          *row;
 
-    if (SyncAuthenticPixels(image, exception) == MagickFalse)
-    {
-      status = MagickFalse;
-      break;
-    }
+        row=(const uint16_t *) dst->planes[UHDR_PLANE_PACKED]+
+          (size_t) y*dst->stride[UHDR_PLANE_PACKED]*4;
+        for (x=0; x < (ssize_t) image->columns; x++)
+        {
+          SetPixelRed(image,ClampToQuantum(QuantumRange*
+            (HalfToSinglePrecision(*row++))),q);
+          SetPixelGreen(image,ClampToQuantum(QuantumRange*
+            (HalfToSinglePrecision(*row++))),q);
+          SetPixelBlue(image,ClampToQuantum(QuantumRange*
+            (HalfToSinglePrecision(*row++))),q);
+          row++;
+          q+=GetPixelChannels(image);
+        }
+      }
+    else
+      if (decoded_img_fmt == UHDR_IMG_FMT_32bppRGBA1010102)
+        {
+          const uint32_t
+            *row;
+
+          row=(const uint32_t *) dst->planes[UHDR_PLANE_PACKED]+
+            (size_t) y*dst->stride[UHDR_PLANE_PACKED];
+          for (x=0; x < (ssize_t) image->columns; x++)
+          {
+            unsigned int
+              b,
+              g,
+              pixel,
+              r;
+
+            /*
+              Expand 10-bit channels to 16-bit by bit replication so that
+              full-scale (1023) maps to full-scale (65535).
+            */
+            pixel=row[x];
+            r=pixel & 0x3FF;
+            g=(pixel >> 10) & 0x3FF;
+            b=(pixel >> 20) & 0x3FF;
+            SetPixelRed(image,ScaleShortToQuantum((unsigned short)
+              ((r << 6) | (r >> 4))),q);
+            SetPixelGreen(image,ScaleShortToQuantum((unsigned short)
+              ((g << 6) | (g >> 4))),q);
+            SetPixelBlue(image,ScaleShortToQuantum((unsigned short)
+              ((b << 6) | (b >> 4))),q);
+            q+=GetPixelChannels(image);
+          }
+        }
+      else
+        if (decoded_img_fmt == UHDR_IMG_FMT_32bppRGBA8888)
+          {
+            const uint8_t
+              *row;
+
+            row=(const uint8_t *) dst->planes[UHDR_PLANE_PACKED]+
+              (size_t) y*dst->stride[UHDR_PLANE_PACKED]*4;
+            for (x=0; x < (ssize_t) image->columns; x++)
+            {
+              SetPixelRed(image,ScaleCharToQuantum((unsigned char) (*row++)),q);
+              SetPixelGreen(image,ScaleCharToQuantum((unsigned char) (*row++)),
+                q);
+              SetPixelBlue(image,ScaleCharToQuantum((unsigned char) (*row++)),
+                q);
+              row++;
+              q+=GetPixelChannels(image);
+            }
+          }
+    if (SyncAuthenticPixels(image,exception) == MagickFalse)
+      {
+        status=MagickFalse;
+        break;
+      }
   }
-  uhdr_release_decoder(handle);
-  CloseBlob(image);
+cleanup:
+#undef CHECK_IF_ERR
+#undef ThrowUHDRReadError
+  if (handle != (uhdr_codec_private_t *) NULL)
+    uhdr_release_decoder(handle);
+  if (blob_buffer != (unsigned char *) NULL)
+    blob_buffer=(unsigned char *) RelinquishMagickMemory(blob_buffer);
+  (void) CloseBlob(image);
   if (status == MagickFalse)
-    return (DestroyImageList(image));
-  return (GetFirstImageInList(image));
+    return(DestroyImageList(image));
+  return(GetFirstImageInList(image));
 }
 #endif
 
@@ -605,11 +700,11 @@ static uhdr_color_gamut_t getImageColorGamut(ChromaticityInfo *info)
 
 static uhdr_color_gamut_t map_cg_to_uhdr_cg(const char *input_cg)
 {
-  if (!strcmp(input_cg, "display_p3"))
+  if (LocaleCompare(input_cg,"display_p3") == 0)
     return UHDR_CG_DISPLAY_P3;
-  if (!strcmp(input_cg, "bt709"))
+  if (LocaleCompare(input_cg,"bt709") == 0)
     return UHDR_CG_BT_709;
-  if (!strcmp(input_cg, "bt2100"))
+  if (LocaleCompare(input_cg,"bt2100") == 0)
     return UHDR_CG_BT_2100;
   else
     return UHDR_CG_UNSPECIFIED;
@@ -617,36 +712,30 @@ static uhdr_color_gamut_t map_cg_to_uhdr_cg(const char *input_cg)
 
 static uhdr_mem_block_t GetExifProfile(Image *image, ExceptionInfo *exception)
 {
-  const char
-    *name;
-
   const StringInfo
     *profile;
 
   uhdr_mem_block_t
     uhdr_profile = { 0 };
 
-  ResetImageProfileIterator(image);
-  for (name = GetNextImageProfile(image); name != (const char *)NULL;)
-  {
-    profile = GetImageProfile(image, name);
-    if (LocaleCompare(name, "EXIF") == 0)
+  profile=GetImageProfile(image,"exif");
+  if ((profile == (const StringInfo *) NULL) ||
+      (GetStringInfoLength(profile) == 0))
+    return(uhdr_profile);
+  if (GetStringInfoLength(profile) > 65533UL)
     {
-      uhdr_profile.data_sz = (unsigned int)GetStringInfoLength(profile);
-      uhdr_profile.capacity = uhdr_profile.data_sz;
-      if (uhdr_profile.data_sz > 65533L)
-        (void)ThrowMagickException(exception, GetMagickModule(), CoderWarning,
-                                   "ExifProfileSizeExceedsLimit", "`%s'", image->filename);
-
-      uhdr_profile.data = GetStringInfoDatum(profile);
-      return uhdr_profile;
+      /*
+        An EXIF block this large cannot be stored in a JPEG APP1 segment and
+        would make the encoder fail; drop it with a warning instead.
+      */
+      (void) ThrowMagickException(exception,GetMagickModule(),CoderWarning,
+        "ExifProfileSizeExceedsLimit","`%s'",image->filename);
+      return(uhdr_profile);
     }
-    if (image->debug != MagickFalse)
-      (void)LogMagickEvent(CoderEvent, GetMagickModule(), "%s profile: %.17g bytes", name,
-                           (double)GetStringInfoLength(profile));
-    name = GetNextImageProfile(image);
-  }
-  return uhdr_profile;
+  uhdr_profile.data_sz=(unsigned int) GetStringInfoLength(profile);
+  uhdr_profile.capacity=uhdr_profile.data_sz;
+  uhdr_profile.data=GetStringInfoDatum(profile);
+  return(uhdr_profile);
 }
 
 static void fillRawImageDescriptor(uhdr_raw_image_t *imgDescriptor, const ImageInfo *image_info,
@@ -657,17 +746,18 @@ static void fillRawImageDescriptor(uhdr_raw_image_t *imgDescriptor, const ImageI
 
   imgDescriptor->fmt = fmt;
 
-  if (image->depth >= 10)
+  option = GetImageOption(image_info, image->depth >= 10 ?
+    "uhdr:hdr-color-gamut" : "uhdr:sdr-color-gamut");
+  imgDescriptor->cg = (option != (const char *)NULL) ? map_cg_to_uhdr_cg(option)
+                                                     : getImageColorGamut(&image->chromaticity);
+  if (imgDescriptor->cg == UHDR_CG_UNSPECIFIED)
   {
-    option = GetImageOption(image_info, "uhdr:hdr-color-gamut");
-    imgDescriptor->cg = (option != (const char *)NULL) ? map_cg_to_uhdr_cg(option)
-                                                       : getImageColorGamut(&image->chromaticity);
-  }
-  else if (image->depth == 8)
-  {
-    option = GetImageOption(image_info, "uhdr:sdr-color-gamut");
-    imgDescriptor->cg = (option != (const char *)NULL) ? map_cg_to_uhdr_cg(option)
-                                                       : getImageColorGamut(&image->chromaticity);
+    /*
+      libultrahdr rejects raw images with an unspecified gamut; fall back on
+      the colorspace, then on BT.709 (sRGB primaries).
+    */
+    imgDescriptor->cg = (image->colorspace == DisplayP3Colorspace) ?
+      UHDR_CG_DISPLAY_P3 : UHDR_CG_BT_709;
   }
 
   imgDescriptor->range = imgDescriptor->fmt == UHDR_IMG_FMT_24bppYCbCrP010 ? UHDR_CR_LIMITED_RANGE
@@ -1122,11 +1212,11 @@ static MagickBooleanType ApplyGainMapTransformOrientation(
   ExceptionInfo *exception)
 {
   Image
-    *transform_image;
+    *transform_image = (Image *) NULL;
 
   size_t
     orientation,
-    rotations;
+    rotations = 0;
 
   if ((state->basis_x_x == 1) && (state->basis_x_y == 0) &&
       (state->basis_y_x == 0) && (state->basis_y_y == 1))
@@ -1498,7 +1588,7 @@ static StringInfo *TransformGainMapProfile(const ImageInfo *image_info,
     }
   option=GetImageOption(image_info,"uhdr:gainmap-quality");
   if (option != (const char *) NULL)
-    gainmap_images->quality=StringToUnsignedLong(option);
+    gainmap_images->quality=MagickMin(StringToUnsignedLong(option),100UL);
   else if (image->quality > 0)
     gainmap_images->quality=image->quality;
   (void) CopyMagickString(gainmap_images->magick,"JPEG",MagickPathExtent);
@@ -1712,7 +1802,7 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
     *option = GetImageOption(image_info,"uhdr:hdr-color-transfer");
 
   uhdr_color_transfer_t
-    hdr_ct = (option != (const char *) NULL) ? map_ct_to_uhdr_ct(option) : UHDR_CT_SRGB;
+    hdr_ct = (option != (const char *) NULL) ? map_ct_to_uhdr_ct(option) : UHDR_CT_HLG;
 
   if (hdr_ct == UHDR_CT_UNSPECIFIED)
     {
@@ -1733,7 +1823,14 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
   int
     hdrIntentMinDepth = hdr_ct == UHDR_CT_LINEAR ? 16 : 10;
 
-  for (int i = 0; i < (ssize_t) image_count; i++)
+  /*
+    When transcoding a preserved gain map the encoder is fed compressed
+    images, so there is no need to convert the pixels to raw intents.
+  */
+  const ssize_t
+    intent_count = (preserve_gainmap != MagickFalse) ? 0 : (ssize_t) image_count;
+
+  for (ssize_t i = 0; i < intent_count; i++)
   {
     /* Classify image as hdr/sdr intent basing on depth */
     int
@@ -1833,9 +1930,12 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
     yBuffer = AcquireQuantumMemory(picSize,1);
     if (yBuffer == NULL)
     {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       status = MagickFalse;
       break;
     }
+    (void) memset(yBuffer,0,picSize);
 
     if ((int) image->depth >= hdrIntentMinDepth)
     {
@@ -1956,7 +2056,8 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
             a = SinglePrecisionToHalf(QuantumScale * GetPixelAlpha(image, p));
 
             rgbaBase[y * hdrImgDescriptor.stride[UHDR_PLANE_PACKED] + x] =
-                ((uint64_t)a << 48) | ((uint64_t)b << 32) | (g << 16) | (r);
+                ((uint64_t)a << 48) | ((uint64_t)b << 32) |
+                ((uint64_t)g << 16) | (uint64_t)r;
           }
           else
           {
@@ -1971,7 +2072,8 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
             b = ScaleQuantumToShort(GetPixelBlue(image, p)) & 0xFFC0;
 
             rgbBase[y * hdrImgDescriptor.stride[UHDR_PLANE_PACKED] + x] =
-                (0x3U << 30) | (b << 14) | (g << 4) | (r >> 6);
+                (0x3U << 30) | ((uint32_t) b << 14) | ((uint32_t) g << 4) |
+                ((uint32_t) r >> 6);
           }
         }
         else if (image->depth == 8)
@@ -2003,12 +2105,17 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
             g = ScaleQuantumToChar(GetPixelGreen(image, p));
             b = ScaleQuantumToChar(GetPixelBlue(image, p));
 
-            rgbBase[y * sdrImgDescriptor.stride[UHDR_PLANE_PACKED] + x] = (b << 16) | (g << 8) | r;
+            rgbBase[y * sdrImgDescriptor.stride[UHDR_PLANE_PACKED] + x] =
+                ((uint32_t) 0xFF << 24) | ((uint32_t) b << 16) |
+                ((uint32_t) g << 8) | (uint32_t) r;
           }
         }
         p += GetPixelChannels(image);
       }
     }
+
+    if (status == MagickFalse)
+      break;
 
 next_image:
     if (i != (ssize_t) image_count - 1)
@@ -2023,10 +2130,12 @@ next_image:
         break;
     }
 
-    status = SetImageProgress(image, SaveImageTag, (MagickOffsetType)i,
-      image_count);
-    if (status == MagickFalse)
-      break;
+    if (SetImageProgress(image, SaveImageTag, (MagickOffsetType)i,
+          image_count) == MagickFalse)
+      {
+        status = MagickFalse;
+        break;
+      }
   }
 
   if (status != MagickFalse)
@@ -2040,7 +2149,7 @@ next_image:
     {                                                                                         \
       (void)ThrowMagickException(exception, GetMagickModule(), CoderError,                    \
                                  retval.has_detail ? retval.detail : "unknown error", "`%s'", \
-                                 image->filename);                                            \
+                                 images->filename);                                           \
       uhdr_release_encoder(handle);                                                           \
       status = MagickFalse;                                                                   \
     }                                                                                         \
@@ -2049,7 +2158,7 @@ next_image:
     if (handle == NULL)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
-          "FailedToCreateEncoder","`%s'",image->filename);
+          "FailedToCreateEncoder","`%s'",images->filename);
         status=MagickFalse;
       }
 
@@ -2080,8 +2189,8 @@ next_image:
       }
 
     /* Configure encoding settings */
-    if (status != MagickFalse && image->quality > 0 && image->quality <= 100)
-      CHECK_IF_ERR(uhdr_enc_set_quality(handle, image->quality, UHDR_BASE_IMG))
+    if (status != MagickFalse && images->quality > 0 && images->quality <= 100)
+      CHECK_IF_ERR(uhdr_enc_set_quality(handle, images->quality, UHDR_BASE_IMG))
 
     const char
       *option;

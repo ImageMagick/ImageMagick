@@ -629,14 +629,14 @@ static double TriangleThreshold(const double *histogram)
   a=y1-y2;
   b=x2-x1;
   c=(-1.0)*(a*x1+b*y1);
-  inverse_ratio=1.0/sqrt(a*a+b*b+c*c);
+  inverse_ratio=MagickSafeReciprocal(sqrt(a*a+b*b));
   threshold=0;
   max_distance=0.0;
   if (x2 == (double) start)
     for (i=start; i < max; i++)
     {
       segment=inverse_ratio*(a*i+b*histogram[i]+c);
-      distance=sqrt(segment*segment);
+      distance=fabs(segment);
       if ((distance > max_distance) && (segment > 0.0))
         {
           threshold=i;
@@ -647,7 +647,7 @@ static double TriangleThreshold(const double *histogram)
     for (i=end; i > max; i--)
     {
       segment=inverse_ratio*(a*i+b*histogram[i]+c);
-      distance=sqrt(segment*segment);
+      distance=fabs(segment);
       if ((distance > max_distance) && (segment < 0.0))
         {
           threshold=i;
@@ -706,7 +706,10 @@ MagickExport MagickBooleanType AutoThresholdImage(Image *image,
 
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
-      break;
+      {
+        status=MagickFalse;
+        break;
+      }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       double intensity = GetPixelIntensity(image,p);
@@ -715,6 +718,11 @@ MagickExport MagickBooleanType AutoThresholdImage(Image *image,
     }
   }
   image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    {
+      histogram=(double *) RelinquishMagickMemory(histogram);
+      return(MagickFalse);
+    }
   /*
     Normalize histogram.
   */
@@ -826,7 +834,7 @@ MagickExport MagickBooleanType BilevelImage(Image *image,const double threshold,
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   if (IsGrayColorspace(image->colorspace) == MagickFalse)
-    (void) SetImageColorspace(image,sRGBColorspace,exception);
+    (void) TransformImageColorspace(image,sRGBColorspace,exception);
   /*
     Bilevel threshold image.
   */
@@ -885,7 +893,7 @@ MagickExport MagickBooleanType BilevelImage(Image *image,const double threshold,
         #pragma omp atomic
 #endif
         progress++;
-        proceed=SetImageProgress(image,ThresholdImageTag,progress++,
+        proceed=SetImageProgress(image,ThresholdImageTag,progress,
           image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
@@ -959,7 +967,7 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) SetImageColorspace(image,sRGBColorspace,exception);
+    (void) TransformImageColorspace(image,sRGBColorspace,exception);
   GetPixelInfo(image,&threshold);
   flags=ParseGeometry(thresholds,&geometry_info);
   threshold.red=geometry_info.rho;
@@ -1395,6 +1403,8 @@ MagickExport MagickBooleanType ColorThresholdImage(Image *image,
       }
   }
   image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    return(MagickFalse);
   image->colorspace=sRGBColorspace;
   return(SyncImage(image,exception));
 }
@@ -1533,8 +1543,8 @@ static ThresholdMap *GetThresholdMapFile(const char *xml,const char *filename,
     *attribute,
     *content;
 
-  double
-    value;
+  size_t
+    cells;
 
   ssize_t
     i;
@@ -1659,10 +1669,24 @@ static ThresholdMap *GetThresholdMapFile(const char *xml,const char *filename,
       map=DestroyThresholdMap(map);
       return(map);
     }
-  map->levels=(ssize_t *) AcquireQuantumMemory((size_t) map->width,map->height*
-    sizeof(*map->levels));
+  cells=map->width*map->height;
+  if ((cells/map->height) != map->width)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","map \"%s\"",map_id);
+      thresholds=DestroyXMLTree(thresholds);
+      map=DestroyThresholdMap(map);
+      return(map);
+    }
+  map->levels=(ssize_t *) AcquireQuantumMemory(cells,sizeof(*map->levels));
   if (map->levels == (ssize_t *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"UnableToAcquireThresholdMap");
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","map \"%s\"",map_id);
+      thresholds=DestroyXMLTree(thresholds);
+      map=DestroyThresholdMap(map);
+      return(map);
+    }
   for (i=0; i < (ssize_t) (map->width*map->height); i++)
   {
     map->levels[i]=(ssize_t) strtol(content,&p,10);
@@ -1685,8 +1709,7 @@ static ThresholdMap *GetThresholdMapFile(const char *xml,const char *filename,
       }
     content=p;
   }
-  value=(double) strtol(content,&p,10);
-  (void) value;
+  (void) strtol(content,&p,10);
   if (p != content)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
@@ -1905,7 +1928,7 @@ MagickExport MagickBooleanType OrderedDitherImage(Image *image,
     *p;
 
   double
-    levels[CompositePixelChannel];
+    levels[MaxPixelChannels];
 
   MagickBooleanType
     status;
@@ -2047,7 +2070,7 @@ MagickExport MagickBooleanType OrderedDitherImage(Image *image,
   }
   image_view=DestroyCacheView(image_view);
   map=DestroyThresholdMap(map);
-  return(MagickTrue);
+  return(status);
 }
 
 /*
@@ -2219,14 +2242,15 @@ MagickExport MagickBooleanType PerceptibleImage(Image *image,
 %  The format of the RandomThresholdImage method is:
 %
 %      MagickBooleanType RandomThresholdImage(Image *image,
-%        const char *thresholds,ExceptionInfo *exception)
+%        const double min_threshold,const double max_threshold,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o low,high: Specify the high and low thresholds. These values range from
-%      0 to QuantumRange.
+%    o min_threshold,max_threshold: Specify the low and high thresholds.  These
+%      values range from 0 to QuantumRange.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -2461,10 +2485,7 @@ MagickExport MagickBooleanType RangeThresholdImage(Image *image,
                   MagickSafeReciprocal(high_black-high_white)*
                   (high_black-pixel));
               else
-                if (pixel > high_black)
-                  q[i]=(Quantum) 0;
-                else
-                  q[i]=(Quantum) 0;
+                q[i]=(Quantum) 0;
       }
       q+=(ptrdiff_t) GetPixelChannels(image);
     }

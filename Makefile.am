@@ -17,7 +17,7 @@
 #  Top-Level Makefile for building ImageMagick.
 #
 
-topincludedir = @includedir@/MagickCore
+topincludedir = $(includedir)/MagickCore
 
 AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)
 
@@ -156,7 +156,7 @@ pkgconfig_DATA = \
 docdir = $(DOCUMENTATION_PATH)
 
 # Manual pages to install
-if INSTALL_DOC#
+if INSTALL_DOC
 man_MANS = \
   $(MAGICKCORE_MANS) \
   $(MAGICKWAND_MANS) \
@@ -191,12 +191,15 @@ maintainer-clean-local: $(PERLMAGICK_MAINTAINER_CLEAN_LOCAL_TARGETS)
 
 check-local: $(PERLMAGICK_CHECK_LOCAL_TARGETS)
 
-# drd: valgrind's newer thread error detector
+# Developer targets (not files)
+.PHONY: drd helgrind memcheck
+
+# drd: valgrind's thread error detector
 drd:
 	$(MAKE) MEMCHECK='valgrind --tool=drd --check-stack-var=yes --var-info=yes \
 	  --quiet $(VALGRIND_EXTRA_OPTS)' check
 
-# helgrind: valgrind's older thread error detector
+# helgrind: valgrind's thread error detector (happens-before based)
 helgrind:
 	$(MAKE) MEMCHECK='valgrind --tool=helgrind --error-exitcode=2 --quiet \
 	$(VALGRIND_EXTRA_OPTS)' check
@@ -207,10 +210,6 @@ memcheck:
 	--error-exitcode=2 --track-origins=yes --num-callers=12 \
 	--quiet $(VALGRIND_EXTRA_OPTS)' check
 
-# ptrcheck: valgrind's experimental pointer checking tool.
-ptrcheck:
-	$(MAKE) MEMCHECK='valgrind --tool=exp-ptrcheck --quiet $(VALGRIND_EXTRA_OPTS)' check
-
 # Non-Automake subdirectories to distribute
 DISTDIRS = scripts www PerlMagick
 dist-hook:
@@ -219,7 +218,7 @@ dist-hook:
 	  cd $(srcdir) && \
 	  ( \
 	    for dir in $(DISTDIRS) ; do \
-	      find $$dir -depth -print | grep -E -v '(~$$)|(/.git)|(/\.#)|(/\.deps)|(/\.git)' \
+	      find $$dir -depth -print | grep -E -v '(~$$)|(/\.git)|(/\.#)|(/\.deps)' \
 	        | cpio -pdum $$builddir/$(distdir) 2> /dev/null ; \
 	    done \
 	  ) \
@@ -232,39 +231,43 @@ dist-hook:
 # Install HTML files
 pkgdocdir = $(DOCUMENTATION_PATH)
 
+# The www tree lives in the source directory, so enumerate it from $(srcdir)
+# (a plain 'find www' only works for in-tree builds).
 if INSTALL_DOC
 HTML_INSTALL_DATA_TARGETS = install-data-html
+HTML_UNINSTALL_DATA_TARGETS = uninstall-data-html
 endif
 
+.PHONY: install-data-html uninstall-data-html
+
 install-data-html:
-	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)
-	$(INSTALL_DATA) $(srcdir)/index.html $(DESTDIR)$(pkgdocdir)
-	@for dir in $$(find www -type d) ; do \
-	  $(mkinstalldirs) $(DESTDIR)$(pkgdocdir)/$$dir && \
-	  if test -d $(builddir)/$$dir ; then \
-	    docsrcdir=$(builddir)/$$dir; \
+	$(MKDIR_P) "$(DESTDIR)$(pkgdocdir)"
+	$(INSTALL_DATA) "$(srcdir)/index.html" "$(DESTDIR)$(pkgdocdir)"
+	@for dir in `cd $(srcdir) && find www -type d` ; do \
+	  $(MKDIR_P) "$(DESTDIR)$(pkgdocdir)/$$dir" || exit 1 ; \
+	  if test -d "$(builddir)/$$dir" ; then \
+	    docsrcdir="$(builddir)/$$dir"; \
 	  else \
-	    docsrcdir=$(srcdir)/$$dir; \
+	    docsrcdir="$(srcdir)/$$dir"; \
 	  fi; \
-	  for file in $$docsrcdir/*.* ; do \
+	  for file in "$$docsrcdir"/*.* ; do \
+	    test -f "$$file" || continue ; \
 	    echo "$(INSTALL_DATA) $$file $(DESTDIR)$(pkgdocdir)/$$dir" ; \
-	    $(INSTALL_DATA) "$$file" $(DESTDIR)$(pkgdocdir)/$$dir ; \
+	    $(INSTALL_DATA) "$$file" "$(DESTDIR)$(pkgdocdir)/$$dir" || exit 1 ; \
 	  done ; \
 	done
 
 # Uninstall HTML files
-HTML_UNINSTALL_DATA_TARGETS = uninstall-data-html
 uninstall-data-html:
-	rm -f $(DESTDIR)$(pkgdocdir)/index.html
-	for dir in $$(find www -type d) ; do \
-	  rm -f -r $(DESTDIR)$(pkgdocdir)/$$dir ; \
+	rm -f "$(DESTDIR)$(pkgdocdir)/index.html"
+	@for dir in `cd $(srcdir) && find www -type d` ; do \
+	  rm -f -r "$(DESTDIR)$(pkgdocdir)/$$dir" ; \
 	done
 
 # Ensure that version.h at $(srcdir)/MagickCore/version.h is kept up to date.
 magick-version: MagickCore/version.h
 	@if test -n "$(VPATH)" ; then \
-	  cmp MagickCore/version.h $(srcdir)/MagickCore/version.h > /dev/null ; \
-	        if test $$? -eq 1 ; then \
+	  if ! cmp -s MagickCore/version.h $(srcdir)/MagickCore/version.h ; then \
 	    echo "Updating $(srcdir)/MagickCore/version.h ..."; \
 	    cp MagickCore/version.h $(srcdir)/MagickCore/version.h ; \
 	  fi ; \
@@ -280,21 +283,22 @@ libtool: $(LIBTOOL_DEPS)
 
 # Format C API documentation
 html-local:
-# copy static file
+# copy static file (enumerated from the source tree so VPATH builds work)
 	for dir in $(DOCDIRSMANUAL) ; do \
-		$(mkinstalldirs) $(top_builddir)/$$dir ;\
-		for file in $$dir/*.* ; do \
-			if ! test -f $(top_builddir)/$$file; then \
-				cp -p -f $(top_srcdir)/$$file $(top_builddir)/$$dir ; \
+		$(MKDIR_P) $(top_builddir)/$$dir ;\
+		for file in $(top_srcdir)/$$dir/*.* ; do \
+			test -f "$$file" || continue ; \
+			if ! test -f "$(top_builddir)/$$dir/`basename $$file`"; then \
+				cp -p -f "$$file" $(top_builddir)/$$dir ; \
 			fi; \
 		done ; \
 	done;
-# remove old doxygen files
+# remove old doxygen files
 	for dir in $(DOCDIRDOXYGEN) ; do \
-	    rm -rf $$dir || true; \
+	    rm -rf $$dir || true; \
 	done;
 # make doxygen doc
-	$(mkinstalldirs) $(top_builddir)/www/api
+	$(MKDIR_P) $(top_builddir)/www/api
 	cd config && doxygen MagickCore.dox
 	cd config && doxygen MagickWand.dox
 	cd config && doxygen Magick++.dox
@@ -312,6 +316,7 @@ DIST_WINDOWS_SRC_7ZIP=$(PACKAGE_NAME)-$(PACKAGE_VERSION)-windows.7z
 else
 DIST_WINDOWS_SRC_7ZIP=
 endif
+.PHONY: windows-dist
 $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) windows-dist:
 	if test -d $(PACKAGE_NAME)-$(PACKAGE_VERSION) ; then \
 	  chmod -R u+w $(PACKAGE_NAME)-$(PACKAGE_VERSION) ; \
@@ -335,7 +340,7 @@ endif # P7ZIP_DELEGATE
 if RPM_DELEGATE
 
 DIST_ARCHIVE_SRPM=$(distdir).src.rpm
-.PHONY: srpm
+.PHONY: srpm rpm
 $(DIST_ARCHIVE_SRPM) srpm: dist-bzip2
 	rm -f $(DIST_ARCHIVE_SRPM)
 	$(RPM) --define="_sourcedir `pwd`" --define="_srcrpmdir `pwd`" --nodeps --bs ImageMagick.spec
@@ -353,7 +358,6 @@ DIST_ARCHIVE_RPM= \
   $(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-devel-$(PACKAGE_VERSION)-$(PACKAGE_PATCHLEVEL_VERSION).$(RPMARCH).rpm \
   $(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-perl-$(PACKAGE_VERSION)-$(PACKAGE_PATCHLEVEL_VERSION).$(RPMARCH).rpm
 
-.PHONY: rpm
 rpm: dist
 	rm -rf $(RPMDIR)
 	$(mkinstalldirs) $(RPMDIR)
@@ -370,9 +374,12 @@ endif # RPM_DELEGATE
 
 #
 # Build a validated snapshot release and move to the snapshots directory.
+# Override on the command line: make snapshot SNAPSHOT_DIR=/some/dir
 #
+SNAPSHOT_DIR = /var/ftp/pub/ImageMagick/beta
+.PHONY: snapshot
 snapshot: distcheck
-	$(MAKE) $(DIST_ARCHIVE_SRPM)
-	$(MAKE) $(DIST_WINDOWS_SRC_ZIP)
-	$(MAKE) $(DIST_WINDOWS_SRC_7ZIP)
-	mv $(DIST_ARCHIVES) $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) $(DIST_ARCHIVE_SRPM) /var/ftp/pub/ImageMagick/beta/
+	test -z "$(DIST_ARCHIVE_SRPM)" || $(MAKE) $(DIST_ARCHIVE_SRPM)
+	test -z "$(DIST_WINDOWS_SRC_ZIP)" || $(MAKE) $(DIST_WINDOWS_SRC_ZIP)
+	test -z "$(DIST_WINDOWS_SRC_7ZIP)" || $(MAKE) $(DIST_WINDOWS_SRC_7ZIP)
+	mv $(DIST_ARCHIVES) $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) $(DIST_ARCHIVE_SRPM) $(SNAPSHOT_DIR)/

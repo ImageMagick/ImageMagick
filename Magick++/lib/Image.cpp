@@ -84,7 +84,7 @@ Magick::Image::Image(const Blob &blob_)
     read(blob_);
     quiet(false);
   }
-  catch (const Error&)
+  catch (...)
   {
     // Release resources
     delete _imgRef;
@@ -102,7 +102,7 @@ Magick::Image::Image(const Blob &blob_,const Geometry &size_)
     read(blob_, size_);
     quiet(false);
   }
-  catch(const Error&)
+  catch(...)
   {
     // Release resources
     delete _imgRef;
@@ -121,7 +121,7 @@ Magick::Image::Image(const Blob &blob_,const Geometry &size_,
     read(blob_,size_,depth_);
     quiet(false);
   }
-  catch(const Error&)
+  catch(...)
   {
     // Release resources
     delete _imgRef;
@@ -140,7 +140,7 @@ Magick::Image::Image(const Blob &blob_,const Geometry &size_,
     read(blob_,size_,depth_,magick_);
     quiet(false);
   }
-  catch(const Error&)
+  catch(...)
   {
     // Release resources
     delete _imgRef;
@@ -159,7 +159,7 @@ Magick::Image::Image(const Blob &blob_,const Geometry &size_,
     read(blob_,size_,magick_);
     quiet(false);
   }
-  catch(const Error&)
+  catch(...)
   {
     // Release resources
     delete _imgRef;
@@ -184,7 +184,7 @@ Magick::Image::Image(const Geometry &size_,const Color &color_)
     read(imageSpec);
     quiet(false);
   }
-  catch(const Error&)
+  catch(...)
   {
     // Release resources
     delete _imgRef;
@@ -210,16 +210,26 @@ Magick::Image::Image(const Image &image_,const Geometry &geometry_)
   MagickCore::Image
     *image;
 
-  GetPPException;
-  image=CloneImage(image_.constImage(),geometry_.width(),geometry_.height(),
-    MagickTrue,exceptionInfo);
-  replaceImage(image);
-  _imgRef->options(new Options(*image_.constOptions()));
-  offset.x=0;
-  offset.y=0;
-  (void) CopyImagePixels(image,image_.constImage(),&geometry,&offset,
-    exceptionInfo);
-  ThrowImageException;
+  try
+  {
+    GetPPException;
+    image=CloneImage(image_.constImage(),geometry_.width(),geometry_.height(),
+      MagickTrue,exceptionInfo);
+    replaceImage(image);
+    _imgRef->options(new Options(*image_.constOptions()));
+    offset.x=0;
+    offset.y=0;
+    if (image != (MagickCore::Image *) NULL)
+      (void) CopyImagePixels(image,image_.constImage(),&geometry,&offset,
+        exceptionInfo);
+    ThrowImageException;
+  }
+  catch(...)
+  {
+    // Release resources
+    delete _imgRef;
+    throw;
+  }
 }
 
 Magick::Image::Image(const size_t width_,const size_t height_,
@@ -232,7 +242,7 @@ Magick::Image::Image(const size_t width_,const size_t height_,
     read(width_,height_,map_.c_str(),type_,pixels_);
     quiet(false);
   }
-  catch(const Error&)
+  catch(...)
   {
     // Release resources
     delete _imgRef;
@@ -250,7 +260,7 @@ Magick::Image::Image(const std::string &imageSpec_)
     read(imageSpec_);
     quiet(false);
   }
-  catch(const Error&)
+  catch(...)
   {
     // Release resources
     delete _imgRef;
@@ -411,6 +421,7 @@ size_t Magick::Image::baseRows(void) const
 
 void Magick::Image::blackPointCompensation(const bool flag_)
 {
+  modifyImage();
   image()->black_point_compensation=(MagickBooleanType) flag_;
 }
 
@@ -612,6 +623,7 @@ std::string Magick::Image::comment(void) const
 
 void Magick::Image::compose(const CompositeOperator compose_)
 {
+  modifyImage();
   image()->compose=compose_;
 }
 
@@ -1070,8 +1082,14 @@ void Magick::Image::isValid(const bool isValid_)
 {
   if (!isValid_)
     {
-      delete _imgRef;
-      _imgRef=new ImageRef;
+      // Allocate first so a failure leaves this object untouched, and only
+      // delete the old reference if nobody else shares it.
+      ImageRef
+        *newRef=new ImageRef;
+
+      if (_imgRef->decrease() == 0)
+        delete _imgRef;
+      _imgRef=newRef;
     }
   else if (!isValid())
     {
@@ -2385,8 +2403,6 @@ void Magick::Image::colorMap(const size_t index_,const Color &color_)
   MagickCore::Image
     *imageptr;
 
-  imageptr=image();
-
   if (index_ > (MaxColormapSize-1))
     throwExceptionExplicit(MagickCore::OptionError,
       "Colormap index must be less than MaxColormapSize");
@@ -2397,9 +2413,13 @@ void Magick::Image::colorMap(const size_t index_,const Color &color_)
 
   modifyImage();
 
-  // Ensure that colormap size is large enough
-  if (colorMapSize() < (index_+1))
+  // Ensure that colormap exists and is large enough
+  if (constImage()->colormap == (PixelInfo *) NULL ||
+      constImage()->colors < (index_+1))
     colorMapSize(index_+1);
+
+  // Fetch the image pointer only now: modifyImage() may have replaced it
+  imageptr=image();
 
   // Set color at index in colormap
   (imageptr->colormap)[index_]=color_;
@@ -2414,7 +2434,7 @@ Magick::Color Magick::Image::colorMap(const size_t index_) const
       return(Color());
     }
 
-  if (index_ > constImage()->colors-1)
+  if (index_ >= constImage()->colors)
     throwExceptionExplicit(MagickCore::OptionError,"Index out of range");
 
   return(Magick::Color((constImage()->colormap)[index_]));
@@ -2622,23 +2642,26 @@ void Magick::Image::convolve(const size_t order_,const double *kernel_)
 
   GetPPException;
   kernel_info=AcquireKernelInfo((const char *) NULL,exceptionInfo);
-  kernel_info->width=order_;
-  kernel_info->height=order_;
-  kernel_info->x=(ssize_t) (order_-1)/2;
-  kernel_info->y=(ssize_t) (order_-1)/2;
-  kernel_info->values=(MagickRealType *) AcquireAlignedMemory(order_,
-    order_*sizeof(*kernel_info->values));
-  if (kernel_info->values != (MagickRealType *) NULL)
+  if (kernel_info != (KernelInfo *) NULL)
     {
-      MagickCore::Image
-        *newImage;
+      kernel_info->width=order_;
+      kernel_info->height=order_;
+      kernel_info->x=(ssize_t) (order_-1)/2;
+      kernel_info->y=(ssize_t) (order_-1)/2;
+      kernel_info->values=(MagickRealType *) AcquireAlignedMemory(order_,
+        order_*sizeof(*kernel_info->values));
+      if (kernel_info->values != (MagickRealType *) NULL)
+        {
+          MagickCore::Image
+            *newImage;
 
-      for (ssize_t i=0; i < (ssize_t) (order_*order_); i++)
-        kernel_info->values[i]=kernel_[i];
-      newImage=ConvolveImage(image(),kernel_info,exceptionInfo);
-      replaceImage(newImage);
+          for (ssize_t i=0; i < (ssize_t) (order_*order_); i++)
+            kernel_info->values[i]=kernel_[i];
+          newImage=ConvolveImage(image(),kernel_info,exceptionInfo);
+          replaceImage(newImage);
+        }
+      kernel_info=DestroyKernelInfo(kernel_info);
     }
-  kernel_info=DestroyKernelInfo(kernel_info);
   ThrowImageException;
 }
 
@@ -2651,6 +2674,7 @@ void Magick::Image::copyPixels(const Image &source_,const Geometry &geometry_,
   const RectangleInfo
     geometry=geometry_;
 
+  modifyImage();
   GetPPException;
   (void) CopyImagePixels(image(),source_.constImage(),&geometry,&offset,
     exceptionInfo);
@@ -2897,6 +2921,7 @@ void Magick::Image::erase(void)
 void Magick::Image::evaluate(const ChannelType channel_,
   const MagickEvaluateOperator operator_,double rvalue_)
 {
+  modifyImage();
   GetPPException;
   GetAndSetPPChannelMask(channel_);
   EvaluateImage(image(),operator_,rvalue_,exceptionInfo);
@@ -2908,6 +2933,7 @@ void Magick::Image::evaluate(const ChannelType channel_,
   const MagickFunction function_,const size_t number_parameters_,
   const double *parameters_)
 {
+  modifyImage();
   GetPPException;
   GetAndSetPPChannelMask(channel_);
   FunctionImage(image(),function_,number_parameters_,parameters_,
@@ -2926,6 +2952,7 @@ void Magick::Image::evaluate(const ChannelType channel_,const ssize_t x_,
   MagickCore::Image
     *cropImage;
 
+  modifyImage();
   geometry.width = columns_;
   geometry.height = rows_;
   geometry.x = x_;
@@ -2933,13 +2960,16 @@ void Magick::Image::evaluate(const ChannelType channel_,const ssize_t x_,
 
   GetPPException;
   cropImage=CropImage(image(),&geometry,exceptionInfo);
-  GetAndSetPPChannelMask(channel_);
-  EvaluateImage(cropImage,operator_,rvalue_,exceptionInfo);
-  RestorePPChannelMask;
-  (void) CompositeImage(image(),cropImage,image()->alpha_trait == 
-    BlendPixelTrait ? OverCompositeOp : CopyCompositeOp,MagickFalse,
-    geometry.x,geometry.y,exceptionInfo );
-  cropImage=DestroyImageList(cropImage);
+  if (cropImage != (MagickCore::Image *) NULL)
+    {
+      GetAndSetPPChannelMask(channel_);
+      EvaluateImage(cropImage,operator_,rvalue_,exceptionInfo);
+      RestorePPChannelMask;
+      (void) CompositeImage(image(),cropImage,image()->alpha_trait ==
+        BlendPixelTrait ? OverCompositeOp : CopyCompositeOp,MagickFalse,
+        geometry.x,geometry.y,exceptionInfo );
+      cropImage=DestroyImageList(cropImage);
+    }
   ThrowImageException;
 }
 
@@ -3519,7 +3549,8 @@ void Magick::Image::liquidRescale(const Geometry &geometry_)
     &height);
 
   GetPPException;
-  newImage=LiquidRescaleImage(image(),width,height,(double) x,(double) y,exceptionInfo);
+  newImage=LiquidRescaleImage(image(),width,height,(double) x,(double) y,
+    exceptionInfo);
   replaceImage(newImage);
   ThrowImageException;
 }
@@ -3569,7 +3600,7 @@ void Magick::Image::map(const Image &mapImage_,const DitherMethod ditherMethod_)
 {
   modifyImage();
   GetPPException;
-  options()->quantizeDither(ditherMethod_);
+  options()->quantizeDitherMethod(ditherMethod_);
   RemapImage(options()->quantizeInfo(),image(),mapImage_.constImage(),
     exceptionInfo);
   ThrowImageException;
@@ -3643,7 +3674,12 @@ void Magick::Image::morphology(const MorphologyMethod method_,
   GetPPException;
   kernel=AcquireKernelInfo(kernel_.c_str(),exceptionInfo);
   if (kernel == (KernelInfo *) NULL)
-    throwExceptionExplicit(MagickCore::OptionError,"Unable to parse kernel.");
+    {
+      ThrowImageException;  // releases exceptionInfo (and reports its error)
+      throwExceptionExplicit(MagickCore::OptionError,
+        "Unable to parse kernel.");
+      return;
+    }
   newImage=MorphologyImage(constImage(),method_,iterations_,kernel,
     exceptionInfo);
   replaceImage(newImage);
@@ -3690,6 +3726,7 @@ void Magick::Image::morphologyChannel(const ChannelType channel_,
   kernel=AcquireKernelInfo(kernel_.c_str(),exceptionInfo);
   if (kernel == (KernelInfo *)NULL)
     {
+      ThrowImageException;  // releases exceptionInfo (and reports its error)
       throwExceptionExplicit(MagickCore::OptionError,
         "Unable to parse kernel.");
       return;
@@ -3885,7 +3922,7 @@ void Magick::Image::pixelColor(const ssize_t x_,const ssize_t y_,
     *pixel;
 
   // Test arguments to ensure they are within the image.
-  if (y_ > (ssize_t) rows() || x_ > (ssize_t) columns())
+  if (x_ < 0 || y_ < 0 || y_ >= (ssize_t) rows() || x_ >= (ssize_t) columns())
     throwExceptionExplicit(MagickCore::OptionError,
       "Access outside of image boundary");
 
@@ -3898,6 +3935,9 @@ void Magick::Image::pixelColor(const ssize_t x_,const ssize_t y_,
   Pixels pixels(*this);
     // Set pixel value
   pixel=pixels.get(x_, y_, 1, 1 );
+  if (pixel == (Quantum *) NULL)
+    throwExceptionExplicit(MagickCore::OptionError,
+      "Unable to access pixel");
   packet=color_;
   MagickCore::SetPixelViaPixelInfo(constImage(),&packet,pixel);
   // Tell ImageMagick that pixels have been updated
@@ -4017,6 +4057,7 @@ void Magick::Image::raise(const Geometry &geometry_,const bool raisedFlag_)
 
 void Magick::Image::randomThreshold(const double low_,const double high_)
 {
+  modifyImage();
   GetPPException;
   (void) RandomThresholdImage(image(),low_,high_,exceptionInfo);
   ThrowImageException;
@@ -4125,6 +4166,7 @@ void Magick::Image::readPixels(const Magick::QuantumType quantum_,
   QuantumInfo
     *quantum_info;
 
+  modifyImage();
   quantum_info=AcquireQuantumInfo(imageInfo(),image());
   GetPPException;
   ImportQuantumPixels(image(),(MagickCore::CacheView *) NULL,quantum_info,
@@ -4603,7 +4645,7 @@ Magick::Image Magick::Image::subImageSearch(const Image &reference_,
     *newImage;
 
   RectangleInfo
-    offset;
+    offset=RectangleInfo();
 
   GetPPException;
   newImage=SimilarityImage(image(),reference_.constImage(),metric_,
@@ -5151,6 +5193,9 @@ void Magick::Image::floodFill(const ssize_t x_,const ssize_t y_,
 
   options()->fillColor(fillColor);
   options()->fillPattern(fillPattern);
+  // Options keeps its own clone of the pattern; release ours
+  if (fillPattern != (MagickCore::Image *) NULL)
+    fillPattern=DestroyImageList(fillPattern);
   ThrowImageException;
 }
 

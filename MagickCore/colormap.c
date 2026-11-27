@@ -123,6 +123,9 @@ MagickExport MagickBooleanType AcquireImageColormap(Image *image,
         image->filename);
     }
   image->colors=MagickMax(colors,1);
+  /*
+    The colormap carries one spare trailing entry (colors+1 allocated).
+  */
   if (image->colormap == (PixelInfo *) NULL)
     image->colormap=(PixelInfo *) AcquireQuantumMemory(image->colors+1,
       sizeof(*image->colormap));
@@ -142,13 +145,22 @@ MagickExport MagickBooleanType AcquireImageColormap(Image *image,
       pixel;
 
     GetPixelInfo(image,image->colormap+i);
-    pixel=((double) i*(QuantumRange/MagickMax(colors-1,1)));
+    /*
+      Floating-point ramp: QuantumRange/(colors-1) is an integer division in
+      non-HDRI builds and would truncate the step (e.g. 65535/2 -> 32767).
+    */
+    pixel=(double) i*((double) QuantumRange/(double) MagickMax(
+      image->colors-1,1));
     image->colormap[i].red=pixel;
     image->colormap[i].green=pixel;
     image->colormap[i].blue=pixel;
     image->colormap[i].alpha=(MagickRealType) OpaqueAlpha;
     image->colormap[i].alpha_trait=BlendPixelTrait;
   }
+  /*
+    Initialize the spare trailing entry so it never holds stale heap data.
+  */
+  GetPixelInfo(image,image->colormap+image->colors);
   image->storage_class=PseudoClass;
   return(MagickTrue);
 }
@@ -166,7 +178,7 @@ MagickExport MagickBooleanType AcquireImageColormap(Image *image,
 %
 %  CycleColormap() displaces an image's colormap by a given number of
 %  positions.  If you cycle the colormap a number of times you can produce
-%  a psychodelic effect.
+%  a psychedelic effect.
 %
 %  WARNING: this assumes an images colormap is in a well know and defined
 %  order. Currently Imagemagick has no way of setting that order.
@@ -195,6 +207,7 @@ MagickExport MagickBooleanType CycleColormapImage(Image *image,
     status;
 
   ssize_t
+    shift,
     y;
 
   assert(image != (Image *) NULL);
@@ -202,7 +215,18 @@ MagickExport MagickBooleanType CycleColormapImage(Image *image,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->storage_class == DirectClass)
-    (void) SetImageType(image,PaletteType,exception);
+    if (SetImageType(image,PaletteType,exception) == MagickFalse)
+      return(MagickFalse);
+  if ((image->storage_class != PseudoClass) ||
+      (image->colormap == (PixelInfo *) NULL) || (image->colors == 0))
+    return(MagickFalse);
+  /*
+    Reduce the displacement once, up front, so the per-pixel arithmetic can
+    never overflow and the result is always a valid non-negative index.
+  */
+  shift=displace % (ssize_t) image->colors;
+  if (shift < 0)
+    shift+=(ssize_t) image->colors;
   status=MagickTrue;
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -230,10 +254,8 @@ MagickExport MagickBooleanType CycleColormapImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      index=(ssize_t) (GetPixelIndex(image,q)+displace) % (ssize_t)
+      index=((ssize_t) GetPixelIndex(image,q)+shift) % (ssize_t)
         image->colors;
-      if (index < 0)
-        index+=(ssize_t) image->colors;
       SetPixelIndex(image,(Quantum) index,q);
       SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
       q+=(ptrdiff_t) GetPixelChannels(image);
@@ -257,7 +279,7 @@ MagickExport MagickBooleanType CycleColormapImage(Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  SortColormapByIntensity() sorts the colormap of a PseudoClass image by
-%  decreasing color intensity.
+%  decreasing color intensity and remaps the pixel indexes to match.
 %
 %  The format of the SortColormapByIntensity method is:
 %
@@ -272,24 +294,41 @@ MagickExport MagickBooleanType CycleColormapImage(Image *image,
 %
 */
 
+typedef struct _IntensityEntry
+{
+  double
+    intensity;
+
+  size_t
+    index;
+} IntensityEntry;
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
 static int IntensityCompare(const void *x,const void *y)
 {
-  const PixelInfo
-    *color_1,
-    *color_2;
+  const IntensityEntry
+    *entry_1,
+    *entry_2;
 
-  int
-    intensity;
-
-  color_1=(const PixelInfo *) x;
-  color_2=(const PixelInfo *) y;
-  intensity=(int) GetPixelInfoIntensity((const Image *) NULL,color_2)-(int)
-    GetPixelInfoIntensity((const Image *) NULL,color_1);
-  return(intensity);
+  entry_1=(const IntensityEntry *) x;
+  entry_2=(const IntensityEntry *) y;
+  /*
+    Decreasing intensity.  Compare as doubles (truncating to int loses
+    precision and can overflow for HDRI values) and break ties on the
+    original index so the order is deterministic (qsort is not stable).
+  */
+  if (entry_1->intensity > entry_2->intensity)
+    return(-1);
+  if (entry_1->intensity < entry_2->intensity)
+    return(1);
+  if (entry_1->index < entry_2->index)
+    return(-1);
+  if (entry_1->index > entry_2->index)
+    return(1);
+  return(0);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -302,8 +341,17 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image,
   CacheView
     *image_view;
 
+  IntensityEntry
+    *entries;
+
   MagickBooleanType
     status;
+
+  PixelInfo
+    *colormap;
+
+  size_t
+    *remap;
 
   ssize_t
     j;
@@ -311,38 +359,67 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image,
   ssize_t
     y;
 
-  unsigned short
-    *pixels;
-
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  if (image->storage_class != PseudoClass)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if ((image->storage_class != PseudoClass) ||
+      (image->colormap == (PixelInfo *) NULL))
     return(MagickTrue);
   /*
-    Allocate memory for pixel indexes.
+    Allocate memory for the sort keys, the old->new index map, and a scratch
+    copy of the colormap.
   */
-  pixels=(unsigned short *) AcquireQuantumMemory((size_t) image->colors,
-    sizeof(*pixels));
-  if (pixels == (unsigned short *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      image->filename);
+  entries=(IntensityEntry *) AcquireQuantumMemory((size_t) image->colors,
+    sizeof(*entries));
+  remap=(size_t *) AcquireQuantumMemory((size_t) image->colors,
+    sizeof(*remap));
+  colormap=(PixelInfo *) AcquireQuantumMemory((size_t) image->colors+1,
+    sizeof(*colormap));
+  if ((entries == (IntensityEntry *) NULL) || (remap == (size_t *) NULL) ||
+      (colormap == (PixelInfo *) NULL))
+    {
+      if (entries != (IntensityEntry *) NULL)
+        entries=(IntensityEntry *) RelinquishMagickMemory(entries);
+      if (remap != (size_t *) NULL)
+        remap=(size_t *) RelinquishMagickMemory(remap);
+      if (colormap != (PixelInfo *) NULL)
+        colormap=(PixelInfo *) RelinquishMagickMemory(colormap);
+      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+        image->filename);
+    }
   /*
-    Assign index values to colormap entries.
+    Record each entry's intensity and original position.  The colormap itself
+    is left untouched (the original code overwrote each entry's alpha with its
+    index and never restored it, corrupting colormap transparency).
   */
   for (j=0; j < (ssize_t) image->colors; j++)
-    image->colormap[j].alpha=(double) j;
+  {
+    entries[j].intensity=(double) GetPixelInfoIntensity((const Image *) NULL,
+      image->colormap+j);
+    entries[j].index=(size_t) j;
+  }
   /*
-    Sort image colormap by decreasing color popularity.
+    Sort by decreasing color intensity.
   */
-  qsort((void *) image->colormap,(size_t) image->colors,
-    sizeof(*image->colormap),IntensityCompare);
+  qsort((void *) entries,(size_t) image->colors,sizeof(*entries),
+    IntensityCompare);
   /*
-    Update image colormap indexes to sorted colormap order.
+    Build the sorted colormap and the old-index -> new-index map.
   */
   for (j=0; j < (ssize_t) image->colors; j++)
-    pixels[(ssize_t) image->colormap[j].alpha]=(unsigned short) j;
+  {
+    colormap[j]=image->colormap[entries[j].index];
+    remap[entries[j].index]=(size_t) j;
+  }
+  colormap[image->colors]=image->colormap[image->colors];
+  entries=(IntensityEntry *) RelinquishMagickMemory(entries);
+  (void) memcpy(image->colormap,colormap,((size_t) image->colors+1)*
+    sizeof(*colormap));
+  colormap=(PixelInfo *) RelinquishMagickMemory(colormap);
+  /*
+    Update image pixel indexes to sorted colormap order.
+  */
   status=MagickTrue;
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -373,8 +450,9 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image,
       ssize_t
         i;
 
-      i=ConstrainColormapIndex(image,(ssize_t) GetPixelIndex(image,q),exception);
-      index=(Quantum) pixels[i];
+      i=(ssize_t) ConstrainColormapIndex(image,(ssize_t) GetPixelIndex(image,q),
+        exception);
+      index=(Quantum) remap[i];
       SetPixelIndex(image,index,q);
       SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
       q+=(ptrdiff_t) GetPixelChannels(image);
@@ -383,6 +461,6 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image,
       status=MagickFalse;
   }
   image_view=DestroyCacheView(image_view);
-  pixels=(unsigned short *) RelinquishMagickMemory(pixels);
+  remap=(size_t *) RelinquishMagickMemory(remap);
   return(status);
 }

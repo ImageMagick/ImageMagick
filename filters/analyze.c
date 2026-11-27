@@ -85,30 +85,6 @@ typedef struct _StatisticsInfo
     skewness;
 } StatisticsInfo;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-static inline int GetMagickNumberThreads(const Image *source,
-  const Image *destination,const size_t chunk,int multithreaded)
-{
-#define MagickMax(x,y)  (((x) > (y)) ? (x) : (y))
-#define MagickMin(x,y)  (((x) < (y)) ? (x) : (y))
-
-  /*
-    Number of threads bounded by the amount of work and any thread resource
-    limit.  The limit is 2 if the pixel cache type is not memory or
-    memory-mapped.
-  */
-  if (multithreaded == 0)
-    return(1);
-  if (((GetImagePixelCacheType(source) != MemoryCache) &&
-       (GetImagePixelCacheType(source) != MapCache)) ||
-      ((GetImagePixelCacheType(destination) != MemoryCache) &&
-       (GetImagePixelCacheType(destination) != MapCache)))
-    return(MagickMax(MagickMin((int) GetMagickResourceLimit(ThreadResource),2),1));
-  return(MagickMax(MagickMin((int) GetMagickResourceLimit(ThreadResource),
-    (int) (chunk)/64),1));
-}
-#endif
-
 ModuleExport size_t analyzeImage(Image **images,const int argc,
   const char **argv,ExceptionInfo *exception)
 {
@@ -157,8 +133,7 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,
     image_view=AcquireVirtualCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) \
-    shared(progress,status,brightness,saturation) \
-    num_threads(GetMagickNumberThreads(image,image,image->rows,1))
+    shared(progress,status,brightness,saturation)
 #endif
     for (y=0; y < (ssize_t) image->rows; y++)
     {

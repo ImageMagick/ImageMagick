@@ -445,6 +445,9 @@ static MagickBooleanType WriteMAPImage(const ImageInfo *image_info,Image *image,
   */
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    size_t
+      count;
+
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
@@ -456,7 +459,12 @@ static MagickBooleanType WriteMAPImage(const ImageInfo *image_info,Image *image,
       *q++=(unsigned char) ((ssize_t) GetPixelIndex(image,p));
       p+=(ptrdiff_t) GetPixelChannels(image);
     }
-    (void) WriteBlob(image,(size_t) (q-pixels),pixels);
+    count=(size_t) (q-pixels);
+    if (WriteBlob(image,count,pixels) != (ssize_t) count)
+      {
+        status=MagickFalse;
+        break;
+      }
   }
   pixels=(unsigned char *) RelinquishMagickMemory(pixels);
   if (CloseBlob(image) == MagickFalse)

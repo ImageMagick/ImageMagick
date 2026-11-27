@@ -271,7 +271,6 @@ static const ColormapInfo
     { "gray1", 3, 3, 3, 1, X11Compliance | XPMCompliance },
     { "gray10", 26, 26, 26, 1, X11Compliance | XPMCompliance },
     { "gray100", 255, 255, 255, 1, X11Compliance | XPMCompliance },
-    { "gray100", 255, 255, 255, 1, X11Compliance | XPMCompliance },
     { "gray11", 28, 28, 28, 1, X11Compliance | XPMCompliance },
     { "gray12", 31, 31, 31, 1, X11Compliance | XPMCompliance },
     { "gray13", 33, 33, 33, 1, X11Compliance | XPMCompliance },
@@ -374,7 +373,7 @@ static const ColormapInfo
     { "green2", 0, 238, 0, 1, X11Compliance },
     { "green3", 0, 205, 0, 1, X11Compliance },
     { "green4", 0, 139, 0, 1, X11Compliance },
-    { "GreenYellow", 173, 255, 47, 1, X11Compliance | XPMCompliance },
+    { "GreenYellow", 173, 255, 47, 1, SVGCompliance | X11Compliance | XPMCompliance },
     { "grey", 190, 190, 190, 1, SVGCompliance | X11Compliance },
     { "grey0", 0, 0, 0, 1, SVGCompliance | X11Compliance },
     { "grey1", 3, 3, 3, 1, SVGCompliance | X11Compliance },
@@ -826,7 +825,7 @@ static MagickBooleanType
 %
 %  A description of each parameter follows:
 %
-%    o filename: the font file name.
+%    o filename: the color configuration file name.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -847,6 +846,12 @@ static LinkedListInfo *AcquireColorCache(const char *filename,
     Load external color map.
   */
   cache=NewLinkedList(0);
+  if (cache == (LinkedListInfo *) NULL)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",filename);
+      return(cache);
+    }
   status=MagickTrue;
 #if !MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
   {
@@ -867,6 +872,7 @@ static LinkedListInfo *AcquireColorCache(const char *filename,
     }
     options=DestroyConfigureOptions(options);
   }
+  (void) status;
 #else
   magick_unreferenced(filename);
 #endif
@@ -901,10 +907,12 @@ static LinkedListInfo *AcquireColorCache(const char *filename,
     color_info->exempt=MagickTrue;
     color_info->signature=MagickCoreSignature;
     if (AppendValueToLinkedList(cache,color_info) == MagickFalse)
-      status=MagickFalse;
-    if (status == MagickFalse)
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",color_info->name);
+      {
+        status=MagickFalse;
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          ResourceLimitError,"MemoryAllocationFailed","`%s'",p->name);
+        color_info=(ColorInfo *) RelinquishMagickMemory(color_info);
+      }
   }
   return(cache);
 }
@@ -992,12 +1000,12 @@ MagickPrivate void ColorComponentTerminus(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetColorInfo() searches the color list for the specified name and standards
-%  compliance and if found returns attributes for that color.
+%  GetColorCompliance() searches the color list for the specified name and
+%  standards compliance and if found returns attributes for that color.
 %
-%  The format of the GetColorInfo method is:
+%  The format of the GetColorCompliance method is:
 %
-%      const PixelInfo *GetColorInfo(const char *name,
+%      const ColorInfo *GetColorCompliance(const char *name,
 %        const ComplianceType compliance,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1016,7 +1024,8 @@ MagickExport const ColorInfo *GetColorCompliance(const char *name,
     colorname[MagickPathExtent];
 
   char
-    *q;
+    *q,
+    *r;
 
   const ColorInfo
     *color;
@@ -1033,13 +1042,10 @@ MagickExport const ColorInfo *GetColorCompliance(const char *name,
   *colorname='\0';
   if (name != (const char *) NULL)
     (void) CopyMagickString(colorname,name,MagickPathExtent);
-  for (q=colorname; *q != '\0'; q++)
-  {
-    if (isspace((int) ((unsigned char) *q)) == 0)
-      continue;
-    (void) CopyMagickString(q,q+1,MagickPathExtent);
-    q--;
-  }
+  for (q=colorname, r=colorname; *r != '\0'; r++)
+    if (isspace((int) ((unsigned char) *r)) == 0)
+      *q++=(*r);
+  *q='\0';
   /*
     Search for color tag.
   */
@@ -1563,9 +1569,9 @@ MagickExport void GetColorTuple(const PixelInfo *pixel,
 
   assert(pixel != (const PixelInfo *) NULL);
   assert(tuple != (char *) NULL);
+  *tuple='\0';
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",tuple);
-  *tuple='\0';
   if (hex != MagickFalse)
     {
       /*
@@ -1632,7 +1638,7 @@ MagickExport void GetColorTuple(const PixelInfo *pixel,
 %  IsColorCacheInstantiated() determines if the color list is instantiated.  If
 %  not, it instantiates the list and returns it.
 %
-%  The format of the IsColorInstantiated method is:
+%  The format of the IsColorCacheInstantiated method is:
 %
 %      MagickBooleanType IsColorCacheInstantiated(ExceptionInfo *exception)
 %
@@ -1778,7 +1784,7 @@ MagickExport MagickBooleanType IsEquivalentImage(const Image *image,
   x=0;
   status=MagickTrue;
   GetPixelInfo(image,&pixel);
-  GetPixelInfo(image,&target);
+  GetPixelInfo(target_image,&target);
   image_view=AcquireVirtualCacheView(image,exception);
   target_view=AcquireVirtualCacheView(target_image,exception);
   for (y=(*y_offset); y < (ssize_t) image->rows; y++)
@@ -1796,7 +1802,7 @@ MagickExport MagickBooleanType IsEquivalentImage(const Image *image,
           q=GetCacheViewVirtualPixels(target_view,i,j,1,1,exception);
           if (q == (const Quantum *) NULL)
             break;
-          GetPixelInfoPixel(image,q,&target);
+          GetPixelInfoPixel(target_image,q,&target);
           if (IsFuzzyEquivalencePixelInfo(&pixel,&target) == MagickFalse)
             break;
         }
@@ -2101,6 +2107,8 @@ static MagickBooleanType LoadColorCache(LinkedListInfo *cache,const char *xml,
         /*
           Color element.
         */
+        if (color_info != (ColorInfo *) NULL)
+          color_info=(ColorInfo *) DestroyColorElement(color_info);
         color_info=(ColorInfo *) AcquireCriticalMemory(sizeof(*color_info));
         (void) memset(color_info,0,sizeof(*color_info));
         color_info->path=ConstantString(filename);
@@ -2111,13 +2119,25 @@ static MagickBooleanType LoadColorCache(LinkedListInfo *cache,const char *xml,
     if (color_info == (ColorInfo *) NULL)
       continue;
     if ((LocaleCompare(keyword,"/>") == 0) ||
-        (LocaleCompare(keyword,"</policy>") == 0))
+        (LocaleCompare(keyword,"</color>") == 0))
       {
-        status=AppendValueToLinkedList(cache,color_info);
-        if (status == MagickFalse)
-          (void) ThrowMagickException(exception,GetMagickModule(),
-            ResourceLimitError,"MemoryAllocationFailed","`%s'",
-            color_info->name);
+        if (color_info->name == (char *) NULL)
+          {
+            (void) ThrowMagickException(exception,GetMagickModule(),
+              ConfigureError,"MissingColorName","`%s'",filename);
+            status=MagickFalse;
+            color_info=(ColorInfo *) DestroyColorElement(color_info);
+            continue;
+          }
+        if (AppendValueToLinkedList(cache,color_info) == MagickFalse)
+          {
+            (void) ThrowMagickException(exception,GetMagickModule(),
+              ResourceLimitError,"MemoryAllocationFailed","`%s'",
+              color_info->name);
+            status=MagickFalse;
+            color_info=(ColorInfo *) DestroyColorElement(color_info);
+            continue;
+          }
         color_info=(ColorInfo *) NULL;
         continue;
       }
@@ -2178,6 +2198,8 @@ static MagickBooleanType LoadColorCache(LinkedListInfo *cache,const char *xml,
         break;
     }
   }
+  if (color_info != (ColorInfo *) NULL)
+    color_info=(ColorInfo *) DestroyColorElement(color_info);
   token=(char *) RelinquishMagickMemory(token);
   return(status);
 }
@@ -2320,6 +2342,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
 
   ssize_t
     i,
+    length,
     type;
 
   /*
@@ -2452,7 +2475,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
       icc_color=MagickFalse;
       if (LocaleNCompare(colorspace,"device-",7) == 0)
         {
-          (void) CopyMagickString(colorspace,colorspace+7,MagickPathExtent);
+          (void) memmove(colorspace,colorspace+7,strlen(colorspace+7)+1);
           if (strchr(name,'%') == (char *) NULL)
             scale=(double) QuantumRange;
           icc_color=MagickTrue;
@@ -2474,9 +2497,10 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
         }
       LocaleLower(colorspace);
       color->alpha_trait=UndefinedPixelTrait;
-      if ((i > 0) && (colorspace[i] == 'a'))
+      length=(ssize_t) strlen(colorspace);
+      if ((length > 1) && (colorspace[length-1] == 'a'))
         {
-          colorspace[i]='\0';
+          colorspace[length-1]='\0';
           color->alpha_trait=BlendPixelTrait;
         }
       type=ParseCommandOption(MagickColorspaceOptions,MagickFalse,colorspace);
@@ -2762,7 +2786,7 @@ MagickExport MagickBooleanType QueryColorname(
   {
     const ColorInfo
       *value;
-    
+
     value=(const ColorInfo *) p->value;
     if (((value->compliance & compliance) != 0) &&
         ((fabs((double) (value->color.red-color->red)) < MagickEpsilon)) &&

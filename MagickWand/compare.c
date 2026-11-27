@@ -1186,15 +1186,21 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
           DestroyCompare();
           return(MagickFalse);
         }
-      if (((metric == NormalizedCrossCorrelationErrorMetric) ||
-           (metric == DotProductCorrelationErrorMetric) ||
-           (metric == PhaseCorrelationErrorMetric) ||
-           (metric == PeakSignalToNoiseRatioErrorMetric) ||
-           (metric == StructuralSimilarityErrorMetric)) ?
-          (similarity_metric < dissimilarity_threshold) :
-          (similarity_metric >= dissimilarity_threshold))
-       (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
-         "ImagesTooDissimilar","`%s'",image->filename);
+      if (metric == PeakSignalToNoiseRatioErrorMetric)
+        {
+          if (similarity_metric < MagickSafeReciprocal(dissimilarity_threshold))
+            (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
+              "ImagesTooDissimilar","`%s'",image->filename);
+        }
+      else
+        if (((metric == NormalizedCrossCorrelationErrorMetric) ||
+            (metric == DotProductCorrelationErrorMetric) ||
+            (metric == PhaseCorrelationErrorMetric) ||
+            (metric == StructuralSimilarityErrorMetric)) ?
+           ((1.0-similarity_metric) >= dissimilarity_threshold) :
+           (similarity_metric >= dissimilarity_threshold))
+        (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
+          "ImagesTooDissimilar","`%s'",image->filename);
     }
   if (similarity_image == (Image *) NULL)
     difference_image=CompareImages(image,reconstruct_image,metric,&distortion,

@@ -17,6 +17,41 @@ using namespace std;
 
 #include "Magick++/Exception.h"
 
+// Deep-copy a chain of nested exceptions.  The copies are plain
+// Magick::Exception objects (message text is preserved, the derived type is
+// not).  If memory runs out part-way, the portion copied so far is returned
+// since this is called from copy operations while an exception may already
+// be propagating.
+static Magick::Exception* copyNestedChain(const Magick::Exception *source_)
+{
+  Magick::Exception
+    *head,
+    *tail;
+
+  head=(Magick::Exception *) NULL;
+  tail=(Magick::Exception *) NULL;
+  try
+  {
+    for ( ; source_ != (const Magick::Exception *) NULL;
+          source_=source_->nested())
+    {
+      Magick::Exception
+        *copy;
+
+      copy=new Magick::Exception(source_->what());
+      if (tail == (Magick::Exception *) NULL)
+        head=copy;
+      else
+        tail->nested(copy);
+      tail=copy;
+    }
+  }
+  catch (...)
+  {
+  }
+  return(head);
+}
+
 Magick::Exception::Exception(const std::string& what_)
   : std::exception(),
     _what(what_),
@@ -35,7 +70,7 @@ Magick::Exception::Exception(const std::string& what_,
 Magick::Exception::Exception(const Magick::Exception& original_)
   : exception(original_),
     _what(original_._what),
-    _nested((Exception *) NULL)
+    _nested(copyNestedChain(original_._nested))
 {
 }
 
@@ -48,7 +83,16 @@ Magick::Exception& Magick::Exception::operator=(
   const Magick::Exception& original_)
 {
   if (this != &original_)
-    this->_what=original_._what;
+    {
+      Exception
+        *nested;
+
+      nested=copyNestedChain(original_._nested);
+      std::exception::operator=(original_);
+      this->_what=original_._what;
+      delete this->_nested;
+      this->_nested=nested;
+    }
   return(*this);
 }
 
@@ -64,7 +108,11 @@ const Magick::Exception* Magick::Exception::nested() const throw()
 
 void Magick::Exception::nested(Exception* nested_) throw()
 {
-  _nested=nested_;
+  if (_nested != nested_)
+    {
+      delete _nested;
+      _nested=nested_;
+    }
 }
 
 Magick::Error::Error(const std::string& what_)
@@ -838,39 +886,58 @@ MagickPPExport void Magick::throwException(ExceptionInfo *exception_,
   if (exception_->severity == MagickCore::UndefinedException)
     return;
 
-  message=formatExceptionMessage(exception_);
   nestedException=(Exception *) NULL;
   q=(Exception *) NULL;
+  try
+  {
+    message=formatExceptionMessage(exception_);
+  }
+  catch (...)
+  {
+    DestroyExceptionInfo(exception_);
+    throw;
+  }
   LockSemaphoreInfo(exception_->semaphore);
-  if (exception_->exceptions != (void *) NULL)
-    {
-      index=GetNumberOfElementsInLinkedList((LinkedListInfo *)
-        exception_->exceptions);
-      while(index > 0)
+  try
+  {
+    if (exception_->exceptions != (void *) NULL)
       {
-        p=(const ExceptionInfo *) GetValueFromLinkedList((LinkedListInfo *)
-          exception_->exceptions,--index);
-        if ((p->severity != exception_->severity) || (LocaleCompare(p->reason,
-            exception_->reason) != 0) || (LocaleCompare(p->description,
-            exception_->description) != 0))
-          {
-            if (nestedException == (Exception *) NULL)
-              {
-                nestedException=createException(p);
-                q=nestedException;
-              }
-            else
-              {
-                Exception
-                  *r;
+        index=GetNumberOfElementsInLinkedList((LinkedListInfo *)
+          exception_->exceptions);
+        while(index > 0)
+        {
+          p=(const ExceptionInfo *) GetValueFromLinkedList((LinkedListInfo *)
+            exception_->exceptions,--index);
+          if ((p->severity != exception_->severity) || (LocaleCompare(p->reason,
+              exception_->reason) != 0) || (LocaleCompare(p->description,
+              exception_->description) != 0))
+            {
+              if (nestedException == (Exception *) NULL)
+                {
+                  nestedException=createException(p);
+                  q=nestedException;
+                }
+              else
+                {
+                  Exception
+                    *r;
 
-                r=createException(p);
-                q->nested(r);
-                q=r;
-              }
-          }
+                  r=createException(p);
+                  q->nested(r);
+                  q=r;
+                }
+            }
+        }
       }
-    }
+  }
+  catch (...)
+  {
+    // Never leave the semaphore locked or leak the partial nested chain
+    UnlockSemaphoreInfo(exception_->semaphore);
+    delete nestedException;
+    DestroyExceptionInfo(exception_);
+    throw;
+  }
   severity=exception_->severity;
   UnlockSemaphoreInfo(exception_->semaphore);
 

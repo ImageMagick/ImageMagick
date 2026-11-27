@@ -69,9 +69,10 @@ static MagickBooleanType
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadMPRImage() reads a Magick Persistent Registry image as a blob from
-%  memory.  It allocates the memory necessary for the new Image structure and
-%  returns a pointer to the new image.
+%  ReadMPRImage() retrieves a copy of an image from the Magick Persistent
+%  Registry by name.  It allocates the memory necessary for the new Image
+%  structure and returns a pointer to the new image, or NULL (with an
+%  exception) if no image is registered under that name.
 %
 %  The format of the ReadMPRImage method is:
 %
@@ -97,13 +98,19 @@ static Image *ReadMPRImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
+  if (*image_info->filename == '\0')
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "MissingAnImageFilename","`%s'",image_info->filename);
+      return((Image *) NULL);
+    }
   image=(Image *) GetImageRegistry(ImageRegistryType,image_info->filename,
     exception);
   if (image == (Image *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),FileOpenError,
         "UnableToOpenFile","`%s'",image_info->filename);
-      return(image);
+      return((Image *) NULL);
     }
   (void) SyncImageSettings(image_info,image,exception);
   return(image);
@@ -143,7 +150,7 @@ ModuleExport size_t RegisterMPRImage(void)
   entry->format_type=ImplicitFormatType;
   entry->flags|=CoderStealthFlag;
   entry->flags|=CoderExplicitAllowedFlag;
-  entry->flags^=CoderAdjoinFlag;
+  entry->flags&=~CoderAdjoinFlag;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("MPR","MPRI","Magick Persistent Registry");
   entry->decoder=(DecodeImageHandler *) ReadMPRImage;
@@ -151,7 +158,7 @@ ModuleExport size_t RegisterMPRImage(void)
   entry->format_type=ImplicitFormatType;
   entry->flags|=CoderStealthFlag;
   entry->flags|=CoderExplicitAllowedFlag;
-  entry->flags^=CoderAdjoinFlag;
+  entry->flags&=~CoderAdjoinFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
@@ -172,7 +179,7 @@ ModuleExport size_t RegisterMPRImage(void)
 %
 %  The format of the UnregisterMPRImage method is:
 %
-%      UnregisterMPRImage(void)
+%      void UnregisterMPRImage(void)
 %
 */
 ModuleExport void UnregisterMPRImage(void)
@@ -192,9 +199,9 @@ ModuleExport void UnregisterMPRImage(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WriteMPRImage() writes an image into the Magick Persistent Registry
-%  image as a blob from memory.  It allocates the memory necessary for the
-%  new Image structure and returns a pointer to the new image.
+%  WriteMPRImage() stores a copy of the image in the Magick Persistent
+%  Registry under the image filename.  It returns MagickTrue if the image
+%  was stored, otherwise MagickFalse.
 %
 %  The format of the WriteMPRImage method is:
 %
@@ -220,9 +227,17 @@ static MagickBooleanType WriteMPRImage(const ImageInfo *image_info,Image *image,
   assert(image_info->signature == MagickCoreSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   magick_unreferenced(image_info);
+  if (*image->filename == '\0')
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "MissingAnImageFilename","`%s'",image->filename);
+      return(MagickFalse);
+    }
   status=SetImageRegistry(ImageRegistryType,image->filename,image,exception);
   return(status);
 }

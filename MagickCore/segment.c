@@ -369,6 +369,9 @@ static MagickBooleanType Classify(Image *image,short **extrema,
   count=0;
   progress=0;
   image_view=AcquireVirtualCacheView(image,exception);
+  if (image_view == (CacheView *) NULL)
+    ThrowClassifyException(ResourceLimitError,"MemoryAllocationFailed",
+      image->filename);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     const Quantum
@@ -426,35 +429,54 @@ static MagickBooleanType Classify(Image *image,short **extrema,
   /*
     Remove clusters that do not meet minimum cluster threshold.
   */
-  count=0;
-  last_cluster=head;
-  next_cluster=head;
-  for (cluster=head; cluster != (Cluster *) NULL; cluster=next_cluster)
   {
-    next_cluster=cluster->next;
-    if ((cluster->count > 0) &&
-        (cluster->count >= (count*cluster_threshold/100.0)))
-      {
-        /*
-          Initialize cluster.
-        */
-        cluster->id=count;
-        cluster->red.center/=cluster->count;
-        cluster->green.center/=cluster->count;
-        cluster->blue.center/=cluster->count;
-        count++;
-        last_cluster=cluster;
-        continue;
-      }
-    /*
-      Delete cluster.
-    */
-    if (cluster == head)
-      head=next_cluster;
-    else
-      last_cluster->next=next_cluster;
-    cluster=(Cluster *) RelinquishMagickMemory(cluster);
+    double
+      threshold_count;
+
+    threshold_count=(double) count*cluster_threshold/100.0;
+    count=0;
+    last_cluster=head;
+    next_cluster=head;
+    for (cluster=head; cluster != (Cluster *) NULL; cluster=next_cluster)
+    {
+      next_cluster=cluster->next;
+      if ((cluster->count > 0) &&
+          ((double) cluster->count >= threshold_count))
+        {
+          /*
+            Initialize cluster.
+          */
+          cluster->id=count;
+          cluster->red.center/=cluster->count;
+          cluster->green.center/=cluster->count;
+          cluster->blue.center/=cluster->count;
+          count++;
+          last_cluster=cluster;
+          continue;
+        }
+      /*
+        Delete cluster.
+      */
+      if (cluster == head)
+        head=next_cluster;
+      else
+        last_cluster->next=next_cluster;
+      cluster=(Cluster *) RelinquishMagickMemory(cluster);
+    }
   }
+  if (head == (Cluster *) NULL)
+    {
+      /*
+        Ensure at least one fallback cluster exists.
+      */
+      cluster=(Cluster *) AcquireQuantumMemory(1,sizeof(*cluster));
+      if (cluster == (Cluster *) NULL)
+        ThrowClassifyException(ResourceLimitError,"MemoryAllocationFailed",
+          image->filename);
+      (void) memset(cluster,0,sizeof(*cluster));
+      head=cluster;
+      count=1;
+    }
   number_clusters=(size_t) count;
   if (verbose != MagickFalse)
     {
@@ -539,9 +561,12 @@ static MagickBooleanType Classify(Image *image,short **extrema,
     i++;
   }
   /*
-    Do course grain classes.
+    Do coarse grain classes.
   */
   image_view=AcquireAuthenticCacheView(image,exception);
+  if (image_view == (CacheView *) NULL)
+    ThrowClassifyException(ResourceLimitError,"MemoryAllocationFailed",
+      image->filename);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(image,image,image->rows,1)
@@ -618,6 +643,11 @@ static MagickBooleanType Classify(Image *image,short **extrema,
               squares[(ssize_t) (pixel.red-ScaleQuantumToChar((const Quantum) p->red))]+
               squares[(ssize_t) (pixel.green-ScaleQuantumToChar((const Quantum) p->green))]+
               squares[(ssize_t) (pixel.blue-ScaleQuantumToChar((const Quantum) p->blue))];
+            if (distance_squared == 0.0)
+              {
+                SetPixelIndex(image,(Quantum) j,q);
+                break;
+              }
             numerator=distance_squared;
             for (k=0; k < (ssize_t) image->colors; k++)
             {
@@ -626,6 +656,11 @@ static MagickBooleanType Classify(Image *image,short **extrema,
                 squares[(ssize_t) (pixel.red-ScaleQuantumToChar((const Quantum) p->red))]+
                 squares[(ssize_t) (pixel.green-ScaleQuantumToChar((const Quantum) p->green))]+
                 squares[(ssize_t) (pixel.blue-ScaleQuantumToChar((const Quantum) p->blue))];
+              if (distance_squared == 0.0)
+                {
+                  sum=0.0;
+                  break;
+                }
               ratio=numerator/distance_squared;
               sum+=SegmentPower(ratio);
             }
@@ -670,7 +705,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
   squares-=255;
   free_squares=squares;
   free_squares=(double *) RelinquishMagickMemory(free_squares);
-  return(MagickTrue);
+  return(status != MagickFalse ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -741,7 +776,7 @@ static void ConsolidateCrossings(ZeroCrossing *zero_crossing,
       /*
         K is the zero crossing just left of j.
       */
-      for (k=j-1; k > 0; k--)
+      for (k=j-1; k >= 0; k--)
         if (zero_crossing[i].crossings[k] != 0)
           break;
       if (k < 0)
@@ -1034,6 +1069,16 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
           }
         if (cluster == (Cluster *) NULL)
           {
+            for (cluster=head; cluster != (Cluster *) NULL; cluster=next_cluster)
+            {
+              next_cluster=cluster->next;
+              cluster=(Cluster *) RelinquishMagickMemory(cluster);
+            }
+            for (i=0; i < MaxDimension; i++)
+            {
+              extrema[i]=(short *) RelinquishMagickMemory(extrema[i]);
+              histogram[i]=(ssize_t *) RelinquishMagickMemory(histogram[i]);
+            }
             (void) ThrowMagickException(exception,GetMagickModule(),
               ResourceLimitError,"MemoryAllocationFailed","`%s'",
               image->filename);
@@ -1058,6 +1103,11 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
       cluster=(Cluster *) AcquireQuantumMemory(1,sizeof(*cluster));
       if (cluster == (Cluster *) NULL)
         {
+          for (i=0; i < MaxDimension; i++)
+          {
+            extrema[i]=(short *) RelinquishMagickMemory(extrema[i]);
+            histogram[i]=(ssize_t *) RelinquishMagickMemory(histogram[i]);
+          }
           (void) ThrowMagickException(exception,GetMagickModule(),
             ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
           return(MagickFalse);
@@ -1119,53 +1169,51 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
   /*
     Remove clusters that do not meet minimum cluster threshold.
   */
-  count=0;
-  last_cluster=head;
-  next_cluster=head;
-  for (cluster=head; cluster != (Cluster *) NULL; cluster=next_cluster)
   {
-    next_cluster=cluster->next;
-    if ((cluster->count > 0) &&
-        (cluster->count >= (count*cluster_threshold/100.0)))
-      {
-        /*
-          Initialize cluster.
-        */
-        cluster->id=count;
-        cluster->red.center/=cluster->count;
-        cluster->green.center/=cluster->count;
-        cluster->blue.center/=cluster->count;
-        count++;
-        last_cluster=cluster;
-        continue;
-      }
-    /*
-      Delete cluster.
-    */
-    if (cluster == head)
-      head=next_cluster;
-    else
-      last_cluster->next=next_cluster;
-    cluster=(Cluster *) RelinquishMagickMemory(cluster);
+    double
+      threshold_count;
+
+    threshold_count=(double) count*cluster_threshold/100.0;
+    count=0;
+    last_cluster=head;
+    next_cluster=head;
+    for (cluster=head; cluster != (Cluster *) NULL; cluster=next_cluster)
+    {
+      next_cluster=cluster->next;
+      if ((cluster->count > 0) &&
+          ((double) cluster->count >= threshold_count))
+        {
+          /*
+            Initialize cluster.
+          */
+          cluster->id=count;
+          cluster->red.center/=cluster->count;
+          cluster->green.center/=cluster->count;
+          cluster->blue.center/=cluster->count;
+          count++;
+          last_cluster=cluster;
+          continue;
+        }
+      /*
+        Delete cluster.
+      */
+      if (cluster == head)
+        head=next_cluster;
+      else
+        last_cluster->next=next_cluster;
+      cluster=(Cluster *) RelinquishMagickMemory(cluster);
+    }
   }
   object=head;
   background=head;
-  if ((count > 1) && (head != (Cluster *) NULL) && 
-      (head->next != (Cluster *) NULL))
+  if ((count > 1) && (head != (Cluster *) NULL))
     {
-      object=head->next;
-      for (cluster=object; cluster->next != (Cluster *) NULL; )
+      for (cluster=head->next; cluster != (Cluster *) NULL; cluster=cluster->next)
       {
         if (cluster->count < object->count)
           object=cluster;
-        cluster=cluster->next;
-      }
-      background=head->next;
-      for (cluster=background; cluster->next != (Cluster *) NULL; )
-      {
         if (cluster->count > background->count)
           background=cluster;
-        cluster=cluster->next;
       }
     }
   if (background != (Cluster *) NULL)
@@ -1292,7 +1340,8 @@ static void InitializeList(IntervalTree **list,ssize_t *number_nodes,
 {
   if (node == (IntervalTree *) NULL)
     return;
-  if (node->child == (IntervalTree *) NULL)
+  if ((node->child == (IntervalTree *) NULL) &&
+      (*number_nodes < (ssize_t) TreeLength))
     list[(*number_nodes)++]=node;
   InitializeList(list,number_nodes,node->sibling);
   InitializeList(list,number_nodes,node->child);
@@ -1368,7 +1417,12 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
   /*
     The root is the entire histogram.
   */
-  root=(IntervalTree *) AcquireCriticalMemory(sizeof(*root));
+  root=(IntervalTree *) AcquireQuantumMemory(1,sizeof(*root));
+  if (root == (IntervalTree *) NULL)
+    {
+      list=(IntervalTree **) RelinquishMagickMemory(list);
+      return((IntervalTree *) NULL);
+    }
   root->child=(IntervalTree *) NULL;
   root->sibling=(IntervalTree *) NULL;
   root->tau=0.0;
@@ -1487,7 +1541,8 @@ static void ActiveNodes(IntervalTree **list,ssize_t *number_nodes,
     return;
   if (node->stability >= node->mean_stability)
     {
-      list[(*number_nodes)++]=node;
+      if (*number_nodes < (ssize_t) TreeLength)
+        list[(*number_nodes)++]=node;
       ActiveNodes(list,number_nodes,node->sibling);
     }
   else
@@ -1565,9 +1620,20 @@ static double OptimalTau(const ssize_t *histogram,const double max_tau,
   /*
     Initialize zero crossing list.
   */
-  derivative=(double *) AcquireCriticalMemory(256*sizeof(*derivative));
-  second_derivative=(double *) AcquireCriticalMemory(256*
+  derivative=(double *) AcquireQuantumMemory(256UL,sizeof(*derivative));
+  second_derivative=(double *) AcquireQuantumMemory(256UL,
     sizeof(*second_derivative));
+  if ((derivative == (double *) NULL) ||
+      (second_derivative == (double *) NULL))
+    {
+      if (second_derivative != (double *) NULL)
+        second_derivative=(double *) RelinquishMagickMemory(second_derivative);
+      if (derivative != (double *) NULL)
+        derivative=(double *) RelinquishMagickMemory(derivative);
+      zero_crossing=(ZeroCrossing *) RelinquishMagickMemory(zero_crossing);
+      list=(IntervalTree **) RelinquishMagickMemory(list);
+      return(0.0);
+    }
   i=0;
   for (tau=max_tau; tau >= min_tau; tau-=delta_tau)
   {
@@ -1728,7 +1794,13 @@ static void ScaleSpace(const ssize_t *histogram,const double tau,
     u,
     x;
 
-  gamma=(double *) AcquireQuantumMemory(256,sizeof(*gamma));
+  if (tau <= 0.0)
+    {
+      for (x=0; x <= 255; x++)
+        scale_histogram[x]=(double) histogram[x];
+      return;
+    }
+  gamma=(double *) AcquireQuantumMemory(256UL,sizeof(*gamma));
   if (gamma == (double *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"UnableToAllocateGammaMap");
   alpha=MagickSafeReciprocal(tau*sqrt(2.0*MagickPI));
@@ -1839,20 +1911,24 @@ MagickExport MagickBooleanType SegmentImage(Image *image,
     Initialize histogram.
   */
   previous_colorspace=image->colorspace;
-  (void) TransformImageColorspace(image,colorspace,exception);
-  InitializeHistogram(image,histogram,exception);
-  (void) OptimalTau(histogram[Red],Tau,0.2,DeltaTau,smooth_threshold == 0.0 ?
-    1.0 : smooth_threshold,extrema[Red]);
-  (void) OptimalTau(histogram[Green],Tau,0.2,DeltaTau,smooth_threshold == 0.0 ?
-    1.0 : smooth_threshold,extrema[Green]);
-  (void) OptimalTau(histogram[Blue],Tau,0.2,DeltaTau,smooth_threshold == 0.0 ?
-    1.0 : smooth_threshold,extrema[Blue]);
-  /*
-    Classify using the fuzzy c-Means technique.
-  */
-  status=Classify(image,extrema,cluster_threshold,WeightingExponent,verbose,
-    exception);
-  (void) TransformImageColorspace(image,previous_colorspace,exception);
+  status=TransformImageColorspace(image,colorspace,exception);
+  if (status != MagickFalse)
+    {
+      InitializeHistogram(image,histogram,exception);
+      (void) OptimalTau(histogram[Red],Tau,0.2,DeltaTau,
+        smooth_threshold == 0.0 ? 1.0 : smooth_threshold,extrema[Red]);
+      (void) OptimalTau(histogram[Green],Tau,0.2,DeltaTau,
+        smooth_threshold == 0.0 ? 1.0 : smooth_threshold,extrema[Green]);
+      (void) OptimalTau(histogram[Blue],Tau,0.2,DeltaTau,
+        smooth_threshold == 0.0 ? 1.0 : smooth_threshold,extrema[Blue]);
+      /*
+        Classify using the fuzzy c-Means technique.
+      */
+      status=Classify(image,extrema,cluster_threshold,WeightingExponent,verbose,
+        exception);
+    }
+  if (TransformImageColorspace(image,previous_colorspace,exception) == MagickFalse)
+    status=MagickFalse;
   /*
     Relinquish resources.
   */
