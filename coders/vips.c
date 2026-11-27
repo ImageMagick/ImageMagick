@@ -582,7 +582,7 @@ ModuleExport size_t RegisterVIPSImage(void)
   entry->encoder=(EncodeImageHandler *) WriteVIPSImage;
   entry->magick=(IsImageFormatHandler *) IsVIPS;
   entry->flags|=CoderEndianSupportFlag;
-  entry->flags&=~CoderAdjoinFlag;  /* single image per file */
+  entry->flags&=~CoderAdjoinFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
