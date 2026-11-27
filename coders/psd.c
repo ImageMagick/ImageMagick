@@ -3290,6 +3290,8 @@ static size_t WritePSDChannels(const PSDInfo *psd_info,
         (ssize_t) channels);
       offset_length=(layer->rows*(psd_info->version == 1 ? 2 : 4));
     }
+  if (total_length == 0)
+    return(0);
   size_offset+=2;
   if ((layer->storage_class == PseudoClass) &&
       (IsImageGray(layer) == MagickFalse))
@@ -4129,8 +4131,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
         image->compression=image_info->compression;
       if (image->compression == ZipCompression)
         image->compression=RLECompression;
-      if (WritePSDChannels(&psd_info,image_info,image,image,0,MagickFalse,
-          exception) == 0)
+      if (WritePSDChannels(&psd_info,image_info,image,image,0,MagickFalse,exception) == 0)
         status=MagickFalse;
       image->compression=compression;
     }

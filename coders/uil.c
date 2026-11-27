@@ -293,13 +293,23 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image,
     UIL header.
   */
   symbol=AcquireString("");
-  (void) WriteBlobString(image,"/* UIL */\n");
+  if (WriteBlobString(image,"/* UIL */\n") != 10)
+    {
+      symbol=DestroyString(symbol);
+      (void) CloseBlob(image);
+      return(MagickFalse);
+    }
   GetPathComponent(image->filename,BasePath,basename);
   sanitized_basename=SanitizeStringForIdentifier(basename);
   (void) FormatLocaleString(buffer,MagickPathExtent,
     "value\n  %s_ct : color_table(\n",sanitized_basename);
   sanitized_basename=DestroyString(sanitized_basename);
-  (void) WriteBlobString(image,buffer);
+  if (WriteBlobString(image,buffer) != (ssize_t) strlen(buffer))
+    {
+      symbol=DestroyString(symbol);
+      (void) CloseBlob(image);
+      return(MagickFalse);
+    }
   GetPixelInfo(image,&pixel);
   for (i=0; i < (ssize_t) colors; i++)
   {
@@ -334,11 +344,25 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image,
         "    color('%s',%s) = '%s'",name,
         GetPixelInfoIntensity(image,image->colormap+i) <
         ((double) QuantumRange/2.0) ? "background" : "foreground",symbol);
-    (void) WriteBlobString(image,buffer);
+    if (WriteBlobString(image,buffer) != (ssize_t) strlen(buffer))
+      {
+        status=MagickFalse;
+        break;
+      }
     (void) FormatLocaleString(buffer,MagickPathExtent,"%s",
       (i == (ssize_t) (colors-1) ? ");\n" : ",\n"));
-    (void) WriteBlobString(image,buffer);
+    if (WriteBlobString(image,buffer) != (ssize_t) strlen(buffer))
+      {
+        status=MagickFalse;
+        break;
+      }
   }
+  if (status == MagickFalse)
+    {
+      symbol=DestroyString(symbol);
+      (void) CloseBlob(image);
+      return(MagickFalse);
+    }
   /*
     Define UIL pixels.
   */
@@ -348,13 +372,22 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image,
     "  %s_icon : icon(color_table = %s_ct,\n",sanitized_basename,
     sanitized_basename);
   sanitized_basename=DestroyString(sanitized_basename);
-  (void) WriteBlobString(image,buffer);
+  if (WriteBlobString(image,buffer) != (ssize_t) strlen(buffer))
+    {
+      symbol=DestroyString(symbol);
+      (void) CloseBlob(image);
+      return(MagickFalse);
+    }
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
-    (void) WriteBlobString(image,"    \"");
+    if (WriteBlobString(image,"    \"") != 5)
+      {
+        status=MagickFalse;
+        break;
+      }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       k=((ssize_t) GetPixelIndex(image,p) % MaxCixels);
@@ -370,12 +403,22 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image,
       }
       symbol[j]='\0';
       (void) CopyMagickString(buffer,symbol,MagickPathExtent);
-      (void) WriteBlobString(image,buffer);
+      if (WriteBlobString(image,buffer) != (ssize_t) strlen(buffer))
+        {
+          status=MagickFalse;
+          break;
+        }
       p+=(ptrdiff_t) GetPixelChannels(image);
     }
+    if (status == MagickFalse)
+      break;
     (void) FormatLocaleString(buffer,MagickPathExtent,"\"%s\n",
       (y == (ssize_t) (image->rows-1) ? ");" : ","));
-    (void) WriteBlobString(image,buffer);
+    if (WriteBlobString(image,buffer) != (ssize_t) strlen(buffer))
+      {
+        status=MagickFalse;
+        break;
+      }
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
       image->rows);
     if (status == MagickFalse)
