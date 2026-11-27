@@ -3806,6 +3806,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
               }
             if (LocaleCompare("symbol",token) == 0)
               {
+                if (*q == '"')
+                  (void) GetNextToken(q,&q,extent,token);
                 symbolDepth++;
                 graphic_context[n]->render=symbolDepth > 0 ? MagickFalse :
                   MagickTrue;
@@ -7195,6 +7197,14 @@ static ssize_t TracePath(MVGInfo *mvg_info,const char *path,
         /*
           Move to.
         */
+        if ((mvg_info->offset-subpath_offset) == 1)
+          {
+            /*
+              Discard a subpath that consists of a lone moveto.
+            */
+            mvg_info->offset=subpath_offset;
+            q=(*mvg_info->primitive_info)+subpath_offset;
+          }
         if (mvg_info->offset != subpath_offset)
           {
             primitive_info=(*mvg_info->primitive_info)+subpath_offset;
