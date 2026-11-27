@@ -326,10 +326,15 @@ static MagickBooleanType WriteRGFImage(const ImageInfo *image_info,Image *image,
 
   size_t
     bit,
-    byte;
+    byte,
+    length;
 
   ssize_t
     y;
+
+  unsigned char
+    *pixels,
+    *q;
 
   /*
     Open output image file.
@@ -359,6 +364,10 @@ static MagickBooleanType WriteRGFImage(const ImageInfo *image_info,Image *image,
   */
   if (IsImageMonochrome(image) == MagickFalse)
     (void) SetImageType(image,BilevelType,exception);
+  length=image->columns/8+(image->columns % 8 != 0 ? 1 : 0);
+  pixels=(unsigned char *) AcquireQuantumMemory(length,sizeof(*pixels));
+  if (pixels == (unsigned char *) NULL)
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   x=0;
   y=0;
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -368,6 +377,7 @@ static MagickBooleanType WriteRGFImage(const ImageInfo *image_info,Image *image,
       break;
     bit=0;
     byte=0;
+    q=pixels;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       byte>>=1;
@@ -376,25 +386,25 @@ static MagickBooleanType WriteRGFImage(const ImageInfo *image_info,Image *image,
       bit++;
       if (bit == 8)
         {
-          /*
-            Write a bitmap byte to the image file.
-          */
-          (void) WriteBlobByte(image,(unsigned char) byte);
+          *q++=(unsigned char) byte;
           bit=0;
           byte=0;
         }
       p+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (bit != 0)
-    {
-      byte >>= 8 - bit;
-      (void) WriteBlobByte(image,(unsigned char) byte);
-    }
+      *q++=(unsigned char) (byte >> (8-bit));
+    if (WriteBlob(image,length,pixels) != (ssize_t) length)
+      {
+        status=MagickFalse;
+        break;
+      }
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
       image->rows);
     if (status == MagickFalse)
       break;
   }
+  pixels=(unsigned char *) RelinquishMagickMemory(pixels);
   if (CloseBlob(image) == MagickFalse)
     status=MagickFalse;
   return(status);
