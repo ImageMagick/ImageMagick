@@ -216,9 +216,11 @@ static unsigned char *NTGetRegistryValue(HKEY root,const char *key,DWORD flags,
       LPBYTE
         wide;
 
-      wide=(LPBYTE) NTAcquireQuantumMemory((const size_t) size,sizeof(*wide));
+      wide=(LPBYTE) NTAcquireQuantumMemory((const size_t) size+sizeof(wchar_t),
+        sizeof(*wide));
       if (wide != (LPBYTE) NULL)
         {
+          (void) memset(wide,0,(size_t) size+sizeof(wchar_t));
           status=RegQueryValueExW(registry_key,wide_name,0,&type,wide,&size);
           if ((status == ERROR_SUCCESS) && (type == REG_SZ))
             value=(unsigned char *) create_utf8_string((const wchar_t *) wide);
@@ -300,7 +302,12 @@ BOOL WINAPI DllMain(HINSTANCE handle,DWORD reason,LPVOID lpvReserved)
             *path;
 
           module_path=create_utf8_string(wide_path);
-          for ( ; count > 0; count--)
+          if (module_path == (char *) NULL)
+            {
+              wide_path=(wchar_t *) RelinquishMagickMemory(wide_path);
+              return(FALSE);
+            }
+          for (count=(ssize_t) strlen(module_path)-1; count >= 0; count--)
             if (module_path[count] == '\\')
               {
                 module_path[count+1]='\0';
@@ -316,7 +323,8 @@ BOOL WINAPI DllMain(HINSTANCE handle,DWORD reason,LPVOID lpvReserved)
             }
           count=(ssize_t) GetEnvironmentVariable("PATH",path,16*
             MagickPathExtent);
-          if ((count != 0) && (strstr(path,module_path) == (char *) NULL))
+          if ((count != 0) && (count < (ssize_t) (16*MagickPathExtent)) &&
+              (strstr(path,module_path) == (char *) NULL))
             {
               if ((strlen(module_path)+count+1) < (16*MagickPathExtent-1))
                 {
@@ -415,15 +423,15 @@ MagickPrivate int gettimeofday (struct timeval *time_value,
         daylight;
 
       long
-        timezone=0;
+        tz_seconds=0;
 
       if (is_tz_set == 0)
         {
           _tzset();
           is_tz_set++;
         }
-      _get_timezone(&timezone);
-      time_zone->tz_minuteswest=timezone/60;
+      _get_timezone(&tz_seconds);
+      time_zone->tz_minuteswest=tz_seconds/60;
       _get_daylight(&daylight);
       time_zone->tz_dsttime=daylight;
     }
@@ -443,8 +451,8 @@ MagickPrivate int gettimeofday (struct timeval *time_value,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % NTAccessWide() checks the file accessibility of a file path.
-#
-# The format of the NTAccessWide method is:
+%
+%  The format of the NTAccessWide method is:
 %
 %     int NTAccessWide(const char *path, int mode)
 %
@@ -611,12 +619,16 @@ MagickExport wchar_t* NTCreateWidePath(const char *utf8)
   wchar_t
     *wide;
 
+  if (utf8 == (const char *) NULL)
+    return((wchar_t *) NULL);
   count=MultiByteToWideChar(CP_UTF8,0,utf8,-1,NULL,0);
+  if (count == 0)
+    return((wchar_t *) NULL);
   if ((count > MAX_PATH) && (strncmp(utf8,"\\\\?\\",4) != 0) &&
       (NTLongPathsEnabled() == MagickFalse))
     {
       char
-        buffer[MagickPathExtent];
+        *buffer;
 
       wchar_t
         shortPath[MAX_PATH],
@@ -625,13 +637,21 @@ MagickExport wchar_t* NTCreateWidePath(const char *utf8)
       size_t
         length;
 
-      (void) FormatLocaleString(buffer,MagickPathExtent,"\\\\?\\%s",utf8);
+      length=strlen(utf8)+5;
+      buffer=(char *) AcquireQuantumMemory(length,sizeof(*buffer));
+      if (buffer == (char *) NULL)
+        return((wchar_t *) NULL);
+      (void) FormatLocaleString(buffer,length,"\\\\?\\%s",utf8);
       count+=4;
       longPath=(wchar_t *) NTAcquireQuantumMemory((size_t) count,
         sizeof(*longPath));
       if (longPath == (wchar_t *) NULL)
-        return((wchar_t *) NULL);
+        {
+          buffer=(char *) RelinquishMagickMemory(buffer);
+          return((wchar_t *) NULL);
+        }
       count=MultiByteToWideChar(CP_UTF8,0,buffer,-1,longPath,count);
+      buffer=(char *) RelinquishMagickMemory(buffer);
       if (count != 0)
         count=(int) GetShortPathNameW(longPath,shortPath,MAX_PATH);
       longPath=(wchar_t *) RelinquishMagickMemory(longPath);
@@ -639,7 +659,9 @@ MagickExport wchar_t* NTCreateWidePath(const char *utf8)
         return((wchar_t *) NULL);
       length=(size_t) count-3;
       wide=(wchar_t *) NTAcquireQuantumMemory(length,sizeof(*wide));
-      wcscpy_s(wide,length,shortPath+4);
+      if (wide == (wchar_t *) NULL)
+        return((wchar_t *) NULL);
+      (void) wcscpy_s(wide,length,shortPath+4);
       return(wide);
     }
   wide=(wchar_t *) NTAcquireQuantumMemory((size_t) count,sizeof(*wide));
@@ -796,18 +818,18 @@ MagickPrivate void NTErrorHandler(const ExceptionType severity,
     }
   message=GetExceptionMessage(errno);
   if ((description != (char *) NULL) && errno)
-    (void) FormatLocaleString(buffer,MagickPathExtent,"%s: %s (%s) [%s].\n",
+    (void) FormatLocaleString(buffer,sizeof(buffer),"%s: %s (%s) [%s].\n",
       GetClientName(),reason,description,message);
   else
     if (description != (char *) NULL)
-      (void) FormatLocaleString(buffer,MagickPathExtent,"%s: %s (%s).\n",
+      (void) FormatLocaleString(buffer,sizeof(buffer),"%s: %s (%s).\n",
         GetClientName(),reason,description);
     else
       if (errno != 0)
-        (void) FormatLocaleString(buffer,MagickPathExtent,"%s: %s [%s].\n",
+        (void) FormatLocaleString(buffer,sizeof(buffer),"%s: %s [%s].\n",
           GetClientName(),reason,message);
       else
-        (void) FormatLocaleString(buffer,MagickPathExtent,"%s: %s.\n",
+        (void) FormatLocaleString(buffer,sizeof(buffer),"%s: %s.\n",
           GetClientName(),reason);
   message=DestroyString(message);
   (void) MessageBox(NULL,buffer,"ImageMagick Exception",MB_OK | MB_TASKMODAL |
@@ -953,12 +975,24 @@ extern MagickPrivate char *NTGetEnvironmentValue(const char *name)
 MagickPrivate MagickBooleanType NTGetExecutionPath(char *path,
   const size_t extent)
 {
+  DWORD
+    count;
+
   wchar_t
     wide_path[MagickPathExtent];
 
-  (void) GetModuleFileNameW((HMODULE) NULL,wide_path,(DWORD) extent);
-  (void) WideCharToMultiByte(CP_UTF8,0,wide_path,-1,path,(int) extent,NULL,
-    NULL);
+  if ((path == (char *) NULL) || (extent == 0))
+    return(MagickFalse);
+  *path='\0';
+  count=GetModuleFileNameW((HMODULE) NULL,wide_path,MagickPathExtent);
+  if ((count == 0) || (count >= MagickPathExtent))
+    return(MagickFalse);
+  if (WideCharToMultiByte(CP_UTF8,0,wide_path,-1,path,(int) MagickMin(extent,
+        (size_t) INT_MAX),NULL,NULL) == 0)
+    {
+      *path='\0';
+      return(MagickFalse);
+    }
   return(MagickTrue);
 }
 
@@ -995,9 +1029,9 @@ static char *NTGetLastErrorMessage(DWORD last_error)
   LPVOID
     buffer = (LPVOID) NULL;
 
-  status=FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
-    FORMAT_MESSAGE_FROM_SYSTEM,NULL,last_error,
-    MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT),(LPTSTR) &buffer,0,NULL);
+  status=FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER |
+    FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,NULL,last_error,
+    MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT),(LPSTR) &buffer,0,NULL);
   if (!status)
     reason=AcquireString("An unknown error occurred");
   else
@@ -1120,8 +1154,9 @@ MagickPrivate MagickBooleanType NTGetModulePath(const char *module,char *path)
   if (handle == (HMODULE) NULL)
     return(MagickFalse);
   length=GetModuleFileName(handle,module_path,MagickPathExtent);
-  if (length != 0)
-    GetPathComponent(module_path,HeadPath,path);
+  if (length == 0)
+    return(MagickFalse);
+  GetPathComponent(module_path,HeadPath,path);
   return(MagickTrue);
 }
 
@@ -1176,6 +1211,9 @@ static int NTLocateGhostscript(DWORD flags,int *root_index,
     char
       key[MagickPathExtent];
 
+    char
+      subkey[MagickPathExtent];
+
     HKEY
       hkey;
 
@@ -1202,8 +1240,8 @@ static int NTLocateGhostscript(DWORD flags,int *root_index,
           /*
             Now enumerate the keys.
           */
-          extent=sizeof(key)/sizeof(char);
-          for (k=0; RegEnumKeyA(hkey,k,key,extent) == ERROR_SUCCESS; k++)
+          extent=sizeof(subkey)/sizeof(char);
+          for (k=0; RegEnumKeyA(hkey,k,subkey,extent) == ERROR_SUCCESS; k++)
           {
             int
               major,
@@ -1213,12 +1251,13 @@ static int NTLocateGhostscript(DWORD flags,int *root_index,
             major=0;
             minor=0;
             patch=0;
-            if (MagickSscanf(key,"%d.%d.%d",&major,&minor,&patch) != 3)
-              if (MagickSscanf(key,"%d.%d",&major,&minor) != 2)
+            if (MagickSscanf(subkey,"%d.%d.%d",&major,&minor,&patch) != 3)
+              if (MagickSscanf(subkey,"%d.%d",&major,&minor) != 2)
                 continue;
             if ((major > *major_version) ||
                ((major == *major_version) && (minor > *minor_version)) ||
-               ((minor == *minor_version) && (patch > *patch_version)))
+               ((major == *major_version) && (minor == *minor_version) &&
+                (patch > *patch_version)))
               {
                 *root_index=j;
                 *product_family=products[i];
@@ -1239,7 +1278,8 @@ static int NTLocateGhostscript(DWORD flags,int *root_index,
       *patch_version=0;
     }
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),"Ghostscript (%s) "
-    "version %d.%d.%d",*product_family,*major_version,*minor_version,*patch_version);
+    "version %d.%d.%d",*product_family != (const char *) NULL ?
+    *product_family : "unknown",*major_version,*minor_version,*patch_version);
   return(status);
 }
 
@@ -1296,6 +1336,7 @@ static MagickBooleanType NTGhostscriptGetString(const char *name,
                 *is_64_bit=FALSE;
               return(MagickTrue);
             }
+          directory=DestroyString(directory);
           return(MagickFalse);
         }
     }
@@ -1376,7 +1417,7 @@ static MagickBooleanType NTGhostscriptDLL(char *path,int length)
   return(MagickTrue);
 }
 
-static inline MagickBooleanType NTGhostscriptHasValidHandle()
+static inline MagickBooleanType NTGhostscriptHasValidHandle(void)
 {
   if ((nt_ghost_info.delete_instance == NULL) || (ghost_info.exit == NULL) ||
       (nt_ghost_info.new_instance == NULL) || (ghost_info.set_stdio == NULL) ||
@@ -1487,13 +1528,13 @@ MagickPrivate void NTGhostscriptEXE(char *path,int length)
           if (NTGhostscriptGetString("GS_DLL",&is_64_bit_version,program,
                 sizeof(program)) == MagickFalse)
             {
-              UnlockSemaphoreInfo(ghost_semaphore);
 #if defined(_WIN64)
               (void) CopyMagickString(program,"gswin64c.exe",sizeof(program));
 #else
               (void) CopyMagickString(program,"gswin32c.exe",sizeof(program));
 #endif
               (void) CopyMagickString(path,program,length);
+              UnlockSemaphoreInfo(ghost_semaphore);
               return;
             }
           p=strrchr(program,'\\');
@@ -1559,9 +1600,9 @@ MagickPrivate MagickBooleanType NTGhostscriptFonts(char *path,int length)
             MagickPathExtent) == MagickFalse)
         return(MagickFalse);
     }
-  for (p=buffer-1; p != (char *) NULL; p=strchr(p+1,DirectoryListSeparator))
+  for (p=buffer; p != (char *) NULL; )
   {
-    (void) CopyMagickString(path,p+1,length+1);
+    (void) CopyMagickString(path,p,(size_t) length);
     q=strchr(path,DirectoryListSeparator);
     if (q != (char *) NULL)
       *q='\0';
@@ -1573,6 +1614,9 @@ MagickPrivate MagickBooleanType NTGhostscriptFonts(char *path,int length)
       DirectorySeparator);
     if (IsPathAccessible(filename) != MagickFalse)
       return(MagickTrue);
+    p=strchr(p,DirectoryListSeparator);
+    if (p != (char *) NULL)
+      p++;
   }
   *path='\0';
   return(MagickFalse);
@@ -1644,7 +1688,10 @@ MagickExport MagickBooleanType NTIsSymlinkWide(const char *path)
     *path_wide;
 
   path_wide=NTCreateWidePath(path);
+  if (path_wide == (wchar_t *) NULL)
+    return(MagickFalse);
   attributes=GetFileAttributesW(path_wide);
+  path_wide=(wchar_t *) RelinquishMagickMemory(path_wide);
   if (attributes == INVALID_FILE_ATTRIBUTES)
     return(MagickFalse);
   return(((attributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0) ? MagickTrue : 
@@ -1663,14 +1710,14 @@ MagickExport MagickBooleanType NTIsSymlinkWide(const char *path)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  NTLongPathsEnabled() returns a boolean indicating whether long paths are
-$  enabled.
+%  enabled.
 %
 %  The format of the NTLongPathsEnabled method is:
 %
 %      MagickBooleanType NTLongPathsEnabled()
 %
 */
-MagickExport MagickBooleanType NTLongPathsEnabled()
+MagickExport MagickBooleanType NTLongPathsEnabled(void)
 {
   static size_t
     long_paths_enabled = 2;
@@ -1694,7 +1741,6 @@ MagickExport MagickBooleanType NTLongPathsEnabled()
         &registry_key);
       if (status != ERROR_SUCCESS)
         {
-          RegCloseKey(registry_key);
           long_paths_enabled=0;
           return(MagickFalse);
         }
@@ -1707,7 +1753,7 @@ MagickExport MagickBooleanType NTLongPathsEnabled()
           long_paths_enabled=0;
           return(MagickFalse);
         }
-      size=0;
+      size=(DWORD) sizeof(value);
       status=RegQueryValueExA(registry_key,"LongPathsEnabled",0,&type,
         (LPBYTE) &value,&size);
       RegCloseKey(registry_key);
@@ -1716,7 +1762,7 @@ MagickExport MagickBooleanType NTLongPathsEnabled()
           long_paths_enabled=0;
           return(MagickFalse);
         }
-      long_paths_enabled=(size_t) value;
+      long_paths_enabled=(size_t) (value != 0 ? 1 : 0);
     }
   return(long_paths_enabled == 1 ? MagickTrue : MagickFalse);
 }
@@ -1788,7 +1834,20 @@ MagickPrivate void *NTMapMemory(char *address,size_t length,int protection,
   if ((file == -1) && (flags & MAP_ANONYMOUS))
     file_handle=INVALID_HANDLE_VALUE;
   else
-    file_handle=(HANDLE) _get_osfhandle(file);
+    {
+      file_handle=(HANDLE) _get_osfhandle(file);
+      if (file_handle == INVALID_HANDLE_VALUE)
+        return((void *) ((char *) MAP_FAILED));
+      if (offset > 0)
+        {
+          MagickOffsetType
+            extent;
+
+          extent=(MagickOffsetType) length+offset;
+          low_length=(DWORD) (extent & 0xFFFFFFFFUL);
+          high_length=(DWORD) ((extent >> 32) & 0xFFFFFFFFUL);
+        }
+    }
   map_handle=CreateFileMapping(file_handle,0,protection_mode,high_length,
     low_length,0);
   if (map_handle)
@@ -1841,8 +1900,9 @@ MagickPrivate DIR *NTOpenDirectory(const char *path)
     MagickPathExtent);
   if (length == 0)
     return((DIR *) NULL);
-  if (wcsncat_s(file_specification,MagickPathExtent,L"\\*.*",MagickPathExtent-
-      wcslen(file_specification)-1) != 0)
+  if ((wcslen(file_specification)+4) >= MagickPathExtent)
+    return((DIR *) NULL);
+  if (wcscat_s(file_specification,MagickPathExtent,L"\\*.*") != 0)
     return((DIR *) NULL);
   entry=(DIR *) AcquireCriticalMemory(sizeof(DIR));
   entry->firsttime=TRUE;
@@ -1949,7 +2009,8 @@ MagickPrivate void *NTOpenLibrary(const char *filename)
       {
         q=strchr(p,DirectoryListSeparator);
         if (q != (const char*) NULL)
-          (void) CopyMagickString(path,p,q-p+1);
+          (void) CopyMagickString(path,p,MagickMin((size_t) (q-p)+1,
+            MagickPathExtent));
         else
           (void) CopyMagickString(path,p,MagickPathExtent);
         (void) ConcatenateMagickString(path,DirectorySeparator,MagickPathExtent);
@@ -1998,6 +2059,8 @@ static inline wchar_t *create_wchar_mode(const char *mode)
     *wide;
 
   count=MultiByteToWideChar(CP_UTF8,0,mode,-1,NULL,0);
+  if (count == 0)
+    return((wchar_t *) NULL);
   wide=(wchar_t *) AcquireQuantumMemory((size_t) count+1,
     sizeof(*wide));
   if (wide == (wchar_t *) NULL)
@@ -2224,13 +2287,20 @@ static inline wchar_t* resolve_symlink(const wchar_t* path)
     return((wchar_t *) NULL);
   link_length=GetFinalPathNameByHandleW(file_handle,NULL,0,
     FILE_NAME_NORMALIZED);
+  if (link_length == 0)
+    {
+      CloseHandle(file_handle);
+      return((wchar_t *) NULL);
+    }
   link=(wchar_t *) AcquireQuantumMemory(link_length,sizeof(wchar_t));
   if (link == (wchar_t *) NULL)
     {
       CloseHandle(file_handle);
       return((wchar_t *) NULL);
     }
-  GetFinalPathNameByHandleW(file_handle,link,link_length,FILE_NAME_NORMALIZED);
+  if (GetFinalPathNameByHandleW(file_handle,link,link_length,
+        FILE_NAME_NORMALIZED) == 0)
+    link=(wchar_t *) RelinquishMagickMemory(link);
   CloseHandle(file_handle);
   return(link);
 }
@@ -2245,6 +2315,8 @@ MagickExport char *NTRealPathWide(const char *path)
     *wide_path;
 
   wide_path=NTCreateWidePath(path);
+  if (wide_path == (wchar_t *) NULL)
+    return((char *) NULL);
   wide_real_path=resolve_symlink(wide_path);
   if (wide_real_path == (wchar_t*) NULL)
     {
@@ -2252,6 +2324,11 @@ MagickExport char *NTRealPathWide(const char *path)
         full_path_length;
 
       full_path_length=GetFullPathNameW(wide_path,0,NULL,NULL);
+      if (full_path_length == 0)
+        {
+          wide_path=(wchar_t *) RelinquishMagickMemory(wide_path);
+          return((char *) NULL);
+        }
       wide_real_path=(wchar_t *) AcquireQuantumMemory(full_path_length,
         sizeof(wchar_t));
       if (wide_real_path == (wchar_t*) NULL)
@@ -2259,12 +2336,24 @@ MagickExport char *NTRealPathWide(const char *path)
           wide_path=(wchar_t *) RelinquishMagickMemory(wide_path);
           return((char*) NULL);
         }
-      GetFullPathNameW(wide_path,full_path_length,wide_real_path,NULL);
+      if (GetFullPathNameW(wide_path,full_path_length,wide_real_path,NULL) == 0)
+        {
+          wide_real_path=(wchar_t *) RelinquishMagickMemory(wide_real_path);
+          wide_path=(wchar_t *) RelinquishMagickMemory(wide_path);
+          return((char *) NULL);
+        }
     }
   wide_path=(wchar_t *) RelinquishMagickMemory(wide_path);
   /*
-    Remove \\?\ prefix for POSIX-like behavior.
+    Remove \\?\ prefix for POSIX-like behavior; \\?\UNC\server\share becomes
+    \\server\share.
   */
+  if (wcsncmp(wide_real_path,L"\\\\?\\UNC\\",8) == 0)
+    {
+      wide_real_path[6]=L'\\';
+      real_path=create_utf8_string(wide_real_path+6);
+    }
+  else
   if (wcsncmp(wide_real_path,L"\\\\?\\",4) == 0)
     real_path=create_utf8_string(wide_real_path+4);
   else
@@ -2532,7 +2621,7 @@ MagickPrivate unsigned char *NTResourceToBlob(const char *id)
       FreeResource(global);
       return((unsigned char *) NULL);
     }
-  blob=(unsigned char *) AcquireQuantumMemory(length+MagickPathExtent,
+  blob=(unsigned char *) AcquireQuantumMemory((size_t) length+MagickPathExtent,
     sizeof(*blob));
   if (blob != (unsigned char *) NULL)
     {
@@ -2580,12 +2669,14 @@ MagickExport int NTSetFileTimestamp(const char *path, struct stat *attributes)
     *path_wide;
 
   status=(-1);
+  if (attributes == (struct stat *) NULL)
+    return(status);
   path_wide=NTCreateWidePath(path);
   if (path_wide == (WCHAR *) NULL)
     return(status);
   handle=CreateFileW(path_wide,FILE_WRITE_ATTRIBUTES,FILE_SHARE_WRITE |
     FILE_SHARE_READ,NULL,OPEN_EXISTING,0,NULL);
-  if (handle != (HANDLE) NULL)
+  if (handle != INVALID_HANDLE_VALUE)
     {
       FILETIME
         creation_time,
@@ -2607,9 +2698,9 @@ MagickExport int NTSetFileTimestamp(const char *path, struct stat *attributes)
         116444736000000000LL;
       last_write_time.dwLowDateTime=date_time.LowPart;
       last_write_time.dwHighDateTime=date_time.HighPart;
-      status=SetFileTime(handle,&creation_time,&last_access_time,&last_write_time);
+      status=SetFileTime(handle,&creation_time,&last_access_time,
+        &last_write_time) != 0 ? 0 : -1;
       CloseHandle(handle);
-      status=0;
     }
   path_wide=(WCHAR *) RelinquishMagickMemory(path_wide);
   return(status);
@@ -2787,7 +2878,7 @@ MagickPrivate int NTSystemCommand(const char *command,char *output)
   STARTUPINFO
     startup_info;
 
-  if (command == (char *) NULL)
+  if ((command == (char *) NULL) || (*command == '\0'))
     return(-1);
   read_output=(HANDLE) NULL;
   write_output=(HANDLE) NULL;
@@ -2839,7 +2930,11 @@ MagickPrivate int NTSystemCommand(const char *command,char *output)
   if (output != (char *) NULL)
     *output='\0';
   if (asynchronous != MagickFalse)
-    return(status == 0);
+    {
+      CloseHandle(process_info.hProcess);
+      CloseHandle(process_info.hThread);
+      return(0);
+    }
   output_offset=0;
   status=STATUS_TIMEOUT;
   while (status == STATUS_TIMEOUT)
@@ -2873,6 +2968,8 @@ MagickPrivate int NTSystemCommand(const char *command,char *output)
               output_offset+=count-1;
             }
         }
+      else
+        break;
       if (!PeekNamedPipe(read_output,NULL,0,NULL,&size,NULL))
         break;
     }
@@ -2881,6 +2978,8 @@ MagickPrivate int NTSystemCommand(const char *command,char *output)
     {
       CopyLastError;
       CleanupOutputHandles;
+      CloseHandle(process_info.hProcess);
+      CloseHandle(process_info.hThread);
       return(status);
     }
   status=GetExitCodeProcess(process_info.hProcess,&child_status);
@@ -2888,6 +2987,8 @@ MagickPrivate int NTSystemCommand(const char *command,char *output)
     {
       CopyLastError;
       CleanupOutputHandles;
+      CloseHandle(process_info.hProcess);
+      CloseHandle(process_info.hThread);
       return(-1);
     }
   CloseHandle(process_info.hProcess);
@@ -2943,7 +3044,7 @@ MagickPrivate ssize_t NTSystemConfiguration(int name)
       if (GlobalMemoryStatusEx(&status) == 0)
         return(0L);
       GetSystemInfo(&system_info);
-      return((ssize_t) status.ullTotalPhys/system_info.dwPageSize);
+      return((ssize_t) (status.ullTotalPhys/system_info.dwPageSize));
     }
     case _SC_OPEN_MAX:
       return(2048);
@@ -3072,10 +3173,10 @@ MagickPrivate void NTWarningHandler(const ExceptionType severity,
   if (reason == (char *) NULL)
     return;
   if (description == (char *) NULL)
-    (void) FormatLocaleString(buffer,MagickPathExtent,"%s: %s.\n",GetClientName(),
+    (void) FormatLocaleString(buffer,sizeof(buffer),"%s: %s.\n",GetClientName(),
       reason);
   else
-    (void) FormatLocaleString(buffer,MagickPathExtent,"%s: %s (%s).\n",
+    (void) FormatLocaleString(buffer,sizeof(buffer),"%s: %s (%s).\n",
       GetClientName(),reason,description);
   (void) MessageBox(NULL,buffer,"ImageMagick Warning",MB_OK | MB_TASKMODAL |
     MB_SETFOREGROUND | MB_ICONINFORMATION);
