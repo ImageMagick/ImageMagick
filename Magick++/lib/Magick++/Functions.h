@@ -21,10 +21,10 @@ namespace Magick
   MagickPPExport void CloneString(char **destination_,
     const std::string &source_);
 
-  // Disable OpenCL acceleration (only works when build with OpenCL support)
+  // Disable OpenCL acceleration (only works when built with OpenCL support)
   MagickPPExport void DisableOpenCL(void);
 
-  // Enable OpenCL acceleration (only works when build with OpenCL support)
+  // Enable OpenCL acceleration (only works when built with OpenCL support)
   MagickPPExport bool EnableOpenCL(void);
 
   // C library initialization routine
@@ -37,7 +37,7 @@ namespace Magick
   MagickPPExport bool SetSecurityPolicy(const std::string &policy_);
 
   // C library de-initialize routine
-  MagickPPExport void TerminateMagick();
+  MagickPPExport void TerminateMagick(void);
 
   // Constructor to initialize the Magick++ environment
   class MagickPPExport MagickPlusPlusGenesis
@@ -45,9 +45,9 @@ namespace Magick
   public:
 
     // Constructor to initialize Magick++
-    MagickPlusPlusGenesis(const char *path_)
+    explicit MagickPlusPlusGenesis(const char *path_)
     {
-      InitializeMagick( path_ );
+      InitializeMagick(path_);
     }
 
     // Destructor to de-initialize Magick++
@@ -58,6 +58,9 @@ namespace Magick
 
   private:
 
+    // Non-copyable: a copy would call TerminateMagick() a second time
+    MagickPlusPlusGenesis(const MagickPlusPlusGenesis&);
+    MagickPlusPlusGenesis& operator=(const MagickPlusPlusGenesis&);
   };
 }
 #endif // Magick_Functions_header

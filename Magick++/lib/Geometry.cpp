@@ -17,6 +17,16 @@
 
 using namespace std;
 
+namespace
+{
+  // Area of a geometry.  Computed in floating point so that very large
+  // width/height values cannot silently wrap around in size_t arithmetic.
+  inline double GeometryArea(const Magick::Geometry& geometry_)
+  {
+    return((double) geometry_.width()*(double) geometry_.height());
+  }
+}
+
 MagickPPExport int Magick::operator == (const Magick::Geometry& left_,
   const Magick::Geometry& right_)
 {
@@ -42,25 +52,25 @@ MagickPPExport int Magick::operator != (const Magick::Geometry& left_,
 MagickPPExport int Magick::operator > (const Magick::Geometry& left_,
   const Magick::Geometry& right_)
 {
-  return(!(left_ < right_) && (left_ != right_));
+  return(GeometryArea(left_) > GeometryArea(right_));
 }
 
 MagickPPExport int Magick::operator < (const Magick::Geometry& left_,
   const Magick::Geometry& right_)
 {
-  return((left_.width()*left_.height()) < (right_.width()*right_.height()));
+  return(GeometryArea(left_) < GeometryArea(right_));
 }
 
 MagickPPExport int Magick::operator >= (const Magick::Geometry& left_,
   const Magick::Geometry& right_)
 {
-  return((left_ > right_) || (left_ == right_));
+  return(GeometryArea(left_) >= GeometryArea(right_));
 }
 
 MagickPPExport int Magick::operator <= (const Magick::Geometry& left_,
   const Magick::Geometry& right_ )
 {
-  return((left_ < right_) || (left_ == right_));
+  return(GeometryArea(left_) <= GeometryArea(right_));
 }
 
 Magick::Geometry::Geometry(void)
@@ -147,6 +157,11 @@ Magick::Geometry::~Geometry(void)
 
 const Magick::Geometry& Magick::Geometry::operator=(const char *geometry_)
 {
+  if (geometry_ == 0)
+    {
+      *this=Geometry();
+      return(*this);
+    }
   *this=std::string(geometry_);
   return(*this);
 }
@@ -189,12 +204,16 @@ const Magick::Geometry& Magick::Geometry::operator=(
     height_val=0,
     width_val=0;
 
+  // Start from a clean state so that re-assigning a geometry string does not
+  // inherit offsets or flags (%, !, <, >, ^, @) from a previous value.
+  *this=Geometry();
+
   // If argument does not start with digit, presume that it is a
   // page-size specification that needs to be converted to an
   // equivalent geometry specification using PostscriptGeometry()
   (void) CopyMagickString(geom,geometry_.c_str(),MagickPathExtent);
   if (geom[0] != '-' && geom[0] != '+' && geom[0] != 'x' &&
-      !isdigit(static_cast<int>(geom[0])))
+      !isdigit(static_cast<unsigned char>(geom[0])))
     {
       pageptr=GetPageGeometry(geom);
       if (pageptr != 0)
@@ -208,8 +227,7 @@ const Magick::Geometry& Magick::Geometry::operator=(
 
   if (flags == NoValue)
     {
-      // Total failure!
-      *this=Geometry();
+      // Total failure!  State was already reset above.
       isValid(false);
       return(*this);
     }
@@ -353,6 +371,7 @@ bool Magick::Geometry::greater(void) const
 void Magick::Geometry::height(size_t height_)
 {
   _height=height_;
+  isValid(true);
 }
 
 size_t Magick::Geometry::height(void) const
@@ -449,21 +468,27 @@ Magick::Geometry::Geometry(const MagickCore::RectangleInfo &rectangle_)
 const Magick::Geometry& Magick::Geometry::operator=(
   const MagickCore::RectangleInfo &rectangle_)
 {
-  _width=static_cast<size_t>(rectangle_.width),
-  _height=static_cast<size_t>(rectangle_.height),
-  _xOff=static_cast<ssize_t>(rectangle_.x),
-  _yOff=static_cast<ssize_t>(rectangle_.y),
+  _width=static_cast<size_t>(rectangle_.width);
+  _height=static_cast<size_t>(rectangle_.height);
+  _xOff=static_cast<ssize_t>(rectangle_.x);
+  _yOff=static_cast<ssize_t>(rectangle_.y);
   _isValid=true;
+  _percent=false;
+  _aspect=false;
+  _greater=false;
+  _less=false;
+  _fillArea=false;
+  _limitPixels=false;
   return(*this);
 }
 
 Magick::Geometry::operator MagickCore::RectangleInfo() const
 {
   RectangleInfo rectangle;
-  rectangle.width=_width;
-  rectangle.height=_height;
-  rectangle.x=_xOff;
-  rectangle.y=_yOff;
+  rectangle.width=static_cast<size_t>(_width);
+  rectangle.height=static_cast<size_t>(_height);
+  rectangle.x=static_cast<ssize_t>(_xOff);
+  rectangle.y=static_cast<ssize_t>(_yOff);
   return(rectangle);
 }
 
@@ -524,6 +549,12 @@ const Magick::Offset& Magick::Offset::operator=(const char *offset_)
   MagickCore::MagickStatusType
     flags;
 
+  if (offset_ == 0)
+    {
+      _x=0;
+      _y=0;
+      return(*this);
+    }
   flags=ParseGeometry(offset_,&geometry_info);
   _x=(ssize_t) geometry_info.rho;
   _y=(ssize_t) geometry_info.sigma;
@@ -630,6 +661,12 @@ const Magick::Point& Magick::Point::operator=(const char *point_)
   MagickCore::MagickStatusType
     flags;
 
+  if (point_ == 0)
+    {
+      _x=0.0;
+      _y=0.0;
+      return(*this);
+    }
   flags=ParseGeometry(point_,&geometry_info);
   _x=geometry_info.rho;
   _y=geometry_info.sigma;
@@ -670,20 +707,20 @@ Magick::Point::operator std::string() const
   string
     point;
 
-  if (_x < 0.0)
-    point+="-";
-  else
+  // "%.17g" already emits the '-' for negative values, so only add an
+  // explicit sign for non-negative ones.
+  if (_x >= 0.0)
     point+="+";
 
   FormatLocaleString(buffer,MagickPathExtent,"%.17g",_x);
   point+=buffer;
 
-  if (_y < 0.0)
-    point+="x-";
-  else
+  if (_y >= 0.0)
     point+="x+";
+  else
+    point+="x";
 
-  FormatLocaleString(buffer,MagickPathExtent,"%.17g",(double) _y);
+  FormatLocaleString(buffer,MagickPathExtent,"%.17g",_y);
   point+=buffer;
 
   return(point);

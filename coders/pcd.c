@@ -1003,11 +1003,18 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
     *p,
     *q;
 
+  size_t
+    length;
+
   ssize_t
     x;
 
   ssize_t
     y;
+
+  unsigned char
+    *pixels,
+    *r;
 
   /*
     Scale image to tile size.
@@ -1066,49 +1073,79 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
   downsample_image=ResizeImage(tile_image,tile_image->columns/2,
     tile_image->rows/2,TriangleFilter,exception);
   if (downsample_image == (Image *) NULL)
-    return(MagickFalse);
+    {
+      tile_image=DestroyImage(tile_image);
+      return(MagickFalse);
+    }
+  pixels=(unsigned char *) AcquireQuantumMemory(tile_image->columns,3*
+    sizeof(*pixels));
+  if (pixels == (unsigned char *) NULL)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      downsample_image=DestroyImage(downsample_image);
+      tile_image=DestroyImage(tile_image);
+      return(MagickFalse);
+    }
   /*
     Write tile to PCD file.
   */
+  status=MagickTrue;
   for (y=0; y < (ssize_t) tile_image->rows; y+=2)
   {
     p=GetVirtualPixels(tile_image,0,y,tile_image->columns,2,exception);
     if (p == (const Quantum *) NULL)
-      break;
+      {
+        status=MagickFalse;
+        break;
+      }
+    r=pixels;
     for (x=0; x < (ssize_t) (tile_image->columns << 1); x++)
     {
-      (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelRed(tile_image,p)));
+      *r++=ScaleQuantumToChar(GetPixelRed(tile_image,p));
       p+=(ptrdiff_t) GetPixelChannels(tile_image);
     }
     q=GetVirtualPixels(downsample_image,0,y >> 1,downsample_image->columns,1,
       exception);
     if (q == (Quantum *) NULL)
-      break;
+      {
+        status=MagickFalse;
+        break;
+      }
     for (x=0; x < (ssize_t) downsample_image->columns; x++)
     {
-      (void) WriteBlobByte(image,ScaleQuantumToChar(
-        GetPixelGreen(tile_image,q)));
+      *r++=ScaleQuantumToChar(GetPixelGreen(tile_image,q));
       q+=(ptrdiff_t) GetPixelChannels(tile_image);
     }
     q=GetVirtualPixels(downsample_image,0,y >> 1,downsample_image->columns,1,
       exception);
     if (q == (Quantum *) NULL)
-      break;
+      {
+        status=MagickFalse;
+        break;
+      }
     for (x=0; x < (ssize_t) downsample_image->columns; x++)
     {
-      (void) WriteBlobByte(image,ScaleQuantumToChar(
-        GetPixelBlue(tile_image,q)));
+      *r++=ScaleQuantumToChar(GetPixelBlue(tile_image,q));
       q+=(ptrdiff_t) GetPixelChannels(tile_image);
     }
+    length=(size_t) (r-pixels);
+    if (WriteBlob(image,length,pixels) != (ssize_t) length)
+      {
+        status=MagickFalse;
+        break;
+      }
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
       tile_image->rows);
     if (status == MagickFalse)
       break;
   }
-  (void) WriteBlobPadding(image,0x800,'\0');
+  if ((status != MagickFalse) && (WriteBlobPadding(image,0x800,'\0') != 0x800))
+    status=MagickFalse;
+  pixels=(unsigned char *) RelinquishMagickMemory(pixels);
   downsample_image=DestroyImage(downsample_image);
   tile_image=DestroyImage(tile_image);
-  return(MagickTrue);
+  return(status);
 }
 
 static MagickBooleanType WritePCDImage(const ImageInfo *image_info,Image *image,
@@ -1179,9 +1216,12 @@ static MagickBooleanType WritePCDImage(const ImageInfo *image_info,Image *image,
     Write PCD tiles.
   */
   status=WritePCDTile(pcd_image,"768x512>",192,128,exception);
-  status=WritePCDTile(pcd_image,"768x512>",384,256,exception);
-  status=WritePCDTile(pcd_image,"768x512>",768,512,exception);
-  (void) CloseBlob(pcd_image);
+  if (status != MagickFalse)
+    status=WritePCDTile(pcd_image,"768x512>",384,256,exception);
+  if (status != MagickFalse)
+    status=WritePCDTile(pcd_image,"768x512>",768,512,exception);
+  if (CloseBlob(pcd_image) == MagickFalse)
+    status=MagickFalse;
   if (pcd_image != image)
     pcd_image=DestroyImage(pcd_image);
   return(status);

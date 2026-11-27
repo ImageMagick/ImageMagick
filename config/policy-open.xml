@@ -183,7 +183,7 @@
   -->
   <!-- <policy domain="module" rights="none" pattern="{MSL,URL,VIDEO}"/> -->
   <!-- <policy domain="coder" rights="write"
-          pattern="{MVG,PDF,PS,SVG,TXT,XPS}"/> -->
+          pattern="{AI,EPS,MVG,PDF,PS,SVG,TXT,XPS}"/> -->
 
   <!-- ================================================================== -->
   <!-- System Policies                                                     -->
@@ -221,4 +221,7 @@
   <!-- Treat filenames with percent signs (%) as plain text rather than
        formatting placeholders. -->
   <!-- <policy domain="system" name="filename:literal" value="true"/> -->
+
+  <!-- Temporarily take ImageMagick offline for maintenance -->
+  <!-- <policy domain="system" name="offline" value="true"/> -->
 </policymap>

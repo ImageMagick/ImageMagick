@@ -13,11 +13,25 @@
 
 #include "Magick++/TypeMetric.h"
 #include "Magick++/Drawable.h"
-#include <cstring>
+#include <limits>
+
+namespace
+{
+  // Convert a floating point extent to size_t without invoking undefined
+  // behavior: negative, NaN and out-of-range values are clamped.
+  size_t extentToSize(const double value)
+  {
+    if (!(value > 0.0))
+      return(0);
+    if (value >= static_cast<double>(std::numeric_limits<size_t>::max()))
+      return(std::numeric_limits<size_t>::max());
+    return(static_cast<size_t>(value));
+  }
+}
 
 Magick::TypeMetric::TypeMetric(void)
+  : _typeMetric()
 {
-  memset(&_typeMetric,0,sizeof(_typeMetric));
 }
 
 Magick::TypeMetric::~TypeMetric(void)
@@ -31,9 +45,10 @@ double Magick::TypeMetric::ascent(void) const
 
 Magick::Geometry Magick::TypeMetric::bounds(void) const
 {
-  return(Geometry((size_t) (_typeMetric.bounds.x2-_typeMetric.bounds.x1),
-    (size_t) (_typeMetric.bounds.y2-_typeMetric.bounds.y1),(ssize_t)
-    _typeMetric.bounds.x1,(ssize_t) _typeMetric.bounds.y1));
+  return(Geometry(extentToSize(_typeMetric.bounds.x2-_typeMetric.bounds.x1),
+    extentToSize(_typeMetric.bounds.y2-_typeMetric.bounds.y1),
+    static_cast<ssize_t>(_typeMetric.bounds.x1),
+    static_cast<ssize_t>(_typeMetric.bounds.y1)));
 }
 
 double Magick::TypeMetric::descent(void) const

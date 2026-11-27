@@ -74,6 +74,15 @@
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
 #include "coders/coders-private.h"
+
+/*
+  Define declarations.
+*/
+#define MaxCixels  92
+
+static const char
+  Cixel[MaxCixels+1] = " .XoO+@#$%&*=-;:>,<1234567890qwertyuipasdfghjk"
+                       "lzxcvbnmMNBVCZASDFGHJKLPIUYTREWQ!~^/()_`'][{}|";
 
 /*
   Forward declarations.
@@ -81,6 +90,56 @@
 static MagickBooleanType
   WritePICONImage(const ImageInfo *,Image *,ExceptionInfo *),
   WriteXPMImage(const ImageInfo *,Image *,ExceptionInfo *);
+
+/*
+  Writer helpers shared by the XPM and PICON encoders.
+*/
+static void EncodeXPMSymbol(size_t index,const size_t characters_per_pixel,
+  char *symbol)
+{
+  size_t
+    i;
+
+  /*
+    Write exactly characters_per_pixel symbol characters (no terminator),
+    least significant base-92 digit first.
+  */
+  for (i=0; i < characters_per_pixel; i++)
+  {
+    symbol[i]=Cixel[index % MaxCixels];
+    index/=MaxCixels;
+  }
+}
+
+static ssize_t GetXPMOpacityIndex(const Image *image)
+{
+  double
+    alpha,
+    beta;
+
+  ssize_t
+    i,
+    opacity;
+
+  opacity=(-1);
+  if (image->colormap == (PixelInfo *) NULL)
+    return(opacity);
+  for (i=0; i < (ssize_t) image->colors; i++)
+  {
+    if (image->colormap[i].alpha == (double) OpaqueAlpha)
+      continue;
+    if (opacity < 0)
+      {
+        opacity=i;
+        continue;
+      }
+    alpha=(double) TransparentAlpha-image->colormap[i].alpha;
+    beta=(double) TransparentAlpha-image->colormap[opacity].alpha;
+    if (alpha < beta)
+      opacity=i;
+  }
+  return(opacity);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -160,15 +219,18 @@ static ssize_t CopyXPMColor(char *destination,const char *source,size_t length)
   const char
     *p;
 
+  /*
+    The destination must have room for length+1 characters; it is always
+    terminated (the old post-decrement logic left it unterminated when a quote
+    was hit on the final permitted character).
+  */
   p=source;
-  while (length-- && (*p != '\0'))
+  while ((length != 0) && (*p != '\0') && (*p != '"'))
   {
-    if (*p == '"')
-      break;
     *destination++=(*p++);
+    length--;
   }
-  if (length != 0)
-    *destination='\0';
+  *destination='\0';
   return((ssize_t) (p-source));
 }
 
@@ -260,6 +322,9 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
+  MagickAddressType
+    color_index;
+
   MagickBooleanType
     active,
     status;
@@ -282,10 +347,10 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     y;
 
   unsigned long
-    colors,
-    columns,
-    rows,
-    width;
+    colors = 0,
+    columns = 0,
+    rows = 0,
+    width = 0;
 
   /*
     Open image file.
@@ -406,7 +471,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       symbolic[MagickPathExtent];
 
     MagickAddressType
-      value = (MagickAddressType) j;
+      value = (MagickAddressType) (j+1);  /* 0 is reserved for "not found" */
 
     p=next;
     next=NextXPMLine(p);
@@ -417,6 +482,8 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     status=AddValueToSplayTree(xpm_colors,ConstantString(key),(const void *)
       value);
+    if (status == MagickFalse)
+      break;
     /*
       Parse color.
     */
@@ -444,7 +511,8 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
       }
     (void) StripMagickString(target);
-    if ((*symbolic != '\0') && (strlen(symbolic) > 2))
+    if ((*symbolic == 's') && (isspace((int) ((unsigned char) symbolic[1])) != 0)
+        && (strlen(symbolic) > 2))
       {
         char
           symbolic_key[MagickPathExtent];
@@ -500,7 +568,18 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           count=CopyXPMColor(key,p,MagickMin(width,MagickPathExtent-1));
           if (count != (ssize_t) width)
             break;
-          j=(ssize_t) GetValueFromSplayTree(xpm_colors,key);
+          color_index=(MagickAddressType) GetValueFromSplayTree(xpm_colors,key);
+          if ((color_index == 0) || (color_index > (MagickAddressType)
+              image->colors))
+            {
+              /*
+                Pixel references a key that the colormap never defined.
+              */
+              xpm_colors=DestroySplayTree(xpm_colors);
+              xpm_buffer=DestroyString(xpm_buffer);
+              ThrowReaderException(CorruptImageError,"CorruptImage");
+            }
+          j=(ssize_t) (color_index-1);
           if (image->storage_class == PseudoClass)
             SetPixelIndex(image,(Quantum) j,r);
           SetPixelViaPixelInfo(image,image->colormap+j,r);
@@ -668,12 +747,6 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
       0x48, 0x31, 0x07, 0x25, 0xb5, 0x58, 0x73, 0x4f, 0x04, 0x00, 0x3b,
     };
 
-#define MaxCixels  92
-
-  static const char
-    Cixel[MaxCixels+1] = " .XoO+@#$%&*=-;:>,<1234567890qwertyuipasdfghjk"
-                         "lzxcvbnmMNBVCZASDFGHJKLPIUYTREWQ!~^/()_`'][{}|";
-
   char
     buffer[MagickPathExtent],
     basename[MagickPathExtent],
@@ -713,12 +786,16 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
 
   size_t
     characters_per_pixel,
-    colors;
+    colors,
+    length;
 
   ssize_t
-    j,
     k,
     y;
+
+  unsigned char
+    *pixels,
+    *r;
 
   /*
     Open output image file.
@@ -757,12 +834,19 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
         affinity_image=DestroyImage(affinity_image);
       if (picon != (Image *) NULL)
         picon=DestroyImage(picon);
+      (void) CloseBlob(image);
       return(MagickFalse);
     }
   quantize_info=AcquireQuantizeInfo(image_info);
   status=RemapImage(quantize_info,picon,affinity_image,exception);
   quantize_info=DestroyQuantizeInfo(quantize_info);
   affinity_image=DestroyImage(affinity_image);
+  if (status == MagickFalse)
+    {
+      picon=DestroyImage(picon);
+      (void) CloseBlob(image);
+      return(MagickFalse);
+    }
   transparent=MagickFalse;
   if (picon->storage_class == PseudoClass)
     {
@@ -803,10 +887,13 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
   if (transparent != MagickFalse)
     {
       colors++;
-      picon->colormap=(PixelInfo *) ResizeQuantumMemory((void **)
-        picon->colormap,(size_t) colors,sizeof(*picon->colormap));
+      picon->colormap=(PixelInfo *) ResizeQuantumMemory(picon->colormap,
+        (size_t) colors,sizeof(*picon->colormap));
       if (picon->colormap == (PixelInfo *) NULL)
-        ThrowWriterException(ResourceLimitError,"MemoryAllocationError");
+        {
+          picon=DestroyImage(picon);
+          ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+        }
       picon->colormap[colors-1].red=0.0;
       picon->colormap[colors-1].green=0.0;
       picon->colormap[colors-1].blue=0.0;
@@ -832,6 +919,18 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
   characters_per_pixel=1;
   for (k=MaxCixels; (ssize_t) colors > k; k*=MaxCixels)
     characters_per_pixel++;
+  if (picon->columns > ((size_t) MAGICK_SSIZE_MAX-4)/characters_per_pixel)
+    {
+      picon=DestroyImage(picon);
+      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    }
+  length=picon->columns*characters_per_pixel+4;
+  pixels=(unsigned char *) AcquireQuantumMemory(length,sizeof(*pixels));
+  if (pixels == (unsigned char *) NULL)
+    {
+      picon=DestroyImage(picon);
+      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   /*
     XPM header.
   */
@@ -866,14 +965,8 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
     /*
       Write XPM color.
     */
-    k=i % MaxCixels;
-    symbol[0]=Cixel[k];
-    for (j=1; j < (ssize_t) characters_per_pixel; j++)
-    {
-      k=((i-k)/MaxCixels) % MaxCixels;
-      symbol[j]=Cixel[k];
-    }
-    symbol[j]='\0';
+    EncodeXPMSymbol((size_t) i,characters_per_pixel,symbol);
+    symbol[characters_per_pixel]='\0';
     (void) FormatLocaleString(buffer,MagickPathExtent,
       "\"%.1024s c %.1024s\",\n",symbol,name);
     (void) WriteBlobString(image,buffer);
@@ -886,32 +979,40 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
   {
     p=GetVirtualPixels(picon,0,y,picon->columns,1,exception);
     if (p == (const Quantum *) NULL)
-      break;
-    (void) WriteBlobString(image,"\"");
+      {
+        status=MagickFalse;
+        break;
+      }
+    r=pixels;
+    *r++='"';
     for (x=0; x < (ssize_t) picon->columns; x++)
     {
-      k=((ssize_t) GetPixelIndex(picon,p) % MaxCixels);
-      symbol[0]=Cixel[k];
-      for (j=1; j < (ssize_t) characters_per_pixel; j++)
-      {
-        k=(((int) GetPixelIndex(picon,p)-k)/MaxCixels) % MaxCixels;
-        symbol[j]=Cixel[k];
-      }
-      symbol[j]='\0';
-      (void) CopyMagickString(buffer,symbol,MagickPathExtent);
-      (void) WriteBlobString(image,buffer);
+      k=(ssize_t) GetPixelIndex(picon,p);
+      if ((k < 0) || (k >= (ssize_t) colors))
+        k=0;
+      EncodeXPMSymbol((size_t) k,characters_per_pixel,(char *) r);
+      r+=(ptrdiff_t) characters_per_pixel;
       p+=(ptrdiff_t) GetPixelChannels(picon);
     }
-    (void) FormatLocaleString(buffer,MagickPathExtent,"\"%.1024s\n",
-      y == (ssize_t) (picon->rows-1) ? "" : ",");
-    (void) WriteBlobString(image,buffer);
+    *r++='"';
+    if (y != (ssize_t) (picon->rows-1))
+      *r++=',';
+    *r++='\n';
+    length=(size_t) (r-pixels);
+    if (WriteBlob(image,length,pixels) != (ssize_t) length)
+      {
+        status=MagickFalse;
+        break;
+      }
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
       picon->rows);
     if (status == MagickFalse)
       break;
   }
+  pixels=(unsigned char *) RelinquishMagickMemory(pixels);
   picon=DestroyImage(picon);
-  (void) WriteBlobString(image,"};\n");
+  if (status != MagickFalse)
+    (void) WriteBlobString(image,"};\n");
   if (CloseBlob(image) == MagickFalse)
     status=MagickFalse;
   return(status);
@@ -947,8 +1048,6 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
 static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
-#define MaxCixels  92
-
   char
     buffer[MagickPathExtent],
     basename[MagickPathExtent],
@@ -966,19 +1065,19 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
     pixel;
 
   size_t
-    characters_per_pixel;
+    characters_per_pixel,
+    length;
 
   ssize_t
     i,
-    j,
     k,
     opacity,
     x,
     y;
 
-  static const char
-    Cixel[MaxCixels+1] = " .XoO+@#$%&*=-;:>,<1234567890qwertyuipasdfghjk"
-                         "lzxcvbnmMNBVCZASDFGHJKLPIUYTREWQ!~^/()_`'][{}|";
+  unsigned char
+    *pixels,
+    *q;
 
   /*
     Open output image file.
@@ -989,78 +1088,57 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
   assert(image->signature == MagickCoreSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
   if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
-    if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
-      (void) TransformImageColorspace(image,sRGBColorspace,exception);
+    (void) TransformImageColorspace(image,sRGBColorspace,exception);
   opacity=(-1);
   if ((image->alpha_trait & BlendPixelTrait) == 0)
     {
       if ((image->storage_class == DirectClass) || (image->colors > 256))
-        (void) SetImageType(image,PaletteType,exception);
+        status=SetImageType(image,PaletteType,exception);
     }
   else
     {
-      double
-        alpha,
-        beta;
-
       /*
         Identify transparent colormap index.
       */
       if ((image->storage_class == DirectClass) || (image->colors > 256))
-        (void) SetImageType(image,PaletteBilevelAlphaType,exception);
-      for (i=0; i < (ssize_t) image->colors; i++)
-        if (image->colormap[i].alpha != (double) OpaqueAlpha)
-          {
-            if (opacity < 0)
-              {
-                opacity=i;
-                continue;
-              }
-            alpha=(double) TransparentAlpha-(double)
-              image->colormap[i].alpha;
-            beta=(double) TransparentAlpha-(double)
-              image->colormap[opacity].alpha;
-            if (alpha < beta)
-              opacity=i;
-          }
-      if (opacity == -1)
+        status=SetImageType(image,PaletteBilevelAlphaType,exception);
+      if (status != MagickFalse)
         {
-          (void) SetImageType(image,PaletteBilevelAlphaType,exception);
-          for (i=0; i < (ssize_t) image->colors; i++)
-            if (image->colormap[i].alpha != (double) OpaqueAlpha)
-              {
-                if (opacity < 0)
-                  {
-                    opacity=i;
-                    continue;
-                  }
-                alpha=(double) TransparentAlpha-(double)
-                  image->colormap[i].alpha;
-                beta=(double) TransparentAlpha-(double)
-                  image->colormap[opacity].alpha;
-                if (alpha < beta)
-                  opacity=i;
-              }
+          opacity=GetXPMOpacityIndex(image);
+          if (opacity == -1)
+            {
+              status=SetImageType(image,PaletteBilevelAlphaType,exception);
+              opacity=GetXPMOpacityIndex(image);
+            }
         }
-      if (opacity >= 0)
+      if ((status != MagickFalse) && (opacity >= 0))
         {
           image->colormap[opacity].red=image->transparent_color.red;
           image->colormap[opacity].green=image->transparent_color.green;
           image->colormap[opacity].blue=image->transparent_color.blue;
         }
     }
+  if ((status == MagickFalse) || (image->storage_class != PseudoClass) ||
+      (image->colormap == (PixelInfo *) NULL))
+    ThrowWriterException(CoderError,"ImageTypeNotSupported");
   /*
     Compute the character per pixel.
   */
   characters_per_pixel=1;
   for (k=MaxCixels; (ssize_t) image->colors > k; k*=MaxCixels)
     characters_per_pixel++;
+  if (image->columns > ((size_t) MAGICK_SSIZE_MAX-4)/characters_per_pixel)
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+  length=image->columns*characters_per_pixel+4;
+  pixels=(unsigned char *) AcquireQuantumMemory(length,sizeof(*pixels));
+  if (pixels == (unsigned char *) NULL)
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   /*
     XPM header.
   */
@@ -1098,23 +1176,19 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
     /*
       Write XPM color.
     */
-    k=i % MaxCixels;
-    symbol[0]=Cixel[k];
-    for (j=1; j < (ssize_t) characters_per_pixel; j++)
-    {
-      k=((i-k)/MaxCixels) % MaxCixels;
-      symbol[j]=Cixel[k];
-    }
-    symbol[j]='\0';
+    EncodeXPMSymbol((size_t) i,characters_per_pixel,symbol);
+    symbol[characters_per_pixel]='\0';
     (void) FormatLocaleString(symbolic_key,MagickPathExtent,"xpm:symbolic.%s",
       name);
     symbolic=GetImageProperty(image,symbolic_key,exception);
-    if (symbolic == (const char *) NULL)
+    sanitized_value=(char *) NULL;
+    if (symbolic != (const char *) NULL)
+      sanitized_value=SanitizeStringForIdentifier(symbolic);
+    if (sanitized_value == (char *) NULL)
       (void) FormatLocaleString(buffer,MagickPathExtent,
         "\"%.1024s c %.1024s\",\n",symbol,name);
     else
       {
-        sanitized_value=SanitizeStringForIdentifier(symbolic);
         (void) FormatLocaleString(buffer,MagickPathExtent,
           "\"%.1024s c %.1024s s %.1024s\",\n",symbol,name,sanitized_value);
         sanitized_value=DestroyString(sanitized_value);
@@ -1129,29 +1203,31 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
-      break;
-    (void) WriteBlobString(image,"\"");
+      {
+        status=MagickFalse;
+        break;
+      }
+    q=pixels;
+    *q++='"';
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      k=((ssize_t) GetPixelIndex(image,p) % MaxCixels);
-      if (k < 0)
+      k=(ssize_t) GetPixelIndex(image,p);
+      if ((k < 0) || (k >= (ssize_t) image->colors))
         k=0;
-      symbol[0]=Cixel[k];
-      for (j=1; j < (ssize_t) characters_per_pixel; j++)
-      {
-        k=(((int) GetPixelIndex(image,p)-k)/MaxCixels) % MaxCixels;
-        if (k < 0)
-          k=0;
-        symbol[j]=Cixel[k];
-      }
-      symbol[j]='\0';
-      (void) CopyMagickString(buffer,symbol,MagickPathExtent);
-      (void) WriteBlobString(image,buffer);
+      EncodeXPMSymbol((size_t) k,characters_per_pixel,(char *) q);
+      q+=(ptrdiff_t) characters_per_pixel;
       p+=(ptrdiff_t) GetPixelChannels(image);
     }
-    (void) FormatLocaleString(buffer,MagickPathExtent,"\"%.1024s\n",
-      (y == (ssize_t) (image->rows-1) ? "" : ","));
-    (void) WriteBlobString(image,buffer);
+    *q++='"';
+    if (y != (ssize_t) (image->rows-1))
+      *q++=',';
+    *q++='\n';
+    length=(size_t) (q-pixels);
+    if (WriteBlob(image,length,pixels) != (ssize_t) length)
+      {
+        status=MagickFalse;
+        break;
+      }
     if (image->previous == (Image *) NULL)
       {
         status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -1160,7 +1236,10 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
           break;
       }
   }
-  (void) WriteBlobString(image,"};\n");
-  (void) CloseBlob(image);
-  return(MagickTrue);
+  pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+  if (status != MagickFalse)
+    (void) WriteBlobString(image,"};\n");
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  return(status);
 }

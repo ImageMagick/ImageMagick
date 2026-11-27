@@ -8,8 +8,8 @@
 // Reference counted container class for Binary Large Objects (BLOBs)
 //
 
-#if !defined(Magick_BlobRef_header)
-#define Magick_BlobRef_header
+#if !defined(Magick_Blob_header)
+#define Magick_Blob_header
 
 #include "Magick++/Include.h"
 #include <string>
@@ -45,7 +45,8 @@ namespace Magick
     Blob& operator=(const Blob& blob_);
 
     // Update object contents from Base64-encoded string representation.
-    void base64(const std::string base64_);
+    // If the string cannot be decoded the object is left unchanged.
+    void base64(const std::string& base64_);
     // Return Base64-encoded string representation.
     std::string base64(void) const;
 
@@ -69,7 +70,8 @@ namespace Magick
     // otherwise modified after it has been supplied to this method.
     // Specify allocator_ as "MallocAllocator" if memory is allocated
     // via the C language malloc() function, or "NewAllocator" if
-    // memory is allocated via C++ 'new'.
+    // memory is allocated via C++ 'new'. If this method throws, ownership
+    // of the supplied pointer stays with the caller.
     void updateNoCopy(void* data_,size_t length_,
       Allocator allocator_=NewAllocator);
 
@@ -79,4 +81,4 @@ namespace Magick
 
 } // namespace Magick
 
-#endif // Magick_BlobRef_header
+#endif // Magick_Blob_header

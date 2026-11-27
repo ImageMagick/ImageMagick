@@ -14,6 +14,10 @@
 #include "Magick++/Statistic.h"
 #include "Magick++/Image.h"
 
+#include <cctype>
+#include <cmath>
+#include <cstdlib>
+
 using namespace std;
 
 Magick::ChannelMoments::ChannelMoments(void)
@@ -147,21 +151,32 @@ Magick::ChannelPerceptualHash::ChannelPerceptualHash(
 
   for (i=0; i<14; i++)
   {
-    unsigned int
-      hex;
+    char
+      *end;
 
     double
       value;
 
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__MINGW32__)
-    if (sscanf_s(hash_.substr(i*5,5).c_str(),"%05x",&hex) != 1)
-#else
-    if (sscanf(hash_.substr(i*5,5).c_str(),"%05x",&hex) != 1)
-#endif
+    size_t
+      j;
+
+    unsigned long
+      hex;
+
+    const std::string
+      field=hash_.substr(i*5,5);
+
+    for (j=0; j<5; j++)
+    {
+      if (isxdigit((unsigned char) field[j]) == 0)
+        throw ErrorOption("Invalid hash value");
+    }
+    hex=strtoul(field.c_str(),&end,16);
+    if (*end != '\0')
       throw ErrorOption("Invalid hash value");
 
-    value=((unsigned short)hex) / pow(10.0, (double)(hex >> 17));
-    if (hex & (1 << 16))
+    value=((unsigned short) hex) / pow(10.0, (double)(hex >> 17));
+    if (hex & (1UL << 16))
       value=-value;
     if (i < 7)
       _srgbHuPhash[i]=value;
@@ -194,7 +209,8 @@ Magick::ChannelPerceptualHash::operator std::string() const
       value;
 
     unsigned int
-      hex;
+      hex,
+      mantissa;
 
     if (i < 7)
       value=_srgbHuPhash[i];
@@ -211,7 +227,10 @@ Magick::ChannelPerceptualHash::operator std::string() const
     hex=(hex<<1);
     if (value < 0.0)
       hex|=1;
-    hex=(hex<<16)+(unsigned int)(value < 0.0 ? -(value - 0.5) : value + 0.5);
+    mantissa=(unsigned int)(value < 0.0 ? -(value - 0.5) : value + 0.5);
+    if (mantissa > 65535)
+      mantissa=65535;  /* rounding must not spill into the sign/exponent bits */
+    hex=(hex<<16)+mantissa;
     (void) FormatLocaleString(buffer,6,"%05x",hex);
     hash+=std::string(buffer);
   }
@@ -229,9 +248,10 @@ bool Magick::ChannelPerceptualHash::isValid() const
 }
 
 double Magick::ChannelPerceptualHash::sumSquaredDifferences(
-  const ChannelPerceptualHash &channelPerceptualHash_)
+  const ChannelPerceptualHash &channelPerceptualHash_) const
 {
   double
+    delta,
     ssd;
 
   size_t
@@ -240,10 +260,10 @@ double Magick::ChannelPerceptualHash::sumSquaredDifferences(
   ssd=0.0;
   for (i=0; i<7; i++)
   {
-    ssd+=((_srgbHuPhash[i]-channelPerceptualHash_._srgbHuPhash[i])*
-      (_srgbHuPhash[i]-channelPerceptualHash_._srgbHuPhash[i]));
-    ssd+=((_hclpHuPhash[i]-channelPerceptualHash_._hclpHuPhash[i])*
-      (_hclpHuPhash[i]-channelPerceptualHash_._hclpHuPhash[i]));
+    delta=_srgbHuPhash[i]-channelPerceptualHash_._srgbHuPhash[i];
+    ssd+=delta*delta;
+    delta=_hclpHuPhash[i]-channelPerceptualHash_._hclpHuPhash[i];
+    ssd+=delta*delta;
   }
   return(ssd);
 }
@@ -517,7 +537,7 @@ Magick::ImagePerceptualHash::operator std::string() const
     return(std::string());
 
   return static_cast<std::string>(_channels[0]) +
-    static_cast<std::string>(_channels[1]) + 
+    static_cast<std::string>(_channels[1]) +
     static_cast<std::string>(_channels[2]);
 }
 
@@ -551,7 +571,7 @@ bool Magick::ImagePerceptualHash::isValid() const
 }
 
 double Magick::ImagePerceptualHash::sumSquaredDifferences(
-      const ImagePerceptualHash &channelPerceptualHash_)
+  const ImagePerceptualHash &imagePerceptualHash_) const
 {
   double
     ssd;
@@ -561,13 +581,14 @@ double Magick::ImagePerceptualHash::sumSquaredDifferences(
 
   if (!isValid())
     throw ErrorOption("instance is not valid");
-  if (!channelPerceptualHash_.isValid())
-    throw ErrorOption("channelPerceptualHash_ is not valid");
+  if (!imagePerceptualHash_.isValid())
+    throw ErrorOption("imagePerceptualHash_ is not valid");
 
   ssd=0.0;
   for (i=0; i<3; i++)
   {
-    ssd+=_channels[i].sumSquaredDifferences(_channels[i]);
+    ssd+=_channels[i].sumSquaredDifferences(
+      imagePerceptualHash_._channels[i]);
   }
   return(ssd);
 }
