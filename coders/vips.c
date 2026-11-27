@@ -582,7 +582,7 @@ ModuleExport size_t RegisterVIPSImage(void)
   entry->encoder=(EncodeImageHandler *) WriteVIPSImage;
   entry->magick=(IsImageFormatHandler *) IsVIPS;
   entry->flags|=CoderEndianSupportFlag;
-  entry->flags&=~CoderAdjoinFlag;  /* single image per file */
+  entry->flags&=~CoderAdjoinFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
@@ -636,12 +636,29 @@ ModuleExport void UnregisterVIPSImage(void)
 %
 */
 
-static inline void WriteVIPSPixel(Image *image,const Quantum value)
+static inline unsigned char *WriteVIPSPixel(Image *image,const Quantum value,
+  unsigned char *q)
 {
   if (image->depth == 16)
-    (void) WriteBlobShort(image,ScaleQuantumToShort(value));
+    {
+      unsigned short
+        pixel;
+
+      pixel=ScaleQuantumToShort(value);
+      if (image->endian == LSBEndian)
+        {
+          *q++=(unsigned char) pixel;
+          *q++=(unsigned char) (pixel >> 8);
+        }
+      else
+        {
+          *q++=(unsigned char) (pixel >> 8);
+          *q++=(unsigned char) pixel;
+        }
+    }
   else
-    (void) WriteBlobByte(image,ScaleQuantumToChar(value));
+    *q++=ScaleQuantumToChar(value);
+  return(q);
 }
 
 static MagickBooleanType WriteVIPSImage(const ImageInfo *image_info,
@@ -656,6 +673,9 @@ static MagickBooleanType WriteVIPSImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
+  size_t
+    length;
+
   ssize_t
     x;
 
@@ -664,6 +684,10 @@ static MagickBooleanType WriteVIPSImage(const ImageInfo *image_info,
 
   unsigned int
     channels;
+
+  unsigned char
+    *pixels,
+    *q;
 
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
@@ -772,6 +796,11 @@ static MagickBooleanType WriteVIPSImage(const ImageInfo *image_info,
     Legacy, offsets, future.
   */
   (void) WriteBlobPadding(image,24,'\0');
+  pixels=(unsigned char *) AcquireQuantumMemory(image->columns,
+    channels*(image->depth/8)*sizeof(*pixels));
+  if (pixels == (unsigned char *) NULL)
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+  length=image->columns*channels*(image->depth/8);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
@@ -780,35 +809,42 @@ static MagickBooleanType WriteVIPSImage(const ImageInfo *image_info,
         status=MagickFalse;
         break;
       }
+    q=pixels;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      WriteVIPSPixel(image,GetPixelRed(image,p));
+      q=WriteVIPSPixel(image,GetPixelRed(image,p),q);
       if (channels == 2)
-        WriteVIPSPixel(image,GetPixelAlpha(image,p));
+        q=WriteVIPSPixel(image,GetPixelAlpha(image,p),q);
       else
         {
           if (channels >= 3)
             {
-              WriteVIPSPixel(image,GetPixelGreen(image,p));
-              WriteVIPSPixel(image,GetPixelBlue(image,p));
+              q=WriteVIPSPixel(image,GetPixelGreen(image,p),q);
+              q=WriteVIPSPixel(image,GetPixelBlue(image,p),q);
             }
           if (channels >= 4)
             {
               if (image->colorspace == CMYKColorspace)
                 {
-                  WriteVIPSPixel(image,GetPixelBlack(image,p));
+                  q=WriteVIPSPixel(image,GetPixelBlack(image,p),q);
                   if (channels == 5)
-                    WriteVIPSPixel(image,GetPixelAlpha(image,p));
+                    q=WriteVIPSPixel(image,GetPixelAlpha(image,p),q);
                 }
               else
-                WriteVIPSPixel(image,GetPixelAlpha(image,p));
+                q=WriteVIPSPixel(image,GetPixelAlpha(image,p),q);
             }
         }
       p+=(ptrdiff_t) GetPixelChannels(image);
     }
+    if (WriteBlob(image,length,pixels) != (ssize_t) length)
+      {
+        status=MagickFalse;
+        break;
+      }
   }
+  pixels=(unsigned char *) RelinquishMagickMemory(pixels);
   metadata=GetImageProperty(image,"vips:metadata",exception);
-  if (metadata != (const char*) NULL)
+  if ((status != MagickFalse) && (metadata != (const char*) NULL))
     (void) WriteBlobString(image,metadata);
   if (CloseBlob(image) == MagickFalse)
     status=MagickFalse;

@@ -511,6 +511,16 @@ ModuleExport void UnregisterXBMImage(void)
 %    o exception: return any errors or warnings in this structure.
 %
 */
+static inline MagickBooleanType WriteXBMBuffer(Image *image,const char *buffer)
+{
+  size_t
+    length;
+
+  length=strlen(buffer);
+  return(WriteBlob(image,length,(const unsigned char *) buffer) ==
+    (ssize_t) length ? MagickTrue : MagickFalse);
+}
+
 static MagickBooleanType WriteXBMImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
@@ -598,12 +608,20 @@ static MagickBooleanType WriteXBMImage(const ImageInfo *image_info,Image *image,
           */
           (void) FormatLocaleString(buffer,MagickPathExtent,"0x%02X, ",
             (unsigned int) (byte & 0xff));
-          (void) WriteBlob(image,strlen(buffer),(unsigned char *) buffer);
+          if (WriteXBMBuffer(image,buffer) == MagickFalse)
+            {
+              status=MagickFalse;
+              break;
+            }
           count++;
           if (count == 12)
             {
               (void) CopyMagickString(buffer,"\n  ",MagickPathExtent);
-              (void) WriteBlob(image,strlen(buffer),(unsigned char *) buffer);
+              if (WriteXBMBuffer(image,buffer) == MagickFalse)
+                {
+                  status=MagickFalse;
+                  break;
+                }
               count=0;
             };
           bit=0;
@@ -611,6 +629,8 @@ static MagickBooleanType WriteXBMImage(const ImageInfo *image_info,Image *image,
         }
       p+=(ptrdiff_t) GetPixelChannels(image);
     }
+    if (status == MagickFalse)
+      break;
     if (bit != 0)
       {
         /*
@@ -619,12 +639,20 @@ static MagickBooleanType WriteXBMImage(const ImageInfo *image_info,Image *image,
         byte>>=(8-bit);
         (void) FormatLocaleString(buffer,MagickPathExtent,"0x%02X, ",
           (unsigned int) (byte & 0xff));
-        (void) WriteBlob(image,strlen(buffer),(unsigned char *) buffer);
+        if (WriteXBMBuffer(image,buffer) == MagickFalse)
+          {
+            status=MagickFalse;
+            break;
+          }
         count++;
         if (count == 12)
           {
             (void) CopyMagickString(buffer,"\n  ",MagickPathExtent);
-            (void) WriteBlob(image,strlen(buffer),(unsigned char *) buffer);
+            if (WriteXBMBuffer(image,buffer) == MagickFalse)
+              {
+                status=MagickFalse;
+                break;
+              }
             count=0;
           };
         bit=0;
@@ -636,7 +664,8 @@ static MagickBooleanType WriteXBMImage(const ImageInfo *image_info,Image *image,
       break;
   }
   (void) CopyMagickString(buffer,"};\n",MagickPathExtent);
-  (void) WriteBlob(image,strlen(buffer),(unsigned char *) buffer);
+  if ((status != MagickFalse) && (WriteXBMBuffer(image,buffer) == MagickFalse))
+    status=MagickFalse;
   if (CloseBlob(image) == MagickFalse)
     status=MagickFalse;
   return(status);

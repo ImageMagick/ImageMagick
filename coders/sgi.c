@@ -1202,7 +1202,11 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image,
           (void) WriteBlobMSBLong(image,(unsigned int) offsets[i]);
         for (i=0; i < (ssize_t) (iris_info.rows*iris_info.depth); i++)
           (void) WriteBlobMSBLong(image,(unsigned int) runlength[i]);
-        (void) WriteBlob(image,number_packets,packets);
+        if (WriteBlob(image,number_packets,packets) != (ssize_t) number_packets)
+          {
+            status=MagickFalse;
+            break;
+          }
         /*
           Relinquish resources.
         */

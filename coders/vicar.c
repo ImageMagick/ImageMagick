@@ -548,9 +548,6 @@ static MagickBooleanType WriteVICARImage(const ImageInfo *image_info,
   size_t
     length;
 
-  ssize_t
-    count;
-
   unsigned char
     *pixels;
 
@@ -595,9 +592,11 @@ static MagickBooleanType WriteVICARImage(const ImageInfo *image_info,
       break;
     length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
       GrayQuantum,pixels,exception);
-    count=WriteBlob(image,length,pixels);
-    if (count != (ssize_t) length)
-      break;
+    if (WriteBlob(image,length,pixels) != (ssize_t) length)
+      {
+        status=MagickFalse;
+        break;
+      }
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
       image->rows);
     if (status == MagickFalse)
