@@ -314,6 +314,9 @@ static MagickBooleanType WriteOTBImage(const ImageInfo *image_info,Image *image,
   const Quantum
     *p;
 
+  size_t
+    length;
+
   ssize_t
     x;
 
@@ -323,7 +326,9 @@ static MagickBooleanType WriteOTBImage(const ImageInfo *image_info,Image *image,
   unsigned char
     bit,
     byte,
-    info;
+    info,
+    *pixels,
+    *q;
 
   /*
     Open output image file.
@@ -345,6 +350,10 @@ static MagickBooleanType WriteOTBImage(const ImageInfo *image_info,Image *image,
     Convert image to a bi-level image.
   */
   (void) SetImageType(image,BilevelType,exception);
+  length=image->columns/8+(image->columns % 8 != 0 ? 1 : 0);
+  pixels=(unsigned char *) AcquireQuantumMemory(length,sizeof(*pixels));
+  if (pixels == (unsigned char *) NULL)
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   info=0;
   if ((image->columns >= 256) || (image->rows >= 256))
     SetBit(info,4,1);
@@ -367,6 +376,7 @@ static MagickBooleanType WriteOTBImage(const ImageInfo *image_info,Image *image,
       break;
     bit=0;
     byte=0;
+    q=pixels;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (GetPixelLuma(image,p) < ((double) QuantumRange/2.0))
@@ -374,14 +384,19 @@ static MagickBooleanType WriteOTBImage(const ImageInfo *image_info,Image *image,
       bit++;
       if (bit == 8)
         {
-          (void) WriteBlobByte(image,byte);
+          *q++=byte;
           bit=0;
           byte=0;
         }
       p+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (bit != 0)
-      (void) WriteBlobByte(image,byte);
+      *q++=byte;
+    if (WriteBlob(image,length,pixels) != (ssize_t) length)
+      {
+        status=MagickFalse;
+        break;
+      }
     if (image->previous == (Image *) NULL)
       {
         status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -390,6 +405,7 @@ static MagickBooleanType WriteOTBImage(const ImageInfo *image_info,Image *image,
           break;
       }
   }
+  pixels=(unsigned char *) RelinquishMagickMemory(pixels);
   if (CloseBlob(image) == MagickFalse)
     status=MagickFalse;
   return(status);

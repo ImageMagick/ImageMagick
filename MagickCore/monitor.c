@@ -46,7 +46,6 @@
 #include "MagickCore/log.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
-#include "MagickCore/statistic-private.h"
 
 /*
   Static declarations.
@@ -69,7 +68,7 @@ static SemaphoreInfo
 %
 %  The format of the MonitorComponentGenesis method is:
 %
-%      MagickBooleanMonitor MonitorComponentGenesis(void)
+%      MagickBooleanType MonitorComponentGenesis(void)
 %
 */
 MagickPrivate MagickBooleanType MonitorComponentGenesis(void)
@@ -124,14 +123,14 @@ MagickPrivate void MonitorComponentTerminus(void)
 %
 %  The format of the SetImageProgress method is:
 %
-%    MagickBooleanType SetImageProgress(const char *text,
+%    MagickBooleanType SetImageProgress(const Image *image,const char *tag,
 %      const MagickOffsetType offset,const MagickSizeType extent)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o text: description of the image processing operation.
+%    o tag: description of the image processing operation.
 %
 %    o offset: the offset relative to the extent parameter.
 %
@@ -144,9 +143,13 @@ MagickExport MagickBooleanType SetImageProgress(const Image *image,
   char
     message[MagickPathExtent];
 
+  double
+    percent;
+
   MagickBooleanType
     status;
 
+  assert(image != (const Image *) NULL);
   if (image->progress_monitor == (MagickProgressMonitor) NULL)
     return(MagickTrue);
   (void) FormatLocaleString(message,MagickPathExtent,"%s/%s",
@@ -155,8 +158,10 @@ MagickExport MagickBooleanType SetImageProgress(const Image *image,
     ActivateSemaphoreInfo(&monitor_semaphore);
   LockSemaphoreInfo(monitor_semaphore);
   status=image->progress_monitor(message,offset,extent,image->client_data);
-  (void) FormatLocaleString(message,MagickPathExtent,"%g%%:%s:%s",
-    (double) (100.0*offset*MagickSafeReciprocal((double) extent-1.0)),
+  percent=100.0;
+  if (extent > 1)
+    percent=100.0*(double) offset/((double) extent-1.0);
+  (void) FormatLocaleString(message,MagickPathExtent,"%g%%:%s:%s",percent,
     tag == (const char *) NULL ? "null" : tag,image->filename);
   (void) SetImageArtifact((Image *) image,"monitor:progress",message);
   UnlockSemaphoreInfo(monitor_semaphore);
@@ -206,6 +211,8 @@ MagickExport MagickProgressMonitor SetImageProgressMonitor(Image *image,
   MagickProgressMonitor
     previous_monitor;
 
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
   previous_monitor=image->progress_monitor;
   image->progress_monitor=progress_monitor;
   image->client_data=client_data;
@@ -256,6 +263,8 @@ MagickExport MagickProgressMonitor SetImageInfoProgressMonitor(
   MagickProgressMonitor
     previous_monitor;
 
+  assert(image_info != (ImageInfo *) NULL);
+  assert(image_info->signature == MagickCoreSignature);
   previous_monitor=image_info->progress_monitor;
   image_info->progress_monitor=progress_monitor;
   image_info->client_data=client_data;

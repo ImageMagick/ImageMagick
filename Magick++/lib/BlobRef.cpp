@@ -5,7 +5,7 @@
 // Copyright @ 2014 ImageMagick Studio LLC, a non-profit organization
 // dedicated to making software imaging solutions freely available.
 //
-// Implementation of Blob
+// Implementation of BlobRef
 //
 
 #define MAGICKCORE_IMPLEMENTATION  1
@@ -27,7 +27,7 @@ Magick::BlobRef::BlobRef(const void* data_,const size_t length_)
   if (data_ != (const void*) NULL)
     {
       data=new unsigned char[length_];
-      memcpy(data,data_,length_);
+      std::memcpy(data,data_,length_);
     }
 }
 
@@ -39,7 +39,7 @@ Magick::BlobRef::~BlobRef(void)
       data=(void *) NULL;
     }
   else if (allocator == Magick::Blob::MallocAllocator)
-    data=(void *) RelinquishMagickMemory(data);
+    data=(void *) MagickCore::RelinquishMagickMemory(data);
 }
 
 size_t Magick::BlobRef::decrease()

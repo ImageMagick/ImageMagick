@@ -105,21 +105,21 @@ static const char
     "\n"
     "    Animate\n"
     "      Open...\n"
-    "      Save...\n"
     "      Play\n"
     "      Step\n"
     "      Repeat\n"
     "      Auto Reverse\n"
+    "      Save...\n"
     "    Speed\n"
-    "      Slower\n"
     "      Faster\n"
+    "      Slower\n"
     "    Direction\n"
     "      Forward\n"
     "      Reverse\n"
-    "      Help\n"
-    "        Overview\n"
-    "        Browse Documentation\n"
-    "        About Animate\n"
+    "    Help\n"
+    "      Overview\n"
+    "      Browse Documentation\n"
+    "      About Animate\n"
     "    Image Info\n"
     "    Quit\n"
     "\n"
@@ -140,6 +140,8 @@ static const char
     "\n"
     "  space  Press to display the next image in the sequence.\n"
     "\n"
+    "  Bksp   Press to display the previous image in the sequence.\n"
+    "\n"
     "  <      Press to speed-up the display of the images.  Refer to\n"
     "         -delay for more information.\n"
     "\n"
@@ -156,7 +158,7 @@ static const char
     "         This information is printed: image name;  image size;\n"
     "         and the total number of unique colors in the image.\n"
     "\n"
-    "  Ctl-q  Press to discard all images and exit program.\n"
+    "  q, Esc Press to discard all images and exit program.\n"
   };
 
 /*
@@ -248,6 +250,21 @@ static Image
 
 static MagickBooleanType
   XSaveImage(Display *,XResourceInfo *,XWindows *,Image *,ExceptionInfo *);
+
+static const char *GetBaseFilename(const char *path)
+{
+  const char
+    *p;
+
+  /*
+    Return the portion of the path following the last directory separator;
+    safe for empty names.
+  */
+  p=strrchr(path,'/');
+  if ((p == (const char *) NULL) || (*(p+1) == '\0'))
+    return(path);
+  return(p+1);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -287,6 +304,9 @@ MagickExport MagickBooleanType AnimateImages(const ImageInfo *image_info,
   Display
     *display;
 
+  Image
+    *nexus;
+
   MagickStatusType
     status;
 
@@ -319,7 +339,20 @@ MagickExport MagickBooleanType AnimateImages(const ImageInfo *image_info,
     resource_info.image_geometry=AcquireString(image_info->page);
   resource_info.immutable=MagickTrue;
   argv[0]=AcquireString(GetClientName());
-  (void) XAnimateImages(display,&resource_info,argv,1,images,exception);
+  nexus=XAnimateImages(display,&resource_info,argv,1,images,exception);
+  while (nexus != (Image *) NULL)
+  {
+    Image
+      *next;
+
+    /*
+      Animate the image sequence requested via drag-and-drop or remote command
+      rather than leaking it.
+    */
+    next=XAnimateImages(display,&resource_info,argv,1,nexus,exception);
+    nexus=DestroyImageList(nexus);
+    nexus=next;
+  }
   (void) SetErrorHandler((ErrorHandler) NULL);
   (void) SetWarningHandler((WarningHandler) NULL);
   argv[0]=DestroyString(argv[0]);
@@ -434,9 +467,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       status=ExpandFilenames(&number_files,&filelist);
       if ((status == MagickFalse) || (number_files == 0))
         {
-          for (i=0; i < number_files; i++)
-            filelist[i]=DestroyString(filelist[i]);
-          filelist=(char **) RelinquishMagickMemory(filelist);
+          if (status != MagickFalse)
+            filelist=(char **) RelinquishMagickMemory(filelist);
           if (number_files == 0)
             {
               ThrowXWindowException(ImageError,"NoImagesWereLoaded",filenames);
@@ -459,13 +491,15 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         CatchException(exception);
         if (next != (Image *) NULL)
           AppendImageToList(&images,next);
-        if (number_files <= 5)
+        if ((number_files <= 5) || (images == (Image *) NULL))
           continue;
         proceed=SetImageProgress(images,LoadImageTag,i,(MagickSizeType)
           number_files);
         if (proceed == MagickFalse)
           break;
       }
+      for (i++; i < number_files; i++)
+        filelist[i]=DestroyString(filelist[i]);
       filelist=(char **) RelinquishMagickMemory(filelist);
       read_info=DestroyImageInfo(read_info);
       if (images == (Image *) NULL)
@@ -573,7 +607,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     }
     case ForwardCommand:
     {
-      *state=ForwardAnimationState;
+      *state|=ForwardAnimationState;
       *state&=(~AutoReverseAnimationState);
       break;
     }
@@ -721,7 +755,11 @@ static int SceneCompare(const void *x,const void *y)
 
   image_1=(*(const Image * const *) x);
   image_2=(*(const Image * const *) y);
-  return((int) (image_1->scene-image_2->scene));
+  if (image_1->scene < image_2->scene)
+    return(-1);
+  if (image_1->scene > image_2->scene)
+    return(1);
+  return(0);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -740,9 +778,6 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     *display_image,
     **image_list;
 
-  int
-    scene;
-
   MagickStatusType
     status;
 
@@ -750,7 +785,8 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     geometry_info;
 
   ssize_t
-    i;
+    i,
+    scene;
 
   size_t
     delay,
@@ -798,6 +834,12 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   resources=(*resource_info);
+  if (resources.window_id == (char *) NULL)
+    {
+      ThrowXWindowException(XServerError,"NoWindowWithSpecifiedIDExists",
+        "(null)");
+      return;
+    }
   window_info.id=(Window) NULL;
   root_window=XRootWindow(display,XDefaultScreen(display));
   if (LocaleCompare(resources.window_id,"root") == 0)
@@ -912,13 +954,13 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   */
   resources.colormap=SharedColormap;
   display_image=image_list[0];
-  for (scene=0; scene < (int) number_scenes; scene++)
+  for (scene=0; scene < (ssize_t) number_scenes; scene++)
   {
     if ((resource_info->map_type != (char *) NULL) ||
         (visual_info->klass == TrueColor) ||
         (visual_info->klass == DirectColor))
       (void) SetImageType(image_list[scene],image_list[scene]->alpha_trait ==
-        BlendPixelTrait ? TrueColorType : TrueColorAlphaType,exception);
+        BlendPixelTrait ? TrueColorAlphaType : TrueColorType,exception);
     if ((display_image->columns < image_list[scene]->columns) &&
         (display_image->rows < image_list[scene]->rows))
       display_image=image_list[scene];
@@ -1066,8 +1108,8 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     ThrowXWindowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
       images->filename);
   window_info.pixmaps[0]=window_info.pixmap;
-  window_info.matte_pixmaps[0]=window_info.pixmap;
-  for (scene=1; scene < (int) number_scenes; scene++)
+  window_info.matte_pixmaps[0]=window_info.matte_pixmap;
+  for (scene=1; scene < (ssize_t) number_scenes; scene++)
   {
     unsigned int
       columns,
@@ -1143,7 +1185,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   iterations=0;
   do
   {
-    for (scene=0; scene < (int) number_scenes; scene++)
+    for (scene=0; scene < (ssize_t) number_scenes; scene++)
     {
       if (XEventsQueued(display,QueuedAfterFlush) > 0)
         {
@@ -1166,6 +1208,18 @@ MagickExport void XAnimateBackgroundImage(Display *display,
       break;
   } while (event.type != DestroyNotify);
   (void) XSync(display,MagickFalse);
+  for (scene=0; scene < (ssize_t) number_scenes; scene++)
+  {
+    if (window_info.pixmaps[scene] != (Pixmap) NULL)
+      (void) XFreePixmap(display,window_info.pixmaps[scene]);
+    window_info.pixmaps[scene]=(Pixmap) NULL;
+    if (window_info.matte_pixmaps[scene] != (Pixmap) NULL)
+      (void) XFreePixmap(display,window_info.matte_pixmaps[scene]);
+    window_info.matte_pixmaps[scene]=(Pixmap) NULL;
+  }
+  window_info.pixmaps=(Pixmap *) RelinquishMagickMemory(window_info.pixmaps);
+  window_info.matte_pixmaps=(Pixmap *)
+    RelinquishMagickMemory(window_info.matte_pixmaps);
   image_list=(Image **) RelinquishMagickMemory(image_list);
   images=DestroyImageList(images);
 }
@@ -1314,8 +1368,10 @@ MagickExport Image *XAnimateImages(Display *display,
     command[MagickPathExtent],
     *directory,
     geometry[MagickPathExtent],
-    *p,
     resource_name[MagickPathExtent];
+
+  const char
+    *base;
 
   Image
     *coalesce_image,
@@ -1358,6 +1414,12 @@ MagickExport Image *XAnimateImages(Display *display,
   size_t
     delay,
     number_scenes;
+
+  ErrorHandler
+    error_handler;
+
+  MagickBooleanType
+    handlers_installed;
 
   WarningHandler
     warning_handler;
@@ -1408,7 +1470,9 @@ MagickExport Image *XAnimateImages(Display *display,
   assert(images->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
+  error_handler=(ErrorHandler) NULL;
   warning_handler=(WarningHandler) NULL;
+  handlers_installed=MagickFalse;
   windows=XSetWindows((XWindows *) ~0);
   if (windows != (XWindows *) NULL)
     {
@@ -1421,10 +1485,11 @@ MagickExport Image *XAnimateImages(Display *display,
       if (status == -1)
         (void) ThrowMagickException(exception,GetMagickModule(),FileOpenError,
           "UnableToOpenFile","%s",working_directory);
-      warning_handler=resource_info->display_warnings ?
+      error_handler=resource_info->display_warnings ?
         SetErrorHandler(XWarning) : SetErrorHandler((ErrorHandler) NULL);
       warning_handler=resource_info->display_warnings ?
         SetWarningHandler(XWarning) : SetWarningHandler((WarningHandler) NULL);
+      handlers_installed=MagickTrue;
     }
   else
     {
@@ -1542,7 +1607,7 @@ MagickExport Image *XAnimateImages(Display *display,
         (visual_info->klass == TrueColor) ||
         (visual_info->klass == DirectColor))
       (void) SetImageType(image_list[scene],image_list[scene]->alpha_trait ==
-        BlendPixelTrait ? TrueColorType : TrueColorAlphaType,exception);
+        BlendPixelTrait ? TrueColorAlphaType : TrueColorType,exception);
     if ((display_image->columns < image_list[scene]->columns) &&
         (display_image->rows < image_list[scene]->rows))
       display_image=image_list[scene];
@@ -1893,9 +1958,9 @@ MagickExport Image *XAnimateImages(Display *display,
   /*
     Set out progress and warning handlers.
   */
-  if (warning_handler == (WarningHandler) NULL)
+  if (handlers_installed == MagickFalse)
     {
-      warning_handler=resource_info->display_warnings ?
+      error_handler=resource_info->display_warnings ?
         SetErrorHandler(XWarning) : SetErrorHandler((ErrorHandler) NULL);
       warning_handler=resource_info->display_warnings ?
         SetWarningHandler(XWarning) : SetWarningHandler((WarningHandler) NULL);
@@ -1981,17 +2046,14 @@ MagickExport Image *XAnimateImages(Display *display,
         char
           window_name[MagickPathExtent];
 
-        p=image_list[scene]->magick_filename+
-          strlen(image_list[scene]->magick_filename)-1;
-        while ((p > image_list[scene]->magick_filename) && (*(p-1) != '/'))
-          p--;
+        base=GetBaseFilename(image_list[scene]->magick_filename);
         (void) FormatLocaleString(window_name,MagickPathExtent,
-          "%s: %s[%.17g of %.17g]",MagickPackageName,p,(double) scene+1,
+          "%s: %s[%.17g of %.17g]",MagickPackageName,base,(double) scene+1,
           (double) number_scenes);
         (void) CloneString(&windows->image.name,window_name);
       }
     status=XStringListToTextProperty(&windows->image.name,1,&window_name);
-    if (status != Success)
+    if (status != 0)
       {
         XSetWMName(display,windows->image.id,&window_name);
         (void) XFree((void *) window_name.value);
@@ -2105,12 +2167,9 @@ MagickExport Image *XAnimateImages(Display *display,
               /*
                 Update window title.
               */
-              p=image_list[scene]->filename+
-                strlen(image_list[scene]->filename)-1;
-              while ((p > image_list[scene]->filename) && (*(p-1) != '/'))
-                p--;
+              base=GetBaseFilename(image_list[scene]->filename);
               (void) FormatLocaleString(name,MagickPathExtent,
-                "%s: %s[%.17g of %.17g]",MagickPackageName,p,(double)
+                "%s: %s[%.17g of %.17g]",MagickPackageName,base,(double)
                 scene+1,(double) number_scenes);
               (void) CloneString(&windows->image.name,name);
               if (resource_info->title != (char *) NULL)
@@ -2125,7 +2184,7 @@ MagickExport Image *XAnimateImages(Display *display,
                 }
               status=XStringListToTextProperty(&windows->image.name,1,
                 &window_name);
-              if (status != Success)
+              if (status != 0)
                 {
                   XSetWMName(display,windows->image.id,&window_name);
                   (void) XFree((void *) window_name.value);
@@ -2167,7 +2226,7 @@ MagickExport Image *XAnimateImages(Display *display,
                     length;
 
                   length=XLookupString((XKeyEvent *) &event.xkey,command,(int)
-                    sizeof(command),&key_symbol,(XComposeStatus *) NULL);
+                    sizeof(command)-1,&key_symbol,(XComposeStatus *) NULL);
                   *(command+length)='\0';
                   if ((key_symbol == XK_q) || (key_symbol == XK_Escape))
                     {
@@ -2351,8 +2410,14 @@ MagickExport Image *XAnimateImages(Display *display,
             status=XGetWindowProperty(display,root_window,selection,0L,2047L,
               MagickFalse,(Atom) AnyPropertyType,&type,&format,&length,&after,
               &data);
-            if ((status != Success) || (length == 0))
+            if (status != Success)
               break;
+            if ((data == (unsigned char *) NULL) || (length == 0))
+              {
+                if (data != (unsigned char *) NULL)
+                  (void) XFree((void *) data);
+                break;
+              }
             if (*event.xclient.data.l == 2)
               {
                 /*
@@ -2518,14 +2583,14 @@ MagickExport Image *XAnimateImages(Display *display,
       }
       case KeyPress:
       {
-        static int
+        int
           length;
 
         /*
           Respond to a user key press.
         */
         length=XLookupString((XKeyEvent *) &event.xkey,command,(int)
-          sizeof(command),&key_symbol,(XComposeStatus *) NULL);
+          sizeof(command)-1,&key_symbol,(XComposeStatus *) NULL);
         *(command+length)='\0';
         if (resource_info->debug != MagickFalse)
           (void) LogMagickEvent(X11Event,GetMagickModule(),
@@ -2591,11 +2656,15 @@ MagickExport Image *XAnimateImages(Display *display,
       }
       case KeyRelease:
       {
+        int
+          length;
+
         /*
           Respond to a user key release.
         */
-        (void) XLookupString((XKeyEvent *) &event.xkey,command,(int)
-          sizeof(command),&key_symbol,(XComposeStatus *) NULL);
+        length=XLookupString((XKeyEvent *) &event.xkey,command,(int)
+          sizeof(command)-1,&key_symbol,(XComposeStatus *) NULL);
+        *(command+length)='\0';
         if (resource_info->debug != MagickFalse)
           (void) LogMagickEvent(X11Event,GetMagickModule(),
             "Key release: 0x%lx (%c)",(unsigned long) key_symbol,*command);
@@ -2714,8 +2783,14 @@ MagickExport Image *XAnimateImages(Display *display,
         status=XGetWindowProperty(display,event.xproperty.window,
           event.xproperty.atom,0L,(long) MagickPathExtent,MagickFalse,(Atom)
           AnyPropertyType,&type,&format,&length,&after,&data);
-        if ((status != Success) || (length == 0))
+        if (status != Success)
           break;
+        if ((data == (unsigned char *) NULL) || (length == 0))
+          {
+            if (data != (unsigned char *) NULL)
+              (void) XFree((void *) data);
+            break;
+          }
         (void) CopyMagickString(resource_info->image_info->filename,
           (char *) data,MagickPathExtent);
         nexus=ReadImage(resource_info->image_info,exception);
@@ -2814,7 +2889,7 @@ MagickExport Image *XAnimateImages(Display *display,
   if (resource_info->backdrop == MagickFalse)
     if (windows->backdrop.mapped)
       {
-        (void) XWithdrawWindow(display,windows->backdrop.id,\
+        (void) XWithdrawWindow(display,windows->backdrop.id,
           windows->backdrop.screen);
         (void) XDestroyWindow(display,windows->backdrop.id);
         windows->backdrop.id=(Window) NULL;
@@ -2855,7 +2930,7 @@ MagickExport Image *XAnimateImages(Display *display,
   /*
     Restore our progress monitor and warning handlers.
   */
-  (void) SetErrorHandler(warning_handler);
+  (void) SetErrorHandler(error_handler);
   (void) SetWarningHandler(warning_handler);
   /*
     Change to home directory.
@@ -2977,8 +3052,11 @@ static MagickBooleanType XSaveImage(Display *display,
       status=XDialogWidget(display,windows,"Save","Enter JPEG quality:",
         quality);
       if (*quality == '\0')
-        return(MagickTrue);
-      image->quality=StringToUnsignedLong(quality);
+        {
+          image_info=DestroyImageInfo(image_info);
+          return(MagickTrue);
+        }
+      image->quality=MagickMin(StringToUnsignedLong(quality),(size_t) 100);
       image_info->interlace=status != MagickFalse ?  NoInterlace :
         PlaneInterlace;
     }
@@ -2994,14 +3072,16 @@ static MagickBooleanType XSaveImage(Display *display,
         Request page geometry from user.
       */
       (void) CopyMagickString(geometry,PSPageGeometry,MagickPathExtent);
-      if (LocaleCompare(image_info->magick,"PDF") == 0)
-        (void) CopyMagickString(geometry,PSPageGeometry,MagickPathExtent);
       if (image_info->page != (char *) NULL)
         (void) CopyMagickString(geometry,image_info->page,MagickPathExtent);
       XListBrowserWidget(display,windows,&windows->widget,PageSizes,"Select",
         "Select page geometry:",geometry);
       if (*geometry != '\0')
-        image_info->page=GetPageGeometry(geometry);
+        {
+          if (image_info->page != (char *) NULL)
+            image_info->page=DestroyString(image_info->page);
+          image_info->page=GetPageGeometry(geometry);
+        }
     }
   /*
     Write image.

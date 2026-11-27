@@ -44,7 +44,7 @@ namespace Magick
     void adjoin(const bool flag_);
     bool adjoin(void) const;
 
-    // Transparent color
+    // Matte (transparent) color
     void matteColor(const Color &matteColor_);
     Color matteColor(void) const;
 
@@ -95,7 +95,7 @@ namespace Magick
     void endian(const EndianType endian_);
     EndianType endian(void) const;
 
-    // Image filename to read or write
+    // Open file handle to read from or write to
     void file(FILE *file_);
     FILE *file(void) const;
 
@@ -119,7 +119,7 @@ namespace Magick
     void font(const std::string &font_);
     std::string font(void) const;
 
-    // Font name
+    // Font family name
     void fontFamily(const std::string &family_);
     std::string fontFamily(void) const;
 
@@ -135,17 +135,18 @@ namespace Magick
     void fontWeight(const size_t weight_);
     size_t fontWeight(void) const;
 
+    // Descriptive name of the current image format (read-only)
     std::string format(void) const;
 
     // Image interlace scheme
     void interlaceType(const InterlaceType interlace_);
     InterlaceType interlaceType(void) const;
 
-   // Image format to write or read
+    // Image format to write or read
     void magick(const std::string &magick_);
     std::string magick(void) const;
 
-   // Write as a monochrome image
+    // Write as a monochrome image
     void monochrome(const bool monochromeFlag_);
     bool monochrome(void) const;
 
@@ -165,7 +166,7 @@ namespace Magick
     void quantizeColorSpace(const ColorspaceType colorSpace_);
     ColorspaceType quantizeColorSpace(void) const;
 
-    // Dither image during quantization.
+    // Dither image during quantization (also keeps the dither method in sync).
     void quantizeDither(const bool ditherFlag_);
     bool quantizeDither(void) const;
     void quantizeDither(const DitherMethod ditherMethod_);
@@ -230,7 +231,7 @@ namespace Magick
     // Specify miter limit. When two line segments meet at a sharp
     // angle and miter joins have been specified for 'lineJoin', it is
     // possible for the miter to extend far beyond the thickness of
-    // the line stroking the path. The miterLimit' imposes a limit on
+    // the line stroking the path. The miterLimit imposes a limit on
     // the ratio of the miter length to the 'stroke_width'. The default
     // value of this parameter is 4.
     void strokeMiterLimit(const size_t miterLimit_);
@@ -240,14 +241,15 @@ namespace Magick
     void strokePattern(const MagickCore::Image *strokePattern_);
     const MagickCore::Image *strokePattern(void) const;
 
-   // Stroke width for drawing vector objects (default one)
+    // Stroke width for drawing vector objects (default one)
     void strokeWidth(const double strokeWidth_);
     double strokeWidth(void) const;
 
+    // Sub-image (scene) number to start reading at
     void subImage(const size_t subImage_);
     size_t subImage(void) const;
 
-    // Sub-frame number to return
+    // Number of sub-images (scenes) to read
     void subRange(const size_t subRange_);
     size_t subRange(void) const;
 

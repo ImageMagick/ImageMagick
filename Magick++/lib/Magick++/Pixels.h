@@ -11,9 +11,21 @@
 #if !defined(Magick_Pixels_header)
 #define Magick_Pixels_header
 
+#include <string>
+
 #include "Magick++/Include.h"
 #include "Magick++/Color.h"
 #include "Magick++/Image.h"
+
+// Dynamic exception specifications (throw()) are deprecated in C++11 and
+// removed in C++20, so use noexcept where the compiler supports it.
+#if !defined(MAGICK_PIXELS_NOEXCEPT)
+#  if (__cplusplus >= 201103L) || (defined(_MSC_VER) && (_MSC_VER >= 1900))
+#    define MAGICK_PIXELS_NOEXCEPT noexcept
+#  else
+#    define MAGICK_PIXELS_NOEXCEPT throw()
+#  endif
+#endif
 
 namespace Magick
 {
@@ -41,7 +53,8 @@ namespace Magick
     // Return pixel metacontent
     void *metacontent(void);
 
-    // Returns the offset for the specified channel.
+    // Returns the offset for the specified channel, or -1 if the channel
+    // is not defined for the image.
     ssize_t offset(PixelChannel channel) const;
 
     // Allocate a pixel view region to store image pixels as defined
@@ -85,20 +98,21 @@ namespace Magick
   public:
 
     // Construct pixel data using specified image
-    PixelData(Magick::Image &image_,std::string map_,const StorageType type_);
+    PixelData(Magick::Image &image_,const std::string &map_,
+      const StorageType type_);
 
     // Construct pixel data using specified image
     PixelData(Magick::Image &image_,const ::ssize_t x_,const ::ssize_t y_,
-      const size_t width_,const size_t height_,std::string map_,
+      const size_t width_,const size_t height_,const std::string &map_,
       const StorageType type_);
 
     // Destroy pixel data
     ~PixelData(void);
 
-    // Pixel data buffer
+    // Pixel data buffer (NULL if the request was invalid or failed)
     const void *data(void) const;
 
-    // Length of the buffer
+    // Length of the buffer (in elements)
     ::ssize_t length(void) const;
 
     // Size of the buffer in bytes
@@ -111,10 +125,10 @@ namespace Magick
     const PixelData& operator=(const PixelData& pixels_);
 
     void init(Magick::Image &image_,const ::ssize_t x_,const ::ssize_t y_,
-      const size_t width_,const size_t height_,std::string map_,
+      const size_t width_,const size_t height_,const std::string &map_,
       const StorageType type_);
 
-    void relinquish(void) throw();
+    void relinquish(void) MAGICK_PIXELS_NOEXCEPT;
 
     void      *_data;  // The pixel data
     ::ssize_t _length; // Length of the data

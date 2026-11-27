@@ -44,16 +44,8 @@
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/image.h"
-#include "MagickCore/linked-list.h"
-#include "MagickCore/list.h"
-#include "MagickCore/memory_.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/prepress.h"
-#include "MagickCore/resource_.h"
-#include "MagickCore/registry.h"
-#include "MagickCore/semaphore.h"
-#include "MagickCore/splay-tree.h"
-#include "MagickCore/string_.h"
 #include "MagickCore/thread-private.h"
 
 /*
@@ -73,8 +65,7 @@
 %
 %  The format of the GetImageTotalInkDensity method is:
 %
-%      double GetImageTotalInkDensity(const Image *image,
-%        ExceptionInfo *exception)
+%      double GetImageTotalInkDensity(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -83,8 +74,7 @@
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport double GetImageTotalInkDensity(Image *image,
-  ExceptionInfo *exception)
+MagickExport double GetImageTotalInkDensity(Image *image,ExceptionInfo *exception)
 {
   CacheView
     *image_view;
@@ -98,10 +88,10 @@ MagickExport double GetImageTotalInkDensity(Image *image,
   ssize_t
     y;
 
-  assert(image != (Image *) NULL);
+  assert(image != (const Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->colorspace != CMYKColorspace)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
@@ -117,35 +107,37 @@ MagickExport double GetImageTotalInkDensity(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    double
-      density;
-
     const Quantum
       *p;
+
+    double
+      row_max_density;
 
     ssize_t
       x;
 
+    if (status == MagickFalse)
+      continue;
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       {
         status=MagickFalse;
         continue;
       }
+    row_max_density=0.0;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      density=(double) GetPixelRed(image,p)+(double) GetPixelGreen(image,p)+
-        (double) GetPixelBlue(image,p)+(double) GetPixelBlack(image,p);
-      if (density > total_ink_density)
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_GetImageTotalInkDensity)
-#endif
-        {
-          if (density > total_ink_density)
-            total_ink_density=density;
-        }
+      double
+        density;
+
+      density=(double) GetPixelCyan(image,p)+(double) GetPixelMagenta(image,p)+
+        (double) GetPixelYellow(image,p)+(double) GetPixelBlack(image,p);
+      if (density > row_max_density)
+        row_max_density=density;
       p+=(ptrdiff_t) GetPixelChannels(image);
     }
+    if (row_max_density > total_ink_density)
+      total_ink_density=row_max_density;
   }
   image_view=DestroyCacheView(image_view);
   if (status == MagickFalse)

@@ -165,7 +165,7 @@ namespace Magick
     Offset(const std::string &offset_);
 
     // Construct Offset from specified x and y
-    Offset(ssize_t x_,ssize_t y_);
+    Offset(::ssize_t x_,::ssize_t y_);
 
     // Destructor
     ~Offset(void);
@@ -180,10 +180,10 @@ namespace Magick
     const Offset& operator=(const std::string &offset_);
 
     // X offset from origin
-    ssize_t x(void) const;
+    ::ssize_t x(void) const;
 
     // Y offset from origin
-    ssize_t y(void) const;
+    ::ssize_t y(void) const;
 
     //
     // Public methods below this point are for Magick++ use only.
@@ -193,8 +193,8 @@ namespace Magick
     operator MagickCore::OffsetInfo() const;
 
   private:
-    ssize_t _x;
-    ssize_t _y;
+    ::ssize_t _x;
+    ::ssize_t _y;
   };
 
   class MagickPPExport Point;
