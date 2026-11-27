@@ -61,7 +61,6 @@
 #include "MagickCore/string_.h"
 #include "MagickCore/module.h"
 #include "MagickCore/type.h"
-#include "MagickCore/module.h"
 #if defined(MAGICKCORE_WMF_DELEGATE)
 #include "MagickWand/MagickWand.h"
 #endif
@@ -165,6 +164,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       return((Image *) NULL);
     }
   wmf_info=(wmfAPI *) NULL;
+  (void) memset(&options,0,sizeof(options));
   flags=0;
   flags|=WMF_OPT_IGNORE_NONFATAL;
   flags|=WMF_OPT_FUNCTION;
@@ -180,7 +180,6 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void *) image);
   if (wmf_status != wmf_E_None)
     {
-      ipa_device_close(wmf_info);
       wmf_api_destroy(wmf_info);
       ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
         image->filename);
@@ -190,7 +189,6 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   wmf_status=wmf_scan(wmf_info,0,&bounding_box);
   if (wmf_status != wmf_E_None)
     {
-      ipa_device_close(wmf_info);
       wmf_api_destroy(wmf_info);
       ThrowReaderException(DelegateError,"FailedToScanFile");
     }
@@ -199,9 +197,16 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unique_file=AcquireUniqueFileResource(filename);
   if (unique_file != -1)
     file=fdopen(unique_file,"rb+");
-  if ((unique_file == -1) || (file == (FILE *) NULL))
+  if ((unique_file == -1) || (file == (FILE *) NULL) ||
+      (eps_info == (wmf_eps_t *) NULL))
     {
-      ipa_device_close(wmf_info);
+      if (file != (FILE *) NULL)
+        (void) fclose(file);
+      else
+        if (unique_file != -1)
+          (void) close(unique_file);
+      if (unique_file != -1)
+        (void) RelinquishUniqueFileResource(filename);
       wmf_api_destroy(wmf_info);
       ThrowReaderException(FileOpenError,"UnableToCreateTemporaryFile");
     }
@@ -210,12 +215,16 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   wmf_status=wmf_play(wmf_info,0,&bounding_box);
   if (wmf_status != wmf_E_None)
     {
-      ipa_device_close(wmf_info);
       wmf_api_destroy(wmf_info);
+      (void) RelinquishUniqueFileResource(filename);
       ThrowReaderException(DelegateError,"FailedToRenderFile");
     }
   if (fseek(file,0,SEEK_SET) != 0)
-    ThrowImageException(FileOpenError,"UnableToCreateTemporaryFile");
+    {
+      wmf_api_destroy(wmf_info);
+      (void) RelinquishUniqueFileResource(filename);
+      ThrowReaderException(FileOpenError,"UnableToCreateTemporaryFile");
+    }
   wmf_api_destroy(wmf_info);
   (void) CloseBlob(image);
   image=DestroyImage(image);
@@ -449,7 +458,7 @@ static void         util_set_brush(wmfAPI *API, wmfDC *dc, const BrushApply brus
 static void         util_set_pen(wmfAPI *API, wmfDC *dc);
 
 /* Progress callback */
-int magick_progress_callback(void *context,float quantum)
+static int magick_progress_callback(void *context,float quantum)
 {
   Image
     *image;
@@ -650,7 +659,9 @@ static void ipa_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
     *exception;
 
   Image
-    *image;
+    *draw_image,
+    *image,
+    *work_image;
 
   MagickWand
     *magick_wand;
@@ -665,68 +676,63 @@ static void ipa_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
   if (bmp_draw->bmp.data == 0)
     return;
 
-  image = (Image*)bmp_draw->bmp.data;
-  if (!image)
-     return;
-
+  image=(Image *) bmp_draw->bmp.data;
   exception=ddata->exception;
+  draw_image=image;
+  work_image=(Image *) NULL;
   if (bmp_draw->crop.x || bmp_draw->crop.y ||
      (bmp_draw->crop.w != bmp_draw->bmp.width) ||
      (bmp_draw->crop.h != bmp_draw->bmp.height))
     {
-      /* Image needs to be cropped */
-      Image
-        *crop_image;
-
+      /*
+        Image needs to be cropped.  Crop a copy: the original bitmap is owned
+        by libwmf (and may be drawn again), so it must stay untouched.
+      */
       RectangleInfo
         crop_info;
 
-      crop_info.x = bmp_draw->crop.x;
-      crop_info.y = bmp_draw->crop.y;
-      crop_info.width = bmp_draw->crop.w;
-      crop_info.height = bmp_draw->crop.h;
-
-      crop_image = CropImage(image, &crop_info, exception);
-      if (crop_image)
-        {
-          image=DestroyImageList(image);
-          image = crop_image;
-          bmp_draw->bmp.data = (void*)image;
-        }
+      crop_info.x=bmp_draw->crop.x;
+      crop_info.y=bmp_draw->crop.y;
+      crop_info.width=bmp_draw->crop.w;
+      crop_info.height=bmp_draw->crop.h;
+      work_image=CropImage(image,&crop_info,exception);
+      if (work_image == (Image *) NULL)
+        return;
+      draw_image=work_image;
     }
 
-  QueryColorCompliance("white", AllCompliance, &white, exception);
-
+  (void) QueryColorCompliance("white",AllCompliance,&white,exception);
   if (ddata->image_info->texture ||
        !(IsPixelInfoEquivalent(&ddata->image_info->background_color,&white)) ||
        ddata->image_info->background_color.alpha != (double) OpaqueAlpha)
-  {
-    /*
-      Set image white background to transparent so that it may be
-      overlaid over non-white backgrounds.
-    */
-    QueryColorCompliance("white", AllCompliance, &white, exception);
-    TransparentPaintImage(image, &white, QuantumRange, MagickFalse, exception);
-  }
+    {
+      /*
+        Set image white background to transparent so that it may be
+        overlaid over non-white backgrounds.
+      */
+      if (work_image == (Image *) NULL)
+        {
+          work_image=CloneImage(image,0,0,MagickTrue,exception);
+          if (work_image == (Image *) NULL)
+            return;
+          draw_image=work_image;
+        }
+      (void) TransparentPaintImage(draw_image,&white,QuantumRange,MagickFalse,
+        exception);
+    }
 
-  width = fabs(bmp_draw->pixel_width *(double) bmp_draw->crop.w);
-  height = fabs(bmp_draw->pixel_height *(double) bmp_draw->crop.h);
-  magick_wand=NewMagickWandFromImage(image);
-  (void) DrawComposite(WmfDrawingWand, CopyCompositeOp,
-    XC(bmp_draw->pt.x) *ddata->scale_x, YC(bmp_draw->pt.y) *ddata->scale_y,
-    width *ddata->scale_x, height *ddata->scale_y, magick_wand);
-  magick_wand=DestroyMagickWand(magick_wand);
-
-#if 0
-  printf("bmp_draw->bmp.data   = 0x%lx\n", (long)bmp_draw->bmp.data);
-  printf("registry id          = %li\n", id);
-  /* printf("pixel_width          = %g\n", bmp_draw->pixel_width); */
-  /* printf("pixel_height         = %g\n", bmp_draw->pixel_height); */
-  printf("bmp_draw->bmp WxH    = %ix%i\n", bmp_draw->bmp.width, bmp_draw->bmp.height);
-  printf("bmp_draw->crop WxH   = %ix%i\n", bmp_draw->crop.w, bmp_draw->crop.h);
-  printf("bmp_draw->crop x,y   = %i,%i\n", bmp_draw->crop.x, bmp_draw->crop.y);
-  printf("image size WxH       = %lux%lu\n", image->columns, image->rows);
-#endif
+  width=fabs(bmp_draw->pixel_width *(double) bmp_draw->crop.w);
+  height=fabs(bmp_draw->pixel_height *(double) bmp_draw->crop.h);
+  magick_wand=NewMagickWandFromImage(draw_image);
+  if (magick_wand != (MagickWand *) NULL)
+    {
+      (void) DrawComposite(WmfDrawingWand,CopyCompositeOp,
+        XC(bmp_draw->pt.x) *ddata->scale_x,YC(bmp_draw->pt.y) *ddata->scale_y,
+        width *ddata->scale_x,height *ddata->scale_y,magick_wand);
+      magick_wand=DestroyMagickWand(magick_wand);
+    }
+  if (work_image != (Image *) NULL)
+    work_image=DestroyImageList(work_image);
 }
 
 static void ipa_bmp_read(wmfAPI *API, wmfBMP_Read_t *bmp_read) {
@@ -752,8 +758,8 @@ static void ipa_bmp_read(wmfAPI *API, wmfBMP_Read_t *bmp_read) {
       char
         size[MagickPathExtent];
 
-      (void) FormatLocaleString(size,MagickPathExtent,"%ux%u",bmp_read->width,
-        bmp_read->height);
+      (void) FormatLocaleString(size,MagickPathExtent,"%ux%u",
+        (unsigned int) bmp_read->width,(unsigned int) bmp_read->height);
       CloneString(&image_info->size,size);
     }
 #if 0
@@ -770,16 +776,21 @@ static void ipa_bmp_read(wmfAPI *API, wmfBMP_Read_t *bmp_read) {
       printf("ipa_bmp_read: rows=%ld,columns=%ld\n\n", image->rows, image->columns);
 #endif
 
-      bmp_read->bmp.data   = (void*)image;
-      bmp_read->bmp.width  = (U16)image->columns;
-      bmp_read->bmp.height = (U16)image->rows;
+      if ((image->columns > 0xFFFFUL) || (image->rows > 0xFFFFUL))
+        image=DestroyImageList(image);  /* does not fit libwmf's U16 fields */
+      else
+        {
+          bmp_read->bmp.data   = (void*)image;
+          bmp_read->bmp.width  = (U16)image->columns;
+          bmp_read->bmp.height = (U16)image->rows;
+        }
     }
 }
 
 static void ipa_bmp_free(wmfAPI *API, wmfBMP *bmp)
 {
   (void) API;
-  DestroyImageList((Image*)bmp->data);
+  (void) DestroyImageList((Image*)bmp->data);
   bmp->data = (void*) 0;
   bmp->width = (U16) 0;
   bmp->height = (U16) 0;
@@ -810,6 +821,8 @@ static void ipa_device_close(wmfAPI *API)
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData(API);
 
+  if (ddata == (wmf_magick_t *) NULL)
+    return;
   if (ddata->draw_wand != (DrawingWand *) NULL)
     {
       DestroyDrawingWand(ddata->draw_wand);
@@ -820,7 +833,9 @@ static void ipa_device_close(wmfAPI *API)
       DestroyDrawInfo(ddata->draw_info);
       ddata->draw_info=(DrawInfo *)NULL;
     }
-  if (WMF_MAGICK_GetFontData(API)->ps_name)
+  if ((API->font_data != (void *) NULL) &&
+      (WMF_MAGICK_GetFontData(API) != (wmf_magick_font_t *) NULL) &&
+      (WMF_MAGICK_GetFontData(API)->ps_name != (char *) NULL))
     WMF_MAGICK_GetFontData(API)->ps_name=(char *) RelinquishMagickMemory(
       WMF_MAGICK_GetFontData(API)->ps_name);
 }
@@ -1024,18 +1039,13 @@ static void util_draw_arc(wmfAPI *API,
           wmfDrawArc_t *draw_arc, magick_arc_t finish)
 {
   wmfD_Coord
-    BR,
     O,
-    TL,
-    center,
     end,
     start;
 
   double
     phi_e = 360,
-    phi_s = 0;
-
-  double
+    phi_s = 0,
     Rx,
     Ry;
 
@@ -1044,41 +1054,21 @@ static void util_draw_arc(wmfAPI *API,
 
   if (TO_FILL(draw_arc) || TO_DRAW(draw_arc))
     {
-      center.x = (draw_arc->TL.x + draw_arc->BR.x) / 2;
-      center.y = (draw_arc->TL.y + draw_arc->BR.y) / 2;
-      start = center;
-      end = center;
+      O.x = (draw_arc->TL.x + draw_arc->BR.x) / 2;
+      O.y = (draw_arc->TL.y + draw_arc->BR.y) / 2;
+      start.x = 0;
+      start.y = 0;
+      end = start;
+
+      Rx = fabs((double) (draw_arc->BR.x - draw_arc->TL.x)) / 2;
+      Ry = fabs((double) (draw_arc->BR.y - draw_arc->TL.y)) / 2;
 
       if (finish != magick_arc_ellipse)
         {
-          draw_arc->start.x += center.x;
-          draw_arc->start.y += center.y;
-
-          draw_arc->end.x += center.x;
-          draw_arc->end.y += center.y;
-        }
-
-      TL = draw_arc->TL;
-      BR = draw_arc->BR;
-
-      O = center;
-
-      if (finish != magick_arc_ellipse)
-        {
+          /* Start and end are taken relative to the center (no longer
+             written back into libwmf's structure). */
           start = draw_arc->start;
           end = draw_arc->end;
-        }
-
-      Rx = (BR.x - TL.x) / 2;
-      Ry = (BR.y - TL.y) / 2;
-
-      if (finish != magick_arc_ellipse)
-        {
-          start.x -= O.x;
-          start.y -= O.y;
-
-          end.x -= O.x;
-          end.y -= O.y;
 
           phi_s = atan2((double) start.y, (double) start.x) *180 / MagickPI;
           phi_e = atan2((double) end.y, (double) end.x) *180 / MagickPI;
@@ -1093,30 +1083,44 @@ static void util_draw_arc(wmfAPI *API,
       else
         util_set_brush(API, draw_arc->dc, BrushApplyFill);
 
-      if (finish == magick_arc_ellipse)
+      if ((finish == magick_arc_ellipse) ||
+          ((finish != magick_arc_open) && ((phi_e-phi_s) >= 360.0)))
         DrawEllipse(WmfDrawingWand, XC(O.x), YC(O.y), Rx, Ry, 0, 360);
-      else if (finish == magick_arc_pie)
+      else
         {
-          DrawPathStart(WmfDrawingWand);
-          DrawPathMoveToAbsolute(WmfDrawingWand, XC(O.x+start.x),
-            YC(O.y+start.y));
-          DrawPathEllipticArcAbsolute(WmfDrawingWand, Rx, Ry, 0, MagickFalse,
-            MagickTrue, XC(O.x+end.x), YC(O.y+end.y));
-          DrawPathLineToAbsolute(WmfDrawingWand, XC(O.x), YC(O.y));
-          DrawPathClose(WmfDrawingWand);
-          DrawPathFinish(WmfDrawingWand);
+          double
+            ex,
+            ey,
+            sx,
+            sy;
+
+          /* Points on the ellipse at the angles that DrawArc() uses. */
+          sx = (double) O.x + Rx*cos(phi_s*MagickPI/180.0);
+          sy = (double) O.y + Ry*sin(phi_s*MagickPI/180.0);
+          ex = (double) O.x + Rx*cos(phi_e*MagickPI/180.0);
+          ey = (double) O.y + Ry*sin(phi_e*MagickPI/180.0);
+
+          if (finish == magick_arc_pie)
+            {
+              DrawPathStart(WmfDrawingWand);
+              DrawPathMoveToAbsolute(WmfDrawingWand, XC(sx), YC(sy));
+              DrawPathEllipticArcAbsolute(WmfDrawingWand, Rx, Ry, 0,
+                ((phi_e-phi_s) > 180.0) ? MagickTrue : MagickFalse,
+                MagickTrue, XC(ex), YC(ey));
+              DrawPathLineToAbsolute(WmfDrawingWand, XC(O.x), YC(O.y));
+              DrawPathClose(WmfDrawingWand);
+              DrawPathFinish(WmfDrawingWand);
+            }
+          else if (finish == magick_arc_chord)
+            {
+              DrawArc(WmfDrawingWand, XC(draw_arc->TL.x), YC(draw_arc->TL.y),
+                XC(draw_arc->BR.x), YC(draw_arc->BR.y), phi_s, phi_e);
+              DrawLine(WmfDrawingWand, XC(sx), YC(sy), XC(ex), YC(ey));
+            }
+          else      /* if (finish == magick_arc_open) */
+            DrawArc(WmfDrawingWand, XC(draw_arc->TL.x), YC(draw_arc->TL.y),
+              XC(draw_arc->BR.x), YC(draw_arc->BR.y), phi_s, phi_e);
         }
-        else if (finish == magick_arc_chord)
-        {
-          DrawArc(WmfDrawingWand, XC(draw_arc->TL.x), YC(draw_arc->TL.y),
-            XC(draw_arc->BR.x), XC(draw_arc->BR.y), phi_s, phi_e);
-          DrawLine(WmfDrawingWand, XC(draw_arc->BR.x-start.x),
-            YC(draw_arc->BR.y-start.y), XC(draw_arc->BR.x-end.x),
-            YC(draw_arc->BR.y-end.y));
-        }
-        else      /* if (finish == magick_arc_open) */
-          DrawArc(WmfDrawingWand, XC(draw_arc->TL.x), YC(draw_arc->TL.y),
-            XC(draw_arc->BR.x), XC(draw_arc->BR.y), phi_s, phi_e);
     }
 
   /* Restore graphic wand */
@@ -1142,7 +1146,7 @@ static void ipa_draw_line(wmfAPI *API, wmfDrawLine_t *draw_line)
 
 static void ipa_poly_line(wmfAPI *API, wmfPolyLine_t *polyline)
 {
-  if (polyline->count <= 2)
+  if (polyline->count < 2)
     return;
 
   if (TO_DRAW(polyline))
@@ -1445,6 +1449,9 @@ static void ipa_draw_text(wmfAPI *API, wmfDrawText_t *draw_text)
   ExceptionInfo
     *exception;
 
+  MagickBooleanType
+    have_metrics = MagickFalse;
+
   TypeMetric
     metrics;
 
@@ -1469,6 +1476,7 @@ static void ipa_draw_text(wmfAPI *API, wmfDrawText_t *draw_text)
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData(API);
 
+  (void) memset(&metrics,0,sizeof(metrics));
   point = draw_text->pt;
 
   /* Choose bounding box and calculate its width and height */
@@ -1505,7 +1513,7 @@ static void ipa_draw_text(wmfAPI *API, wmfDrawText_t *draw_text)
 
   font = WMF_DC_FONT(draw_text->dc);
 
-  if (!draw_text->str)
+  if ((font == (wmfFont *) NULL) || (!draw_text->str))
     return;
 
   /* Convert font_height to equivalent pointsize */
@@ -1535,7 +1543,7 @@ static void ipa_draw_text(wmfAPI *API, wmfDrawText_t *draw_text)
    *Obtain font metrics if required
    *
    */
-  if ((WMF_DC_TEXTALIGN(draw_text->dc) & TA_CENTER) ||
+  if (((WMF_DC_TEXTALIGN(draw_text->dc) & TA_CENTER) == TA_CENTER) ||
       (WMF_TEXT_UNDERLINE(font)) || (WMF_TEXT_STRIKEOUT(font)))
     {
       Image
@@ -1551,8 +1559,10 @@ static void ipa_draw_text(wmfAPI *API, wmfDrawText_t *draw_text)
 
       if (GetTypeMetrics(image, draw_info, &metrics, exception) != MagickFalse)
         {
-          /* Center the text if it is not yet centered and should be */
-          if ((WMF_DC_TEXTALIGN(draw_text->dc) & TA_CENTER))
+          have_metrics=MagickTrue;
+          /* Center the text if it is not yet centered and should be
+             (TA_RIGHT shares a bit with TA_CENTER, so compare the mask) */
+          if ((WMF_DC_TEXTALIGN(draw_text->dc) & TA_CENTER) == TA_CENTER)
             {
               double
                 text_width = metrics.width *(ddata->scale_y / ddata->scale_x);
@@ -1617,7 +1627,8 @@ static void ipa_draw_text(wmfAPI *API, wmfDrawText_t *draw_text)
   (void) DrawSetFontSize(WmfDrawingWand,pointsize);
 
   /* Output Postscript font name */
-  (void) DrawSetFont(WmfDrawingWand, WMF_FONT_PSNAME(font));
+  if (WMF_FONT_PSNAME(font) != (char *) NULL)
+    (void) DrawSetFont(WmfDrawingWand, WMF_FONT_PSNAME(font));
 
   /* Translate coordinates so target is 0,0 */
   DrawTranslate(WmfDrawingWand, XC(point.x), YC(point.y));
@@ -1629,9 +1640,8 @@ static void ipa_draw_text(wmfAPI *API, wmfDrawText_t *draw_text)
   /* ImageMagick's drawing rotation is clockwise from horizontal
      while WMF drawing rotation is counterclockwise from horizontal */
   angle=fabs(RadiansToDegrees(2.0*MagickPI-WMF_TEXT_ANGLE(font)));
-  if (angle == 360)
-    angle = 0;
-  if (angle != 0)
+  angle=fmod(angle,360.0);
+  if (angle != 0.0)
     DrawRotate(WmfDrawingWand, angle);
 
   /*
@@ -1643,7 +1653,7 @@ static void ipa_draw_text(wmfAPI *API, wmfDrawText_t *draw_text)
   DrawAnnotation(WmfDrawingWand,0,0,(unsigned char *) draw_text->str);
 
   /* Underline text the Windows way (at the bottom) */
-  if (WMF_TEXT_UNDERLINE(font))
+  if ((have_metrics != MagickFalse) && (WMF_TEXT_UNDERLINE(font)))
     {
       double
         line_height;
@@ -1665,7 +1675,7 @@ static void ipa_draw_text(wmfAPI *API, wmfDrawText_t *draw_text)
     }
 
   /* Strikeout text the Windows way */
-  if (WMF_TEXT_STRIKEOUT(font))
+  if ((have_metrics != MagickFalse) && (WMF_TEXT_STRIKEOUT(font)))
     {
       double line_height;
 
@@ -1876,7 +1886,8 @@ static void util_set_brush(wmfAPI *API, wmfDC *dc,const BrushApply brush_apply)
         wmfBMP
           *brush_bmp = WMF_BRUSH_BITMAP(brush);
 
-        if (brush_bmp && brush_bmp->data != 0)
+        if (brush_bmp && brush_bmp->data != 0 && brush_bmp->width > 0 &&
+            brush_bmp->height > 0)
           {
             CompositeOperator
               mode;
@@ -2377,9 +2388,15 @@ static void lite_font_map(wmfAPI* API, wmfFont* font)
     return;
 
   font_data = (wmfFontData*)API->font_data;
+  if (font_data == (wmfFontData *) NULL)
+    return;
   font->user_data = font_data->user_data;
   magick_font = (wmf_magick_font_t*)font->user_data;
+  if (magick_font == (wmf_magick_font_t *) NULL)
+    return;
   wmf_font_name = WMF_FONT_NAME(font);
+  if (wmf_font_name == (const char *) NULL)
+    wmf_font_name = "Times";
 
   if (magick_font->ps_name != (char *) NULL)
     magick_font->ps_name=DestroyString(magick_font->ps_name);
@@ -2387,7 +2404,10 @@ static void lite_font_map(wmfAPI* API, wmfFont* font)
   exception=ddata->exception;
   type_info_base=GetTypeInfo("*",exception);
   if (type_info_base == 0)
-    return;
+    {
+      (void) CloneString(&magick_font->ps_name,"Times-Roman");
+      return;
+    }
 
   /* Certain short-hand font names are not the proper Windows names
      and should be promoted to the proper names */
@@ -2475,9 +2495,14 @@ static void lite_font_map(wmfAPI* API, wmfFont* font)
                 CloneString(&magick_font->ps_name,WMFFontMap[i].bold);
               else
                 CloneString(&magick_font->ps_name,WMFFontMap[i].normal);
+              break;
             }
         }
     }
+
+  /* Never leave the mapping empty: DrawSetFont() requires a name */
+  if (magick_font->ps_name == (char *) NULL)
+    (void) CloneString(&magick_font->ps_name,"Times-Roman");
 
 #if 0
   printf("\nlite_font_map\n");
@@ -2626,6 +2651,11 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   wmf_status_function(API,image,magick_progress_callback);
 
   ddata=WMF_MAGICK_GetData(API);
+  if (ddata == (wmf_magick_t *) NULL)
+    {
+      wmf_api_destroy(API);
+      ThrowReaderException(DelegateError,"UnableToInitializeWMFLibrary");
+    }
   ddata->image=image;
   ddata->image_info=image_info;
   ddata->draw_info=CloneDrawInfo(image_info,(const DrawInfo *) NULL);
@@ -2751,7 +2781,10 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   bounding_width  = bbox.BR.x - bbox.TL.x;
   bounding_height = bbox.BR.y - bbox.TL.y;
-  if ((bounding_width == 0) || (bounding_height == 0))
+  if (!(fabs(bounding_width) > 0.0) || !(fabs(bounding_height) > 0.0) ||
+      !(image_width > 0.0) || !(image_height > 0.0) ||
+      (image_width >= (double) MAGICK_SSIZE_MAX) ||
+      (image_height >= (double) MAGICK_SSIZE_MAX))
     {
       ipa_device_close(API);
       (void) wmf_api_destroy(API);
@@ -2850,8 +2883,8 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
    *Create canvas image
    *
    */
-  image->rows=(unsigned long) ceil(image_height);
-  image->columns=(unsigned long) ceil(image_width);
+  image->rows=(size_t) ceil(image_height);
+  image->columns=(size_t) ceil(image_width);
 
   if (image_info->ping != MagickFalse)
     {
@@ -2865,11 +2898,16 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
-    return(DestroyImageList(image));
+    {
+      ipa_device_close(API);
+      wmf_api_destroy(API);
+      (void) CloseBlob(image);
+      return(DestroyImageList(image));
+    }
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-       "  Creating canvas image with size %lux%lu",(unsigned long) image->rows,
-       (unsigned long) image->columns);
+       "  Creating canvas image with size %lux%lu",
+       (unsigned long) image->columns,(unsigned long) image->rows);
 
   /*
    *Set solid background color
@@ -2964,6 +3002,7 @@ ModuleExport size_t RegisterWMFImage(void)
 #if defined(MAGICKCORE_SANS_DELEGATE) || defined(MAGICKCORE_WMF_DELEGATE)
   entry->decoder=ReadWMFImage;
 #endif
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

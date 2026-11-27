@@ -36,15 +36,15 @@ MagickPPExport bool Magick::EnableOpenCL(void)
   bool
     status;
 
- status=MagickCore::SetOpenCLEnabled(MagickTrue) != MagickFalse;
- return(status);
+  status=MagickCore::SetOpenCLEnabled(MagickTrue) != MagickFalse;
+  return(status);
 }
 
 MagickPPExport void Magick::InitializeMagick(const char *path_)
 {
+  // MagickCoreGenesis is safe to call repeatedly; it only initializes once.
   MagickCore::MagickCoreGenesis(path_,MagickFalse);
-  if (!magick_initialized)
-    magick_initialized=true;
+  magick_initialized=true;
 }
 
 MagickPPExport void Magick::SetRandomSeed(const unsigned long seed)
@@ -69,6 +69,6 @@ MagickPPExport void Magick::TerminateMagick(void)
   if (magick_initialized)
     {
       magick_initialized=false;
-      MagickCore::MagickWandTerminus();
+      MagickCore::MagickCoreTerminus();
     }
 }

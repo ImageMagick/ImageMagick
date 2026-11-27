@@ -114,6 +114,8 @@ static MagickBooleanType IsWEBP(const unsigned char *magick,const size_t length)
 {
   if (length < 12)
     return(MagickFalse);
+  if (LocaleNCompare((const char *) magick,"RIFF",4) != 0)
+    return(MagickFalse);
   if (LocaleNCompare((const char *) magick+8,"WEBP",4) == 0)
     return(MagickTrue);
   return(MagickFalse);
@@ -199,6 +201,13 @@ static MagickBooleanType IsWEBPImageLossless(const unsigned char *stream,
   */
   if (length <= VP8_CHUNK_INDEX)
     return(MagickFalse);
+  if (memcmp(stream,"RIFF",TAG_SIZE) != 0)
+    {
+      /*
+        Bare frame fragment (animation): the first chunk tag says it all.
+      */
+      return(memcmp(stream,"VP8L",TAG_SIZE) == 0 ? MagickTrue : MagickFalse);
+    }
   if (stream[VP8_CHUNK_INDEX] != EXTENDED_HEADER)
     return(stream[VP8_CHUNK_INDEX] == LOSSLESS_FLAG ? MagickTrue : MagickFalse);
   /*
@@ -260,12 +269,10 @@ static int ReadSingleWEBPImage(const ImageInfo *image_info,Image *image,
     image_height;
 
   ssize_t
+    stride,
     x_offset,
     y_offset,
     y;
-
-  unsigned char
-    *p;
 
   WebPDecBuffer
     *magick_restrict webp_image;
@@ -307,9 +314,12 @@ static int ReadSingleWEBPImage(const ImageInfo *image_info,Image *image,
   webp_status=(int) WebPDecode(stream,length,configure);
   if (webp_status != VP8_STATUS_OK)
     return(webp_status);
-  p=(unsigned char *) webp_image->u.RGBA.rgba;
+  stride=(ssize_t) webp_image->u.RGBA.stride;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    const unsigned char
+      *magick_restrict p;
+
     Quantum
       *q;
 
@@ -322,15 +332,22 @@ static int ReadSingleWEBPImage(const ImageInfo *image_info,Image *image,
         webp_status=-1;
         break;
       }
+    p=(const unsigned char *) NULL;
+    if ((y >= y_offset) && (y < (y_offset+(ssize_t) image_height)))
+      p=(const unsigned char *) webp_image->u.RGBA.rgba+(y-y_offset)*stride;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (((x >= x_offset) && (x < (x_offset+(ssize_t) image_width))) &&
-          ((y >= y_offset) && (y < (y_offset+(ssize_t) image_height))))
+      if ((p != (const unsigned char *) NULL) && (x >= x_offset) &&
+          (x < (x_offset+(ssize_t) image_width)))
         {
-          SetPixelRed(image,ScaleCharToQuantum(*p++),q);
-          SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
-          SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
-          SetPixelAlpha(image,ScaleCharToQuantum(*p++),q);
+          const unsigned char
+            *magick_restrict pixel;
+
+          pixel=p+4*(x-x_offset);
+          SetPixelRed(image,ScaleCharToQuantum(pixel[0]),q);
+          SetPixelGreen(image,ScaleCharToQuantum(pixel[1]),q);
+          SetPixelBlue(image,ScaleCharToQuantum(pixel[2]),q);
+          SetPixelAlpha(image,ScaleCharToQuantum(pixel[3]),q);
         }
       else
         {
@@ -342,7 +359,10 @@ static int ReadSingleWEBPImage(const ImageInfo *image_info,Image *image,
       q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
-      break;
+      {
+        webp_status=-1;
+        break;
+      }
     status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
       image->rows);
     if (status == MagickFalse)
@@ -449,11 +469,13 @@ static int ReadAnimatedWEBPImage(const ImageInfo *image_info,Image *image,
 
     mux=WebPMuxCreate(&data,0);
     status=WebPMuxGetAnimationParams(mux,&params);
-    if (status >= 0)
+    if (status == WEBP_MUX_OK)
       image->iterations=(size_t) params.loop_count;
     WebPMuxDelete(mux);
   }
   demux=WebPDemux(&data);
+  if (demux == (WebPDemuxer *) NULL)
+    return(VP8_STATUS_BITSTREAM_ERROR);
   if (!WebPDemuxGetFrame(demux,1,&iter))
     {
       WebPDemuxDelete(demux);
@@ -465,7 +487,10 @@ static int ReadAnimatedWEBPImage(const ImageInfo *image_info,Image *image,
       {
         AcquireNextImage(image_info,image,exception);
         if (GetNextImageInList(image) == (Image *) NULL)
-          break;
+          {
+            webp_status=-1;
+            break;
+          }
         image=SyncNextImageInList(image);
         CloneImageProperties(image,original_image);
         image->page.x=(ssize_t) iter.x_offset;
@@ -560,6 +585,7 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
       return((Image *) NULL);
     }
   stream=(unsigned char *) NULL;
+  (void) memset(&configure,0,sizeof(configure));
   if (WebPInitDecoderConfig(&configure) == 0)
     ThrowWEBPException(ResourceLimitError,"UnableToDecodeImageFile");
   webp_image->colorspace=MODE_RGBA;
@@ -569,7 +595,7 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
   status=IsWEBP(header,(size_t) count);
   if (status == MagickFalse)
     ThrowWEBPException(CorruptImageError,"CorruptImage");
-  length=(size_t) (ReadWebPLSBWord(header+4)+8);
+  length=(size_t) ReadWebPLSBWord(header+4)+8;
   if (length < 12)
     ThrowWEBPException(CorruptImageError,"CorruptImage");
   blob_size=(size_t) GetBlobSize(image);
@@ -705,7 +731,7 @@ ModuleExport size_t RegisterWEBPImage(void)
   entry->mime_type=ConstantString("image/webp");
   entry->flags|=CoderDecoderSeekableStreamFlag;
 #if !defined(MAGICKCORE_WEBPMUX_DELEGATE)
-  entry->flags^=CoderAdjoinFlag;
+  entry->flags&=~CoderAdjoinFlag;
 #endif
   entry->magick=(IsImageFormatHandler *) IsWEBP;
   if (*version != '\0')
@@ -777,7 +803,8 @@ static int WebPEncodeProgress(int percent,const WebPPicture* picture)
     status;
 
   image=(Image *) picture->user_data;
-  status=SetImageProgress(image,EncodeImageTag,percent-1,100);
+  status=SetImageProgress(image,EncodeImageTag,(MagickOffsetType)
+    (percent > 0 ? percent-1 : 0),100);
   return(status == MagickFalse ? 0 : 1);
 }
 #endif
@@ -865,7 +892,10 @@ static MagickBooleanType WriteSingleWEBPPicture(const ImageInfo *image_info,
 
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
-      break;
+      {
+        status=MagickFalse;
+        break;
+      }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       *q++=(uint32_t) (image->alpha_trait != UndefinedPixelTrait ? (uint32_t)
@@ -968,8 +998,9 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
   frame_timestamp=0;
   memory_info_list=NewLinkedList(GetImageListLength(image));
   frame=image;
-  while (frame != NULL)
+  while (frame != (Image *) NULL)
   {
+    memory_info=(MemoryInfo *) NULL;
     status=(MagickBooleanType) WebPPictureInit(&picture);
     if (status == MagickFalse)
       {
@@ -984,18 +1015,36 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
         status=(MagickBooleanType) WebPAnimEncoderAdd(enc,&picture,
           (int) frame_timestamp,configure);
         if (status == MagickFalse)
-          (void) ThrowMagickException(exception,GetMagickModule(),
-            CorruptImageError,WebPErrorCodeMessage(picture.error_code),"`%s'",
-            image->filename);
+          (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
+            WebPAnimEncoderGetError(enc),"`%s'",image->filename);
       }
     if (memory_info != (MemoryInfo *) NULL)
       (void) AppendValueToLinkedList(memory_info_list,memory_info);
     WebPPictureFree(&picture);
+    if (status == MagickFalse)
+      break;
     effective_delta=(size_t) CastDoubleToSizeT((double) frame->delay*1000.0*
       MagickSafeReciprocal((double) frame->ticks_per_second));
     if (effective_delta < 10)
-      effective_delta=(image->delay == 0) && (image->previous != NULL) ? 
-        (image->previous->delay*1000/image->ticks_per_second) : 100;
+      {
+        /*
+          Too short to be honored by most viewers: reuse the previous frame's
+          delay when this one has none, otherwise fall back to 100ms.
+        */
+        effective_delta=100;
+        if ((frame->delay == 0) && (frame->previous != (Image *) NULL) &&
+            (frame->previous->ticks_per_second != 0))
+          {
+            size_t
+              previous_delta;
+
+            previous_delta=(size_t) CastDoubleToSizeT(
+              (double) frame->previous->delay*1000.0*MagickSafeReciprocal(
+              (double) frame->previous->ticks_per_second));
+            if (previous_delta >= 10)
+              effective_delta=previous_delta;
+          }
+      }
     frame_timestamp+=effective_delta;
     frame=GetNextImageInList(frame);
   }
@@ -1045,15 +1094,18 @@ static MagickBooleanType WriteWEBPImageProfile(Image *image,
       (xmp_profile == (StringInfo *) NULL) &&
       (image->iterations == 0))
     return(MagickTrue);
-  mux=WebPMuxCreate(webp_data, 1);
-  WebPDataClear(webp_data);
-  if (mux == NULL)
-    (void) ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
-      "UnableToEncodeImageFile","`%s'",image->filename);
+  mux=WebPMuxCreate(webp_data,1);
+  if (mux == (WebPMux *) NULL)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"UnableToEncodeImageFile","`%s'",image->filename);
+      return(MagickFalse);
+    }
   /*
-    Clean up returned data.
+    The mux owns a copy of the data now; clean up the original.
   */
-  memset(webp_data, 0, sizeof(*webp_data));
+  WebPDataClear(webp_data);
+  memset(webp_data,0,sizeof(*webp_data));
   mux_error=WEBP_MUX_OK;
   if (image->iterations > 0)
     {
@@ -1068,7 +1120,7 @@ static MagickBooleanType WriteWEBPImageProfile(Image *image,
       else
         if (mux_error == WEBP_MUX_OK)
           {
-            new_params.loop_count=MagickMin((int) image->iterations,65535);
+            new_params.loop_count=(int) MagickMin(image->iterations,(size_t) 65535);
             mux_error=WebPMuxSetAnimationParams(mux, &new_params);
           }
     }
@@ -1102,8 +1154,11 @@ static MagickBooleanType WriteWEBPImageProfile(Image *image,
     mux_error=WebPMuxAssemble(mux,webp_data);
   WebPMuxDelete(mux);
   if (mux_error != WEBP_MUX_OK)
-    (void) ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
-      "UnableToEncodeImageFile","`%s'",image->filename);
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"UnableToEncodeImageFile","`%s'",image->filename);
+      return(MagickFalse);
+    }
   return(MagickTrue);
 }
 #endif
@@ -1114,9 +1169,16 @@ static inline void SetBooleanOption(const ImageInfo *image_info,
   const char
     *value;
 
+  ssize_t
+    option_value;
+
   value=GetImageOption(image_info,option);
   if (value != (char *) NULL)
-    *setting=(int) ParseCommandOption(MagickBooleanOptions,MagickFalse,value);
+    {
+      option_value=ParseCommandOption(MagickBooleanOptions,MagickFalse,value);
+      if (option_value >= 0)
+        *setting=(int) option_value;
+    }
 }
 
 static inline void SetIntegerOption(const ImageInfo *image_info,
@@ -1247,6 +1309,11 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
           if ((next->rows != image->rows) || (next->columns != image->columns))
             {
               coalesce_image=CoalesceImages(image,exception);
+              if (coalesce_image == (Image *) NULL)
+                {
+                  (void) CloseBlob(image);
+                  return(MagickFalse);
+                }
               break;
             }
           next=GetNextImageInList(next);

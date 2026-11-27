@@ -123,7 +123,7 @@
     these formats without accepting potentially untrusted input through them.
   -->
   <policy domain="module" rights="none" pattern="{MSL,URL,VIDEO}"/>
-  <policy domain="coder" rights="write" pattern="{MVG,PDF,PS,SVG,TXT,XPS}"/>
+  <policy domain="coder" rights="write" pattern="{AI,EPS,MVG,PDF,PS,SVG,TXT,XPS}"/>
 
   <!-- Optional: overwrite temporary files and buffers before deletion. -->
   <!-- <policy domain="system" name="shred" value="1"/> -->

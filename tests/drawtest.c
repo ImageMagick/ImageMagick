@@ -49,7 +49,10 @@
 #include <locale.h>
 #include <MagickWand/MagickWand.h>
 
+#define PointCount(points)  (sizeof(points)/sizeof((points)[0]))
+
 #define ThrowWandException(wand) \
+do \
 { \
   char \
     *description; \
@@ -61,13 +64,18 @@
   (void) FormatLocaleFile(stderr,"%s %s %lu %s\n",GetMagickModule(), \
     description); \
   description=(char *) MagickRelinquishMemory(description); \
-  exit(-1); \
-}
+  (void) DestroyMagickWand(wand); \
+  MagickWandTerminus(); \
+  exit(EXIT_FAILURE); \
+} while (0)
 
 static MagickBooleanType ScribbleImage(MagickWand *canvas)
 {
   DrawingWand
     *picasso;
+
+  MagickBooleanType
+    status;
 
   PixelWand
     *color;
@@ -83,8 +91,8 @@ static MagickBooleanType ScribbleImage(MagickWand *canvas)
     DrawRotate(picasso,0);
     (void) PixelSetColor(color,"#ffffff");
     DrawSetFillColor(picasso,color);
-    DrawRectangle(picasso,23.69,22.97,564.6,802.2);
     DrawSetFillOpacity(picasso,1.0);
+    DrawRectangle(picasso,23.69,22.97,564.6,802.2);
     (void) PixelSetColor(color,"none");
     DrawSetFillColor(picasso,color);
     DrawSetStrokeColor(picasso,color);
@@ -164,7 +172,7 @@ static MagickBooleanType ScribbleImage(MagickWand *canvas)
         DrawSetFillRule(picasso,EvenOddRule);
         (void) PixelSetColor(color,"#c2c280");
         DrawSetFillColor(picasso,color);
-        DrawPolygon(picasso,37,points);
+        DrawPolygon(picasso,PointCount(points),points);
       }
       (void) PopDrawingWand(picasso);
       (void) PushDrawingWand(picasso);
@@ -210,7 +218,7 @@ static MagickBooleanType ScribbleImage(MagickWand *canvas)
         DrawSetFillRule(picasso,EvenOddRule);
         (void) PixelSetColor(color,"#00ffff");
         DrawSetFillColor(picasso,color);
-        DrawPolygon(picasso,48,points);
+        DrawPolygon(picasso,PointCount(points),points);
       }
       (void) PopDrawingWand(picasso);
       (void) PushDrawingWand(picasso);
@@ -260,7 +268,7 @@ static MagickBooleanType ScribbleImage(MagickWand *canvas)
         DrawSetFillRule(picasso,EvenOddRule);
         (void) PixelSetColor(color,"#800000");
         DrawSetFillColor(picasso,color);
-        DrawPolygon(picasso,6,points);
+        DrawPolygon(picasso,PointCount(points),points);
       }
       (void) PopDrawingWand(picasso);
       (void) PushDrawingWand(picasso);
@@ -282,7 +290,7 @@ static MagickBooleanType ScribbleImage(MagickWand *canvas)
         DrawSetFillRule(picasso,EvenOddRule);
         (void) PixelSetColor(color,"#800000");
         DrawSetFillColor(picasso,color);
-        DrawPolygon(picasso,11,points);
+        DrawPolygon(picasso,PointCount(points),points);
       }
       (void) PopDrawingWand(picasso);
       (void) PushDrawingWand(picasso);
@@ -305,7 +313,7 @@ static MagickBooleanType ScribbleImage(MagickWand *canvas)
         DrawSetFillRule(picasso,EvenOddRule);
         (void) PixelSetColor(color,"#ffff00");
         DrawSetFillColor(picasso,color);
-        DrawPolygon(picasso,15,points);
+        DrawPolygon(picasso,PointCount(points),points);
       }
       (void) PopDrawingWand(picasso);
       (void) PushDrawingWand(picasso);
@@ -326,7 +334,7 @@ static MagickBooleanType ScribbleImage(MagickWand *canvas)
         DrawSetFillRule(picasso,EvenOddRule);
         (void) PixelSetColor(color,"#ffff00");
         DrawSetFillColor(picasso,color);
-        DrawPolygon(picasso,7,points);
+        DrawPolygon(picasso,PointCount(points),points);
       }
       (void) PopDrawingWand(picasso);
       (void) PushDrawingWand(picasso);
@@ -394,17 +402,17 @@ static MagickBooleanType ScribbleImage(MagickWand *canvas)
         DrawSetFillRule(picasso,EvenOddRule);
         (void) PixelSetColor(color,"#ffff00");
         DrawSetFillColor(picasso,color);
-        DrawPolygon(picasso,193,points);
+        DrawPolygon(picasso,PointCount(points),points);
       }
       (void) PopDrawingWand(picasso);
     }
     (void) PopDrawingWand(picasso);
   }
   (void) PopDrawingWand(picasso);
-  (void) MagickDrawImage(canvas,picasso);
+  status=MagickDrawImage(canvas,picasso);
   color=DestroyPixelWand(color);
   picasso=DestroyDrawingWand(picasso);
-  return(MagickTrue);
+  return(status);
 }
 
 int main(int argc,char **argv)
@@ -420,8 +428,8 @@ int main(int argc,char **argv)
 
   if (argc != 2)
     {
-      (void) printf ("Usage: %s filename\n",argv[0]);
-      exit(1);
+      (void) fprintf(stderr,"Usage: %s filename\n",argv[0]);
+      exit(EXIT_FAILURE);
     }
   (void) CopyMagickString(filename,argv[1],MagickPathExtent);
   /*
@@ -463,5 +471,5 @@ int main(int argc,char **argv)
     ThrowWandException(canvas);
   canvas=DestroyMagickWand(canvas);
   MagickWandTerminus();
-  return(0);
+  return(EXIT_SUCCESS);
 }

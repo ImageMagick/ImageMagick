@@ -78,7 +78,8 @@ MagickExport const char *GetClientName(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetClientPath returns the current client name.
+%  GetClientPath returns the current client path.  A zero-length string is
+%  returned if the client path has never been set.
 %
 %  The format of the GetClientPath method is:
 %
@@ -101,7 +102,10 @@ MagickExport const char *GetClientPath(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetClientName sets the client name and returns it.
+%  SetClientName() sets the client name if one is specified (a NULL or empty
+%  name leaves it unchanged) and returns the current client name.  "Magick"
+%  is returned if the client name has never been set.  The name is truncated
+%  to fit the internal buffer.
 %
 %  The format of the SetClientName method is:
 %
@@ -109,13 +113,13 @@ MagickExport const char *GetClientPath(void)
 %
 %  A description of each parameter follows:
 %
-%    o name: Specifies the new client name.
+%    o name: Specifies the new client name, or NULL to query the current one.
 %
 */
 MagickExport const char *SetClientName(const char *name)
 {
   static char
-    client_name[256] = "";
+    client_name[MagickPathExtent] = "";
 
   if ((name != (char *) NULL) && (*name != '\0'))
     {
@@ -136,7 +140,7 @@ MagickExport const char *SetClientName(const char *name)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetClientPath() sets the client path if the name is specified.  Otherwise
+%  SetClientPath() sets the client path if the path is specified.  Otherwise
 %  the current client path is returned. A zero-length string is returned if
 %  the client path has never been set.
 %
@@ -146,7 +150,7 @@ MagickExport const char *SetClientName(const char *name)
 %
 %  A description of each parameter follows:
 %
-%    o path: Specifies the new client path.
+%    o path: Specifies the new client path, or NULL to query the current one.
 %
 */
 MagickExport const char *SetClientPath(const char *path)
@@ -156,8 +160,8 @@ MagickExport const char *SetClientPath(const char *path)
 
   if ((path != (char *) NULL) && (*path != '\0'))
     {
-      (void) CopyMagickString(client_path,path,MagickPathExtent);
-      (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),"%s",path);
+      (void) CopyMagickString(client_path,path,sizeof(client_path));
+      (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),"%s",client_path);
     }
   return(client_path);
 }

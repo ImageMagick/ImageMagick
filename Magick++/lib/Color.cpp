@@ -15,6 +15,8 @@
 #include "Magick++/Color.h"
 #include "Magick++/Exception.h"
 
+#include <cmath>
+
 using namespace std;
 
 MagickPPExport int Magick::operator == (const Magick::Color &left_,
@@ -226,6 +228,12 @@ Magick::Color& Magick::Color::operator=(const Magick::Color& color_)
 
 const Magick::Color& Magick::Color::operator=(const char *color_)
 {
+  // A NULL string cannot be parsed; treat it as an invalid color
+  if (color_ == (const char *) NULL)
+    {
+      _isValid=false;
+      return(*this);
+    }
   *this=std::string(color_);
   return(*this);
 }
@@ -233,6 +241,7 @@ const Magick::Color& Magick::Color::operator=(const char *color_)
 const Magick::Color& Magick::Color::operator=(const MagickCore::PixelInfo &color_)
 {
   *_pixel=color_;
+  _isValid=true;
   setPixelType(color_);
 
   return(*this);
@@ -243,11 +252,12 @@ const Magick::Color& Magick::Color::operator=(const std::string &color_)
   PixelInfo
     target_color;
 
-  initPixel();
   GetPPException;
   if (QueryColorCompliance(color_.c_str(),AllCompliance,&target_color,
       exceptionInfo))
     {
+      initPixel();
+
       quantumAlpha((Magick::Quantum ) target_color.alpha);
       quantumBlack((Magick::Quantum ) target_color.black);
       quantumBlue((Magick::Quantum ) target_color.blue);
@@ -258,10 +268,10 @@ const Magick::Color& Magick::Color::operator=(const std::string &color_)
     }
   else
     {
-      _isValid = false;
-      _pixelOwn = false;
-      delete _pixel;
-      _pixel = (PixelInfo *)NULL;
+      // Mark the color invalid but keep _pixel intact: it may point into an
+      // image (not owned, so it must never be deleted here) and it must not
+      // become NULL since the accessors and copy operations dereference it.
+      _isValid=false;
     }
   ThrowPPException(true);
 
@@ -284,6 +294,7 @@ Magick::Color::operator std::string() const
   if (!isValid())
     return std::string("none");
 
+  MagickCore::GetPixelInfo((MagickCore::Image *) NULL,&pixel);
   pixel.colorspace=(_pixelType == RGBPixel || _pixelType == RGBAPixel) ?
     sRGBColorspace : CMYKColorspace;
   pixel.depth=MAGICKCORE_QUANTUM_DEPTH;
@@ -633,9 +644,9 @@ Magick::ColorHSL::ColorHSL(const double hue_,const double saturation_,
 
   ConvertHSLToRGB(hue_,saturation_,lightness_,&red,&green,&blue);
 
-  quantumRed((Magick::Quantum) red);
-  quantumGreen((Magick::Quantum) green);
-  quantumBlue((Magick::Quantum) blue);
+  quantumRed(ClampToQuantum(red));
+  quantumGreen(ClampToQuantum(green));
+  quantumBlue(ClampToQuantum(blue));
 }
 
 Magick::ColorHSL::~ColorHSL()
@@ -794,7 +805,7 @@ void Magick::ColorMono::mono(bool mono_)
 
 bool Magick::ColorMono::mono(void) const
 {
-  return(quantumGreen() == 0);
+  return(quantumGreen() >= (Magick::Quantum) (QuantumRange/2));
 }
 
 Magick::ColorMono::ColorMono(PixelInfo *rep_,PixelType pixelType_)
@@ -914,9 +925,8 @@ void Magick::ColorYUV::u(const double u_)
 
 double Magick::ColorYUV::u(void) const
 {
-  return(scaleQuantumToDouble((Magick::Quantum) ((-0.14740 *
-    (double) quantumRed()) - (0.28950 * (double) quantumGreen()) + (0.43690 *
-    (double) quantumBlue()))));
+  return(QuantumScale*((-0.14740*(double) quantumRed())-
+    (0.28950*(double) quantumGreen())+(0.43690*(double) quantumBlue())));
 }
 
 void Magick::ColorYUV::v(const double v_)
@@ -926,9 +936,8 @@ void Magick::ColorYUV::v(const double v_)
 
 double Magick::ColorYUV::v(void) const
 {
-  return(scaleQuantumToDouble((Magick::Quantum) ((0.61500 *
-    (double) quantumRed()) - (0.51500 * (double) quantumGreen()) - (0.10000 *
-    (double) quantumBlue()))));
+  return(QuantumScale*((0.61500*(double) quantumRed())-
+    (0.51500*(double) quantumGreen())-(0.10000*(double) quantumBlue())));
 }
 
 void Magick::ColorYUV::y(const double y_)
@@ -938,16 +947,16 @@ void Magick::ColorYUV::y(const double y_)
 
 double Magick::ColorYUV::y ( void ) const
 {
-  return(scaleQuantumToDouble((Magick::Quantum) ((0.29900 *
-    (double) quantumRed()) + (0.58700 * (double) quantumGreen()) + (0.11400 *
-    (double) quantumBlue()))));
+  return(QuantumScale*((0.29900*(double) quantumRed())+
+    (0.58700*(double) quantumGreen())+(0.11400*(double) quantumBlue())));
 }
 
 void Magick::ColorYUV::convert(const double y_,const double u_,const double v_)
 {
-  quantumRed(scaleDoubleToQuantum(y_ + 1.13980 * v_));
-  quantumGreen(scaleDoubleToQuantum(y_ - (0.39380 * u_) - (0.58050 * v_)));
-  quantumBlue(scaleDoubleToQuantum(y_ + 2.02790 * u_));
+  quantumRed(ClampToQuantum(((double) QuantumRange)*(y_+1.13980*v_)));
+  quantumGreen(ClampToQuantum(((double) QuantumRange)*
+    (y_-(0.39380*u_)-(0.58050*v_))));
+  quantumBlue(ClampToQuantum(((double) QuantumRange)*(y_+2.02790*u_)));
 }
 
 Magick::ColorYUV::ColorYUV(PixelInfo *rep_,PixelType pixelType_)

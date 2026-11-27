@@ -101,6 +101,14 @@
 #include "librsvg/rsvg-cairo.h"
 #include "librsvg/librsvg-features.h"
 #endif
+#if defined(LIBRSVG_CHECK_VERSION)
+#if LIBRSVG_CHECK_VERSION(2,32,0)
+#define MagickRSVGHaveReadStream  1
+#endif
+#if LIBRSVG_CHECK_VERSION(2,52,0)
+#define MagickRSVGHaveRenderDocument  1
+#endif
+#endif
 #endif
 
 /*
@@ -358,6 +366,46 @@ static Image *RenderSVGImage(const ImageInfo *image_info,Image *image,
 }
 
 #if defined(MAGICKCORE_RSVG_DELEGATE)
+#if defined(MAGICKCORE_CAIRO_DELEGATE)
+static MagickBooleanType GetRSVGIntrinsicSize(RsvgHandle *svg_handle,
+  double *width,double *height)
+{
+#if defined(MagickRSVGHaveRenderDocument)
+  gboolean
+    has_viewbox;
+
+  RsvgRectangle
+    viewbox;
+
+  *width=0.0;
+  *height=0.0;
+  if (rsvg_handle_get_intrinsic_size_in_pixels(svg_handle,width,height) != FALSE)
+    return(MagickTrue);
+  /*
+    No absolute intrinsic size; fall back to the viewBox, if any.
+  */
+  has_viewbox=FALSE;
+  (void) memset(&viewbox,0,sizeof(viewbox));
+  rsvg_handle_get_intrinsic_dimensions(svg_handle,(gboolean *) NULL,
+    (RsvgLength *) NULL,(gboolean *) NULL,(RsvgLength *) NULL,&has_viewbox,
+    &viewbox);
+  if (has_viewbox == FALSE)
+    return(MagickFalse);
+  *width=viewbox.width;
+  *height=viewbox.height;
+  return(MagickTrue);
+#else
+  RsvgDimensionData
+    dimension_info;
+
+  rsvg_handle_get_dimensions(svg_handle,&dimension_info);
+  *width=(double) dimension_info.width;
+  *height=(double) dimension_info.height;
+  return(MagickTrue);
+#endif
+}
+
+#endif
 static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
@@ -374,19 +422,26 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
   MemoryInfo
     *pixel_info;
 
-  RsvgDimensionData
-    dimension_info;
+  double
+    dimension_height,
+    dimension_width,
+    intrinsic_height,
+    intrinsic_width;
 
   unsigned char
     *p,
     *pixels;
-
 #else
   GdkPixbuf
     *pixel_buffer;
 
   const guchar
     *p;
+#endif
+
+#if defined(MagickRSVGHaveReadStream)
+  GInputStream
+    *stream;
 #endif
 
   GError
@@ -439,6 +494,33 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
   if ((fabs(image->resolution.x) > MagickEpsilon) &&
       (fabs(image->resolution.y) > MagickEpsilon))
     rsvg_handle_set_dpi_x_y(svg_handle,image->resolution.x,image->resolution.y);
+#if defined(MagickRSVGHaveReadStream)
+  stream=g_memory_input_stream_new();
+  while ((n=ReadBlob(image,MagickMaxBufferExtent-1,buffer)) > 0)
+  {
+    guchar
+      *chunk;
+
+    chunk=(guchar *) g_try_malloc((gsize) n);
+    if (chunk == (guchar *) NULL)
+      break;
+    (void) memcpy(chunk,buffer,(size_t) n);
+    g_memory_input_stream_add_data(G_MEMORY_INPUT_STREAM(stream),chunk,
+      (gssize) n,g_free);
+  }
+  buffer=(unsigned char *) RelinquishMagickMemory(buffer);
+  error=(GError *) NULL;
+  if (rsvg_handle_read_stream_sync(svg_handle,stream,(GCancellable *) NULL,
+      &error) == FALSE)
+    {
+      if (error != (GError *) NULL)
+        g_error_free(error);
+      g_object_unref(stream);
+      g_object_unref(svg_handle);
+      ThrowReaderException(CorruptImageError,"UnableToReadImageData");
+    }
+  g_object_unref(stream);
+#else
   while ((n=ReadBlob(image,MagickMaxBufferExtent-1,buffer)) != 0)
   {
     buffer[n]='\0';
@@ -459,18 +541,22 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
       g_object_unref(svg_handle);
       ThrowReaderException(CorruptImageError,"UnableToReadImageData");
     }
+#endif
 #if defined(MAGICKCORE_CAIRO_DELEGATE)
   apply_density=MagickTrue;
-  rsvg_handle_get_dimensions(svg_handle,&dimension_info);
-  if ((dimension_info.width == 0) || (dimension_info.height == 0))
+  if ((GetRSVGIntrinsicSize(svg_handle,&intrinsic_width,&intrinsic_height) == MagickFalse) ||
+      (ceil(intrinsic_width) <= 0.0) || (ceil(intrinsic_height) <= 0.0))
     {
       g_object_unref(svg_handle);
       ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
     }
+  dimension_width=ceil(intrinsic_width);
+  dimension_height=ceil(intrinsic_height);
   if ((image->resolution.x > 0.0) && (image->resolution.y > 0.0))
     {
-      RsvgDimensionData
-        dpi_dimension_info;
+      double
+        dpi_height,
+        dpi_width;
 
       /*
         We should not apply the density when the internal 'factor' is 'i'.
@@ -478,9 +564,9 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
       */
       rsvg_handle_set_dpi_x_y(svg_handle,image->resolution.x*256,
         image->resolution.y*256);
-      rsvg_handle_get_dimensions(svg_handle,&dpi_dimension_info);
-      if ((fabs((double) dpi_dimension_info.width-dimension_info.width) >= MagickEpsilon) ||
-          (fabs((double) dpi_dimension_info.height-dimension_info.height) >= MagickEpsilon))
+      if ((GetRSVGIntrinsicSize(svg_handle,&dpi_width,&dpi_height) != MagickFalse) &&
+          ((fabs(ceil(dpi_width)-dimension_width) >= MagickEpsilon) ||
+           (fabs(ceil(dpi_height)-dimension_height) >= MagickEpsilon)))
         apply_density=MagickFalse;
       rsvg_handle_set_dpi_x_y(svg_handle,image->resolution.x,
         image->resolution.y);
@@ -492,9 +578,9 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
       if ((image->columns != 0) || (image->rows != 0))
         {
           image->resolution.x=DefaultSVGDensity*image->columns/
-            dimension_info.width;
+            dimension_width;
           image->resolution.y=DefaultSVGDensity*image->rows/
-            dimension_info.height;
+            dimension_height;
           if (fabs(image->resolution.x) < MagickEpsilon)
             image->resolution.x=image->resolution.y;
           else
@@ -508,15 +594,15 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
     }
   if (apply_density != MagickFalse)
     {
-      image->columns=(size_t) (image->resolution.x*dimension_info.width/
+      image->columns=(size_t) (image->resolution.x*dimension_width/
         DefaultSVGDensity);
-      image->rows=(size_t) (image->resolution.y*dimension_info.height/
+      image->rows=(size_t) (image->resolution.y*dimension_height/
         DefaultSVGDensity);
     }
   else
     {
-      image->columns=(size_t) dimension_info.width;
-      image->rows=(size_t) dimension_info.height;
+      image->columns=(size_t) dimension_width;
+      image->rows=(size_t) dimension_height;
     }
   pixel_info=(MemoryInfo *) NULL;
 #else
@@ -585,7 +671,25 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
       if (apply_density != MagickFalse)
         cairo_scale(cairo_image,image->resolution.x/DefaultSVGDensity,
           image->resolution.y/DefaultSVGDensity);
+#if defined(MagickRSVGHaveRenderDocument)
+      {
+        RsvgRectangle
+          viewport;
+
+        viewport.x=0.0;
+        viewport.y=0.0;
+        viewport.width=intrinsic_width;
+        viewport.height=intrinsic_height;
+        error=(GError *) NULL;
+        if (rsvg_handle_render_document(svg_handle,cairo_image,&viewport,&error) == FALSE)
+          {
+            if (error != (GError *) NULL)
+              g_error_free(error);
+          }
+      }
+#else
       rsvg_handle_render_cairo(svg_handle,cairo_image);
+#endif
       cairo_destroy(cairo_image);
       cairo_surface_destroy(cairo_surface);
       g_object_unref(svg_handle);
@@ -3889,7 +3993,8 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
 
     size_t
       blob_length,
-      encode_length;
+      encode_length,
+      length;
 
     ssize_t
       i;
@@ -3943,6 +4048,13 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
     encode_length=0;
     base64=Base64Encode(blob,blob_length,&encode_length);
     blob=(unsigned char *) RelinquishMagickMemory(blob);
+    if (base64 == (char *) NULL)
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+        (void) CloseBlob(image);
+        return(MagickFalse);
+      }
     (void) FormatLocaleString(message,MagickPathExtent,
       "  <image id=\"image%.17g\" width=\"%.17g\" height=\"%.17g\" "
       "x=\"%.17g\" y=\"%.17g\"\n    xlink:href=\"data:image/png;base64,",
@@ -3950,11 +4062,17 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
       (double) image->page.x,(double) image->page.y);
     (void) WriteBlobString(image,message);
     p=base64;
-    for (i=(ssize_t) encode_length; i > 0; i-=76)
+    for (i=(ssize_t) encode_length; i > 0; i-=(ssize_t) length)
     {
-      (void) FormatLocaleString(message,MagickPathExtent,"%.76s",p);
-      (void) WriteBlobString(image,message);
-      p+=(ptrdiff_t) 76;
+      length=(size_t) i;
+      if (length > 76)
+        length=76;
+      if (WriteBlob(image,length,(const unsigned char *) p) != (ssize_t) length)
+        {
+          status=MagickFalse;
+          break;
+        }
+      p+=(ptrdiff_t) length;
       if (i > 76)
         (void) WriteBlobString(image,"\n");
     }

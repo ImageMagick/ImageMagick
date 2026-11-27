@@ -12977,9 +12977,9 @@ static const unsigned char
 
 typedef struct _MagickImageInfo
 {
-  char
-    name[MagickPathExtent],
-    magick[MagickPathExtent];
+  const char
+    *name,
+    *magick;
 
   const void
     *blob;
@@ -12996,7 +12996,7 @@ static const MagickImageInfo
     { "NETSCAPE", "GIF", NetscapeImage, sizeof(NetscapeImage) },
     { "ROSE", "PNM", RoseImage, sizeof(RoseImage) },
     { "WIZARD", "GIF", WizardImage, sizeof(WizardImage) },
-    { "", "", (const void *) NULL, 0 }
+    { (const char *) NULL, (const char *) NULL, (const void *) NULL, 0 }
   };
 
 /*
@@ -13004,13 +13004,42 @@ static const MagickImageInfo
 */
 static MagickBooleanType
   WriteMAGICKImage(const ImageInfo *,Image *,ExceptionInfo *);
+
+/*
+  Copy a filename into a C comment, neutralizing anything that could end the
+  comment early (and so inject code into the generated source) or break the
+  line.
+*/
+static void CopyCommentString(char *destination,const char *source,
+  const size_t length)
+{
+  size_t
+    i;
+
+  if (length == 0)
+    return;
+  for (i=0; (source != (const char *) NULL) && (source[i] != '\0') &&
+       (i < (length-1)); i++)
+  {
+    unsigned char
+      c;
+
+    c=(unsigned char) source[i];
+    destination[i]=((c < 0x20) || (c >= 0x7f)) ? '_' : (char) c;
+    if ((i > 0) && (destination[i] == '/') && (destination[i-1] == '*'))
+      destination[i]='_';
+    if ((i > 0) && (destination[i] == '*') && (destination[i-1] == '/'))
+      destination[i]='_';
+  }
+  destination[i]='\0';
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d M A G I C K I m a g e                                             h
+%   R e a d M A G I C K I m a g e                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -13050,6 +13079,13 @@ static Image *ReadMAGICKImage(const ImageInfo *image_info,
   size_t
     extent;
 
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickCoreSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
+      image_info->filename);
   blob_info=CloneImageInfo(image_info);
   if (LocaleCompare(image_info->magick,"MAGICK") != 0)
     (void) CopyMagickString(blob_info->filename,image_info->magick,
@@ -13089,9 +13125,12 @@ static Image *ReadMAGICKImage(const ImageInfo *image_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadMAGICKImage() reads a MAGICK image file and returns it.  It allocates
-%  the memory necessary for the new Image structure and returns a pointer to
-%  the new image.
+%  RegisterMAGICKImage() adds attributes for the MAGICK image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
 %
 %  The format of the RegisterMAGICKImage method is:
 %
@@ -13215,11 +13254,16 @@ static MagickBooleanType WriteMAGICKImage(const ImageInfo *image_info,
 {
   char
     buffer[MagickPathExtent],
-    *p,
-    *sanitized_filename;
+    comment[MagickPathExtent];
 
   const char
     *value;
+
+  const MagickInfo
+    *magick_info;
+
+  const unsigned char
+    *p;
 
   Image
     *magick_image;
@@ -13231,10 +13275,8 @@ static MagickBooleanType WriteMAGICKImage(const ImageInfo *image_info,
     status;
 
   size_t
+    i,
     length;
-
-  ssize_t
-    i;
 
   void
     *blob;
@@ -13246,12 +13288,14 @@ static MagickBooleanType WriteMAGICKImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickCoreSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   magick_image=CloneImage(image,0,0,MagickTrue,exception);
   if (magick_image == (Image *) NULL)
-    ThrowWriterException(ResourceLimitError,exception->reason);
+    return(MagickFalse);
   write_info=CloneImageInfo(image_info);
   /*
     Set output format.
@@ -13260,6 +13304,13 @@ static MagickBooleanType WriteMAGICKImage(const ImageInfo *image_info,
   value=GetImageOption(image_info,"h:format");
   if (value == (char *) NULL)
     value=GetImageOption(image_info,"magick:format");
+  magick_info=(const MagickInfo *) NULL;
+  if ((value != (char *) NULL) && (IsOptionMember("H",value) == MagickFalse) &&
+      (IsOptionMember("MAGICK",value) == MagickFalse))
+    magick_info=GetMagickInfo(value,exception);
+  if ((magick_info != (const MagickInfo *) NULL) &&
+      (magick_info->encoder == (EncodeImageHandler *) WriteMAGICKImage))
+    value=(const char *) NULL;  /* requested format is ours: avoid recursion */
   if ((value == (char *) NULL) || (IsOptionMember("H",value) != MagickFalse) ||
       (IsOptionMember("MAGICK",value) != MagickFalse))
     {
@@ -13272,11 +13323,13 @@ static MagickBooleanType WriteMAGICKImage(const ImageInfo *image_info,
         (void) CopyMagickString(write_info->magick,"GIF",MagickPathExtent);
     }
   else
-    (void) CopyMagickString(write_info->magick,value,MagickPathExtent);  /* use the requested format */
+    (void) CopyMagickString(write_info->magick,value,MagickPathExtent);
   blob=ImageToBlob(write_info,magick_image,&length,exception);
   magick_image=DestroyImage(magick_image);
-  if (blob == (void *) NULL)
+  if ((blob == (void *) NULL) || (length == 0))
     {
+      if (blob != (void *) NULL)
+        blob=RelinquishMagickMemory(blob);
       (void) DestroyImageInfo(write_info);
       return(MagickFalse);
     }
@@ -13287,33 +13340,28 @@ static MagickBooleanType WriteMAGICKImage(const ImageInfo *image_info,
       (void) DestroyImageInfo(write_info);
       return(status);
     }
+  CopyCommentString(comment,image->filename,sizeof(comment));
   (void) WriteBlobString(image,"/*\n");
-  sanitized_filename=SanitizeStringForIdentifier(image->filename);
-  (void) FormatLocaleString(buffer,MagickPathExtent,"  %s (%s).\n",
-    sanitized_filename,write_info->magick);
-  sanitized_filename=DestroyString(sanitized_filename);
+  (void) FormatLocaleString(buffer,MagickPathExtent,"  %s (%s).\n",comment,
+    write_info->magick);
   (void) DestroyImageInfo(write_info);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"*/\n");
   (void) WriteBlobString(image,"static const unsigned char\n");
   (void) WriteBlobString(image,"  MagickImage[] =\n");
   (void) WriteBlobString(image,"  {\n");
-  (void) WriteBlobString(image,"    ");
-  p=(char *) blob;
-  for (i=0; i < (ssize_t) length ; i++)
+  p=(const unsigned char *) blob;
+  for (i=0; i < length; i++)
   {
-    (void) FormatLocaleString(buffer,MagickPathExtent,"0x%02X%s",*p & 0xff,
-      (i+1) < (ssize_t) length ? ", " : "");
+    if ((i % 12) == 0)
+      (void) WriteBlobString(image,"    ");
+    (void) FormatLocaleString(buffer,MagickPathExtent,"0x%02X%s%s",
+      (unsigned int) p[i],(i+1) < length ? "," : "",
+      (((i+1) % 12) == 0) || ((i+1) == length) ? "\n" : " ");
     (void) WriteBlobString(image,buffer);
-    if (((i+1) % 12) == 0)
-      {
-        (void) CopyMagickString(buffer,"\n    ",MagickPathExtent);
-        (void) WriteBlobString(image,buffer);
-      }
-    p++;
   }
-  (void) WriteBlobString(image,"\n  };\n");
-  (void) CloseBlob(image);
+  (void) WriteBlobString(image,"  };\n");
   blob=RelinquishMagickMemory(blob);
-  return(MagickTrue);
+  status=CloseBlob(image);
+  return(status);
 }

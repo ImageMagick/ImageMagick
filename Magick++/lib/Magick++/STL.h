@@ -17,7 +17,9 @@
 #include <functional>
 #include <iterator>
 #include <map>
+#include <string>
 #include <utility>
+#include <vector>
 
 #include "Magick++/CoderInfo.h"
 #include "Magick++/Drawable.h"
@@ -235,7 +237,8 @@ namespace Magick
   };
 
   // Apply a color matrix to the image channels.  The user supplied
-  // matrix may be of order 1 to 5 (1x1 through 5x5).
+  // matrix may be of order 1 to 5 (1x1 through 5x5).  The matrix is
+  // held by pointer (not copied) and must outlive the function object.
   class MagickPPExport colorMatrixImage
   {
   public:
@@ -346,7 +349,8 @@ namespace Magick
   // Distort image.  distorts an image using various distortion methods, by
   // mapping color lookups of the source image to a new destination image
   // usually of the same size as the source image, unless 'bestfit' is set to
-  // true.
+  // true.  The argument array is held by pointer (not copied) and must
+  // outlive the function object.
   class MagickPPExport distortImage
   {
   public:
@@ -1734,15 +1738,15 @@ namespace Magick
   {
   public:
     sigmoidalContrastImage( const size_t sharpen_,
-      const double contrast,
-      const double midpoint = (double) QuantumRange / 2.0 );
+      const double contrast_,
+      const double midpoint_ = (double) QuantumRange / 2.0 );
 
     void operator()( Image &image_ ) const;
 
   private:
     size_t _sharpen;
-    double contrast;
-    double midpoint;
+    double _contrast;
+    double _midpoint;
   };
 
   // Width and height of a raw image
@@ -2106,13 +2110,14 @@ namespace Magick
                       CoderInfo::MatchType isMultiFrame_ = CoderInfo::AnyMatch
                       ) {
     // Obtain first entry in MagickInfo list
-    size_t number_formats;
+    size_t number_formats=0;
     GetPPException;
     char **coder_list =
       MagickCore::GetMagickList( "*", &number_formats, exceptionInfo );
     if( !coder_list )
       {
         throwException(exceptionInfo);
+        (void) MagickCore::DestroyExceptionInfo(exceptionInfo);
         throwExceptionExplicit(MagickCore::MissingDelegateError,
                              "Coder array not returned!", 0 );
       }
@@ -2124,11 +2129,11 @@ namespace Magick
       {
         const MagickCore::MagickInfo *magick_info =
           MagickCore::GetMagickInfo( coder_list[i], exceptionInfo );
-        if (!magick_info)
-          continue;
-
         coder_list[i]=(char *)
           MagickCore::RelinquishMagickMemory( coder_list[i] );
+
+        if (!magick_info)
+          continue;
 
         // Skip stealth coders
         if ( MagickCore::GetMagickStealth(magick_info) )
@@ -2162,6 +2167,16 @@ namespace Magick
         catch (Magick::ErrorModule&)
         {
           continue;
+        }
+        catch (...)
+        {
+          // Release what is still owned before propagating
+          for ( ::ssize_t j=i+1; j < (::ssize_t) number_formats; j++)
+            coder_list[j]=(char *)
+              MagickCore::RelinquishMagickMemory( coder_list[j] );
+          coder_list=(char **) MagickCore::RelinquishMagickMemory( coder_list );
+          (void) MagickCore::DestroyExceptionInfo(exceptionInfo);
+          throw;
         }
       }
     coder_list=(char **) MagickCore::RelinquishMagickMemory( coder_list );
@@ -2209,18 +2224,21 @@ namespace Magick
   //    }
 
   template <class Container >
-  void colorHistogram( Container *histogram_, const Image image)
+  void colorHistogram( Container *histogram_, const Image &image)
   {
     GetPPException;
 
     // Obtain histogram array
-    size_t colors;
+    size_t colors=0;
     MagickCore::PixelInfo *histogram_array =
       MagickCore::GetImageHistogram( image.constImage(), &colors, exceptionInfo );
     ThrowPPException(image.quiet());
 
     // Clear out container
     histogram_->clear();
+
+    if (histogram_array == (MagickCore::PixelInfo *) NULL)
+      return;
 
     // Transfer histogram array to container
     for ( size_t i=0; i < colors; i++)
@@ -2426,7 +2444,6 @@ namespace Magick
     MagickCore::RemapImages(&quantizeInfo,first_->image(),
       (mapImage_.isValid() ? mapImage_.constImage() :
       (const MagickCore::Image*) NULL),exceptionInfo);
-    unlinkImages(first_,last_);
     if (exceptionInfo->severity != MagickCore::UndefinedException)
       {
         unlinkImages(first_,last_);
@@ -2529,7 +2546,7 @@ namespace Magick
 
     // Apply transparency to montage images
     if (montageImages_->size() > 0 && options_.transparentColor().isValid())
-      for_each(montageImages_->begin(),montageImages_->end(),transparentImage(
+      std::for_each(montageImages_->begin(),montageImages_->end(),transparentImage(
         options_.transparentColor()));
   }
 
@@ -2712,8 +2729,8 @@ namespace Magick
     GetPPException;
     MagickCore::QuantizeImages(first_->quantizeInfo(),first_->image(),
       exceptionInfo);
-    unlinkImages(first_,last_);
 
+    // The list must stay linked while it is walked below
     MagickCore::Image *image=first_->image();
     while (image != (MagickCore::Image *) NULL)
     {
