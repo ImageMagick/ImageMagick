@@ -12933,7 +12933,8 @@ static MagickBooleanType WriteOneJNGImage(MngWriteInfo *mng_info,
   PNGType(chunk,mng_JDAT);
   LogPNGChunk(logging,mng_JDAT,length);
   (void) WriteBlob(image,4,chunk);
-  (void) WriteBlob(image,length,blob);
+  if (WriteBlob(image,length,blob) != (ssize_t) length)
+    status=MagickFalse;
   (void) WriteBlobMSBULong(image,crc32(crc32(0,chunk,4),blob,(uInt) length));
 
   jpeg_image=DestroyImage(jpeg_image);
