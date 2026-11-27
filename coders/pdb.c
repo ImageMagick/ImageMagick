@@ -34,13 +34,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %
-%   20071202 TS * rewrote RLE decoder - old version could cause buffer overflows
-%               * failure of RLE decoding now throws error RLEDecoderError
-%               * fixed bug in RLE decoding - now all rows are decoded, not just
-%     the first one
-%   * fixed bug in reader - record offsets now handled correctly
-%   * fixed bug in reader - only bits 0..2 indicate compression type
-%               * in writer: now using image color count instead of depth
 */
 
 /*
@@ -69,7 +62,6 @@
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/property.h"
-#include "MagickCore/quantum-private.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
@@ -188,7 +180,7 @@ static MagickBooleanType DecodeImage(Image *image, unsigned char *pixels,
     if (0 == count) {
       data = ReadBlobByte( image );
       if (-1 == data) return MagickFalse;
-      if (data > 128) {
+      if (data >= 128) {
         mode  = RLE_MODE_RUN;
         count = data - 128 + 1;
         data  = ReadBlobByte( image );
@@ -223,7 +215,7 @@ static MagickBooleanType DecodeImage(Image *image, unsigned char *pixels,
 %  IsPDB() returns MagickTrue if the image format type, identified by the
 %  magick string, is PDB.
 %
-%  The format of the ReadPDBImage method is:
+%  The format of the IsPDB method is:
 %
 %      MagickBooleanType IsPDB(const unsigned char *magick,const size_t length)
 %
@@ -254,7 +246,7 @@ static MagickBooleanType IsPDB(const unsigned char *magick,const size_t length)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadPDBImage() reads an Pilot image file and returns it.  It
+%  ReadPDBImage() reads a Pilot image file and returns it.  It
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
@@ -348,6 +340,8 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if (pdb_info.next_record != 0)
     ThrowReaderException(CoderError,"MultipleRecordListNotSupported");
+  if (pdb_info.number_records < 1)
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   /*
     Read record header.
   */
@@ -365,7 +359,9 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (count != 3  ||  memcmp(tag,"\x6f\x80\x01",3) != 0)
         ThrowReaderException(CorruptImageError,"CorruptImage");
     }
-  num_pad_bytes = (size_t) (img_offset - TellBlob( image ));
+  if (img_offset < (ssize_t) TellBlob(image))
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  num_pad_bytes=(size_t) (img_offset-(ssize_t) TellBlob(image));
   while (num_pad_bytes-- != 0)
   {
     int
@@ -397,6 +393,8 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   image->columns=(size_t) MagickAbsoluteValue(pdb_image.width);
   image->rows=(size_t) MagickAbsoluteValue(pdb_image.height);
+  if ((image->columns == 0) || (image->rows == 0))
+    ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
   image->depth=8;
   image->storage_class=PseudoClass;
   bits_per_pixel=pdb_image.type == 0 ? 2UL : pdb_image.type == 2 ? 4UL : 1UL;
@@ -417,11 +415,11 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     status=ResetImagePixels(image,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
-  pixels=(unsigned char *) AcquireQuantumMemory(packets+257UL,image->rows*
+  pixels=(unsigned char *) AcquireQuantumMemory(packets,image->rows*
     sizeof(*pixels));
   if (pixels == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-  (void) memset(pixels,0,(packets+257UL)*image->rows*sizeof(*pixels));
+  (void) memset(pixels,0,packets*image->rows*sizeof(*pixels));
   switch (pdb_image.version & 0x07)
   {
     case 0:
@@ -481,6 +479,8 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
               bit=0;
             }
         }
+        if (bit != 0)
+          p++;  /* rows are byte aligned */
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
         status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
@@ -518,6 +518,8 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
               p++;
             }
         }
+        if (shift != 8)
+          p++;  /* rows are byte aligned */
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
         status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
@@ -555,6 +557,8 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
               p++;
             }
         }
+        if (shift != 8)
+          p++;  /* rows are byte aligned */
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
         status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
@@ -575,7 +579,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (EOFBlob(image) != MagickFalse)
     ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
       image->filename);
-  if (pdb_info.number_records > 1)
+  if ((pdb_info.number_records > 1) && (comment_offset >= (ssize_t) TellBlob(image)))
     {
       char
         *comment;
@@ -589,7 +593,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       size_t
         length;
 
-      num_pad_bytes = (size_t) (comment_offset - TellBlob( image ));
+      num_pad_bytes=(size_t) (comment_offset-(ssize_t) TellBlob(image));
       while (num_pad_bytes-- != 0)
       {
         c=ReadBlobByte(image);
@@ -770,6 +774,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
 
   size_t
     bits_per_pixel,
+    count,
     literal,
     packets,
     packet_size,
@@ -803,18 +808,18 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
     bits_per_pixel=1;
   } else if (image->colors <= 4) {
     bits_per_pixel=2;
-  } else if (image->colors <= 8) {
-    bits_per_pixel=3;
   } else {
     bits_per_pixel=4;
   }
+  if ((image->columns > 32767UL) || (image->rows > 32767UL))
+    ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
   (void) memset(&pdb_info,0,sizeof(pdb_info));
   (void) memset(&pdb_image,0,sizeof(pdb_image));
   GetPathComponent(image_info->filename,TailPath,filename);
   (void) CopyMagickString(pdb_info.name,filename,sizeof(pdb_info.name));
   pdb_info.attributes=0;
   pdb_info.version=0;
-  pdb_info.create_time=(ssize_t) GetMagickTime();
+  pdb_info.create_time=(ssize_t) GetMagickTime()+2082844800L;  /* Palm epoch is 1904 */
   pdb_info.modify_time=pdb_info.create_time;
   pdb_info.archive_time=0;
   pdb_info.modify_number=0;
@@ -855,11 +860,11 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
   pdb_image.reserved_2=0;
   pdb_image.x_anchor=(unsigned short) 0xffff;
   pdb_image.y_anchor=(unsigned short) 0xffff;
-  pdb_image.width=(short) image->columns;
-  if (image->columns % 16)
-    pdb_image.width=(short) (16*(image->columns/16+1));
+  pdb_image.width=(short) (16*((image->columns+15)/16));  /* pad to 16 */
+  if (image->columns > 32752UL)
+    ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
   pdb_image.height=(short) image->rows;
-  packets=((bits_per_pixel*image->columns+7)/8);
+  packets=((bits_per_pixel*(size_t) pdb_image.width+7)/8);
   packet_size=(size_t) (bits_per_pixel > 8 ? 2 : 1);
   runlength=(unsigned char *) AcquireQuantumMemory(9UL*packets,
     image->rows*sizeof(*runlength));
@@ -880,9 +885,6 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
     }
   (void) memset(buffer,0,512*sizeof(*buffer));
   (void) memset(scanline,0,image->columns*packet_size*sizeof(*scanline));
-  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
-    if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
-      (void) TransformImageColorspace(image,sRGBColorspace,exception);
   /*
     Convert to GRAY raster scanline.
   */
@@ -897,7 +899,16 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
         scanline=(unsigned char *) RelinquishMagickMemory(scanline);
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     }
+  (void) SetQuantumFormat(image,quantum_info,UndefinedQuantumFormat);
   status=SetQuantumDepth(image,quantum_info,bits_per_pixel > 8 ? 16 : 8);
+  if (status == MagickFalse)
+    {
+      runlength=(unsigned char *) RelinquishMagickMemory(runlength);
+      buffer=(unsigned char *) RelinquishMagickMemory(buffer);
+      scanline=(unsigned char *) RelinquishMagickMemory(scanline);
+      quantum_info=DestroyQuantumInfo(quantum_info);
+      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   bits=8/(int) bits_per_pixel-1;  /* start at most significant bits */
   literal=0;
   repeat=0;
@@ -936,7 +947,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
             }
           else
             {
-              if (repeat >= 2)
+              if (repeat < 2)
                 literal+=repeat;
               else
                 {
@@ -1003,7 +1014,9 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
   (void) WriteBlobMSBShort(image,pdb_image.y_anchor);
   (void) WriteBlobMSBShort(image,(unsigned short) pdb_image.width);
   (void) WriteBlobMSBShort(image,(unsigned short) pdb_image.height);
-  (void) WriteBlob(image,(size_t) (q-runlength),runlength);
+  count=(size_t) (q-runlength);
+  if (WriteBlob(image,count,runlength) != (ssize_t) count)
+    status=MagickFalse;
   runlength=(unsigned char *) RelinquishMagickMemory(runlength);
   if (comment != (const char *) NULL)
     (void) WriteBlobString(image,comment);

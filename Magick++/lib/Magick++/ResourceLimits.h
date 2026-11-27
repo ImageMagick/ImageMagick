@@ -63,6 +63,10 @@ namespace Magick
     static void throttle(const MagickSizeType limit_);
     static MagickSizeType throttle(void);
 
+    // The maximum elapsed time in seconds.
+    static void time_(const MagickSizeType limit_);
+    static MagickSizeType time_(void);
+
     // The maximum width of an image.
     static void width(const MagickSizeType limit_);
     static MagickSizeType width(void);

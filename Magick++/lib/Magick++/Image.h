@@ -14,6 +14,7 @@
 #include "Magick++/Include.h"
 #include <string>
 #include <list>
+#include <vector>
 #include "Magick++/Blob.h"
 #include "Magick++/Color.h"
 #include "Magick++/Drawable.h"

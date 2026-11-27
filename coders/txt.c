@@ -105,7 +105,11 @@ static MagickBooleanType
 static MagickBooleanType IsTXT(const unsigned char *magick,const size_t length)
 {
   char
-    colorspace[MagickPathExtent];
+    colorspace[MagickPathExtent],
+    header[MagickPathExtent];
+
+  size_t
+    extent;
 
   ssize_t
     count;
@@ -117,11 +121,17 @@ static MagickBooleanType IsTXT(const unsigned char *magick,const size_t length)
 
   if (length < 40)
     return(MagickFalse);
-  if (LocaleNCompare((const char *) magick,MagickTXTID,
-        strlen(MagickTXTID)) != 0)
+  /*
+    The magick buffer is not guaranteed to be NUL-terminated, so parse a
+    bounded, terminated copy of it instead.
+  */
+  extent=length < (sizeof(header)-1) ? length : (sizeof(header)-1);
+  (void) memcpy(header,magick,extent);
+  header[extent]='\0';
+  if (LocaleNCompare(header,MagickTXTID,strlen(MagickTXTID)) != 0)
     return(MagickFalse);
-  count=(ssize_t) MagickSscanf((const char *) magick+32,"%lu,%lu,%lu,%32s",
-    &columns,&rows,&depth,colorspace);
+  count=(ssize_t) MagickSscanf(header+32,"%lu,%lu,%lu,%32s",&columns,&rows,
+    &depth,colorspace);
   if (count != 4)
     return(MagickFalse);
   return(MagickTrue);
@@ -144,16 +154,12 @@ static MagickBooleanType IsTXT(const unsigned char *magick,const size_t length)
 %
 %  The format of the ReadTEXTImage method is:
 %
-%      Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
-%        char *text,ExceptionInfo *exception)
+%      Image *ReadTEXTImage(const ImageInfo *image_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image_info: the image info.
-%
-%    o image: the image.
-%
-%    o text: the text storage buffer.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -194,6 +200,8 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,
   */
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
@@ -336,17 +344,11 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,
     if (status == MagickFalse)
       break;
   }
-  if (texture != (Image *) NULL)
-    {
-      MagickProgressMonitor
-        progress_monitor;
-
-      progress_monitor=SetImageProgressMonitor(image,
-        (MagickProgressMonitor) NULL,image->client_data);
-      (void) TextureImage(image,texture,exception);
-      (void) SetImageProgressMonitor(image,progress_monitor,image->client_data);
-    }
-  (void) AnnotateImage(image,draw_info,exception);
+  /*
+    The final page has already been textured and annotated inside the loop
+    (the loop only exits normally via the end-of-file break), so drawing it
+    again here would double-render the text.
+  */
   texture=DestroyImageList(texture);
   draw_info=DestroyDrawInfo(draw_info);
   if (CloseBlob(image) == MagickFalse)
@@ -446,14 +448,20 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         count=(ssize_t) MagickSscanf(text+32,"%lu,%lu,%lf,%32s",&width,&height,
           &max_value,colorspace);
       }
-    if ((count < 4) || (width == 0) || (height == 0) || (max_value == 0.0) ||
+    if ((count < 4) || (width == 0) || (height == 0) ||
         (number_meta_channels >= (unsigned long) (MaxPixelChannels-MetaPixelChannels)))
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    /*
+      Reject zero, negative, NaN, and out-of-range maximum values (the negated
+      comparison is deliberate: it is also true for NaN).
+    */
+    if ((max_value > 0.0) == MagickFalse)
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    if (max_value >= 18446744073709551615.0)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     image->columns=width;
     image->rows=height;
     image->number_meta_channels=number_meta_channels;
-    if ((max_value == 0.0) || (max_value >= 18446744073709551615.0))
-      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     for (depth=1; ((double) GetQuantumRange(depth)+1) < max_value; depth++) ;
     image->depth=depth;
     LocaleLower(colorspace);
@@ -506,6 +514,9 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         if (ReadBlobString(image,text) == (char *) NULL)
           {
+            (void) ThrowMagickException(exception,GetMagickModule(),
+              CorruptImageWarning,"UnexpectedEndOfFile","`%s'",
+              image->filename);
             status=MagickFalse;
             break;
           }
@@ -532,10 +543,20 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
               n++;
             }
         }
+        /*
+          Ignore (but still consume) pixels that fall outside the canvas so the
+          remaining lines stay in step with the row/column loops.
+        */
+        if ((channels[0] < 0.0) || (channels[0] >= (double) image->columns) ||
+            (channels[1] < 0.0) || (channels[1] >= (double) image->rows))
+          continue;
         q=GetAuthenticPixels(image,CastDoubleToSsizeT(channels[0]),
           CastDoubleToSsizeT(channels[1]),1,1,exception);
         if (q == (Quantum *) NULL)
-          break;
+          {
+            status=MagickFalse;
+            break;
+          }
         for (i=0; i < (ssize_t) GetImageChannels(image); i++)
           q[i]=ScaleAnyToQuantum(CastDoubleToQuantumAny(channels[i+2]),range);
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -676,6 +697,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
   MagickBooleanType
+    sparse_color,
     status;
 
   MagickOffsetType
@@ -691,11 +713,15 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
   assert(image_info->signature == MagickCoreSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   status=OpenBlob(image_info,image,WriteBlobMode,exception);
   if (status == MagickFalse)
     return(status);
+  sparse_color=(LocaleCompare(image_info->magick,"SPARSE-COLOR") == 0) ?
+    MagickTrue : MagickFalse;
   scene=0;
   number_scenes=GetImageListLength(image);
   do
@@ -720,13 +746,12 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
     range=GetQuantumRange(image->depth);
     if (image->alpha_trait != UndefinedPixelTrait)
       (void) ConcatenateMagickString(colorspace,"a",MagickPathExtent);
-    if (LocaleCompare(image_info->magick,"SPARSE-COLOR") != 0)
+    if (sparse_color == MagickFalse)
       {
         (void) FormatLocaleString(buffer,MagickPathExtent,
           "# ImageMagick pixel enumeration: %.17g,%.17g,%.17g,%.17g,%s\n",
           (double) image->columns,(double) image->rows,
-          (double) image->number_meta_channels,
-          (double) GetQuantumRange(image->depth),colorspace);
+          (double) image->number_meta_channels,(double) range,colorspace);
         (void) WriteBlobString(image,buffer);
       }
     GetPixelInfo(image,&pixel);
@@ -740,7 +765,10 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
 
       p=GetVirtualPixels(image,0,y,image->columns,1,exception);
       if (p == (const Quantum *) NULL)
-        break;
+        {
+          status=MagickFalse;
+          break;
+        }
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         char
@@ -750,7 +778,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
           i;
 
         GetPixelInfoPixel(image,p,&pixel);
-        if (LocaleCompare(image_info->magick,"SPARSE-COLOR") == 0)
+        if (sparse_color != MagickFalse)
           {
             /*
               Sparse-color format.
@@ -793,6 +821,8 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
       if (status == MagickFalse)
         break;
     }
+    if (status == MagickFalse)
+      break;
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

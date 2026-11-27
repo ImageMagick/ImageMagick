@@ -228,8 +228,7 @@ static const HuffmanTable
 %
 %
 */
-static inline void Ascii85Tuple(Ascii85Info *ascii85_info,
-  const unsigned char *magick_restrict data)
+static inline void Ascii85Tuple(char *tuple,const unsigned char *magick_restrict data)
 {
 #define MaxLineExtent  36L
 
@@ -243,8 +242,8 @@ static inline void Ascii85Tuple(Ascii85Info *ascii85_info,
     ((size_t) data[2] << 8) | (size_t) data[3];
   if (code == 0L)
     {
-      ascii85_info->tuple[0]='z';
-      ascii85_info->tuple[1]='\0';
+      tuple[0]='z';
+      tuple[1]='\0';
       return;
     }
   quantum=85UL*85UL*85UL*85UL;
@@ -252,11 +251,11 @@ static inline void Ascii85Tuple(Ascii85Info *ascii85_info,
   {
     x=(code/quantum);
     code-=quantum*x;
-    ascii85_info->tuple[i]=(char) (x+(int) '!');
+    tuple[i]=(char) (x+(int) '!');
     quantum/=85L;
   }
-  ascii85_info->tuple[4]=(char) ((code % 85L)+(int) '!');
-  ascii85_info->tuple[5]='\0';
+  tuple[4]=(char) ((code % 85L)+(int) '!');
+  tuple[5]='\0';
 }
 
 MagickExport void Ascii85Initialize(Image *image)
@@ -284,7 +283,7 @@ static MagickBooleanType Ascii85FlushInternal(Image *image)
       image->ascii85->buffer[image->ascii85->offset]='\0';
       image->ascii85->buffer[image->ascii85->offset+1]='\0';
       image->ascii85->buffer[image->ascii85->offset+2]='\0';
-      Ascii85Tuple(image->ascii85,image->ascii85->buffer);
+      Ascii85Tuple(image->ascii85->tuple,image->ascii85->buffer);
       if (WriteBlob(image,(size_t) image->ascii85->offset+1,
         (const unsigned char *) (*image->ascii85->tuple == 'z' ? "!!!!" :
         image->ascii85->tuple)) != (ssize_t) (image->ascii85->offset+1))
@@ -331,7 +330,7 @@ static MagickBooleanType Ascii85EncodeInternal(Image *image,
   p=image->ascii85->buffer;
   for (n=image->ascii85->offset; n >= 4; n-=4)
   {
-    Ascii85Tuple(image->ascii85,p);
+    Ascii85Tuple(image->ascii85->tuple,p);
     for (q=image->ascii85->tuple; *q != '\0'; q++)
     {
       image->ascii85->line_break--;
@@ -364,6 +363,115 @@ static MagickBooleanType Ascii85EncodeInternal(Image *image,
 MagickExport void Ascii85Encode(Image *image,const unsigned char code)
 {
   (void) Ascii85EncodeInternal(image,code);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   A s c i i 8 5 E n c o d e I m a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Ascii85EncodeImage() encodes a byte buffer in ASCII base-85 format.
+%
+%  The format of the Ascii85EncodeImage method is:
+%
+%      MagickBooleanType Ascii85EncodeImage(Image *image,const size_t length,
+%        const unsigned char *magick_restrict pixels,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: write the encoded data to this image's blob.
+%
+%    o length: the number of bytes to encode.
+%
+%    o pixels: the bytes to encode.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport MagickBooleanType Ascii85EncodeImage(Image *image,
+  const size_t length,const unsigned char *magick_restrict pixels,
+  ExceptionInfo *exception)
+{
+  char
+    tuple[6];
+
+  const char
+    *p;
+
+  const unsigned char
+    *data;
+
+  size_t
+    i,
+    output_length,
+    remaining;
+
+  ssize_t
+    line_break;
+
+  unsigned char
+    input[4],
+    output[4096];
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  assert((pixels != (const unsigned char *) NULL) || (length == 0));
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
+  magick_unreferenced(exception);
+  data=pixels;
+  remaining=length;
+  output_length=0;
+  line_break=2*MaxLineExtent;
+  while (remaining >= 4)
+  {
+    if (output_length > (sizeof(output)-6))
+      {
+        if (WriteBlob(image,output_length,output) != (ssize_t) output_length)
+          return(MagickFalse);
+        output_length=0;
+      }
+    Ascii85Tuple(tuple,data);
+    for (p=tuple; *p != '\0'; p++)
+    {
+      line_break--;
+      if ((line_break < 0) && (*p != '%'))
+        {
+          output[output_length++]='\n';
+          line_break=2*MaxLineExtent;
+        }
+      output[output_length++]=(unsigned char) *p;
+    }
+    data+=4;
+    remaining-=4;
+  }
+  if (output_length > (sizeof(output)-7))
+    {
+      if (WriteBlob(image,output_length,output) != (ssize_t) output_length)
+        return(MagickFalse);
+      output_length=0;
+    }
+  if (remaining != 0)
+    {
+      (void) memset(input,0,sizeof(input));
+      (void) memcpy(input,data,remaining);
+      Ascii85Tuple(tuple,input);
+      p=(*tuple == 'z') ? "!!!!" : tuple;
+      for (i=0; i < remaining+1; i++)
+        output[output_length++]=(unsigned char) p[i];
+    }
+  output[output_length++]='~';
+  output[output_length++]='>';
+  output[output_length++]='\n';
+  if (WriteBlob(image,output_length,output) != (ssize_t) output_length)
+    return(MagickFalse);
+  return(MagickTrue);
 }
 
 /*

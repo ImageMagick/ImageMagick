@@ -11,6 +11,7 @@
 
 #include "Magick++/SecurityPolicy.h"
 #include "Magick++/Exception.h"
+#include <locale>
 #include <sstream>
 
 using namespace std;
@@ -66,7 +67,7 @@ Magick::SecurityPolicy::SecurityPolicy()
 }
 
 bool Magick::SecurityPolicy::setValue(const PolicyDomain domain_,
-  const std::string name_,const std::string value_)
+  const std::string &name_,const std::string &value_)
 {
   MagickBooleanType
     status;
@@ -82,6 +83,9 @@ template <typename T>
 std::string Magick::SecurityPolicy::toString(const T& value)
 {
   stringstream ss;
+  // Policy values must be plain digits; never let a global locale insert
+  // thousands separators (e.g. "1,048,576").
+  ss.imbue(std::locale::classic());
   ss << value;
   return ss.str();
 }

@@ -837,6 +837,11 @@ static MagickBooleanType sixel_encode_impl(sixel_pixel_t *pixels,size_t width,
   sixel_output_t *context)
 {
 #define RelinquishNodesAndMap \
+  while ((np = context->node_top) != NULL) \
+  { \
+    context->node_top=np->next; \
+    np=(sixel_node_t *) RelinquishMagickMemory(np); \
+  } \
   while ((np = context->node_free) != NULL) \
   { \
     context->node_free=np->next; \
@@ -883,7 +888,10 @@ static MagickBooleanType sixel_encode_impl(sixel_pixel_t *pixels,size_t width,
     nwrite=(int) FormatLocaleString((char *) context->buffer,sizeof(context->buffer),
       "\x1bP" "0;1;0" "q");
   if (nwrite <= 0)
-    return(MagickFalse);
+    {
+      RelinquishNodesAndMap;
+      return(MagickFalse);
+    }
   sixel_advance(context,nwrite);
   nwrite=(int) FormatLocaleString((char *) context->buffer+context->pos,
     sizeof(context->buffer),"\"1;1;%d;%d",(int) width,(int) height);
