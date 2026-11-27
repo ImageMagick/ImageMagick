@@ -752,7 +752,11 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
           "# ImageMagick pixel enumeration: %.17g,%.17g,%.17g,%.17g,%s\n",
           (double) image->columns,(double) image->rows,
           (double) image->number_meta_channels,(double) range,colorspace);
-        (void) WriteBlobString(image,buffer);
+        if (WriteBlobString(image,buffer) != (ssize_t) strlen(buffer))
+          {
+            status=MagickFalse;
+            break;
+          }
       }
     GetPixelInfo(image,&pixel);
     for (y=0; y < (ssize_t) image->rows; y++)
@@ -790,7 +794,11 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
                 GetColorTuple(&pixel,MagickFalse,tuple);
                 (void) ConcatenateMagickString(buffer,tuple,MagickPathExtent);
                 (void) ConcatenateMagickString(buffer," ",MagickPathExtent);
-                (void) WriteBlobString(image,buffer);
+                if (WriteBlobString(image,buffer) != (ssize_t) strlen(buffer))
+                  {
+                    status=MagickFalse;
+                    break;
+                  }
               }
             p+=(ptrdiff_t) GetPixelChannels(image);
             continue;
@@ -813,9 +821,15 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
         (void) QueryColorname(image,&pixel,SVGCompliance,tuple,exception);
         (void) ConcatenateMagickString(buffer,tuple,MagickPathExtent);
         (void) ConcatenateMagickString(buffer,"\n",MagickPathExtent);
-        (void) WriteBlobString(image,buffer);
+        if (WriteBlobString(image,buffer) != (ssize_t) strlen(buffer))
+          {
+            status=MagickFalse;
+            break;
+          }
         p+=(ptrdiff_t) GetPixelChannels(image);
       }
+      if (status == MagickFalse)
+        break;
       status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
         image->rows);
       if (status == MagickFalse)

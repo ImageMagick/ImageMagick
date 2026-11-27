@@ -1175,7 +1175,10 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
             quantum_type,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
           if (image->previous == (Image *) NULL)
             {
               status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -1200,24 +1203,36 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
             RedQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
           length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             GreenQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
           length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             BlueQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
           if (quantum_type == RGBAQuantum)
             {
               length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
                 AlphaQuantum,pixels,exception);
               count=WriteBlob(image,length,pixels);
               if (count != (ssize_t) length)
-                break;
+                {
+                  status=MagickFalse;
+                  break;
+                }
             }
           if (image->previous == (Image *) NULL)
             {
@@ -1243,8 +1258,13 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
             RedQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
         }
+        if (status == MagickFalse)
+          break;
         if (image->previous == (Image *) NULL)
           {
             status=SetImageProgress(image,SaveImageTag,1,5);
@@ -1260,8 +1280,13 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
             GreenQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
         }
+        if (status == MagickFalse)
+          break;
         if (image->previous == (Image *) NULL)
           {
             status=SetImageProgress(image,SaveImageTag,2,5);
@@ -1277,8 +1302,13 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
             BlueQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
         }
+        if (status == MagickFalse)
+          break;
         if (image->previous == (Image *) NULL)
           {
             status=SetImageProgress(image,SaveImageTag,3,5);
@@ -1296,9 +1326,14 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
                 AlphaQuantum,pixels,exception);
               count=WriteBlob(image,length,pixels);
               if (count != (ssize_t) length)
-                break;
+                {
+                  status=MagickFalse;
+                  break;
+                }
             }
           }
+        if (status == MagickFalse)
+          break;
         if (image->previous == (Image *) NULL)
           {
             status=SetImageProgress(image,SaveImageTag,5,5);
@@ -1329,8 +1364,13 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
             RedQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
         }
+        if (status == MagickFalse)
+          break;
         if (image->previous == (Image *) NULL)
           {
             status=SetImageProgress(image,SaveImageTag,1,5);
@@ -1338,7 +1378,10 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
               break;
           }
         if (CloseBlob(image) == MagickFalse)
-          break;
+          {
+            status=MagickFalse;
+            break;
+          }
         AppendImageFormat("Cb",image->filename);
         status=OpenBlob(image_info,image,scene == 0 ? WriteBinaryBlobMode :
           AppendBinaryBlobMode,exception);
@@ -1356,8 +1399,13 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
             GreenQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
         }
+        if (status == MagickFalse)
+          break;
         if (image->previous == (Image *) NULL)
           {
             status=SetImageProgress(image,SaveImageTag,2,5);
@@ -1365,7 +1413,10 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
               break;
           }
         if (CloseBlob(image) == MagickFalse)
-          break;
+          {
+            status=MagickFalse;
+            break;
+          }
         AppendImageFormat("Cr",image->filename);
         status=OpenBlob(image_info,image,scene == 0 ? WriteBinaryBlobMode :
           AppendBinaryBlobMode,exception);
@@ -1383,8 +1434,13 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
             BlueQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
         }
+        if (status == MagickFalse)
+          break;
         if (image->previous == (Image *) NULL)
           {
             status=SetImageProgress(image,SaveImageTag,3,5);
@@ -1394,7 +1450,10 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
         if (quantum_type == RGBAQuantum)
           {
             if (CloseBlob(image) == MagickFalse)
-              break;
+              {
+                status=MagickFalse;
+                break;
+              }
             AppendImageFormat("A",image->filename);
             status=OpenBlob(image_info,image,scene == 0 ? WriteBinaryBlobMode :
               AppendBinaryBlobMode,exception);
@@ -1412,8 +1471,13 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
                 AlphaQuantum,pixels,exception);
               count=WriteBlob(image,length,pixels);
               if (count != (ssize_t) length)
-                break;
+                {
+                  status=MagickFalse;
+                  break;
+                }
             }
+            if (status == MagickFalse)
+              break;
             if (image->previous == (Image *) NULL)
               {
                 status=SetImageProgress(image,SaveImageTag,4,5);
@@ -1421,7 +1485,11 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
                   break;
               }
           }
-        (void) CloseBlob(image);
+        if (CloseBlob(image) == MagickFalse)
+          {
+            status=MagickFalse;
+            break;
+          }
         (void) CopyMagickString(image->filename,image_info->filename,
           MagickPathExtent);
         if (image->previous == (Image *) NULL)
@@ -1434,6 +1502,8 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
       }
     }
     quantum_info=DestroyQuantumInfo(quantum_info);
+    if (status == MagickFalse)
+      break;
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

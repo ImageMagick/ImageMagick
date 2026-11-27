@@ -1301,8 +1301,11 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
                 }
             }
           }
-    (void) WriteBlob(image,(size_t) packets,pixels);
+    if (WriteBlob(image,(size_t) packets,pixels) != (ssize_t) packets)
+      status=MagickFalse;
     pixel_info=RelinquishVirtualMemory(pixel_info);
+    if (status == MagickFalse)
+      break;
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
