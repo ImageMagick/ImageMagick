@@ -17,10 +17,48 @@
 #include "Magick++/Options.h"
 #include "Magick++/Functions.h"
 #include "Magick++/Exception.h"
+#include <algorithm>
+#include <cmath>
 #include <cstring>
 
-#define MagickPI     3.1415926535897932384626433832795028841971693993751058209749445923078164062
+#if !defined(MagickPI)
+#define MagickPI  3.14159265358979323846264338327950288419716939937510
+#endif
+#if !defined(DegreesToRadians)
 #define DegreesToRadians(x)  (MagickPI*(x)/180.0)
+#endif
+
+namespace
+{
+  // Post-multiply the current affine matrix by "affine" (in place).
+  void ConcatenateAffine(MagickCore::AffineMatrix *target,
+    const MagickCore::AffineMatrix &affine)
+  {
+    const MagickCore::AffineMatrix
+      current=*target;
+
+    target->sx=current.sx*affine.sx+current.ry*affine.rx;
+    target->rx=current.rx*affine.sx+current.sy*affine.rx;
+    target->ry=current.sx*affine.ry+current.ry*affine.sy;
+    target->sy=current.rx*affine.ry+current.sy*affine.sy;
+    target->tx=current.sx*affine.tx+current.ry*affine.ty+current.tx;
+    target->ty=current.rx*affine.tx+current.sy*affine.ty+current.ty;
+  }
+
+  MagickCore::AffineMatrix IdentityAffine(void)
+  {
+    MagickCore::AffineMatrix
+      affine;
+
+    affine.sx=1.0;
+    affine.rx=0.0;
+    affine.ry=0.0;
+    affine.sy=1.0;
+    affine.tx=0.0;
+    affine.ty=0.0;
+    return(affine);
+  }
+}
 
 Magick::Options::Options(void)
   : _imageInfo(static_cast<ImageInfo*>(AcquireMagickMemory(
@@ -30,6 +68,21 @@ Magick::Options::Options(void)
     _drawInfo(static_cast<DrawInfo*>(AcquireMagickMemory(sizeof(DrawInfo)))),
     _quiet(false)
 {
+  if ((_imageInfo == (MagickCore::ImageInfo *) NULL) ||
+      (_quantizeInfo == (MagickCore::QuantizeInfo *) NULL) ||
+      (_drawInfo == (MagickCore::DrawInfo *) NULL))
+    {
+      // A throwing constructor does not run the destructor, so clean up here.
+      if (_imageInfo != (MagickCore::ImageInfo *) NULL)
+        (void) RelinquishMagickMemory(_imageInfo);
+      if (_quantizeInfo != (MagickCore::QuantizeInfo *) NULL)
+        (void) RelinquishMagickMemory(_quantizeInfo);
+      if (_drawInfo != (MagickCore::DrawInfo *) NULL)
+        (void) RelinquishMagickMemory(_drawInfo);
+      throwExceptionExplicit(MagickCore::ResourceLimitError,
+        "Unable to allocate options memory");
+    }
+
   // Initialize image info with defaults
   GetImageInfo(_imageInfo);
 
@@ -160,17 +213,12 @@ double Magick::Options::colorFuzz(void) const
 
 void Magick::Options::debug(const bool flag_)
 {
-  if (flag_)
-    SetLogEventMask("All");
-  else
-    SetLogEventMask("None");
+  (void) SetLogEventMask(flag_ ? "All" : "None");
 }
 
 bool Magick::Options::debug(void) const
 {
-  if (IsEventLogging())
-    return(true);
-  return(false);
+  return(IsEventLogging() != MagickFalse);
 }
 
 void Magick::Options::density(const Point &density_)
@@ -221,15 +269,12 @@ FILE *Magick::Options::file(void) const
 
 void Magick::Options::fileName(const std::string &fileName_)
 {
-  ssize_t
-    max_length;
+  // Truncate to the size of the fixed-length buffer and always terminate.
+  const size_t
+    length=std::min(fileName_.length(),sizeof(_imageInfo->filename)-1);
 
-  max_length=sizeof(_imageInfo->filename)-1;
-  fileName_.copy(_imageInfo->filename,(size_t) max_length);
-  if ((ssize_t) fileName_.length() > max_length)
-    _imageInfo->filename[max_length]=0;
-  else
-    _imageInfo->filename[fileName_.length()]=0;
+  (void) fileName_.copy(_imageInfo->filename,length);
+  _imageInfo->filename[length]=0;
 }
 
 std::string Magick::Options::fileName(void) const
@@ -298,7 +343,7 @@ std::string Magick::Options::font(void) const
 {
   if (_imageInfo->font)
     return(std::string(_imageInfo->font));
-  
+
   return(std::string());
 }
 
@@ -320,7 +365,7 @@ std::string Magick::Options::fontFamily(void) const
 {
   if (_drawInfo->family)
     return(std::string(_drawInfo->family));
-  
+
   return(std::string());
 }
 
@@ -370,7 +415,7 @@ std::string Magick::Options::format(void) const
 
   if ((magick_info != 0) && (*magick_info->description != '\0'))
     return(std::string( magick_info->description));
-  
+
   return(std::string());
 }
 
@@ -412,7 +457,7 @@ std::string Magick::Options::magick(void) const
 
 void Magick::Options::monochrome(const bool monochromeFlag_)
 {
-  _imageInfo->monochrome=(MagickBooleanType) monochromeFlag_;
+  _imageInfo->monochrome=(monochromeFlag_ ? MagickTrue : MagickFalse);
 }
 
 bool Magick::Options::monochrome(void) const
@@ -478,12 +523,14 @@ bool Magick::Options::quantizeDither(void) const
 
 void Magick::Options::quantizeDither(const DitherMethod ditherMethod_)
 {
-  _imageInfo->dither=(MagickBooleanType) (ditherMethod_ != NoDitherMethod);
-  _quantizeInfo->dither_method=ditherMethod_;
+  quantizeDitherMethod(ditherMethod_);
 }
 
 void Magick::Options::quantizeDitherMethod(const DitherMethod ditherMethod_)
 {
+  // Keep the boolean dither flag and the method consistent with each other.
+  _imageInfo->dither=(ditherMethod_ != NoDitherMethod ? MagickTrue :
+    MagickFalse);
   _quantizeInfo->dither_method=ditherMethod_;
 }
 
@@ -557,8 +604,7 @@ Magick::Geometry Magick::Options::size(void) const
 
 void Magick::Options::strokeAntiAlias(const bool flag_)
 {
-  flag_ ? _drawInfo->stroke_antialias=MagickTrue :
-    _drawInfo->stroke_antialias=MagickFalse;
+  _drawInfo->stroke_antialias=(flag_ ? MagickTrue : MagickFalse);
 }
 
 bool Magick::Options::strokeAntiAlias(void) const
@@ -589,7 +635,8 @@ void Magick::Options::strokeDashArray(const double *strokeDashArray_)
       size_t
         x;
 
-      for (x=0; fabs(strokeDashArray_[x]) >= MagickEpsilon; x++) ;
+      // The array is terminated by a zero entry.
+      for (x=0; std::fabs(strokeDashArray_[x]) >= MagickEpsilon; x++) ;
       _drawInfo->dash_pattern=static_cast<double*>(AcquireMagickMemory((x+1)*
         sizeof(double)));
       if (!_drawInfo->dash_pattern)
@@ -597,8 +644,8 @@ void Magick::Options::strokeDashArray(const double *strokeDashArray_)
           "Unable to allocate dash-pattern memory");
       else
         {
-          (void) memset(_drawInfo->dash_pattern,0,(size_t) (x+1)*sizeof(double));
-          memcpy(_drawInfo->dash_pattern,strokeDashArray_,x*sizeof(double));
+          (void) memcpy(_drawInfo->dash_pattern,strokeDashArray_,
+            x*sizeof(double));
           _drawInfo->dash_pattern[x]=0.0;
         }
     }
@@ -724,15 +771,23 @@ Magick::DirectionType Magick::Options::textDirection() const
 
 void Magick::Options::textEncoding(const std::string &encoding_)
 {
-  CloneString(&_drawInfo->encoding,encoding_.c_str());
-  (void) SetImageOption(imageInfo(),"encoding",encoding_.c_str());
+  if (encoding_.length() == 0)
+    {
+      _drawInfo->encoding=(char *) RelinquishMagickMemory(_drawInfo->encoding);
+      DestroyString(RemoveImageOption(_imageInfo,"encoding"));
+    }
+  else
+    {
+      Magick::CloneString(&_drawInfo->encoding,encoding_);
+      (void) SetImageOption(_imageInfo,"encoding",encoding_.c_str());
+    }
 }
 
 std::string Magick::Options::textEncoding(void) const
 {
   if (_drawInfo->encoding && *_drawInfo->encoding)
     return(std::string(_drawInfo->encoding));
-  
+
   return(std::string());
 }
 
@@ -794,117 +849,60 @@ Magick::Color Magick::Options::textUnderColor(void) const
 
 void Magick::Options::transformOrigin(const double tx_,const double ty_)
 {
-  AffineMatrix
-    affine,
-    current=_drawInfo->affine;
+  MagickCore::AffineMatrix
+    affine=IdentityAffine();
 
-  affine.sx=1.0;
-  affine.rx=0.0;
-  affine.ry=0.0;
-  affine.sy=1.0;
   affine.tx=tx_;
   affine.ty=ty_;
-
-  _drawInfo->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
-  _drawInfo->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
-  _drawInfo->affine.ry=current.sx*affine.ry+current.ry*affine.sy;
-  _drawInfo->affine.sy=current.rx*affine.ry+current.sy*affine.sy;
-  _drawInfo->affine.tx=current.sx*affine.tx+current.ry*affine.ty+current.tx;
-  _drawInfo->affine.ty=current.rx*affine.tx+current.sy*affine.ty+current.ty;
+  ConcatenateAffine(&_drawInfo->affine,affine);
 }
 
 void Magick::Options::transformReset(void)
 {
-  _drawInfo->affine.sx=1.0;
-  _drawInfo->affine.rx=0.0;
-  _drawInfo->affine.ry=0.0;
-  _drawInfo->affine.sy=1.0;
-  _drawInfo->affine.tx=0.0;
-  _drawInfo->affine.ty=0.0;
+  _drawInfo->affine=IdentityAffine();
 }
 
 void Magick::Options::transformRotation(const double angle_)
 {
-  AffineMatrix
-    affine,
-    current=_drawInfo->affine;
+  const double
+    radians=DegreesToRadians(std::fmod(angle_,360.0));
 
-  affine.sx=cos(DegreesToRadians(fmod(angle_,360.0)));
-  affine.rx=(-sin(DegreesToRadians(fmod(angle_,360.0))));
-  affine.ry=sin(DegreesToRadians(fmod(angle_,360.0)));
-  affine.sy=cos(DegreesToRadians(fmod(angle_,360.0)));
-  affine.tx=0.0;
-  affine.ty=0.0;
+  MagickCore::AffineMatrix
+    affine=IdentityAffine();
 
-  _drawInfo->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
-  _drawInfo->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
-  _drawInfo->affine.ry=current.sx*affine.ry+current.ry*affine.sy;
-  _drawInfo->affine.sy=current.rx*affine.ry+current.sy*affine.sy;
-  _drawInfo->affine.tx=current.sx*affine.tx+current.ry*affine.ty+current.tx;
-  _drawInfo->affine.ty=current.rx*affine.tx+current.sy*affine.ty+current.ty;
+  affine.sx=std::cos(radians);
+  affine.rx=(-std::sin(radians));
+  affine.ry=std::sin(radians);
+  affine.sy=std::cos(radians);
+  ConcatenateAffine(&_drawInfo->affine,affine);
 }
 
 void Magick::Options::transformScale(const double sx_,const double sy_)
 {
-  AffineMatrix
-    affine,
-    current=_drawInfo->affine;
+  MagickCore::AffineMatrix
+    affine=IdentityAffine();
 
   affine.sx=sx_;
-  affine.rx=0.0;
-  affine.ry=0.0;
   affine.sy=sy_;
-  affine.tx=0.0;
-  affine.ty=0.0;
-
-  _drawInfo->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
-  _drawInfo->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
-  _drawInfo->affine.ry=current.sx*affine.ry+current.ry*affine.sy;
-  _drawInfo->affine.sy=current.rx*affine.ry+current.sy*affine.sy;
-  _drawInfo->affine.tx=current.sx*affine.tx+current.ry*affine.ty+current.tx;
-  _drawInfo->affine.ty=current.rx*affine.tx+current.sy*affine.ty+current.ty;
+  ConcatenateAffine(&_drawInfo->affine,affine);
 }
 
 void Magick::Options::transformSkewX(const double skewx_)
 {
-  AffineMatrix
-    affine,
-    current=_drawInfo->affine;
+  MagickCore::AffineMatrix
+    affine=IdentityAffine();
 
-  affine.sx=1.0;
-  affine.rx=0.0;
-  affine.ry=tan(DegreesToRadians(fmod(skewx_,360.0)));
-  affine.sy=1.0;
-  affine.tx=0.0;
-  affine.ty=0.0;
-
-  _drawInfo->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
-  _drawInfo->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
-  _drawInfo->affine.ry=current.sx*affine.ry+current.ry*affine.sy;
-  _drawInfo->affine.sy=current.rx*affine.ry+current.sy*affine.sy;
-  _drawInfo->affine.tx=current.sx*affine.tx+current.ry*affine.ty+current.tx;
-  _drawInfo->affine.ty=current.rx*affine.tx+current.sy*affine.ty+current.ty;
+  affine.ry=std::tan(DegreesToRadians(std::fmod(skewx_,360.0)));
+  ConcatenateAffine(&_drawInfo->affine,affine);
 }
 
 void Magick::Options::transformSkewY(const double skewy_)
 {
-  AffineMatrix
-    affine,
-    current=_drawInfo->affine;
+  MagickCore::AffineMatrix
+    affine=IdentityAffine();
 
-  affine.sx=1.0;
-  affine.rx=tan(DegreesToRadians(fmod(skewy_,360.0)));
-  affine.ry=0.0;
-  affine.sy=1.0;
-  affine.tx=0.0;
-  affine.ty=0.0;
-
-  _drawInfo->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
-  _drawInfo->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
-  _drawInfo->affine.ry=current.sx*affine.ry+current.ry*affine.sy;
-  _drawInfo->affine.sy=current.rx*affine.ry+current.sy*affine.sy;
-  _drawInfo->affine.tx=current.sx*affine.tx+current.ry*affine.ty+current.tx;
-  _drawInfo->affine.ty=current.rx*affine.tx+current.sy*affine.ty+current.ty;
+  affine.rx=std::tan(DegreesToRadians(std::fmod(skewy_,360.0)));
+  ConcatenateAffine(&_drawInfo->affine,affine);
 }
 
 void Magick::Options::type(const ImageType type_)
@@ -919,7 +917,7 @@ Magick::ImageType Magick::Options::type(void) const
 
 void Magick::Options::verbose(const bool verboseFlag_)
 {
-  _imageInfo->verbose=(MagickBooleanType) verboseFlag_;
+  _imageInfo->verbose=(verboseFlag_ ? MagickTrue : MagickFalse);
 }
 
 bool Magick::Options::verbose(void) const

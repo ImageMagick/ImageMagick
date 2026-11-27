@@ -1524,6 +1524,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
     if (image->storage_class == PseudoClass)
       {
         size_t
+          count,
           packet_size;
 
         unsigned char
@@ -1534,8 +1535,8 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
           Allocate colormap.
         */
         packet_size=(size_t) (3UL*depth/8UL);
-        colormap=(unsigned char *) AcquireQuantumMemory(image->colors,
-          packet_size*sizeof(*colormap));
+        count=packet_size*image->colors;
+        colormap=(unsigned char *) AcquireQuantumMemory(image->colors,count);
         if (colormap == (unsigned char *) NULL)
           ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
         /*
@@ -1599,8 +1600,11 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
             }
           }
         }
-        (void) WriteBlob(image,packet_size*image->colors,colormap);
+        if (WriteBlob(image,count,colormap) != (ssize_t) count)
+          status=MagickFalse;
         colormap=(unsigned char *) RelinquishMagickMemory(colormap);
+        if (status == MagickFalse)
+          break;
       }
     /*
       Initialize persistent pixel cache.

@@ -774,6 +774,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
 
   size_t
     bits_per_pixel,
+    count,
     literal,
     packets,
     packet_size,
@@ -1013,7 +1014,9 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
   (void) WriteBlobMSBShort(image,pdb_image.y_anchor);
   (void) WriteBlobMSBShort(image,(unsigned short) pdb_image.width);
   (void) WriteBlobMSBShort(image,(unsigned short) pdb_image.height);
-  (void) WriteBlob(image,(size_t) (q-runlength),runlength);
+  count=(size_t) (q-runlength);
+  if (WriteBlob(image,count,runlength) != (ssize_t) count)
+    status=MagickFalse;
   runlength=(unsigned char *) RelinquishMagickMemory(runlength);
   if (comment != (const char *) NULL)
     (void) WriteBlobString(image,comment);

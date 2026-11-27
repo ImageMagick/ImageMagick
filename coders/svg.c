@@ -4143,7 +4143,8 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
 
     size_t
       blob_length,
-      encode_length;
+      encode_length,
+      length;
 
     ssize_t
       i;
@@ -4211,11 +4212,17 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
       (double) image->page.x,(double) image->page.y);
     (void) WriteBlobString(image,message);
     p=base64;
-    for (i=(ssize_t) encode_length; i > 0; i-=76)
+    for (i=(ssize_t) encode_length; i > 0; i-=(ssize_t) length)
     {
-      (void) FormatLocaleString(message,MagickPathExtent,"%.76s",p);
-      (void) WriteBlobString(image,message);
-      p+=(ptrdiff_t) 76;
+      length=(size_t) i;
+      if (length > 76)
+        length=76;
+      if (WriteBlob(image,length,(const unsigned char *) p) != (ssize_t) length)
+        {
+          status=MagickFalse;
+          break;
+        }
+      p+=(ptrdiff_t) length;
       if (i > 76)
         (void) WriteBlobString(image,"\n");
     }

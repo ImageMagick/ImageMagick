@@ -106,12 +106,12 @@ namespace Magick
 
     // Returns the sum squared difference between this hash and the other hash
     double sumSquaredDifferences(
-      const ChannelPerceptualHash &channelPerceptualHash_);
+      const ChannelPerceptualHash &channelPerceptualHash_) const;
 
-    // SRGB hu preceptual hash (valid range for index is 0-6)
+    // SRGB hu perceptual hash (valid range for index is 0-6)
     double srgbHuPhash(const size_t index_) const;
 
-    // HCLp hu preceptual hash (valid range for index is 0-6)
+    // HCLp hu perceptual hash (valid range for index is 0-6)
     double hclpHuPhash(const size_t index_) const;
 
     //
@@ -161,13 +161,13 @@ namespace Magick
     // Kurtosis
     double kurtosis() const;
 
-    // Minimum value observed
+    // Maximum value observed
     double maxima() const;
 
     // Average (mean) value observed
     double mean() const;
 
-    // Maximum value observed
+    // Minimum value observed
     double minima() const;
 
     // Skewness
@@ -268,7 +268,7 @@ namespace Magick
 
     // Returns the sum squared difference between this hash and the other hash
     double sumSquaredDifferences(
-      const ImagePerceptualHash &channelPerceptualHash_);
+      const ImagePerceptualHash &imagePerceptualHash_) const;
 
     //
     // Implementation methods

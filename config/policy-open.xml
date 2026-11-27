@@ -183,7 +183,7 @@
   -->
   <!-- <policy domain="module" rights="none" pattern="{MSL,URL,VIDEO}"/> -->
   <!-- <policy domain="coder" rights="write"
-          pattern="{MVG,PDF,PS,SVG,TXT,XPS}"/> -->
+          pattern="{AI,EPS,MVG,PDF,PS,SVG,TXT,XPS}"/> -->
 
   <!-- ================================================================== -->
   <!-- System Policies                                                     -->

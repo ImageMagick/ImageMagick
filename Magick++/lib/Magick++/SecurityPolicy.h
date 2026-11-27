@@ -39,8 +39,8 @@ namespace Magick
   private:
     SecurityPolicy(void);
 
-    static bool setValue(const PolicyDomain domain_, const std::string name_,
-      const std::string value_);
+    static bool setValue(const PolicyDomain domain_,
+      const std::string &name_,const std::string &value_);
 
     template <typename T>
     static std::string toString(const T& value);

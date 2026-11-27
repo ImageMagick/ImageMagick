@@ -101,6 +101,16 @@ MagickCore::MagickSizeType Magick::ResourceLimits::throttle(void)
   return(GetMagickResourceLimit(ThrottleResource));
 }
 
+void Magick::ResourceLimits::time_(const MagickSizeType limit_)
+{
+  (void) SetMagickResourceLimit(TimeResource,limit_);
+}
+
+MagickCore::MagickSizeType Magick::ResourceLimits::time_(void)
+{
+  return(GetMagickResourceLimit(TimeResource));
+}
+
 void Magick::ResourceLimits::width(const MagickSizeType limit_)
 {
   (void) SetMagickResourceLimit(WidthResource,limit_);
