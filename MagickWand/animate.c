@@ -216,7 +216,6 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
       XCloseDisplay(display); \
       display=(Display *) NULL; \
     } \
-  XDestroyResourceInfo(&resource_info); \
   DestroyImageStack(); \
   for (i=0; i < (ssize_t) argc; i++) \
     argv[i]=DestroyString(argv[i]); \
@@ -283,9 +282,9 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
   assert(exception != (ExceptionInfo *) NULL);
-  wand_unreferenced(metadata);
   if (IsEventLogging() != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
+      image_info->filename);
   if (argc == 2)
     {
       option=argv[1];
@@ -296,9 +295,9 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
           return(MagickTrue);
         }
     }
-  status=MagickTrue;
   SetNotifyHandlers;
   display=(Display *) NULL;
+  image=(Image *) NULL;
   j=1;
   k=0;
   NewImageStack();
@@ -496,8 +495,10 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if ((i == (ssize_t) argc) || (IsGeometry(argv[i]) == MagickFalse))
+            if (i == (ssize_t) argc)
               ThrowAnimateException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowAnimateInvalidArgumentException(option,argv[i]);
             resource_info.border_width=(unsigned int)
               StringToUnsignedLong(argv[i]);
             break;
@@ -1413,15 +1414,12 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
   if (k != 0)
     ThrowAnimateException(OptionError,"UnbalancedParenthesis",argv[i]);
   if (image == (Image *) NULL)
-    ThrowAnimateException(OptionError,"MissingAnImageFilename",argv[argc-1])
+    ThrowAnimateException(OptionError,"MissingAnImageFilename",argv[argc-1]);
   FinalizeImageSettings(image_info,image,MagickTrue);
   if (image == (Image *) NULL)
-    ThrowAnimateException(OptionError,"MissingAnImageFilename",argv[argc-1])
+    ThrowAnimateException(OptionError,"MissingAnImageFilename",argv[argc-1]);
   if (resource_info.window_id != (char *) NULL)
-    {
-      XAnimateBackgroundImage(display,&resource_info,image,exception);
-      status&=(MagickStatusType) MagickTrue;
-    }
+    XAnimateBackgroundImage(display,&resource_info,image,exception);
   else
     {
       Image
