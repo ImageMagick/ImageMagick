@@ -74,7 +74,7 @@
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
+%    o wand: the magick wand.
 %
 %    o artifact: the image artifact.
 %
@@ -115,7 +115,7 @@ WandExport MagickBooleanType MagickDeleteImageArtifact(MagickWand *wand,
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
+%    o wand: the magick wand.
 %
 %    o property: the image property.
 %
@@ -156,7 +156,7 @@ WandExport MagickBooleanType MagickDeleteImageProperty(MagickWand *wand,
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
+%    o wand: the magick wand.
 %
 %    o option: the image option.
 %
@@ -368,10 +368,12 @@ WandExport const char *MagickGetCopyright(void)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickGetFilename() returns the filename associated with an image sequence.
+%  Use MagickRelinquishMemory() to free the filename when you are finished
+%  with it.
 %
 %  The format of the MagickGetFilename method is:
 %
-%      const char *MagickGetFilename(const MagickWand *wand)
+%      char *MagickGetFilename(const MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
@@ -398,7 +400,8 @@ WandExport char *MagickGetFilename(const MagickWand *wand)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickGetFont() returns the font associated with the MagickWand.
+%  MagickGetFont() returns the font associated with the MagickWand.  Use
+%  MagickRelinquishMemory() to free the font when you are finished with it.
 %
 %  The format of the MagickGetFont method is:
 %
@@ -431,11 +434,13 @@ WandExport char *MagickGetFont(MagickWand *wand)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickGetFormat() returns the format of the magick wand.
+%  MagickGetFormat() returns the format of the magick wand.  Use
+%  MagickRelinquishMemory() to free the format when you are finished with
+%  it.
 %
 %  The format of the MagickGetFormat method is:
 %
-%      const char MagickGetFormat(MagickWand *wand)
+%      char *MagickGetFormat(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
@@ -478,8 +483,8 @@ WandExport FilterType MagickGetFilter(MagickWand *wand)
   const char
     *option;
 
-  FilterType
-    type;
+  ssize_t
+    parsed;
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickWandSignature);
@@ -488,8 +493,10 @@ WandExport FilterType MagickGetFilter(MagickWand *wand)
   option=GetImageOption(wand->image_info,"filter");
   if (option == (const char *) NULL)
     return(UndefinedFilter);
-  type=(FilterType) ParseCommandOption(MagickFilterOptions,MagickFalse,option);
-  return(type);
+  parsed=ParseCommandOption(MagickFilterOptions,MagickFalse,option);
+  if (parsed < 0)
+    return(UndefinedFilter);
+  return((FilterType) parsed);
 }
 
 /*
@@ -519,8 +526,8 @@ WandExport GravityType MagickGetGravity(MagickWand *wand)
   const char
     *option;
 
-  GravityType
-    type;
+  ssize_t
+    parsed;
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickWandSignature);
@@ -529,9 +536,10 @@ WandExport GravityType MagickGetGravity(MagickWand *wand)
   option=GetImageOption(wand->image_info,"gravity");
   if (option == (const char *) NULL)
     return(UndefinedGravity);
-  type=(GravityType) ParseCommandOption(MagickGravityOptions,MagickFalse,
-    option);
-  return(type);
+  parsed=ParseCommandOption(MagickGravityOptions,MagickFalse,option);
+  if (parsed < 0)
+    return(UndefinedGravity);
+  return((GravityType) parsed);
 }
 
 /*
@@ -616,13 +624,13 @@ WandExport char *MagickGetImageArtifact(MagickWand *wand,const char *artifact)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickGetImageArtifacts() returns all the artifact names that match the
-%  specified pattern associated with a wand.  Use MagickGetImageProperty() to
+%  specified pattern associated with a wand.  Use MagickGetImageArtifact() to
 %  return the value of a particular artifact.  Use MagickRelinquishMemory() to
 %  free the value when you are finished with it.
 %
 %  The format of the MagickGetImageArtifacts method is:
 %
-%      char *MagickGetImageArtifacts(MagickWand *wand,
+%      char **MagickGetImageArtifacts(MagickWand *wand,
 %        const char *pattern,size_t *number_artifacts)
 %
 %  A description of each parameter follows:
@@ -644,7 +652,7 @@ WandExport char **MagickGetImageArtifacts(MagickWand *wand,
     *artifact;
 
   size_t
-    length;
+    count;
 
   ssize_t
     i;
@@ -653,37 +661,42 @@ WandExport char **MagickGetImageArtifacts(MagickWand *wand,
   assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  *number_artifacts=0;
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
         "ContainsNoImages","`%s'",wand->name);
       return((char **) NULL);
     }
-  (void) GetImageArtifact(wand->images,"exif:*");
-  length=1024;
-  artifacts=(char **) AcquireQuantumMemory(length,sizeof(*artifacts));
-  if (artifacts == (char **) NULL)
-    return((char **) NULL);
+  if (pattern == (const char *) NULL)
+    pattern="*";
+  count=0;
   ResetImageArtifactIterator(wand->images);
   artifact=GetNextImageArtifact(wand->images);
-  for (i=0; artifact != (const char *) NULL; )
+  while (artifact != (const char *) NULL)
   {
-    if ((*artifact != '[') &&
-        (GlobExpression(artifact,pattern,MagickFalse) != MagickFalse))
+    if (((*artifact != '[') &&
+        (GlobExpression(artifact,pattern,MagickFalse) != MagickFalse)))
+      count++;
+    artifact=GetNextImageArtifact(wand->images);
+  }
+  artifacts=(char **) AcquireQuantumMemory(count+1,sizeof(*artifacts));
+  if (artifacts == (char **) NULL)
+    {
+      (void) ThrowMagickException(wand->exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",
+        wand->name);
+      return((char **) NULL);
+    }
+  i=0;
+  ResetImageArtifactIterator(wand->images);
+  artifact=GetNextImageArtifact(wand->images);
+  while (artifact != (const char *) NULL)
+  {
+    if (((*artifact != '[') &&
+        (GlobExpression(artifact,pattern,MagickFalse) != MagickFalse)) &&
+        (i < (ssize_t) count))
       {
-        if ((i+1) >= (ssize_t) length)
-          {
-            length<<=1;
-            artifacts=(char **) ResizeQuantumMemory(artifacts,length,
-              sizeof(*artifacts));
-            if (artifacts == (char **) NULL)
-              {
-                (void) ThrowMagickException(wand->exception,GetMagickModule(),
-                  ResourceLimitError,"MemoryAllocationFailed","`%s'",
-                  wand->name);
-                return((char **) NULL);
-              }
-          }
         artifacts[i]=ConstantString(artifact);
         i++;
       }
@@ -768,12 +781,12 @@ WandExport unsigned char *MagickGetImageProfile(MagickWand *wand,
 %
 %  MagickGetImageProfiles() returns all the profile names that match the
 %  specified pattern associated with a wand.  Use MagickGetImageProfile() to
-%  return the value of a particular property.  Use MagickRelinquishMemory() to
+%  return the value of a particular profile.  Use MagickRelinquishMemory() to
 %  free the value when you are finished with it.
 %
 %  The format of the MagickGetImageProfiles method is:
 %
-%      char *MagickGetImageProfiles(MagickWand *wand,const char *pattern,
+%      char **MagickGetImageProfiles(MagickWand *wand,const char *pattern,
 %        size_t *number_profiles)
 %
 %  A description of each parameter follows:
@@ -792,53 +805,58 @@ WandExport char **MagickGetImageProfiles(MagickWand *wand,const char *pattern,
     **profiles;
 
   const char
-    *property;
+    *profile;
+
+  size_t
+    count;
 
   ssize_t
     i;
-
-  size_t
-    length;
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  *number_profiles=0;
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
         "ContainsNoImages","`%s'",wand->name);
       return((char **) NULL);
     }
-  (void) GetImageProfile(wand->images,"exif:*");
-  length=1024;
-  profiles=(char **) AcquireQuantumMemory(length,sizeof(*profiles));
-  if (profiles == (char **) NULL)
-    return((char **) NULL);
+  if (pattern == (const char *) NULL)
+    pattern="*";
+  count=0;
   ResetImageProfileIterator(wand->images);
-  property=GetNextImageProfile(wand->images);
-  for (i=0; property != (const char *) NULL; )
+  profile=GetNextImageProfile(wand->images);
+  while (profile != (const char *) NULL)
   {
-    if ((*property != '[') &&
-        (GlobExpression(property,pattern,MagickFalse) != MagickFalse))
+    if (((*profile != '[') &&
+        (GlobExpression(profile,pattern,MagickFalse) != MagickFalse)))
+      count++;
+    profile=GetNextImageProfile(wand->images);
+  }
+  profiles=(char **) AcquireQuantumMemory(count+1,sizeof(*profiles));
+  if (profiles == (char **) NULL)
+    {
+      (void) ThrowMagickException(wand->exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",
+        wand->name);
+      return((char **) NULL);
+    }
+  i=0;
+  ResetImageProfileIterator(wand->images);
+  profile=GetNextImageProfile(wand->images);
+  while (profile != (const char *) NULL)
+  {
+    if (((*profile != '[') &&
+        (GlobExpression(profile,pattern,MagickFalse) != MagickFalse)) &&
+        (i < (ssize_t) count))
       {
-        if ((i+1) >= (ssize_t) length)
-          {
-            length<<=1;
-            profiles=(char **) ResizeQuantumMemory(profiles,length,
-              sizeof(*profiles));
-            if (profiles == (char **) NULL)
-              {
-                (void) ThrowMagickException(wand->exception,GetMagickModule(),
-                  ResourceLimitError,"MemoryAllocationFailed","`%s'",
-                  wand->name);
-                return((char **) NULL);
-              }
-          }
-        profiles[i]=ConstantString(property);
+        profiles[i]=ConstantString(profile);
         i++;
       }
-    property=GetNextImageProfile(wand->images);
+    profile=GetNextImageProfile(wand->images);
   }
   profiles[i]=(char *) NULL;
   *number_profiles=(size_t) i;
@@ -910,7 +928,7 @@ WandExport char *MagickGetImageProperty(MagickWand *wand,const char *property)
 %
 %  The format of the MagickGetImageProperties method is:
 %
-%      char *MagickGetImageProperties(MagickWand *wand,
+%      char **MagickGetImageProperties(MagickWand *wand,
 %        const char *pattern,size_t *number_properties)
 %
 %  A description of each parameter follows:
@@ -931,47 +949,53 @@ WandExport char **MagickGetImageProperties(MagickWand *wand,
   const char
     *property;
 
+  size_t
+    count;
+
   ssize_t
     i;
-
-  size_t
-    length;
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  *number_properties=0;
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
         "ContainsNoImages","`%s'",wand->name);
       return((char **) NULL);
     }
+  if (pattern == (const char *) NULL)
+    pattern="*";
   (void) GetImageProperty(wand->images,"exif:*",wand->exception);
-  length=1024;
-  properties=(char **) AcquireQuantumMemory(length,sizeof(*properties));
-  if (properties == (char **) NULL)
-    return((char **) NULL);
+  count=0;
   ResetImagePropertyIterator(wand->images);
   property=GetNextImageProperty(wand->images);
-  for (i=0; property != (const char *) NULL; )
+  while (property != (const char *) NULL)
   {
-    if ((*property != '[') &&
-        (GlobExpression(property,pattern,MagickFalse) != MagickFalse))
+    if (((*property != '[') &&
+        (GlobExpression(property,pattern,MagickFalse) != MagickFalse)))
+      count++;
+    property=GetNextImageProperty(wand->images);
+  }
+  properties=(char **) AcquireQuantumMemory(count+1,sizeof(*properties));
+  if (properties == (char **) NULL)
+    {
+      (void) ThrowMagickException(wand->exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",
+        wand->name);
+      return((char **) NULL);
+    }
+  i=0;
+  ResetImagePropertyIterator(wand->images);
+  property=GetNextImageProperty(wand->images);
+  while (property != (const char *) NULL)
+  {
+    if (((*property != '[') &&
+        (GlobExpression(property,pattern,MagickFalse) != MagickFalse)) &&
+        (i < (ssize_t) count))
       {
-        if ((i+1) >= (ssize_t) length)
-          {
-            length<<=1;
-            properties=(char **) ResizeQuantumMemory(properties,length,
-              sizeof(*properties));
-            if (properties == (char **) NULL)
-              {
-                (void) ThrowMagickException(wand->exception,GetMagickModule(),
-                  ResourceLimitError,"MemoryAllocationFailed","`%s'",
-                  wand->name);
-                return((char **) NULL);
-              }
-          }
         properties[i]=ConstantString(property);
         i++;
       }
@@ -1024,7 +1048,7 @@ WandExport InterlaceType MagickGetInterlaceScheme(MagickWand *wand)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickGetInterpolateMethod() gets the wand compression.
+%  MagickGetInterpolateMethod() gets the wand interpolate method.
 %
 %  The format of the MagickGetInterpolateMethod method is:
 %
@@ -1040,8 +1064,8 @@ WandExport PixelInterpolateMethod MagickGetInterpolateMethod(MagickWand *wand)
   const char
     *option;
 
-  PixelInterpolateMethod
-    method;
+  ssize_t
+    parsed;
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickWandSignature);
@@ -1050,9 +1074,10 @@ WandExport PixelInterpolateMethod MagickGetInterpolateMethod(MagickWand *wand)
   option=GetImageOption(wand->image_info,"interpolate");
   if (option == (const char *) NULL)
     return(UndefinedInterpolatePixel);
-  method=(PixelInterpolateMethod) ParseCommandOption(MagickInterpolateOptions,
-    MagickFalse,option);
-  return(method);
+  parsed=ParseCommandOption(MagickInterpolateOptions,MagickFalse,option);
+  if (parsed < 0)
+    return(UndefinedInterpolatePixel);
+  return((PixelInterpolateMethod) parsed);
 }
 
 /*
@@ -1112,7 +1137,7 @@ WandExport char *MagickGetOption(MagickWand *wand,const char *key)
 %
 %  The format of the MagickGetOptions method is:
 %
-%      char *MagickGetOptions(MagickWand *wand,const char *pattern,
+%      char **MagickGetOptions(MagickWand *wand,const char *pattern,
 %        size_t *number_options)
 %
 %  A description of each parameter follows:
@@ -1133,46 +1158,46 @@ WandExport char **MagickGetOptions(MagickWand *wand,const char *pattern,
   const char
     *option;
 
+  size_t
+    count;
+
   ssize_t
     i;
-
-  size_t
-    length;
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  if (wand->images == (Image *) NULL)
-    {
-      (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","`%s'",wand->name);
-      return((char **) NULL);
-    }
-  length=1024;
-  options=(char **) AcquireQuantumMemory(length,sizeof(*options));
-  if (options == (char **) NULL)
-    return((char **) NULL);
+  *number_options=0;
+  if (pattern == (const char *) NULL)
+    pattern="*";
+  count=0;
   ResetImageOptionIterator(wand->image_info);
   option=GetNextImageOption(wand->image_info);
-  for (i=0; option != (const char *) NULL; )
+  while (option != (const char *) NULL)
   {
-    if ((*option != '[') &&
-        (GlobExpression(option,pattern,MagickFalse) != MagickFalse))
+    if (((*option != '[') &&
+        (GlobExpression(option,pattern,MagickFalse) != MagickFalse)))
+      count++;
+    option=GetNextImageOption(wand->image_info);
+  }
+  options=(char **) AcquireQuantumMemory(count+1,sizeof(*options));
+  if (options == (char **) NULL)
+    {
+      (void) ThrowMagickException(wand->exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",
+        wand->name);
+      return((char **) NULL);
+    }
+  i=0;
+  ResetImageOptionIterator(wand->image_info);
+  option=GetNextImageOption(wand->image_info);
+  while (option != (const char *) NULL)
+  {
+    if (((*option != '[') &&
+        (GlobExpression(option,pattern,MagickFalse) != MagickFalse)) &&
+        (i < (ssize_t) count))
       {
-        if ((i+1) >= (ssize_t) length)
-          {
-            length<<=1;
-            options=(char **) ResizeQuantumMemory(options,length,
-              sizeof(*options));
-            if (options == (char **) NULL)
-              {
-                (void) ThrowMagickException(wand->exception,GetMagickModule(),
-                  ResourceLimitError,"MemoryAllocationFailed","`%s'",
-                  wand->name);
-                return((char **) NULL);
-              }
-          }
         options[i]=ConstantString(option);
         i++;
       }
@@ -1473,7 +1498,7 @@ WandExport MagickBooleanType MagickGetResolution(const MagickWand *wand,
 %
 %  A description of each parameter follows:
 %
-%    o wand: the magick wand.
+%    o type: the resource type.
 %
 */
 WandExport MagickSizeType MagickGetResource(const ResourceType type)
@@ -1500,7 +1525,7 @@ WandExport MagickSizeType MagickGetResource(const ResourceType type)
 %
 %  A description of each parameter follows:
 %
-%    o wand: the magick wand.
+%    o type: the resource type.
 %
 */
 WandExport MagickSizeType MagickGetResourceLimit(const ResourceType type)
@@ -1523,7 +1548,7 @@ WandExport MagickSizeType MagickGetResourceLimit(const ResourceType type)
 %
 %  The format of the MagickGetSamplingFactors method is:
 %
-%      double *MagickGetSamplingFactor(MagickWand *wand,
+%      double *MagickGetSamplingFactors(MagickWand *wand,
 %        size_t *number_factors)
 %
 %  A description of each parameter follows:
@@ -1564,8 +1589,11 @@ WandExport double *MagickGetSamplingFactors(MagickWand *wand,
   sampling_factors=(double *) AcquireQuantumMemory((size_t) i+1,
     sizeof(*sampling_factors));
   if (sampling_factors == (double *) NULL)
-    ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
-      wand->image_info->filename);
+    {
+      (void) ThrowMagickException(wand->exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",wand->name);
+      return((double *) NULL);
+    }
   i=0;
   for (p=wand->image_info->sampling_factor; p != (char *) NULL; p=strchr(p,':'))
   {
@@ -1603,7 +1631,7 @@ WandExport double *MagickGetSamplingFactors(MagickWand *wand,
 %
 %    o columns: the width in pixels.
 %
-%    o height: the height in pixels.
+%    o rows: the height in pixels.
 %
 */
 WandExport MagickBooleanType MagickGetSize(const MagickWand *wand,
@@ -2149,12 +2177,12 @@ WandExport MagickBooleanType MagickSetFilename(MagickWand *wand,
 */
 WandExport MagickBooleanType MagickSetFont(MagickWand *wand,const char *font)
 {
-  if ((font == (const char *) NULL) || (*font == '\0'))
-    return(MagickFalse);
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if ((font == (const char *) NULL) || (*font == '\0'))
+    return(MagickFalse);
   (void) CloneString(&wand->image_info->font,font);
   return(MagickTrue);
 }
@@ -2378,6 +2406,8 @@ WandExport MagickBooleanType MagickSetImageProfile(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   profile_info=BlobToProfileStringInfo(name,profile,length,wand->exception);
+  if (profile_info == (StringInfo *) NULL)
+    return(MagickFalse);
   status=SetImageProfilePrivate(wand->images,profile_info,wand->exception);
   return(status);
 }
@@ -2436,7 +2466,7 @@ WandExport MagickBooleanType MagickSetImageProperty(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickSetInterlaceScheme() sets the image compression.
+%  MagickSetInterlaceScheme() sets the image interlace scheme.
 %
 %  The format of the MagickSetInterlaceScheme method is:
 %
@@ -2478,7 +2508,7 @@ WandExport MagickBooleanType MagickSetInterlaceScheme(MagickWand *wand,
 %  The format of the MagickSetInterpolateMethod method is:
 %
 %      MagickBooleanType MagickSetInterpolateMethod(MagickWand *wand,
-%        const InterpolateMethodPixel method)
+%        const PixelInterpolateMethod method)
 %
 %  A description of each parameter follows:
 %
@@ -2866,6 +2896,8 @@ WandExport MagickBooleanType MagickSetSamplingFactors(MagickWand *wand,
   assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if ((number_factors != 0) && (sampling_factors == (const double *) NULL))
+    return(MagickFalse);
   if (wand->image_info->sampling_factor != (char *) NULL)
     wand->image_info->sampling_factor=(char *)
       RelinquishMagickMemory(wand->image_info->sampling_factor);
@@ -2926,9 +2958,9 @@ WandExport void MagickSetSeed(const unsigned long seed)
 %  MagickSetSecurityPolicy() sets the ImageMagick security policy.  It returns
 %  MagickFalse if the policy is already set or if the policy does not parse.
 %
-%  The format of the MagickSetAntialias method is:
+%  The format of the MagickSetSecurityPolicy method is:
 %
-%      MagickBooleanType MagickSetAntialias(MagickWand *wand,
+%      MagickBooleanType MagickSetSecurityPolicy(MagickWand *wand,
 %        const char *policy)
 %
 %  A description of each parameter follows:
