@@ -150,6 +150,9 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
   Image
     *image;
 
+  MagickBooleanType
+    success;
+
   MagickStatusType
     status;
 
@@ -178,6 +181,7 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
     }
   image=NewImageList();
   number_images=0;
+  success=MagickTrue;
   option=(char *) NULL;
   /*
     Conjure an image.
@@ -193,14 +197,14 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
     if (IsCommandOption(option) != MagickFalse)
       {
         if (LocaleCompare("concurrent",option+1) == 0)
-          break;
+          continue;
         if (LocaleCompare("debug",option+1) == 0)
           {
             ssize_t
               event;
 
             if (*option == '+')
-              break;
+              continue;
             i++;
             if (i == (ssize_t) argc)
               ThrowConjureException(OptionError,"MissingArgument",option);
@@ -214,7 +218,7 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
         if (LocaleCompare("duration",option+1) == 0)
           {
             if (*option == '+')
-              break;
+              continue;
             i++;
             if (i == (ssize_t) argc)
               ThrowConjureException(OptionError,"MissingArgument",option);
@@ -248,17 +252,17 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
         if (LocaleCompare("quiet",option+1) == 0)
           continue;
         if (LocaleCompare("regard-warnings",option+1) == 0)
-          break;
+          continue;
         if (LocaleCompare("seed",option+1) == 0)
           {
             if (*option == '+')
-              break;
+              continue;
             i++;
             if (i == (ssize_t) argc)
               ThrowConjureException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConjureInvalidArgumentException(option,argv[i]);
-            break;
+            continue;
           }
         if (LocaleCompare("verbose",option+1) == 0)
           {
@@ -269,6 +273,7 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
             (LocaleCompare("-version",option+1) == 0))
           {
             ListMagickVersion(stdout);
+            DestroyConjure();
             return(MagickTrue);
           }
         /*
@@ -290,12 +295,13 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
     status=SetImageOption(image_info,"filename",argv[i]);
     if (status == MagickFalse)
       ThrowConjureException(ImageError,"UnableToPersistKey",argv[i]);
-    (void) FormatLocaleString(filename,MagickPathExtent,"%s",argv[i]);
+    (void) CopyMagickString(filename,argv[i],MagickPathExtent);
     image=ReadImages(image_info,filename,exception);
     CatchException(exception);
-    if (image != (Image *) NULL)
+    if (image == (Image *) NULL)
+      success=MagickFalse;
+    else
       image=DestroyImageList(image);
-    status=image != (Image *) NULL ? MagickTrue : MagickFalse;
     number_images++;
   }
   if (i != (ssize_t) argc)
@@ -307,5 +313,5 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
   for (i=0; i < (ssize_t) argc; i++)
     argv[i]=DestroyString(argv[i]);
   argv=(char **) RelinquishMagickMemory(argv);
-  return(status != 0 ? MagickTrue : MagickFalse);
+  return(success);
 }
