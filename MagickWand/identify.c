@@ -218,7 +218,8 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
     i;
 
   size_t
-    count;
+    count,
+    number_files;
 
   ssize_t
     j,
@@ -250,6 +251,7 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
       return(MagickFalse);
     }
   count=0;
+  number_files=0;
   format=NULL;
   j=1;
   k=0;
@@ -302,6 +304,7 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
           Read input image.
         */
         FireImageStack(MagickFalse,MagickFalse,pend);
+        number_files++;
         identify_info=CloneImageInfo(image_info);
         identify_info->verbose=MagickFalse;
         filename=argv[i];
@@ -328,18 +331,20 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
               (void) IdentifyImage(image,stdout,image_info->verbose,exception);
               continue;
             }
-          if (metadata != (char **) NULL)
-            {
-              char
-                *text;
+          {
+            char
+              *text;
 
-              text=InterpretImageProperties(image_info,image,format,exception);
-              if (text == (char *) NULL)
-                ThrowIdentifyException(ResourceLimitError,
-                  "MemoryAllocationFailed",(char *) NULL);
+            text=InterpretImageProperties(image_info,image,format,exception);
+            if (text == (char *) NULL)
+              ThrowIdentifyException(ResourceLimitError,
+                "MemoryAllocationFailed",(char *) NULL);
+            if (metadata != (char **) NULL)
               (void) ConcatenateString(&(*metadata),text);
-              text=DestroyString(text);
-            }
+            else
+              (void) fputs(text,stdout);
+            text=DestroyString(text);
+          }
         }
         RemoveAllImageStack();
         continue;
@@ -938,9 +943,9 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
       FireImageStack(MagickFalse,MagickTrue,MagickTrue);
   }
   if (k != 0)
-    ThrowIdentifyException(OptionError,"UnbalancedParenthesis",argv[i]);
-  if (i != (ssize_t) argc)
-    ThrowIdentifyException(OptionError,"MissingAnImageFilename",argv[i]);
+    ThrowIdentifyException(OptionError,"UnbalancedParenthesis","(");
+  if (number_files == 0)
+    ThrowIdentifyException(OptionError,"MissingAnImageFilename",argv[0]);
   DestroyIdentify();
   return(status != 0 ? MagickTrue : MagickFalse);
 }
