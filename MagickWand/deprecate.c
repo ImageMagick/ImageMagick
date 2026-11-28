@@ -95,20 +95,38 @@ static MagickBooleanType ConcatenateImages(int argc,char **argv,
     *input,
     *output;
 
-  int
-    c;
-
   MagickBooleanType
+    copied,
     status;
+
+  size_t
+    count;
 
   ssize_t
     i;
+
+  unsigned char
+    buffer[MagickPathExtent];
 
   /*
     Open output file.
   */
   if (IsPathAuthorized(WritePolicyRights,argv[argc-1]) == MagickFalse)
-    ThrowPolicyException(argv[argc-1],MagickFalse);
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
+        "NotAuthorized","`%s'",argv[argc-1]);
+      return(MagickFalse);
+    }
+  for (i=2; i < ((ssize_t) argc-1); i++)
+    if (LocaleCompare(argv[i],argv[argc-1]) == 0)
+      {
+        /*
+          Refuse to truncate (and later delete) one of our own inputs.
+        */
+        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+          "InvalidArgument","'%s': %s","-concatenate",argv[i]);
+        return(MagickFalse);
+      }
   output=fopen_utf8(argv[argc-1],"wb");
   if (output == (FILE *) NULL)
     {
@@ -120,20 +138,47 @@ static MagickBooleanType ConcatenateImages(int argc,char **argv,
   for (i=2; i < ((ssize_t) argc-1); i++)
   {
     if (IsPathAuthorized(ReadPolicyRights,argv[i]) == MagickFalse)
-      ThrowPolicyException(argv[i],MagickFalse);
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
+          "NotAuthorized","`%s'",argv[i]);
+        status=MagickFalse;
+        break;
+      }
     input=fopen_utf8(argv[i],"rb");
     if (input == (FILE *) NULL)
       {
         ThrowFileException(exception,FileOpenError,"UnableToOpenFile",argv[i]);
+        status=MagickFalse;
         continue;
       }
-    for (c=fgetc(input); c != EOF; c=fgetc(input))
-      if (fputc((char) c,output) != c)
-        status=MagickFalse;
+    copied=MagickTrue;
+    while ((count=fread(buffer,1,sizeof(buffer),input)) > 0)
+      if (fwrite(buffer,1,count,output) != count)
+        {
+          copied=MagickFalse;
+          break;
+        }
+    if (ferror(input) != 0)
+      copied=MagickFalse;
     (void) fclose(input);
-    (void) remove_utf8(argv[i]);
+    if (copied == MagickFalse)
+      {
+        ThrowFileException(exception,FileOpenError,"UnableToWriteFile",
+          argv[argc-1]);
+        status=MagickFalse;
+        break;
+      }
   }
-  (void) fclose(output);
+  if (fclose(output) != 0)
+    status=MagickFalse;
+  if (status != MagickFalse)
+    {
+      /*
+        Only remove the inputs once everything is safely written.
+      */
+      for (i=2; i < ((ssize_t) argc-1); i++)
+        (void) remove_utf8(argv[i]);
+    }
   return(status);
 }
 
@@ -457,7 +502,7 @@ static MagickBooleanType ConvertUsage(void)
       "                       virtual pixel access method\n"
       "  -weight type         render text with this font weight\n"
       "  -white-point point   chromaticity white point\n"
-      "  -write-mask filename associate a write mask with the image"
+      "  -write-mask filename associate a write mask with the image\n"
       "  -word-break type     sets whether line breaks appear wherever the text would otherwise overflow",
     stack_operators[] =
       "  -clone indexes       clone an image\n"
@@ -537,6 +582,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
     image_stack[MaxImageStackDepth+1];
 
   MagickBooleanType
+    concatenated,
     fire,
     pend,
     respect_parentheses;
@@ -560,7 +606,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   (void) FormatLocaleFile(stderr,"WARNING: %s\n",
-        "The convert command is deprecated in IMv7, use \"magick\" instead of \"convert\" or \"magick convert\"\n");
+        "The convert command is deprecated in IMv7, use \"magick\" instead of \"convert\" or \"magick convert\"");
   if (argc == 2)
     {
       option=argv[1];
@@ -599,7 +645,11 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
     ThrowConvertException(ResourceLimitError,"MemoryAllocationFailed",
       (char *) NULL);
   if ((argc > 2) && (LocaleCompare("-concatenate",argv[1]) == 0))
-    return(ConcatenateImages(argc,argv,exception));
+    {
+      concatenated=ConcatenateImages(argc,argv,exception);
+      DestroyConvert();
+      return(concatenated);
+    }
   for (i=1; i < ((ssize_t) argc-1); i++)
   {
     option=argv[i];
@@ -1033,9 +1083,10 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               *clone_images,
               *clone_list;
 
-            clone_list=CloneImageList(image,exception);
             if (k != 0)
               clone_list=CloneImageList(image_stack[k-1].image,exception);
+            else
+              clone_list=CloneImageList(image,exception);
             if (clone_list == (Image *) NULL)
               ThrowConvertException(ImageError,"ImageSequenceRequired",option);
             FireImageStack(MagickTrue,MagickTrue,MagickTrue);
@@ -1092,9 +1143,10 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if ((i == (ssize_t) argc) ||
-                (IsGeometry(argv[i]) == MagickFalse))
+            if (i == (ssize_t) argc)
               ThrowConvertException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
             break;
           }
         if (LocaleCompare("colorspace",option+1) == 0)
@@ -2390,7 +2442,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
                 argv[i]);
             break;
           }
-        ThrowConvertException(OptionError,"UnrecognizedOption",argv[i])
+        ThrowConvertException(OptionError,"UnrecognizedOption",option)
       }
       case 'p':
       {
@@ -2973,9 +3025,10 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if ((i == (ssize_t) argc) ||
-                (IsGeometry(argv[i]) == MagickFalse))
+            if (i == (ssize_t) argc)
               ThrowConvertException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
             break;
           }
         if (LocaleCompare("statistic",option+1) == 0)
@@ -3057,6 +3110,8 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("support",option+1) == 0)
           {
             i++;  /* deprecated */
+            if (i == (ssize_t) argc)
+              ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
         if (LocaleCompare("swap",option+1) == 0)
@@ -3443,6 +3498,7 @@ WandExport MagickBooleanType MagickGetImageAlphaColor(MagickWand *wand,
 {
   assert(wand != (MagickWand *)NULL);
   assert(wand->signature == MagickWandSignature);
+  assert(alpha_color != (PixelWand *) NULL);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *)NULL)
@@ -3481,6 +3537,7 @@ WandExport MagickBooleanType MagickSetImageAlphaColor(MagickWand *wand,
 {
   assert(wand != (MagickWand *)NULL);
   assert(wand->signature == MagickWandSignature);
+  assert(alpha != (const PixelWand *) NULL);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *)NULL)
