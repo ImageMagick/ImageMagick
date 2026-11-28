@@ -136,7 +136,7 @@ WandExport void ClearPixelWand(PixelWand *wand)
 %
 %  A description of each parameter follows:
 %
-%    o wand: the magick wand.
+%    o wand: the pixel wand.
 %
 */
 WandExport PixelWand *ClonePixelWand(const PixelWand *wand)
@@ -198,8 +198,12 @@ WandExport PixelWand **ClonePixelWands(const PixelWand **wands,
   PixelWand
     **clone_wands;
 
-  clone_wands=(PixelWand **) AcquireCriticalMemory((size_t) number_wands*
+  assert(wands != (const PixelWand **) NULL);
+  clone_wands=(PixelWand **) AcquireQuantumMemory(number_wands,
     sizeof(*clone_wands));
+  if (clone_wands == (PixelWand **) NULL)
+    ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
+      GetExceptionMessage(errno));
   for (i=0; i < (ssize_t) number_wands; i++)
     clone_wands[i]=ClonePixelWand(wands[i]);
   return(clone_wands);
@@ -304,9 +308,9 @@ WandExport PixelWand **DestroyPixelWands(PixelWand **wand,
 %
 %  A description of each parameter follows:
 %
-%    o p: the pixel wand.
+%    o p: the first pixel wand.
 %
-%    o q: the pixel wand.
+%    o q: the second pixel wand.
 %
 %    o fuzz: any two colors that are less than or equal to this distance
 %      squared are consider similar.
@@ -429,8 +433,10 @@ WandExport PixelWand **NewPixelWands(const size_t number_wands)
   PixelWand
     **wands;
 
-  wands=(PixelWand **) AcquireCriticalMemory((size_t) number_wands*
-    sizeof(*wands));
+  wands=(PixelWand **) AcquireQuantumMemory(number_wands,sizeof(*wands));
+  if (wands == (PixelWand **) NULL)
+    ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
+      GetExceptionMessage(errno));
   for (i=0; i < (ssize_t) number_wands; i++)
     wands[i]=NewPixelWand();
   return(wands);
@@ -669,7 +675,7 @@ WandExport Quantum PixelGetBlueQuantum(const PixelWand *wand)
 %
 %  The format of the PixelGetColorAsString method is:
 %
-%      char *PixelGetColorAsString(PixelWand *wand)
+%      char *PixelGetColorAsString(const PixelWand *wand)
 %
 %  A description of each parameter follows:
 %
@@ -710,7 +716,7 @@ WandExport char *PixelGetColorAsString(const PixelWand *wand)
 %
 %  The format of the PixelGetColorAsNormalizedString method is:
 %
-%      char *PixelGetColorAsNormalizedString(PixelWand *wand)
+%      char *PixelGetColorAsNormalizedString(const PixelWand *wand)
 %
 %  A description of each parameter follows:
 %
@@ -726,15 +732,15 @@ WandExport char *PixelGetColorAsNormalizedString(const PixelWand *wand)
   assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  (void) FormatLocaleString(color,MagickPathExtent,"%g,%g,%g",(double)
+  (void) FormatLocaleString(color,sizeof(color),"%g,%g,%g",(double)
     (QuantumScale*wand->pixel.red),(double) (QuantumScale*wand->pixel.green),
     (double) (QuantumScale*wand->pixel.blue));
   if (wand->pixel.colorspace == CMYKColorspace)
-    (void) FormatLocaleString(color+strlen(color),MagickPathExtent,",%g",
-      (double) (QuantumScale*wand->pixel.black));
+    (void) FormatLocaleString(color+strlen(color),sizeof(color)-strlen(color),
+      ",%g",(double) (QuantumScale*wand->pixel.black));
   if (wand->pixel.alpha_trait != UndefinedPixelTrait)
-    (void) FormatLocaleString(color+strlen(color),MagickPathExtent,",%g",
-      (double) (QuantumScale*wand->pixel.alpha));
+    (void) FormatLocaleString(color+strlen(color),sizeof(color)-strlen(color),
+      ",%g",(double) (QuantumScale*wand->pixel.alpha));
   return(ConstantString(color));
 }
 
@@ -876,14 +882,15 @@ WandExport char *PixelGetException(const PixelWand *wand,
   *description='\0';
   if (wand->exception->reason != (char *) NULL)
     (void) CopyMagickString(description,GetLocaleExceptionMessage(
-      wand->exception->severity,wand->exception->reason),MagickPathExtent);
+      wand->exception->severity,wand->exception->reason),
+      2*MagickPathExtent);
   if (wand->exception->description != (char *) NULL)
     {
-      (void) ConcatenateMagickString(description," (",MagickPathExtent);
+      (void) ConcatenateMagickString(description," (",2*MagickPathExtent);
       (void) ConcatenateMagickString(description,GetLocaleExceptionMessage(
         wand->exception->severity,wand->exception->description),
-        MagickPathExtent);
-      (void) ConcatenateMagickString(description,")",MagickPathExtent);
+        2*MagickPathExtent);
+      (void) ConcatenateMagickString(description,")",2*MagickPathExtent);
     }
   return(description);
 }
@@ -1079,7 +1086,7 @@ WandExport Quantum PixelGetIndex(const PixelWand *wand)
   assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  return((Quantum) wand->pixel.index);
+  return(ClampToQuantum(wand->pixel.index));
 }
 
 /*
@@ -1159,7 +1166,7 @@ WandExport Quantum PixelGetMagentaQuantum(const PixelWand *wand)
 %
 %  The format of the PixelGetMagickColor method is:
 %
-%      void PixelGetMagickColor(PixelWand *wand,PixelInfo *color)
+%      void PixelGetMagickColor(const PixelWand *wand,PixelInfo *color)
 %
 %  A description of each parameter follows:
 %
@@ -1225,7 +1232,7 @@ WandExport PixelInfo PixelGetPixel(const PixelWand *wand)
 %
 %  The format of the PixelGetQuantumPacket method is:
 %
-%      void PixelGetQuantumPacket(PixelWand *wand,PixelInfo *packet)
+%      void PixelGetQuantumPacket(const PixelWand *wand,PixelInfo *packet)
 %
 %  A description of each parameter follows:
 %
@@ -1678,6 +1685,8 @@ WandExport MagickBooleanType PixelSetColor(PixelWand *wand,const char *color)
   assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (color == (const char *) NULL)
+    return(MagickFalse);
   status=QueryColorCompliance(color,AllCompliance,&pixel,wand->exception);
   if (status != MagickFalse)
     wand->pixel=pixel;
