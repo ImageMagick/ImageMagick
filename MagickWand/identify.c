@@ -943,7 +943,10 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
       FireImageStack(MagickFalse,MagickTrue,MagickTrue);
   }
   if (k != 0)
-    ThrowIdentifyException(OptionError,"UnbalancedParenthesis","(");
+    {
+      const char *parenthesis = "(";
+      ThrowIdentifyException(OptionError,"UnbalancedParenthesis",parenthesis);
+    }
   if (number_files == 0)
     ThrowIdentifyException(OptionError,"MissingAnImageFilename",argv[0]);
   DestroyIdentify();
