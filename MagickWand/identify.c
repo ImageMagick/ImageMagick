@@ -944,7 +944,7 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
   }
   if (k != 0)
     {
-      const char *parenthesis = "(";
+      char *parenthesis = "(";
       ThrowIdentifyException(OptionError,"UnbalancedParenthesis",parenthesis);
     }
   if (number_files == 0)
