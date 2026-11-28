@@ -124,14 +124,6 @@ struct _MatrixInfo
 %
 */
 
-#if defined(SIGBUS)
-static void MatrixSignalHandler(int magick_unused(status))
-{
-  magick_unreferenced(status);
-  ThrowFatalException(CacheFatalError,"UnableToExtendMatrixCache");
-}
-#endif
-
 static inline MagickOffsetType WriteMatrixElements(
   const MatrixInfo *magick_restrict matrix_info,const MagickOffsetType offset,
   const MagickSizeType length,const unsigned char *magick_restrict buffer)
@@ -180,9 +172,6 @@ static MagickBooleanType SetMatrixExtent(
 #if defined(MAGICKCORE_HAVE_POSIX_FALLOCATE)
   if (matrix_info->synchronize != MagickFalse)
     (void) posix_fallocate(matrix_info->file,offset+1,extent-offset);
-#endif
-#if defined(SIGBUS)
-  (void) signal(SIGBUS,MatrixSignalHandler);
 #endif
   return(count != (MagickOffsetType) 1 ? MagickFalse : MagickTrue);
 }
