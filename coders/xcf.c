@@ -278,7 +278,7 @@ typedef enum
 } GimpLayerMode;
 
 /*
-  Simple utility routine to convert between PSD blending modes and
+  Simple utility routine to convert between GIMP blending modes and
   ImageMagick compositing operators
 */
 static CompositeOperator GIMPBlendModeToCompositeOperator(
@@ -315,7 +315,6 @@ static CompositeOperator GIMPBlendModeToCompositeOperator(
       return(DarkenCompositeOp);
     case GIMP_LAYER_MODE_LIGHTEN_ONLY_LEGACY:
     case GIMP_LAYER_MODE_LIGHTEN_ONLY:
-      return(LightenCompositeOp);
     case GIMP_LAYER_MODE_LUMA_LIGHTEN_ONLY:
       return(LightenCompositeOp);
     case GIMP_LAYER_MODE_HSV_HUE_LEGACY:
@@ -336,6 +335,22 @@ static CompositeOperator GIMPBlendModeToCompositeOperator(
     case GIMP_LAYER_MODE_HARDLIGHT_LEGACY:
     case GIMP_LAYER_MODE_HARDLIGHT:
       return(HardLightCompositeOp);
+    case GIMP_LAYER_MODE_SOFTLIGHT_LEGACY:
+    case GIMP_LAYER_MODE_SOFTLIGHT:
+      return(SoftLightCompositeOp);
+    case GIMP_LAYER_MODE_EXCLUSION:
+      return(ExclusionCompositeOp);
+    case GIMP_LAYER_MODE_VIVID_LIGHT:
+      return(VividLightCompositeOp);
+    case GIMP_LAYER_MODE_PIN_LIGHT:
+      return(PinLightCompositeOp);
+    case GIMP_LAYER_MODE_LINEAR_LIGHT:
+      return(LinearLightCompositeOp);
+    case GIMP_LAYER_MODE_LINEAR_BURN:
+      return(LinearBurnCompositeOp);
+    case GIMP_LAYER_MODE_BEHIND_LEGACY:
+    case GIMP_LAYER_MODE_BEHIND:
+      return(DstOverCompositeOp);
     case GIMP_LAYER_MODE_DIVIDE_LEGACY:
     case GIMP_LAYER_MODE_DIVIDE:
       return(DivideDstCompositeOp);
@@ -361,7 +376,7 @@ static CompositeOperator GIMPBlendModeToCompositeOperator(
 %
 %  The format of the ReadBlobStringWithLongSize method is:
 %
-%      char *ReadBlobStringWithLongSize(Image *image,char *string,
+%      char *ReadBlobStringWithLongSize(Image *image,char *string,size_t max,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -369,6 +384,8 @@ static CompositeOperator GIMPBlendModeToCompositeOperator(
 %    o image: the image.
 %
 %    o string: the address of a character buffer.
+%
+%    o max: the size of the character buffer.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -399,7 +416,10 @@ static char *ReadBlobStringWithLongSize(Image *image,char *string,size_t max,
   {
     c=ReadBlobByte(image);
     if (c == EOF)
-      return((char *) NULL);
+      {
+        string[i]='\0';
+        return((char *) NULL);
+      }
     string[i]=(char) c;
   }
   string[i]='\0';
@@ -412,7 +432,7 @@ static char *ReadBlobStringWithLongSize(Image *image,char *string,size_t max,
 
 static MagickOffsetType GetXCFOffset(Image *image, XCFDocInfo *inDocInfo)
 {
-  if (inDocInfo->version >= 4)
+  if (inDocInfo->version >= 11)
     return (MagickOffsetType) ReadBlobMSBLongLong(image);
   else
     return (MagickOffsetType) ReadBlobMSBLong(image);
@@ -422,86 +442,87 @@ static MagickBooleanType load_tile(Image *image,Image *tile_image,
   XCFDocInfo *inDocInfo,XCFLayerInfo *inLayerInfo,size_t data_length,
   ExceptionInfo *exception)
 {
-  ssize_t
-    y;
-
-  ssize_t
-    x;
+  MagickBooleanType
+    status;
 
   Quantum
+    alpha,
     *q;
 
   size_t
+    bytes_per_pixel,
     extent;
 
   ssize_t
-    count;
+    count,
+    x,
+    y;
 
   unsigned char
-    *graydata;
+    *p,
+    *pixels;
 
-  XCFPixelInfo
-    *xcfdata,
-    *xcfodata;
-
-  extent=0;
-  if (inDocInfo->image_type == GIMP_GRAY)
-    extent=tile_image->columns*tile_image->rows*sizeof(*graydata);
-  else
-    if (inDocInfo->image_type == GIMP_RGB)
-      extent=tile_image->columns*tile_image->rows*sizeof(*xcfdata);
+  /*
+    Uncompressed tiles hold interleaved pixels, bytes_per_pixel bytes each
+    (gray, gray+alpha, RGB or RGBA).
+  */
+  bytes_per_pixel=inDocInfo->bytes_per_pixel;
+  if ((bytes_per_pixel == 0) || (bytes_per_pixel > 4))
+    ThrowBinaryException(CorruptImageError,"ImproperImageHeader",
+      image->filename);
+  extent=tile_image->columns*tile_image->rows*bytes_per_pixel;
   if (extent > data_length)
     ThrowBinaryException(CorruptImageError,"NotEnoughPixelData",
       image->filename);
-  xcfdata=(XCFPixelInfo *) AcquireQuantumMemory(MagickMax(data_length,
-    tile_image->columns*tile_image->rows),sizeof(*xcfdata));
-  if (xcfdata == (XCFPixelInfo *) NULL)
+  pixels=(unsigned char *) AcquireQuantumMemory(extent,sizeof(*pixels));
+  if (pixels == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
-  xcfodata=xcfdata;
-  graydata=(unsigned char *) xcfdata;  /* used by gray and indexed */
-  count=ReadBlob(image,data_length,(unsigned char *) xcfdata);
-  if (count != (ssize_t) data_length)
+  count=ReadBlob(image,extent,pixels);
+  if (count != (ssize_t) extent)
     {
-      xcfodata=(XCFPixelInfo *) RelinquishMagickMemory(xcfodata);
+      pixels=(unsigned char *) RelinquishMagickMemory(pixels);
       ThrowBinaryException(CorruptImageError,"NotEnoughPixelData",
         image->filename);
     }
+  alpha=ScaleCharToQuantum((unsigned char) inLayerInfo->alpha);
+  status=MagickTrue;
+  p=pixels;
   for (y=0; y < (ssize_t) tile_image->rows; y++)
   {
     q=GetAuthenticPixels(tile_image,0,y,tile_image->columns,1,exception);
     if (q == (Quantum *) NULL)
-      break;
-    if (inDocInfo->image_type == GIMP_GRAY)
       {
-        for (x=0; x < (ssize_t) tile_image->columns; x++)
-        {
-          SetPixelGray(tile_image,ScaleCharToQuantum(*graydata),q);
-          SetPixelAlpha(tile_image,ScaleCharToQuantum((unsigned char)
-            inLayerInfo->alpha),q);
-          graydata++;
-          q+=(ptrdiff_t) GetPixelChannels(tile_image);
-        }
+        status=MagickFalse;
+        break;
       }
-    else
-      if (inDocInfo->image_type == GIMP_RGB)
+    for (x=0; x < (ssize_t) tile_image->columns; x++)
+    {
+      if (inDocInfo->image_type == GIMP_GRAY)
         {
-          for (x=0; x < (ssize_t) tile_image->columns; x++)
-          {
-            SetPixelRed(tile_image,ScaleCharToQuantum(xcfdata->red),q);
-            SetPixelGreen(tile_image,ScaleCharToQuantum(xcfdata->green),q);
-            SetPixelBlue(tile_image,ScaleCharToQuantum(xcfdata->blue),q);
-            SetPixelAlpha(tile_image,xcfdata->alpha == 255U ? TransparentAlpha :
-              ScaleCharToQuantum((unsigned char) inLayerInfo->alpha),q);
-            xcfdata++;
-            q+=(ptrdiff_t) GetPixelChannels(tile_image);
-          }
+          SetPixelGray(tile_image,ScaleCharToQuantum(p[0]),q);
+          SetPixelAlpha(tile_image,bytes_per_pixel > 1 ?
+            ScaleCharToQuantum(p[1]) : alpha,q);
         }
-     if (SyncAuthenticPixels(tile_image,exception) == MagickFalse)
-       break;
+      else
+        {
+          SetPixelRed(tile_image,ScaleCharToQuantum(p[0]),q);
+          SetPixelGreen(tile_image,ScaleCharToQuantum(p[1]),q);
+          SetPixelBlue(tile_image,ScaleCharToQuantum(p[2]),q);
+          SetPixelAlpha(tile_image,bytes_per_pixel > 3 ?
+            ScaleCharToQuantum(p[3]) : alpha,q);
+        }
+      p+=bytes_per_pixel;
+      q+=(ptrdiff_t) GetPixelChannels(tile_image);
+    }
+    if (SyncAuthenticPixels(tile_image,exception) == MagickFalse)
+      {
+        status=MagickFalse;
+        break;
+      }
   }
-  xcfodata=(XCFPixelInfo *) RelinquishMagickMemory(xcfodata);
-  return MagickTrue;
+  pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+  return(status);
 }
 
 static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
@@ -534,6 +555,9 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
     *xcfdatalimit;
 
   bytes_per_pixel=(ssize_t) inDocInfo->bytes_per_pixel;
+  if ((bytes_per_pixel < 1) || (bytes_per_pixel > 4) || (data_length == 0))
+    ThrowBinaryException(CorruptImageError,"ImproperImageHeader",
+      image->filename);
   xcfdata=(unsigned char *) AcquireQuantumMemory(data_length,sizeof(*xcfdata));
   if (xcfdata == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
@@ -541,14 +565,16 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
   (void) memset(xcfdata,0,(size_t) data_length*sizeof(*xcfdata));
   xcfodata=xcfdata;
   count=ReadBlob(image, (size_t) data_length, xcfdata);
-  xcfdatalimit = xcfodata+count-1;
+  if (count <= 0)
+    goto bogus_rle;
+  xcfdatalimit=xcfodata+count-1;
   alpha=ScaleCharToQuantum((unsigned char) inLayerInfo->alpha);
   for (i=0; i < bytes_per_pixel; i++)
   {
     q=GetAuthenticPixels(tile_image,0,0,tile_image->columns,tile_image->rows,
       exception);
     if (q == (Quantum *) NULL)
-      continue;
+      goto bogus_rle;
     size=(MagickOffsetType) (tile_image->rows*tile_image->columns);
     while (size > 0)
     {
@@ -671,7 +697,7 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
         }
     }
     if (SyncAuthenticPixels(tile_image,exception) == MagickFalse)
-      break;
+      goto bogus_rle;
   }
   xcfodata=(unsigned char *) RelinquishMagickMemory(xcfodata);
   return(MagickTrue);
@@ -685,10 +711,6 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
 static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
   XCFLayerInfo *inLayerInfo,ExceptionInfo *exception)
 {
-  int
-    destLeft = 0,
-    destTop = 0;
-
   Image*
     tile_image;
 
@@ -701,6 +723,8 @@ static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
     offset2;
 
   ssize_t
+    destLeft = 0,
+    destTop = 0,
     i;
 
   size_t
@@ -715,6 +739,10 @@ static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
   /* start reading the data */
   width=ReadBlobMSBLong(image);
   height=ReadBlobMSBLong(image);
+  if ((width == 0) || (height == 0) || (width > inLayerInfo->image->columns) ||
+      (height > inLayerInfo->image->rows))
+    ThrowBinaryException(CorruptImageError,"ImproperImageHeader",
+      image->filename);
 
   /*
     Read in the first tile offset.  If it is '0', then this tile level is empty
@@ -738,7 +766,7 @@ static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
   for (i = 0; i < (ssize_t) ntiles; i++)
   {
     status=MagickFalse;
-    if (offset == 0)
+    if ((offset <= 0) || ((MagickSizeType) offset >= inDocInfo->file_size))
       ThrowBinaryException(CorruptImageError,"NotEnoughTiles",image->filename);
     /*
       Save the current position as it is where the next tile offset is stored.
@@ -747,7 +775,7 @@ static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
     /* read in the offset of the next tile so we can calculate the amount
        of data needed for this tile*/
     offset2=GetXCFOffset(image,inDocInfo);
-    if ((MagickSizeType) offset2 >= inDocInfo->file_size)
+    if ((offset2 < 0) || ((MagickSizeType) offset2 >= inDocInfo->file_size))
       ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
         image->filename);
     /* if the offset is 0 then we need to read in the maximum possible
@@ -762,12 +790,12 @@ static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
       Allocate the image for the tile.  NOTE: the last tile in a row or
       column may not be a full tile!
     */
-    tile_image_width=(size_t) (destLeft == (int) ntile_cols-1 ?
-      (int) width % TILE_WIDTH : TILE_WIDTH);
+    tile_image_width=(size_t) (destLeft == (ssize_t) ntile_cols-1 ?
+      width % TILE_WIDTH : TILE_WIDTH);
     if (tile_image_width == 0)
       tile_image_width=TILE_WIDTH;
-    tile_image_height = (size_t) (destTop == (int) ntile_rows-1 ?
-      (int) height % TILE_HEIGHT : TILE_HEIGHT);
+    tile_image_height=(size_t) (destTop == (ssize_t) ntile_rows-1 ?
+      height % TILE_HEIGHT : TILE_HEIGHT);
     if (tile_image_height == 0)
       tile_image_height=TILE_HEIGHT;
     tile_image=CloneImage(inLayerInfo->image,tile_image_width,
@@ -808,7 +836,7 @@ static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
       return(MagickFalse);
     /* adjust tile position */
     destLeft++;
-    if (destLeft >= (int) ntile_cols)
+    if (destLeft >= (ssize_t) ntile_cols)
       {
         destLeft = 0;
         destTop++;
@@ -816,9 +844,14 @@ static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
     /* restore the saved position so we'll be ready to
       *  read the next offset.
       */
-    offset=SeekBlob(image, saved_pos, SEEK_SET);
+    if (SeekBlob(image,saved_pos,SEEK_SET) != saved_pos)
+      ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
+        image->filename);
     /* read in the offset of the next tile */
     offset=GetXCFOffset(image,inDocInfo);
+    if (EOFBlob(image) != MagickFalse)
+      ThrowBinaryException(CorruptImageError,"UnexpectedEndOfFile",
+        image->filename);
   }
   if (offset != 0)
     ThrowBinaryException(CorruptImageError,"CorruptImage",image->filename)
@@ -836,13 +869,26 @@ static MagickBooleanType load_hierarchy(Image *image,XCFDocInfo *inDocInfo,
   (void) ReadBlobMSBLong(image); /* width */
   (void) ReadBlobMSBLong(image); /* height */
   inDocInfo->bytes_per_pixel=ReadBlobMSBLong(image);
+  /*
+    Only 8-bit samples are supported: gray (+alpha) or RGB (+alpha).
+  */
+  if (inDocInfo->image_type == GIMP_GRAY)
+    {
+      if ((inDocInfo->bytes_per_pixel < 1) || (inDocInfo->bytes_per_pixel > 2))
+        ThrowBinaryException(CorruptImageError,"ImproperImageHeader",
+          image->filename);
+    }
+  else
+    if ((inDocInfo->bytes_per_pixel < 3) || (inDocInfo->bytes_per_pixel > 4))
+      ThrowBinaryException(CorruptImageError,"ImproperImageHeader",
+        image->filename);
 
   /* load in the levels...we make sure that the number of levels
    *  calculated when the TileManager was created is the same
    *  as the number of levels found in the file.
    */
   offset=GetXCFOffset(image,inDocInfo);  /* top level */
-  if ((MagickSizeType) offset >= GetBlobSize(image))
+  if ((offset <= 0) || ((MagickSizeType) offset >= GetBlobSize(image)))
     ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
       image->filename);
 
@@ -850,7 +896,10 @@ static MagickBooleanType load_hierarchy(Image *image,XCFDocInfo *inDocInfo,
    */
   do
   {
-    junk=(MagickOffsetType) ReadBlobMSBLong(image);
+    junk=GetXCFOffset(image,inDocInfo);
+    if (EOFBlob(image) != MagickFalse)
+      ThrowBinaryException(CorruptImageError,"UnexpectedEndOfFile",
+        image->filename);
   }
   while (junk != 0);
 
@@ -870,7 +919,9 @@ static MagickBooleanType load_hierarchy(Image *image,XCFDocInfo *inDocInfo,
   /* restore the saved position so we'll be ready to
    *  read the next offset.
    */
-  offset=SeekBlob(image, saved_pos, SEEK_SET);
+  if (SeekBlob(image,saved_pos,SEEK_SET) != saved_pos)
+    ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
+      image->filename);
   return(MagickTrue);
 }
 
@@ -960,7 +1011,7 @@ static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
       outLayer->mode = ReadBlobMSBLong(image);
       break;
     case PROP_TATTOO:
-      outLayer->preserve_trans = ReadBlobMSBLong(image);
+      outLayer->tattoo = ReadBlobMSBLong(image);
       break;
      case PROP_PARASITES:
      {
@@ -987,15 +1038,15 @@ static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
          prop_type); */
 
       {
-      int buf[16];
+      unsigned char buf[16];
       ssize_t amount;
 
       /* read over it... */
       while ((prop_size > 0) && (EOFBlob(image) == MagickFalse))
         {
         amount = (ssize_t) MagickMin(16, prop_size);
-        amount = ReadBlob(image, (size_t) amount, (unsigned char *) &buf);
-        if (!amount)
+        amount = ReadBlob(image, (size_t) amount, buf);
+        if (amount <= 0)
           ThrowBinaryException(CorruptImageError,"CorruptImage",
             image->filename);
         prop_size -= (size_t) MagickMin(16, (size_t) amount);
@@ -1072,16 +1123,19 @@ static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
   layer_mask_offset = GetXCFOffset(image,inDocInfo);
 
   /* read in the hierarchy */
+  if ((hierarchy_offset <= 0) ||
+      ((MagickSizeType) hierarchy_offset >= inDocInfo->file_size))
+    ThrowBinaryException(CorruptImageError,"ImproperImageHeader",
+      image->filename);
   offset=SeekBlob(image, hierarchy_offset, SEEK_SET);
   if (offset != hierarchy_offset)
-    ThrowBinaryException(CorruptImageError,"InvalidImageHeader",
+    ThrowBinaryException(CorruptImageError,"ImproperImageHeader",
       image->filename);
   if (load_hierarchy (image, inDocInfo, outLayer, exception) == 0)
     return(MagickFalse);
 
-  /* read in the layer mask */
-  if (layer_mask_offset != 0)
-    offset=SeekBlob(image, (MagickOffsetType) layer_mask_offset, SEEK_SET);
+  /* layer masks are not supported: layer_mask_offset is read and ignored */
+  (void) layer_mask_offset;
 
   return(MagickTrue);
 }
@@ -1159,7 +1213,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       return((Image *) NULL);
     }
   count=ReadBlob(image,sizeof(magick)-1,(unsigned char *) magick);
-  if ((count != sizeof(magick)-1) ||
+  if ((count != (ssize_t) (sizeof(magick)-1)) ||
       (LocaleNCompare((char *) magick,"gimp xcf",8) != 0))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   magick[sizeof(magick)-1]='\0';
@@ -1172,6 +1226,8 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   doc_info.image_type=ReadBlobMSBLong(image);
   if (doc_info.image_type == GIMP_INDEXED)
     ThrowReaderException(CoderError,"ColormapTypeNotSupported");
+  if ((doc_info.image_type != GIMP_RGB) && (doc_info.image_type != GIMP_GRAY))
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if (doc_info.version >= 4)
     {
       size_t
@@ -1200,14 +1256,12 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
+  status=ResetImagePixels(image,exception);
   if (status != MagickFalse)
-    status=ResetImagePixels(image,exception);
-  if (doc_info.image_type == GIMP_RGB)
-    SetImageColorspace(image,sRGBColorspace,exception);
-  else if (doc_info.image_type == GIMP_GRAY)
-    SetImageColorspace(image,GRAYColorspace,exception);
-  else
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    status=SetImageColorspace(image,doc_info.image_type == GIMP_GRAY ?
+      GRAYColorspace : sRGBColorspace,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   (void) SetImageBackgroundColor(image,exception);
   (void) SetImageAlpha(image,OpaqueAlpha,exception);
   /*
@@ -1365,15 +1419,15 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
       default:
       {
-        int buf[16];
+        unsigned char buf[16];
         ssize_t amount;
 
       /* read over it... */
       while ((prop_size > 0) && (EOFBlob(image) == MagickFalse))
       {
         amount=(ssize_t) MagickMin(16, prop_size);
-        amount=(ssize_t) ReadBlob(image,(size_t) amount,(unsigned char *) &buf);
-        if (!amount)
+        amount=(ssize_t) ReadBlob(image,(size_t) amount,buf);
+        if (amount <= 0)
           ThrowReaderException(CorruptImageError,"CorruptImage");
         prop_size -= (size_t) MagickMin(16,(size_t) amount);
       }
@@ -1420,16 +1474,14 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
               ThrowReaderException(ResourceLimitError,"ListLengthExceedsLimit");
           }
         if (EOFBlob(image) != MagickFalse)
-          {
-            ThrowFileException(exception,CorruptImageError,
-              "UnexpectedEndOfFile",image->filename);
-            break;
-          }
+          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
     } while (foundAllLayers == MagickFalse);
     doc_info.number_layers=number_layers;
     offset=SeekBlob(image,oldPos,SEEK_SET); /* restore the position! */
     if (offset < 0)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    if (number_layers == 0)
+      goto close_image;
     /* allocate our array of layer info blocks */
     length=(size_t) number_layers;
     layer_info=(XCFLayerInfo *) AcquireQuantumMemory(length,
@@ -1452,6 +1504,16 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       if (offset == 0)
         break;
+      if (current_layer >= (ssize_t) number_layers)
+        {
+          ssize_t j;
+
+          for (j=0; j < current_layer; j++)
+            if (layer_info[j].image != (Image *) NULL)
+              layer_info[j].image=DestroyImage(layer_info[j].image);
+          layer_info=(XCFLayerInfo *) RelinquishMagickMemory(layer_info);
+          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+        }
       /* save the current position as it is where the
       *  next layer offset is stored.
       */
@@ -1494,6 +1556,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     layer_info=(XCFLayerInfo *) RelinquishMagickMemory(layer_info);
   }
 
+close_image:
   (void) CloseBlob(image);
   if (GetNextImageInList(image) != (Image *) NULL)
     DestroyImage(RemoveFirstImageFromList(&image));
