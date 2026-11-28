@@ -1439,7 +1439,11 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image,
             (void) WriteBlobLSBLong(image,0x001f);
           }
     }
-  (void) WriteBlob(image,dib_info.image_size,pixels);
+  if (WriteBlob(image,dib_info.image_size,pixels) != (ssize_t) dib_info.image_size)
+    {
+      pixels = (unsigned char*)RelinquishMagickMemory(pixels);
+      ThrowWriterException(CorruptImageError, "UnableToWriteImageData");
+    }
   pixels=(unsigned char *) RelinquishMagickMemory(pixels);
   if (CloseBlob(image) == MagickFalse)
     status=MagickFalse;

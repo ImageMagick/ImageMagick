@@ -729,15 +729,20 @@ static sixel_output_t *sixel_output_create(Image *image)
   return(output);
 }
 
-static void sixel_advance(sixel_output_t *context, int nwrite)
+static MagickBooleanType sixel_advance(sixel_output_t *context, int nwrite)
 {
+  if (nwrite <= 0)
+    return(MagickFalse);
   if ((context->pos += nwrite) >= SIXEL_OUTPUT_PACKET_SIZE)
     {
-      WriteBlob(context->image,SIXEL_OUTPUT_PACKET_SIZE,context->buffer);
+      if (WriteBlob(context->image,SIXEL_OUTPUT_PACKET_SIZE,context->buffer) !=
+          SIXEL_OUTPUT_PACKET_SIZE)
+        return(MagickFalse);
       memmove(context->buffer,
               context->buffer + SIXEL_OUTPUT_PACKET_SIZE,(size_t)
               (context->pos -= SIXEL_OUTPUT_PACKET_SIZE));
     }
+  return(MagickTrue);
 }
 
 static int sixel_put_flash(sixel_output_t *const context)
@@ -752,16 +757,16 @@ static int sixel_put_flash(sixel_output_t *const context)
       nwrite=(int) FormatLocaleString((char *) context->buffer+context->pos,
         sizeof(context->buffer),"!%d%c",context->save_count,
         (char) context->save_pixel);
-      if (nwrite <= 0)
+      if (sixel_advance(context,nwrite) == MagickFalse)
         return(-1);
-      sixel_advance(context,nwrite);
     }
   else
     {
       for (n = 0; n < context->save_count; n++)
       {
         context->buffer[context->pos]=(unsigned char)context->save_pixel;
-        sixel_advance(context,1);
+        if (sixel_advance(context,1) == MagickFalse)
+          return(-1);
       }
     }
   context->save_pixel=0;
@@ -769,7 +774,7 @@ static int sixel_put_flash(sixel_output_t *const context)
   return(0);
 }
 
-static void sixel_put_pixel(sixel_output_t *const context,int pix)
+static MagickBooleanType sixel_put_pixel(sixel_output_t *const context,int pix)
 {
   if ((pix < 0) || (pix > '?'))
     pix=0;
@@ -778,10 +783,12 @@ static void sixel_put_pixel(sixel_output_t *const context,int pix)
     context->save_count++;
   else
     {
-      sixel_put_flash(context);
+      if (sixel_put_flash(context) < 0)
+        return(MagickFalse);
       context->save_pixel=pix;
       context->save_count=1;
     }
+  return(MagickTrue);
 }
 
 static void sixel_node_del(sixel_output_t *const context,sixel_node_t *np)
@@ -820,15 +827,19 @@ static int sixel_put_node(sixel_output_t *const context,int x,sixel_node_t *np,
         {
           nwrite=(int) FormatLocaleString((char *) context->buffer+
             context->pos,sizeof(context->buffer),"#%d",np->color);
-          sixel_advance(context,nwrite);
+          if (sixel_advance(context,nwrite) == MagickFalse)
+            return(-1);
           context->active_palette=np->color;
         }
     }
   for (; x < np->left; x++)
-    sixel_put_pixel(context,0);
+    if (sixel_put_pixel(context,0) == MagickFalse)
+      return(-1);
   for (; x < np->right; x++)
-    sixel_put_pixel(context,np->map[x]);
-  sixel_put_flash(context);
+    if (sixel_put_pixel(context,np->map[x]) == MagickFalse)
+      return(-1);
+  if (sixel_put_flash(context) < 0)
+    return(-1);
   return(x);
 }
 
@@ -837,6 +848,11 @@ static MagickBooleanType sixel_encode_impl(sixel_pixel_t *pixels,size_t width,
   sixel_output_t *context)
 {
 #define RelinquishNodesAndMap \
+  while ((np = context->node_top) != NULL) \
+  { \
+    context->node_top=np->next; \
+    np=(sixel_node_t *) RelinquishMagickMemory(np); \
+  } \
   while ((np = context->node_free) != NULL) \
   { \
     context->node_free=np->next; \
@@ -882,17 +898,18 @@ static MagickBooleanType sixel_encode_impl(sixel_pixel_t *pixels,size_t width,
   else
     nwrite=(int) FormatLocaleString((char *) context->buffer,sizeof(context->buffer),
       "\x1bP" "0;1;0" "q");
-  if (nwrite <= 0)
-    return(MagickFalse);
-  sixel_advance(context,nwrite);
-  nwrite=(int) FormatLocaleString((char *) context->buffer+context->pos,
-    sizeof(context->buffer),"\"1;1;%d;%d",(int) width,(int) height);
-  if (nwrite <= 0)
+  if (sixel_advance(context,nwrite) == MagickFalse)
     {
       RelinquishNodesAndMap;
       return(MagickFalse);
     }
-  sixel_advance(context,nwrite);
+  nwrite=(int) FormatLocaleString((char *) context->buffer+context->pos,
+    sizeof(context->buffer),"\"1;1;%d;%d",(int) width,(int) height);
+  if (sixel_advance(context,nwrite) == MagickFalse)
+    {
+      RelinquishNodesAndMap;
+      return(MagickFalse);
+    }
   if ((ncolors != 2) || (keycolor == -1))
     for (n = 0; n < (ssize_t) ncolors; n++)
     {
@@ -900,16 +917,10 @@ static MagickBooleanType sixel_encode_impl(sixel_pixel_t *pixels,size_t width,
         nwrite=(int) FormatLocaleString((char *) context->buffer+context->pos,
           sizeof(context->buffer),"#%d;2;%d;%d;%d",n,(palette[n*3+0]*100+127)/
           255,(palette[n*3+1]*100+127)/255,(palette[n*3+2]*100+127)/255);
-        if (nwrite <= 0)
+        if (sixel_advance(context,nwrite) == MagickFalse)
           {
             RelinquishNodesAndMap;
             return(MagickFalse);
-          }
-        sixel_advance(context,nwrite);
-        if (nwrite <= 0)
-          {
-            RelinquishNodesAndMap;
-            return (MagickFalse);
           }
     }
   for (y=i=0; y < (int) height; y++)
@@ -977,10 +988,19 @@ static MagickBooleanType sixel_encode_impl(sixel_pixel_t *pixels,size_t width,
         {
           /* DECGCR Graphics Carriage Return */
           context->buffer[context->pos]='$';
-          sixel_advance(context,1);
+          if (sixel_advance(context,1) == MagickFalse)
+            {
+              RelinquishNodesAndMap;
+              return(MagickFalse);
+            }
           x=0;
         }
       x=sixel_put_node(context,x,np,(int) ncolors,keycolor);
+      if (x < 0)
+        {
+          RelinquishNodesAndMap;
+          return(MagickFalse);
+        }
       sixel_node_del(context,np);
       np=context->node_top;
       while (np != (sixel_node_t *) NULL)
@@ -991,14 +1011,18 @@ static MagickBooleanType sixel_encode_impl(sixel_pixel_t *pixels,size_t width,
             continue;
           }
           x=sixel_put_node(context,x,np,(int) ncolors,keycolor);
+          if (x < 0)
+            {
+              RelinquishNodesAndMap;
+              return(MagickFalse);
+            }
           sixel_node_del(context,np);
           np=context->node_top;
       }
     }
     /* DECGNL Graphics Next Line */
     context->buffer[context->pos]='-';
-    sixel_advance(context,1);
-    if (nwrite <= 0)
+    if (sixel_advance(context,1) == MagickFalse)
       {
         RelinquishNodesAndMap;
         return(MagickFalse);
@@ -1009,22 +1033,26 @@ static MagickBooleanType sixel_encode_impl(sixel_pixel_t *pixels,size_t width,
   if (context->has_8bit_control)
     {
       context->buffer[context->pos]=0x9c;
-      sixel_advance(context,1);
+      nwrite=1;
     }
   else
     {
       context->buffer[context->pos]=0x1b;
       context->buffer[context->pos+1]='\\';
-      sixel_advance(context,2);
+      nwrite=2;
     }
-  if (nwrite <= 0)
+  if (sixel_advance(context,nwrite) == MagickFalse)
     {
       RelinquishNodesAndMap;
       return(MagickFalse);
     }
   /* flush buffer */
-  if (context->pos > 0)
-    WriteBlob(context->image,(size_t) context->pos,context->buffer);
+  if ((context->pos > 0) &&
+      (WriteBlob(context->image,(size_t) context->pos,context->buffer) != (ssize_t) context->pos))
+    {
+      RelinquishNodesAndMap;
+      return(MagickFalse);
+    }
   RelinquishNodesAndMap;
   return(MagickTrue);
 }

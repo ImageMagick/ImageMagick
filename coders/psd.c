@@ -3092,7 +3092,8 @@ static size_t WritePSDChannel(const PSDInfo *psd_info,
     *p;
 
   MagickBooleanType
-    monochrome;
+    monochrome,
+    status;
 
   QuantumInfo
     *quantum_info;
@@ -3103,6 +3104,7 @@ static size_t WritePSDChannel(const PSDInfo *psd_info,
   ssize_t
     count,
     i,
+    written,
     y;
 
   unsigned char
@@ -3124,6 +3126,7 @@ static size_t WritePSDChannel(const PSDInfo *psd_info,
   flush=Z_NO_FLUSH;
 #endif
   count=0;
+  status=MagickTrue;
   if (separate != MagickFalse)
     {
       size_offset=TellBlob(image)+2;
@@ -3178,7 +3181,13 @@ static size_t WritePSDChannel(const PSDInfo *psd_info,
       {
         length=PSDPackbitsEncodeImage(image,length,pixels,compact_pixels,
           exception);
-        count+=WriteBlob(image,length,compact_pixels);
+        written=WriteBlob(image,length,compact_pixels);
+        if (written != (ssize_t) length)
+          {
+            status=MagickFalse;
+            break;
+          }
+        count+=written;
         size_offset+=WritePSDOffset(psd_info,image,length,size_offset);
       }
 #ifdef MAGICKCORE_ZLIB_DELEGATE
@@ -3195,12 +3204,30 @@ static size_t WritePSDChannel(const PSDInfo *psd_info,
               break;
             length=(size_t) MagickMinBufferExtent-stream.avail_out;
             if (length > 0)
-              count+=WriteBlob(image,length,compressed_pixels);
+              {
+                written=WriteBlob(image,length,compressed_pixels);
+                if (written != (ssize_t) length)
+                  {
+                    status=MagickFalse;
+                    break;
+                  }
+                count+=written;
+              }
         } while (stream.avail_out == 0);
+        if (status == MagickFalse)
+          break;
       }
 #endif
     else
-      count+=WriteBlob(image,length,pixels);
+      {
+        written=WriteBlob(image,length,pixels);
+        if (written != (ssize_t) length)
+          {
+            status=MagickFalse;
+            break;
+          }
+        count+=written;
+      }
   }
 #ifdef MAGICKCORE_ZLIB_DELEGATE
   if (compression == ZipCompression)
@@ -3211,7 +3238,7 @@ static size_t WritePSDChannel(const PSDInfo *psd_info,
     }
 #endif
   quantum_info=DestroyQuantumInfo(quantum_info);
-  return((size_t) count);
+  return(status != MagickFalse ? (size_t) count : 0);
 }
 
 static unsigned char *AcquireCompactPixels(const Image *image,
@@ -4129,8 +4156,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
         image->compression=image_info->compression;
       if (image->compression == ZipCompression)
         image->compression=RLECompression;
-      if (WritePSDChannels(&psd_info,image_info,image,image,0,MagickFalse,
-          exception) == 0)
+      if (WritePSDChannels(&psd_info,image_info,image,image,0,MagickFalse,exception) == 0)
         status=MagickFalse;
       image->compression=compression;
     }

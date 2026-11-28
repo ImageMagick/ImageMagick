@@ -84,15 +84,6 @@ static inline Quantum GetYUVSample(const unsigned char **p,const size_t quantum)
   (*p)+=2;
   return(sample);
 }
-
-static inline void WriteYUVSample(Image *image,const Quantum sample,
-  const size_t quantum)
-{
-  if (quantum == 1)
-    (void) WriteBlobByte(image,ScaleQuantumToChar(sample));
-  else
-    (void) WriteBlobShort(image,ScaleQuantumToShort(sample));
-}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -676,6 +667,31 @@ ModuleExport void UnregisterYUVImage(void)
 %    o exception: return any errors or warnings in this structure.
 %
 */
+static inline unsigned char *WriteYUVSample(Image *image,const Quantum sample,
+  const size_t quantum,unsigned char *q)
+{
+  if (quantum == 1)
+    *q++=ScaleQuantumToChar(sample);
+  else
+    {
+      unsigned short
+        value;
+
+      value=ScaleQuantumToShort(sample);
+      if (image->endian == LSBEndian)
+        {
+          *q++=(unsigned char) value;
+          *q++=(unsigned char) (value >> 8);
+        }
+      else
+        {
+          *q++=(unsigned char) (value >> 8);
+          *q++=(unsigned char) value;
+        }
+    }
+  return(q);
+}
+
 static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
@@ -701,6 +717,7 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
 
   size_t
     height,
+    length,
     number_scenes,
     quantum,
     width;
@@ -710,6 +727,10 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
     vertical_factor,
     y;
 
+  unsigned char
+    *pixels,
+    *q;
+
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
   assert(image != (Image *) NULL);
@@ -718,6 +739,7 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   chroma_image=(Image *) NULL;
   yuv_image=(Image *) NULL;
+  pixels=(unsigned char *) NULL;
   quantum=(size_t) (image->depth <= 8 ? 1 : 2);
   interlace=image->interlace;
   horizontal_factor=2;
@@ -767,6 +789,11 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
     image->depth=(size_t) (quantum == 1 ? 8 : 16);
     width=image->columns+(image->columns & (size_t) (horizontal_factor-1));
     height=image->rows+(image->rows & (size_t) (vertical_factor-1));
+    pixels=(unsigned char *) AcquireQuantumMemory(width,
+      (interlace == NoInterlace ? 2 : 1)*quantum*sizeof(*pixels));
+    if (pixels == (unsigned char *) NULL)
+      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    length=width*(interlace == NoInterlace ? 2 : 1)*quantum;
     yuv_image=ResizeImage(image,width,height,TriangleFilter,exception);
     if (yuv_image == (Image *) NULL)
       {
@@ -815,16 +842,22 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
               status=MagickFalse;
               break;
             }
+          q=pixels;
           for (x=0; x < (ssize_t) (yuv_image->columns-1); x+=2)
           {
-            WriteYUVSample(image,GetPixelGreen(yuv_image,s),quantum);
-            WriteYUVSample(image,GetPixelRed(yuv_image,p),quantum);
+            q=WriteYUVSample(image,GetPixelGreen(yuv_image,s),quantum,q);
+            q=WriteYUVSample(image,GetPixelRed(yuv_image,p),quantum,q);
             p+=(ptrdiff_t) GetPixelChannels(yuv_image);
-            WriteYUVSample(image,GetPixelBlue(yuv_image,s),quantum);
-            WriteYUVSample(image,GetPixelRed(yuv_image,p),quantum);
+            q=WriteYUVSample(image,GetPixelBlue(yuv_image,s),quantum,q);
+            q=WriteYUVSample(image,GetPixelRed(yuv_image,p),quantum,q);
             p+=(ptrdiff_t) GetPixelChannels(yuv_image);
             s+=(ptrdiff_t) GetPixelChannels(chroma_image);
           }
+          if (WriteBlob(image,length,pixels) != (ssize_t) length)
+            {
+              status=MagickFalse;
+              break;
+            }
           if (image->previous == (Image *) NULL)
             {
               status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -850,11 +883,17 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
               status=MagickFalse;
               break;
             }
+          q=pixels;
           for (x=0; x < (ssize_t) yuv_image->columns; x++)
           {
-            WriteYUVSample(image,GetPixelRed(yuv_image,p),quantum);
+            q=WriteYUVSample(image,GetPixelRed(yuv_image,p),quantum,q);
             p+=(ptrdiff_t) GetPixelChannels(yuv_image);
           }
+          if (WriteBlob(image,length,pixels) != (ssize_t) length)
+            {
+              status=MagickFalse;
+              break;
+            }
           if (image->previous == (Image *) NULL)
             {
               status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -887,6 +926,7 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
             if (status == MagickFalse)
               break;
           }
+        length=chroma_image->columns*quantum;
         for (y=0; y < (ssize_t) chroma_image->rows; y++)
         {
           p=GetVirtualPixels(chroma_image,0,y,chroma_image->columns,1,
@@ -896,11 +936,17 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
               status=MagickFalse;
               break;
             }
+          q=pixels;
           for (x=0; x < (ssize_t) chroma_image->columns; x++)
           {
-            WriteYUVSample(image,GetPixelGreen(chroma_image,p),quantum);
+            q=WriteYUVSample(image,GetPixelGreen(chroma_image,p),quantum,q);
             p+=(ptrdiff_t) GetPixelChannels(chroma_image);
           }
+          if (WriteBlob(image,length,pixels) != (ssize_t) length)
+            {
+              status=MagickFalse;
+              break;
+            }
         }
         if (status == MagickFalse)
           break;
@@ -934,11 +980,17 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
               status=MagickFalse;
               break;
             }
+          q=pixels;
           for (x=0; x < (ssize_t) chroma_image->columns; x++)
           {
-            WriteYUVSample(image,GetPixelBlue(chroma_image,p),quantum);
+            q=WriteYUVSample(image,GetPixelBlue(chroma_image,p),quantum,q);
             p+=(ptrdiff_t) GetPixelChannels(chroma_image);
           }
+          if (WriteBlob(image,length,pixels) != (ssize_t) length)
+            {
+              status=MagickFalse;
+              break;
+            }
         }
         if (status == MagickFalse)
           break;
@@ -949,6 +1001,7 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
               break;
           }
       }
+    pixels=(unsigned char *) RelinquishMagickMemory(pixels);
     chroma_image=DestroyImage(chroma_image);
     if (interlace == PartitionInterlace)
       (void) CopyMagickString(image->filename,image_info->filename,
@@ -960,6 +1013,7 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);
+  pixels=(unsigned char *) RelinquishMagickMemory(pixels);
   if (yuv_image != (Image *) NULL)
     yuv_image=DestroyImage(yuv_image);
   if (chroma_image != (Image *) NULL)

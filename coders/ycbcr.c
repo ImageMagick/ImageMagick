@@ -183,7 +183,8 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
       canvas_image->alpha_trait=BlendPixelTrait;
     }
   pixels=GetQuantumPixels(quantum_info);
-  if (image_info->number_scenes != 0)
+  if ((image_info->number_scenes != 0) &&
+      (image_info->interlace != PartitionInterlace))
     while (image->scene < image_info->scene)
     {
       /*
@@ -201,6 +202,15 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
   count=0;
   length=0;
   scene=0;
+  if ((image_info->number_scenes != 0) &&
+      (image_info->interlace == PartitionInterlace))
+    {
+      /*
+        Partition files are skipped per plane file, not by consuming rows.
+      */
+      scene=(MagickOffsetType) image_info->scene;
+      image->scene=image_info->scene;
+    }
   status=MagickTrue;
   stream=NULL;
   columns=(ssize_t) MagickMin(image->columns,canvas_image->columns);
@@ -312,7 +322,8 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
           }
         for (y=0; y < (ssize_t) image->extract_info.height; y++)
         {
-          for (i=0; i < (ssize_t) (image->alpha_trait != UndefinedPixelTrait ? 4 : 3); i++)
+          for (i=0; i < (ssize_t) (image->alpha_trait != UndefinedPixelTrait ?
+               4 : 3); i++)
           {
             const Quantum
               *magick_restrict p;
@@ -383,6 +394,8 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
               }
             stream=ReadBlobStream(image,length,pixels,&count);
           }
+          if (status == MagickFalse)
+            break;
           if (image->previous == (Image *) NULL)
             {
               status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
@@ -391,6 +404,8 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                 break;
             }
         }
+        quantum_type=image->alpha_trait != UndefinedPixelTrait ? RGBAQuantum :
+          RGBQuantum;
         break;
       }
       case PlaneInterlace:
@@ -847,7 +862,6 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
           }
         if (image->alpha_trait != UndefinedPixelTrait)
           {
-            (void) CloseBlob(image);
             if (CloseBlob(image) == MagickFalse)
               break;
             AppendImageFormat("A",image->filename);
@@ -926,6 +940,8 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
             if (status == MagickFalse)
               break;
           }
+        (void) CopyMagickString(image->filename,image_info->filename,
+          MagickPathExtent);
         break;
       }
     }
@@ -1032,8 +1048,8 @@ ModuleExport size_t RegisterYCBCRImage(void)
 */
 ModuleExport void UnregisterYCBCRImage(void)
 {
-  (void) UnregisterMagickInfo("YCbCr");
-  (void) UnregisterMagickInfo("YCbCrA");
+  (void) UnregisterMagickInfo("YCBCR");
+  (void) UnregisterMagickInfo("YCBCRA");
 }
 
 /*
@@ -1124,10 +1140,20 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
       Convert MIFF to YCbCr raster pixels.
     */
     if (image->colorspace != YCbCrColorspace)
-      (void) TransformImageColorspace(image,YCbCrColorspace,exception);
+      if (TransformImageColorspace(image,YCbCrColorspace,exception) ==
+          MagickFalse)
+        {
+          status=MagickFalse;
+          break;
+        }
     if ((LocaleCompare(image_info->magick,"YCbCrA") == 0) &&
         ((image->alpha_trait & BlendPixelTrait) == 0))
-      (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
+      if (SetImageAlphaChannel(image,OpaqueAlphaChannel,exception) ==
+          MagickFalse)
+        {
+          status=MagickFalse;
+          break;
+        }
     quantum_info=AcquireQuantumInfo(image_info,image);
     if (quantum_info == (QuantumInfo *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
@@ -1149,7 +1175,10 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
             quantum_type,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
           if (image->previous == (Image *) NULL)
             {
               status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -1174,24 +1203,36 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
             RedQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
           length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             GreenQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
           length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             BlueQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
           if (quantum_type == RGBAQuantum)
             {
               length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
                 AlphaQuantum,pixels,exception);
               count=WriteBlob(image,length,pixels);
               if (count != (ssize_t) length)
-                break;
+                {
+                  status=MagickFalse;
+                  break;
+                }
             }
           if (image->previous == (Image *) NULL)
             {
@@ -1217,8 +1258,13 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
             RedQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
         }
+        if (status == MagickFalse)
+          break;
         if (image->previous == (Image *) NULL)
           {
             status=SetImageProgress(image,SaveImageTag,1,5);
@@ -1234,8 +1280,13 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
             GreenQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
         }
+        if (status == MagickFalse)
+          break;
         if (image->previous == (Image *) NULL)
           {
             status=SetImageProgress(image,SaveImageTag,2,5);
@@ -1251,8 +1302,13 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
             BlueQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
         }
+        if (status == MagickFalse)
+          break;
         if (image->previous == (Image *) NULL)
           {
             status=SetImageProgress(image,SaveImageTag,3,5);
@@ -1270,12 +1326,14 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
                 AlphaQuantum,pixels,exception);
               count=WriteBlob(image,length,pixels);
               if (count != (ssize_t) length)
-              break;
+                {
+                  status=MagickFalse;
+                  break;
+                }
             }
           }
-        if (image_info->interlace == PartitionInterlace)
-          (void) CopyMagickString(image->filename,image_info->filename,
-            MagickPathExtent);
+        if (status == MagickFalse)
+          break;
         if (image->previous == (Image *) NULL)
           {
             status=SetImageProgress(image,SaveImageTag,5,5);
@@ -1306,8 +1364,13 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
             RedQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
         }
+        if (status == MagickFalse)
+          break;
         if (image->previous == (Image *) NULL)
           {
             status=SetImageProgress(image,SaveImageTag,1,5);
@@ -1315,7 +1378,10 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
               break;
           }
         if (CloseBlob(image) == MagickFalse)
-          break;
+          {
+            status=MagickFalse;
+            break;
+          }
         AppendImageFormat("Cb",image->filename);
         status=OpenBlob(image_info,image,scene == 0 ? WriteBinaryBlobMode :
           AppendBinaryBlobMode,exception);
@@ -1333,8 +1399,13 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
             GreenQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
         }
+        if (status == MagickFalse)
+          break;
         if (image->previous == (Image *) NULL)
           {
             status=SetImageProgress(image,SaveImageTag,2,5);
@@ -1342,7 +1413,10 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
               break;
           }
         if (CloseBlob(image) == MagickFalse)
-          break;
+          {
+            status=MagickFalse;
+            break;
+          }
         AppendImageFormat("Cr",image->filename);
         status=OpenBlob(image_info,image,scene == 0 ? WriteBinaryBlobMode :
           AppendBinaryBlobMode,exception);
@@ -1360,8 +1434,13 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
             BlueQuantum,pixels,exception);
           count=WriteBlob(image,length,pixels);
           if (count != (ssize_t) length)
-            break;
+            {
+              status=MagickFalse;
+              break;
+            }
         }
+        if (status == MagickFalse)
+          break;
         if (image->previous == (Image *) NULL)
           {
             status=SetImageProgress(image,SaveImageTag,3,5);
@@ -1371,7 +1450,10 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
         if (quantum_type == RGBAQuantum)
           {
             if (CloseBlob(image) == MagickFalse)
-              break;
+              {
+                status=MagickFalse;
+                break;
+              }
             AppendImageFormat("A",image->filename);
             status=OpenBlob(image_info,image,scene == 0 ? WriteBinaryBlobMode :
               AppendBinaryBlobMode,exception);
@@ -1389,8 +1471,13 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
                 AlphaQuantum,pixels,exception);
               count=WriteBlob(image,length,pixels);
               if (count != (ssize_t) length)
-                break;
+                {
+                  status=MagickFalse;
+                  break;
+                }
             }
+            if (status == MagickFalse)
+              break;
             if (image->previous == (Image *) NULL)
               {
                 status=SetImageProgress(image,SaveImageTag,4,5);
@@ -1398,7 +1485,11 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
                   break;
               }
           }
-        (void) CloseBlob(image);
+        if (CloseBlob(image) == MagickFalse)
+          {
+            status=MagickFalse;
+            break;
+          }
         (void) CopyMagickString(image->filename,image_info->filename,
           MagickPathExtent);
         if (image->previous == (Image *) NULL)
@@ -1411,6 +1502,8 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
       }
     }
     quantum_info=DestroyQuantumInfo(quantum_info);
+    if (status == MagickFalse)
+      break;
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
@@ -1420,5 +1513,8 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
   } while (image_info->adjoin != MagickFalse);
   if (CloseBlob(image) == MagickFalse)
     status=MagickFalse;
+  if (image_info->interlace == PartitionInterlace)
+    (void) CopyMagickString(image->filename,image_info->filename,
+      MagickPathExtent);
   return(status);
 }
