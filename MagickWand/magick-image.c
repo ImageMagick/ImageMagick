@@ -3095,9 +3095,13 @@ WandExport MagickBooleanType MagickDrawImage(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   draw_info=PeekDrawingWand(drawing_wand);
-  if ((draw_info == (DrawInfo *) NULL) ||
-      (draw_info->primitive == (char *) NULL))
+  if (draw_info == (DrawInfo *) NULL)
     return(MagickFalse);
+  if (draw_info->primitive == (char *) NULL)
+    {
+      draw_info=DestroyDrawInfo(draw_info);
+      return(MagickFalse);
+    }
   primitive=AcquireString(draw_info->primitive);
   draw_info=DestroyDrawInfo(draw_info);
   draw_info=CloneDrawInfo(wand->image_info,(DrawInfo *) NULL);
@@ -5391,6 +5395,11 @@ WandExport PixelWand **MagickGetImageHistogram(MagickWand *wand,
   if (histogram == (PixelInfo *) NULL)
     return((PixelWand **) NULL);
   pixel_wands=NewPixelWands(*number_colors);
+  if (pixel_wands == (PixelWand **) NULL)
+    {
+      histogram=(PixelInfo *) RelinquishMagickMemory(histogram);
+      return((PixelWand **) NULL);
+    }
   for (i=0; i < (ssize_t) *number_colors; i++)
   {
     PixelSetPixelColor(pixel_wands[i],&histogram[i]);
@@ -5656,7 +5665,7 @@ WandExport OrientationType MagickGetImageOrientation(MagickWand *wand)
 WandExport MagickBooleanType MagickGetImagePage(MagickWand *wand,
   size_t *width,size_t *height,ssize_t *x,ssize_t *y)
 {
-  assert(wand != (const MagickWand *) NULL);
+  assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
@@ -7565,14 +7574,18 @@ WandExport MagickWand *MagickMontageImage(MagickWand *wand,
     }
     case UnframeMode:
     {
-      montage_info->frame=(char *) NULL;
+      if (montage_info->frame != (char *) NULL)
+        montage_info->frame=(char *) RelinquishMagickMemory(
+          montage_info->frame);
       montage_info->shadow=MagickFalse;
       montage_info->border_width=0;
       break;
     }
     case ConcatenateMode:
     {
-      montage_info->frame=(char *) NULL;
+      if (montage_info->frame != (char *) NULL)
+        montage_info->frame=(char *) RelinquishMagickMemory(
+          montage_info->frame);
       montage_info->shadow=MagickFalse;
       (void) CloneString(&montage_info->geometry,"+0+0");
       montage_info->border_width=0;
@@ -7583,7 +7596,10 @@ WandExport MagickWand *MagickMontageImage(MagickWand *wand,
   }
   font=DrawGetFont(drawing_wand);
   if (font != (char *) NULL)
-    (void) CloneString(&montage_info->font,font);
+    {
+      (void) CloneString(&montage_info->font,font);
+      font=DestroyString(font);
+    }
   if (frame != (char *) NULL)
     (void) CloneString(&montage_info->frame,frame);
   montage_info->pointsize=DrawGetFontSize(drawing_wand);
@@ -9140,6 +9156,8 @@ WandExport MagickBooleanType MagickRemapImage(MagickWand *wand,
   assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  assert(remap_wand != (const MagickWand *) NULL);
+  assert(remap_wand->signature == MagickWandSignature);
   if ((wand->images == (Image *) NULL) ||
       (remap_wand->images == (Image *) NULL))
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
