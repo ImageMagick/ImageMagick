@@ -4,7 +4,7 @@
 %                                                                             %
 %                                                                             %
 %                            DDDD   N   N   GGGG                              %
-%                            D   D  NN  N  GS                                 %
+%                            D   D  NN  N  G                                  %
 %                            D   D  N N N  G  GG                              %
 %                            D   D  N  NN  G   G                              %
 %                            DDDD   N   N   GGGG                              %
@@ -88,7 +88,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadDNGImage() reads an binary file in the Digital Negative format and
+%  ReadDNGImage() reads a binary file in the Digital Negative format and
 %  returns it.  It allocates the memory necessary for the new Image structure
 %  and returns a pointer to the new image.
 %
@@ -168,10 +168,13 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info,
   (void) SetImageProperty(image,"dng:make",raw_info->idata.make,exception);
   (void) SetImageProperty(image,"dng:camera.model.name",raw_info->idata.model,
     exception);
-  (void) FormatMagickTime(raw_info->other.timestamp,sizeof(timestamp),
-    timestamp);
-  (void) SetImageProperty(image,"dng:create.date",timestamp,exception);
-  (void) FormatImageProperty(image,"dng:iso.setting","%.0g",
+  if (raw_info->other.timestamp != 0)
+    {
+      (void) FormatMagickTime(raw_info->other.timestamp,sizeof(timestamp),
+        timestamp);
+      (void) SetImageProperty(image,"dng:create.date",timestamp,exception);
+    }
+  (void) FormatImageProperty(image,"dng:iso.setting","%.0f",
     (double) raw_info->other.iso_speed);
 #if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,18)
   (void) SetImageProperty(image,"dng:software",raw_info->idata.software,
@@ -179,20 +182,27 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info,
   if (*raw_info->shootinginfo.BodySerial != '\0')
     (void) SetImageProperty(image,"dng:serial.number",
       raw_info->shootinginfo.BodySerial,exception);
-  (void) FormatImageProperty(image,"dng:exposure.time","1/%.0g",
-    (double) MagickSafeReciprocal(raw_info->other.shutter));
-  (void) FormatImageProperty(image,"dng:f.number","%0.1g",
+  if (raw_info->other.shutter > 0.0f)
+    {
+      if (raw_info->other.shutter < 1.0f)
+        (void) FormatImageProperty(image,"dng:exposure.time","1/%.0f",
+          (double) MagickSafeReciprocal(raw_info->other.shutter));
+      else
+        (void) FormatImageProperty(image,"dng:exposure.time","%g",
+          (double) raw_info->other.shutter);
+    }
+  (void) FormatImageProperty(image,"dng:f.number","%0.1f",
     (double) raw_info->other.aperture);
-  (void) FormatImageProperty(image,"dng:max.aperture.value","%0.1g",
+  (void) FormatImageProperty(image,"dng:max.aperture.value","%0.1f",
     (double) raw_info->lens.EXIF_MaxAp);
-  (void) FormatImageProperty(image,"dng:focal.length","%0.1g mm",
+  (void) FormatImageProperty(image,"dng:focal.length","%0.1f mm",
     (double) raw_info->other.focal_len);
   (void) FormatImageProperty(image,"dng:wb.rb.levels","%g %g %g %g",
     (double) raw_info->color.cam_mul[0],(double) raw_info->color.cam_mul[2],
     (double) raw_info->color.cam_mul[1],(double) raw_info->color.cam_mul[3]);
   (void) SetImageProperty(image,"dng:lens.type",
     raw_info->lens.makernotes.LensFeatures_suf,exception);
-  (void) FormatImageProperty(image,"dng:lens","%0.1g-%0.1gmm f/%0.1g-%0.1g",
+  (void) FormatImageProperty(image,"dng:lens","%0.1f-%0.1fmm f/%0.1f-%0.1f",
     (double) raw_info->lens.makernotes.MinFocal,
     (double) raw_info->lens.makernotes.MaxFocal,
     (double) raw_info->lens.makernotes.MaxAp4MinFocal,
@@ -201,28 +211,50 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info,
     (double) raw_info->lens.makernotes.LensFStops);
   (void) FormatImageProperty(image,"dng:min.focal.length","%0.1f mm",
     (double) raw_info->lens.makernotes.MinFocal);
-  (void) FormatImageProperty(image,"dng:max.focal.length","%0.1g mm",
+  (void) FormatImageProperty(image,"dng:max.focal.length","%0.1f mm",
     (double) raw_info->lens.makernotes.MaxFocal);
-  (void) FormatImageProperty(image,"dng:max.aperture.at.min.focal","%0.1g",
+  (void) FormatImageProperty(image,"dng:max.aperture.at.min.focal","%0.1f",
     (double) raw_info->lens.makernotes.MaxAp4MinFocal);
-  (void) FormatImageProperty(image,"dng:max.aperture.at.max.focal","%0.1g",
+  (void) FormatImageProperty(image,"dng:max.aperture.at.max.focal","%0.1f",
     (double) raw_info->lens.makernotes.MaxAp4MaxFocal);
   (void) FormatImageProperty(image,"dng:focal.length.in.35mm.format","%d mm",
     raw_info->lens.FocalLengthIn35mmFormat);
 #endif
 #if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,20)
-  (void) FormatImageProperty(image,"dng:gps.latitude",
-    "%.0g deg %.0g' %.2g\" N",
-    (double) raw_info->other.parsed_gps.latitude[0],
-    (double) raw_info->other.parsed_gps.latitude[1],
-    (double) raw_info->other.parsed_gps.latitude[2]);
-  (void) FormatImageProperty(image,"dng:gps.longitude",
-    "%.0g deg %.0g' %.2g\" W",
-    (double) raw_info->other.parsed_gps.longitude[0],
-    (double) raw_info->other.parsed_gps.longitude[1],
-    (double) raw_info->other.parsed_gps.longitude[2]);
-  (void) FormatImageProperty(image,"dng:gps.altitude","%.1g m",
-    (double) raw_info->other.parsed_gps.altitude);
+  if (raw_info->other.parsed_gps.gpsparsed != 0)
+    {
+      const char
+        *latitude_ref,
+        *longitude_ref;
+
+      double
+        altitude;
+
+      latitude_ref="";
+      if (raw_info->other.parsed_gps.latref == 'N')
+        latitude_ref=" N";
+      if (raw_info->other.parsed_gps.latref == 'S')
+        latitude_ref=" S";
+      longitude_ref="";
+      if (raw_info->other.parsed_gps.longref == 'E')
+        longitude_ref=" E";
+      if (raw_info->other.parsed_gps.longref == 'W')
+        longitude_ref=" W";
+      altitude=(double) raw_info->other.parsed_gps.altitude;
+      if (raw_info->other.parsed_gps.altref == 1)
+        altitude=(-altitude);
+      (void) FormatImageProperty(image,"dng:gps.latitude",
+        "%.0f deg %.0f' %.2f\"%s",
+        (double) raw_info->other.parsed_gps.latitude[0],
+        (double) raw_info->other.parsed_gps.latitude[1],
+        (double) raw_info->other.parsed_gps.latitude[2],latitude_ref);
+      (void) FormatImageProperty(image,"dng:gps.longitude",
+        "%.0f deg %.0f' %.2f\"%s",
+        (double) raw_info->other.parsed_gps.longitude[0],
+        (double) raw_info->other.parsed_gps.longitude[1],
+        (double) raw_info->other.parsed_gps.longitude[2],longitude_ref);
+      (void) FormatImageProperty(image,"dng:gps.altitude","%.1f m",altitude);
+    }
 #endif
 }
 #endif
@@ -318,6 +350,8 @@ static void SetLibRawParams(const ImageInfo *image_info,Image *image,
     }
 #if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,21)
   option=GetImageOption(image_info,"dng:interpolation-quality");
+  if (option == (const char *) NULL)
+    option=GetImageOption(image_info,"dng:interpolation_quality");
   if (option != (const char *) NULL)
     {
       int
@@ -350,8 +384,8 @@ static void LibRawDataError(void *data,const char *magick_unused(file),
       */
       exception=(ExceptionInfo *) data;
       (void) ThrowMagickException(exception,GetMagickModule(),
-        CorruptImageWarning,"Data corrupted at","`%d'",(int) offset);
-  }
+        CorruptImageWarning,"Data corrupted at","`%lld'",(long long) offset);
+    }
 }
 
 static void ReadLibRawThumbnail(const ImageInfo *image_info,Image *image,
@@ -373,7 +407,8 @@ static void ReadLibRawThumbnail(const ImageInfo *image_info,Image *image,
   if (errcode != LIBRAW_SUCCESS)
     return;
   thumbnail=libraw_dcraw_make_mem_thumb(raw_info,&errcode);
-  if (errcode == LIBRAW_SUCCESS)
+  if ((errcode == LIBRAW_SUCCESS) &&
+      (thumbnail != (libraw_processed_image_t *) NULL))
     {
       StringInfo
         *profile;
@@ -397,7 +432,8 @@ static void ReadLibRawThumbnail(const ImageInfo *image_info,Image *image,
         }
       profile=BlobToProfileStringInfo("dng:thumbnail",thumbnail->data,
         thumbnail->data_size,exception);
-      (void) SetImageProfilePrivate(image,profile,exception);
+      if (profile != (StringInfo *) NULL)
+        (void) SetImageProfilePrivate(image,profile,exception);
     }
   if (thumbnail != (libraw_processed_image_t *) NULL)
     libraw_dcraw_clear_mem(thumbnail);
@@ -414,7 +450,8 @@ static void ReadLibRawProfiles(Image *image,const libraw_data_t *raw_info,
     {
       profile=BlobToProfileStringInfo("icc",raw_info->color.profile,
         raw_info->color.profile_length,exception);
-      (void) SetImageProfilePrivate(image,profile,exception);
+      if (profile != (StringInfo *) NULL)
+        (void) SetImageProfilePrivate(image,profile,exception);
     }
 #if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,18)
   if ((raw_info->idata.xmpdata != NULL) &&
@@ -422,13 +459,16 @@ static void ReadLibRawProfiles(Image *image,const libraw_data_t *raw_info,
     {
       profile=BlobToProfileStringInfo("xmp",raw_info->idata.xmpdata,
         raw_info->idata.xmplen,exception);
-      (void) SetImageProfilePrivate(image,profile,exception);
+      if (profile != (StringInfo *) NULL)
+        (void) SetImageProfilePrivate(image,profile,exception);
     }
 #endif
 }
 
 static inline OrientationType LibRawFlipToOrientation(int flip)
 {
+  if ((flip < 0) || (flip > 8))
+    return(UndefinedOrientation);
   switch(flip)
   {
     case 5:
@@ -485,6 +525,17 @@ static MagickBooleanType UnpackLibRawImage(Image *image,const ImageInfo *image_i
       image->colorspace=GRAYColorspace;
       image->type=raw_image->colors == 1 ? GrayscaleType : GrayscaleAlphaType;
     }
+  if ((MagickSizeType) raw_image->data_size <
+      ((MagickSizeType) raw_image->width*raw_image->height*
+       raw_image->colors*sizeof(*p)))
+    {
+      libraw_dcraw_clear_mem(raw_image);
+      (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+        "InsufficientImageDataInFile","`%s'",image->filename);
+      return(MagickFalse);
+    }
+  if ((raw_image->colors == 2) || (raw_image->colors == 4))
+    image->alpha_trait=BlendPixelTrait;
   image->columns=raw_image->width;
   image->rows=raw_image->height;
   image->depth=raw_image->bits;
@@ -505,7 +556,10 @@ static MagickBooleanType UnpackLibRawImage(Image *image,const ImageInfo *image_i
 
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
-      break;
+      {
+        status=MagickFalse;
+        break;
+      }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       SetPixelRed(image,ScaleShortToQuantum(*p++),q);
@@ -519,7 +573,10 @@ static MagickBooleanType UnpackLibRawImage(Image *image,const ImageInfo *image_i
       q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
-      break;
+      {
+        status=MagickFalse;
+        break;
+      }
     if (image->previous == (Image *) NULL)
       {
         status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
@@ -529,7 +586,7 @@ static MagickBooleanType UnpackLibRawImage(Image *image,const ImageInfo *image_i
       }
   }
   libraw_dcraw_clear_mem(raw_image);
-  return(MagickTrue);
+  return(status);
 }
 
 #if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,21)
@@ -539,15 +596,36 @@ static Image* LibrawThumbnailBitmapToImage(const ImageInfo *image_info,
   Image
     *image;
 
+  MagickBooleanType
+    status;
+
   QuantumInfo
     *quantum_info;
 
   QuantumType
     quantum_type;
 
-  Quantum
-    *q;
+  size_t
+    channels;
 
+  ssize_t
+    y;
+
+  channels=(size_t) raw_info->thumbnail.tcolors;
+  if ((channels != 1) && (channels != 3))
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
+        "UnsupportedNumberOfChannels","`%s'",image_info->filename);
+      return((Image *) NULL);
+    }
+  if (((MagickSizeType) raw_info->thumbnail.twidth*
+       raw_info->thumbnail.theight*channels) >
+      (MagickSizeType) raw_info->thumbnail.tlength)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+        "InsufficientImageDataInFile","`%s'",image_info->filename);
+      return((Image *) NULL);
+    }
   image=AcquireImage(image_info,exception);
   image->columns=(size_t) raw_info->thumbnail.twidth;
   image->rows=(size_t) raw_info->thumbnail.theight;
@@ -555,23 +633,43 @@ static Image* LibrawThumbnailBitmapToImage(const ImageInfo *image_info,
     return(DestroyImage(image));
   image->depth=8;
   quantum_type=RGBQuantum;
-  if (raw_info->thumbnail.tcolors == 1)
+  if (channels == 1)
     {
       image->colorspace=GRAYColorspace;
       image->type=GrayscaleType;
       quantum_type=GrayQuantum;
     }
   quantum_info=AcquireQuantumInfo(image_info,image);
-  q=QueueAuthenticPixels(image,0,0,image->columns,
-    image->rows,exception);
-  if (q != (Quantum *) NULL)
+  if (quantum_info == (QuantumInfo *) NULL)
     {
-      (void) ImportQuantumPixels(image,(CacheView *) NULL,
-        quantum_info,quantum_type,(const unsigned char *)
-        raw_info->thumbnail.thumb,exception);
-      (void) SyncAuthenticPixels(image,exception);
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      return(DestroyImage(image));
     }
+  status=MagickTrue;
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    Quantum
+      *q;
+
+    q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
+    if (q == (Quantum *) NULL)
+      {
+        status=MagickFalse;
+        break;
+      }
+    (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+      quantum_type,(const unsigned char *) raw_info->thumbnail.thumb+
+      (size_t) y*image->columns*channels,exception);
+    if (SyncAuthenticPixels(image,exception) == MagickFalse)
+      {
+        status=MagickFalse;
+        break;
+      }
+  }
   quantum_info=DestroyQuantumInfo(quantum_info);
+  if (status == MagickFalse)
+    return(DestroyImage(image));
   return(image);
 }
 #endif
@@ -580,6 +678,9 @@ static MagickBooleanType UnpackLibRawThumbnails(Image **image,const ImageInfo *i
   libraw_data_t *raw_info,int *errcode,ExceptionInfo *exception)
 {
 #if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,21)
+  Image
+    *original;
+
   ImageInfo
     *thumbnail_info;
 
@@ -597,7 +698,8 @@ static MagickBooleanType UnpackLibRawThumbnails(Image **image,const ImageInfo *i
         "ListLengthExceedsLimit","`%s'",image_info->filename);
       return(MagickFalse);
     }
-  for(i=0; i < (ssize_t) raw_info->thumbs_list.thumbcount; i++)
+  original=(*image);
+  for (i=0; i < (int) raw_info->thumbs_list.thumbcount; i++)
   {
     Image
       *thumbnail;
@@ -614,9 +716,18 @@ static MagickBooleanType UnpackLibRawThumbnails(Image **image,const ImageInfo *i
     thumbnail_info=DestroyImageInfo(thumbnail_info);
     if (thumbnail == (Image*) NULL)
       return(MagickFalse);
+    (void) CopyMagickString(thumbnail->filename,image_info->filename,
+      MagickPathExtent);
+    thumbnail->scene=(size_t) i;
     AppendImageToList(image,thumbnail);
   }
-  (void) RemoveImageFromList(image);
+  /*
+    Drop the placeholder image so the list holds only the thumbnails.
+  */
+  *image=original->next;
+  (*image)->previous=(Image *) NULL;
+  original->next=(Image *) NULL;
+  original=DestroyImage(original);
   return(MagickTrue);
 #else
   magick_unreferenced(image_info);
@@ -681,7 +792,6 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
           libraw_strerror(errcode),"`%s'",image->filename);
-        libraw_close(raw_info);
         return(DestroyImageList(image));
       }
     libraw_set_dataerror_handler(raw_info,LibRawDataError,exception);
@@ -726,7 +836,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (status == MagickFalse)
       {
         libraw_close(raw_info);
-        return(image);
+        return(DestroyImageList(image));
       }
     option=GetImageOption(image_info,"dng:read-thumbnails");
     if (IsStringTrue(option) == MagickTrue)
@@ -780,7 +890,7 @@ static inline void RegisterDNGMagickInfo(const char *name,
   entry=AcquireMagickInfo("DNG",name,description);
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
   entry->flags|=CoderDecoderSeekableStreamFlag;
-  entry->flags^=CoderBlobSupportFlag;
+  entry->flags&=~CoderBlobSupportFlag;
   entry->format_type=ExplicitFormatType;
   if (*version != '\0')
     entry->version=ConstantString(version);
@@ -842,9 +952,9 @@ ModuleExport size_t RegisterDNGImage(void)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  UnregisterDNGImage() removes format registrations made by the
-%  BIM module from the list of supported formats.
+%  DNG module from the list of supported formats.
 %
-%  The format of the UnregisterBIMImage method is:
+%  The format of the UnregisterDNGImage method is:
 %
 %      UnregisterDNGImage(void)
 %
