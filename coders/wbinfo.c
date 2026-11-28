@@ -84,26 +84,6 @@ typedef enum
   AmigaIconChunkFatal      /* abort the read */
 } AmigaIconChunkStatus;
 
-static MagickBooleanType GetRemainingBlobSize(Image *image,size_t *remaining)
-{
-  MagickOffsetType
-    offset;
-
-  MagickSizeType
-    blob_size;
-
-  offset=TellBlob(image);
-  blob_size=GetBlobSize(image);
-  if ((offset < 0) || ((MagickSizeType) offset > blob_size) ||
-      (blob_size-(MagickSizeType) offset > (MagickSizeType) MAGICK_SIZE_MAX))
-    {
-      *remaining=0;
-      return(MagickFalse);
-    }
-  *remaining=(size_t) (blob_size-(MagickSizeType) offset);
-  return(MagickTrue);
-}
-
 /*
   Amiga Workbench system palettes.
 */
@@ -181,7 +161,7 @@ static size_t NewIconLineBitCount(const char *src,size_t src_len)
   Returns the number of bits written.
 */
 static size_t DecodeNewIconLine(const char *src,size_t src_len,
-  unsigned char *bits,size_t bits_alloc,size_t bit_offset)
+  unsigned char *bits,size_t bytes_alloc,size_t bit_offset)
 {
   size_t
     bit_count,
@@ -211,7 +191,7 @@ static size_t DecodeNewIconLine(const char *src,size_t src_len,
       }
     for (bit_i=6; bit_i >= 0; bit_i--)
     {
-      if ((bit_count < bits_alloc*8) && ((val >> bit_i) & 1))
+      if ((bit_count < bytes_alloc*8) && ((val >> bit_i) & 1))
         bits[bit_count >> 3]|=(unsigned char) (1 << (7-(bit_count & 7)));
       bit_count++;
     }
@@ -246,11 +226,12 @@ static unsigned char *DecodeAmigaRLE(const unsigned char *data,
     control,
     val;
 
+  *decoded_count=0;
+  *complete=MagickFalse;
   result=(unsigned char *) AcquireQuantumMemory(expected_count,
     sizeof(*result));
   if (result == (unsigned char *) NULL)
     return((unsigned char *) NULL);
-  *complete=MagickFalse;
   total_bits=data_size*8;
   bit_pos=0;
   count=0;
@@ -297,6 +278,26 @@ static unsigned char *DecodeAmigaRLE(const unsigned char *data,
   return(result);
 }
 
+static MagickBooleanType GetRemainingBlobSize(Image *image,size_t *remaining)
+{
+  MagickOffsetType
+    offset;
+
+  MagickSizeType
+    blob_size;
+
+  offset=TellBlob(image);
+  blob_size=GetBlobSize(image);
+  if ((offset < 0) || ((MagickSizeType) offset > blob_size) ||
+      (blob_size-(MagickSizeType) offset > (MagickSizeType) MAGICK_SIZE_MAX))
+    {
+      *remaining=0;
+      return(MagickFalse);
+    }
+  *remaining=(size_t) (blob_size-(MagickSizeType) offset);
+  return(MagickTrue);
+}
+
 static MagickBooleanType AppendAmigaImage(Image **image,size_t width,
   size_t height,size_t scene,const ImageInfo *image_info,
   ExceptionInfo *exception)
@@ -310,15 +311,15 @@ static MagickBooleanType AppendAmigaImage(Image **image,size_t width,
       if (*image == (Image *) NULL)
         return(MagickFalse);
     }
+  (*image)->depth=8;
+  (*image)->alpha_trait=BlendPixelTrait;
+  (*image)->scene=scene;
   if (SetImageExtent(*image,width,height,exception) == MagickFalse)
     {
       if (scene > 0)
         DeleteImageFromList(image);
       return(MagickFalse);
     }
-  (*image)->depth=8;
-  (*image)->alpha_trait=BlendPixelTrait;
-  (*image)->scene=scene;
   return(MagickTrue);
 }
 
@@ -471,7 +472,7 @@ static MagickBooleanType ReadAndRenderClassicImage(Image **image,
     if ((planes[p_idx] == (unsigned char *) NULL) ||
         (ReadBlob(*image,plane_size,planes[p_idx]) != (ssize_t) plane_size))
       {
-        planes=RelinquishPlanes(planes,p_idx);
+        planes=RelinquishPlanes(planes,p_idx+1);
         return(MagickFalse);
       }
   }
@@ -583,6 +584,7 @@ static MagickBooleanType DecodeAndRenderNewIcon(Image **image,size_t *scene,
   size_t
     bit_count,
     bit_pos,
+    dirty_bytes,
     line_bits_alloc,
     line_bits_bytes,
     line_idx,
@@ -649,6 +651,9 @@ static MagickBooleanType DecodeAndRenderNewIcon(Image **image,size_t *scene,
   (void) memset(line_bits,0,line_bits_bytes*sizeof(*line_bits));
   bit_count=DecodeNewIconLine(first_line+5,strlen(first_line+5),line_bits,
     line_bits_bytes,0);
+  dirty_bytes=(bit_count+7)/8;
+  if (dirty_bytes > line_bits_bytes)
+    dirty_bytes=line_bits_bytes;
   if (bit_count < ni_num_colors*24)
     {
       line_bits=(unsigned char *) RelinquishMagickMemory(line_bits);
@@ -691,9 +696,16 @@ static MagickBooleanType DecodeAndRenderNewIcon(Image **image,size_t *scene,
     size_t
       lbp;
 
-    (void) memset(line_bits,0,line_bits_bytes*sizeof(*line_bits));
+    /*
+      Clear only what the previous line wrote; clearing the whole buffer for
+      every line is quadratic for files with many long IM lines.
+    */
+    (void) memset(line_bits,0,dirty_bytes*sizeof(*line_bits));
     bit_count=DecodeNewIconLine(im_lines[line_idx],strlen(im_lines[line_idx]),
       line_bits,line_bits_bytes,0);
+    dirty_bytes=(bit_count+7)/8;
+    if (dirty_bytes > line_bits_bytes)
+      dirty_bytes=line_bits_bytes;
     lbp=0;
     while ((lbp+ni_depth <= bit_count) && (pix_count < ni_width*ni_height))
       ni_pixels[pix_count++]=(unsigned char) BitsToUInt(line_bits,bit_count,
@@ -972,6 +984,7 @@ static AmigaIconChunkStatus DecodeAndRenderGlowIcon(Image **image,
   /*
     Decode image pixels.
   */
+  pixel_count=0;
   if (image_format == 1)
     {
       rle_complete=MagickFalse;
@@ -995,7 +1008,12 @@ static AmigaIconChunkStatus DecodeAndRenderGlowIcon(Image **image,
         (void) memcpy(pixel_data,chunk+10,pixel_count);
     }
   if (pixel_data == (unsigned char *) NULL)
-    return(AmigaIconChunkStop);
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",
+        (*image)->filename);
+      return(AmigaIconChunkFatal);
+    }
   /*
     Decode palette.
   */
@@ -1026,6 +1044,14 @@ static AmigaIconChunkStatus DecodeAndRenderGlowIcon(Image **image,
             sizeof(*pal_data));
           if (pal_data != (unsigned char *) NULL)
             (void) memcpy(pal_data,chunk+10+image_size,pal_count);
+        }
+      if (pal_data == (unsigned char *) NULL)
+        {
+          pixel_data=(unsigned char *) RelinquishMagickMemory(pixel_data);
+          (void) ThrowMagickException(exception,GetMagickModule(),
+            ResourceLimitError,"MemoryAllocationFailed","`%s'",
+            (*image)->filename);
+          return(AmigaIconChunkFatal);
         }
     }
   if (pal_data != (unsigned char *) NULL)
@@ -1089,7 +1115,12 @@ static AmigaIconChunkStatus DecodeAndRenderARGBIcon(Image **image,
   argb_raw=(unsigned char *) AcquireQuantumMemory((size_t) raw_size+1,
     sizeof(*argb_raw));
   if (argb_raw == (unsigned char *) NULL)
-    return(AmigaIconChunkContinue);
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",
+        (*image)->filename);
+      return(AmigaIconChunkFatal);
+    }
   if (uncompress(argb_raw,&raw_size,chunk+10,(uLong) (chunk_size-10)) != Z_OK)
     {
       argb_raw=(unsigned char *) RelinquishMagickMemory(argb_raw);
@@ -1282,7 +1313,7 @@ static MagickBooleanType IsWBINFO(const unsigned char *magick,
     return(MagickTrue);
   return(MagickFalse);
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1310,6 +1341,34 @@ static MagickBooleanType IsWBINFO(const unsigned char *magick,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static MagickBooleanType SkipBlobBytes(Image *image,MagickSizeType count)
+{
+  size_t
+    remaining;
+
+  unsigned char
+    buffer[512];
+
+  /*
+    Skip forward over count bytes of the blob.
+  */
+  if ((GetRemainingBlobSize(image,&remaining) == MagickFalse) ||
+      (count > (MagickSizeType) remaining))
+    return(MagickFalse);
+  while (count > 0)
+  {
+    size_t
+      length;
+
+    length=count > (MagickSizeType) sizeof(buffer) ? sizeof(buffer) : (size_t) count;
+    if (ReadBlob(image,length,buffer) != (ssize_t) length)
+      return(MagickFalse);
+    count-=(MagickSizeType) length;
+  }
+  return(MagickTrue);
+}
+
 static Image *ReadWBINFOImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -1361,26 +1420,26 @@ static Image *ReadWBINFOImage(const ImageInfo *image_info,
     left_edge(2), top_edge(2), width(2), height(2), flags(2), activation(2),
     gadget_type(2).
   */
-  if (SeekBlob(image,20,SEEK_CUR) < 0)
+  if (SkipBlobBytes(image,20) == MagickFalse)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   gadget_render=ReadBlobMSBLong(image);
   select_render=ReadBlobMSBLong(image);
   /* gadget_text(4), mutual_exclude(4), special_info(4), gadget_id(2) */
-  if (SeekBlob(image,14,SEEK_CUR) < 0)
+  if (SkipBlobBytes(image,14) == MagickFalse)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   user_data=ReadBlobMSBLong(image);
   /* End of embedded Gadget, now at offset 48: icon_type(1), padding(1) */
-  if (SeekBlob(image,2,SEEK_CUR) < 0)
+  if (SkipBlobBytes(image,2) == MagickFalse)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   has_default_tool=ReadBlobMSBLong(image);
   has_tooltypes=ReadBlobMSBLong(image);
   /* current_x(4), current_y(4) */
-  if (SeekBlob(image,8,SEEK_CUR) < 0)
+  if (SkipBlobBytes(image,8) == MagickFalse)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   has_drawer_data=ReadBlobMSBLong(image);
   has_tool_window=ReadBlobMSBLong(image);
   /* stack_size(4), now at offset 78 */
-  if (SeekBlob(image,4,SEEK_CUR) < 0)
+  if (SkipBlobBytes(image,4) == MagickFalse)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if (EOFBlob(image) != MagickFalse)
     ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
@@ -1390,7 +1449,7 @@ static Image *ReadWBINFOImage(const ImageInfo *image_info,
   */
   if (has_drawer_data)
     {
-      if (SeekBlob(image,56,SEEK_CUR) < 0)
+      if (SkipBlobBytes(image,56) == MagickFalse)
         ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     }
   /*
@@ -1421,8 +1480,14 @@ static Image *ReadWBINFOImage(const ImageInfo *image_info,
         text_len;
 
       text_len=ReadBlobMSBLong(image);
-      if (SeekBlob(image,(MagickOffsetType) text_len,SEEK_CUR) < 0)
-        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      if ((EOFBlob(image) != MagickFalse) ||
+          (SkipBlobBytes(image,(MagickSizeType) text_len) == MagickFalse))
+        {
+          if (scene == 0)
+            ThrowReaderException(CorruptImageError,
+              "InsufficientImageDataInFile");
+          return(FinishTruncatedWBINFO(image,image_info,exception));
+        }
     }
   /*
     Read ToolTypes and decode NewIcons if present.
@@ -1453,16 +1518,27 @@ static Image *ReadWBINFOImage(const ImageInfo *image_info,
         text_len;
 
       text_len=ReadBlobMSBLong(image);
-      if (SeekBlob(image,(MagickOffsetType) text_len,SEEK_CUR) < 0)
-        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      if ((EOFBlob(image) != MagickFalse) ||
+          (SkipBlobBytes(image,(MagickSizeType) text_len) == MagickFalse))
+        {
+          if (scene == 0)
+            ThrowReaderException(CorruptImageError,
+              "InsufficientImageDataInFile");
+          return(FinishTruncatedWBINFO(image,image_info,exception));
+        }
     }
   /*
     Skip DrawerData2 (6 bytes) if present.
   */
   if (has_drawer_data && (user_data & 255))
     {
-      if (SeekBlob(image,6,SEEK_CUR) < 0)
-        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      if (SkipBlobBytes(image,6) == MagickFalse)
+        {
+          if (scene == 0)
+            ThrowReaderException(CorruptImageError,
+              "InsufficientImageDataInFile");
+          return(FinishTruncatedWBINFO(image,image_info,exception));
+        }
     }
   /*
     Scan for FORM ICON (GlowIcons and ARGB images).
@@ -1497,7 +1573,8 @@ static Image *ReadWBINFOImage(const ImageInfo *image_info,
                   size_t
                     form_size;
 
-                  if ((memcmp(rest_data+search_pos,"FORM",4) != 0) ||
+                  if ((rest_data[search_pos] != (unsigned char) 'F') ||
+                      (memcmp(rest_data+search_pos,"FORM",4) != 0) ||
                       (memcmp(rest_data+search_pos+8,"ICON",4) != 0))
                     continue;
                   form_size=((size_t) rest_data[search_pos+4] << 24) |
@@ -1529,7 +1606,7 @@ static Image *ReadWBINFOImage(const ImageInfo *image_info,
     return(DestroyImageList(image));
   return(GetFirstImageInList(image));
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1563,7 +1640,7 @@ ModuleExport size_t RegisterWBINFOImage(void)
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
