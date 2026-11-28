@@ -58,9 +58,9 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MontageImageCommand() reads one or more images, applies one or more image
-%  processing operations, and writes out the image in the same or
-%  differing format.
+%  MontageImageCommand() reads one or more images, tiles them into a
+%  composite montage image, and writes the result to the last file name on
+%  the command line.
 %
 %  The format of the MontageImageCommand method is:
 %
@@ -96,7 +96,7 @@ static MagickBooleanType MontageUsage(void)
       "  -annotate geometry text\n"
       "                       annotate the image with text\n"
       "  -auto-orient         automagically orient image\n"
-      "  -blur geometry      reduce image noise and reduce detail levels\n"
+      "  -blur geometry       reduce image noise and reduce detail levels\n"
       "  -border geometry     surround image with a border of color\n"
       "  -channel mask        set the image channel mask\n"
       "  -crop geometry       preferred size and location of the cropped image\n"
@@ -276,8 +276,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
 }
 
   char
-    *option,
-    *transparent_color;
+    *option;
 
   const char
     *format;
@@ -353,7 +352,6 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
   respect_parentheses=MagickFalse;
   scene=0;
   status=MagickFalse;
-  transparent_color=(char *) NULL;
   /*
     Parse command line.
   */
@@ -384,21 +382,22 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
       }
     if (IsCommandOption(option) == MagickFalse)
       {
+        char
+          *filename;
+
         Image
           *images;
 
         FireImageStack(MagickFalse,MagickFalse,pend);
+        /*
+          Option is a file name: resolve it once, outside the scene loop, so a
+          "--" escape is not consumed repeatedly for multi-scene reads.
+        */
+        filename=argv[i];
+        if ((LocaleCompare(filename,"--") == 0) && (i < ((ssize_t) argc-1)))
+          filename=argv[++i];
         for (scene=(ssize_t) first_scene; scene <= (ssize_t) last_scene ; scene++)
         {
-          char
-            *filename;
-
-          /*
-            Option is a file name: begin by reading image from specified file.
-          */
-          filename=argv[i];
-          if ((LocaleCompare(filename,"--") == 0) && (i < ((ssize_t) argc-1)))
-            filename=argv[++i];
           (void) CloneString(&image_info->font,montage_info->font);
           if (first_scene == last_scene)
             images=ReadImages(image_info,filename,exception);
@@ -478,9 +477,9 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
               ThrowMontageException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMontageInvalidArgumentException(option,argv[i]);
+            i++;
             if (i == (ssize_t) argc)
               ThrowMontageException(OptionError,"MissingArgument",option);
-            i++;
             break;
           }
         if (LocaleCompare("auto-orient",option+1) == 0)
@@ -619,9 +618,10 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
               *clone_images,
               *clone_list;
 
-            clone_list=CloneImageList(image,exception);
             if (k != 0)
               clone_list=CloneImageList(image_stack[k-1].image,exception);
+            else
+              clone_list=CloneImageList(image,exception);
             if (clone_list == (Image *) NULL)
               ThrowMontageException(ImageError,"ImageSequenceRequired",option);
             FireImageStack(MagickTrue,MagickTrue,MagickTrue);
@@ -929,6 +929,17 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             if (endian < 0)
               ThrowMontageException(OptionError,"UnrecognizedEndianType",
                 argv[i]);
+            break;
+          }
+        if (LocaleCompare("extract",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMontageException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMontageInvalidArgumentException(option,argv[i]);
             break;
           }
         if (LocaleCompare("extent",option+1) == 0)
@@ -1286,7 +1297,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             if (LocaleCompare("unframe",argv[i]) == 0)
               {
                 mode=UnframeMode;
-                montage_info->frame=(char *) NULL;
+                (void) CloneString(&montage_info->frame,(char *) NULL);
                 montage_info->shadow=MagickFalse;
                 montage_info->border_width=0;
                 break;
@@ -1294,7 +1305,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             if (LocaleCompare("concatenate",argv[i]) == 0)
               {
                 mode=ConcatenateMode;
-                montage_info->frame=(char *) NULL;
+                (void) CloneString(&montage_info->frame,(char *) NULL);
                 montage_info->shadow=MagickFalse;
                 montage_info->gravity=(GravityType) NorthWestGravity;
                 (void) CloneString(&montage_info->geometry,"+0+0");
@@ -1550,8 +1561,10 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             if (*option == '+')
               break;
             i++;
-            if ((i == (ssize_t) argc) || (IsGeometry(argv[i]) == MagickFalse))
+            if (i == (ssize_t) argc)
               ThrowMontageException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMontageInvalidArgumentException(option,argv[i]);
             break;
           }
         if (LocaleCompare("shuffle",option+1) == 0)
@@ -1611,6 +1624,8 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
         if (LocaleCompare("support",option+1) == 0)
           {
             i++;  /* deprecated */
+            if (i == (ssize_t) argc)
+              ThrowMontageException(OptionError,"MissingArgument",option);
             break;
           }
         if (LocaleCompare("swap",option+1) == 0)
@@ -1709,15 +1724,11 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             (void) CloneString(&montage_info->title,argv[i]);
             break;
           }
-        if (LocaleCompare("transform",option+1) == 0)
-          break;
         if (LocaleCompare("transparent",option+1) == 0)
           {
-            transparent_color=(char *) NULL;
             i++;
             if (i == (ssize_t) argc)
               ThrowMontageException(OptionError,"MissingArgument",option);
-            (void) CloneString(&transparent_color,argv[i]);
             break;
           }
         if (LocaleCompare("transparent-color",option+1) == 0)
