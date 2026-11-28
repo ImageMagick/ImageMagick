@@ -64,10 +64,18 @@
 %  Use DestroyMagickCLI() to dispose of the CLI wand when it is no longer
 %  needed.
 %
-%  The format of the NewMagickWand method is:
+%  The format of the AcquireMagickCLI method is:
 %
 %      MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
 %           ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: the image info to adopt (ownership passes to the CLI wand),
+%      or NULL to allocate a default one.
+%
+%    o exception: the exception info to adopt (ownership passes to the CLI
+%      wand), or NULL to allocate a default one.
 %
 */
 WandExport MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
@@ -78,6 +86,7 @@ WandExport MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
 
   CheckMagickCoreCompatibility();
   cli_wand=(MagickCLI *) AcquireCriticalMemory(sizeof(*cli_wand));
+  (void) memset(cli_wand,0,sizeof(*cli_wand));
   cli_wand->wand.id=AcquireWandId();
   (void) FormatLocaleString(cli_wand->wand.name,MagickPathExtent,
     "%s-%.17g","MagickWandCLI", (double) cli_wand->wand.id);
@@ -131,10 +140,13 @@ WandExport MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
 %  DestroyMagickCLI() destroys everything in a CLI wand, including image_info
 %  and any exceptions, if still present in the wand.
 %
-%  The format of the NewMagickWand method is:
+%  The format of the DestroyMagickCLI method is:
 %
-%    MagickWand *DestroyMagickCLI()
-%            Exception *exception)
+%      MagickCLI *DestroyMagickCLI(MagickCLI *cli_wand)
+%
+%  A description of each parameter follows:
+%
+%    o cli_wand: the CLI wand to destroy.  Always returns NULL.
 %
 */
 WandExport MagickCLI *DestroyMagickCLI(MagickCLI *cli_wand)
@@ -239,7 +251,6 @@ WandExport MagickBooleanType CLICatchException(MagickCLI *cli_wand,
 
   return(status);
 }
-
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -254,12 +265,50 @@ WandExport MagickBooleanType CLICatchException(MagickCLI *cli_wand,
 % CLILogEvent() is a wrapper around LogMagickEvent(), adding to it the
 % location of the option that is (about) to be executed.
 %
+% The location text is escaped before being merged into the format string, so
+% a script filename containing '%' cannot be misread as a format directive.
+%
 */
-WandExport MagickBooleanType CLILogEvent(MagickCLI *cli_wand,
-     const LogEventType type,const char *magick_module,const char *function,
-     const size_t line,const char *format,...)
+
+static void CLIFormatLocation(const MagickCLI *cli_wand,char *location,const size_t extent)
 {
   char
+    raw[MagickPathExtent];
+
+  const char
+    *p;
+
+  char
+    *q;
+
+  /*
+    Render the wand's location format into 'location'.
+  */
+  assert(extent > 2);
+  (void) FormatLocaleString(raw,MagickPathExtent,cli_wand->location,
+    cli_wand->filename,cli_wand->line,cli_wand->column);
+  q=location;
+  for (p=raw; *p != '\0'; p++)
+  {
+    if (*p == '%')
+      {
+        if ((size_t) (q-location) >= (extent-2))
+          break;
+        *q++='%';
+      }
+    else
+      if ((size_t) (q-location) >= (extent-1))
+        break;
+    *q++=*p;
+  }
+  *q='\0';
+}
+
+WandExport MagickBooleanType CLILogEvent(MagickCLI *cli_wand,const LogEventType type,
+  const char *magick_module,const char *function,const size_t line,const char *format,...)
+{
+  char
+    location[MagickPathExtent/2],
     new_format[MagickPathExtent];
 
   MagickBooleanType
@@ -268,16 +317,15 @@ WandExport MagickBooleanType CLILogEvent(MagickCLI *cli_wand,
   va_list
     operands;
 
+  /* 
+    Prepend the CLI location to format string.
+  */
+  assert(cli_wand != (MagickCLI *) NULL);
+  assert(cli_wand->signature == MagickWandSignature);
   if (IsEventLogging() == MagickFalse)
     return(MagickFalse);
-
-  /* HACK - prepend the CLI location to format string.
-     The better way would be add more arguments to the 'va' operands
-     list, but that does not appear to be possible! So we do some
-     pre-formatting of the location info here.
-  */
-  (void) FormatLocaleString(new_format,MagickPathExtent,cli_wand->location,
-       cli_wand->filename, cli_wand->line, cli_wand->column);
+  CLIFormatLocation(cli_wand,location,sizeof(location));
+  (void) CopyMagickString(new_format,location,MagickPathExtent);
   (void) ConcatenateMagickString(new_format," ",MagickPathExtent);
   (void) ConcatenateMagickString(new_format,format,MagickPathExtent);
 
@@ -302,12 +350,16 @@ WandExport MagickBooleanType CLILogEvent(MagickCLI *cli_wand,
 %
 % CLIThrowException() is a wrapper around ThrowMagickException(), adding to
 % it the location of the option that caused the exception to occur.
+%
+% The location text is escaped before being merged into the format string, so
+% a script filename containing '%' cannot be misread as a format directive.
 */
 WandExport MagickBooleanType CLIThrowException(MagickCLI *cli_wand,
   const char *magick_module,const char *function,const size_t line,
   const ExceptionType severity,const char *tag,const char *format,...)
 {
   char
+    location[MagickPathExtent/2],
     new_format[MagickPathExtent];
 
   size_t
@@ -319,17 +371,19 @@ WandExport MagickBooleanType CLIThrowException(MagickCLI *cli_wand,
   va_list
     operands;
 
-  /* HACK - append location to format string.
-     The better way would be add more arguments to the 'va' operands
-     list, but that does not appear to be possible! So we do some
-     pre-formatting of the location info here.
+  /*
+    Append location to format string.
   */
+  assert(cli_wand != (MagickCLI *) NULL);
+  assert(cli_wand->signature == MagickWandSignature);
+  assert(cli_wand->wand.signature == MagickWandSignature);
   (void) CopyMagickString(new_format,format,MagickPathExtent);
   (void) ConcatenateMagickString(new_format," ",MagickPathExtent);
 
+  CLIFormatLocation(cli_wand,location,sizeof(location));
   len=strlen(new_format);
-  (void) FormatLocaleString(new_format+len,MagickPathExtent-len,
-    cli_wand->location,cli_wand->filename,cli_wand->line,cli_wand->column);
+  if (strlen(location) < (MagickPathExtent-len))  /* never truncate mid-escape */
+    (void) CopyMagickString(new_format+len,location,MagickPathExtent-len);
 
   va_start(operands,format);
   status=ThrowMagickExceptionList(cli_wand->wand.exception,magick_module,
