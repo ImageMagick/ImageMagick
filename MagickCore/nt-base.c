@@ -926,6 +926,7 @@ extern MagickPrivate char *NTGetEnvironmentValue(const char *name)
     *environment = (char *) NULL;
 
   DWORD
+    actual_size,
     size;
 
   LPWSTR
@@ -939,13 +940,19 @@ extern MagickPrivate char *NTGetEnvironmentValue(const char *name)
   size=GetEnvironmentVariableW(wide_name,(LPWSTR) NULL,0);
   if (size == 0)
     return(environment);
-  wide=(LPWSTR) NTAcquireQuantumMemory((const size_t) size,sizeof(*wide));
-  if (wide == (LPWSTR) NULL)
-    return(environment);
-  if (GetEnvironmentVariableW(wide_name,wide,size) != 0)
-    environment=create_utf8_string(wide);
-  wide=(LPWSTR) RelinquishMagickMemory(wide);
-  return(environment);
+  for ( ; ; )
+  {
+    wide=(LPWSTR) NTAcquireQuantumMemory((const size_t) size,sizeof(*wide));
+    if (wide == (LPWSTR) NULL)
+      return(environment);
+    actual_size=GetEnvironmentVariableW(wide_name,wide,size);
+    if ((actual_size > 0) && (actual_size < size))
+      environment=create_utf8_string(wide);
+    wide=(LPWSTR) RelinquishMagickMemory(wide);
+    if (actual_size < size)
+      return(environment);
+    size=actual_size;
+  }
 }
 
 /*
