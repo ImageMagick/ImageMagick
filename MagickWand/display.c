@@ -163,7 +163,7 @@ static MagickBooleanType DisplayUsage(void)
       "  -dither method       apply error diffusion to image\n"
       "  -endian type         endianness (MSB or LSB) of the image\n"
       "  -filter type         use this filter when resizing an image\n"
-      "  -format string     output formatted image characteristics\n"
+      "  -format string       output formatted image characteristics\n"
       "  -geometry geometry   preferred size and location of the Image window\n"
       "  -gravity type        horizontal and vertical backdrop placement\n"
       "  -identify            identify the format and characteristics of the image\n"
@@ -226,7 +226,7 @@ static MagickBooleanType DisplayUsage(void)
     "resources as command line options:  -background, -bordercolor,\n");
   (void) printf(
     " -mattecolor, -borderwidth, -font, -foreground, -iconGeometry,\n");
-  (void) printf("-iconic, -name, -shared-memory, -usePixmap, or -title.\n");
+  (void) printf("-iconic, -name, -shared-memory, -use-pixmap, or -title.\n");
   (void) printf(
     "\nBy default, the image format of 'file' is determined by its magic\n");
   (void) printf(
@@ -263,6 +263,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
   argv=(char **) RelinquishMagickMemory(argv); \
 }
 #define ThrowDisplayException(asperity,tag,option) \
+do \
 { \
   char *message = GetExceptionMessage(errno);     \
   (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag, \
@@ -270,14 +271,15 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
   message=DestroyString(message); \
   DestroyDisplay(); \
   return(MagickFalse); \
-}
+} while (0)
 #define ThrowDisplayInvalidArgumentException(option,argument) \
+do \
 { \
   (void) ThrowMagickException(exception,GetMagickModule(),OptionError, \
     "InvalidArgument","'%s': %s",option,argument); \
   DestroyDisplay(); \
   return(MagickFalse); \
-}
+} while (0)
 
   char
     *resource_value,
@@ -1342,6 +1344,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if ((i == (ssize_t) argc) ||
                 (strchr(argv[i],'%') == (char *) NULL))
               ThrowDisplayException(OptionError,"MissingArgument",option);
+            (void) SetLogFormat(argv[i]);
             break;
           }
         if (LocaleCompare("loop",option+1) == 0)
@@ -1777,7 +1780,8 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             resource_info.update=(unsigned int) StringToUnsignedLong(argv[i]);
             break;
           }
-        if (LocaleCompare("use-pixmap",option+1) == 0)
+        if ((LocaleCompare("use-pixmap",option+1) == 0) ||
+            (LocaleCompare("usePixmap",option+1) == 0))
           {
             resource_info.use_pixmap=(*option == '-') ? MagickTrue :
               MagickFalse;
@@ -1862,14 +1866,14 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (IsPathAccessible(resource_info.write_filename) != MagickFalse)
               {
                 char
-                  answer[2],
+                  answer[2] = { '\0', '\0' },
                   *p;
 
                 (void) FormatLocaleFile(stderr,"Overwrite %s? ",
                   resource_info.write_filename);
                 p=fgets(answer,(int) sizeof(answer),stdin);
-                (void) p;
-                if (((*answer != 'y') && (*answer != 'Y')))
+                if ((p == (char *) NULL) ||
+                    ((*answer != 'y') && (*answer != 'Y')))
                   {
                     DestroyDisplay();
                     return(MagickFalse);
@@ -1890,7 +1894,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
       FireImageStack(MagickFalse,MagickTrue,MagickTrue);
   }
   if (k != 0)
-    ThrowDisplayException(OptionError,"UnbalancedParenthesis",argv[i]);
+    ThrowDisplayException(OptionError,"UnbalancedParenthesis","(");
   if (state & RetainColorsState)
     {
       XRetainWindowColors(display,XRootWindow(display,XDefaultScreen(display)));
