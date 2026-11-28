@@ -3941,6 +3941,8 @@ static Image *ReadOnePNGImage(MngReadInfo *mng_info,
    *    Throwing an Exception when an error occurs.
    */
   image->depth=(size_t) ping_file_depth;
+  if ((int) ping_color_type == PNG_COLOR_TYPE_PALETTE)
+    image->depth=8;  /* palette entries are 8-bit samples */
   return(image);
 
 /* end of reading one PNG image */
