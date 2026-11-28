@@ -108,7 +108,6 @@ static MagickBooleanType ImportUsage(void)
       "  -encipher filename   convert plain pixels to cipher pixels\n"
       "  -extent geometry     set the image size\n"
       "  -geometry geometry   preferred size or location of the image\n"
-      "  -help                print program options\n"
       "  -monochrome          transform image to black and white\n"
       "  -negate              replace every pixel with its complementary color \n"
       "  -quantize colorspace reduce colors in this colorspace\n"
@@ -361,8 +360,12 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
   resource_value=XGetResourceInstance(resource_database,GetClientName(),
     "delay","0");
   resource_info.delay=(unsigned int) StringToUnsignedLong(resource_value);
-  image_info->density=XGetResourceInstance(resource_database,GetClientName(),
+  resource_value=XGetResourceInstance(resource_database,GetClientName(),
     "density",(char *) NULL);
+  if (image_info->density != (char *) NULL)
+    image_info->density=DestroyString(image_info->density);
+  if (resource_value != (char *) NULL)
+    image_info->density=ConstantString(resource_value);
   resource_value=XGetResourceInstance(resource_database,GetClientName(),
     "descend","False");
   ximage_info.descend=IsStringTrue(resource_value);
@@ -381,10 +384,14 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
   if (LocaleCompare("Partition",resource_value) == 0)
     image_info->interlace=PartitionInterlace;
   if (image_info->interlace == UndefinedInterlace)
-    ThrowImportException(OptionError,"Unrecognized interlace type",
+    ThrowImportException(OptionError,"UnrecognizedInterlaceType",
       resource_value);
-  image_info->page=XGetResourceInstance(resource_database,GetClientName(),
+  resource_value=XGetResourceInstance(resource_database,GetClientName(),
     "pageGeometry",(char *) NULL);
+  if (image_info->page != (char *) NULL)
+    image_info->page=DestroyString(image_info->page);
+  if (resource_value != (char *) NULL)
+    image_info->page=ConstantString(resource_value);
   resource_value=XGetResourceInstance(resource_database,GetClientName(),
     "pause","0");
   resource_info.pause=(unsigned int) StringToUnsignedLong(resource_value);
@@ -448,7 +455,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
             MagickPathExtent);
         for (scene=0; scene < (size_t) MagickMax(snapshots,1); scene++)
         {
-          MagickDelay(1000*resource_info.pause);
+          MagickDelay((MagickSizeType) 1000*resource_info.pause);
           images=XImportImage(image_info,&ximage_info,exception);
           status&=(MagickStatusType) (images != (Image *) NULL) &&
             (exception->severity < ErrorException);
@@ -477,9 +484,9 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
               ThrowImportException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowImportInvalidArgumentException(option,argv[i]);
+            i++;
             if (i == (ssize_t) argc)
               ThrowImportException(OptionError,"MissingArgument",option);
-            i++;
             break;
           }
         ThrowImportException(OptionError,"UnrecognizedOption",option);
@@ -1255,11 +1262,17 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
       }
       case 'w':
       {
-        i++;
-        if (i == (ssize_t) argc)
-          ThrowImportException(OptionError,"MissingArgument",option);
-        (void) CloneString(&target_window,argv[i]);
-        break;
+        if (LocaleCompare("window",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowImportException(OptionError,"MissingArgument",option);
+            (void) CloneString(&target_window,argv[i]);
+            break;
+          }
+        ThrowImportException(OptionError,"UnrecognizedOption",option);
       }
       case 'v':
       {
@@ -1284,7 +1297,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
       FireImageStack(MagickFalse,MagickTrue,MagickTrue);
   }
   if (k != 0)
-    ThrowImportException(OptionError,"UnbalancedParenthesis",argv[i]);
+    ThrowImportException(OptionError,"UnbalancedParenthesis",argv[argc-1]);
   if (i-- != (ssize_t) argc)
     ThrowImportException(OptionError,"MissingAnImageFilename",argv[i]);
   if (image == (Image *) NULL)
