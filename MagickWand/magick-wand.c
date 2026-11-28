@@ -548,6 +548,8 @@ WandExport double *MagickQueryFontMetrics(MagickWand *wand,
   if (draw_info == (DrawInfo *) NULL)
     {
       font_metrics=(double *) RelinquishMagickMemory(font_metrics);
+      (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
+        "MemoryAllocationFailed","`%s'",wand->name);
       return((double *) NULL);
     }
   (void) CloneString(&draw_info->text,text);
@@ -659,6 +661,8 @@ WandExport double *MagickQueryMultilineFontMetrics(MagickWand *wand,
   if (draw_info == (DrawInfo *) NULL)
     {
       font_metrics=(double *) RelinquishMagickMemory(font_metrics);
+      (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
+        "MemoryAllocationFailed","`%s'",wand->name);
       return((double *) NULL);
     }
   (void) CloneString(&draw_info->text,text);
@@ -784,7 +788,7 @@ WandExport char **MagickQueryFormats(const char *pattern,
 %
 %  The format of the MagickRelinquishMemory method is:
 %
-%      void *MagickRelinquishMemory(void *resource)
+%      void *MagickRelinquishMemory(void *memory)
 %
 %  A description of each parameter follows:
 %
@@ -896,7 +900,7 @@ WandExport void MagickSetFirstIterator(MagickWand *wand)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickSetIteratorIndex() set the iterator to the given position in the
+%  MagickSetIteratorIndex() sets the iterator to the given position in the
 %  image list specified with the index parameter.  A zero index will set
 %  the first image as current, and so on.  Negative indexes can be used
 %  to specify an image relative to the end of the images in the wand, with
@@ -905,7 +909,7 @@ WandExport void MagickSetFirstIterator(MagickWand *wand)
 %  If the index is invalid (range too large for number of images in wand)
 %  the function will return MagickFalse, but no 'exception' will be raised,
 %  as it is not actually an error.  In that case the current image will not
-%  change.
+%  change.  MagickFalse is also returned if the wand contains no images.
 %
 %  After using this, any images added to the wand using MagickAddImage() or
 %  MagickReadImage() will be added after the image indexed, regardless
