@@ -68,7 +68,7 @@ static SemaphoreInfo
 %
 %  The format of the AcquireWandId() method is:
 %
-%      size_t AcquireWandId()
+%      size_t AcquireWandId(void)
 %
 */
 WandExport size_t AcquireWandId(void)
@@ -85,9 +85,10 @@ WandExport size_t AcquireWandId(void)
   if (wand_ids == (SplayTreeInfo *) NULL)
     wand_ids=NewSplayTree((int (*)(const void *,const void *)) NULL,
       (void *(*)(void *)) NULL,(void *(*)(void *)) NULL);
-  wand_id=id++;
-  (void) AddValueToSplayTree(wand_ids,(const void *) wand_id,(const void *)
-    wand_id);
+  wand_id=(MagickAddressType) id++;
+  if (wand_ids != (SplayTreeInfo *) NULL)
+    (void) AddValueToSplayTree(wand_ids,(const void *) wand_id,(const void *)
+      wand_id);
   UnlockSemaphoreInfo(wand_semaphore);
   return((size_t) wand_id);
 }
@@ -108,8 +109,6 @@ WandExport size_t AcquireWandId(void)
 %  The format of the DestroyWandIds() method is:
 %
 %      void DestroyWandIds(void)
-%
-%  A description of each parameter follows:
 %
 */
 WandExport void DestroyWandIds(void)
@@ -138,7 +137,7 @@ WandExport void DestroyWandIds(void)
 %
 %  The format of the RelinquishWandId() method is:
 %
-%      void RelinquishWandId(const size_t *id)
+%      void RelinquishWandId(const size_t id)
 %
 %  A description of each parameter follows:
 %
@@ -150,6 +149,8 @@ WandExport void RelinquishWandId(const size_t id)
   MagickAddressType
     wand_id = (MagickAddressType) id;
 
+  if (wand_semaphore == (SemaphoreInfo *) NULL)
+    ActivateSemaphoreInfo(&wand_semaphore);
   LockSemaphoreInfo(wand_semaphore);
   if (wand_ids != (SplayTreeInfo *) NULL)
     (void) DeleteNodeFromSplayTree(wand_ids,(const void *) wand_id);
