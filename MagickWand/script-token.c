@@ -181,6 +181,14 @@
 #  include "MagickCore/string-private.h"
 #  include "MagickCore/utility-private.h"
 #endif
+
+/* Not available on every platform; degrade gracefully. */
+#ifndef O_CLOEXEC
+#  define O_CLOEXEC 0
+#endif
+#ifndef O_NOFOLLOW
+#  define O_NOFOLLOW 0
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -193,12 +201,12 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AcquireScriptTokenInfo() allocated, initializes and opens the given
+%  AcquireScriptTokenInfo() allocates, initializes and opens the given
 %  file stream from which tokens are to be extracted.
 %
 %  The format of the AcquireScriptTokenInfo method is:
 %
-%     ScriptTokenInfo *AcquireScriptTokenInfo(char *filename)
+%     ScriptTokenInfo *AcquireScriptTokenInfo(const char *filename)
 %
 %  A description of each parameter follows:
 %
@@ -210,6 +218,8 @@ WandExport ScriptTokenInfo *AcquireScriptTokenInfo(const char *filename)
   ScriptTokenInfo
     *token_info;
 
+  if (filename == (const char *) NULL)
+    return((ScriptTokenInfo *) NULL);
   if (IsPathAuthorized(ReadPolicyRights,filename) == MagickFalse)
     return((ScriptTokenInfo *) NULL);
   token_info=(ScriptTokenInfo *) AcquireMagickMemory(sizeof(*token_info));
@@ -218,27 +228,33 @@ WandExport ScriptTokenInfo *AcquireScriptTokenInfo(const char *filename)
   (void) memset(token_info,0,sizeof(*token_info));
 
   token_info->opened=MagickFalse;
-  if ( LocaleCompare(filename,"-") == 0 ) {
+  if ( LocaleCompare(filename,"-") == 0 )
     token_info->stream=stdin;
-    token_info->opened=MagickFalse;
-  }
-  else if (LocaleNCompare(filename,"fd:",3) == 0 ) {
-    token_info->stream=fdopen(StringToLong(filename+3),"rb");
-    token_info->opened=MagickFalse;
-  }
-  else {
-    int fd = open_utf8(filename,O_RDONLY | O_CLOEXEC | O_NOFOLLOW,0);
-    if (fd != -1)
-      token_info->stream=fdopen(fd,"r");
-    if (token_info->stream != (FILE *) NULL)
-      token_info->opened=MagickTrue;
-    else
-      fd=close_utf8(fd)-1;
-  }
-  if ((token_info->stream != (FILE *) NULL) &&
-      (IsPathAuthorized(ReadPolicyRights,filename) != MagickFalse))
-    token_info->opened=MagickTrue;
+  else if (LocaleNCompare(filename,"fd:",3) == 0 )
+    {
+      long
+        value;
+
+      value=StringToLong(filename+3);
+      if ((value >= 0) && ((long) ((int) value) == value))
+        token_info->stream=fdopen((int) value,"rb");
+    }
   else
+    {
+      int
+        fd;
+
+      fd=open_utf8(filename,O_RDONLY | O_CLOEXEC | O_NOFOLLOW,0);
+      if (fd != -1)
+        {
+          token_info->stream=fdopen(fd,"r");
+          if (token_info->stream == (FILE *) NULL)
+            (void) close_utf8(fd);
+          else
+            token_info->opened=MagickTrue;
+        }
+    }
+  if (token_info->stream == (FILE *) NULL)
     {
       token_info=(ScriptTokenInfo *) RelinquishMagickMemory(token_info);
       return(token_info);
@@ -266,8 +282,8 @@ WandExport ScriptTokenInfo *AcquireScriptTokenInfo(const char *filename)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyScriptTokenInfo() allocated, initializes and opens the given
-%  file stream from which tokens are to be extracted.
+%  DestroyScriptTokenInfo() closes the file stream (only if it was opened by
+%  AcquireScriptTokenInfo()) and releases all memory held by the structure.
 %
 %  The format of the DestroyScriptTokenInfo method is:
 %
@@ -348,27 +364,47 @@ WandExport ScriptTokenInfo * DestroyScriptTokenInfo(ScriptTokenInfo *token_info)
     break; \
   } \
 }
-/* macro to collect the token characters */
+/*
+  Append one character to the token buffer, growing it when required.
+  Returns MagickFalse (and sets the status) if memory is exhausted; note that
+  a failed resize releases the old buffer, leaving token_info->token NULL.
+*/
+static MagickBooleanType SaveTokenChar(ScriptTokenInfo *token_info,
+  ssize_t *offset,const int c)
+{
+  if (token_info->token == (char *) NULL)
+    {
+      token_info->status=TokenStatusMemoryFailed;
+      return(MagickFalse);
+    }
+  if ((size_t) *offset >= (token_info->length-1))
+    {
+      size_t
+        length;
+
+      length=token_info->length;
+      if (length >= MagickPathExtent)
+        length+=MagickPathExtent;
+      else
+        length*=4;
+      token_info->token=(char *) ResizeQuantumMemory(token_info->token,
+        length,sizeof(*token_info->token));
+      if (token_info->token == (char *) NULL)
+        {
+          token_info->status=TokenStatusMemoryFailed;
+          return(MagickFalse);
+        }
+      token_info->length=length;
+    }
+  token_info->token[(*offset)++]=(char) c;
+  return(MagickTrue);
+}
+
+/* macro to collect the token characters (abandons the token on failure) */
 #define SaveChar(c) \
 { \
-  if ((size_t) offset >= (token_info->length-1)) { \
-    if (token_info == (ScriptTokenInfo *) NULL) \
-      break; \
-    if ( token_info->length >= MagickPathExtent ) \
-      token_info->length += MagickPathExtent; \
-    else \
-      token_info->length *= 4; \
-    token_info->token=(char *) ResizeQuantumMemory(token_info->token, \
-      token_info->length,sizeof(*token_info->token)); \
-    if ( token_info->token == (char *) NULL ) { \
-      token_info->status=TokenStatusMemoryFailed; \
-      break; \
-    } \
-  } \
-  if ( token_info->token == (char *) NULL ) \
-    token_info->status=TokenStatusMemoryFailed; \
-  else \
-    token_info->token[offset++]=(char) (c); \
+  if (SaveTokenChar(token_info,&offset,(c)) == MagickFalse) \
+    goto EndOfToken; \
 }
 
 WandExport MagickBooleanType GetScriptToken(ScriptTokenInfo *token_info)
@@ -388,7 +424,8 @@ WandExport MagickBooleanType GetScriptToken(ScriptTokenInfo *token_info)
     return(MagickFalse);
   if (token_info->status != TokenStatusOK)
     {
-      token_info->token[0]='\0';
+      if (token_info->token != (char *) NULL)
+        token_info->token[0]='\0';
       return(MagickFalse);
     }
   state=IN_WHITE;
@@ -411,9 +448,12 @@ RestoreMSCWarning
     if ( state == IN_WHITE )
       if ( ( c == '#' ) ||
            ( token_info->curr_column==1 && (c == ':' || c == '@' ) ) )
-        state=IN_COMMENT;
+        {
+          state=IN_COMMENT;
+          continue;
+        }
     /* whitespace token separator character */
-    if (strchr(" \n\r\t",c) != (char *) NULL) {
+    if ( c == ' ' || c == '\n' || c == '\r' || c == '\t' ) {
       switch (state) {
         case IN_TOKEN:
           token_info->token[offset]='\0';
@@ -455,6 +495,8 @@ RestoreMSCWarning
             continue;
           }
         GetChar(c);
+        if (c == '\r')
+          GetChar(c);      /* CRLF line continuation: swallow the LF */
         if (c == '\n')
           switch (state) {
             case IN_COMMENT:
@@ -498,7 +540,9 @@ RestoreMSCWarning
     }
   }
   /* input stream has EOF or produced a fatal error */
-  token_info->token[offset]='\0';
+EndOfToken:
+  if (token_info->token != (char *) NULL)
+    token_info->token[offset]='\0';
   if ( token_info->status != TokenStatusOK )
     return(MagickFalse);  /* fatal condition - no valid token */
   token_info->status = TokenStatusEOF;
