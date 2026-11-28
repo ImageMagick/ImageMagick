@@ -126,7 +126,6 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
   assert(exception != (ExceptionInfo *) NULL);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",(*image)->filename);
-  (void) image_info;
   status=MagickTrue;
   composite_options->clip_to_self=GetCompositeClipToSelf(
     composite_options->compose);
@@ -178,6 +177,8 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
               *image=DestroyImageList(*image);
               *image=stegano_image;
             }
+          else
+            status=MagickFalse;
         }
       else
         if (composite_options->stereo != MagickFalse)
@@ -193,6 +194,8 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
                 *image=DestroyImageList(*image);
                 *image=stereo_image;
               }
+            else
+              status=MagickFalse;
           }
         else
           if (composite_options->tile != MagickFalse)
@@ -259,6 +262,8 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
                       *image=DestroyImageList(*image);
                       *image=clone_image;
                     }
+                  else
+                    status=MagickFalse;
                 }
             }
       (void) SetPixelChannelMask(composite_image,channel_mask);
@@ -277,11 +282,12 @@ static MagickBooleanType CompositeUsage(void)
       "  -version             print version information",
     operators[] =
       "  -blend geometry      blend images\n"
+      "  -blur geometry       blur the composite using a blur map\n"
       "  -border geometry     surround image with a border of color\n"
       "  -bordercolor color   border color\n"
       "  -channel mask        set the image channel mask\n"
       "  -colors value        preferred number of colors in the image\n"
-      "  -decipher filename    convert cipher pixels to plain pixels\n"
+      "  -decipher filename   convert cipher pixels to plain pixels\n"
       "  -displace geometry   shift lookup according to a relative displacement map\n"
       "  -dissolve value      dissolve the two images a given percent\n"
       "  -distort geometry    shift lookup according to a absolute distortion map\n"
@@ -313,6 +319,7 @@ static MagickBooleanType CompositeUsage(void)
       "                       transparent, extract, background, or shape\n"
       "  -authenticate password\n"
       "                       decipher image with this password\n"
+      "  -background color    background color\n"
       "  -blue-primary point  chromaticity blue primary point\n"
       "  -colorspace type     alternate image colorspace\n"
       "  -comment string      annotate image with comment\n"
@@ -353,10 +360,10 @@ static MagickBooleanType CompositeUsage(void)
       "  -support factor      resize support: > 1.0 is blurry, < 1.0 is sharp\n"
       "  -synchronize         synchronize image to storage device\n"
       "  -taint               declare the image as modified\n"
+      "  -tile                repeat composite operation across and down image\n"
       "  -transparent-color color\n"
       "                       transparent color\n"
       "  -treedepth value     color tree depth\n"
-      "  -tile                repeat composite operation across and down image\n"
       "  -units type          the units of image resolution\n"
       "  -verbose             print detailed information about the image\n"
       "  -virtual-pixel method\n"
@@ -465,9 +472,7 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
     status;
 
   ssize_t
-    i;
-
-  ssize_t
+    i,
     j,
     k;
 
@@ -488,8 +493,12 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
           ListMagickVersion(stdout);
           return(MagickTrue);
         }
+      if ((LocaleCompare("help",option+1) == 0) ||
+          (LocaleCompare("-help",option+1) == 0))
+        return(CompositeUsage());
     }
-  if (argc < 4)
+  if ((argc < 4) && ((argc != 3) || (IsCommandOption(argv[1]) == MagickFalse) ||
+      (LocaleCompare("list",argv[1]+1) != 0)))  /* "-list type" needs no images */
     {
       (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
         "MissingArgument","%s","");
@@ -744,7 +753,7 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
             ssize_t
               compose;
 
-            composite_options.compose=UndefinedCompositeOp;
+            composite_options.compose=OverCompositeOp;
             if (*option == '+')
               break;
             i++;
@@ -1449,6 +1458,8 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
         if (LocaleCompare("support",option+1) == 0)
           {
             i++;  /* deprecated */
+            if (i == (ssize_t) argc)
+              ThrowCompositeException(OptionError,"MissingArgument",option);
             break;
           }
         if (LocaleCompare("swap",option+1) == 0)
@@ -1484,7 +1495,7 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
         if (LocaleCompare("tile",option+1) == 0)
           {
             composite_options.tile=(*option == '-') ? MagickTrue : MagickFalse;
-            (void) CopyMagickString(argv[i]+1,"sans",MagickPathExtent);
+            (void) CopyMagickString(argv[i]+1,"sans",strlen(argv[i]));
             break;
           }
         if (LocaleCompare("transform",option+1) == 0)
@@ -1649,8 +1660,37 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
   /*
     Composite images.
   */
-  RemoveImageStack(composite_image);
-  RemoveImageStack(images);
+  {
+    Image
+      *first_image,
+      *second_image,
+      *third_image;
+
+    /*
+      Work on private copies (base, overlay, optional mask) and leave the
+      parsed image list untouched, so the image stack cleanup owns and frees
+      it exactly once.
+    */
+    first_image=GetFirstImageInList(image);
+    second_image=GetNextImageInList(first_image);
+    third_image=GetNextImageInList(second_image);
+    images=CloneImage(first_image,0,0,MagickTrue,exception);
+    composite_image=CloneImage(second_image,0,0,MagickTrue,exception);
+    if (third_image != (Image *) NULL)
+      mask_image=CloneImage(third_image,0,0,MagickTrue,exception);
+    if ((images == (Image *) NULL) || (composite_image == (Image *) NULL) ||
+        ((third_image != (Image *) NULL) && (mask_image == (Image *) NULL)))
+      {
+        if (images != (Image *) NULL)
+          images=DestroyImageList(images);
+        if (composite_image != (Image *) NULL)
+          composite_image=DestroyImage(composite_image);
+        if (mask_image != (Image *) NULL)
+          mask_image=DestroyImage(mask_image);
+        ThrowCompositeException(ResourceLimitError,"MemoryAllocationFailed",
+          (char *) NULL);
+      }
+  }
   if (composite_image->geometry != (char *) NULL)
     {
       RectangleInfo
@@ -1673,10 +1713,11 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
             }
         }
     }
-  RemoveImageStack(mask_image);
   status&=(MagickStatusType) CompositeImageList(image_info,&images,
     composite_image,mask_image,&composite_options,exception);
   composite_image=DestroyImage(composite_image);
+  if (mask_image != (Image *) NULL)
+    mask_image=DestroyImage(mask_image);
   /*
     Write composite images.
   */
@@ -1689,8 +1730,11 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
 
       text=InterpretImageProperties(image_info,images,format,exception);
       if (text == (char *) NULL)
-        ThrowCompositeException(ResourceLimitError,"MemoryAllocationFailed",
-          (char *) NULL);
+        {
+          images=DestroyImageList(images);
+          ThrowCompositeException(ResourceLimitError,"MemoryAllocationFailed",
+            (char *) NULL);
+        }
       (void) ConcatenateString(&(*metadata),text);
       text=DestroyString(text);
     }
